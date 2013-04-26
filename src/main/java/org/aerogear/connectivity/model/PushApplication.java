@@ -35,8 +35,12 @@ public class PushApplication extends PersistentObject {
     private String name;
     @Column
     private String description;
+
+    // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
     private Set<iOSApplication> iOSApps = new HashSet<iOSApplication>();
+
+    // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
     private Set<AndroidApplication> androidApps = new HashSet<AndroidApplication>();
 //    @OneToMany

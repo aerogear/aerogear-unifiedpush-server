@@ -44,6 +44,7 @@ public  class AbstractMobileApplication extends PersistentObject implements Mobi
     @Column
     private String description;
     
+    // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
     private Set<MobileApplicationInstance> instances = new HashSet<MobileApplicationInstance>();
 
