@@ -24,6 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
@@ -43,7 +44,7 @@ public  class AbstractMobileApplication extends PersistentObject implements Mobi
     @Column
     private String description;
     
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER)
     private Set<MobileApplicationInstance> instances = new HashSet<MobileApplicationInstance>();
 
     public String getName() {

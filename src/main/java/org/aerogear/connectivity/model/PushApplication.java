@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.aerogear.connectivity.jpa.PersistentObject;
@@ -34,9 +35,9 @@ public class PushApplication extends PersistentObject {
     private String name;
     @Column
     private String description;
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER)
     private Set<iOSApplication> iOSApps = new HashSet<iOSApplication>();
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER)
     private Set<AndroidApplication> androidApps = new HashSet<AndroidApplication>();
 //    @OneToMany
 //    private Set<AbstractMobileApplication> mobileApplications = new HashSet<AbstractMobileApplication>();
