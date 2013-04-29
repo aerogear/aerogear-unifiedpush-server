@@ -17,7 +17,10 @@
 
 package org.aerogear.connectivity.rest;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -29,8 +32,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
 import org.aerogear.connectivity.service.SenderService;
+import org.aerogear.connectivity.service.SimplePushApplicationService;
+
+import com.ning.http.client.AsyncHttpClient;
 
 @Stateless
 @Path("/sender")
@@ -38,8 +45,12 @@ import org.aerogear.connectivity.service.SenderService;
 public class SenderEndpoint {
     @Inject
     private PushApplicationService pushApplicationService;
-    
-    @Inject SenderService senderService;
+    @Inject
+    private SimplePushApplicationService simplePushApplicationService;
+
+
+    @Inject
+    private SenderService senderService;
 
     @POST
     @Path("/broadcast/{id}")
@@ -52,4 +63,46 @@ public class SenderEndpoint {
         return Response.status(200)
                 .entity("Job submitted").build();
     }
+
+
+    @POST
+    @Path("/simplePush/selected/{id}") //TODO: URL name sucks
+    @Consumes("application/json")
+    public Response notifyGivenChannels(Map message, @PathParam("id") String simplePushId) {
+        
+        
+        SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
+        String endpoint = spa.getPushNetworkURL();
+        
+        String version = (String) message.get("version");
+        List<String> channelIDList = (List<String>) message.get("channelIDs");
+        
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        
+        for (String channelID : channelIDList) {
+
+            try {
+                Future<com.ning.http.client.Response> f =
+                        asyncHttpClient.preparePut(endpoint + channelID)
+                          .addHeader("Content-Type", "application/json")
+                          //.setBody("{\"key\":\"blah\", \"alert\":\"add\"}")
+                          .setBody("version=" + Integer.parseInt(version))
+                          
+                          .execute();
+
+                
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        }
+        
+        
+        return Response.status(200)
+                .entity("Job submitted").build();
+    }
+
+
 }

@@ -43,6 +43,12 @@ public class PushApplication extends PersistentObject {
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
     private Set<AndroidApplication> androidApps = new HashSet<AndroidApplication>();
+    
+    // TODO: let's do LAZY
+    @OneToMany(fetch=FetchType.EAGER)
+    private Set<SimplePushApplication> simplePushApps = new HashSet<SimplePushApplication>();
+    
+    
 //    @OneToMany
 //    private Set<AbstractMobileApplication> mobileApplications = new HashSet<AbstractMobileApplication>();
 
@@ -85,5 +91,13 @@ public class PushApplication extends PersistentObject {
 
    public void setAndroidApps(final Set<AndroidApplication> androidApps) {
       this.androidApps = androidApps;
+   }
+
+   public Set<SimplePushApplication> getSimplePushApps() {
+       return simplePushApps;
+   }
+
+   public void setSimplePushApps(final Set<SimplePushApplication> simplePushApps) {
+       this.simplePushApps = simplePushApps;
    }
 }

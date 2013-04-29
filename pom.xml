@@ -152,6 +152,13 @@
       <artifactId>gcm-server</artifactId>
       <version>1.0.2</version>
     </dependency>
+
+	<dependency>
+	  <groupId>com.ning</groupId>
+	  <artifactId>async-http-client</artifactId>
+	  <version>1.7.14</version>
+	</dependency>
+
     
   </dependencies>
   <repositories>

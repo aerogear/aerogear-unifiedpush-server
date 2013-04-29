@@ -42,6 +42,21 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android 
 ```
 
+_The response returns an ID for the Android variant...._
+
+##### SimplePush Variant
+
+Add an ```android``` variant (e.g. _HR for Android_):
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json"
+  -X POST
+  -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
+
+  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush 
+```
+
+_The response returns an ID for the SimplePush variant...._
+
 #### Registration of an installation, on a device (iOS)
 
 Client-side example for how to register an installation:
@@ -119,6 +134,21 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
    
 http://localhost:8080/ag-push/rest/sender/broadcast/{id} 
 ```
+
+### Sender (Simple Push)
+
+To send a message (version) notification to a selected list of Channels, issue the following command:
+
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json"
+    -X POST 
+	-d '{
+		  "channelIDs":["someID", "moreID...."],
+		  "version":"1909"
+	    }'
+http://localhost:8080/ag-push/rest/sender/simplePush/selected/{id} 
+```
+
 
 ## More details
 

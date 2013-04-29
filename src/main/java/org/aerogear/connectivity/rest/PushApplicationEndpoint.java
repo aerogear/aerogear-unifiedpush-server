@@ -31,10 +31,12 @@ import javax.ws.rs.Produces;
 
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
 import org.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
 import org.aerogear.connectivity.service.AndroidApplicationService;
 import org.aerogear.connectivity.service.PushApplicationService;
+import org.aerogear.connectivity.service.SimplePushApplicationService;
 import org.aerogear.connectivity.service.iOSApplicationService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
@@ -49,6 +51,8 @@ public class PushApplicationEndpoint {
     private iOSApplicationService iOSappService;
     @Inject
     private AndroidApplicationService androidAppService;
+    @Inject
+    private SimplePushApplicationService simplePushApplicationService;
    
     @GET
     @Produces("application/json")
@@ -111,5 +115,19 @@ public class PushApplicationEndpoint {
        pushAppService.addAndroidApplication(pushApp, androidVariation);
 
        return androidVariation;
+   }
+
+   // new SimplePush
+   @POST
+   @Path("/{id}/simplePush")
+   @Consumes("application/json")
+   public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("id") String pushApplicationId) {
+       // store the SimplePush variant:
+       spa = simplePushApplicationService.addSimplePushApplication(spa);
+       // find the root push app
+       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationId);
+       // add iOS variant, and merge:
+       pushAppService.addSimplePushApplication(pushApp, spa);
+       return spa;
    }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
 
 public interface PushApplicationService {
@@ -31,8 +32,9 @@ public interface PushApplicationService {
     
     void addiOSApplication(PushApplication pushApp, iOSApplication iOSapp);
     void addAndroidApplication(PushApplication pushApp, AndroidApplication androidApp);
+    void addSimplePushApplication(PushApplication pushApp, SimplePushApplication simplePushApp);
     
     List<iOSApplication> alliOSApplicationsForPushApplication(PushApplication pushApp);
     List<AndroidApplication> allAndroidApplicationsForPushApplication(PushApplication pushApp);
-
+    List<SimplePushApplication> allSimplePushApplicationsForPushApplication(PushApplication pushApp);
 }
