@@ -20,17 +20,20 @@ package org.aerogear.connectivity.rest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
@@ -64,6 +67,43 @@ public class SenderEndpoint {
                 .entity("Job submitted").build();
     }
 
+    @Inject protected EntityManager entityManager;
+
+    @POST
+    @Path("/simplePush/broadcast/{id}") //TODO: URL name sucks
+    @Consumes("application/json")
+    public Response broadcastSimplePush(Map message, @PathParam("id") String simplePushId) {
+
+        
+        SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
+        String endpoint = spa.getPushNetworkURL();
+        
+        String version = (String) message.get("version");
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+
+        Set<MobileApplicationInstance> instances = spa.getInstances();
+        for (MobileApplicationInstance mobileApplicationInstance : instances) {
+            
+            if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
+                try {
+                    Future<com.ning.http.client.Response> f =
+                            asyncHttpClient.preparePut(endpoint + mobileApplicationInstance.getDeviceToken())
+                              .addHeader("Accept", "application/x-www-form-urlencoded")
+                              .setBody("version=" + Integer.parseInt(version))
+                              .execute();
+
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return Response.status(200)
+                .entity("Job submitted").build();
+    }
+    
+    
 
     @POST
     @Path("/simplePush/selected/{id}") //TODO: URL name sucks
@@ -84,25 +124,19 @@ public class SenderEndpoint {
             try {
                 Future<com.ning.http.client.Response> f =
                         asyncHttpClient.preparePut(endpoint + channelID)
-                          .addHeader("Content-Type", "application/json")
-                          //.setBody("{\"key\":\"blah\", \"alert\":\"add\"}")
+                          .addHeader("Accept", "application/x-www-form-urlencoded")
                           .setBody("version=" + Integer.parseInt(version))
-                          
                           .execute();
-
                 
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
         }
-        
-        
+        asyncHttpClient.close();
+
         return Response.status(200)
                 .entity("Job submitted").build();
     }
-
-
 }

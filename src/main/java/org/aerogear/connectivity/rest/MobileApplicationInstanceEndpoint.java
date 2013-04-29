@@ -44,7 +44,6 @@ public class MobileApplicationInstanceEndpoint
     @POST
     @Consumes("application/json")
     public MobileApplicationInstance registerInstallation(
-            @HeaderParam("ag-push-app") String pushAppId, 
             @HeaderParam("ag-mobile-app") String mobileAppId, 
             MobileApplicationInstance entity) {
 

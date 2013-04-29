@@ -36,6 +36,8 @@ public class MobileApplicationInstance extends PersistentObject {
     private String osVersion;
     @Column
     private String clientIdentifier;
+    @Column
+    private String category;
 
     
    public String getDeviceToken() {
@@ -78,5 +80,13 @@ public class MobileApplicationInstance extends PersistentObject {
 
    public void setClientIdentifier(final String clientIdentifier) {
       this.clientIdentifier = clientIdentifier;
+   }
+
+   public String getCategory() {
+       return category;
+   }
+
+   public void setCategory(final String category) {
+       this.category = category;
    }
 }
