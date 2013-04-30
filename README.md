@@ -108,7 +108,6 @@ CURL example for how to register an installation:
 
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json" 
-   -H "ag-push-app: {id}"
    -H "ag-mobile-app: {id}"
    -X POST
    -d '{
@@ -121,6 +120,23 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
 http://localhost:8080/ag-push/rest/registry/device 
 ```
 
+#### Registration of an installation, for a SimplePush client:
+
+CURL example for how to register a connected SimplePush client:
+
+
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json"
+    -H "ag-mobile-app: {VARIAN_ID}"
+    -X POST
+    -d '{
+       "category" : "broadcast",
+       "deviceToken" : "4a81527d-6967-40bb-ac56-755e8cbfb579"
+     }'
+http://localhost:8080/ag-push/rest/registry/device 
+```
+
+The ```category``` matches the (logical) name of the channel; The ```deviceToken``` matches the ```channelID``` from the SimplePushServer.
 
 ### Sender
 
