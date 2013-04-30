@@ -21,12 +21,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -67,8 +65,6 @@ public class SenderEndpoint {
                 .entity("Job submitted").build();
     }
 
-    @Inject protected EntityManager entityManager;
-
     @POST
     @Path("/simplePush/broadcast/{id}") //TODO: URL name sucks
     @Consumes("application/json")
@@ -86,7 +82,6 @@ public class SenderEndpoint {
             
             if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
                 try {
-                    Future<com.ning.http.client.Response> f =
                             asyncHttpClient.preparePut(endpoint + mobileApplicationInstance.getDeviceToken())
                               .addHeader("Accept", "application/x-www-form-urlencoded")
                               .setBody("version=" + Integer.parseInt(version))
@@ -122,7 +117,6 @@ public class SenderEndpoint {
         for (String channelID : channelIDList) {
 
             try {
-                Future<com.ning.http.client.Response> f =
                         asyncHttpClient.preparePut(endpoint + channelID)
                           .addHeader("Accept", "application/x-www-form-urlencoded")
                           .setBody("version=" + Integer.parseInt(version))
@@ -134,7 +128,6 @@ public class SenderEndpoint {
                 e.printStackTrace();
             }
         }
-        asyncHttpClient.close();
 
         return Response.status(200)
                 .entity("Job submitted").build();
