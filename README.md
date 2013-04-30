@@ -137,6 +137,19 @@ http://localhost:8080/ag-push/rest/sender/broadcast/{id}
 
 ### Sender (Simple Push)
 
+#### Broadcast Send
+
+The is a (convenience) broadcast channel (for SimplePush). All clients that decided to register with that channel, can receive a message (version), when issuing the following REQUEST:
+
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json"
+    -X POST
+    -d '{"version":"1909"}'
+http://localhost:8080/ag-push/rest/sender/simplePush/broadcast/{SimplePushVariantID}
+```
+
+#### Selected Send
+
 To send a message (version) notification to a selected list of Channels, issue the following command:
 
 ```
@@ -146,9 +159,10 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
 		  "channelIDs":["someID", "moreID...."],
 		  "version":"1909"
 	    }'
-http://localhost:8080/ag-push/rest/sender/simplePush/selected/{id} 
+http://localhost:8080/ag-push/rest/sender/simplePush/selected/{SimplePushVariantID} 
 ```
 
+_**NOTE:** Using one channelID is desired to notify exactly one connected client/channel_.
 
 ## More details
 
