@@ -16,7 +16,19 @@
     </head>
     <body>
         <h2>Response from Server</h2>
-        <textarea id="responseText"></textarea>
+        <div class="leftDiv">
+            <textarea id="responseText"></textarea>
+            <div>
+                <input type="text" id="mailVersion" value="1" disabled/> <button id="mail">Send Mail Update</button>
+            </div>
+            <div>
+                <input type="text" id="fooVersion" value="1" disabled/> <button id="foo">Send Foo Update</button>
+            </div>
+            <div>
+                <input type="text" id="broadcastVersion" value="1" disabled/> <button id="broadcast">Broadcast Update</button>
+            </div>
+        </div>
+        <div class="rightDiv" id="framer"></div>
         <script src="js/socket.js"></script>
     </body>
 </html>
