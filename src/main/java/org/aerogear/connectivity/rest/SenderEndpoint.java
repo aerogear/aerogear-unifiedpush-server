@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -82,6 +83,7 @@ public class SenderEndpoint {
             
             if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
                 try {
+                    Future<com.ning.http.client.Response> f = 
                             asyncHttpClient.preparePut(endpoint + mobileApplicationInstance.getDeviceToken())
                               .addHeader("Accept", "application/x-www-form-urlencoded")
                               .setBody("version=" + Integer.parseInt(version))
@@ -117,6 +119,7 @@ public class SenderEndpoint {
         for (String channelID : channelIDList) {
 
             try {
+                Future<com.ning.http.client.Response> f =
                         asyncHttpClient.preparePut(endpoint + channelID)
                           .addHeader("Accept", "application/x-www-form-urlencoded")
                           .setBody("version=" + Integer.parseInt(version))
