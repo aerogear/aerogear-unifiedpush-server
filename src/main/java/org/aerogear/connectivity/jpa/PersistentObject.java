@@ -38,9 +38,9 @@ public abstract class PersistentObject implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private String id = null;
 
-    @Version
-    @Column(name = "version")
-    private int version = 0;
+//    @Version
+//    @Column(name = "version")
+//    private int version = 0;
 
     public String getId()
     {
@@ -52,14 +52,14 @@ public abstract class PersistentObject implements Serializable {
        this.id = id;
     }
 
-    public int getVersion()
-    {
-       return this.version;
-    }
-
-    public void setVersion(final int version)
-    {
-       this.version = version;
-    }
+//    public int getVersion()
+//    {
+//       return this.version;
+//    }
+//
+//    public void setVersion(final int version)
+//    {
+//       this.version = version;
+//    }
 
 }
