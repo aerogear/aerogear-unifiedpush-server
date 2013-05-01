@@ -3,7 +3,13 @@ AeroGear PushEE
 
 AeroGear's Connectivity Server (Java EE poc)
 
-### Some guidance 
+### Some guidance
+
+Deploying the server to JBoss AS using the jboss-as-maven-plugin:
+
+```
+mvn package jboss-as:deploy
+```
 
 #### Register Push App
 

@@ -181,6 +181,13 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+      <!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
+      <!-- To use, set the JBOSS_HOME environment variable and run: mvn package jboss-as:deploy -->
+      <plugin>
+        <groupId>org.jboss.as.plugins</groupId>
+        <artifactId>jboss-as-maven-plugin</artifactId>
+        <version>7.4.Final</version>
+      </plugin>
     </plugins>
   </build>
 
