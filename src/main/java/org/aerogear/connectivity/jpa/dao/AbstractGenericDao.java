@@ -34,7 +34,10 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
 
     public E update(E e) {
         entityManager.joinTransaction();
-        return entityManager.merge(e);
+        E ent = entityManager.merge(e);
+        entityManager.flush();
+        return ent;
+        
     }
 
     public void delete(E e) {
