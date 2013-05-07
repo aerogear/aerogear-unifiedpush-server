@@ -80,17 +80,4 @@
             }
         });
     });
-
-    if ( window.location === window.parent.location ) {
-        testFrame = $("<iframe></iframe>");
-        testFrame.attr("src", "http://" + window.location.hostname + ":8080/ag-push/websocket.html");
-        testFrame.css({
-            width: "100%",
-            height: "450px",
-            "margin-top": "-50px"
-        });
-        $("#framer").append( testFrame );
-    } else {
-        $(".leftDiv").css("width", "100%");
-    }
 })();
