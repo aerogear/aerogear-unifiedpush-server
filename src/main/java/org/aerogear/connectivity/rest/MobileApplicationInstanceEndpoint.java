@@ -18,6 +18,8 @@
 package org.aerogear.connectivity.rest;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -40,6 +42,9 @@ import org.aerogear.connectivity.service.MobileApplicationService;
 public class MobileApplicationInstanceEndpoint
 {
     @Inject
+    private Logger logger;
+    
+    @Inject
     private MobileApplicationInstanceService mobileApplicationInstanceService;
 
     @Inject
@@ -48,13 +53,26 @@ public class MobileApplicationInstanceEndpoint
     @POST
     @Consumes("application/json")
     public MobileApplicationInstance registerInstallation(
-            @HeaderParam("ag-mobile-app") String mobileAppId, 
+            @HeaderParam("ag-mobile-app") String mobileVariantID, 
             MobileApplicationInstance entity) {
+        if (logger.isLoggable(Level.INFO)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n\nag-mobile-app: ");
+            sb.append(mobileVariantID);
+            sb.append("\n\n");
+            logger.info(sb.toString());
+        }
 
         // store the installation:
         entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
         // find the matching variation:
-        MobileApplication mobileApp = mobileApplicationService.findMobileApplicationById(mobileAppId);
+        MobileApplication mobileApp = mobileApplicationService.findMobileApplicationById(mobileVariantID);
+        
+        if (mobileApp == null) {
+            logger.severe("\n\nCould not find Mobile Variant\n\n");
+            return null; // TODO -> 404 ... or even 500 ?
+        }
+
         // add installation to the matching variant
         mobileApplicationService.addInstallation(mobileApp, entity);
 
