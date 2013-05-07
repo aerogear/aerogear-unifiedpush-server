@@ -17,6 +17,8 @@
 
 package org.aerogear.connectivity.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.MobileApplicationInstanceDao;
@@ -29,5 +31,22 @@ public class MobileApplicationInstanceServiceImpl implements MobileApplicationIn
 
     public MobileApplicationInstance addMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);
+    }
+
+    @Override
+    public List<MobileApplicationInstance> findMobileApplicationInstancesByToken(
+            String token) {
+        return dao.findByToken(token);
+    }
+
+    @Override
+    public void removeMobileApplicationInstances(
+            List<MobileApplicationInstance> instances) {
+
+        // uh... :)
+        
+        for (MobileApplicationInstance mobileApplicationInstance : instances) {
+            dao.delete(mobileApplicationInstance);
+        }
     }
 }

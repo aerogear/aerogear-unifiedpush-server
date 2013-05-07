@@ -24,6 +24,8 @@ import org.aerogear.connectivity.model.SimplePushApplication;
 public interface SimplePushApplicationService {
     
     SimplePushApplication addSimplePushApplication(SimplePushApplication spa);
+    SimplePushApplication updateSimplePushApplication(SimplePushApplication spa);
+    void removeSimplePushApplication(SimplePushApplication spa);
     List<SimplePushApplication> findAllSimplePushApplications();
     SimplePushApplication findSimplePushApplicationById(String id);
 

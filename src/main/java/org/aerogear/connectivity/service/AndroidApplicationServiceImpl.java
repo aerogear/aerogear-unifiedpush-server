@@ -44,4 +44,15 @@ public class AndroidApplicationServiceImpl implements AndroidApplicationService 
         return androidApplicationDao.find(AndroidApplication.class, id);
     }
 
+    @Override
+    public AndroidApplication updateAndroidApplication(
+            AndroidApplication androidApp) {
+        return androidApplicationDao.update(androidApp);
+    }
+
+    @Override
+    public void removeAndroidApplication(AndroidApplication androidApp) {
+        androidApplicationDao.delete(androidApp);
+    }
+
 }

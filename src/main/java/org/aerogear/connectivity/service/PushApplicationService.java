@@ -29,6 +29,8 @@ public interface PushApplicationService {
     PushApplication addPushApplication(PushApplication pushApp);
     List<PushApplication> findAllPushApplications();
     PushApplication findPushApplicationById(String id);
+    PushApplication updatePushApplication(PushApplication pushApp);
+    void removePushApplication(PushApplication pushApp);
     
     void addiOSApplication(PushApplication pushApp, iOSApplication iOSapp);
     void addAndroidApplication(PushApplication pushApp, AndroidApplication androidApp);

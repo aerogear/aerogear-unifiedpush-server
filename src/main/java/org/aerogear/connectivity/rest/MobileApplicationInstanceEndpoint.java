@@ -17,13 +17,17 @@
 
 package org.aerogear.connectivity.rest;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import org.aerogear.connectivity.api.MobileApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
@@ -55,5 +59,18 @@ public class MobileApplicationInstanceEndpoint
         mobileApplicationService.addInstallation(mobileApp, entity);
 
         return entity;
+   }
+    @DELETE
+    @Path("/registry/device/{token}")
+    @Consumes("application/json")
+    public void unregisterInstallations(
+            @HeaderParam("ag-mobile-app") String mobileAppId, 
+            @PathParam("token") String token) {
+        
+        // there can be multiple regs.........
+        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
+        
+        // delete them:
+        mobileApplicationInstanceService.removeMobileApplicationInstances(instances);
    }
 }

@@ -44,4 +44,14 @@ public class iOSApplicationServiceImpl implements iOSApplicationService {
         return iOSApplicationDao.find(iOSApplication.class, id);
     }
 
+    @Override
+    public iOSApplication updateiOSApplication(iOSApplication iOSApp) {
+        return iOSApplicationDao.update(iOSApp);
+    }
+
+    @Override
+    public void removeiOSApplication(iOSApplication iOSApp) {
+        iOSApplicationDao.delete(iOSApp);
+    }
+
 }

@@ -24,6 +24,9 @@ import org.aerogear.connectivity.model.iOSApplication;
 public interface iOSApplicationService {
     
     iOSApplication addiOSApplication(iOSApplication iOSApp);
+    iOSApplication updateiOSApplication(iOSApplication iOSApp);
+    void removeiOSApplication(iOSApplication iOSApp);
+    
     List<iOSApplication> findAlliOSApplications();
     iOSApplication findiOSApplicationById(String id);
 

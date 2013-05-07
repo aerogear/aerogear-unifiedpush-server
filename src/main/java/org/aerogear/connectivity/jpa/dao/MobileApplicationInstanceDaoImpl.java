@@ -17,8 +17,20 @@
 
 package org.aerogear.connectivity.jpa.dao;
 
+import java.util.List;
+
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 
 public class MobileApplicationInstanceDaoImpl extends AbstractGenericDao<MobileApplicationInstance, String> implements MobileApplicationInstanceDao {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<MobileApplicationInstance> findByToken(String token) {
+
+        return createQuery(
+                "select mobileApplicationInstance from MobileApplicationInstance mobileApplicationInstance where mobileApplicationInstance.deviceToken = :token")
+        .setParameter("token", token)
+        .getResultList();
+    }
 
 }

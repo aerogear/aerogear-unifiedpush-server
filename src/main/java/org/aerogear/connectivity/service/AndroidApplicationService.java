@@ -24,6 +24,8 @@ import org.aerogear.connectivity.model.AndroidApplication;
 public interface AndroidApplicationService {
     
     AndroidApplication addAndroidApplication(AndroidApplication androidApp);
+    AndroidApplication updateAndroidApplication(AndroidApplication androidApp);
+    void removeAndroidApplication(AndroidApplication androidApp);
     List<AndroidApplication> findAllAndroidApplications();
     AndroidApplication findAndroidApplicationById(String id);
 }

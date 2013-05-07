@@ -45,4 +45,15 @@ public class SimplePushApplicationServiceImpl implements
     public SimplePushApplication findSimplePushApplicationById(String id) {
         return simplePushApplicationDao.find(SimplePushApplication.class, id);
     }
+
+    @Override
+    public SimplePushApplication updateSimplePushApplication(
+            SimplePushApplication spa) {
+        return simplePushApplicationDao.update(spa);
+    }
+
+    @Override
+    public void removeSimplePushApplication(SimplePushApplication spa) {
+        simplePushApplicationDao.delete(spa);
+    }
 }

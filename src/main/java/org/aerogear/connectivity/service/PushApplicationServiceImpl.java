@@ -88,4 +88,14 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public PushApplication updatePushApplication(PushApplication pushApp) {
+        return pushApplicationDao.update(pushApp);
+    }
+
+    @Override
+    public void removePushApplication(PushApplication pushApp) {
+        pushApplicationDao.delete(pushApp);
+    }
 }
