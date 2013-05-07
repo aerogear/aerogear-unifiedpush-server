@@ -159,6 +159,12 @@
 	  <version>1.7.14</version>
 	</dependency>
 
+    <!-- Apache Oltu -->
+   <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+      <version>0.31-SNAPSHOT</version>
+    </dependency>
     
   </dependencies>
   <repositories>
@@ -170,6 +176,20 @@
       <id>gcm-server-repository</id>
       <url>https://raw.github.com/slorber/gcm-server-repository/master/releases/</url>
     </repository>
+
+    <!-- apache snapshot (e.g. Apache Oltu) -->
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    
   </repositories>
   <build>
     <finalName>ag-push</finalName>
