@@ -28,6 +28,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -78,11 +79,40 @@ public class MobileApplicationInstanceEndpoint
 
         return entity;
    }
+
+
+    @PUT
+    @Path("/registry/device/{token}")
+    @Consumes("application/json")
+    public MobileApplicationInstance updateInstance(
+            @HeaderParam("ag-mobile-app") String mobileVariantID, 
+            @PathParam("token") String token,
+            MobileApplicationInstance postedVariant) {
+
+        // there can be multiple regs.........
+        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
+
+        // TODO: make sure there is really just one 
+        MobileApplicationInstance mvi = instances.get(0);
+        
+        mvi.setCategory(postedVariant.getCategory());
+        mvi.setDeviceToken(postedVariant.getDeviceToken());
+        mvi.setClientIdentifier(postedVariant.getClientIdentifier());
+        mvi.setDeviceType(postedVariant.getDeviceType());
+        mvi.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
+        mvi.setOsVersion(postedVariant.getOsVersion());
+
+        //update
+        mobileApplicationInstanceService.updateMobileApplicationInstance(mvi);
+        
+        return mvi;
+    }
+    
     @DELETE
     @Path("/registry/device/{token}")
     @Consumes("application/json")
     public void unregisterInstallations(
-            @HeaderParam("ag-mobile-app") String mobileAppId, 
+            @HeaderParam("ag-mobile-app") String mobileVariantID, 
             @PathParam("token") String token) {
         
         // there can be multiple regs.........

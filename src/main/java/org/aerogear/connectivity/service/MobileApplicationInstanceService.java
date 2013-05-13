@@ -24,6 +24,7 @@ import org.aerogear.connectivity.model.MobileApplicationInstance;
 public interface MobileApplicationInstanceService {
 
     MobileApplicationInstance addMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance);
+    MobileApplicationInstance updateMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance);
     List<MobileApplicationInstance> findMobileApplicationInstancesByToken(String token);
     void removeMobileApplicationInstances(List<MobileApplicationInstance> instances);
 }

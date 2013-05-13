@@ -49,4 +49,10 @@ public class MobileApplicationInstanceServiceImpl implements MobileApplicationIn
             dao.delete(mobileApplicationInstance);
         }
     }
+
+    @Override
+    public MobileApplicationInstance updateMobileApplicationInstance(
+            MobileApplicationInstance mobileApplicationInstance) {
+        return dao.update(mobileApplicationInstance);
+    }
 }
