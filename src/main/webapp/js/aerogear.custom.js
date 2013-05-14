@@ -754,7 +754,7 @@ AeroGear.isArray = function( obj ) {
     AeroGear.SimplePush = window.AeroGearSimplePush;
     AeroGear.SimplePush.pushAppID = window.AeroGearSimplePush.pushAppID || "";
     AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
-    AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "wss://" + window.location.hostname + ":7777/simplepush";
+    AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
     AeroGear.SimplePush.pushServerURL = window.AeroGearSimplePush.pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
     // Add push to the navigator object
