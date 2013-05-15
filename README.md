@@ -11,6 +11,8 @@ Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 mvn package jboss-as:deploy
 ```
 
+***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
+
 #### Register Push App
 
 Register a ```PushApplication```, like _Mobile HR_:
@@ -87,19 +89,19 @@ Client-side example for how to register an installation:
     [client setDefaultHeader:@"ag-push-app" 
      value:@"SOME ID..."];
     [client setDefaultHeader:@"ag-mobile-app"
-	   value:@"SOME OTHER ID..."];
+     value:@"SOME OTHER ID..."];
 
 
 
     [client postPath:@"/registry/device"
-	  parameters:
+    parameters:
        @{
           @"deviceToken": pushToken,
           @"deviceType": @"iPhone", 
           @"mobileOperatingSystem": @"iOS", 
           @"osVersion": @"6.1.3"
         }
-	  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"\nSUCCESS....\n");
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@", error);
@@ -177,10 +179,10 @@ To send a message (version) notification to a selected list of Channels, issue t
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json"
     -X POST 
-	-d '{
-		  "channelIDs":["someID", "moreID...."],
-		  "version":"1909"
-	    }'
+  -d '{
+      "channelIDs":["someID", "moreID...."],
+      "version":"1909"
+      }'
 http://localhost:8080/ag-push/rest/sender/simplePush/selected/{SimplePushVariantID} 
 ```
 

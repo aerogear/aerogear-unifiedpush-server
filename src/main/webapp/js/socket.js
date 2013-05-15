@@ -7,7 +7,9 @@
     broadcastRequest.onsuccess = function( event ) {
         broadcastEndpoint = event.target.result;
         broadcastRequest.registerWithPushServer( "broadcast", broadcastEndpoint );
-        appendTextArea("Subscribed to Broadcast messages");
+        appendTextArea("Subscribed to Broadcast messages on " + broadcastEndpoint.channelID);
+        $("#broadcastVersion").val( localStorage.getItem( broadcastEndpoint.channelID ) || 1 );
+        $("#broadcast").prop("disabled", false);
     };
 
     mailRequest = navigator.push.register();
@@ -16,6 +18,8 @@
         mailRequest.registerWithPushServer( "mail", mailEndpoint );
         $("#mailVersion").attr("name", mailEndpoint.channelID);
         appendTextArea("Subscribed to Mail messages on " + mailEndpoint.channelID);
+        $("#mailVersion").val( localStorage.getItem( mailEndpoint.channelID ) || 1 );
+        $("#mail").prop("disabled", false);
     };
 
     fooRequest = navigator.push.register();
@@ -24,16 +28,25 @@
         fooRequest.registerWithPushServer( "foo", fooEndpoint );
         $("#fooVersion").attr("name", fooEndpoint.channelID);
         appendTextArea("Subscribed to Foo messages on " + fooEndpoint.channelID);
+        $("#fooVersion").val( localStorage.getItem( fooEndpoint.channelID ) || 1 );
+        $("#foo").prop("disabled", false);
     };
 
     navigator.setMessageHandler( "push", function( message ) {
-        if ( message.channelID === mailEndpoint.channelID )
+        if ( message.channelID === mailEndpoint.channelID ) {
             appendTextArea("Mail Notification - " + message.version);
-        else if ( message.channelID === fooEndpoint.channelID )
+            $("#mailVersion").val( +message.version + 1 );
+            localStorage.setItem( message.channelID, +message.version + 1 );
+        } else if ( message.channelID === fooEndpoint.channelID ) {
             appendTextArea("Foo Notification - " + message.version);
-        // Broadcast messages are subscribed by default and can be acted on as well
-        else if ( message.channelID === broadcastEndpoint.channelID )
+            $("#fooVersion").val( +message.version  + 1);
+            localStorage.setItem( message.channelID, +message.version + 1 );
+        } else if ( message.channelID === broadcastEndpoint.channelID ) {
+            // Broadcast messages are subscribed by default and can be acted on as well
             appendTextArea("Broadcast Notification - " + message.version);
+            $("#broadcastVersion").val( +message.version + 1 );
+            localStorage.setItem( message.channelID, +message.version + 1 );
+        }
     });
 
     function appendTextArea(newData) {
@@ -75,7 +88,6 @@
             type: "POST",
             data: JSON.stringify( data ),
             complete: function() {
-                input.val( parseInt(val, 10) + 1 );
                 $this.prop("disabled", false);
             }
         });
