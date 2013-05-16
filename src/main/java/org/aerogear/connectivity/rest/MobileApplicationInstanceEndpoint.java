@@ -82,7 +82,7 @@ public class MobileApplicationInstanceEndpoint
 
 
     @PUT
-    @Path("/registry/device/{token}")
+    @Path("{token}")
     @Consumes("application/json")
     public MobileApplicationInstance updateInstance(
             @HeaderParam("ag-mobile-app") String mobileVariantID, 
@@ -109,7 +109,7 @@ public class MobileApplicationInstanceEndpoint
     }
     
     @DELETE
-    @Path("/registry/device/{token}")
+    @Path("{token}")
     @Consumes("application/json")
     public void unregisterInstallations(
             @HeaderParam("ag-mobile-app") String mobileVariantID, 
