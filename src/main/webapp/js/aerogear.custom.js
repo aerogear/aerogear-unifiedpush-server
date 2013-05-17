@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0 - 2013-05-15
+/*! AeroGear JavaScript Library - v1.0.0 - 2013-05-16
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -571,7 +571,8 @@ AeroGear.isArray = function( obj ) {
                 channel = {
                     channelID: message.channelID,
                     version: message.version,
-                    state: "used"
+                    state: "used",
+                    registered: false
                 };
                 pushStore.channels = updateChannel( pushStore.channels, channel );
                 this.setPushStore( pushStore );
@@ -594,6 +595,10 @@ AeroGear.isArray = function( obj ) {
                         message: updates[ i ]
                     }));
                 }
+
+                // Acknowledge all updates sent in this notification message
+                message.messageType = "ack";
+                client.send( JSON.stringify( message ) );
             }
         };
 
@@ -732,6 +737,7 @@ AeroGear.isArray = function( obj ) {
                         bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                         channels[ i ].channelID = pushStore.channels[ index ].channelID;
                         channels[ i ].state = "used";
+                        channels[ i ].registered = true;
                         pushStore.channels[ index ] = channels[ i ];
                         processed = true;
                     }
@@ -822,11 +828,19 @@ AeroGear.isArray = function( obj ) {
 
                 // Provide methods to inform push server
                 request.registerWithPushServer = function( messageType, endpoint ) {
+                    var type = "POST",
+                        url = AeroGear.SimplePush.pushServerURL;
+
+                    if ( endpoint.registered ) {
+                        type = "PUT";
+                        url += "/" + endpoint.channelID;
+                    }
+
                     $.ajax({
                         contentType: "application/json",
                         dataType: "json",
-                        type: "POST",
-                        url: AeroGear.SimplePush.pushServerURL,
+                        type: type,
+                        url: url,
                         headers: {
                             "ag-mobile-app": AeroGear.SimplePush.variantID
                         },
@@ -842,7 +856,7 @@ AeroGear.isArray = function( obj ) {
                         contentType: "application/json",
                         dataType: "json",
                         type: "DELETE",
-                        url: AeroGear.SimplePush.pushServerURL,
+                        url: AeroGear.SimplePush.pushServerURL + "/" + endpoint.channelID,
                         headers: {
                             "ag-mobile-app": AeroGear.SimplePush.variantID
                         },
