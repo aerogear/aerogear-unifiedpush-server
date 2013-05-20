@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<messaging-deployment xmlns="urn:jboss:messaging-deployment:1.0">
+    <hornetq-server>
+        <jms-destinations>
+            <jms-topic name="AG-PushApp">
+                <entry name="topic/aerogear/pushApp"/>
+                <entry name="java:jboss/exported/jms/topic/aerogear/pushApp"/>
+            </jms-topic>
+            <jms-topic name="AG-Sender-Global">
+                <entry name="topic/aerogear/sender"/>
+                <entry name="java:jboss/exported/jms/topic/aerogear/sender"/>
+            </jms-topic>
+            <jms-topic name="AG-Sender-GCM">
+                <entry name="topic/aerogear/sender"/>
+                <entry name="java:jboss/exported/jms/topic/aerogear/sender/gcm"/>
+            </jms-topic>
+            <jms-topic name="AG-Sender-APS">
+                <entry name="topic/aerogear/sender"/>
+                <entry name="java:jboss/exported/jms/topic/aerogear/sender/apns"/>
+            </jms-topic>
+            <jms-topic name="AG-Sender-SP">
+                <entry name="topic/aerogear/sender"/>
+                <entry name="java:jboss/exported/jms/topic/aerogear/sender/simplePush"/>
+            </jms-topic>
+        </jms-destinations>
+    </hornetq-server>
+</messaging-deployment>
