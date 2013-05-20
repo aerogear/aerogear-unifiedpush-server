@@ -1,0 +1,39 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.aerogear.connectivity.jms;
+
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+
+@MessageDriven(name = "PushApplicationListener", activationConfig = {
+    @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+    @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic/aerogear/pushApp")
+})
+public class PushApplicationListener implements MessageListener {
+
+    @Override
+    public void onMessage(Message message) {
+        
+        
+        System.out.println("\n\n\n\n\nMESSAGE: " + message + "\n\n\n\n");
+        
+    }
+
+}

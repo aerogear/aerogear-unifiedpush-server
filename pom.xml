@@ -165,6 +165,32 @@
       <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
       <version>0.31-SNAPSHOT</version>
     </dependency>
+
+
+    <!-- HornetQ Client APIs -->
+      <dependency>
+         <groupId>org.jboss.spec.javax.jms</groupId>
+         <artifactId>jboss-jms-api_1.1_spec</artifactId>
+         <version>1.0.1.Final</version>
+         <scope>provided</scope>
+      </dependency>
+      <!--dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-commons</artifactId>
+         <version>${hornet.version}</version>
+         <scope>provided</scope>
+      </dependency-->
+      <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-core-client</artifactId>
+         <version>${hornet.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-jms-client</artifactId>
+         <version>${hornet.version}</version>
+      </dependency>
+
     
   </dependencies>
   <repositories>
@@ -228,7 +254,8 @@
         -->
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-        
+
+        <hornet.version>2.2.13.Final</hornet.version>
         
     </properties>
   

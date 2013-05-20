@@ -20,10 +20,19 @@ package org.aerogear.connectivity.rest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -58,6 +67,29 @@ public class PushApplicationEndpoint {
     @Inject
     private SimplePushApplicationService simplePushApplicationService;
 
+    
+    
+    
+    
+    @Resource(mappedName = "java:/ConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(mappedName = "java:/topic/aerogear/pushApp")
+    private Topic pushAppTopic;
+    
+    Connection connection = null;
+    Session session = null;
+    
+    
+//    public PushApplicationEndpoint() {
+//       try {
+//        connection = connectionFactory.createConnection();
+//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//        connection.start();
+//       } catch (JMSException e) {
+//           e.printStackTrace();
+//       }
+//    }
+//    
     // ===============================================================
     // =============== Push Application construct ====================
     // ===============================================================
@@ -67,6 +99,26 @@ public class PushApplicationEndpoint {
     @POST
     @Consumes("application/json")
     public PushApplication registerPushApplication(PushApplication pushApp) {
+        // create ID...
+        
+        pushApp.setId(UUID.randomUUID().toString());
+        
+        
+        
+        try {
+            connection = connectionFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(pushAppTopic);
+            connection.start();
+            
+            ObjectMessage om = session.createObjectMessage(pushApp);
+            messageProducer.send(om);
+            
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+        
+        
       return pushAppService.addPushApplication(pushApp);
     }
 

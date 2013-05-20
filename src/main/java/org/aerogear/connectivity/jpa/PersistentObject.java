@@ -33,8 +33,8 @@ public abstract class PersistentObject implements Serializable {
 
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+//    @GeneratedValue(generator = "system-uuid")
+//    @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(name = "id", updatable = false, nullable = false)
     private String id = null;
 

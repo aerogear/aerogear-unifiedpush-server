@@ -18,14 +18,23 @@
 package org.aerogear.connectivity.rest;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,10 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import org.aerogear.connectivity.model.MobileApplicationInstance;
-import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushApplication;
-import org.aerogear.connectivity.service.PushApplicationService;
-import org.aerogear.connectivity.service.SenderService;
 import org.aerogear.connectivity.service.SimplePushApplicationService;
 
 import com.ning.http.client.AsyncHttpClient;
@@ -46,21 +52,39 @@ import com.ning.http.client.AsyncHttpClient;
 @TransactionAttribute
 public class SenderEndpoint {
     @Inject
-    private PushApplicationService pushApplicationService;
-    @Inject
     private SimplePushApplicationService simplePushApplicationService;
-
-
-    @Inject
-    private SenderService senderService;
+    
+    @Resource(mappedName = "java:/ConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(mappedName = "java:/topic/aerogear/sender")
+    private Topic globalSenderTopic;
+    
+    Connection connection = null;
+    Session session = null;
+        
+    
+    
 
     @POST
-    @Path("/broadcast/{id}")
+    @Path("/broadcast/{pushApplicationID}")
     @Consumes("application/json")
-    public Response broadcast(Map<String, String> message, @PathParam("id") String pushApplicationId) {
-
-        PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationId);
-        senderService.broadcast(pushApp, message);
+    public Response broadcast(LinkedHashMap<String, String> message, @PathParam("pushApplicationID") String pushApplicationID) {
+        
+        try {
+            connection = connectionFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(globalSenderTopic);
+            connection.start();
+            
+            ObjectMessage objMessage = session.createObjectMessage(message);
+            objMessage.setStringProperty("pushApplicationID", pushApplicationID);
+            
+            
+            messageProducer.send(objMessage);
+            
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
 
         return Response.status(200)
                 .entity("Job submitted").build();
