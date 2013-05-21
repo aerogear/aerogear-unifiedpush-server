@@ -184,6 +184,9 @@ public class PushApplicationEndpoint {
         iOSVariation.setDescription(form.getDescription());
         iOSVariation.setPassphrase(form.getPassphrase());
         iOSVariation.setCertificate(form.getCertificate());
+        
+        // manually set the ID:
+        iOSVariation.setId(UUID.randomUUID().toString());
                 
         // store the iOS variant:
         iOSVariation = iOSappService.addiOSApplication(iOSVariation);
@@ -257,6 +260,9 @@ public class PushApplicationEndpoint {
    @Path("/{pushAppID}/android")
    @Consumes("application/json")
    public AndroidApplication registerAndroidVariant(AndroidApplication androidVariation, @PathParam("pushAppID") String pushApplicationId) {
+       // manually set the ID:
+       androidVariation.setId(UUID.randomUUID().toString());
+
        // store the Android variant:
        androidVariation = androidAppService.addAndroidApplication(androidVariation);
        // find the root push app
@@ -330,6 +336,9 @@ public class PushApplicationEndpoint {
    @Path("/{pushAppID}/simplePush")
    @Consumes("application/json")
    public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("pushAppID") String pushApplicationId) {
+       // manually set the ID:
+       spa.setId(UUID.randomUUID().toString());
+       
        // store the SimplePush variant:
        spa = simplePushApplicationService.addSimplePushApplication(spa);
        // find the root push app
