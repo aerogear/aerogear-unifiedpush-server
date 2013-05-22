@@ -5,6 +5,12 @@ AeroGear's Connectivity Server (Java EE poc)
 
 ### Some guidance
 
+Since *JMS* is used, we need the ```standalone-full.xml``` configuration, for starting the server:
+
+```
+./bin/standalone.sh -b 0.0.0.0 -c standalone-full.xml
+```
+
 Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 
 ```

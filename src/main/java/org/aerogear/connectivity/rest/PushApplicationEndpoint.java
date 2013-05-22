@@ -79,22 +79,6 @@ public class PushApplicationEndpoint {
     Connection connection = null;
     Session session = null;
     
-    
-//    public PushApplicationEndpoint() {
-//       try {
-//        connection = connectionFactory.createConnection();
-//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//        connection.start();
-//       } catch (JMSException e) {
-//           e.printStackTrace();
-//       }
-//    }
-//    
-    // ===============================================================
-    // =============== Push Application construct ====================
-    // ===============================================================
-    
-    
     // CREATE
     @POST
     @Consumes("application/json")
@@ -112,14 +96,15 @@ public class PushApplicationEndpoint {
             connection.start();
             
             ObjectMessage om = session.createObjectMessage(pushApp);
+            om.setStringProperty("ApplicationType", "aerogear.PushApplication");
             messageProducer.send(om);
             
+            session.close();            
         } catch (JMSException e) {
             e.printStackTrace();
         }
         
-        
-      return pushAppService.addPushApplication(pushApp);
+        return pushApp;
     }
 
     // READ
@@ -187,14 +172,25 @@ public class PushApplicationEndpoint {
         
         // manually set the ID:
         iOSVariation.setId(UUID.randomUUID().toString());
-                
-        // store the iOS variant:
-        iOSVariation = iOSappService.addiOSApplication(iOSVariation);
-
-        // find the root push app
-        PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationId);
-        // add iOS variant, and merge:
-        pushAppService.addiOSApplication(pushApp, iOSVariation);
+        
+        
+        try {
+            connection = connectionFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(pushAppTopic);
+            connection.start();
+            
+            ObjectMessage om = session.createObjectMessage(iOSVariation);
+            om.setStringProperty("ApplicationType", "aerogear.iOSApplication");
+            om.setStringProperty("PushApplicationID", pushApplicationId);
+            messageProducer.send(om);
+            
+            
+            session.close();            
+            
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
 
         return iOSVariation;
    }
@@ -262,13 +258,24 @@ public class PushApplicationEndpoint {
    public AndroidApplication registerAndroidVariant(AndroidApplication androidVariation, @PathParam("pushAppID") String pushApplicationId) {
        // manually set the ID:
        androidVariation.setId(UUID.randomUUID().toString());
+       
+       try {
+           connection = connectionFactory.createConnection();
+           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+           MessageProducer messageProducer = session.createProducer(pushAppTopic);
+           connection.start();
+           
+           ObjectMessage om = session.createObjectMessage(androidVariation);
+           om.setStringProperty("ApplicationType", "aerogear.AndroidApplication");
+           om.setStringProperty("PushApplicationID", pushApplicationId);
+           messageProducer.send(om);
 
-       // store the Android variant:
-       androidVariation = androidAppService.addAndroidApplication(androidVariation);
-       // find the root push app
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationId);
-       // add iOS variant, and merge:
-       pushAppService.addAndroidApplication(pushApp, androidVariation);
+           
+           session.close();            
+
+       } catch (JMSException e) {
+           e.printStackTrace();
+       }
 
        return androidVariation;
    }
@@ -339,12 +346,23 @@ public class PushApplicationEndpoint {
        // manually set the ID:
        spa.setId(UUID.randomUUID().toString());
        
-       // store the SimplePush variant:
-       spa = simplePushApplicationService.addSimplePushApplication(spa);
-       // find the root push app
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationId);
-       // add iOS variant, and merge:
-       pushAppService.addSimplePushApplication(pushApp, spa);
+       try {
+           connection = connectionFactory.createConnection();
+           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+           MessageProducer messageProducer = session.createProducer(pushAppTopic);
+           connection.start();
+           
+           ObjectMessage om = session.createObjectMessage(spa);
+           om.setStringProperty("ApplicationType", "aerogear.SimplePushApplication");
+           om.setStringProperty("PushApplicationID", pushApplicationId);
+           messageProducer.send(om);
+
+           
+           session.close();            
+
+       } catch (JMSException e) {
+           e.printStackTrace();
+       }
        return spa;
    }
    // READ

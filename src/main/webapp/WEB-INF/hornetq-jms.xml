@@ -26,7 +26,7 @@
                 <entry name="topic/aerogear/sender"/>
                 <entry name="java:jboss/exported/jms/topic/aerogear/sender"/>
             </jms-topic>
-            <jms-topic name="AG-Sender-GCM">
+            <!--jms-topic name="AG-Sender-GCM">
                 <entry name="topic/aerogear/sender"/>
                 <entry name="java:jboss/exported/jms/topic/aerogear/sender/gcm"/>
             </jms-topic>
@@ -37,7 +37,7 @@
             <jms-topic name="AG-Sender-SP">
                 <entry name="topic/aerogear/sender"/>
                 <entry name="java:jboss/exported/jms/topic/aerogear/sender/simplePush"/>
-            </jms-topic>
+            </jms-topic-->
         </jms-destinations>
     </hornetq-server>
 </messaging-deployment>
