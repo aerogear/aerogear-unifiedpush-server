@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.rest;
+package org.aerogear.connectivity.rest.sender;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

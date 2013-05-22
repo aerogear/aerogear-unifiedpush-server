@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.rest;
+package org.aerogear.connectivity.rest.registry.instances;
 
 import java.util.List;
 import java.util.UUID;
