@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.rest;
+package org.aerogear.connectivity.rest.registry.instances;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,6 +64,9 @@ public class MobileApplicationInstanceEndpoint
             sb.append("\n\n");
             logger.info(sb.toString());
         }
+        
+        // set the ID:
+        entity.setId(UUID.randomUUID().toString());
 
         // store the installation:
         entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);

@@ -15,29 +15,20 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa;
+package org.aerogear.connectivity.jms.sender;
 
-import java.io.Serializable;
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+@MessageDriven(name = "GCMSenderListener", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic/aerogear/sender/gcm")
+    })
+public class GCMSenderListener  implements MessageListener {
 
-@MappedSuperclass
-public abstract class PersistentObject implements Serializable {
-    private static final long serialVersionUID = -2604260447891156143L;
-
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id = null;
-
-    public String getId()
-    {
-       return this.id;
-    }
-
-    public void setId(final String id)
-    {
-       this.id = id;
+    @Override
+    public void onMessage(Message message) {
     }
 }

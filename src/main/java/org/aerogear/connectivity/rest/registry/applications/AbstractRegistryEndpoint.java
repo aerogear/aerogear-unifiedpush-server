@@ -15,29 +15,25 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa;
+package org.aerogear.connectivity.rest.registry.applications;
 
-import java.io.Serializable;
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Session;
+import javax.jms.Topic;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
-@MappedSuperclass
-public abstract class PersistentObject implements Serializable {
-    private static final long serialVersionUID = -2604260447891156143L;
-
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id = null;
-
-    public String getId()
-    {
-       return this.id;
-    }
-
-    public void setId(final String id)
-    {
-       this.id = id;
-    }
+@Stateless
+@TransactionAttribute
+public abstract class AbstractRegistryEndpoint {
+    @Resource(mappedName = "java:/ConnectionFactory")
+    protected ConnectionFactory connectionFactory;
+    @Resource(mappedName = "java:/topic/aerogear/pushApp")
+    protected Topic pushAppTopic;
+    
+    protected Connection connection = null;
+    protected Session session = null;
+  
 }
