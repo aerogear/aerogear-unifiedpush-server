@@ -65,6 +65,9 @@ public class NativeBroadcastSenderEndpoint {
             
             messageProducer.send(objMessage);
             
+            session.close();
+            connection.close();
+            
         } catch (JMSException e) {
             e.printStackTrace();
         }

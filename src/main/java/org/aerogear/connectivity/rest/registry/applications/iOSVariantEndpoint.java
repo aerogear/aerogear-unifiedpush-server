@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -42,6 +44,8 @@ import org.aerogear.connectivity.service.PushApplicationService;
 import org.aerogear.connectivity.service.iOSApplicationService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+@Stateless
+@TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
 public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     
@@ -85,8 +89,8 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
             om.setStringProperty("PushApplicationID", pushApplicationId);
             messageProducer.send(om);
             
-            
-            session.close();            
+            session.close();
+            connection.close();
             
         } catch (JMSException e) {
             e.printStackTrace();

@@ -20,6 +20,8 @@ package org.aerogear.connectivity.rest.registry.applications;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -37,6 +39,8 @@ import javax.ws.rs.Produces;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
 
+@Stateless
+@TransactionAttribute
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     
@@ -63,7 +67,9 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
             om.setStringProperty("ApplicationType", "aerogear.PushApplication");
             messageProducer.send(om);
             
-            session.close();            
+            session.close();
+            connection.close();
+
         } catch (JMSException e) {
             e.printStackTrace();
         }

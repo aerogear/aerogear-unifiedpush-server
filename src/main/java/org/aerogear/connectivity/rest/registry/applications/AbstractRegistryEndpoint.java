@@ -18,15 +18,11 @@
 package org.aerogear.connectivity.rest.registry.applications;
 
 import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-@Stateless
-@TransactionAttribute
 public abstract class AbstractRegistryEndpoint {
     @Resource(mappedName = "java:/ConnectionFactory")
     protected ConnectionFactory connectionFactory;

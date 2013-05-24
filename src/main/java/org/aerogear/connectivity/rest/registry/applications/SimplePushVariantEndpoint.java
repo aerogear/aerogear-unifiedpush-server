@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -40,6 +42,8 @@ import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
 import org.aerogear.connectivity.service.SimplePushApplicationService;
 
+@Stateless
+@TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
 public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
 
@@ -71,8 +75,8 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
            om.setStringProperty("PushApplicationID", pushApplicationId);
            messageProducer.send(om);
 
-           
-           session.close();            
+           session.close();
+           connection.close();
 
        } catch (JMSException e) {
            e.printStackTrace();

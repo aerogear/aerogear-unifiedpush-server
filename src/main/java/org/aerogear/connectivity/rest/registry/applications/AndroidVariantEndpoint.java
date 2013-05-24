@@ -43,8 +43,8 @@ import org.aerogear.connectivity.service.AndroidApplicationService;
 import org.aerogear.connectivity.service.PushApplicationService;
 
 @Stateless
-@Path("/applications/{pushAppID}/android")
 @TransactionAttribute
+@Path("/applications/{pushAppID}/android")
 public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
     
     @Inject
@@ -75,8 +75,8 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
            om.setStringProperty("PushApplicationID", pushApplicationId);
            messageProducer.send(om);
 
-           
-           session.close();            
+           session.close();
+           connection.close();
 
        } catch (JMSException e) {
            e.printStackTrace();
