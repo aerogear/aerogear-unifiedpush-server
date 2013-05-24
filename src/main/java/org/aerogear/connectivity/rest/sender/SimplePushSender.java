@@ -18,11 +18,14 @@
 package org.aerogear.connectivity.rest.sender;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -36,6 +39,7 @@ import org.aerogear.connectivity.service.SimplePushApplicationService;
 
 import com.ning.http.client.AsyncHttpClient;
 
+@Stateless
 @Path("/sender/simplePush")
 public class SimplePushSender {
 
@@ -47,31 +51,22 @@ public class SimplePushSender {
     @Consumes("application/json")
     public Response broadcastSimplePush(Map message, @PathParam("id") String simplePushId) {
 
-        
         SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
         String endpoint = spa.getPushNetworkURL();
         
         String version = (String) message.get("version");
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-
         Set<MobileApplicationInstance> instances = spa.getInstances();
+        List<String> broadcastTokens = new ArrayList<>();
         for (MobileApplicationInstance mobileApplicationInstance : instances) {
             
             if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
-                try {
-                    Future<com.ning.http.client.Response> f = 
-                            asyncHttpClient.preparePut(endpoint + mobileApplicationInstance.getDeviceToken())
-                              .addHeader("Accept", "application/x-www-form-urlencoded")
-                              .setBody("version=" + Integer.parseInt(version))
-                              .execute();
-
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                
+                broadcastTokens.add(mobileApplicationInstance.getDeviceToken());
             }
         }
+        
+        this.performHTTP(endpoint, version, broadcastTokens);
+        
         return Response.status(200)
                 .entity("Job submitted").build();
     }
@@ -88,26 +83,52 @@ public class SimplePushSender {
         String version = (String) message.get("version");
         List<String> channelIDList = (List<String>) message.get("channelIDs");
         
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        this.performHTTP(endpoint, version, channelIDList);
         
-        for (String channelID : channelIDList) {
+        return Response.status(200)
+                .entity("Job submitted").build();
+    }
+    
+    
+    
+    private void performHTTP(String endpoint, String payload, List<String> tokenList) {
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        final CountDownLatch latch = new CountDownLatch(tokenList.size());
+        
+        for (String token : tokenList) {
 
             try {
-                Future<com.ning.http.client.Response> f =
-                        asyncHttpClient.preparePut(endpoint + channelID)
+                com.ning.http.client.Response response =
+                        asyncHttpClient.preparePut(endpoint + token)
                           .addHeader("Accept", "application/x-www-form-urlencoded")
-                          .setBody("version=" + Integer.parseInt(version))
-                          .execute();
+                          .setBody("version=" + Integer.parseInt(payload))
+                          .execute().get();
                 
+                latch.countDown();
+                
+                if (200 != response.getStatusCode()) {
+                    // LOG WARNING
+                }
+                
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        return Response.status(200)
-                .entity("Job submitted").build();
+        
+        try {
+            // all responses received ?
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
+        // close the dude
+        asyncHttpClient.closeAsynchronously();
     }
-
+    
 }
