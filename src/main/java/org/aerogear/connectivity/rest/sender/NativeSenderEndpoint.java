@@ -18,6 +18,7 @@
 package org.aerogear.connectivity.rest.sender;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -62,7 +63,7 @@ public class NativeSenderEndpoint {
     @POST
     @Path("/broadcast/{pushApplicationID}")
     @Consumes("application/json")
-    public Response broadcast(LinkedHashMap<String, String> message, @PathParam("pushApplicationID") String pushApplicationID) {
+    public Response broadcast(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
         
         PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationID);
         senderService.broadcast(pushApp, message);
@@ -91,4 +92,20 @@ public class NativeSenderEndpoint {
                 .entity("Job submitted").build();
     }
 
+
+    @POST
+    @Path("/selected/{pushApplicationID}")
+    @Consumes("application/json")
+    public Response selectedSender(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
+        List<String> identifiers = (List<String>) message.get("alias");
+        Map<String, ? extends Object> payload = (Map<String, ? extends Object>) message.get("message");
+        PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationID);
+        
+        senderService.sendToClientIdentifiers(pushApp, identifiers, payload);
+        
+        return Response.status(200)
+                .entity("Job submitted").build();
+        
+    }
+    
 }

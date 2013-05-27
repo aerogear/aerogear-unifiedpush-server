@@ -17,45 +17,83 @@
 
 package org.aerogear.connectivity.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aerogear.connectivity.message.sender.APNsPushNotificationSender;
+import org.aerogear.connectivity.message.sender.GCMPushNotificationSender;
+import org.aerogear.connectivity.message.sender.UnifiedPushMessage;
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
 
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Message.Builder;
-import com.google.android.gcm.server.Sender;
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsService;
-
 public class SenderServiceImpl implements SenderService {
-
+    
+    
+    
     @Override
-    public void broadcast(PushApplication pushApp,
-            Map<String, String> jsonMap) {
+    public void sendToClientIdentifiers(PushApplication pushApplication, final List<String> identifiers, Map<String, ? extends Object> payload) {
+        
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(payload);
+
+        // TODO: Make better...
+        final Set<iOSApplication> iOSapps = pushApplication.getIOSApps();
+        for (iOSApplication iOSApp : iOSapps) {
+            
+            final List<String> iOSTokenPerVariant = new ArrayList<String>();
+            final APNsPushNotificationSender apnsSender = new APNsPushNotificationSender(iOSApp.getCertificate(), iOSApp.getPassphrase());
+            // get all instances
+            final Set<MobileApplicationInstance> instancesPerVariant = iOSApp.getInstances();
+            for (MobileApplicationInstance instance : instancesPerVariant) {
+                
+                // see if the identifer does match for the instance
+                if (identifiers.contains(instance.getClientIdentifier())) {
+                    // add it
+                    iOSTokenPerVariant.add(instance.getDeviceToken());
+                }
+            }
+            // deliver to network
+            apnsSender.sendPushMessage(iOSTokenPerVariant, unifiedPushMessage);
+        }
+
+        // TODO: make better :)
+        Set<AndroidApplication> androidApps = pushApplication.getAndroidApps();
+        for (AndroidApplication androidApplication : androidApps) {
+            
+            final List<String> androidTokenPerVariant = new ArrayList<String>();
+            final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
+
+            // get all instances
+            Set<MobileApplicationInstance> instancesPerVariant = androidApplication.getInstances();
+            for (MobileApplicationInstance instance : instancesPerVariant) {
+                
+                // see if the identifer does match for the instance
+                if (identifiers.contains(instance.getClientIdentifier())) {
+                    // add it
+                    androidTokenPerVariant.add(instance.getDeviceToken());
+                }
+            }
+            gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage);
+        }
+    }
+
+    
+    @Override
+    public void broadcast(PushApplication pushApplication,
+            Map<String, ? extends Object> jsonMap) {
         
         
-        final UnifiedPushMessage message = new UnifiedPushMessage(jsonMap);
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(jsonMap);
         
         // TODO: DISPATCH TO A QUEUE .....
-        Set<iOSApplication> iOSapps = pushApp.getIOSApps();
+        final Set<iOSApplication> iOSapps = pushApplication.getIOSApps();
         for (iOSApplication iOSApp : iOSapps) {
-
-            // service PER iOS app
-            ApnsService service = APNS
-                    .newService()
-                    .withCert(
-                            new ByteArrayInputStream(iOSApp.getCertificate()),
-                            iOSApp.getPassphrase()).withSandboxDestination()
-                    .asQueued().build();
+            
+            final APNsPushNotificationSender apnsSender = new APNsPushNotificationSender(iOSApp.getCertificate(), iOSApp.getPassphrase());
 
             // get all the tokens:
             final Set<String> iOStokenz = new HashSet<String>();
@@ -65,80 +103,23 @@ public class SenderServiceImpl implements SenderService {
                 iOStokenz.add(mobileApplicationInstance.getDeviceToken());
             }
 
-            String apnsMessage = APNS.newPayload()
-                    // adding recognized key values
-                    .alertBody(message.alert)    // alert dialog, in iOS
-                    .badge(message.badge)        // little badge icon update;
-                    .sound(message.sound)        // sound to be played by app
-                    
-                    .customFields(message.data)  // adding other (submitted) fields
-                    .build();                    // build the JSON payload, for APNs 
-            // send it out:
-            service.push(iOStokenz, apnsMessage);
+            apnsSender.sendPushMessage(iOStokenz, unifiedPushMessage);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        Set<AndroidApplication> androidApps = pushApp.getAndroidApps();
+        Set<AndroidApplication> androidApps = pushApplication.getAndroidApps();
         for (AndroidApplication androidApplication : androidApps) {
 
-            // service PER android app:
-            Sender sender = new Sender(androidApplication.getGoogleKey());
-
             final List<String> androidtokenz = new ArrayList<String>();
+            final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
+
             Set<MobileApplicationInstance> androidApplications = androidApplication
                     .getInstances();
             for (MobileApplicationInstance mobileApplicationInstance : androidApplications) {
                 androidtokenz.add(mobileApplicationInstance.getDeviceToken());
             }
-
-            // payload builder:
-            Builder gcmBuilder = new Message.Builder();
-            
-            // add the "regconized" keys...
-            gcmBuilder.addData("alert", message.alert);
-            gcmBuilder.addData("sound", message.sound);
-            gcmBuilder.addData("badge", ""+message.badge);
-            
-            // iterate over the missing keys:
-            Set<String> keys = message.data.keySet();
-            for (String key : keys) {
-                gcmBuilder.addData(key, message.data.get(key));
-            }
-            
-            Message gcmMessage = gcmBuilder.build();
-
-            // send it out.....
-            try {
-                sender.send(gcmMessage, androidtokenz, 0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage);
         }
     }
-
-    
-    // internal helper class
-    class UnifiedPushMessage {
-        String alert;
-        String sound;
-        int badge;
-        Map<String, String> data;
-        public UnifiedPushMessage(Map<String, String> data) {
-            // special key words (for APNs)
-            this.alert = data.remove("alert");
-            this.sound = data.remove("sound");
-            
-            String badgeVal = data.remove("badge");
-            if (badgeVal == null) {
-                this.badge = -1;
-            } else {
-                this.badge = Integer.parseInt(badgeVal);
-            }
-
-            // rest of the data:
-            this.data = data;
-        }
-        
-    }
-
 }
+

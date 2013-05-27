@@ -15,16 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.message.sender;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
-import org.aerogear.connectivity.model.PushApplication;
-
-public interface SenderService {
-
+public interface PushNotificationSender {
     
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToClientIdentifiers(PushApplication pushApplication, List<String> identifiers, Map<String, ? extends Object> payload);
+    void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage);
+
 }
