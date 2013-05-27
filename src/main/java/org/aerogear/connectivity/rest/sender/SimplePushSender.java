@@ -45,6 +45,9 @@ public class SimplePushSender {
 
     @Inject
     private SimplePushApplicationService simplePushApplicationService;
+    
+    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+
 
     @POST
     @Path("/broadcast/{id}") //TODO: URL name sucks
@@ -92,7 +95,6 @@ public class SimplePushSender {
     
     
     private void performHTTP(String endpoint, String payload, List<String> tokenList) {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         final CountDownLatch latch = new CountDownLatch(tokenList.size());
         
         for (String token : tokenList) {
@@ -127,8 +129,8 @@ public class SimplePushSender {
         } catch (InterruptedException e) {
             Thread.interrupted();
         }
-        // close the dude
-        asyncHttpClient.closeAsynchronously();
+//        // close the dude
+//        asyncHttpClient.closeAsynchronously();
     }
     
 }

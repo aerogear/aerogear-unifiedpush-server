@@ -18,10 +18,12 @@
 package org.aerogear.connectivity.rest.sender;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,42 +37,55 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.service.PushApplicationService;
+import org.aerogear.connectivity.service.SenderService;
+
 
 @Stateless
 @Path("/sender")
 @TransactionAttribute
-public class NativeBroadcastSenderEndpoint {
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-    @Resource(mappedName = "java:/topic/aerogear/sender")
-    private Topic globalSenderTopic;
+public class NativeSenderEndpoint {
+    @Inject
+    private PushApplicationService pushApplicationService;
+    @Inject
+    private SenderService senderService;
     
-    Connection connection = null;
-    Session session = null;
-        
+//    @Resource(mappedName = "java:/ConnectionFactory")
+//    private ConnectionFactory connectionFactory;
+//    @Resource(mappedName = "java:/topic/aerogear/sender")
+//    private Topic globalSenderTopic;
+//    
+//    Connection connection = null;
+//    Session session = null;
+    
     @POST
     @Path("/broadcast/{pushApplicationID}")
     @Consumes("application/json")
     public Response broadcast(LinkedHashMap<String, String> message, @PathParam("pushApplicationID") String pushApplicationID) {
         
-        try {
-            connection = connectionFactory.createConnection();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(globalSenderTopic);
-            connection.start();
-            
-            ObjectMessage objMessage = session.createObjectMessage(message);
-            objMessage.setStringProperty("pushApplicationID", pushApplicationID);
-            
-            
-            messageProducer.send(objMessage);
-            
-            session.close();
-            connection.close();
-            
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
+        PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationID);
+        senderService.broadcast(pushApp, message);
+        
+        
+//        try {
+//            connection = connectionFactory.createConnection();
+//            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//            MessageProducer messageProducer = session.createProducer(globalSenderTopic);
+//            connection.start();
+//            
+//            ObjectMessage objMessage = session.createObjectMessage(message);
+//            objMessage.setStringProperty("pushApplicationID", pushApplicationID);
+//            
+//            
+//            messageProducer.send(objMessage);
+//            
+//            session.close();
+//            connection.close();
+//            
+//        } catch (JMSException e) {
+//            e.printStackTrace();
+//        }
 
         return Response.status(200)
                 .entity("Job submitted").build();

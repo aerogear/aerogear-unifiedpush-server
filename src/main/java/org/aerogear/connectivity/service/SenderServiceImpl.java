@@ -31,6 +31,7 @@ import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
 
 import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.Sender;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
@@ -39,7 +40,11 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public void broadcast(PushApplication pushApp,
-            Map<String, String> jsonMessage) {
+            Map<String, String> jsonMap) {
+        
+        
+        final UnifiedPushMessage message = new UnifiedPushMessage(jsonMap);
+        
         // TODO: DISPATCH TO A QUEUE .....
         Set<iOSApplication> iOSapps = pushApp.getIOSApps();
         for (iOSApplication iOSApp : iOSapps) {
@@ -60,14 +65,16 @@ public class SenderServiceImpl implements SenderService {
                 iOStokenz.add(mobileApplicationInstance.getDeviceToken());
             }
 
-            String msg = APNS.newPayload()
-                    .alertBody(jsonMessage.get("alert")) // payload from the message....
-                    .badge(2) // could submitted, on the payload - but hard coded for testing...
-                    .sound("default") // could submitted, on the payload - but hard coded for testing...
-                    .build();
-
+            String apnsMessage = APNS.newPayload()
+                    // adding recognized key values
+                    .alertBody(message.alert)    // alert dialog, in iOS
+                    .badge(message.badge)        // little badge icon update;
+                    .sound(message.sound)        // sound to be played by app
+                    
+                    .customFields(message.data)  // adding other (submitted) fields
+                    .build();                    // build the JSON payload, for APNs 
             // send it out:
-            service.push(iOStokenz, msg);
+            service.push(iOStokenz, apnsMessage);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
@@ -85,22 +92,53 @@ public class SenderServiceImpl implements SenderService {
             }
 
             // payload builder:
-            Message msg = new Message.Builder()
-
-            .addData("text", jsonMessage.get("alert"))
-                    // could submitted, on the payload... -
-                    // but hard coded for testing...
-                    // (no meaning,here...)
-                    .addData("title", "FOOOOO") 
-                    .build();
+            Builder gcmBuilder = new Message.Builder();
+            
+            // add the "regconized" keys...
+            gcmBuilder.addData("alert", message.alert);
+            gcmBuilder.addData("sound", message.sound);
+            gcmBuilder.addData("badge", ""+message.badge);
+            
+            // iterate over the missing keys:
+            Set<String> keys = message.data.keySet();
+            for (String key : keys) {
+                gcmBuilder.addData(key, message.data.get(key));
+            }
+            
+            Message gcmMessage = gcmBuilder.build();
 
             // send it out.....
             try {
-                sender.send(msg, androidtokenz, 0);
+                sender.send(gcmMessage, androidtokenz, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    
+    // internal helper class
+    class UnifiedPushMessage {
+        String alert;
+        String sound;
+        int badge;
+        Map<String, String> data;
+        public UnifiedPushMessage(Map<String, String> data) {
+            // special key words (for APNs)
+            this.alert = data.remove("alert");
+            this.sound = data.remove("sound");
+            
+            String badgeVal = data.remove("badge");
+            if (badgeVal == null) {
+                this.badge = -1;
+            } else {
+                this.badge = Integer.parseInt(badgeVal);
+            }
+
+            // rest of the data:
+            this.data = data;
+        }
+        
     }
 
 }
