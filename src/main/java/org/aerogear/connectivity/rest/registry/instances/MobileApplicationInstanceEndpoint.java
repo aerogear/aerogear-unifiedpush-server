@@ -43,14 +43,9 @@ import org.aerogear.connectivity.service.MobileApplicationService;
 @TransactionAttribute
 public class MobileApplicationInstanceEndpoint
 {
-    @Inject
-    private Logger logger;
-    
-    @Inject
-    private MobileApplicationInstanceService mobileApplicationInstanceService;
-
-    @Inject
-    private MobileApplicationService mobileApplicationService;
+    @Inject private Logger logger;
+    @Inject private MobileApplicationInstanceService mobileApplicationInstanceService;
+    @Inject private MobileApplicationService mobileApplicationService;
 
     @POST
     @Consumes("application/json")

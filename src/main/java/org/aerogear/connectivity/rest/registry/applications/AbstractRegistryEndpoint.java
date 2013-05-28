@@ -17,19 +17,4 @@
 
 package org.aerogear.connectivity.rest.registry.applications;
 
-import javax.annotation.Resource;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Session;
-import javax.jms.Topic;
-
-public abstract class AbstractRegistryEndpoint {
-    @Resource(mappedName = "java:/ConnectionFactory")
-    protected ConnectionFactory connectionFactory;
-    @Resource(mappedName = "java:/topic/aerogear/pushApp")
-    protected Topic pushAppTopic;
-    
-    protected Connection connection = null;
-    protected Session session = null;
-  
-}
+public abstract class AbstractRegistryEndpoint {}

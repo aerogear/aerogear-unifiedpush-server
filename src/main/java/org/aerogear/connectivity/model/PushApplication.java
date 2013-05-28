@@ -55,7 +55,7 @@ public class PushApplication extends PersistentObject {
 
    public String getName() {
       return this.name;
-   }
+   } 
 
    public void setName(final String name) {
       this.name = name;

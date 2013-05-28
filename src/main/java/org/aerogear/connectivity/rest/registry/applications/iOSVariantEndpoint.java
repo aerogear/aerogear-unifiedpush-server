@@ -65,7 +65,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @Produces("application/json")
     public iOSApplication registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form, 
-            @PathParam("pushAppID") String pushApplicationId) {
+            @PathParam("pushAppID") String pushApplicationID) {
 
         // extract form values:
         iOSApplication iOSVariation = new iOSApplication();
@@ -78,24 +78,35 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
         iOSVariation.setId(UUID.randomUUID().toString());
         
         
-        try {
-            connection = connectionFactory.createConnection();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(pushAppTopic);
-            connection.start();
-            
-            ObjectMessage om = session.createObjectMessage(iOSVariation);
-            om.setStringProperty("ApplicationType", "aerogear.iOSApplication");
-            om.setStringProperty("PushApplicationID", pushApplicationId);
-            messageProducer.send(om);
-            
-            session.close();
-            connection.close();
-            
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
-
+        // delegate down:
+        // store the iOS variant:
+        iOSVariation = iOSappService.addiOSApplication(iOSVariation);
+        // find the root push app
+        PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationID);
+        // add iOS variant, and merge:
+        pushAppService.addiOSApplication(pushApp, iOSVariation);
+        
+//        
+//        
+//        
+//        try {
+//            connection = connectionFactory.createConnection();
+//            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//            MessageProducer messageProducer = session.createProducer(pushAppTopic);
+//            connection.start();
+//            
+//            ObjectMessage om = session.createObjectMessage(iOSVariation);
+//            om.setStringProperty("ApplicationType", "aerogear.iOSApplication");
+//            om.setStringProperty("PushApplicationID", pushApplicationId);
+//            messageProducer.send(om);
+//            
+//            session.close();
+//            connection.close();
+//            
+//        } catch (JMSException e) {
+//            e.printStackTrace();
+//        }
+//
         return iOSVariation;
    }
     // READ

@@ -55,25 +55,29 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
         
         pushApp.setId(UUID.randomUUID().toString());
         
-        
-        
-        try {
-            connection = connectionFactory.createConnection();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(pushAppTopic);
-            connection.start();
-            
-            ObjectMessage om = session.createObjectMessage(pushApp);
-            om.setStringProperty("ApplicationType", "aerogear.PushApplication");
-            messageProducer.send(om);
-            
-            session.close();
-            connection.close();
-
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
-        
+        // delegate:
+        pushAppService.addPushApplication(pushApp);
+//
+//        
+//        
+//        
+//        try {
+//            connection = connectionFactory.createConnection();
+//            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//            MessageProducer messageProducer = session.createProducer(pushAppTopic);
+//            connection.start();
+//            
+//            ObjectMessage om = session.createObjectMessage(pushApp);
+//            om.setStringProperty("ApplicationType", "aerogear.PushApplication");
+//            messageProducer.send(om);
+//            
+//            session.close();
+//            connection.close();
+//
+//        } catch (JMSException e) {
+//            e.printStackTrace();
+//        }
+//        
         return pushApp;
     }
 

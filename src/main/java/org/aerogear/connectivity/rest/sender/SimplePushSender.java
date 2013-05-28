@@ -45,9 +45,7 @@ public class SimplePushSender {
 
     @Inject
     private SimplePushApplicationService simplePushApplicationService;
-    
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-
 
     @POST
     @Path("/broadcast/{id}") //TODO: URL name sucks

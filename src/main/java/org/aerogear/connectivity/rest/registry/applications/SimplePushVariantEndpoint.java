@@ -60,27 +60,37 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    // new SimplePush
    @POST
    @Consumes("application/json")
-   public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("pushAppID") String pushApplicationId) {
+   public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("pushAppID") String pushApplicationID) {
        // manually set the ID:
        spa.setId(UUID.randomUUID().toString());
        
-       try {
-           connection = connectionFactory.createConnection();
-           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-           MessageProducer messageProducer = session.createProducer(pushAppTopic);
-           connection.start();
-           
-           ObjectMessage om = session.createObjectMessage(spa);
-           om.setStringProperty("ApplicationType", "aerogear.SimplePushApplication");
-           om.setStringProperty("PushApplicationID", pushApplicationId);
-           messageProducer.send(om);
-
-           session.close();
-           connection.close();
-
-       } catch (JMSException e) {
-           e.printStackTrace();
-       }
+       
+       //delegate down:
+       // store the SimplePush variant:
+       spa = simplePushApplicationService.addSimplePushApplication(spa);
+       // find the root push app
+       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationID);
+       // add iOS variant, and merge:
+       pushAppService.addSimplePushApplication(pushApp, spa);
+       
+       
+//       try {
+//           connection = connectionFactory.createConnection();
+//           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//           MessageProducer messageProducer = session.createProducer(pushAppTopic);
+//           connection.start();
+//           
+//           ObjectMessage om = session.createObjectMessage(spa);
+//           om.setStringProperty("ApplicationType", "aerogear.SimplePushApplication");
+//           om.setStringProperty("PushApplicationID", pushApplicationId);
+//           messageProducer.send(om);
+//
+//           session.close();
+//           connection.close();
+//
+//       } catch (JMSException e) {
+//           e.printStackTrace();
+//       }
        return spa;
    }
    // READ
