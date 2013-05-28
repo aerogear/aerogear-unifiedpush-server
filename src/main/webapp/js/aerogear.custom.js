@@ -842,7 +842,7 @@ AeroGear.isArray = function( obj ) {
                         type: type,
                         url: url,
                         headers: {
-                            "ag-mobile-app": AeroGear.SimplePush.variantID
+                            "ag-mobile-variant": AeroGear.SimplePush.variantID
                         },
                         data: JSON.stringify({
                             category: messageType,
@@ -858,7 +858,7 @@ AeroGear.isArray = function( obj ) {
                         type: "DELETE",
                         url: AeroGear.SimplePush.pushServerURL + "/" + endpoint.channelID,
                         headers: {
-                            "ag-mobile-app": AeroGear.SimplePush.variantID
+                            "ag-mobile-variant": AeroGear.SimplePush.variantID
                         },
                         data: JSON.stringify({
                             deviceToken: endpoint.channelID

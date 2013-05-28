@@ -1,4 +1,4 @@
-AeroGear PushEE
+ag-mobile-variantAeroGear PushEE
 ===============
 
 AeroGear's Connectivity Server (Java EE poc)
@@ -94,7 +94,7 @@ Client-side example for how to register an installation:
     // set the AG headers....
     [client setDefaultHeader:@"ag-push-app" 
      value:@"SOME ID..."];
-    [client setDefaultHeader:@"ag-mobile-app"
+    [client setDefaultHeader:@"ag-mobile-variant"
      value:@"SOME OTHER ID..."];
 
 
@@ -122,7 +122,7 @@ CURL example for how to register an installation:
 
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json" 
-   -H "ag-mobile-app: {id}"
+   -H "ag-mobile-variant: {id}"
    -X POST
    -d '{
       "deviceToken" : "someTokenString", 
@@ -141,7 +141,7 @@ CURL example for how to register a connected SimplePush client:
 
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json"
-    -H "ag-mobile-app: {VARIAN_ID}"
+    -H "ag-mobile-variant: {VARIAN_ID}"
     -X POST
     -d '{
        "category" : "broadcast",
