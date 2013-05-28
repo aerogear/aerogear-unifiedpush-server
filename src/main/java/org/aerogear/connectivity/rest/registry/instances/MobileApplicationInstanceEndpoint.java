@@ -55,11 +55,11 @@ public class MobileApplicationInstanceEndpoint
     @POST
     @Consumes("application/json")
     public MobileApplicationInstance registerInstallation(
-            @HeaderParam("ag-mobile-app") String mobileVariantID, 
+            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             MobileApplicationInstance entity) {
         if (logger.isLoggable(Level.INFO)) {
             StringBuilder sb = new StringBuilder();
-            sb.append("\n\nag-mobile-app: ");
+            sb.append("\n\nag-mobile-variant: ");
             sb.append(mobileVariantID);
             sb.append("\n\n");
             logger.info(sb.toString());
@@ -89,7 +89,7 @@ public class MobileApplicationInstanceEndpoint
     @Path("{token}")
     @Consumes("application/json")
     public MobileApplicationInstance updateInstance(
-            @HeaderParam("ag-mobile-app") String mobileVariantID, 
+            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             @PathParam("token") String token,
             MobileApplicationInstance postedVariant) {
 
@@ -116,7 +116,7 @@ public class MobileApplicationInstanceEndpoint
     @Path("{token}")
     @Consumes("application/json")
     public void unregisterInstallations(
-            @HeaderParam("ag-mobile-app") String mobileVariantID, 
+            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             @PathParam("token") String token) {
         
         // there can be multiple regs.........
