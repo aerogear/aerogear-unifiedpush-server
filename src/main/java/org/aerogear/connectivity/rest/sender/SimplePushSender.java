@@ -64,7 +64,7 @@ public class SimplePushSender {
         
         String version = (String) message.get("version");
         Set<MobileApplicationInstance> instances = spa.getInstances();
-        List<String> broadcastTokens = new ArrayList<>();
+        List<String> broadcastTokens = new ArrayList<String>();
         for (MobileApplicationInstance mobileApplicationInstance : instances) {
             
             if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
