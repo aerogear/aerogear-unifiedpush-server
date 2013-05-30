@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -45,7 +47,12 @@ public class SimplePushSender {
 
     @Inject
     private SimplePushApplicationService simplePushApplicationService;
-    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+    private AsyncHttpClient asyncHttpClient;
+    
+    @PostConstruct
+    public void createAsyncHttpClient() {
+        asyncHttpClient = new AsyncHttpClient();
+    }
 
     @POST
     @Path("/broadcast/{id}") //TODO: URL name sucks
@@ -127,8 +134,11 @@ public class SimplePushSender {
         } catch (InterruptedException e) {
             Thread.interrupted();
         }
-//        // close the dude
-//        asyncHttpClient.closeAsynchronously();
+    }
+    
+    @PreDestroy
+    public void closeAsyncHttpClient() {
+        asyncHttpClient.close();
     }
     
 }
