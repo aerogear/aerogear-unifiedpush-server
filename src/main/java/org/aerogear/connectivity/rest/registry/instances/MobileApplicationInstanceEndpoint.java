@@ -54,31 +54,56 @@ public class MobileApplicationInstanceEndpoint
             MobileApplicationInstance entity) {
         if (logger.isLoggable(Level.INFO)) {
             StringBuilder sb = new StringBuilder();
-            sb.append("\n\nag-mobile-variant: ");
+            sb.append("ag-mobile-variant: ");
             sb.append(mobileVariantID);
-            sb.append("\n\n");
             logger.info(sb.toString());
         }
         
-        // set the ID:
-        entity.setId(UUID.randomUUID().toString());
-
-        // store the installation:
-        entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
-        // find the matching variation:
-        MobileApplication mobileApp = mobileApplicationService.findMobileApplicationById(mobileVariantID);
+        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(entity.getDeviceToken());
         
-        if (mobileApp == null) {
-            logger.severe("\n\nCould not find Mobile Variant\n\n");
-            return null; // TODO -> 404 ... or even 500 ?
-        }
+        if (instances.isEmpty()) {
+            // set the ID:
+            entity.setId(UUID.randomUUID().toString());
 
-        // add installation to the matching variant
-        mobileApplicationService.addInstallation(mobileApp, entity);
+            // store the installation:
+            entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
+            // find the matching variation:
+            MobileApplication mobileApp = mobileApplicationService.findMobileApplicationById(mobileVariantID);
+        
+            if (mobileApp == null) {
+                logger.severe("\n\nCould not find Mobile Variant\n\n");
+                return null; // TODO -> 404 ... or even 500 ?
+            }
+
+            // add installation to the matching variant
+            mobileApplicationService.addInstallation(mobileApp, entity);
+        } else {
+            logger.warning("UPDATE ON POST.......");
+            
+            if (instances.size()>1) {
+                logger.severe("Too many registration for one installation");
+            }
+            
+            // update the entity:
+            entity = this.updateMobileApplicationInstance(instances.get(0), entity);
+        }
 
         return entity;
    }
 
+    
+    private MobileApplicationInstance updateMobileApplicationInstance(MobileApplicationInstance toUpdate, MobileApplicationInstance postedVariant) {
+        toUpdate.setCategory(postedVariant.getCategory());
+        toUpdate.setDeviceToken(postedVariant.getDeviceToken());
+        toUpdate.setClientIdentifier(postedVariant.getClientIdentifier());
+        toUpdate.setDeviceType(postedVariant.getDeviceType());
+        toUpdate.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
+        toUpdate.setOsVersion(postedVariant.getOsVersion());
+
+        //update
+        return mobileApplicationInstanceService.updateMobileApplicationInstance(toUpdate);
+    }
+    
 
     @PUT
     @Path("{token}")
@@ -90,21 +115,9 @@ public class MobileApplicationInstanceEndpoint
 
         // there can be multiple regs.........
         List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
-
         // TODO: make sure there is really just one 
-        MobileApplicationInstance mvi = instances.get(0);
-        
-        mvi.setCategory(postedVariant.getCategory());
-        mvi.setDeviceToken(postedVariant.getDeviceToken());
-        mvi.setClientIdentifier(postedVariant.getClientIdentifier());
-        mvi.setDeviceType(postedVariant.getDeviceType());
-        mvi.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
-        mvi.setOsVersion(postedVariant.getOsVersion());
-
-        //update
-        mobileApplicationInstanceService.updateMobileApplicationInstance(mvi);
-        
-        return mvi;
+        MobileApplicationInstance updatedVariant = this.updateMobileApplicationInstance(instances.get(0), postedVariant);
+        return updatedVariant;
     }
     
     @DELETE
