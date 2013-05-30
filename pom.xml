@@ -236,10 +236,6 @@
              version defined by this BOM -->
         <javaee6.bom.version>1.0.0.Final</javaee6.bom.version>
         
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-
         <!--
             Options to override the compiler arguments directly on the compiler arument line to separate between what
             the IDE understands as the source level and what the Maven compiler actually use.
