@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -45,6 +46,8 @@ import com.ning.http.client.AsyncHttpClient;
 @Path("/sender/simplePush")
 public class SimplePushSender {
 
+    @Inject private Logger logger;
+    
     @Inject
     private SimplePushApplicationService simplePushApplicationService;
     private AsyncHttpClient asyncHttpClient;
@@ -58,12 +61,23 @@ public class SimplePushSender {
     @Path("/broadcast/{id}") //TODO: URL name sucks
     @Consumes("application/json")
     public Response broadcastSimplePush(Map message, @PathParam("id") String simplePushId) {
+        
+        logger.severe("Broadcast ID: " + simplePushId);
 
         SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
         String endpoint = spa.getPushNetworkURL();
         
+        logger.severe("SimplePush NetworkURL: " + endpoint);
+        
         String version = (String) message.get("version");
+        
+        logger.severe("submitted version: " + version);
+        
         Set<MobileApplicationInstance> instances = spa.getInstances();
+        
+        logger.severe("Number of instances (total):  " + instances.size());
+        
+        
         List<String> broadcastTokens = new ArrayList<String>();
         for (MobileApplicationInstance mobileApplicationInstance : instances) {
             
@@ -72,7 +86,8 @@ public class SimplePushSender {
                 broadcastTokens.add(mobileApplicationInstance.getDeviceToken());
             }
         }
-        
+        logger.severe("Number of instances (broadcast CATEGORY):  " + broadcastTokens.size());
+
         this.performHTTP(endpoint, version, broadcastTokens);
         
         return Response.status(200)
@@ -112,9 +127,10 @@ public class SimplePushSender {
                           .execute().get();
                 
                 latch.countDown();
-                
-                if (200 != response.getStatusCode()) {
-                    // LOG WARNING
+                int simplePushStatusCode = response.getStatusCode();
+                logger.severe("SimplePush Status: " + simplePushStatusCode);
+                if (200 != simplePushStatusCode) {
+                    logger.severe("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
                 }
                 
             } catch (InterruptedException e) {
@@ -131,6 +147,7 @@ public class SimplePushSender {
         try {
             // all responses received ?
             latch.await();
+            logger.severe("......after await....  all response should have been received, by now...");
         } catch (InterruptedException e) {
             Thread.interrupted();
         }
