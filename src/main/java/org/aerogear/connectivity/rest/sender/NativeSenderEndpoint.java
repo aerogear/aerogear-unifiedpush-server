@@ -19,7 +19,7 @@ package org.aerogear.connectivity.rest.sender;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,44 +30,43 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import org.aerogear.connectivity.cdi.event.PushMessageEventDispatcher;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
-import org.aerogear.connectivity.service.SenderService;
 
 @Stateless
 @Path("/sender")
 @TransactionAttribute
 public class NativeSenderEndpoint {
-    @Inject
-    private PushApplicationService pushApplicationService;
-    @Inject
-    private SenderService senderService;
+
+    @Inject private Logger logger;
+    @Inject private PushApplicationService pushApplicationService;
+    @Inject private PushMessageEventDispatcher dispatcher;
     
     @POST
     @Path("/broadcast/{pushApplicationID}")
     @Consumes("application/json")
     public Response broadcast(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
-        
-        PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationID);
-        senderService.broadcast(pushApp, message);
+        PushApplication pushApplication = pushApplicationService.findPushApplicationById(pushApplicationID);
+        dispatcher.dispatchBroadcastMessage(pushApplication, message);
+        logger.info("Message submitted to PushNetworks");
+
         return Response.status(200)
                 .entity("Job submitted").build();
     }
-
 
     @POST
     @Path("/selected/{pushApplicationID}")
     @Consumes("application/json")
     public Response selectedSender(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
+        PushApplication pushApplication = pushApplicationService.findPushApplicationById(pushApplicationID);
+        // read the receivers of the message:
         List<String> identifiers = (List<String>) message.get("alias");
-        Map<String, ? extends Object> payload = (Map<String, ? extends Object>) message.get("message");
-        PushApplication pushApp = pushApplicationService.findPushApplicationById(pushApplicationID);
-        
-        senderService.sendToClientIdentifiers(pushApp, identifiers, payload);
+        // extract the payload
+        LinkedHashMap<String, ? extends Object> payload = (LinkedHashMap<String, ? extends Object>) message.get("message");
+        dispatcher.dispatchSelectedSendMessage(pushApplication, payload, identifiers);
         
         return Response.status(200)
                 .entity("Job submitted").build();
-        
     }
-    
 }

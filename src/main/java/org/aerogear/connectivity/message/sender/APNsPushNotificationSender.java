@@ -17,32 +17,24 @@
 
 package org.aerogear.connectivity.message.sender;
 
-import java.io.ByteArrayInputStream;
 import java.util.Collection;
 
+import javax.inject.Inject;
+
+import org.aerogear.connectivity.message.cache.APNsCache;
 import org.aerogear.connectivity.message.sender.annotations.APNsSender;
+import org.aerogear.connectivity.model.iOSApplication;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 
 @APNsSender
-public class APNsPushNotificationSender implements PushNotificationSender {
+public class APNsPushNotificationSender  {
     
-    private final ApnsService service;
+    @Inject APNsCache apnsCache;
     
-    public APNsPushNotificationSender(byte[] certificate, String passphrase) {
-        // service PER iOS variant
-        service = APNS
-                .newService()
-                .withCert(
-                        new ByteArrayInputStream(certificate),
-                        passphrase).withSandboxDestination()
-                .asQueued().build();
-    }
-    
-    @Override
-    public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        try {
+    public void sendPushMessage(iOSApplication iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+        
             String apnsMessage = APNS.newPayload()
                     // adding recognized key values
                     .alertBody(pushMessage.getAlert())    // alert dialog, in iOS
@@ -53,10 +45,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                     .build();  // build the JSON payload, for APNs 
 
+            // look up the ApnsService from the cache:
+            ApnsService service = apnsCache.getApnsServiceForVariant(iOSVariant);
+
+            // send: 
             service.push(tokens, apnsMessage);
-        } finally {
-            // clean up the resources!
-            service.stop();
-        }
     }
 }

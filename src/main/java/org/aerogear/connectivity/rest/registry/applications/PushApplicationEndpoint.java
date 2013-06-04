@@ -20,13 +20,11 @@ package org.aerogear.connectivity.rest.registry.applications;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -43,42 +41,31 @@ import org.aerogear.connectivity.service.PushApplicationService;
 @TransactionAttribute
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
-    
+
     @Inject
     private PushApplicationService pushAppService;
-   
+    @Inject Event<PushApplication> pushApplicationEventSource;
+ 
     // CREATE
     @POST
     @Consumes("application/json")
+    //@Asynchronous
     public PushApplication registerPushApplication(PushApplication pushApp) {
         // create ID...
-        
         pushApp.setId(UUID.randomUUID().toString());
-        
+
         // delegate:
-        pushAppService.addPushApplication(pushApp);
-//
-//        
-//        
-//        
-//        try {
-//            connection = connectionFactory.createConnection();
-//            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//            MessageProducer messageProducer = session.createProducer(pushAppTopic);
-//            connection.start();
-//            
-//            ObjectMessage om = session.createObjectMessage(pushApp);
-//            om.setStringProperty("ApplicationType", "aerogear.PushApplication");
-//            messageProducer.send(om);
-//            
-//            session.close();
-//            connection.close();
-//
-//        } catch (JMSException e) {
-//            e.printStackTrace();
-//        }
-//        
+        //pushAppService.addPushApplication(pushApp);
+        publishPushApplication(pushApp);
+
         return pushApp;
+    }
+    
+    @Asynchronous
+    public void publishPushApplication(PushApplication pushApp) {
+        //pushAppService.addPushApplication(pushApp);
+        
+        pushApplicationEventSource.fire(pushApp);
     }
 
     // READ
@@ -87,6 +74,7 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     public List<PushApplication> listAllPushApplications()  {
         return pushAppService.findAllPushApplications();
     }
+
     @GET
     @Path("/{pushAppID}")
     @Produces("application/json")

@@ -22,23 +22,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.aerogear.connectivity.message.cache.GCMCache;
 import org.aerogear.connectivity.message.sender.annotations.GCMSender;
 
 import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
 
 @GCMSender
-public class GCMPushNotificationSender implements PushNotificationSender {
+@ApplicationScoped
+public class GCMPushNotificationSender {
     
-    private final Sender sender;
+    @Inject GCMCache cache;
     
-    public GCMPushNotificationSender(String googleAPIKey) {
-        sender = new Sender(googleAPIKey);
-    }
-
-    @Override
-    public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage) {
+    public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
         
@@ -57,7 +58,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            sender.send(gcmMessage, (List<String>) tokens, 0);
+            Sender sender = cache.getSenderForAPIKey(apiKey);
+            MulticastResult result = sender.send(gcmMessage, (List<String>) tokens, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }

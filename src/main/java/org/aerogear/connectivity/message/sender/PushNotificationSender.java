@@ -21,6 +21,6 @@ import java.util.Collection;
 
 public interface PushNotificationSender {
     
-    void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage);
+    void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey);
 
 }

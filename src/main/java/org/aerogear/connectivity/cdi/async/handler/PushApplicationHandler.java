@@ -15,15 +15,25 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.cdi.async.handler;
 
-import java.util.List;
-import java.util.Map;
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.service.PushApplicationService;
 
-public interface SenderService {
+@Stateless
+public class PushApplicationHandler {
+    
+    @Inject
+    private PushApplicationService pushAppService;
 
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToClientIdentifiers(PushApplication pushApplication, List<String> identifiers, Map<String, ? extends Object> payload);
+    @Asynchronous
+    public void newPushApplication(@Observes PushApplication pushApplication) {
+        pushAppService.addPushApplication(pushApplication);
+    }
+
 }

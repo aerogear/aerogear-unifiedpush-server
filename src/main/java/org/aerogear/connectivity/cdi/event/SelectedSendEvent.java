@@ -15,15 +15,25 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.cdi.event;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.aerogear.connectivity.model.PushApplication;
 
-public interface SenderService {
+public class SelectedSendEvent extends AbstractPushMessageEvent {
+    
+    private final List<String> identifiers;
 
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToClientIdentifiers(PushApplication pushApplication, List<String> identifiers, Map<String, ? extends Object> payload);
+    public List<String> getIdentifiers() {
+        return identifiers;
+    }
+
+    public SelectedSendEvent(PushApplication pushApplication,
+            LinkedHashMap<String, ? extends Object> message, List<String> identifiers) {
+        super(pushApplication, message);
+        this.identifiers = identifiers;
+    }
+    
 }

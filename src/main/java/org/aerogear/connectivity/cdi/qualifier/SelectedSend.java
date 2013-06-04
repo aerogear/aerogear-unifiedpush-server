@@ -15,15 +15,22 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.cdi.qualifier;
 
-import java.util.List;
-import java.util.Map;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.aerogear.connectivity.model.PushApplication;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public interface SenderService {
+import javax.inject.Qualifier;
 
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToClientIdentifiers(PushApplication pushApplication, List<String> identifiers, Map<String, ? extends Object> payload);
+@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+public @interface SelectedSend {
+
 }

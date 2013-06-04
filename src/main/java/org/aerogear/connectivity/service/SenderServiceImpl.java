@@ -23,9 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.aerogear.connectivity.message.sender.APNsPushNotificationSender;
 import org.aerogear.connectivity.message.sender.GCMPushNotificationSender;
 import org.aerogear.connectivity.message.sender.UnifiedPushMessage;
+import org.aerogear.connectivity.message.sender.annotations.APNsSender;
+import org.aerogear.connectivity.message.sender.annotations.GCMSender;
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
@@ -33,6 +37,12 @@ import org.aerogear.connectivity.model.iOSApplication;
 
 public class SenderServiceImpl implements SenderService {
     
+    
+    @Inject @GCMSender
+    private GCMPushNotificationSender gcmSender; 
+    
+    @Inject  @APNsSender
+    private APNsPushNotificationSender apnsSender;
     
     
     @Override
@@ -45,7 +55,6 @@ public class SenderServiceImpl implements SenderService {
         for (iOSApplication iOSApp : iOSapps) {
             
             final List<String> iOSTokenPerVariant = new ArrayList<String>();
-            final APNsPushNotificationSender apnsSender = new APNsPushNotificationSender(iOSApp.getCertificate(), iOSApp.getPassphrase());
             // get all instances
             final Set<MobileApplicationInstance> instancesPerVariant = iOSApp.getInstances();
             for (MobileApplicationInstance instance : instancesPerVariant) {
@@ -57,7 +66,7 @@ public class SenderServiceImpl implements SenderService {
                 }
             }
             // deliver to network
-            apnsSender.sendPushMessage(iOSTokenPerVariant, unifiedPushMessage);
+            apnsSender.sendPushMessage(iOSApp, iOSTokenPerVariant, unifiedPushMessage);
         }
 
         // TODO: make better :)
@@ -65,7 +74,7 @@ public class SenderServiceImpl implements SenderService {
         for (AndroidApplication androidApplication : androidApps) {
             
             final List<String> androidTokenPerVariant = new ArrayList<String>();
-            final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
+            //final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
 
             // get all instances
             Set<MobileApplicationInstance> instancesPerVariant = androidApplication.getInstances();
@@ -77,7 +86,7 @@ public class SenderServiceImpl implements SenderService {
                     androidTokenPerVariant.add(instance.getDeviceToken());
                 }
             }
-            gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage);
+            gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage, androidApplication.getGoogleKey());
         }
     }
 
@@ -93,8 +102,6 @@ public class SenderServiceImpl implements SenderService {
         final Set<iOSApplication> iOSapps = pushApplication.getIOSApps();
         for (iOSApplication iOSApp : iOSapps) {
             
-            final APNsPushNotificationSender apnsSender = new APNsPushNotificationSender(iOSApp.getCertificate(), iOSApp.getPassphrase());
-
             // get all the tokens:
             final Set<String> iOStokenz = new HashSet<String>();
             Set<MobileApplicationInstance> iOSinstallations = iOSApp
@@ -103,7 +110,7 @@ public class SenderServiceImpl implements SenderService {
                 iOStokenz.add(mobileApplicationInstance.getDeviceToken());
             }
 
-            apnsSender.sendPushMessage(iOStokenz, unifiedPushMessage);
+            apnsSender.sendPushMessage(iOSApp, iOStokenz, unifiedPushMessage);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
@@ -111,14 +118,13 @@ public class SenderServiceImpl implements SenderService {
         for (AndroidApplication androidApplication : androidApps) {
 
             final List<String> androidtokenz = new ArrayList<String>();
-            final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
 
             Set<MobileApplicationInstance> androidApplications = androidApplication
                     .getInstances();
             for (MobileApplicationInstance mobileApplicationInstance : androidApplications) {
                 androidtokenz.add(mobileApplicationInstance.getDeviceToken());
             }
-            gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage);
+            gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage, androidApplication.getGoogleKey());
         }
     }
 }
