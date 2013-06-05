@@ -45,7 +45,7 @@ public class PushApplication extends PersistentObject {
 
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
-    private Set<AndroidApplication> androidApps = new HashSet<AndroidApplication>();
+    private Set<AndroidVariant> androidApps = new HashSet<AndroidVariant>();
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
@@ -88,11 +88,11 @@ public class PushApplication extends PersistentObject {
       this.iOSApps = iOSApps;
    }
 
-   public Set<AndroidApplication> getAndroidApps() {
+   public Set<AndroidVariant> getAndroidApps() {
       return this.androidApps;
    }
 
-   public void setAndroidApps(final Set<AndroidApplication> androidApps) {
+   public void setAndroidApps(final Set<AndroidVariant> androidApps) {
       this.androidApps = androidApps;
    }
 

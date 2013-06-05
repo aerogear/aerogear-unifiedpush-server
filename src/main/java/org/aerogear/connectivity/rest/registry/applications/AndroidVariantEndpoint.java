@@ -33,7 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.AndroidApplicationService;
 import org.aerogear.connectivity.service.PushApplicationService;
@@ -56,7 +56,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    // new Android
    @POST
    @Consumes("application/json")
-   public AndroidApplication registerAndroidVariant(AndroidApplication androidVariation, @PathParam("pushAppID") String pushApplicationID) {
+   public AndroidVariant registerAndroidVariant(AndroidVariant androidVariation, @PathParam("pushAppID") String pushApplicationID) {
        // manually set the ID:
        androidVariation.setVariantID(UUID.randomUUID().toString());
        
@@ -75,7 +75,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    // READ
    @GET
    @Produces("application/json")
-   public Set<AndroidApplication> listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+   public Set<AndroidVariant> listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
        if (pushApp != null) {
            return pushApp.getAndroidApps();
@@ -85,20 +85,20 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @GET
    @Path("/{androidID}")
    @Produces("application/json")
-   public AndroidApplication findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
+   public AndroidVariant findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
        return androidAppService.findByVariantID(androidID);
    }
    // UPDATE
    @PUT
    @Path("/{androidID}")
    @Consumes("application/json")
-   public AndroidApplication updateAndroidVariation(
+   public AndroidVariant updateAndroidVariation(
            @PathParam("pushAppID") String id,
            @PathParam("androidID") String androidID,
-           AndroidApplication updatedAndroidApplication) {
+           AndroidVariant updatedAndroidApplication) {
        
        
-       AndroidApplication androidVariant = androidAppService.findByVariantID(androidID);
+       AndroidVariant androidVariant = androidAppService.findByVariantID(androidID);
        if (androidVariant != null) {
            
            // apply updated data:
@@ -115,7 +115,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{androidID}")
    @Consumes("application/json")
    public void deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
-       AndroidApplication androidVariant = androidAppService.findByVariantID(androidID);
+       AndroidVariant androidVariant = androidAppService.findByVariantID(androidID);
        
        if (androidVariant != null)
            androidAppService.removeAndroidApplication(androidVariant);

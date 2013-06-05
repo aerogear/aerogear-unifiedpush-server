@@ -2,7 +2,7 @@ package org.aerogear.connectivity.api;
 
 import java.util.Set;
 
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.model.iOSVariant;
 
@@ -38,8 +38,8 @@ public interface PushApplication {
     /**
      * The collection of Android Variants. 
      */
-    void setAndroidApps(final Set<AndroidApplication> androidApps);
-    Set<AndroidApplication> getAndroidApps();
+    void setAndroidApps(final Set<AndroidVariant> androidApps);
+    Set<AndroidVariant> getAndroidApps();
 
     /**
      * The collection of SimplePush Variants. 

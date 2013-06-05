@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.service.AndroidApplicationService;
 
 public class AndroidApplicationServiceImpl implements AndroidApplicationService {
@@ -31,28 +31,28 @@ public class AndroidApplicationServiceImpl implements AndroidApplicationService 
     private AndroidApplicationDao androidApplicationDao;
 
     @Override
-    public AndroidApplication addAndroidApplication(AndroidApplication app) {
+    public AndroidVariant addAndroidApplication(AndroidVariant app) {
         return androidApplicationDao.create(app);
     }
 
     @Override
-    public List<AndroidApplication> findAllAndroidApplications() {
+    public List<AndroidVariant> findAllAndroidApplications() {
         return androidApplicationDao.findAll();
     }
 
     @Override
-    public AndroidApplication findByVariantID(String variantID) {
+    public AndroidVariant findByVariantID(String variantID) {
         return androidApplicationDao.findByVariantID(variantID);
     }
 
     @Override
-    public AndroidApplication updateAndroidApplication(
-            AndroidApplication androidApp) {
+    public AndroidVariant updateAndroidApplication(
+            AndroidVariant androidApp) {
         return androidApplicationDao.update(androidApp);
     }
 
     @Override
-    public void removeAndroidApplication(AndroidApplication androidApp) {
+    public void removeAndroidApplication(AndroidVariant androidApp) {
         androidApplicationDao.delete(androidApp);
     }
 

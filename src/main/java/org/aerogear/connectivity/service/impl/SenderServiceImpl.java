@@ -30,7 +30,7 @@ import org.aerogear.connectivity.message.sender.GCMPushNotificationSender;
 import org.aerogear.connectivity.message.sender.UnifiedPushMessage;
 import org.aerogear.connectivity.message.sender.annotations.APNsSender;
 import org.aerogear.connectivity.message.sender.annotations.GCMSender;
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSVariant;
@@ -71,8 +71,8 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // TODO: make better :)
-        Set<AndroidApplication> androidApps = pushApplication.getAndroidApps();
-        for (AndroidApplication androidApplication : androidApps) {
+        Set<AndroidVariant> androidApps = pushApplication.getAndroidApps();
+        for (AndroidVariant androidApplication : androidApps) {
             
             final List<String> androidTokenPerVariant = new ArrayList<String>();
             //final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
@@ -115,8 +115,8 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        Set<AndroidApplication> androidApps = pushApplication.getAndroidApps();
-        for (AndroidApplication androidApplication : androidApps) {
+        Set<AndroidVariant> androidApps = pushApplication.getAndroidApps();
+        for (AndroidVariant androidApplication : androidApps) {
 
             final List<String> androidtokenz = new ArrayList<String>();
 

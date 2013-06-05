@@ -19,13 +19,13 @@ package org.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 
 public interface AndroidApplicationService {
     
-    AndroidApplication addAndroidApplication(AndroidApplication androidApp);
-    AndroidApplication updateAndroidApplication(AndroidApplication androidApp);
-    void removeAndroidApplication(AndroidApplication androidApp);
-    List<AndroidApplication> findAllAndroidApplications();
-    AndroidApplication findByVariantID(String variantID);
+    AndroidVariant addAndroidApplication(AndroidVariant androidApp);
+    AndroidVariant updateAndroidApplication(AndroidVariant androidApp);
+    void removeAndroidApplication(AndroidVariant androidApp);
+    List<AndroidVariant> findAllAndroidApplications();
+    AndroidVariant findByVariantID(String variantID);
 }

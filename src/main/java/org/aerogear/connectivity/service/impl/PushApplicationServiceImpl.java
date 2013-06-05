@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.PushApplicationDao;
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.model.iOSVariant;
@@ -56,7 +56,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public void addAndroidApplication(PushApplication pushApp, AndroidApplication androidApp) {
+    public void addAndroidApplication(PushApplication pushApp, AndroidVariant androidApp) {
         pushApp.getAndroidApps().add(androidApp);
         //pushApp.getMobileApplications().add(androidApp);
         pushApplicationDao.update(pushApp);
@@ -77,7 +77,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public List<AndroidApplication> allAndroidApplicationsForPushApplication(
+    public List<AndroidVariant> allAndroidApplicationsForPushApplication(
             PushApplication pushApp) {
         // TODO Auto-generated method stub
         return null;

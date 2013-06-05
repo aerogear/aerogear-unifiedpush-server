@@ -21,19 +21,19 @@ import java.util.List;
 
 import org.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
-import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.model.AndroidVariant;
 
-public class AndroidApplicationDaoImpl extends AbstractGenericDao<AndroidApplication, String> implements AndroidApplicationDao {
+public class AndroidApplicationDaoImpl extends AbstractGenericDao<AndroidVariant, String> implements AndroidApplicationDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<AndroidApplication> findAll() {
-        return createQuery("select t from "+AndroidApplication.class.getSimpleName()+" t").getResultList();   
+    public List<AndroidVariant> findAll() {
+        return createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t").getResultList();   
     }
 
     @Override
-    public AndroidApplication findByVariantID(String variantID) {
-        return (AndroidApplication) createQuery("select t from "+AndroidApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+    public AndroidVariant findByVariantID(String variantID) {
+        return (AndroidVariant) createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t where t.variantID = :variantID")
                 .setParameter("variantID", variantID)
                 .getSingleResult();
     }
