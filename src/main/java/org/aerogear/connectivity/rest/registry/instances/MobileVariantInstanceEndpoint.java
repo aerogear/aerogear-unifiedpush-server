@@ -39,7 +39,7 @@ import org.aerogear.connectivity.service.MobileApplicationService;
 @Stateless
 @Path("/registry/device")
 @TransactionAttribute
-public class MobileApplicationInstanceEndpoint
+public class MobileVariantInstanceEndpoint
 {
     @Inject private Logger logger;
     @Inject private MobileApplicationInstanceService mobileApplicationInstanceService;
