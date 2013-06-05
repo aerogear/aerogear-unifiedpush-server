@@ -18,7 +18,6 @@
 package org.aerogear.connectivity.rest.registry.instances;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +28,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -62,9 +60,6 @@ public class MobileApplicationInstanceEndpoint
         List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(entity.getDeviceToken());
         
         if (instances.isEmpty()) {
-            // set the ID:
-            //entity.setId(UUID.randomUUID().toString());
-
             // store the installation:
             entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
             // find the matching variation:
@@ -103,23 +98,7 @@ public class MobileApplicationInstanceEndpoint
         //update
         return mobileApplicationInstanceService.updateMobileApplicationInstance(toUpdate);
     }
-    
 
-    @PUT
-    @Path("{token}")
-    @Consumes("application/json")
-    public MobileApplicationInstance updateInstance(
-            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
-            @PathParam("token") String token,
-            MobileApplicationInstance postedVariant) {
-
-        // there can be multiple regs.........
-        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
-        // TODO: make sure there is really just one 
-        MobileApplicationInstance updatedVariant = this.updateMobileApplicationInstance(instances.get(0), postedVariant);
-        return updatedVariant;
-    }
-    
     @DELETE
     @Path("{token}")
     @Consumes("application/json")
