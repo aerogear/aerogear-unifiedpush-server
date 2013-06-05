@@ -31,12 +31,12 @@ public class AndroidApplicationServiceImpl implements AndroidApplicationService 
     private AndroidApplicationDao androidApplicationDao;
 
     @Override
-    public AndroidVariant addAndroidApplication(AndroidVariant app) {
+    public AndroidVariant addAndroidVariant(AndroidVariant app) {
         return androidApplicationDao.create(app);
     }
 
     @Override
-    public List<AndroidVariant> findAllAndroidApplications() {
+    public List<AndroidVariant> findAllAndroidVariants() {
         return androidApplicationDao.findAll();
     }
 
@@ -46,13 +46,13 @@ public class AndroidApplicationServiceImpl implements AndroidApplicationService 
     }
 
     @Override
-    public AndroidVariant updateAndroidApplication(
+    public AndroidVariant updateAndroidVariant(
             AndroidVariant androidApp) {
         return androidApplicationDao.update(androidApp);
     }
 
     @Override
-    public void removeAndroidApplication(AndroidVariant androidApp) {
+    public void removeAndroidVariant(AndroidVariant androidApp) {
         androidApplicationDao.delete(androidApp);
     }
 

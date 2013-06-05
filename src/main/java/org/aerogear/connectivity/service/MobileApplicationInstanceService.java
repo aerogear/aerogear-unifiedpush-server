@@ -23,8 +23,8 @@ import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileApplicationInstanceService {
 
-    MobileVariantInstanceImpl addMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance);
-    MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance);
-    List<MobileVariantInstanceImpl> findMobileApplicationInstancesByToken(String token);
-    void removeMobileApplicationInstances(List<MobileVariantInstanceImpl> instances);
+    MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(String token);
+    void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
 }

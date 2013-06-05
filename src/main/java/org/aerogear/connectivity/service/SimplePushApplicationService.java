@@ -23,10 +23,10 @@ import org.aerogear.connectivity.model.SimplePushVariant;
 
 public interface SimplePushApplicationService {
     
-    SimplePushVariant addSimplePushApplication(SimplePushVariant spa);
-    SimplePushVariant updateSimplePushApplication(SimplePushVariant spa);
-    void removeSimplePushApplication(SimplePushVariant spa);
-    List<SimplePushVariant> findAllSimplePushApplications();
+    SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
+    SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
+    void removeSimplePushVariant(SimplePushVariant simplePushVariant);
+    List<SimplePushVariant> findAllSimplePushVariants();
     SimplePushVariant findByVariantID(String variantID);
 
 

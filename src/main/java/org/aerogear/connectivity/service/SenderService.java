@@ -25,5 +25,5 @@ import org.aerogear.connectivity.model.PushApplication;
 public interface SenderService {
 
     void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToClientIdentifiers(PushApplication pushApplication, List<String> identifiers, Map<String, ? extends Object> payload);
+    void sendToAliases(PushApplication pushApplication, List<String> aliases, Map<String, ? extends Object> payload);
 }

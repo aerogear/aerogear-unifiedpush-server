@@ -23,9 +23,9 @@ import org.aerogear.connectivity.model.AndroidVariant;
 
 public interface AndroidApplicationService {
     
-    AndroidVariant addAndroidApplication(AndroidVariant androidApp);
-    AndroidVariant updateAndroidApplication(AndroidVariant androidApp);
-    void removeAndroidApplication(AndroidVariant androidApp);
-    List<AndroidVariant> findAllAndroidApplications();
+    AndroidVariant addAndroidVariant(AndroidVariant androidVariant);
+    AndroidVariant updateAndroidVariant(AndroidVariant androidVariant);
+    void removeAndroidVariant(AndroidVariant androidVariant);
+    List<AndroidVariant> findAllAndroidVariants();
     AndroidVariant findByVariantID(String variantID);
 }

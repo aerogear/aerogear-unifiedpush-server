@@ -76,12 +76,12 @@ public class iOSVariantEndpoint {
         
         // delegate down:
         // store the iOS variant:
-        iOSVariation = iOSappService.addiOSApplication(iOSVariation);
+        iOSVariation = iOSappService.addiOSVariant(iOSVariation);
         // find the root push app
         PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
         System.out.println("==========> "  + pushApp);
         // add iOS variant, and merge:
-        pushAppService.addiOSApplication(pushApp, iOSVariation);
+        pushAppService.addiOSVariant(pushApp, iOSVariation);
 
         return iOSVariation;
    }
@@ -119,7 +119,7 @@ public class iOSVariantEndpoint {
             iOSVariation.setPassphrase(form.getPassphrase());
             iOSVariation.setCertificate(form.getCertificate());
 
-            iOSappService.updateiOSApplication(iOSVariation);
+            iOSappService.updateiOSVariant(iOSVariation);
         }
         return iOSVariation;
     }
@@ -132,7 +132,7 @@ public class iOSVariantEndpoint {
         iOSVariant iOSVariation = iOSappService.findByVariantID(iOSID);
         
         if (iOSVariation != null)
-            iOSappService.removeiOSApplication(iOSVariation);
+            iOSappService.removeiOSVariant(iOSVariation);
     }
   
 }

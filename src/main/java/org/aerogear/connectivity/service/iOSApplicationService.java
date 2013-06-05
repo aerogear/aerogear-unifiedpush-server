@@ -24,11 +24,11 @@ import org.aerogear.connectivity.model.iOSVariant;
 // TODO: make generic Variant Service:
 public interface iOSApplicationService {
     
-    iOSVariant addiOSApplication(iOSVariant iOSApp);
-    iOSVariant updateiOSApplication(iOSVariant iOSApp);
-    void removeiOSApplication(iOSVariant iOSApp);
+    iOSVariant addiOSVariant(iOSVariant iOSVariant);
+    iOSVariant updateiOSVariant(iOSVariant iOSVariant);
+    void removeiOSVariant(iOSVariant iOSVariant);
     
-    List<iOSVariant> findAlliOSApplications();
+    List<iOSVariant> findAlliOSVariants();
     iOSVariant findByVariantID(String variantID);
 
 

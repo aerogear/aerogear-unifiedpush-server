@@ -47,7 +47,7 @@ public class SenderServiceImpl implements SenderService {
     
     
     @Override
-    public void sendToClientIdentifiers(PushApplication pushApplication, final List<String> identifiers, Map<String, ? extends Object> payload) {
+    public void sendToAliases(PushApplication pushApplication, final List<String> aliases, Map<String, ? extends Object> payload) {
         
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(payload);
 
@@ -60,8 +60,8 @@ public class SenderServiceImpl implements SenderService {
             final Set<MobileVariantInstanceImpl> instancesPerVariant = iOSApp.getInstances();
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
-                // see if the identifer does match for the instance
-                if (identifiers.contains(instance.getAlias())) {
+                // see if the alias does match for the instance
+                if (aliases.contains(instance.getAlias())) {
                     // add it
                     iOSTokenPerVariant.add(instance.getDeviceToken());
                 }
@@ -81,8 +81,8 @@ public class SenderServiceImpl implements SenderService {
             Set<MobileVariantInstanceImpl> instancesPerVariant = androidApplication.getInstances();
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
-                // see if the identifer does match for the instance
-                if (identifiers.contains(instance.getAlias())) {
+                // see if the alias does match for the instance
+                if (aliases.contains(instance.getAlias())) {
                     // add it
                     androidTokenPerVariant.add(instance.getDeviceToken());
                 }

@@ -63,11 +63,11 @@ public class SimplePushVariantEndpoint {
        
        //delegate down:
        // store the SimplePush variant:
-       spa = simplePushApplicationService.addSimplePushApplication(spa);
+       spa = simplePushApplicationService.addSimplePushVariant(spa);
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
        // add iOS variant, and merge:
-       pushAppService.addSimplePushApplication(pushApp, spa);
+       pushAppService.addSimplePushVariant(pushApp, spa);
 
        return spa;
    }
@@ -103,7 +103,7 @@ public class SimplePushVariantEndpoint {
            spVariant.setName(updatedSimplePushApplication.getName());
            spVariant.setDescription(updatedSimplePushApplication.getDescription());
            spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
-           return simplePushApplicationService.updateSimplePushApplication(spVariant);
+           return simplePushApplicationService.updateSimplePushVariant(spVariant);
        }
 
        return spVariant;
@@ -115,7 +115,7 @@ public class SimplePushVariantEndpoint {
    public void deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
        SimplePushVariant spVariant = simplePushApplicationService.findByVariantID(simplePushID);
        if (spVariant != null) 
-           simplePushApplicationService.removeSimplePushApplication(spVariant);
+           simplePushApplicationService.removeSimplePushVariant(spVariant);
    }
 
    

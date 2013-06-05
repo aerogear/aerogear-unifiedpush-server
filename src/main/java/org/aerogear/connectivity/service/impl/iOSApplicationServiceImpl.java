@@ -31,12 +31,12 @@ public class iOSApplicationServiceImpl implements iOSApplicationService {
     private iOSApplicationDao iOSApplicationDao;
 
     @Override
-    public iOSVariant addiOSApplication(iOSVariant iOSApp) {
+    public iOSVariant addiOSVariant(iOSVariant iOSApp) {
         return iOSApplicationDao.create(iOSApp);
     }
 
     @Override
-    public List<iOSVariant> findAlliOSApplications() {
+    public List<iOSVariant> findAlliOSVariants() {
         return iOSApplicationDao.findAll();
     }
 
@@ -46,12 +46,12 @@ public class iOSApplicationServiceImpl implements iOSApplicationService {
     }
 
     @Override
-    public iOSVariant updateiOSApplication(iOSVariant iOSApp) {
+    public iOSVariant updateiOSVariant(iOSVariant iOSApp) {
         return iOSApplicationDao.update(iOSApp);
     }
 
     @Override
-    public void removeiOSApplication(iOSVariant iOSApp) {
+    public void removeiOSVariant(iOSVariant iOSApp) {
         iOSApplicationDao.delete(iOSApp);
     }
 

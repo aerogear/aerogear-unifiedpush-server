@@ -49,42 +49,41 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public void addiOSApplication(PushApplication pushApp, iOSVariant iOSapp) {
-        pushApp.getIOSApps().add(iOSapp);
-        //pushApp.getMobileApplications().add(iOSapp);
+    public void addiOSVariant(PushApplication pushApp, iOSVariant iOVariant) {
+        pushApp.getIOSApps().add(iOVariant);
         pushApplicationDao.update(pushApp);
     }
 
     @Override
-    public void addAndroidApplication(PushApplication pushApp, AndroidVariant androidApp) {
-        pushApp.getAndroidApps().add(androidApp);
+    public void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant) {
+        pushApp.getAndroidApps().add(androidVariant);
         //pushApp.getMobileApplications().add(androidApp);
         pushApplicationDao.update(pushApp);
     }
     @Override
-    public void addSimplePushApplication(PushApplication pushApp,
-            SimplePushVariant simplePushApp) {
-        pushApp.getSimplePushApps().add(simplePushApp);
+    public void addSimplePushVariant(PushApplication pushApp,
+            SimplePushVariant simplePushVariant) {
+        pushApp.getSimplePushApps().add(simplePushVariant);
         
         pushApplicationDao.update(pushApp);
     }
 
     @Override
-    public List<iOSVariant> alliOSApplicationsForPushApplication(
+    public List<iOSVariant> alliOSVariantsForPushApplication(
             PushApplication pushApp) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<AndroidVariant> allAndroidApplicationsForPushApplication(
+    public List<AndroidVariant> allAndroidVariantsForPushApplication(
             PushApplication pushApp) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<SimplePushVariant> allSimplePushApplicationsForPushApplication(
+    public List<SimplePushVariant> allSimplePushVariantsForPushApplication(
             PushApplication pushApp) {
         // TODO Auto-generated method stub
         return null;

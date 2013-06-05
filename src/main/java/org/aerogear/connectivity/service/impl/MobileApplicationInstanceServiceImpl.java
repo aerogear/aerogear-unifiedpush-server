@@ -30,18 +30,18 @@ public class MobileApplicationInstanceServiceImpl implements MobileApplicationIn
     @Inject
     private MobileVariantInstanceDao dao;
 
-    public MobileVariantInstanceImpl addMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance) {
+    public MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);
     }
 
     @Override
-    public List<MobileVariantInstanceImpl> findMobileApplicationInstancesByToken(
+    public List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(
             String token) {
         return dao.findByToken(token);
     }
 
     @Override
-    public void removeMobileApplicationInstances(
+    public void removeMobileVariantInstances(
             List<MobileVariantInstanceImpl> instances) {
 
         // uh... :)
@@ -52,7 +52,7 @@ public class MobileApplicationInstanceServiceImpl implements MobileApplicationIn
     }
 
     @Override
-    public MobileVariantInstanceImpl updateMobileApplicationInstance(
+    public MobileVariantInstanceImpl updateMobileVariantInstance(
             MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
     }

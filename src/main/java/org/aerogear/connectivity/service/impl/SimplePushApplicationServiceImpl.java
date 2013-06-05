@@ -32,13 +32,13 @@ public class SimplePushApplicationServiceImpl implements
     private SimplePushApplicationDao simplePushApplicationDao;
     
     @Override
-    public SimplePushVariant addSimplePushApplication(
-            SimplePushVariant spa) {
-        return simplePushApplicationDao.create(spa);
+    public SimplePushVariant addSimplePushVariant(
+            SimplePushVariant simplePushVariant) {
+        return simplePushApplicationDao.create(simplePushVariant);
     }
 
     @Override
-    public List<SimplePushVariant> findAllSimplePushApplications() {
+    public List<SimplePushVariant> findAllSimplePushVariants() {
         return simplePushApplicationDao.findAll();
     }
 
@@ -48,13 +48,13 @@ public class SimplePushApplicationServiceImpl implements
     }
 
     @Override
-    public SimplePushVariant updateSimplePushApplication(
-            SimplePushVariant spa) {
-        return simplePushApplicationDao.update(spa);
+    public SimplePushVariant updateSimplePushVariant(
+            SimplePushVariant simplePushVariant) {
+        return simplePushApplicationDao.update(simplePushVariant);
     }
 
     @Override
-    public void removeSimplePushApplication(SimplePushVariant spa) {
-        simplePushApplicationDao.delete(spa);
+    public void removeSimplePushVariant(SimplePushVariant simplePushVariant) {
+        simplePushApplicationDao.delete(simplePushVariant);
     }
 }

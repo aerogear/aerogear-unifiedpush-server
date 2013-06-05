@@ -25,7 +25,6 @@ public interface MobileApplicationService {
     
     MobileVariant findByVariantID(String variantID);
 
-    void addInstallation(MobileVariant mobileApp,
-            MobileVariantInstanceImpl entity);
+    void addInstance(MobileVariant mobileApp, MobileVariantInstanceImpl instance);
 
 }

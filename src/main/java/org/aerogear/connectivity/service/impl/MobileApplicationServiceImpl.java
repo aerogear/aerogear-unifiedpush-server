@@ -35,10 +35,10 @@ public class MobileApplicationServiceImpl implements MobileApplicationService {
     }
 
     @Override
-    public void addInstallation(MobileVariant mobileApp,
-            MobileVariantInstanceImpl entity) {
+    public void addInstance(MobileVariant mobileApp,
+            MobileVariantInstanceImpl instance) {
         
-        mobileApp.getInstances().add(entity);
+        mobileApp.getInstances().add(instance);
         mobileApplicationDao.update(mobileApp);
     }
 

@@ -57,11 +57,11 @@ public class MobileVariantInstanceEndpoint
             logger.info(sb.toString());
         }
         
-        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(entity.getDeviceToken());
+        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileVariantInstancesByToken(entity.getDeviceToken());
         
         if (instances.isEmpty()) {
             // store the installation:
-            entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
+            entity = mobileApplicationInstanceService.addMobileVariantInstance(entity);
             // find the matching variation:
             MobileVariant mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
         
@@ -71,7 +71,7 @@ public class MobileVariantInstanceEndpoint
             }
 
             // add installation to the matching variant
-            mobileApplicationService.addInstallation(mobileApp, entity);
+            mobileApplicationService.addInstance(mobileApp, entity);
         } else {
             logger.warning("UPDATE ON POST.......");
             
@@ -96,7 +96,7 @@ public class MobileVariantInstanceEndpoint
         toUpdate.setOsVersion(postedVariant.getOsVersion());
 
         //update
-        return mobileApplicationInstanceService.updateMobileApplicationInstance(toUpdate);
+        return mobileApplicationInstanceService.updateMobileVariantInstance(toUpdate);
     }
 
     @DELETE
@@ -107,9 +107,9 @@ public class MobileVariantInstanceEndpoint
             @PathParam("token") String token) {
         
         // there can be multiple regs.........
-        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
+        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileVariantInstancesByToken(token);
         
         // delete them:
-        mobileApplicationInstanceService.removeMobileApplicationInstances(instances);
+        mobileApplicationInstanceService.removeMobileVariantInstances(instances);
    }
 }

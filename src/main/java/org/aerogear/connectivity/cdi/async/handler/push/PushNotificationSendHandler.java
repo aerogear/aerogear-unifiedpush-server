@@ -49,7 +49,7 @@ public class PushNotificationSendHandler {
         logger.log(Level.FINE, "Sending 'selected' Message");
 
         // send the message ...
-        senderService.sendToClientIdentifiers(
+        senderService.sendToAliases(
                 selectedSendEvent.getPushApplication(),
                 selectedSendEvent.getIdentifiers(),
                 selectedSendEvent.getMessage());

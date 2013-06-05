@@ -32,11 +32,11 @@ public interface PushApplicationService {
     PushApplication updatePushApplication(PushApplication pushApp);
     void removePushApplication(PushApplication pushApp);
     
-    void addiOSApplication(PushApplication pushApp, iOSVariant iOSapp);
-    void addAndroidApplication(PushApplication pushApp, AndroidVariant androidApp);
-    void addSimplePushApplication(PushApplication pushApp, SimplePushVariant simplePushApp);
+    void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
+    void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
+    void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
     
-    List<iOSVariant> alliOSApplicationsForPushApplication(PushApplication pushApp);
-    List<AndroidVariant> allAndroidApplicationsForPushApplication(PushApplication pushApp);
-    List<SimplePushVariant> allSimplePushApplicationsForPushApplication(PushApplication pushApp);
+    List<iOSVariant> alliOSVariantsForPushApplication(PushApplication pushApp);
+    List<AndroidVariant> allAndroidVariantsForPushApplication(PushApplication pushApp);
+    List<SimplePushVariant> allSimplePushVariantsForPushApplication(PushApplication pushApp);
 }

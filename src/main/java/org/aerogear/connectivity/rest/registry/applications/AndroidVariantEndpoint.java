@@ -63,11 +63,11 @@ public class AndroidVariantEndpoint {
        
        // delegate down:
        // store the Android variant:
-       androidVariation = androidAppService.addAndroidApplication(androidVariation);
+       androidVariation = androidAppService.addAndroidVariant(androidVariation);
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
        // add iOS variant, and merge:
-       pushAppService.addAndroidApplication(pushApp, androidVariation);
+       pushAppService.addAndroidVariant(pushApp, androidVariation);
 
        return androidVariation;
    }
@@ -105,7 +105,7 @@ public class AndroidVariantEndpoint {
            androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
            androidVariant.setName(updatedAndroidApplication.getName());
            androidVariant.setDescription(updatedAndroidApplication.getDescription());
-           return androidAppService.updateAndroidApplication(androidVariant);
+           return androidAppService.updateAndroidVariant(androidVariant);
        }
 
        return androidVariant;
@@ -118,7 +118,7 @@ public class AndroidVariantEndpoint {
        AndroidVariant androidVariant = androidAppService.findByVariantID(androidID);
        
        if (androidVariant != null)
-           androidAppService.removeAndroidApplication(androidVariant);
+           androidAppService.removeAndroidVariant(androidVariant);
    }
   
 }
