@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.SimplePushApplicationDao;
-import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.service.SimplePushApplicationService;
 
 public class SimplePushApplicationServiceImpl implements
@@ -32,29 +32,29 @@ public class SimplePushApplicationServiceImpl implements
     private SimplePushApplicationDao simplePushApplicationDao;
     
     @Override
-    public SimplePushApplication addSimplePushApplication(
-            SimplePushApplication spa) {
+    public SimplePushVariant addSimplePushApplication(
+            SimplePushVariant spa) {
         return simplePushApplicationDao.create(spa);
     }
 
     @Override
-    public List<SimplePushApplication> findAllSimplePushApplications() {
+    public List<SimplePushVariant> findAllSimplePushApplications() {
         return simplePushApplicationDao.findAll();
     }
 
     @Override
-    public SimplePushApplication findByVariantID(String variantID) {
+    public SimplePushVariant findByVariantID(String variantID) {
         return simplePushApplicationDao.findByVariantID(variantID);
     }
 
     @Override
-    public SimplePushApplication updateSimplePushApplication(
-            SimplePushApplication spa) {
+    public SimplePushVariant updateSimplePushApplication(
+            SimplePushVariant spa) {
         return simplePushApplicationDao.update(spa);
     }
 
     @Override
-    public void removeSimplePushApplication(SimplePushApplication spa) {
+    public void removeSimplePushApplication(SimplePushVariant spa) {
         simplePushApplicationDao.delete(spa);
     }
 }

@@ -21,19 +21,19 @@ import java.util.List;
 
 import org.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.aerogear.connectivity.jpa.dao.SimplePushApplicationDao;
-import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.model.SimplePushVariant;
 
-public class SimplePushApplicationDaoImpl extends AbstractGenericDao<SimplePushApplication, String> implements SimplePushApplicationDao {
+public class SimplePushApplicationDaoImpl extends AbstractGenericDao<SimplePushVariant, String> implements SimplePushApplicationDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<SimplePushApplication> findAll() {
-        return createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t").getResultList();   
+    public List<SimplePushVariant> findAll() {
+        return createQuery("select t from "+SimplePushVariant.class.getSimpleName()+" t").getResultList();   
     }
 
     @Override
-    public SimplePushApplication findByVariantID(String variantID) {
-        return (SimplePushApplication) createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+    public SimplePushVariant findByVariantID(String variantID) {
+        return (SimplePushVariant) createQuery("select t from "+SimplePushVariant.class.getSimpleName()+" t where t.variantID = :variantID")
         .setParameter("variantID", variantID)
         .getSingleResult();
     }

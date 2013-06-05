@@ -34,7 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.aerogear.connectivity.model.PushApplication;
-import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.service.PushApplicationService;
 import org.aerogear.connectivity.service.SimplePushApplicationService;
 
@@ -56,7 +56,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    // new SimplePush
    @POST
    @Consumes("application/json")
-   public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("pushAppID") String pushApplicationID) {
+   public SimplePushVariant registerSimplePushVariant(SimplePushVariant spa, @PathParam("pushAppID") String pushApplicationID) {
        // manually set the ID:
        spa.setVariantID(UUID.randomUUID().toString());
        
@@ -74,7 +74,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    // READ
    @GET
    @Produces("application/json")
-   public Set<SimplePushApplication> listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+   public Set<SimplePushVariant> listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
        if (pushApp != null) {
            return pushApp.getSimplePushApps();
@@ -84,19 +84,19 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    @GET
    @Path("/{simplePushID}")
    @Produces("application/json")
-   public SimplePushApplication findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
+   public SimplePushVariant findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
        return simplePushApplicationService.findByVariantID(simplePushID);
    }
    // UPDATE
    @PUT
    @Path("/{simplePushID}")
    @Consumes("application/json")
-   public SimplePushApplication updateSimplePushVariation(
+   public SimplePushVariant updateSimplePushVariation(
            @PathParam("pushAppID") String id,
            @PathParam("simplePushID") String simplePushID,
-           SimplePushApplication updatedSimplePushApplication) {
+           SimplePushVariant updatedSimplePushApplication) {
        
-       SimplePushApplication spVariant = simplePushApplicationService.findByVariantID(simplePushID);
+       SimplePushVariant spVariant = simplePushApplicationService.findByVariantID(simplePushID);
        if (spVariant != null) {
            
            // apply updated data:
@@ -113,7 +113,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{simplePushID}")
    @Consumes("application/json")
    public void deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
-       SimplePushApplication spVariant = simplePushApplicationService.findByVariantID(simplePushID);
+       SimplePushVariant spVariant = simplePushApplicationService.findByVariantID(simplePushID);
        if (spVariant != null) 
            simplePushApplicationService.removeSimplePushApplication(spVariant);
    }

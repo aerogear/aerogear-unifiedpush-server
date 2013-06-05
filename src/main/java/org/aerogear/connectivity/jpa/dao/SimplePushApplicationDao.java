@@ -20,11 +20,11 @@ package org.aerogear.connectivity.jpa.dao;
 import java.util.List;
 
 import org.aerogear.connectivity.jpa.GenericDao;
-import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.model.SimplePushVariant;
 
-public interface SimplePushApplicationDao extends GenericDao<SimplePushApplication, String>{
+public interface SimplePushApplicationDao extends GenericDao<SimplePushVariant, String>{
     
-    List<SimplePushApplication> findAll();
-    SimplePushApplication findByVariantID(String variantID);
+    List<SimplePushVariant> findAll();
+    SimplePushVariant findByVariantID(String variantID);
 
 }
