@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.aerogear.connectivity.model.iOSApplication;
 
+// TODO: make generic Variant Service:
 public interface iOSApplicationService {
     
     iOSApplication addiOSApplication(iOSApplication iOSApp);
@@ -28,7 +29,7 @@ public interface iOSApplicationService {
     void removeiOSApplication(iOSApplication iOSApp);
     
     List<iOSApplication> findAlliOSApplications();
-    iOSApplication findiOSApplicationById(String id);
+    iOSApplication findByVariantID(String variantID);
 
 
 }

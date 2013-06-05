@@ -71,45 +71,25 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
         iOSVariation.setCertificate(form.getCertificate());
         
         // manually set the ID:
-        iOSVariation.setId(UUID.randomUUID().toString());
+        iOSVariation.setVariantID(UUID.randomUUID().toString());
         
         
         // delegate down:
         // store the iOS variant:
         iOSVariation = iOSappService.addiOSApplication(iOSVariation);
         // find the root push app
-        PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationID);
+        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
+        System.out.println("==========> "  + pushApp);
         // add iOS variant, and merge:
         pushAppService.addiOSApplication(pushApp, iOSVariation);
-        
-//        
-//        
-//        
-//        try {
-//            connection = connectionFactory.createConnection();
-//            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//            MessageProducer messageProducer = session.createProducer(pushAppTopic);
-//            connection.start();
-//            
-//            ObjectMessage om = session.createObjectMessage(iOSVariation);
-//            om.setStringProperty("ApplicationType", "aerogear.iOSApplication");
-//            om.setStringProperty("PushApplicationID", pushApplicationId);
-//            messageProducer.send(om);
-//            
-//            session.close();
-//            connection.close();
-//            
-//        } catch (JMSException e) {
-//            e.printStackTrace();
-//        }
-//
+
         return iOSVariation;
    }
     // READ
     @GET
     @Produces("application/json")
     public Set<iOSApplication> listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-        PushApplication pushApp = pushAppService.findPushApplicationById(pushAppID);
+        PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
         if (pushApp != null) {
             return pushApp.getIOSApps();
         }
@@ -119,7 +99,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @Path("/{iOSID}")
     @Produces("application/json")
     public iOSApplication findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
-        return iOSappService.findiOSApplicationById(iOSID);
+        return iOSappService.findByVariantID(iOSID);
     }
     // UPDATE
     @PUT
@@ -131,7 +111,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
         
-        iOSApplication iOSVariation = iOSappService.findiOSApplicationById(iOSID);
+        iOSApplication iOSVariation = iOSappService.findByVariantID(iOSID);
         if (iOSVariation != null) {
             // apply update:
             iOSVariation.setName(form.getName());
@@ -149,7 +129,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @Path("/{iOSID}")
     @Consumes("application/json")
     public void deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
-        iOSApplication iOSVariation = iOSappService.findiOSApplicationById(iOSID);
+        iOSApplication iOSVariation = iOSappService.findByVariantID(iOSID);
         
         if (iOSVariation != null)
             iOSappService.removeiOSApplication(iOSVariation);

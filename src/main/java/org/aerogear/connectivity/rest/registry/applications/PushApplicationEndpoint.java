@@ -52,7 +52,7 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     //@Asynchronous
     public PushApplication registerPushApplication(PushApplication pushApp) {
         // create ID...
-        pushApp.setId(UUID.randomUUID().toString());
+        pushApp.setPushApplicationID(UUID.randomUUID().toString());
 
         // delegate:
         //pushAppService.addPushApplication(pushApp);
@@ -79,7 +79,7 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     @Path("/{pushAppID}")
     @Produces("application/json")
     public PushApplication findById(@PathParam("pushAppID") String id) {
-        return pushAppService.findPushApplicationById(id);
+        return pushAppService.findByPushApplicationID(id);
     }
 
     // UPDATE
@@ -87,7 +87,7 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     @Path("/{pushAppID}")
     @Consumes("application/json")
     public PushApplication updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
-        PushApplication pushApp = pushAppService.findPushApplicationById(id);
+        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp != null) {
             
@@ -105,7 +105,7 @@ public class PushApplicationEndpoint extends AbstractRegistryEndpoint {
     @Path("/{pushAppID}")
     @Consumes("application/json")
     public void deletePushApplication(@PathParam("pushAppID") String id) {
-        PushApplication pushApp = pushAppService.findPushApplicationById(id);
+        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp != null)
             pushAppService.removePushApplication(pushApp);

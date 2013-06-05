@@ -24,5 +24,6 @@ import org.aerogear.connectivity.model.AndroidApplication;
 public interface AndroidApplicationDao extends GenericDao<AndroidApplication, String> {
     
     List<AndroidApplication> findAll();
+    AndroidApplication findByVariantID(String variantID);
 
 }

@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.api.MobileApplication;
 import org.aerogear.connectivity.jpa.dao.MobileApplicationDao;
-import org.aerogear.connectivity.model.AbstractMobileApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 
 public class MobileApplicationServiceImpl implements MobileApplicationService {
@@ -30,8 +29,8 @@ public class MobileApplicationServiceImpl implements MobileApplicationService {
     private MobileApplicationDao mobileApplicationDao;
     
     @Override
-    public MobileApplication findMobileApplicationById(String id) {
-        return mobileApplicationDao.find(AbstractMobileApplication.class, id);
+    public MobileApplication findByVariantID(String variantID) {
+        return mobileApplicationDao.findByVariantID(variantID);
     }
 
     @Override

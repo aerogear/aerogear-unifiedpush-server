@@ -43,8 +43,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
     
     @Override
-    public PushApplication findPushApplicationById(String id) {
-        return pushApplicationDao.find(PushApplication.class, id);
+    public PushApplication findByPushApplicationID(String pushApplicationID) {
+        return pushApplicationDao.findByPushApplicationID(pushApplicationID);
     }
 
     @Override

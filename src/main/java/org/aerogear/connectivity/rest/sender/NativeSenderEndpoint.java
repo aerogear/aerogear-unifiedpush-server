@@ -47,7 +47,7 @@ public class NativeSenderEndpoint {
     @Path("/broadcast/{pushApplicationID}")
     @Consumes("application/json")
     public Response broadcast(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
-        PushApplication pushApplication = pushApplicationService.findPushApplicationById(pushApplicationID);
+        PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
         dispatcher.dispatchBroadcastMessage(pushApplication, message);
         logger.info("Message submitted to PushNetworks");
 
@@ -59,7 +59,7 @@ public class NativeSenderEndpoint {
     @Path("/selected/{pushApplicationID}")
     @Consumes("application/json")
     public Response selectedSender(LinkedHashMap<String, ? extends Object> message, @PathParam("pushApplicationID") String pushApplicationID) {
-        PushApplication pushApplication = pushApplicationService.findPushApplicationById(pushApplicationID);
+        PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
         // read the receivers of the message:
         List<String> identifiers = (List<String>) message.get("alias");
         // extract the payload

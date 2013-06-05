@@ -40,8 +40,8 @@ public class AndroidApplicationServiceImpl implements AndroidApplicationService 
     }
 
     @Override
-    public AndroidApplication findAndroidApplicationById(String id) {
-        return androidApplicationDao.find(AndroidApplication.class, id);
+    public AndroidApplication findByVariantID(String variantID) {
+        return androidApplicationDao.findByVariantID(variantID);
     }
 
     @Override

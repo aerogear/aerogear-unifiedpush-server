@@ -29,4 +29,11 @@ public class iOSApplicationDaoImpl extends AbstractGenericDao<iOSApplication, St
         return createQuery("select t from "+iOSApplication.class.getSimpleName()+" t").getResultList();
     }
 
+    @Override
+    public iOSApplication findByVariantID(String variantID) {
+        return (iOSApplication) createQuery("select t from "+iOSApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+                .setParameter("variantID", variantID)
+                .getSingleResult();
+    }
+
 }

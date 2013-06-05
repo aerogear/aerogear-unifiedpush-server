@@ -21,4 +21,5 @@ import org.aerogear.connectivity.api.MobileApplication;
 
 public interface MobileApplicationDao extends GenericDao<MobileApplication, String> {
 
+    MobileApplication findByVariantID(String variantID);
 }

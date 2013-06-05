@@ -28,4 +28,11 @@ public class AndroidApplicationDaoImpl extends AbstractGenericDao<AndroidApplica
     public List<AndroidApplication> findAll() {
         return createQuery("select t from "+AndroidApplication.class.getSimpleName()+" t").getResultList();   
     }
+
+    @Override
+    public AndroidApplication findByVariantID(String variantID) {
+        return (AndroidApplication) createQuery("select t from "+AndroidApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+                .setParameter("variantID", variantID)
+                .getSingleResult();
+    }
 }

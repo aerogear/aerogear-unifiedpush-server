@@ -40,8 +40,8 @@ public class iOSApplicationServiceImpl implements iOSApplicationService {
     }
 
     @Override
-    public iOSApplication findiOSApplicationById(String id) {
-        return iOSApplicationDao.find(iOSApplication.class, id);
+    public iOSApplication findByVariantID(String variantID) {
+        return iOSApplicationDao.findByVariantID(variantID);
     }
 
     @Override

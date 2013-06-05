@@ -64,7 +64,7 @@ public class SimplePushSender {
         
         logger.severe("Broadcast ID: " + simplePushId);
 
-        SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
+        SimplePushApplication spa = simplePushApplicationService.findByVariantID(simplePushId);
         String endpoint = spa.getPushNetworkURL();
         
         logger.severe("SimplePush NetworkURL: " + endpoint);
@@ -100,7 +100,7 @@ public class SimplePushSender {
     public Response notifyGivenChannels(Map message, @PathParam("id") String simplePushId) {
         
         
-        SimplePushApplication spa = simplePushApplicationService.findSimplePushApplicationById(simplePushId);
+        SimplePushApplication spa = simplePushApplicationService.findByVariantID(simplePushId);
         String endpoint = spa.getPushNetworkURL();
         
         String version = (String) message.get("version");

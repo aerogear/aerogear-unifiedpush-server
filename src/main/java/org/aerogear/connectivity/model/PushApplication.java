@@ -35,6 +35,9 @@ public class PushApplication extends PersistentObject {
     private String name;
     @Column
     private String description;
+    
+    @Column
+    private String pushApplicationID;
 
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
@@ -99,5 +102,13 @@ public class PushApplication extends PersistentObject {
 
    public void setSimplePushApps(final Set<SimplePushApplication> simplePushApps) {
        this.simplePushApps = simplePushApps;
+   }
+
+   public String getPushApplicationID() {
+       return pushApplicationID;
+   }
+
+   public void setPushApplicationID(String pushApplicationID) {
+       this.pushApplicationID = pushApplicationID;
    }
 }

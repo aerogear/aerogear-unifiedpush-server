@@ -29,4 +29,11 @@ public class SimplePushApplicationDaoImpl extends AbstractGenericDao<SimplePushA
         return createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t").getResultList();   
     }
 
+    @Override
+    public SimplePushApplication findByVariantID(String variantID) {
+        return (SimplePushApplication) createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+        .setParameter("variantID", variantID)
+        .getSingleResult();
+    }
+
 }

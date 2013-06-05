@@ -42,8 +42,8 @@ public class SimplePushApplicationServiceImpl implements
     }
 
     @Override
-    public SimplePushApplication findSimplePushApplicationById(String id) {
-        return simplePushApplicationDao.find(SimplePushApplication.class, id);
+    public SimplePushApplication findByVariantID(String variantID) {
+        return simplePushApplicationDao.findByVariantID(variantID);
     }
 
     @Override

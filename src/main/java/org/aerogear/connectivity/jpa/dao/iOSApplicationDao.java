@@ -24,5 +24,6 @@ import org.aerogear.connectivity.model.iOSApplication;
 public interface iOSApplicationDao extends GenericDao<iOSApplication, String> {
     
     List<iOSApplication> findAll();
+    iOSApplication findByVariantID(String variantID);
 
 }

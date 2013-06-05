@@ -20,24 +20,27 @@ package org.aerogear.connectivity.jpa;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
 public abstract class PersistentObject implements Serializable {
     private static final long serialVersionUID = -2604260447891156143L;
 
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(name = "id", updatable = false, nullable = false)
     private String id = null;
 
-    public String getId()
-    {
+    public String getId() {
        return this.id;
     }
 
-    public void setId(final String id)
-    {
+    public void setId(final String id) {
        this.id = id;
     }
 }

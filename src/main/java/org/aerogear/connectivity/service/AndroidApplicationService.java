@@ -27,5 +27,5 @@ public interface AndroidApplicationService {
     AndroidApplication updateAndroidApplication(AndroidApplication androidApp);
     void removeAndroidApplication(AndroidApplication androidApp);
     List<AndroidApplication> findAllAndroidApplications();
-    AndroidApplication findAndroidApplicationById(String id);
+    AndroidApplication findByVariantID(String variantID);
 }

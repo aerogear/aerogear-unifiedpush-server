@@ -24,5 +24,6 @@ import org.aerogear.connectivity.model.SimplePushApplication;
 public interface SimplePushApplicationDao extends GenericDao<SimplePushApplication, String>{
     
     List<SimplePushApplication> findAll();
+    SimplePushApplication findByVariantID(String variantID);
 
 }

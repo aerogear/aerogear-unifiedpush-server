@@ -63,12 +63,12 @@ public class MobileApplicationInstanceEndpoint
         
         if (instances.isEmpty()) {
             // set the ID:
-            entity.setId(UUID.randomUUID().toString());
+            //entity.setId(UUID.randomUUID().toString());
 
             // store the installation:
             entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
             // find the matching variation:
-            MobileApplication mobileApp = mobileApplicationService.findMobileApplicationById(mobileVariantID);
+            MobileApplication mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
         
             if (mobileApp == null) {
                 logger.severe("\n\nCould not find Mobile Variant\n\n");

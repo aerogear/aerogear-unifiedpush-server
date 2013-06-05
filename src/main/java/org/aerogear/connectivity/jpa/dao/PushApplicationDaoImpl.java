@@ -28,5 +28,12 @@ public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, 
     public List<PushApplication> findAll() {
         return createQuery("select t from "+PushApplication.class.getSimpleName()+" t").getResultList();
     }
+
+    @Override
+    public PushApplication findByPushApplicationID(String pushApplicationID) {
+        return (PushApplication) createQuery("select pa from "+PushApplication.class.getSimpleName()+" pa where pa.pushApplicationID = :pushApplicationID")
+        .setParameter("pushApplicationID", pushApplicationID)
+        .getSingleResult();
+    }
     
 }

@@ -40,9 +40,10 @@ public  class AbstractMobileApplication extends PersistentObject implements Mobi
 
     @Column
     private String name;
-    
     @Column
     private String description;
+    @Column
+    private String variantID;
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
@@ -71,6 +72,14 @@ public  class AbstractMobileApplication extends PersistentObject implements Mobi
 
     public void setInstances(final Set<MobileApplicationInstance> instances) {
        this.instances = instances;
+    }
+
+    public String getVariantID() {
+        return variantID;
+    }
+
+    public void setVariantID(String variantID) {
+        this.variantID = variantID;
     }
 
 }

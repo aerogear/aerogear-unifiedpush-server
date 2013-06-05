@@ -27,7 +27,7 @@ public interface SimplePushApplicationService {
     SimplePushApplication updateSimplePushApplication(SimplePushApplication spa);
     void removeSimplePushApplication(SimplePushApplication spa);
     List<SimplePushApplication> findAllSimplePushApplications();
-    SimplePushApplication findSimplePushApplicationById(String id);
+    SimplePushApplication findByVariantID(String variantID);
 
 
 }

@@ -23,7 +23,7 @@ import org.aerogear.connectivity.model.MobileApplicationInstance;
 public interface MobileApplicationService {
     
     
-    MobileApplication findMobileApplicationById(String id);
+    MobileApplication findByVariantID(String variantID);
 
     void addInstallation(MobileApplication mobileApp,
             MobileApplicationInstance entity);

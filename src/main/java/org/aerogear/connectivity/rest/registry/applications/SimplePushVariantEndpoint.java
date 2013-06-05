@@ -58,42 +58,24 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    @Consumes("application/json")
    public SimplePushApplication registerSimplePushVariant(SimplePushApplication spa, @PathParam("pushAppID") String pushApplicationID) {
        // manually set the ID:
-       spa.setId(UUID.randomUUID().toString());
+       spa.setVariantID(UUID.randomUUID().toString());
        
        
        //delegate down:
        // store the SimplePush variant:
        spa = simplePushApplicationService.addSimplePushApplication(spa);
        // find the root push app
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationID);
+       PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
        // add iOS variant, and merge:
        pushAppService.addSimplePushApplication(pushApp, spa);
-       
-       
-//       try {
-//           connection = connectionFactory.createConnection();
-//           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//           MessageProducer messageProducer = session.createProducer(pushAppTopic);
-//           connection.start();
-//           
-//           ObjectMessage om = session.createObjectMessage(spa);
-//           om.setStringProperty("ApplicationType", "aerogear.SimplePushApplication");
-//           om.setStringProperty("PushApplicationID", pushApplicationId);
-//           messageProducer.send(om);
-//
-//           session.close();
-//           connection.close();
-//
-//       } catch (JMSException e) {
-//           e.printStackTrace();
-//       }
+
        return spa;
    }
    // READ
    @GET
    @Produces("application/json")
    public Set<SimplePushApplication> listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushAppID);
+       PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
        if (pushApp != null) {
            return pushApp.getSimplePushApps();
        }
@@ -103,7 +85,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{simplePushID}")
    @Produces("application/json")
    public SimplePushApplication findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
-       return simplePushApplicationService.findSimplePushApplicationById(simplePushID);
+       return simplePushApplicationService.findByVariantID(simplePushID);
    }
    // UPDATE
    @PUT
@@ -114,7 +96,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
            @PathParam("simplePushID") String simplePushID,
            SimplePushApplication updatedSimplePushApplication) {
        
-       SimplePushApplication spVariant = simplePushApplicationService.findSimplePushApplicationById(simplePushID);
+       SimplePushApplication spVariant = simplePushApplicationService.findByVariantID(simplePushID);
        if (spVariant != null) {
            
            // apply updated data:
@@ -131,7 +113,7 @@ public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{simplePushID}")
    @Consumes("application/json")
    public void deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
-       SimplePushApplication spVariant = simplePushApplicationService.findSimplePushApplicationById(simplePushID);
+       SimplePushApplication spVariant = simplePushApplicationService.findByVariantID(simplePushID);
        if (spVariant != null) 
            simplePushApplicationService.removeSimplePushApplication(spVariant);
    }

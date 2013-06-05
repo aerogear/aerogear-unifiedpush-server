@@ -58,35 +58,16 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @Consumes("application/json")
    public AndroidApplication registerAndroidVariant(AndroidApplication androidVariation, @PathParam("pushAppID") String pushApplicationID) {
        // manually set the ID:
-       androidVariation.setId(UUID.randomUUID().toString());
+       androidVariation.setVariantID(UUID.randomUUID().toString());
        
        
        // delegate down:
        // store the Android variant:
        androidVariation = androidAppService.addAndroidApplication(androidVariation);
        // find the root push app
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushApplicationID);
+       PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
        // add iOS variant, and merge:
        pushAppService.addAndroidApplication(pushApp, androidVariation);
-
-       
-//       try {
-//           connection = connectionFactory.createConnection();
-//           session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//           MessageProducer messageProducer = session.createProducer(pushAppTopic);
-//           connection.start();
-//           
-//           ObjectMessage om = session.createObjectMessage(androidVariation);
-//           om.setStringProperty("ApplicationType", "aerogear.AndroidApplication");
-//           om.setStringProperty("PushApplicationID", pushApplicationId);
-//           messageProducer.send(om);
-//
-//           session.close();
-//           connection.close();
-//
-//       } catch (JMSException e) {
-//           e.printStackTrace();
-//       }
 
        return androidVariation;
    }
@@ -95,7 +76,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @GET
    @Produces("application/json")
    public Set<AndroidApplication> listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-       PushApplication pushApp = pushAppService.findPushApplicationById(pushAppID);
+       PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
        if (pushApp != null) {
            return pushApp.getAndroidApps();
        }
@@ -105,7 +86,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{androidID}")
    @Produces("application/json")
    public AndroidApplication findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-       return androidAppService.findAndroidApplicationById(androidID);
+       return androidAppService.findByVariantID(androidID);
    }
    // UPDATE
    @PUT
@@ -117,7 +98,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
            AndroidApplication updatedAndroidApplication) {
        
        
-       AndroidApplication androidVariant = androidAppService.findAndroidApplicationById(androidID);
+       AndroidApplication androidVariant = androidAppService.findByVariantID(androidID);
        if (androidVariant != null) {
            
            // apply updated data:
@@ -134,7 +115,7 @@ public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
    @Path("/{androidID}")
    @Consumes("application/json")
    public void deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
-       AndroidApplication androidVariant = androidAppService.findAndroidApplicationById(androidID);
+       AndroidApplication androidVariant = androidAppService.findByVariantID(androidID);
        
        if (androidVariant != null)
            androidAppService.removeAndroidApplication(androidVariant);
