@@ -43,7 +43,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
+public class iOSVariantEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;

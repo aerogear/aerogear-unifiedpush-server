@@ -41,7 +41,7 @@ import org.aerogear.connectivity.service.PushApplicationService;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-public class AndroidVariantEndpoint extends AbstractRegistryEndpoint {
+public class AndroidVariantEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;

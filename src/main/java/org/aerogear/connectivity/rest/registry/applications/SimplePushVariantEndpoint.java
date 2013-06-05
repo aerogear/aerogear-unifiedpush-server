@@ -41,7 +41,7 @@ import org.aerogear.connectivity.service.SimplePushApplicationService;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-public class SimplePushVariantEndpoint extends AbstractRegistryEndpoint {
+public class SimplePushVariantEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
