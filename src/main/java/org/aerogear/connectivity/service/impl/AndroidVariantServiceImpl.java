@@ -21,14 +21,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
+import org.aerogear.connectivity.jpa.dao.AndroidVariantDao;
 import org.aerogear.connectivity.model.AndroidVariant;
-import org.aerogear.connectivity.service.AndroidApplicationService;
+import org.aerogear.connectivity.service.AndroidVariantService;
 
-public class AndroidApplicationServiceImpl implements AndroidApplicationService {
+public class AndroidVariantServiceImpl implements AndroidVariantService {
 
     @Inject
-    private AndroidApplicationDao androidApplicationDao;
+    private AndroidVariantDao androidApplicationDao;
 
     @Override
     public AndroidVariant addAndroidVariant(AndroidVariant app) {

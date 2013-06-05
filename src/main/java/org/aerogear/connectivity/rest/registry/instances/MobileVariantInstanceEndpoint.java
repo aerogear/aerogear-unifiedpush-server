@@ -33,8 +33,8 @@ import javax.ws.rs.PathParam;
 
 import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
-import org.aerogear.connectivity.service.MobileApplicationInstanceService;
-import org.aerogear.connectivity.service.MobileApplicationService;
+import org.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.aerogear.connectivity.service.MobileVariantService;
 
 @Stateless
 @Path("/registry/device")
@@ -42,8 +42,8 @@ import org.aerogear.connectivity.service.MobileApplicationService;
 public class MobileVariantInstanceEndpoint
 {
     @Inject private Logger logger;
-    @Inject private MobileApplicationInstanceService mobileApplicationInstanceService;
-    @Inject private MobileApplicationService mobileApplicationService;
+    @Inject private MobileVariantInstanceService mobileApplicationInstanceService;
+    @Inject private MobileVariantService mobileApplicationService;
 
     @POST
     @Consumes("application/json")

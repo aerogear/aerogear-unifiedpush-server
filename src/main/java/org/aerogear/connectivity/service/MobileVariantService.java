@@ -17,14 +17,14 @@
 
 package org.aerogear.connectivity.service;
 
-import java.util.List;
-
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
-public interface MobileApplicationInstanceService {
+public interface MobileVariantService {
+    
+    
+    MobileVariant findByVariantID(String variantID);
 
-    MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
-    MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
-    List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(String token);
-    void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
+    void addInstance(MobileVariant mobileApp, MobileVariantInstanceImpl instance);
+
 }

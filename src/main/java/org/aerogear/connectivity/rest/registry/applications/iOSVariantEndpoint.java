@@ -37,7 +37,7 @@ import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
 import org.aerogear.connectivity.service.PushApplicationService;
-import org.aerogear.connectivity.service.iOSApplicationService;
+import org.aerogear.connectivity.service.iOSVariantService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 @Stateless
@@ -48,7 +48,7 @@ public class iOSVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private iOSApplicationService iOSappService;
+    private iOSVariantService iOSappService;
    
     
     // ===============================================================

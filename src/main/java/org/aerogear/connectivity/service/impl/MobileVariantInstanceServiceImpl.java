@@ -23,9 +23,9 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
-import org.aerogear.connectivity.service.MobileApplicationInstanceService;
+import org.aerogear.connectivity.service.MobileVariantInstanceService;
 
-public class MobileApplicationInstanceServiceImpl implements MobileApplicationInstanceService {
+public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
 
     @Inject
     private MobileVariantInstanceDao dao;

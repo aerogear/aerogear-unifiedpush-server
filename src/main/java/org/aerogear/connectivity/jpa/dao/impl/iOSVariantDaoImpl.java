@@ -20,21 +20,22 @@ package org.aerogear.connectivity.jpa.dao.impl;
 import java.util.List;
 
 import org.aerogear.connectivity.jpa.AbstractGenericDao;
-import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
-import org.aerogear.connectivity.model.AndroidVariant;
+import org.aerogear.connectivity.jpa.dao.iOSVariantDao;
+import org.aerogear.connectivity.model.iOSVariant;
 
-public class AndroidApplicationDaoImpl extends AbstractGenericDao<AndroidVariant, String> implements AndroidApplicationDao {
+public class iOSVariantDaoImpl extends AbstractGenericDao<iOSVariant, String> implements iOSVariantDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<AndroidVariant> findAll() {
-        return createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t").getResultList();   
+    public List<iOSVariant> findAll() {
+        return createQuery("select t from "+iOSVariant.class.getSimpleName()+" t").getResultList();
     }
 
     @Override
-    public AndroidVariant findByVariantID(String variantID) {
-        return (AndroidVariant) createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t where t.variantID = :variantID")
+    public iOSVariant findByVariantID(String variantID) {
+        return (iOSVariant) createQuery("select t from "+iOSVariant.class.getSimpleName()+" t where t.variantID = :variantID")
                 .setParameter("variantID", variantID)
                 .getSingleResult();
     }
+
 }

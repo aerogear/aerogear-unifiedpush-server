@@ -35,7 +35,7 @@ import javax.ws.rs.Produces;
 
 import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.PushApplication;
-import org.aerogear.connectivity.service.AndroidApplicationService;
+import org.aerogear.connectivity.service.AndroidVariantService;
 import org.aerogear.connectivity.service.PushApplicationService;
 
 @Stateless
@@ -46,7 +46,7 @@ public class AndroidVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private AndroidApplicationService androidAppService;
+    private AndroidVariantService androidAppService;
    
 
     // ===============================================================

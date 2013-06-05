@@ -22,7 +22,7 @@ import java.util.List;
 import org.aerogear.connectivity.model.iOSVariant;
 
 // TODO: make generic Variant Service:
-public interface iOSApplicationService {
+public interface iOSVariantService {
     
     iOSVariant addiOSVariant(iOSVariant iOSVariant);
     iOSVariant updateiOSVariant(iOSVariant iOSVariant);

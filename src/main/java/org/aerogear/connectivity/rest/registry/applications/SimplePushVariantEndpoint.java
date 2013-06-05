@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.service.PushApplicationService;
-import org.aerogear.connectivity.service.SimplePushApplicationService;
+import org.aerogear.connectivity.service.SimplePushVariantService;
 
 @Stateless
 @TransactionAttribute
@@ -46,7 +46,7 @@ public class SimplePushVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private SimplePushApplicationService simplePushApplicationService;
+    private SimplePushVariantService simplePushApplicationService;
 
    // ===============================================================
    // =============== Mobile variant construct ======================

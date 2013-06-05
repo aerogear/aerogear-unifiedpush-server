@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.jpa.dao;
 
-import org.aerogear.connectivity.api.MobileVariant;
-import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import java.util.List;
 
-public interface MobileApplicationService {
+import org.aerogear.connectivity.jpa.GenericDao;
+import org.aerogear.connectivity.model.AndroidVariant;
+
+public interface AndroidVariantDao extends GenericDao<AndroidVariant, String> {
     
-    
-    MobileVariant findByVariantID(String variantID);
-
-    void addInstance(MobileVariant mobileApp, MobileVariantInstanceImpl instance);
+    List<AndroidVariant> findAll();
+    AndroidVariant findByVariantID(String variantID);
 
 }

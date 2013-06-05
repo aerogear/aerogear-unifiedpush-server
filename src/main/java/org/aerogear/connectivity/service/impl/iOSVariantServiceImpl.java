@@ -21,14 +21,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.aerogear.connectivity.jpa.dao.iOSApplicationDao;
+import org.aerogear.connectivity.jpa.dao.iOSVariantDao;
 import org.aerogear.connectivity.model.iOSVariant;
-import org.aerogear.connectivity.service.iOSApplicationService;
+import org.aerogear.connectivity.service.iOSVariantService;
 
-public class iOSApplicationServiceImpl implements iOSApplicationService {
+public class iOSVariantServiceImpl implements iOSVariantService {
 
     @Inject
-    private iOSApplicationDao iOSApplicationDao;
+    private iOSVariantDao iOSApplicationDao;
 
     @Override
     public iOSVariant addiOSVariant(iOSVariant iOSApp) {

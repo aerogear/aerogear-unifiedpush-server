@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
 
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.model.SimplePushVariant;
-import org.aerogear.connectivity.service.SimplePushApplicationService;
+import org.aerogear.connectivity.service.SimplePushVariantService;
 
 import com.ning.http.client.AsyncHttpClient;
 
@@ -49,7 +49,7 @@ public class SimplePushSender {
     @Inject private Logger logger;
     
     @Inject
-    private SimplePushApplicationService simplePushApplicationService;
+    private SimplePushVariantService simplePushApplicationService;
     private AsyncHttpClient asyncHttpClient;
     
     @PostConstruct

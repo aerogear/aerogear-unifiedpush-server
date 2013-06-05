@@ -19,15 +19,12 @@ package org.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.SimplePushVariant;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
-public interface SimplePushApplicationService {
-    
-    SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
-    SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
-    void removeSimplePushVariant(SimplePushVariant simplePushVariant);
-    List<SimplePushVariant> findAllSimplePushVariants();
-    SimplePushVariant findByVariantID(String variantID);
+public interface MobileVariantInstanceService {
 
-
+    MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(String token);
+    void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
 }

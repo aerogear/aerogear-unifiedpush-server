@@ -21,15 +21,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.aerogear.connectivity.jpa.dao.SimplePushApplicationDao;
+import org.aerogear.connectivity.jpa.dao.SimplePushVariantDao;
 import org.aerogear.connectivity.model.SimplePushVariant;
-import org.aerogear.connectivity.service.SimplePushApplicationService;
+import org.aerogear.connectivity.service.SimplePushVariantService;
 
-public class SimplePushApplicationServiceImpl implements
-        SimplePushApplicationService {
+public class SimplePushVariantServiceImpl implements
+        SimplePushVariantService {
 
     @Inject
-    private SimplePushApplicationDao simplePushApplicationDao;
+    private SimplePushVariantDao simplePushApplicationDao;
     
     @Override
     public SimplePushVariant addSimplePushVariant(

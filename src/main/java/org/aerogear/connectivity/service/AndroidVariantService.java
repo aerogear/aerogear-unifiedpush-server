@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.aerogear.connectivity.jpa.GenericDao;
-import org.aerogear.connectivity.model.SimplePushVariant;
+import org.aerogear.connectivity.model.AndroidVariant;
 
-public interface SimplePushApplicationDao extends GenericDao<SimplePushVariant, String>{
+public interface AndroidVariantService {
     
-    List<SimplePushVariant> findAll();
-    SimplePushVariant findByVariantID(String variantID);
-
+    AndroidVariant addAndroidVariant(AndroidVariant androidVariant);
+    AndroidVariant updateAndroidVariant(AndroidVariant androidVariant);
+    void removeAndroidVariant(AndroidVariant androidVariant);
+    List<AndroidVariant> findAllAndroidVariants();
+    AndroidVariant findByVariantID(String variantID);
 }
