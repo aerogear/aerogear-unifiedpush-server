@@ -29,13 +29,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
-import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.jpa.PersistentObject;
 
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public  class AbstractMobileApplication extends PersistentObject implements MobileApplication {
+public  class AbstractMobileApplication extends PersistentObject implements MobileVariant {
     private static final long serialVersionUID = -5028062942838899201L;
 
     @Column

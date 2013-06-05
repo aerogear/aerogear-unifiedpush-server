@@ -17,15 +17,15 @@
 
 package org.aerogear.connectivity.service;
 
-import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 
 public interface MobileApplicationService {
     
     
-    MobileApplication findByVariantID(String variantID);
+    MobileVariant findByVariantID(String variantID);
 
-    void addInstallation(MobileApplication mobileApp,
+    void addInstallation(MobileVariant mobileApp,
             MobileApplicationInstance entity);
 
 }

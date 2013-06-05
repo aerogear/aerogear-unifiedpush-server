@@ -31,7 +31,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.service.MobileApplicationInstanceService;
 import org.aerogear.connectivity.service.MobileApplicationService;
@@ -63,7 +63,7 @@ public class MobileApplicationInstanceEndpoint
             // store the installation:
             entity = mobileApplicationInstanceService.addMobileApplicationInstance(entity);
             // find the matching variation:
-            MobileApplication mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
+            MobileVariant mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
         
             if (mobileApp == null) {
                 logger.severe("\n\nCould not find Mobile Variant\n\n");

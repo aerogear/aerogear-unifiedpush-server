@@ -21,6 +21,33 @@ import java.util.Set;
 
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 
-public interface MobileApplication {
+/**
+ * Logical construct which matches a mobile app in the appstore. 
+ */
+public interface MobileVariant {
+    
+    /**
+     * The name of the variant (e.g. the name of the matching App in the Appstore) 
+     */
+    void setName(final String name);
+    String getName();
+
+    /**
+     * Some description of the app.
+     */
+    void setDescription(final String description);
+    String getDescription();
+
+    /**
+     * Identifier used to register variants instances (aka installations) with this Variant
+     */
+    void setVariantID(String variantID);
+    String getVariantID();
+
+    /**
+     * The collection of installed applications. 
+     */
+    void setInstances(final Set<MobileApplicationInstance> instances);
     Set<MobileApplicationInstance> getInstances();
+
 }

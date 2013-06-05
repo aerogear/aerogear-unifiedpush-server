@@ -17,10 +17,10 @@
 
 package org.aerogear.connectivity.jpa.dao;
 
-import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.jpa.GenericDao;
 
-public interface MobileApplicationDao extends GenericDao<MobileApplication, String> {
+public interface MobileApplicationDao extends GenericDao<MobileVariant, String> {
 
-    MobileApplication findByVariantID(String variantID);
+    MobileVariant findByVariantID(String variantID);
 }

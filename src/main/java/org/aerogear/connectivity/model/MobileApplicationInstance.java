@@ -20,10 +20,11 @@ package org.aerogear.connectivity.model;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 
+import org.aerogear.connectivity.api.MobileVariantInstance;
 import org.aerogear.connectivity.jpa.PersistentObject;
 
 @Entity
-public class MobileApplicationInstance extends PersistentObject {
+public class MobileApplicationInstance extends PersistentObject implements MobileVariantInstance {
     private static final long serialVersionUID = 7177135979544758234L;
 
     @Column

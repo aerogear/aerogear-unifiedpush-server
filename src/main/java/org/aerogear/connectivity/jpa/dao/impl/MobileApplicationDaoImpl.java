@@ -17,16 +17,16 @@
 
 package org.aerogear.connectivity.jpa.dao.impl;
 
-import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.aerogear.connectivity.jpa.dao.MobileApplicationDao;
 import org.aerogear.connectivity.model.AbstractMobileApplication;
 
-public class MobileApplicationDaoImpl extends AbstractGenericDao<MobileApplication, String> implements MobileApplicationDao {
+public class MobileApplicationDaoImpl extends AbstractGenericDao<MobileVariant, String> implements MobileApplicationDao {
 
     @Override
-    public MobileApplication findByVariantID(String variantID) {
-        return (MobileApplication) createQuery("select t from "+AbstractMobileApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+    public MobileVariant findByVariantID(String variantID) {
+        return (MobileVariant) createQuery("select t from "+AbstractMobileApplication.class.getSimpleName()+" t where t.variantID = :variantID")
         .setParameter("variantID", variantID)
         .getSingleResult();
     }
