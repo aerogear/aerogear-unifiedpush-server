@@ -33,7 +33,7 @@ import org.aerogear.connectivity.message.sender.annotations.GCMSender;
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.service.SenderService;
 
 public class SenderServiceImpl implements SenderService {
@@ -52,8 +52,8 @@ public class SenderServiceImpl implements SenderService {
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(payload);
 
         // TODO: Make better...
-        final Set<iOSApplication> iOSapps = pushApplication.getIOSApps();
-        for (iOSApplication iOSApp : iOSapps) {
+        final Set<iOSVariant> iOSapps = pushApplication.getIOSApps();
+        for (iOSVariant iOSApp : iOSapps) {
             
             final List<String> iOSTokenPerVariant = new ArrayList<String>();
             // get all instances
@@ -100,8 +100,8 @@ public class SenderServiceImpl implements SenderService {
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(jsonMap);
         
         // TODO: DISPATCH TO A QUEUE .....
-        final Set<iOSApplication> iOSapps = pushApplication.getIOSApps();
-        for (iOSApplication iOSApp : iOSapps) {
+        final Set<iOSVariant> iOSapps = pushApplication.getIOSApps();
+        for (iOSVariant iOSApp : iOSapps) {
             
             // get all the tokens:
             final Set<String> iOStokenz = new HashSet<String>();

@@ -21,19 +21,19 @@ import java.util.List;
 
 import org.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.aerogear.connectivity.jpa.dao.iOSApplicationDao;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
-public class iOSApplicationDaoImpl extends AbstractGenericDao<iOSApplication, String> implements iOSApplicationDao {
+public class iOSApplicationDaoImpl extends AbstractGenericDao<iOSVariant, String> implements iOSApplicationDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<iOSApplication> findAll() {
-        return createQuery("select t from "+iOSApplication.class.getSimpleName()+" t").getResultList();
+    public List<iOSVariant> findAll() {
+        return createQuery("select t from "+iOSVariant.class.getSimpleName()+" t").getResultList();
     }
 
     @Override
-    public iOSApplication findByVariantID(String variantID) {
-        return (iOSApplication) createQuery("select t from "+iOSApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+    public iOSVariant findByVariantID(String variantID) {
+        return (iOSVariant) createQuery("select t from "+iOSVariant.class.getSimpleName()+" t where t.variantID = :variantID")
                 .setParameter("variantID", variantID)
                 .getSingleResult();
     }

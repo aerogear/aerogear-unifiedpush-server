@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.iOSApplicationDao;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.service.iOSApplicationService;
 
 public class iOSApplicationServiceImpl implements iOSApplicationService {
@@ -31,27 +31,27 @@ public class iOSApplicationServiceImpl implements iOSApplicationService {
     private iOSApplicationDao iOSApplicationDao;
 
     @Override
-    public iOSApplication addiOSApplication(iOSApplication iOSApp) {
+    public iOSVariant addiOSApplication(iOSVariant iOSApp) {
         return iOSApplicationDao.create(iOSApp);
     }
 
     @Override
-    public List<iOSApplication> findAlliOSApplications() {
+    public List<iOSVariant> findAlliOSApplications() {
         return iOSApplicationDao.findAll();
     }
 
     @Override
-    public iOSApplication findByVariantID(String variantID) {
+    public iOSVariant findByVariantID(String variantID) {
         return iOSApplicationDao.findByVariantID(variantID);
     }
 
     @Override
-    public iOSApplication updateiOSApplication(iOSApplication iOSApp) {
+    public iOSVariant updateiOSApplication(iOSVariant iOSApp) {
         return iOSApplicationDao.update(iOSApp);
     }
 
     @Override
-    public void removeiOSApplication(iOSApplication iOSApp) {
+    public void removeiOSApplication(iOSVariant iOSApp) {
         iOSApplicationDao.delete(iOSApp);
     }
 

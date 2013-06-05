@@ -20,11 +20,11 @@ package org.aerogear.connectivity.jpa.dao;
 import java.util.List;
 
 import org.aerogear.connectivity.jpa.GenericDao;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
-public interface iOSApplicationDao extends GenericDao<iOSApplication, String> {
+public interface iOSApplicationDao extends GenericDao<iOSVariant, String> {
     
-    List<iOSApplication> findAll();
-    iOSApplication findByVariantID(String variantID);
+    List<iOSVariant> findAll();
+    iOSVariant findByVariantID(String variantID);
 
 }

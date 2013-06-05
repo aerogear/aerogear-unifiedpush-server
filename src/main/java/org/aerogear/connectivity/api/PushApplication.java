@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.SimplePushApplication;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
 /**
  * Logical construct of an overall mobile and push-enabled Application
@@ -32,8 +32,8 @@ public interface PushApplication {
     /**
      * The collection of iOS Variants. 
      */
-    void setIOSApps(final Set<iOSApplication> iOSApps);
-    Set<iOSApplication> getIOSApps();
+    void setIOSApps(final Set<iOSVariant> iOSApps);
+    Set<iOSVariant> getIOSApps();
 
     /**
      * The collection of Android Variants. 

@@ -34,7 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.aerogear.connectivity.model.PushApplication;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
 import org.aerogear.connectivity.service.PushApplicationService;
 import org.aerogear.connectivity.service.iOSApplicationService;
@@ -59,12 +59,12 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @POST
     @Consumes("multipart/form-data")
     @Produces("application/json")
-    public iOSApplication registeriOSVariant(
+    public iOSVariant registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form, 
             @PathParam("pushAppID") String pushApplicationID) {
 
         // extract form values:
-        iOSApplication iOSVariation = new iOSApplication();
+        iOSVariant iOSVariation = new iOSVariant();
         iOSVariation.setName(form.getName());
         iOSVariation.setDescription(form.getDescription());
         iOSVariation.setPassphrase(form.getPassphrase());
@@ -88,7 +88,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     // READ
     @GET
     @Produces("application/json")
-    public Set<iOSApplication> listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+    public Set<iOSVariant> listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
         PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
         if (pushApp != null) {
             return pushApp.getIOSApps();
@@ -98,7 +98,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @GET
     @Path("/{iOSID}")
     @Produces("application/json")
-    public iOSApplication findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
+    public iOSVariant findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
         return iOSappService.findByVariantID(iOSID);
     }
     // UPDATE
@@ -106,12 +106,12 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @Path("/{iOSID}")
     @Consumes("multipart/form-data")
     @Produces("application/json")
-    public iOSApplication updateiOSVariant(
+    public iOSVariant updateiOSVariant(
             @MultipartForm iOSApplicationUploadForm form, 
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
         
-        iOSApplication iOSVariation = iOSappService.findByVariantID(iOSID);
+        iOSVariant iOSVariation = iOSappService.findByVariantID(iOSID);
         if (iOSVariation != null) {
             // apply update:
             iOSVariation.setName(form.getName());
@@ -129,7 +129,7 @@ public class iOSVariantEndpoint extends AbstractRegistryEndpoint {
     @Path("/{iOSID}")
     @Consumes("application/json")
     public void deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
-        iOSApplication iOSVariation = iOSappService.findByVariantID(iOSID);
+        iOSVariant iOSVariation = iOSappService.findByVariantID(iOSID);
         
         if (iOSVariation != null)
             iOSappService.removeiOSApplication(iOSVariation);

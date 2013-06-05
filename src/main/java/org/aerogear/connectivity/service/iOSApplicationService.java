@@ -19,17 +19,17 @@ package org.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
 // TODO: make generic Variant Service:
 public interface iOSApplicationService {
     
-    iOSApplication addiOSApplication(iOSApplication iOSApp);
-    iOSApplication updateiOSApplication(iOSApplication iOSApp);
-    void removeiOSApplication(iOSApplication iOSApp);
+    iOSVariant addiOSApplication(iOSVariant iOSApp);
+    iOSVariant updateiOSApplication(iOSVariant iOSApp);
+    void removeiOSApplication(iOSVariant iOSApp);
     
-    List<iOSApplication> findAlliOSApplications();
-    iOSApplication findByVariantID(String variantID);
+    List<iOSVariant> findAlliOSApplications();
+    iOSVariant findByVariantID(String variantID);
 
 
 }

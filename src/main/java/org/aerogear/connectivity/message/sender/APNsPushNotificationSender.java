@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.message.cache.APNsCache;
 import org.aerogear.connectivity.message.sender.annotations.APNsSender;
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
@@ -33,7 +33,7 @@ public class APNsPushNotificationSender  {
     
     @Inject APNsCache apnsCache;
     
-    public void sendPushMessage(iOSApplication iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+    public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
         
             String apnsMessage = APNS.newPayload()
                     // adding recognized key values

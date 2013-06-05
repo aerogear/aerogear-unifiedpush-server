@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.model.iOSVariant;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
@@ -33,7 +33,7 @@ public class APNsCache implements Serializable{
 
     private final ConcurrentHashMap<String, ApnsService> apnsCache = new ConcurrentHashMap<String, ApnsService>();
     
-    public ApnsService getApnsServiceForVariant(iOSApplication iOSVariant) {
+    public ApnsService getApnsServiceForVariant(iOSVariant iOSVariant) {
         ApnsService variantService = null;
         synchronized (apnsCache) {
            String variantId = iOSVariant.getId();
