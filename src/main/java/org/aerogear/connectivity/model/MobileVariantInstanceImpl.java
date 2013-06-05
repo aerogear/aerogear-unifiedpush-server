@@ -36,7 +36,7 @@ public class MobileVariantInstanceImpl extends PersistentObject implements Mobil
     @Column
     private String osVersion;
     @Column
-    private String clientIdentifier;
+    private String alias;
     @Column
     private String category;
 
@@ -75,12 +75,12 @@ public class MobileVariantInstanceImpl extends PersistentObject implements Mobil
       this.osVersion = osVersion;
    }
 
-   public String getClientIdentifier() {
-      return this.clientIdentifier;
+   public String getAlias() {
+      return this.alias;
    }
 
-   public void setClientIdentifier(final String clientIdentifier) {
-      this.clientIdentifier = clientIdentifier;
+   public void setAlias(final String alias) {
+      this.alias = alias;
    }
 
    public String getCategory() {

@@ -45,8 +45,8 @@ public interface MobileVariantInstance {
      * Application specific alias to identify users with the system. 
      * E.g. email address or username
      */
-    void setClientIdentifier(final String clientIdentifier);
-    String getClientIdentifier();
+    void setAlias(final String clientIdentifier);
+    String getAlias();
 
     /**
      * Used for SimplePush, to "tag" the channel

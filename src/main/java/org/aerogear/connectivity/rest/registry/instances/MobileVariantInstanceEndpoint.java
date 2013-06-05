@@ -90,7 +90,7 @@ public class MobileVariantInstanceEndpoint
     private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate, MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
-        toUpdate.setClientIdentifier(postedVariant.getClientIdentifier());
+        toUpdate.setAlias(postedVariant.getAlias());
         toUpdate.setDeviceType(postedVariant.getDeviceType());
         toUpdate.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
         toUpdate.setOsVersion(postedVariant.getOsVersion());

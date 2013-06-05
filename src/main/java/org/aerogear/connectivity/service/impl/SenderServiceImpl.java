@@ -61,7 +61,7 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the identifer does match for the instance
-                if (identifiers.contains(instance.getClientIdentifier())) {
+                if (identifiers.contains(instance.getAlias())) {
                     // add it
                     iOSTokenPerVariant.add(instance.getDeviceToken());
                 }
@@ -82,7 +82,7 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the identifer does match for the instance
-                if (identifiers.contains(instance.getClientIdentifier())) {
+                if (identifiers.contains(instance.getAlias())) {
                     // add it
                     androidTokenPerVariant.add(instance.getDeviceToken());
                 }
