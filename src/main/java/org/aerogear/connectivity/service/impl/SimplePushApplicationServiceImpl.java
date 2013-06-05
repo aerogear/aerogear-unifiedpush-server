@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.service.impl;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.SimplePushApplicationDao;
 import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.service.SimplePushApplicationService;
 
 public class SimplePushApplicationServiceImpl implements
         SimplePushApplicationService {

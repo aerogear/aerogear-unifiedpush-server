@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.jpa.dao.impl;
 
 import java.util.List;
 
+import org.aerogear.connectivity.jpa.AbstractGenericDao;
+import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
 import org.aerogear.connectivity.model.AndroidApplication;
 
 public class AndroidApplicationDaoImpl extends AbstractGenericDao<AndroidApplication, String> implements AndroidApplicationDao {

@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.service.impl;
 
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.api.MobileApplication;
 import org.aerogear.connectivity.jpa.dao.MobileApplicationDao;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.service.MobileApplicationService;
 
 public class MobileApplicationServiceImpl implements MobileApplicationService {
 

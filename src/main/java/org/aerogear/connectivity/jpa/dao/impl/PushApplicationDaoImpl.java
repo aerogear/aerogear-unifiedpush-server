@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.jpa.dao.impl;
 
 import java.util.List;
 
+import org.aerogear.connectivity.jpa.AbstractGenericDao;
+import org.aerogear.connectivity.jpa.dao.PushApplicationDao;
 import org.aerogear.connectivity.model.PushApplication;
 
 public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, String> implements PushApplicationDao {

@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.jpa.dao.impl;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.jpa.AbstractGenericDao;
+import org.aerogear.connectivity.jpa.dao.MobileApplicationInstanceDao;
+import org.aerogear.connectivity.model.MobileApplicationInstance;
 
-public class iOSApplicationDaoImpl extends AbstractGenericDao<iOSApplication, String> implements iOSApplicationDao {
+public class MobileApplicationInstanceDaoImpl extends AbstractGenericDao<MobileApplicationInstance, String> implements MobileApplicationInstanceDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<iOSApplication> findAll() {
-        return createQuery("select t from "+iOSApplication.class.getSimpleName()+" t").getResultList();
-    }
+    public List<MobileApplicationInstance> findByToken(String token) {
 
-    @Override
-    public iOSApplication findByVariantID(String variantID) {
-        return (iOSApplication) createQuery("select t from "+iOSApplication.class.getSimpleName()+" t where t.variantID = :variantID")
-                .setParameter("variantID", variantID)
-                .getSingleResult();
+        return createQuery(
+                "select mobileApplicationInstance from MobileApplicationInstance mobileApplicationInstance where mobileApplicationInstance.deviceToken = :token")
+        .setParameter("token", token)
+        .getResultList();
     }
 
 }

@@ -19,6 +19,7 @@ package org.aerogear.connectivity.jpa.dao;
 
 import java.util.List;
 
+import org.aerogear.connectivity.jpa.GenericDao;
 import org.aerogear.connectivity.model.PushApplication;
 
 public interface PushApplicationDao extends GenericDao<PushApplication, String> {

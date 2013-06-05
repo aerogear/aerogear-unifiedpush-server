@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.service.impl;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.jpa.dao.AndroidApplicationDao;
 import org.aerogear.connectivity.model.AndroidApplication;
+import org.aerogear.connectivity.service.AndroidApplicationService;
 
 public class AndroidApplicationServiceImpl implements AndroidApplicationService {
 

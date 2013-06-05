@@ -15,25 +15,27 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.jpa.dao.impl;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.SimplePushApplication;
+import org.aerogear.connectivity.jpa.AbstractGenericDao;
+import org.aerogear.connectivity.jpa.dao.iOSApplicationDao;
+import org.aerogear.connectivity.model.iOSApplication;
 
-public class SimplePushApplicationDaoImpl extends AbstractGenericDao<SimplePushApplication, String> implements SimplePushApplicationDao {
+public class iOSApplicationDaoImpl extends AbstractGenericDao<iOSApplication, String> implements iOSApplicationDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<SimplePushApplication> findAll() {
-        return createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t").getResultList();   
+    public List<iOSApplication> findAll() {
+        return createQuery("select t from "+iOSApplication.class.getSimpleName()+" t").getResultList();
     }
 
     @Override
-    public SimplePushApplication findByVariantID(String variantID) {
-        return (SimplePushApplication) createQuery("select t from "+SimplePushApplication.class.getSimpleName()+" t where t.variantID = :variantID")
-        .setParameter("variantID", variantID)
-        .getSingleResult();
+    public iOSApplication findByVariantID(String variantID) {
+        return (iOSApplication) createQuery("select t from "+iOSApplication.class.getSimpleName()+" t where t.variantID = :variantID")
+                .setParameter("variantID", variantID)
+                .getSingleResult();
     }
 
 }

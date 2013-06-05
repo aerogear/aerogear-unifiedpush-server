@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,6 +34,7 @@ import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.MobileApplicationInstance;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.service.SenderService;
 
 public class SenderServiceImpl implements SenderService {
     

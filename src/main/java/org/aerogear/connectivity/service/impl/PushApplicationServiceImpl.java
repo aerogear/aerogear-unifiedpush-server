@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.service;
+package org.aerogear.connectivity.service.impl;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import org.aerogear.connectivity.model.AndroidApplication;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushApplication;
 import org.aerogear.connectivity.model.iOSApplication;
+import org.aerogear.connectivity.service.PushApplicationService;
 
 public class PushApplicationServiceImpl implements PushApplicationService {
 

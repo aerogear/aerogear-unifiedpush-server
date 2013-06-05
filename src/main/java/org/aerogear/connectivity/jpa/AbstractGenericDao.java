@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
+package org.aerogear.connectivity.jpa;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

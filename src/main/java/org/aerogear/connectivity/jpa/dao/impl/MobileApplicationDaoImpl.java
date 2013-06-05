@@ -15,26 +15,17 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.jpa.dao;
-
-import java.util.List;
+package org.aerogear.connectivity.jpa.dao.impl;
 
 import org.aerogear.connectivity.api.MobileApplication;
+import org.aerogear.connectivity.jpa.AbstractGenericDao;
+import org.aerogear.connectivity.jpa.dao.MobileApplicationDao;
 import org.aerogear.connectivity.model.AbstractMobileApplication;
-import org.aerogear.connectivity.model.iOSApplication;
 
 public class MobileApplicationDaoImpl extends AbstractGenericDao<MobileApplication, String> implements MobileApplicationDao {
 
     @Override
     public MobileApplication findByVariantID(String variantID) {
-        
-        
-        List list = createQuery("select t from "+AbstractMobileApplication.class.getSimpleName()+" t").getResultList();
-        
-        System.out.println("-------> " + variantID);
-        System.out.println("\n\n\nda: " + ((AbstractMobileApplication) list.get(0)).getVariantID() + "\n\n\n");
-        
-        
         return (MobileApplication) createQuery("select t from "+AbstractMobileApplication.class.getSimpleName()+" t where t.variantID = :variantID")
         .setParameter("variantID", variantID)
         .getSingleResult();
