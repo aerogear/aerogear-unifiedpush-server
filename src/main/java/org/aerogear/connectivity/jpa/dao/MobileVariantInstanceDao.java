@@ -20,10 +20,10 @@ package org.aerogear.connectivity.jpa.dao;
 import java.util.List;
 
 import org.aerogear.connectivity.jpa.GenericDao;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
-public interface MobileApplicationInstanceDao extends GenericDao<MobileApplicationInstance, String> {
+public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
     
-    List<MobileApplicationInstance> findByToken(String token);
+    List<MobileVariantInstanceImpl> findByToken(String token);
 
 }

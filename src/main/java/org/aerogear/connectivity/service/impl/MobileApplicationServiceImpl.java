@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.jpa.dao.MobileVariantDao;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.service.MobileApplicationService;
 
 public class MobileApplicationServiceImpl implements MobileApplicationService {
@@ -36,7 +36,7 @@ public class MobileApplicationServiceImpl implements MobileApplicationService {
 
     @Override
     public void addInstallation(MobileVariant mobileApp,
-            MobileApplicationInstance entity) {
+            MobileVariantInstanceImpl entity) {
         
         mobileApp.getInstances().add(entity);
         mobileApplicationDao.update(mobileApp);

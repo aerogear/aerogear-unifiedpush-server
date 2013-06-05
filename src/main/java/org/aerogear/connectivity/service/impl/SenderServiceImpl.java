@@ -31,7 +31,7 @@ import org.aerogear.connectivity.message.sender.UnifiedPushMessage;
 import org.aerogear.connectivity.message.sender.annotations.APNsSender;
 import org.aerogear.connectivity.message.sender.annotations.GCMSender;
 import org.aerogear.connectivity.model.AndroidVariant;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.service.SenderService;
@@ -57,8 +57,8 @@ public class SenderServiceImpl implements SenderService {
             
             final List<String> iOSTokenPerVariant = new ArrayList<String>();
             // get all instances
-            final Set<MobileApplicationInstance> instancesPerVariant = iOSApp.getInstances();
-            for (MobileApplicationInstance instance : instancesPerVariant) {
+            final Set<MobileVariantInstanceImpl> instancesPerVariant = iOSApp.getInstances();
+            for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the identifer does match for the instance
                 if (identifiers.contains(instance.getClientIdentifier())) {
@@ -78,8 +78,8 @@ public class SenderServiceImpl implements SenderService {
             //final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
 
             // get all instances
-            Set<MobileApplicationInstance> instancesPerVariant = androidApplication.getInstances();
-            for (MobileApplicationInstance instance : instancesPerVariant) {
+            Set<MobileVariantInstanceImpl> instancesPerVariant = androidApplication.getInstances();
+            for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the identifer does match for the instance
                 if (identifiers.contains(instance.getClientIdentifier())) {
@@ -105,9 +105,9 @@ public class SenderServiceImpl implements SenderService {
             
             // get all the tokens:
             final Set<String> iOStokenz = new HashSet<String>();
-            Set<MobileApplicationInstance> iOSinstallations = iOSApp
+            Set<MobileVariantInstanceImpl> iOSinstallations = iOSApp
                     .getInstances();
-            for (MobileApplicationInstance mobileApplicationInstance : iOSinstallations) {
+            for (MobileVariantInstanceImpl mobileApplicationInstance : iOSinstallations) {
                 iOStokenz.add(mobileApplicationInstance.getDeviceToken());
             }
 
@@ -120,9 +120,9 @@ public class SenderServiceImpl implements SenderService {
 
             final List<String> androidtokenz = new ArrayList<String>();
 
-            Set<MobileApplicationInstance> androidApplications = androidApplication
+            Set<MobileVariantInstanceImpl> androidApplications = androidApplication
                     .getInstances();
-            for (MobileApplicationInstance mobileApplicationInstance : androidApplications) {
+            for (MobileVariantInstanceImpl mobileApplicationInstance : androidApplications) {
                 androidtokenz.add(mobileApplicationInstance.getDeviceToken());
             }
             gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage, androidApplication.getGoogleKey());

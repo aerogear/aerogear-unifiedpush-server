@@ -19,12 +19,12 @@ package org.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileApplicationInstanceService {
 
-    MobileApplicationInstance addMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance);
-    MobileApplicationInstance updateMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance);
-    List<MobileApplicationInstance> findMobileApplicationInstancesByToken(String token);
-    void removeMobileApplicationInstances(List<MobileApplicationInstance> instances);
+    MobileVariantInstanceImpl addMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    List<MobileVariantInstanceImpl> findMobileApplicationInstancesByToken(String token);
+    void removeMobileApplicationInstances(List<MobileVariantInstanceImpl> instances);
 }

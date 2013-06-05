@@ -36,7 +36,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.service.SimplePushApplicationService;
 
@@ -73,13 +73,13 @@ public class SimplePushSender {
         
         logger.severe("submitted version: " + version);
         
-        Set<MobileApplicationInstance> instances = spa.getInstances();
+        Set<MobileVariantInstanceImpl> instances = spa.getInstances();
         
         logger.severe("Number of instances (total):  " + instances.size());
         
         
         List<String> broadcastTokens = new ArrayList<String>();
-        for (MobileApplicationInstance mobileApplicationInstance : instances) {
+        for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
             
             if ("broadcast".equalsIgnoreCase(mobileApplicationInstance.getCategory())) {
                 

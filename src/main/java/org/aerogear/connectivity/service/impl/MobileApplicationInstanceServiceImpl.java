@@ -21,39 +21,39 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.aerogear.connectivity.jpa.dao.MobileApplicationInstanceDao;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.service.MobileApplicationInstanceService;
 
 public class MobileApplicationInstanceServiceImpl implements MobileApplicationInstanceService {
 
     @Inject
-    private MobileApplicationInstanceDao dao;
+    private MobileVariantInstanceDao dao;
 
-    public MobileApplicationInstance addMobileApplicationInstance(MobileApplicationInstance mobileApplicationInstance) {
+    public MobileVariantInstanceImpl addMobileApplicationInstance(MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);
     }
 
     @Override
-    public List<MobileApplicationInstance> findMobileApplicationInstancesByToken(
+    public List<MobileVariantInstanceImpl> findMobileApplicationInstancesByToken(
             String token) {
         return dao.findByToken(token);
     }
 
     @Override
     public void removeMobileApplicationInstances(
-            List<MobileApplicationInstance> instances) {
+            List<MobileVariantInstanceImpl> instances) {
 
         // uh... :)
         
-        for (MobileApplicationInstance mobileApplicationInstance : instances) {
+        for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
             dao.delete(mobileApplicationInstance);
         }
     }
 
     @Override
-    public MobileApplicationInstance updateMobileApplicationInstance(
-            MobileApplicationInstance mobileApplicationInstance) {
+    public MobileVariantInstanceImpl updateMobileApplicationInstance(
+            MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
     }
 }

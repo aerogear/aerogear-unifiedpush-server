@@ -47,7 +47,7 @@ public  class AbstractMobileVariant extends PersistentObject implements MobileVa
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
-    private Set<MobileApplicationInstance> instances = new HashSet<MobileApplicationInstance>();
+    private Set<MobileVariantInstanceImpl> instances = new HashSet<MobileVariantInstanceImpl>();
 
     public String getName() {
         return this.name;
@@ -66,11 +66,11 @@ public  class AbstractMobileVariant extends PersistentObject implements MobileVa
     }
 
     @Override
-    public Set<MobileApplicationInstance> getInstances() {
+    public Set<MobileVariantInstanceImpl> getInstances() {
        return this.instances;
     }
 
-    public void setInstances(final Set<MobileApplicationInstance> instances) {
+    public void setInstances(final Set<MobileVariantInstanceImpl> instances) {
        this.instances = instances;
     }
 

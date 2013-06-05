@@ -32,7 +32,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.aerogear.connectivity.api.MobileVariant;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.service.MobileApplicationInstanceService;
 import org.aerogear.connectivity.service.MobileApplicationService;
 
@@ -47,9 +47,9 @@ public class MobileApplicationInstanceEndpoint
 
     @POST
     @Consumes("application/json")
-    public MobileApplicationInstance registerInstallation(
+    public MobileVariantInstanceImpl registerInstallation(
             @HeaderParam("ag-mobile-variant") String mobileVariantID, 
-            MobileApplicationInstance entity) {
+            MobileVariantInstanceImpl entity) {
         if (logger.isLoggable(Level.INFO)) {
             StringBuilder sb = new StringBuilder();
             sb.append("ag-mobile-variant: ");
@@ -57,7 +57,7 @@ public class MobileApplicationInstanceEndpoint
             logger.info(sb.toString());
         }
         
-        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(entity.getDeviceToken());
+        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(entity.getDeviceToken());
         
         if (instances.isEmpty()) {
             // store the installation:
@@ -87,7 +87,7 @@ public class MobileApplicationInstanceEndpoint
    }
 
     
-    private MobileApplicationInstance updateMobileApplicationInstance(MobileApplicationInstance toUpdate, MobileApplicationInstance postedVariant) {
+    private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate, MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
         toUpdate.setClientIdentifier(postedVariant.getClientIdentifier());
@@ -107,7 +107,7 @@ public class MobileApplicationInstanceEndpoint
             @PathParam("token") String token) {
         
         // there can be multiple regs.........
-        List<MobileApplicationInstance> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
+        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileApplicationInstancesByToken(token);
         
         // delete them:
         mobileApplicationInstanceService.removeMobileApplicationInstances(instances);

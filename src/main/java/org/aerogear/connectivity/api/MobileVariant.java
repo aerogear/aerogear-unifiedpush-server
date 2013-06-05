@@ -19,7 +19,7 @@ package org.aerogear.connectivity.api;
 
 import java.util.Set;
 
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 /**
  * Logical construct which matches a mobile app in the appstore. 
@@ -47,7 +47,7 @@ public interface MobileVariant {
     /**
      * The collection of installed applications. 
      */
-    void setInstances(final Set<MobileApplicationInstance> instances);
-    Set<MobileApplicationInstance> getInstances();
+    void setInstances(final Set<MobileVariantInstanceImpl> instances);
+    Set<MobileVariantInstanceImpl> getInstances();
 
 }

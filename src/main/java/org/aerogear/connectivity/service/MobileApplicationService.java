@@ -18,7 +18,7 @@
 package org.aerogear.connectivity.service;
 
 import org.aerogear.connectivity.api.MobileVariant;
-import org.aerogear.connectivity.model.MobileApplicationInstance;
+import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileApplicationService {
     
@@ -26,6 +26,6 @@ public interface MobileApplicationService {
     MobileVariant findByVariantID(String variantID);
 
     void addInstallation(MobileVariant mobileApp,
-            MobileApplicationInstance entity);
+            MobileVariantInstanceImpl entity);
 
 }
