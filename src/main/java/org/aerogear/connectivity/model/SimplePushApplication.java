@@ -23,7 +23,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("'simplePush'")
-public class SimplePushApplication extends AbstractMobileApplication {
+public class SimplePushApplication extends AbstractMobileVariant {
 
     private static final long serialVersionUID = 9046963507735955449L;
 

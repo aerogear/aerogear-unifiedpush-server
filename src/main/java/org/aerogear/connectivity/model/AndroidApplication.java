@@ -23,7 +23,7 @@ import javax.persistence.Column;
 
 @Entity
 @DiscriminatorValue("'android'")
-public class AndroidApplication extends AbstractMobileApplication {
+public class AndroidApplication extends AbstractMobileVariant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     @Column

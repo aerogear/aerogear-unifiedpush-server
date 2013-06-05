@@ -24,7 +24,7 @@ import javax.persistence.Lob;
 
 @Entity
 @DiscriminatorValue("'ios'")
-public class iOSApplication extends AbstractMobileApplication {
+public class iOSApplication extends AbstractMobileVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     @Column

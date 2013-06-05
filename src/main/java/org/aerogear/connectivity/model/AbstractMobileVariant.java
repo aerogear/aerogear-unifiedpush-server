@@ -35,7 +35,7 @@ import org.aerogear.connectivity.jpa.PersistentObject;
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public  class AbstractMobileApplication extends PersistentObject implements MobileVariant {
+public  class AbstractMobileVariant extends PersistentObject implements MobileVariant {
     private static final long serialVersionUID = -5028062942838899201L;
 
     @Column
