@@ -17,7 +17,9 @@
 
 package org.aerogear.connectivity.rest.registry.instances;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,24 +59,25 @@ public class MobileVariantInstanceEndpoint
             logger.info(sb.toString());
         }
         
-        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileVariantInstancesByToken(entity.getDeviceToken());
+        // find the matching variation:
+        MobileVariant mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
+        if (mobileApp == null) {
+            logger.severe("\n\nCould not find Mobile Variant\n\n");
+            return null; // TODO -> 404
+        }
         
+        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(mobileApp.getInstances(), entity.getDeviceToken());
         if (instances.isEmpty()) {
             // store the installation:
             entity = mobileApplicationInstanceService.addMobileVariantInstance(entity);
-            // find the matching variation:
-            MobileVariant mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
-        
-            if (mobileApp == null) {
-                logger.severe("\n\nCould not find Mobile Variant\n\n");
-                return null; // TODO -> 404 ... or even 500 ?
-            }
+            
 
             // add installation to the matching variant
             mobileApplicationService.addInstance(mobileApp, entity);
         } else {
             logger.warning("UPDATE ON POST.......");
             
+            // should be impossible
             if (instances.size()>1) {
                 logger.severe("Too many registration for one installation");
             }
@@ -85,8 +88,19 @@ public class MobileVariantInstanceEndpoint
 
         return entity;
    }
-
     
+    // TODO: move to JQL
+    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(Set<MobileVariantInstanceImpl> instances, String deviceToken) {
+        final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
+        
+        for (MobileVariantInstanceImpl instance : instances) {
+            if (instance.getDeviceToken().equals(deviceToken))
+                instancesWithToken.add(instance);
+        }
+
+        return instancesWithToken;
+    }
+
     private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate, MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
