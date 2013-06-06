@@ -1,4 +1,4 @@
-ag-mobile-variantAeroGear PushEE
+AeroGear PushEE
 ===============
 
 AeroGear's Connectivity Server (Java EE poc)
