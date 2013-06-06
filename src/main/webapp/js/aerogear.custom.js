@@ -831,10 +831,10 @@ AeroGear.isArray = function( obj ) {
                     var type = "POST",
                         url = AeroGear.SimplePush.pushServerURL;
 
-                    if ( endpoint.registered ) {
-                        type = "PUT";
-                        url += "/" + endpoint.channelID;
-                    }
+//                    if ( endpoint.registered ) {
+//                        type = "PUT";
+//                        url += "/" + endpoint.channelID;
+//                    }
 
                     $.ajax({
                         contentType: "application/json",
