@@ -27,7 +27,7 @@ Register a ```PushApplication```, like _Mobile HR_:
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"name" : "MyApp", "description" :  "awesome app" }' http://localhost:8080/ag-push/rest/applications
 ```
 
-_The response returns an ID for the Push App...._
+_The response returns a **pushApplicationID** for the Push App...._
 
 ##### iOS Variant
 
@@ -43,7 +43,7 @@ curl -i -H "Accept: application/json" -H "Content-type: multipart/form-data"
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
 
-_The response returns an ID for the iOS variant...._
+_The response returns a **variantID** for the iOS variant...._
 
 ##### Android Variant
 
@@ -56,7 +56,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android 
 ```
 
-_The response returns an ID for the Android variant...._
+_The response returns a **variantID** for the Android variant...._
 
 ##### SimplePush Variant
 
@@ -69,7 +69,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush 
 ```
 
-_The response returns an ID for the SimplePush variant...._
+_The response returns a **variantID** for the SimplePush variant...._
 
 #### Registration of an installation, on a device (iOS)
 
@@ -79,46 +79,33 @@ Client-side example for how to register an installation:
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-    NSString *tokenStr = [deviceToken description];
-    NSString *pushToken = [[[tokenStr
-      stringByReplacingOccurrencesOfString:@"<" withString:@""]
-      stringByReplacingOccurrencesOfString:@">" withString:@""]
-      stringByReplacingOccurrencesOfString:@" " withString:@""];
+AGDeviceRegistration *registration = 
+  [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"http://server/ag-push/"]];
 
-  // TODO: use https
-    AFHTTPClient *client =
-    [[AFHTTPClient alloc] initWithBaseURL:
-         [NSURL URLWithString:@"http://192.168.0.114:8080/ag-push/"]];
-    client.parameterEncoding = AFJSONParameterEncoding;
+[registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
 
-    // set the AG headers....
-    [client setDefaultHeader:@"ag-push-app" 
-     value:@"SOME ID..."];
-    [client setDefaultHeader:@"ag-mobile-variant"
-     value:@"SOME OTHER ID..."];
+  // apply the desired info:
+  clientInfo.token = @"2c948a843e6404dd013e79d82e5a0009";
+  clientInfo.mobileVariantID = @"2c948a843e6404dd013e79d82e5a0009";
+  clientInfo.deviceType = @"iPhone";
+  clientInfo.operatingSystem = @"iOS";
+  clientInfo.osVersion = @"6.1.3";
+  clientInfo.alias = @"mister@xyz.com";
 
-
-
-    [client postPath:@"/registry/device"
-    parameters:
-       @{
-          @"deviceToken": pushToken,
-          @"deviceType": @"iPhone", 
-          @"mobileOperatingSystem": @"iOS", 
-          @"osVersion": @"6.1.3"
-        }
-    success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"\nSUCCESS....\n");
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
-    }];
+} success:^(id responseObject) {
+  NSLog(@"\n%@", responseObject);
+} failure:^(NSError *error) {
+  NSLog(@"\nERROR");
+}];
 }
 ```
-_No real client SDK, YET!!!!_
+
+For _iOS_ the above sample was based on the **EARLY** version of our [iOS Push SDK](https://github.com/matzew/ag-client-push-sdk)
 
 #### Registration of an installation, for an Android device:
 
-CURL example for how to register an installation:
+For now, perform HTTP from Android to register the "MobileVariantInstance".
+Here is a _CURL_ example for how to perform the:
 
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json" 
@@ -151,6 +138,8 @@ http://localhost:8080/ag-push/rest/registry/device
 ```
 
 The ```category``` matches the (logical) name of the channel; The ```deviceToken``` matches the ```channelID``` from the SimplePushServer.
+
+**NOTE:** For _JavaScript_, an SDK is currently being worked on (see [AG-JS](https://github.com/aerogear/aerogear-js/blob/Notifier-sockjs/src/unified-push/aerogear.unifiedpush.js))
 
 ### Sender
 
