@@ -17,8 +17,6 @@
 
 package org.aerogear.connectivity.rest.registry.applications;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -32,6 +30,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.PushApplication;
@@ -46,7 +48,7 @@ public class AndroidVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private AndroidVariantService androidAppService;
+    private AndroidVariantService androidVariantService;
    
 
     // ===============================================================
@@ -56,69 +58,91 @@ public class AndroidVariantEndpoint {
    // new Android
    @POST
    @Consumes("application/json")
-   public AndroidVariant registerAndroidVariant(AndroidVariant androidVariation, @PathParam("pushAppID") String pushApplicationID) {
-       // manually set the ID:
-       androidVariation.setVariantID(UUID.randomUUID().toString());
-       
-       
-       // delegate down:
-       // store the Android variant:
-       androidVariation = androidAppService.addAndroidVariant(androidVariation);
+   public Response registerAndroidVariant(
+           AndroidVariant androidVariant,
+           @PathParam("pushAppID") String pushApplicationID,
+           @Context UriInfo uriInfo) {
+
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
-       // add iOS variant, and merge:
-       pushAppService.addAndroidVariant(pushApp, androidVariation);
 
-       return androidVariation;
+       if (pushApp == null) {
+           return Response.status(Status.NOT_FOUND).build();
+       }
+
+       // poor validation
+       if (androidVariant.getGoogleKey() == null) {
+           return Response.status(Status.BAD_REQUEST).build();
+       }
+
+       // manually set the ID:
+       androidVariant.setVariantID(UUID.randomUUID().toString());
+
+       // store the Android variant:
+       androidVariant = androidVariantService.addAndroidVariant(androidVariant);
+       // add iOS variant, and merge:
+       pushAppService.addAndroidVariant(pushApp, androidVariant);
+
+       return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
    }
 
    // READ
    @GET
    @Produces("application/json")
-   public Set<AndroidVariant> listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-       PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
-       if (pushApp != null) {
-           return pushApp.getAndroidApps();
-       }
-       return Collections.emptySet();
+   public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+       return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
    @GET
    @Path("/{androidID}")
    @Produces("application/json")
-   public AndroidVariant findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-       return androidAppService.findByVariantID(androidID);
+   public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
+       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
+
+       if (androidVariant != null) {
+           return Response.ok(androidVariant).build();
+       }
+       return Response.status(Status.NOT_FOUND).build();
    }
    // UPDATE
    @PUT
    @Path("/{androidID}")
    @Consumes("application/json")
-   public AndroidVariant updateAndroidVariation(
+   public Response updateAndroidVariation(
            @PathParam("pushAppID") String id,
            @PathParam("androidID") String androidID,
            AndroidVariant updatedAndroidApplication) {
-       
-       
-       AndroidVariant androidVariant = androidAppService.findByVariantID(androidID);
+
+       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
        if (androidVariant != null) {
-           
+
+           // poor validation
+           if (updatedAndroidApplication.getGoogleKey() == null) {
+               return Response.status(Status.BAD_REQUEST).build();
+           }
+
            // apply updated data:
            androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
            androidVariant.setName(updatedAndroidApplication.getName());
            androidVariant.setDescription(updatedAndroidApplication.getDescription());
-           return androidAppService.updateAndroidVariant(androidVariant);
+           androidVariantService.updateAndroidVariant(androidVariant);
+           return Response.noContent().build();
        }
 
-       return androidVariant;
+       return Response.status(Status.NOT_FOUND).build();
    }
+
    // DELETE
    @DELETE
    @Path("/{androidID}")
    @Consumes("application/json")
-   public void deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
-       AndroidVariant androidVariant = androidAppService.findByVariantID(androidID);
+   public Response deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
+       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
        
-       if (androidVariant != null)
-           androidAppService.removeAndroidVariant(androidVariant);
+       if (androidVariant != null) {
+           androidVariantService.removeAndroidVariant(androidVariant);
+           return Response.noContent().build();
+       }
+
+       return Response.status(Status.NOT_FOUND).build();
    }
-  
 }

@@ -49,9 +49,11 @@ public class PushNotificationSenderEndpoint {
     @Consumes("application/json")
     public Response broadcast(BroadcastMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
         PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
+
         if (pushApplication == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
+
         dispatcher.dispatchBroadcastMessage(pushApplication, message);
         logger.info("Message submitted to PushNetworks");
 
@@ -64,9 +66,11 @@ public class PushNotificationSenderEndpoint {
     @Consumes("application/json")
     public Response selectedSender(SelectiveSendMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
         PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
+
         if (pushApplication == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
+
         dispatcher.dispatchSelectedSendMessage(pushApplication, message);
         logger.info("Message submitted to PushNetworks");
 

@@ -17,6 +17,8 @@
 
 package org.aerogear.connectivity.jpa;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -53,5 +55,15 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
     @SuppressWarnings("unchecked")
     public E find(Class<?> classType, K id) {
         return (E) entityManager.find(classType, id);
+    }
+
+    public E getSingleResultForQuery(Query query) {
+        List<E> result = query.getResultList();
+
+        if (! result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
     }
 }

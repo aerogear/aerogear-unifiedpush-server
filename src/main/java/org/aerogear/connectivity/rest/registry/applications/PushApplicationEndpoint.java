@@ -17,13 +17,10 @@
 
 package org.aerogear.connectivity.rest.registry.applications;
 
-import java.util.List;
 import java.util.UUID;
 
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +30,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
@@ -44,70 +44,80 @@ public class PushApplicationEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
-    @Inject Event<PushApplication> pushApplicationEventSource;
- 
+
     // CREATE
     @POST
     @Consumes("application/json")
-    //@Asynchronous
-    public PushApplication registerPushApplication(PushApplication pushApp) {
+    public Response registerPushApplication(PushApplication pushApp) {
+
+        // poor validation
+        if (pushApp.getName() == null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+
         // create ID...
         pushApp.setPushApplicationID(UUID.randomUUID().toString());
+        pushAppService.addPushApplication(pushApp);
 
-        // delegate:
-        //pushAppService.addPushApplication(pushApp);
-        publishPushApplication(pushApp);
-
-        return pushApp;
+        return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp).build();
     }
     
-    @Asynchronous
-    public void publishPushApplication(PushApplication pushApp) {
-        //pushAppService.addPushApplication(pushApp);
-        
-        pushApplicationEventSource.fire(pushApp);
-    }
-
     // READ
     @GET
     @Produces("application/json")
-    public List<PushApplication> listAllPushApplications()  {
-        return pushAppService.findAllPushApplications();
+    public Response listAllPushApplications()  {
+        return Response.ok(pushAppService.findAllPushApplications()).build();
     }
 
     @GET
     @Path("/{pushAppID}")
     @Produces("application/json")
-    public PushApplication findById(@PathParam("pushAppID") String id) {
-        return pushAppService.findByPushApplicationID(id);
+    public Response findById(@PathParam("pushAppID") String id) {
+        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
+        
+        if (pushApp!=null) {
+            return Response.ok(pushApp).build();
+        }
+
+        return Response.status(Status.NOT_FOUND).build();
     }
 
     // UPDATE
     @PUT
     @Path("/{pushAppID}")
     @Consumes("application/json")
-    public PushApplication updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
+    public Response updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp != null) {
-            
+
+            // poor validation
+            if (pushApp.getName() == null) {
+                return Response.status(Status.BAD_REQUEST).build();
+            }
+
             // update name/desc:
             pushApp.setDescription(updatedPushApp.getDescription());
             pushApp.setName(updatedPushApp.getName());
-            return pushAppService.updatePushApplication(pushApp);
+            pushAppService.updatePushApplication(pushApp);
+
+            return Response.noContent().build();
         }
 
-        return pushApp;
+        return Response.status(Status.NOT_FOUND).build();
     }
 
     // DELETE
     @DELETE
     @Path("/{pushAppID}")
     @Consumes("application/json")
-    public void deletePushApplication(@PathParam("pushAppID") String id) {
+    public Response deletePushApplication(@PathParam("pushAppID") String id) {
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
-        if (pushApp != null)
+        if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
+            return Response.noContent().build();
+        }
+        return Response.status(Status.NOT_FOUND).build();
     }   
 }

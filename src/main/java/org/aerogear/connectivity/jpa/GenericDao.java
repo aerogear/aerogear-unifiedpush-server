@@ -25,4 +25,6 @@ public interface GenericDao<E, K> {
     E create(E e);
     E update(E e);
     void delete(E e);
+    
+    E getSingleResultForQuery(Query query);
 }

@@ -26,9 +26,8 @@ public class MobileVariantDaoImpl extends AbstractGenericDao<MobileVariant, Stri
 
     @Override
     public MobileVariant findByVariantID(String variantID) {
-        return (MobileVariant) createQuery("select t from "+AbstractMobileVariant.class.getSimpleName()+" t where t.variantID = :variantID")
-        .setParameter("variantID", variantID)
-        .getSingleResult();
+        return getSingleResultForQuery(createQuery("select t from "+AbstractMobileVariant.class.getSimpleName()+" t where t.variantID = :variantID")
+        .setParameter("variantID", variantID));
     }
 
 }

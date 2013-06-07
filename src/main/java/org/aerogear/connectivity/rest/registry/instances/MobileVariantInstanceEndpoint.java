@@ -32,6 +32,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
@@ -116,14 +117,15 @@ public class MobileVariantInstanceEndpoint
     @DELETE
     @Path("{token}")
     @Consumes("application/json")
-    public void unregisterInstallations(
+    public Response unregisterInstallations(
             @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             @PathParam("token") String token) {
-        
+
         // there can be multiple regs.........
         List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileVariantInstancesByToken(token);
-        
         // delete them:
         mobileApplicationInstanceService.removeMobileVariantInstances(instances);
+
+        return Response.noContent().build();
    }
 }

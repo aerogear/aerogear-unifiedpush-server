@@ -17,8 +17,6 @@
 
 package org.aerogear.connectivity.rest.registry.applications;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -32,6 +30,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.SimplePushVariant;
@@ -46,7 +48,7 @@ public class SimplePushVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private SimplePushVariantService simplePushApplicationService;
+    private SimplePushVariantService simplePushVariantService;
 
    // ===============================================================
    // =============== Mobile variant construct ======================
@@ -56,67 +58,90 @@ public class SimplePushVariantEndpoint {
    // new SimplePush
    @POST
    @Consumes("application/json")
-   public SimplePushVariant registerSimplePushVariant(SimplePushVariant spa, @PathParam("pushAppID") String pushApplicationID) {
-       // manually set the ID:
-       spa.setVariantID(UUID.randomUUID().toString());
-       
-       
-       //delegate down:
-       // store the SimplePush variant:
-       spa = simplePushApplicationService.addSimplePushVariant(spa);
+   public Response registerSimplePushVariant(
+           SimplePushVariant spv,
+           @PathParam("pushAppID") String pushApplicationID,
+           @Context UriInfo uriInfo) {
+
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
-       // add iOS variant, and merge:
-       pushAppService.addSimplePushVariant(pushApp, spa);
 
-       return spa;
+       if (pushApp == null) {
+           return Response.status(Status.NOT_FOUND).build();
+       }
+
+       // poor validation
+       if (spv.getPushNetworkURL() == null) {
+           return Response.status(Status.BAD_REQUEST).build();
+       }
+
+       // manually set the ID:
+       spv.setVariantID(UUID.randomUUID().toString());
+       // store the SimplePush variant:
+       spv = simplePushVariantService.addSimplePushVariant(spv);
+       // add iOS variant, and merge:
+       pushAppService.addSimplePushVariant(pushApp, spv);
+
+       return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(spv.getVariantID())).build()).entity(spv).build();
    }
+
    // READ
    @GET
    @Produces("application/json")
-   public Set<SimplePushVariant> listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-       PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
-       if (pushApp != null) {
-           return pushApp.getSimplePushApps();
-       }
-       return Collections.emptySet();
+   public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+       return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
+
    @GET
    @Path("/{simplePushID}")
    @Produces("application/json")
-   public SimplePushVariant findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
-       return simplePushApplicationService.findByVariantID(simplePushID);
+   public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
+       SimplePushVariant spv = simplePushVariantService.findByVariantID(simplePushID);
+       if (spv != null) {
+           return Response.ok(spv).build();
+       }
+
+       return Response.status(Status.NOT_FOUND).build();
    }
+
    // UPDATE
    @PUT
    @Path("/{simplePushID}")
    @Consumes("application/json")
-   public SimplePushVariant updateSimplePushVariation(
+   public Response updateSimplePushVariation(
            @PathParam("pushAppID") String id,
            @PathParam("simplePushID") String simplePushID,
            SimplePushVariant updatedSimplePushApplication) {
        
-       SimplePushVariant spVariant = simplePushApplicationService.findByVariantID(simplePushID);
+       SimplePushVariant spVariant = simplePushVariantService.findByVariantID(simplePushID);
        if (spVariant != null) {
-           
+
+           // poor validation
+           if (updatedSimplePushApplication.getPushNetworkURL() == null) {
+               return Response.status(Status.BAD_REQUEST).build();
+           }
+
            // apply updated data:
            spVariant.setName(updatedSimplePushApplication.getName());
            spVariant.setDescription(updatedSimplePushApplication.getDescription());
            spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
-           return simplePushApplicationService.updateSimplePushVariant(spVariant);
+           simplePushVariantService.updateSimplePushVariant(spVariant);
+           return Response.noContent().build();
        }
 
-       return spVariant;
+       return Response.status(Status.NOT_FOUND).build();
    }
    // DELETE
    @DELETE
    @Path("/{simplePushID}")
    @Consumes("application/json")
-   public void deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
-       SimplePushVariant spVariant = simplePushApplicationService.findByVariantID(simplePushID);
-       if (spVariant != null) 
-           simplePushApplicationService.removeSimplePushVariant(spVariant);
-   }
+   public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
+       SimplePushVariant spVariant = simplePushVariantService.findByVariantID(simplePushID);
+       if (spVariant != null) {
+           simplePushVariantService.removeSimplePushVariant(spVariant);
+           return Response.noContent().build();
+       }
 
-   
+       return Response.status(Status.NOT_FOUND).build();
+   }
 }

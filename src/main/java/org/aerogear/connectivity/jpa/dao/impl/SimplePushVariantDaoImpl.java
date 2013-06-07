@@ -33,9 +33,8 @@ public class SimplePushVariantDaoImpl extends AbstractGenericDao<SimplePushVaria
 
     @Override
     public SimplePushVariant findByVariantID(String variantID) {
-        return (SimplePushVariant) createQuery("select t from "+SimplePushVariant.class.getSimpleName()+" t where t.variantID = :variantID")
-        .setParameter("variantID", variantID)
-        .getSingleResult();
+        return getSingleResultForQuery(createQuery("select t from "+SimplePushVariant.class.getSimpleName()+" t where t.variantID = :variantID")
+        .setParameter("variantID", variantID));
     }
 
 }

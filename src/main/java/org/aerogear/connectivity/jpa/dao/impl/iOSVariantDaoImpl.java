@@ -33,9 +33,8 @@ public class iOSVariantDaoImpl extends AbstractGenericDao<iOSVariant, String> im
 
     @Override
     public iOSVariant findByVariantID(String variantID) {
-        return (iOSVariant) createQuery("select t from "+iOSVariant.class.getSimpleName()+" t where t.variantID = :variantID")
-                .setParameter("variantID", variantID)
-                .getSingleResult();
+        return getSingleResultForQuery(createQuery("select t from "+iOSVariant.class.getSimpleName()+" t where t.variantID = :variantID")
+                .setParameter("variantID", variantID));
     }
 
 }

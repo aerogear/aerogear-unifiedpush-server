@@ -17,8 +17,6 @@
 
 package org.aerogear.connectivity.rest.registry.applications;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -32,6 +30,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.model.iOSVariant;
@@ -48,7 +50,7 @@ public class iOSVariantEndpoint {
     @Inject
     private PushApplicationService pushAppService;
     @Inject
-    private iOSVariantService iOSappService;
+    private iOSVariantService iOSVariantService;
    
     
     // ===============================================================
@@ -59,9 +61,22 @@ public class iOSVariantEndpoint {
     @POST
     @Consumes("multipart/form-data")
     @Produces("application/json")
-    public iOSVariant registeriOSVariant(
+    public Response registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form, 
-            @PathParam("pushAppID") String pushApplicationID) {
+            @PathParam("pushAppID") String pushApplicationID,
+            @Context UriInfo uriInfo) {
+
+        // find the root push app
+        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
+
+        if (pushApp == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+
+        // poor validation
+        if (form.getCertificate() == null || form.getPassphrase() == null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
 
         // extract form values:
         iOSVariant iOSVariation = new iOSVariant();
@@ -72,67 +87,76 @@ public class iOSVariantEndpoint {
         
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
-        
-        
-        // delegate down:
+
         // store the iOS variant:
-        iOSVariation = iOSappService.addiOSVariant(iOSVariation);
-        // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
-        System.out.println("==========> "  + pushApp);
+        iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
+
         // add iOS variant, and merge:
         pushAppService.addiOSVariant(pushApp, iOSVariation);
 
-        return iOSVariation;
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariation.getVariantID())).build()).entity(iOSVariation).build();
    }
     // READ
     @GET
     @Produces("application/json")
-    public Set<iOSVariant> listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-        PushApplication pushApp = pushAppService.findByPushApplicationID(pushAppID);
-        if (pushApp != null) {
-            return pushApp.getIOSApps();
-        }
-        return Collections.emptySet();
+    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
     }
+
     @GET
     @Path("/{iOSID}")
     @Produces("application/json")
-    public iOSVariant findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
-        return iOSappService.findByVariantID(iOSID);
+    public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
+        iOSVariant iOSvariant = iOSVariantService.findByVariantID(iOSID);
+        
+        if (iOSvariant != null) {
+            return Response.ok(iOSvariant).build();
+        }
+        return Response.status(Status.NOT_FOUND).build();
     }
+
     // UPDATE
     @PUT
     @Path("/{iOSID}")
     @Consumes("multipart/form-data")
     @Produces("application/json")
-    public iOSVariant updateiOSVariant(
-            @MultipartForm iOSApplicationUploadForm form, 
+    public Response updateiOSVariant(
+            @MultipartForm iOSApplicationUploadForm updatedForm, 
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
-        
-        iOSVariant iOSVariation = iOSappService.findByVariantID(iOSID);
-        if (iOSVariation != null) {
-            // apply update:
-            iOSVariation.setName(form.getName());
-            iOSVariation.setDescription(form.getDescription());
-            iOSVariation.setPassphrase(form.getPassphrase());
-            iOSVariation.setCertificate(form.getCertificate());
 
-            iOSappService.updateiOSVariant(iOSVariation);
+        iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
+        if (iOSVariation != null) {
+
+            // poor validation
+            if (updatedForm.getCertificate() == null || updatedForm.getPassphrase() == null) {
+                return Response.status(Status.BAD_REQUEST).build();
+            }
+
+            // apply update:
+            iOSVariation.setName(updatedForm.getName());
+            iOSVariation.setDescription(updatedForm.getDescription());
+            iOSVariation.setPassphrase(updatedForm.getPassphrase());
+            iOSVariation.setCertificate(updatedForm.getCertificate());
+
+            iOSVariantService.updateiOSVariant(iOSVariation);
+            return Response.noContent().build();
         }
-        return iOSVariation;
+        return Response.status(Status.NOT_FOUND).build();
     }
-    
+
     // DELETE
     @DELETE
     @Path("/{iOSID}")
     @Consumes("application/json")
-    public void deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
-        iOSVariant iOSVariation = iOSappService.findByVariantID(iOSID);
+    public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
+        iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
         
-        if (iOSVariation != null)
-            iOSappService.removeiOSVariant(iOSVariation);
+        if (iOSVariation != null) {
+            iOSVariantService.removeiOSVariant(iOSVariation);
+            return Response.noContent().build();
+        }
+        return Response.status(Status.NOT_FOUND).build();
     }
   
 }
