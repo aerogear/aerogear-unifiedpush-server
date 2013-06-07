@@ -24,6 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import org.aerogear.connectivity.jpa.PersistentObject;
 
@@ -32,6 +33,7 @@ public class PushApplication extends PersistentObject {
     private static final long serialVersionUID = 6507691362454032282L;
 
     @Column
+    @NotNull
     private String name;
     @Column
     private String description;

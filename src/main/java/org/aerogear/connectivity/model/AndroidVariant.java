@@ -20,6 +20,7 @@ package org.aerogear.connectivity.model;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'android'")
@@ -27,6 +28,7 @@ public class AndroidVariant extends AbstractMobileVariant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     @Column
+    @NotNull
     private String googleKey;
 
     public String getGoogleKey() {

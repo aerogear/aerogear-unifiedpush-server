@@ -20,6 +20,7 @@ package org.aerogear.connectivity.model;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'simplePush'")
@@ -28,6 +29,7 @@ public class SimplePushVariant extends AbstractMobileVariant {
     private static final long serialVersionUID = 9046963507735955449L;
 
     @Column
+    @NotNull
     private String pushNetworkURL;
 
     public String getPushNetworkURL() {

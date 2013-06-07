@@ -21,6 +21,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'ios'")
@@ -28,10 +29,12 @@ public class iOSVariant extends AbstractMobileVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     @Column
+    @NotNull
     private String passphrase;
     
     @Lob
     @Column(name = "CERT")
+    @NotNull
     private byte[] certificate;
     
     public String getPassphrase() {
