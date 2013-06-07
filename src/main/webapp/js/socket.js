@@ -71,18 +71,23 @@
         if ( type === "broadcast" ) {
             urlSwitch = "broadcast";
             data = {
-                version: val
+            	"simple-push": "version="+val
             };
         } else {
+        	// UGLY HACK
+        	simplePushVal = {};
+        	simplePushVal[type] = "version="+val;
+
             urlSwitch = "selected",
             data = {
-                channelIDs: idArray,
-                version: val
+                message: {
+                    "simple-push": simplePushVal
+                }
             };
         }
 
         $.ajax({
-            url: "http://" + window.location.hostname + ":8080/ag-push/rest/sender/simplePush/" + urlSwitch + "/" + AeroGear.SimplePush.variantID,
+            url: "http://" + window.location.hostname + ":8080/ag-push/rest/sender/" + urlSwitch + "/" + AeroGear.SimplePush.pushAppID,
             contentType: "application/json",
             dataType: "json",
             type: "POST",
