@@ -57,6 +57,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
         
+        final List<String> submittedAliases = message.getAliases();
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(message.getMessage());
 
         // TODO: Make better...
@@ -69,7 +70,7 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the alias does match for the instance
-                if (message.getAliases().contains(instance.getAlias())) {
+                if (submittedAliases != null && submittedAliases.contains(instance.getAlias())) {
                     // add it
                     iOSTokenPerVariant.add(instance.getDeviceToken());
                 }
@@ -90,7 +91,7 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the alias does match for the instance
-                if (message.getAliases().contains(instance.getAlias())) {
+                if (submittedAliases != null && submittedAliases.contains(instance.getAlias())) {
                     // add it
                     androidTokenPerVariant.add(instance.getDeviceToken());
                 }
@@ -118,8 +119,13 @@ public class SenderServiceImpl implements SenderService {
                 String categoryFromInstance = instance.getCategory();
                 // Does the category match one of the submitted ones?
                 // Does the alias also match ??
-                if (tokensPerCategory.get(categoryFromInstance) != null  && message.getAliases().contains(instance.getAlias())) {
+                if (tokensPerCategory.get(categoryFromInstance) != null)  {
                     
+                    String currentAlias = instance.getAlias();
+                    // NO alias at all .....???
+                    // alias matches......
+                    if ((submittedAliases == null && currentAlias == null) || (submittedAliases.contains(currentAlias)) )
+
                     // add the token, to the matching category list:
                     tokensPerCategory.get(categoryFromInstance).add(instance.getDeviceToken());
                 }
