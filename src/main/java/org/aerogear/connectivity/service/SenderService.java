@@ -17,13 +17,13 @@
 
 package org.aerogear.connectivity.service;
 
-import java.util.List;
 import java.util.Map;
 
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 
 public interface SenderService {
 
     void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-    void sendToAliases(PushApplication pushApplication, List<String> aliases, Map<String, ? extends Object> payload);
+    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message);
 }

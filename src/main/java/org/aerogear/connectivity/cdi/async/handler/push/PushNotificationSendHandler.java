@@ -28,6 +28,7 @@ import org.aerogear.connectivity.cdi.event.BroadcastEvent;
 import org.aerogear.connectivity.cdi.event.SelectedSendEvent;
 import org.aerogear.connectivity.cdi.qualifier.Broadcast;
 import org.aerogear.connectivity.cdi.qualifier.SelectedSend;
+import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.aerogear.connectivity.service.SenderService;
 
 public class PushNotificationSendHandler {
@@ -48,10 +49,12 @@ public class PushNotificationSendHandler {
     public void selectedSend(@Observes @SelectedSend SelectedSendEvent selectedSendEvent) {
         logger.log(Level.FINE, "Sending 'selected' Message");
 
+        SelectiveSendMessage ssm = selectedSendEvent.getMessage();
+        
+        
         // send the message ...
         senderService.sendToAliases(
                 selectedSendEvent.getPushApplication(),
-                selectedSendEvent.getIdentifiers(),
-                selectedSendEvent.getMessage());
+                ssm);
     }
 }

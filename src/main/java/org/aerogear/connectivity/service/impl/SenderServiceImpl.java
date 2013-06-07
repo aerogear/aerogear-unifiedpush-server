@@ -19,6 +19,7 @@ package org.aerogear.connectivity.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,13 +28,17 @@ import javax.inject.Inject;
 
 import org.aerogear.connectivity.message.sender.APNsPushNotificationSender;
 import org.aerogear.connectivity.message.sender.GCMPushNotificationSender;
+import org.aerogear.connectivity.message.sender.SimplePushNotificationSender;
 import org.aerogear.connectivity.message.sender.UnifiedPushMessage;
 import org.aerogear.connectivity.message.sender.annotations.APNsSender;
 import org.aerogear.connectivity.message.sender.annotations.GCMSender;
+import org.aerogear.connectivity.message.sender.annotations.SimplePushSender;
 import org.aerogear.connectivity.model.AndroidVariant;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.model.SimplePushVariant;
 import org.aerogear.connectivity.model.iOSVariant;
+import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.aerogear.connectivity.service.SenderService;
 
 public class SenderServiceImpl implements SenderService {
@@ -45,11 +50,14 @@ public class SenderServiceImpl implements SenderService {
     @Inject  @APNsSender
     private APNsPushNotificationSender apnsSender;
     
+    @Inject @SimplePushSender
+    private SimplePushNotificationSender simplePushSender;
+    
     
     @Override
-    public void sendToAliases(PushApplication pushApplication, final List<String> aliases, Map<String, ? extends Object> payload) {
+    public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
         
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(payload);
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(message.getMessage());
 
         // TODO: Make better...
         final Set<iOSVariant> iOSapps = pushApplication.getIOSApps();
@@ -61,7 +69,7 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the alias does match for the instance
-                if (aliases.contains(instance.getAlias())) {
+                if (message.getAliases().contains(instance.getAlias())) {
                     // add it
                     iOSTokenPerVariant.add(instance.getDeviceToken());
                 }
@@ -82,12 +90,44 @@ public class SenderServiceImpl implements SenderService {
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
                 
                 // see if the alias does match for the instance
-                if (aliases.contains(instance.getAlias())) {
+                if (message.getAliases().contains(instance.getAlias())) {
                     // add it
                     androidTokenPerVariant.add(instance.getDeviceToken());
                 }
             }
             gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage, androidApplication.getGoogleKey());
+        }
+        
+        // TODO: make better :)
+        Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
+        for (SimplePushVariant simplePushVariant : spApps) {
+            final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
+            
+            // the specified category names.....
+            final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
+            final Map<String, List<String>> tokensPerCategory = new LinkedHashMap<String, List<String>>();
+
+            // add empty list for every category:
+            for (String category : categoriesToNotify) {
+                tokensPerCategory.put(category, new ArrayList<String>());
+            }
+            
+            Set<MobileVariantInstanceImpl> allSimplePushVarinatInstancesPerVariant = simplePushVariant.getInstances();
+            for (MobileVariantInstanceImpl instance : allSimplePushVarinatInstancesPerVariant) {
+
+                String categoryFromInstance = instance.getCategory();
+                // Does the category match one of the submitted ones?
+                // Does the alias also match ??
+                if (tokensPerCategory.get(categoryFromInstance) != null  && message.getAliases().contains(instance.getAlias())) {
+                    
+                    // add the token, to the matching category list:
+                    tokensPerCategory.get(categoryFromInstance).add(instance.getDeviceToken());
+                }
+            }
+            // send:
+            for (String category : categoriesToNotify) {
+                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory.get(category));    
+            }
         }
     }
 
@@ -126,6 +166,25 @@ public class SenderServiceImpl implements SenderService {
                 androidtokenz.add(mobileApplicationInstance.getDeviceToken());
             }
             gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage, androidApplication.getGoogleKey());
+        }
+        
+        // TODO: DISPATCH TO A QUEUE .....
+        Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
+        for (SimplePushVariant simplePushVariant : spApps) {
+            
+            final List<String> simplePushTokenz = new ArrayList<String>();
+            
+            Set<MobileVariantInstanceImpl> simplePushVarinatInstances = simplePushVariant.getInstances();
+            for (MobileVariantInstanceImpl instance : simplePushVarinatInstances) {
+                // only the BROADCAST channels:
+                if ("broadcast".equalsIgnoreCase(instance.getCategory())) {
+                    simplePushTokenz.add(instance.getDeviceToken());
+                }
+            }
+            simplePushSender.sendMessage(
+                    simplePushVariant.getPushNetworkURL(),
+                    (String) unifiedPushMessage.getData().get("simple-push"), // TODO: add a getter for simple-push
+                    simplePushTokenz);
         }
     }
 }

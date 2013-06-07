@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.cdi.event;
+package org.aerogear.connectivity.rest.sender.messages;
 
-import org.aerogear.connectivity.model.PushApplication;
-import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
+import java.util.LinkedHashMap;
 
-public class SelectedSendEvent extends AbstractPushMessageEvent {
+public class BroadcastMessage extends LinkedHashMap<String, Object> {
+    private static final long serialVersionUID = 1L;
+
+
     
-    public SelectedSendEvent(PushApplication pushApplication, SelectiveSendMessage message) {
-        super(pushApplication, message);
+    public String getSimplePush() {
+        return (String) this.get("simple-push");
     }
-    
-    public SelectiveSendMessage getMessage() {
-        return (SelectiveSendMessage) super.getMessage();
-    }
-
 }

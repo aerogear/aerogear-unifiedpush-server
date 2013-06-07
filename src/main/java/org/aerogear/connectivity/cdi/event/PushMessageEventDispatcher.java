@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.aerogear.connectivity.cdi.qualifier.Broadcast;
 import org.aerogear.connectivity.cdi.qualifier.SelectedSend;
 import org.aerogear.connectivity.model.PushApplication;
+import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 
 @Stateless
 public final class PushMessageEventDispatcher {
@@ -45,8 +46,8 @@ public final class PushMessageEventDispatcher {
     
     @SuppressWarnings("serial")
     @Asynchronous
-    public void dispatchSelectedSendMessage(PushApplication pushApplication, LinkedHashMap<String, ? extends Object> message, List<String> ids) {
-        SelectedSendEvent selectedSendEvent = new SelectedSendEvent(pushApplication, message, ids);
+    public void dispatchSelectedSendMessage(PushApplication pushApplication, SelectiveSendMessage message) {
+        SelectedSendEvent selectedSendEvent = new SelectedSendEvent(pushApplication, message);
         manager.fireEvent(selectedSendEvent, new AnnotationLiteral<SelectedSend>(){});
     }
 }
