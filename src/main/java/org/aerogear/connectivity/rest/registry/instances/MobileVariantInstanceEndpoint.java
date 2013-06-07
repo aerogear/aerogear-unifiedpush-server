@@ -20,7 +20,6 @@ package org.aerogear.connectivity.rest.registry.instances;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -33,6 +32,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.aerogear.connectivity.api.MobileVariant;
 import org.aerogear.connectivity.model.MobileVariantInstanceImpl;
@@ -50,50 +50,48 @@ public class MobileVariantInstanceEndpoint
 
     @POST
     @Consumes("application/json")
-    public MobileVariantInstanceImpl registerInstallation(
+    public Response registerInstallation(
             @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             MobileVariantInstanceImpl entity) {
-        if (logger.isLoggable(Level.INFO)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("ag-mobile-variant: ");
-            sb.append(mobileVariantID);
-            logger.info(sb.toString());
+
+        // we need the VARIANT. We also require the Token!
+        if (mobileVariantID == null || entity.getDeviceToken() == null) {
+            return Response.status(Status.BAD_REQUEST).build();
         }
-        
+
         // find the matching variation:
         MobileVariant mobileApp = mobileApplicationService.findByVariantID(mobileVariantID);
         if (mobileApp == null) {
-            logger.severe("\n\nCould not find Mobile Variant\n\n");
-            return null; // TODO -> 404
+            logger.severe("Could not find Mobile Variant!");
+            return Response.status(Status.NOT_FOUND).build();
         }
-        
+
+        // look up all instances for THIS variant:
         List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(mobileApp.getInstances(), entity.getDeviceToken());
         if (instances.isEmpty()) {
             // store the installation:
             entity = mobileApplicationInstanceService.addMobileVariantInstance(entity);
-            
-
             // add installation to the matching variant
             mobileApplicationService.addInstance(mobileApp, entity);
         } else {
-            logger.warning("UPDATE ON POST.......");
-            
+            logger.info("Updating received metadata for MobileVariantInstance");
+
             // should be impossible
             if (instances.size()>1) {
                 logger.severe("Too many registration for one installation");
             }
-            
+
             // update the entity:
             entity = this.updateMobileApplicationInstance(instances.get(0), entity);
         }
 
-        return entity;
+        return Response.ok().build();
    }
     
     // TODO: move to JQL
     private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(Set<MobileVariantInstanceImpl> instances, String deviceToken) {
         final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
-        
+
         for (MobileVariantInstanceImpl instance : instances) {
             if (instance.getDeviceToken().equals(deviceToken))
                 instancesWithToken.add(instance);
