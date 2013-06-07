@@ -77,6 +77,11 @@
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
 
         <!-- Import the EJB API, we use provided scope as the API is included
       in JBoss -->
@@ -101,7 +106,6 @@
             <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- Import the JPA API, we use provided scope as the API is included
       in JBoss -->
