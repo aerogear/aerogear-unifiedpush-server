@@ -5,7 +5,7 @@ AeroGear's Connectivity Server (Java EE poc)
 
 ### Some guidance
 
-Starting the server:
+Starting the JBoss Application Server:
 
 ```
 ./bin/standalone.sh -b 0.0.0.0
