@@ -143,45 +143,44 @@ The ```category``` matches the (logical) name of the channel; The ```deviceToken
 
 ### Sender
 
+#### Broadcast Send
+
 Send broadcast push message to ALL mobile apps of a certain Push APP......:
 
 ```
 curl -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
+   -d '{"key":"value", "alert":"HELLO!", "sound":"default", "badge":7,
+       "simple-push":"version=123"}'
 
-   -d '{"key":"blah", "alert":"HELLO!"}'
-   
-http://localhost:8080/ag-push/rest/sender/broadcast/{id} 
+http://localhost:8080/ag-push/rest/sender/broadcast/{PushApplicationID}
 ```
 
-### Sender (Simple Push)
-
-#### Broadcast Send
-
-The is a (convenience) broadcast channel (for SimplePush). All clients that decided to register with that channel, can receive a message (version), when issuing the following REQUEST:
-
-```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"
-    -X POST
-    -d '{"version":"1909"}'
-http://localhost:8080/ag-push/rest/sender/simplePush/broadcast/{SimplePushVariantID}
-```
+**TODO:** Add link to message format spec (once published)
 
 #### Selected Send
 
 To send a message (version) notification to a selected list of Channels, issue the following command:
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"
-    -X POST 
-  -d '{
-      "channelIDs":["someID", "moreID...."],
-      "version":"1909"
-      }'
-http://localhost:8080/ag-push/rest/sender/simplePush/selected/{SimplePushVariantID} 
+curl -v -H "Accept: application/json" -H "Content-type: application/json" 
+   -X POST
+
+   -d '{
+      "alias" : ["user@account.com", "jay@redhat.org", ....],
+  
+      "deviceType" : ["iPad", "AndroidTablet"],
+  
+      "message": {"key":"value", "key2":"other value", "alert":"HELLO!",
+        "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
+	  }
+   }'
+
+http://localhost:8080/ag-push/rest/sender/selected/{PushApplicationID} 
 ```
 
-_**NOTE:** Using one channelID is desired to notify exactly one connected client/channel_.
+**TODO:** Add link to message format spec (once published)
+
 
 ## More details
 
