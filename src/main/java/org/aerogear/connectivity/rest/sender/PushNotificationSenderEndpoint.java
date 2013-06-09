@@ -26,6 +26,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -46,7 +47,7 @@ public class PushNotificationSenderEndpoint {
     
     @POST
     @Path("/broadcast/{pushApplicationID}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response broadcast(BroadcastMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
         PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
 
@@ -63,7 +64,7 @@ public class PushNotificationSenderEndpoint {
 
     @POST
     @Path("/selected/{pushApplicationID}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response selectedSender(SelectiveSendMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
         PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
 

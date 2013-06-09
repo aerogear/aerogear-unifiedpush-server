@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -59,8 +60,8 @@ public class iOSVariantEndpoint {
     // ===============================================================
     // new iOS
     @POST
-    @Consumes("multipart/form-data")
-    @Produces("application/json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form, 
             @PathParam("pushAppID") String pushApplicationID,
@@ -98,14 +99,14 @@ public class iOSVariantEndpoint {
    }
     // READ
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
         return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
     }
 
     @GET
     @Path("/{iOSID}")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
         iOSVariant iOSvariant = iOSVariantService.findByVariantID(iOSID);
         
@@ -118,8 +119,8 @@ public class iOSVariantEndpoint {
     // UPDATE
     @PUT
     @Path("/{iOSID}")
-    @Consumes("multipart/form-data")
-    @Produces("application/json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateiOSVariant(
             @MultipartForm iOSApplicationUploadForm updatedForm, 
             @PathParam("pushAppID") String pushApplicationId,
@@ -148,7 +149,7 @@ public class iOSVariantEndpoint {
     // DELETE
     @DELETE
     @Path("/{iOSID}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
         iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
         

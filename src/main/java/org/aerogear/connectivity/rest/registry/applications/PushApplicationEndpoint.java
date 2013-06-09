@@ -30,6 +30,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -47,7 +48,7 @@ public class PushApplicationEndpoint {
 
     // CREATE
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
 
         // poor validation
@@ -64,14 +65,14 @@ public class PushApplicationEndpoint {
     
     // READ
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
         return Response.ok(pushAppService.findAllPushApplications()).build();
     }
 
     @GET
     @Path("/{pushAppID}")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String id) {
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
@@ -85,7 +86,7 @@ public class PushApplicationEndpoint {
     // UPDATE
     @PUT
     @Path("/{pushAppID}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
@@ -110,7 +111,7 @@ public class PushApplicationEndpoint {
     // DELETE
     @DELETE
     @Path("/{pushAppID}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String id) {
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         

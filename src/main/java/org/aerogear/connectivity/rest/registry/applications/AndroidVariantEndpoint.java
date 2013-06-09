@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
@@ -57,7 +58,7 @@ public class AndroidVariantEndpoint {
     // ===============================================================
    // new Android
    @POST
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response registerAndroidVariant(
            AndroidVariant androidVariant,
            @PathParam("pushAppID") String pushApplicationID,
@@ -88,13 +89,13 @@ public class AndroidVariantEndpoint {
 
    // READ
    @GET
-   @Produces("application/json")
+   @Produces(MediaType.APPLICATION_JSON)
    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
    @GET
    @Path("/{androidID}")
-   @Produces("application/json")
+   @Produces(MediaType.APPLICATION_JSON)
    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
        AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
 
@@ -106,7 +107,7 @@ public class AndroidVariantEndpoint {
    // UPDATE
    @PUT
    @Path("/{androidID}")
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response updateAndroidVariation(
            @PathParam("pushAppID") String id,
            @PathParam("androidID") String androidID,
@@ -134,7 +135,7 @@ public class AndroidVariantEndpoint {
    // DELETE
    @DELETE
    @Path("/{androidID}")
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
        AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
        

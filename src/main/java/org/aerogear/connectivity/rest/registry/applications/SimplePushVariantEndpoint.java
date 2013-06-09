@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
@@ -57,7 +58,7 @@ public class SimplePushVariantEndpoint {
    
    // new SimplePush
    @POST
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response registerSimplePushVariant(
            SimplePushVariant spv,
            @PathParam("pushAppID") String pushApplicationID,
@@ -87,14 +88,14 @@ public class SimplePushVariantEndpoint {
 
    // READ
    @GET
-   @Produces("application/json")
+   @Produces(MediaType.APPLICATION_JSON)
    public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
 
    @GET
    @Path("/{simplePushID}")
-   @Produces("application/json")
+   @Produces(MediaType.APPLICATION_JSON)
    public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
        SimplePushVariant spv = simplePushVariantService.findByVariantID(simplePushID);
        if (spv != null) {
@@ -107,7 +108,7 @@ public class SimplePushVariantEndpoint {
    // UPDATE
    @PUT
    @Path("/{simplePushID}")
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response updateSimplePushVariation(
            @PathParam("pushAppID") String id,
            @PathParam("simplePushID") String simplePushID,
@@ -134,7 +135,7 @@ public class SimplePushVariantEndpoint {
    // DELETE
    @DELETE
    @Path("/{simplePushID}")
-   @Consumes("application/json")
+   @Consumes(MediaType.APPLICATION_JSON)
    public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
        SimplePushVariant spVariant = simplePushVariantService.findByVariantID(simplePushID);
        if (spVariant != null) {

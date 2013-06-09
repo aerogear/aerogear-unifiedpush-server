@@ -31,6 +31,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -49,7 +50,7 @@ public class MobileVariantInstanceEndpoint
     @Inject private MobileVariantService mobileApplicationService;
 
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
             @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             MobileVariantInstanceImpl entity) {
@@ -114,7 +115,7 @@ public class MobileVariantInstanceEndpoint
 
     @DELETE
     @Path("{token}")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response unregisterInstallations(
             @HeaderParam("ag-mobile-variant") String mobileVariantID, 
             @PathParam("token") String token) {
