@@ -30,11 +30,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.aerogear.connectivity.cdi.event.PushMessageEventDispatcher;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.rest.sender.messages.BroadcastMessage;
 import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.aerogear.connectivity.service.PushApplicationService;
+import org.aerogear.connectivity.service.SenderService;
 
 @Stateless
 @Path("/sender")
@@ -43,20 +43,27 @@ public class PushNotificationSenderEndpoint {
 
     @Inject private Logger logger;
     @Inject private PushApplicationService pushApplicationService;
-    @Inject private PushMessageEventDispatcher dispatcher;
+    @Inject private SenderService senderService;
     
     @POST
     @Path("/broadcast/{pushApplicationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response broadcast(BroadcastMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
-        PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
+    public Response broadcast(final BroadcastMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
 
+        final PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
         if (pushApplication == null) {
-            return Response.status(Status.NOT_FOUND).build();
+          return Response.status(Status.NOT_FOUND).build();
         }
 
-        dispatcher.dispatchBroadcastMessage(pushApplication, message);
-        logger.info("Message submitted to PushNetworks");
+        // fire the submit on a different thread
+        Thread broadcastSenderThread = new Thread() {
+            public void run() {
+                senderService.broadcast(pushApplication, message);
+                logger.info("Message submitted to PushNetworks");
+
+            }
+        };
+        broadcastSenderThread.start();
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
@@ -65,15 +72,21 @@ public class PushNotificationSenderEndpoint {
     @POST
     @Path("/selected/{pushApplicationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response selectedSender(SelectiveSendMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
-        PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
+    public Response selectedSender(final SelectiveSendMessage message, @PathParam("pushApplicationID") String pushApplicationID) {
+        final PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
 
         if (pushApplication == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        dispatcher.dispatchSelectedSendMessage(pushApplication, message);
-        logger.info("Message submitted to PushNetworks");
+        // // fire the submit on a different thread
+        Thread selectiveSenderThread = new Thread() {
+            public void run() {
+                senderService.sendToAliases(pushApplication, message);
+                logger.info("Message submitted to PushNetworks");
+            }
+        };
+        selectiveSenderThread.start();
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
