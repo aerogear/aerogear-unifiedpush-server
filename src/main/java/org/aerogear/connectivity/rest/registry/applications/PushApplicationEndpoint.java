@@ -37,20 +37,20 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
+import org.picketlink.Identity;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
 public class PushApplicationEndpoint {
 
-    @Inject
-    private PushApplicationService pushAppService;
+    @Inject private PushApplicationService pushAppService;
+    @Inject private Identity identity;
 
     // CREATE
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
-
         // poor validation
         if (pushApp.getName() == null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -67,6 +67,11 @@ public class PushApplicationEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
+        // nope...
+        if (! identity.isLoggedIn()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         return Response.ok(pushAppService.findAllPushApplications()).build();
     }
 
