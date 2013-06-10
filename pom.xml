@@ -166,8 +166,28 @@
       <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
       <version>0.31-SNAPSHOT</version>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.jboss.aerogear</groupId>
+      <artifactId>aerogear-security</artifactId>
+      <version>${aerogear.security.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.aerogear</groupId>
+      <artifactId>aerogear-security-picketlink</artifactId>
+      <version>${aerogear.security.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox-core</artifactId>
+      <version>5.0.0-2012Sep18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox-cdi</artifactId>
+      <version>5.0.0-2012Sep18</version>
+    </dependency>
     <!-- Test stuff -->
     <dependency>
       <groupId>junit</groupId>
@@ -242,7 +262,7 @@
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
-        <hornet.version>2.2.13.Final</hornet.version>
+        <aerogear.security.version>1.0.0</aerogear.security.version>
         
     </properties>
   
