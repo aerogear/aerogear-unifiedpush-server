@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.aerogear.connectivity.message.sender.APNsPushNotificationSender;
@@ -41,6 +43,8 @@ import org.aerogear.connectivity.model.iOSVariant;
 import org.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.aerogear.connectivity.service.SenderService;
 
+@Stateless
+@Asynchronous
 public class SenderServiceImpl implements SenderService {
     
     
@@ -55,6 +59,7 @@ public class SenderServiceImpl implements SenderService {
     
     
     @Override
+    @Asynchronous
     public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
         
         final List<String> submittedAliases = message.getAliases();
@@ -139,10 +144,10 @@ public class SenderServiceImpl implements SenderService {
 
     
     @Override
+    @Asynchronous
     public void broadcast(PushApplication pushApplication,
             Map<String, ? extends Object> jsonMap) {
-        
-        
+
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(jsonMap);
         
         // TODO: DISPATCH TO A QUEUE .....

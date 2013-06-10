@@ -55,15 +55,9 @@ public class PushNotificationSenderEndpoint {
           return Response.status(Status.NOT_FOUND).build();
         }
 
-        // fire the submit on a different thread
-        Thread broadcastSenderThread = new Thread() {
-            public void run() {
-                senderService.broadcast(pushApplication, message);
-                logger.info("Message submitted to PushNetworks");
-
-            }
-        };
-        broadcastSenderThread.start();
+        // submitted to @Async EJB:
+        senderService.broadcast(pushApplication, message);
+        logger.info("Message submitted to PushNetworks");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
@@ -79,14 +73,9 @@ public class PushNotificationSenderEndpoint {
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        // // fire the submit on a different thread
-        Thread selectiveSenderThread = new Thread() {
-            public void run() {
-                senderService.sendToAliases(pushApplication, message);
-                logger.info("Message submitted to PushNetworks");
-            }
-        };
-        selectiveSenderThread.start();
+        // submitted to @Async EJB:
+        senderService.sendToAliases(pushApplication, message);
+        logger.info("Message submitted to PushNetworks");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
