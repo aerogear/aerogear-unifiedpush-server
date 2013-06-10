@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="forge-default" transaction-type="JTA">
+  <persistence-unit name="pushee-default" transaction-type="JTA">
     <description>Forge Persistence Unit</description>
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
@@ -28,4 +28,32 @@
       <property name="hibernate.transaction.flush_before_completion" value="true"/>
     </properties>
   </persistence-unit>
+
+
+    <persistence-unit name="picketlink-default"
+                      transaction-type="JTA">
+        <description>PicketLink Persistence Unit</description>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
+
+        <class>org.picketlink.idm.jpa.schema.IdentityObject</class>
+        <class>org.picketlink.idm.jpa.schema.PartitionObject</class>
+        <class>org.picketlink.idm.jpa.schema.RelationshipObject</class>
+        <class>org.picketlink.idm.jpa.schema.RelationshipIdentityObject</class>
+        <class>org.picketlink.idm.jpa.schema.RelationshipObjectAttribute</class>
+        <class>org.picketlink.idm.jpa.schema.IdentityObjectAttribute</class>
+        <class>org.picketlink.idm.jpa.schema.CredentialObject</class>
+        <class>org.picketlink.idm.jpa.schema.CredentialObjectAttribute</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.transaction.flush_before_completion"
+                      value="true"/>
+        </properties>
+    </persistence-unit>
+
+
 </persistence>
