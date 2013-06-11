@@ -262,7 +262,7 @@
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
-        <aerogear.security.version>1.0.0</aerogear.security.version>
+        <aerogear.security.version>1.0.1-SNAPSHOT</aerogear.security.version>
         
     </properties>
   

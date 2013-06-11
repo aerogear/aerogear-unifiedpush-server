@@ -17,6 +17,11 @@
 
 package org.aerogear.connectivity.rest.security;
 
+import org.jboss.aerogear.security.auth.AuthenticationManager;
+import org.jboss.aerogear.security.authz.IdentityManagement;
+import org.jboss.aerogear.security.exception.AeroGearSecurityException;
+import org.jboss.aerogear.security.picketlink.model.User;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,29 +32,24 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.security.auth.AuthenticationManager;
-import org.jboss.aerogear.security.exception.AeroGearSecurityException;
-import org.jboss.aerogear.security.model.AeroGearUser;
-
 @Stateless
 @Path("/auth")
 public class AuthenticationEndpoint {
     
-  //  @Inject private Logger logger;
     @Inject private AuthenticationManager authenticationManager;
-//    @Inject private IdentityManagement configuration;
+    @Inject private IdentityManagement configuration;
 
 
     @Path("/enroll")
-    public void enroll(final AeroGearUser aeroGearUser) {
-        
+    public void enroll(final User user) {
+        configuration.create(user);
     }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(final AeroGearUser aeroGearUser) {
+    public Response login(final User aeroGearUser) {
 
         try {
             authenticationManager.login(aeroGearUser);
