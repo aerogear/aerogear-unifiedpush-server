@@ -20,7 +20,8 @@ package org.aerogear.connectivity.rest.security;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
-import org.jboss.aerogear.security.picketlink.model.User;
+import org.picketlink.idm.model.SimpleUser;
+
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,18 +42,18 @@ public class AuthenticationEndpoint {
 
 
     @Path("/enroll")
-    public void enroll(final User user) {
-        configuration.create(user);
+    public void enroll(final SimpleUser user, final String password) {
+        configuration.create(user, password);
     }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(final User aeroGearUser) {
+    public Response login(final SimpleUser user, final String password) {
 
         try {
-            authenticationManager.login(aeroGearUser);
+            authenticationManager.login(user, password);
         } catch (AeroGearSecurityException agse) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
