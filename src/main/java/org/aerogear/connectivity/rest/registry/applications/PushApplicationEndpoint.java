@@ -68,9 +68,9 @@ public class PushApplicationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
         // nope...
-        if (! identity.isLoggedIn()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
+//        if (! identity.isLoggedIn()) {
+//            return Response.status(Status.UNAUTHORIZED).build();
+//        }
 
         return Response.ok(pushAppService.findAllPushApplications()).build();
     }
