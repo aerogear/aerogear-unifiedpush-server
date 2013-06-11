@@ -1,5 +1,4 @@
-AeroGear PushEE
-===============
+# AeroGear PushEE [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
 
 AeroGear's Connectivity Server (Java EE poc)
 
