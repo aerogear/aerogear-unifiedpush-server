@@ -26,14 +26,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
+import org.picketlink.annotations.PicketLink;
+
 public class Factory {
+    
+    @SuppressWarnings("unused")
+    @Produces
+    @PicketLink
+    @PersistenceContext(unitName = "picketlink-default")
+    private EntityManager picketLinkEntityManager;
+
+
 
     @Produces
     public Logger produceLog(InjectionPoint injectionPoint) {
         return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
     }
     
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext(unitName="pushee-default", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     @Produces
