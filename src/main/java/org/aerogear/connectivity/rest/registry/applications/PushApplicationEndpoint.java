@@ -35,10 +35,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import org.aerogear.connectivity.cdi.interceptor.Secure;
+//import org.aerogear.connectivity.cdi.interceptor.Secure;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
-import org.picketlink.Identity;
 
 @Stateless
 @TransactionAttribute
@@ -46,10 +45,9 @@ import org.picketlink.Identity;
 public class PushApplicationEndpoint {
 
     @Inject private PushApplicationService pushAppService;
-    @Inject private Identity identity;
 
     // CREATE
-    @Secure({"admin"})
+    //@Secure({"admin"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
@@ -66,7 +64,7 @@ public class PushApplicationEndpoint {
     }
     
     // READ
-    @Secure({"homer"})
+    //@Secure({"homer"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
