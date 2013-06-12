@@ -105,9 +105,13 @@ public class SenderServiceImpl implements SenderService {
         }
         
         // TODO: make better :)
+        final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
+        if (simplePushCategoriesAndValues == null) {
+            return;
+        }
+
         Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
         for (SimplePushVariant simplePushVariant : spApps) {
-            final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
             
             // the specified category names.....
             final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
