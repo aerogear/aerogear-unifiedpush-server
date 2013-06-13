@@ -44,7 +44,7 @@ import org.aerogear.connectivity.service.PushApplicationService;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-public class AndroidVariantEndpoint {
+public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;
@@ -63,6 +63,10 @@ public class AndroidVariantEndpoint {
            AndroidVariant androidVariant,
            @PathParam("pushAppID") String pushApplicationID,
            @Context UriInfo uriInfo) {
+
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
 
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
@@ -91,12 +95,20 @@ public class AndroidVariantEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
    @GET
    @Path("/{androidID}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
 
        if (androidVariant != null) {
@@ -112,6 +124,10 @@ public class AndroidVariantEndpoint {
            @PathParam("pushAppID") String id,
            @PathParam("androidID") String androidID,
            AndroidVariant updatedAndroidApplication) {
+
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
 
        AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
        if (androidVariant != null) {
@@ -137,6 +153,10 @@ public class AndroidVariantEndpoint {
    @Path("/{androidID}")
    @Consumes(MediaType.APPLICATION_JSON)
    public Response deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
        
        if (androidVariant != null) {

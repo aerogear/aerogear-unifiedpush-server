@@ -46,7 +46,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-public class iOSVariantEndpoint {
+public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;
@@ -66,6 +66,11 @@ public class iOSVariantEndpoint {
             @MultipartForm iOSApplicationUploadForm form, 
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
+
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
 
         // find the root push app
         PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
@@ -101,6 +106,10 @@ public class iOSVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
     }
 
@@ -108,6 +117,10 @@ public class iOSVariantEndpoint {
     @Path("/{iOSID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         iOSVariant iOSvariant = iOSVariantService.findByVariantID(iOSID);
         
         if (iOSvariant != null) {
@@ -125,6 +138,11 @@ public class iOSVariantEndpoint {
             @MultipartForm iOSApplicationUploadForm updatedForm, 
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
+
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
 
         iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
         if (iOSVariation != null) {
@@ -151,6 +169,10 @@ public class iOSVariantEndpoint {
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
         
         if (iOSVariation != null) {
@@ -159,5 +181,4 @@ public class iOSVariantEndpoint {
         }
         return Response.status(Status.NOT_FOUND).build();
     }
-  
 }
