@@ -35,22 +35,24 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-//import org.aerogear.connectivity.cdi.interceptor.Secure;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-public class PushApplicationEndpoint {
+public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndpoint {
 
     @Inject private PushApplicationService pushAppService;
 
     // CREATE
-    //@Secure({"admin"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         // poor validation
         if (pushApp.getName() == null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -64,14 +66,12 @@ public class PushApplicationEndpoint {
     }
     
     // READ
-    //@Secure({"homer"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
-        // nope...
-//        if (! identity.isLoggedIn()) {
-//            return Response.status(Status.UNAUTHORIZED).build();
-//        }
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
 
         return Response.ok(pushAppService.findAllPushApplications()).build();
     }
@@ -80,6 +80,10 @@ public class PushApplicationEndpoint {
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String id) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp!=null) {
@@ -94,6 +98,10 @@ public class PushApplicationEndpoint {
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp != null) {
@@ -119,6 +127,10 @@ public class PushApplicationEndpoint {
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String id) {
+        if (! this.isAdmin()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         PushApplication pushApp = pushAppService.findByPushApplicationID(id);
         
         if (pushApp != null) {
@@ -126,5 +138,6 @@ public class PushApplicationEndpoint {
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).build();
-    }   
+    }
+
 }

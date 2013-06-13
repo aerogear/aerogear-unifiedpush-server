@@ -28,13 +28,14 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.aerogear.security.authz.IdentityManagement;
+import org.jboss.resteasy.spi.UnauthorizedException;
 
 @Interceptor
 @Secure({})
 public class SecurityInterceptor {
 
     @Inject
-    private IdentityManagement identityManagement;
+    private IdentityManagement<?> identityManagement;
 
     @AroundInvoke
     public Object invoke(InvocationContext ctx) throws Exception {
@@ -45,10 +46,13 @@ public class SecurityInterceptor {
 
             Secure annotation = ctx.getMethod().getAnnotation(Secure.class);
             Set<String> roles = new HashSet<String>(Arrays.asList(annotation.value()));
+            System.out.println("\n\n\n\n\n   "   + roles);
             boolean hasRoles = identityManagement.hasRoles(roles);
+            System.out.println("\n\n\n\n\n   "   + hasRoles);
+            
 
             if (!hasRoles)
-                throw new RuntimeException("Not authorized!");
+                throw new UnauthorizedException("Not authorized!");
 
         }
 

@@ -44,7 +44,7 @@ import org.aerogear.connectivity.service.SimplePushVariantService;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-public class SimplePushVariantEndpoint {
+public class SimplePushVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -63,6 +63,10 @@ public class SimplePushVariantEndpoint {
            SimplePushVariant spv,
            @PathParam("pushAppID") String pushApplicationID,
            @Context UriInfo uriInfo) {
+
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
 
        // find the root push app
        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
@@ -90,6 +94,10 @@ public class SimplePushVariantEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
    }
 
@@ -97,6 +105,10 @@ public class SimplePushVariantEndpoint {
    @Path("/{simplePushID}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        SimplePushVariant spv = simplePushVariantService.findByVariantID(simplePushID);
        if (spv != null) {
            return Response.ok(spv).build();
@@ -114,6 +126,10 @@ public class SimplePushVariantEndpoint {
            @PathParam("simplePushID") String simplePushID,
            SimplePushVariant updatedSimplePushApplication) {
        
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        SimplePushVariant spVariant = simplePushVariantService.findByVariantID(simplePushID);
        if (spVariant != null) {
 
@@ -137,6 +153,10 @@ public class SimplePushVariantEndpoint {
    @Path("/{simplePushID}")
    @Consumes(MediaType.APPLICATION_JSON)
    public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
+       if (! this.isAdmin()) {
+           return Response.status(Status.UNAUTHORIZED).build();
+       }
+
        SimplePushVariant spVariant = simplePushVariantService.findByVariantID(simplePushID);
        if (spVariant != null) {
            simplePushVariantService.removeSimplePushVariant(spVariant);
