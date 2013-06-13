@@ -49,7 +49,6 @@ Add an ```iOS``` variant (e.g. _HR for iOS_):
 ```
 curl -v -b cookies.txt -c cookies.txt 
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
-
   -F "certificate=@/Users/matzew/Desktop/MyCert.p12"
   -F "passphrase=TopSecret"
 
@@ -68,22 +67,22 @@ curl -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"googleKey" : "IDDASDASDSA"}'
-  
-  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android 
+
+  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android
 ```
 
 _The response returns a **variantID** for the Android variant...._
 
 ##### SimplePush Variant
 
-Add an ```android``` variant (e.g. _HR for Android_):
+Add an ```simplepush``` variant (e.g. _HR for Browser):
 ```
 curl -v -b cookies.txt -c cookies.txt 
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
 
-  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush 
+  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
 ```
 
 _The response returns a **variantID** for the SimplePush variant...._
@@ -96,7 +95,7 @@ Client-side example for how to register an installation:
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-AGDeviceRegistration *registration = 
+AGDeviceRegistration *registration =
   [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"http://server/ag-push/"]];
 
 [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
@@ -126,17 +125,18 @@ For now, perform HTTP from Android to register the "MobileVariantInstance".
 Here is a _CURL_ example for how to perform the:
 
 ```
+<<<<<<< HEAD
 curl -u "{MobileVariantID}:{secret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
    -d '{
-      "deviceToken" : "someTokenString", 
-      "deviceType" : "ANDROID", 
-      "mobileOperatingSystem" : "android", 
+      "deviceToken" : "someTokenString",
+      "deviceType" : "ANDROID",
+      "mobileOperatingSystem" : "android",
       "osVersion" : "4.0.1"
     }'
 
-http://localhost:8080/ag-push/rest/registry/device 
+http://localhost:8080/ag-push/rest/registry/device
 ```
 
 #### Registration of an installation, for a SimplePush client:
@@ -153,7 +153,7 @@ curl -u "{MobileVariantID}:{secret}"
        "category" : "broadcast",
        "deviceToken" : "4a81527d-6967-40bb-ac56-755e8cbfb579"
      }'
-http://localhost:8080/ag-push/rest/registry/device 
+http://localhost:8080/ag-push/rest/registry/device
 ```
 
 The ```category``` matches the (logical) name of the channel; The ```deviceToken``` matches the ```channelID``` from the SimplePushServer.
@@ -189,9 +189,9 @@ curl -u "{PushApplicationID}:{MasterSecret}"
 
    -d '{
       "alias" : ["user@account.com", "jay@redhat.org", ....],
-  
+
       "deviceType" : ["iPad", "AndroidTablet"],
-  
+
       "message": {"key":"value", "key2":"other value", "alert":"HELLO!",
         "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
 	  }
