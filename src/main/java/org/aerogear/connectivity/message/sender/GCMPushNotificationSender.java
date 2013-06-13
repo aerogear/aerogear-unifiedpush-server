@@ -40,14 +40,19 @@ public class GCMPushNotificationSender {
     @Inject GCMCache cache;
     
     public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
+
+        // no need to send empty list
+        if (tokens.isEmpty())
+            return;
+
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
-        
+
         // add the "regconized" keys...
         gcmBuilder.addData("alert", pushMessage.getAlert());
         gcmBuilder.addData("sound", pushMessage.getSound());
         gcmBuilder.addData("badge", ""+pushMessage.getBadge());
-        
+
         // iterate over the missing keys:
         Set<String> keys = pushMessage.getData().keySet();
         for (String key : keys) {
