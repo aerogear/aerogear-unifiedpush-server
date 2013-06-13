@@ -34,7 +34,7 @@
                       transaction-type="JTA">
         <description>PicketLink Persistence Unit</description>
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
+        <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
 
         <class>org.picketlink.idm.jpa.schema.IdentityObject</class>
         <class>org.picketlink.idm.jpa.schema.PartitionObject</class>
@@ -44,6 +44,9 @@
         <class>org.picketlink.idm.jpa.schema.IdentityObjectAttribute</class>
         <class>org.picketlink.idm.jpa.schema.CredentialObject</class>
         <class>org.picketlink.idm.jpa.schema.CredentialObjectAttribute</class>
+
+        <!-- Custom "extensions" of PL -->
+        <class>org.aerogear.connectivity.users.Developer</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

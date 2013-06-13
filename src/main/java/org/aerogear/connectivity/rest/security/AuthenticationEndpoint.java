@@ -17,6 +17,7 @@
 
 package org.aerogear.connectivity.rest.security;
 
+import org.aerogear.connectivity.users.Developer;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
@@ -41,19 +42,19 @@ public class AuthenticationEndpoint {
     @Inject private IdentityManagement configuration;
 
 
-    @Path("/enroll")
-    public void enroll(final SimpleUser user, final String password) {
-        configuration.create(user, password);
-    }
+//    @Path("/enroll")
+//    public void enroll(final SimpleUser user, final String password) {
+//        configuration.create(user, password);
+//    }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(final SimpleUser user, final String password) {
+    public Response login(final Developer developer) {
 
         try {
-            authenticationManager.login(user, password);
+            authenticationManager.login(developer, developer.getPassword());
         } catch (AeroGearSecurityException agse) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
