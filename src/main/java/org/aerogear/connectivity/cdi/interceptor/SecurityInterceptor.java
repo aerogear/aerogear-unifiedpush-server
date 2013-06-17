@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -34,6 +35,8 @@ import org.jboss.resteasy.spi.UnauthorizedException;
 @Secure({})
 public class SecurityInterceptor {
 
+    private static final Logger LOGGER = Logger.getLogger(SecurityInterceptor.class.getSimpleName());
+
     @Inject
     private IdentityManagement<?> identityManagement;
 
@@ -46,9 +49,9 @@ public class SecurityInterceptor {
 
             Secure annotation = ctx.getMethod().getAnnotation(Secure.class);
             Set<String> roles = new HashSet<String>(Arrays.asList(annotation.value()));
-            System.out.println("\n\n\n\n\n   "   + roles);
+            LOGGER.info("\n\n\n\n\n   "   + roles);
             boolean hasRoles = identityManagement.hasRoles(roles);
-            System.out.println("\n\n\n\n\n   "   + hasRoles);
+            LOGGER.info("\n\n\n\n\n   "   + hasRoles);
             
 
             if (!hasRoles)
