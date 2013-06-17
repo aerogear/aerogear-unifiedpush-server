@@ -57,8 +57,6 @@ public class MobileVariantInstanceEndpoint
             MobileVariantInstanceImpl entity,
             @Context HttpServletRequest request) {
         
-        System.out.println("\n\n\n SSSSSSSSSS");
-
         // find the matching variation:
         final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
@@ -145,10 +143,7 @@ public class MobileVariantInstanceEndpoint
         String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
         String mobileVariantID = credentials[0];
         String secret = credentials[1];
-        System.out.println("\n\nmobileVariantID: " + mobileVariantID);
-        System.out.println("\n\nsecret: " + secret);
-        
-        
+
         final MobileVariant mobileVariant = mobileApplicationService.findByVariantID(mobileVariantID);
         if (mobileVariant != null && mobileVariant.getSecret().equals(secret)) {
             return mobileVariant;
