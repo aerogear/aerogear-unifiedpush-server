@@ -18,12 +18,27 @@ mvn package jboss-as:deploy
 
 ***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
 
+
+#### Login 
+
+Temporary there is a "admin:123" user...
+
+```
+curl -v -b cookies.txt -c cookies.txt 
+  -H "Accept: application/json" -H "Content-type: application/json" 
+  -X POST -d '{"loginName": "admin", "password":"123"}'
+  http://localhost:8080/ag-push/rest/auth/login
+```
+
 #### Register Push App
 
 Register a ```PushApplication```, like _Mobile HR_:
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"name" : "MyApp", "description" :  "awesome app" }' http://localhost:8080/ag-push/rest/applications
+curl -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Content-type: application/json"
+  -X POST
+  -d '{"name" : "MyApp", "description" :  "awesome app" }'
+  http://localhost:8080/ag-push/rest/applications
 ```
 
 _The response returns a **pushApplicationID** for the Push App...._
@@ -32,7 +47,8 @@ _The response returns a **pushApplicationID** for the Push App...._
 
 Add an ```iOS``` variant (e.g. _HR for iOS_):
 ```
-curl -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
+curl -v -b cookies.txt -c cookies.txt 
+  -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
 
   -F "certificate=@/Users/matzew/Desktop/MyCert.p12"
   -F "passphrase=TopSecret"
@@ -48,7 +64,8 @@ _The response returns a **variantID** for the iOS variant...._
 
 Add an ```android``` variant (e.g. _HR for Android_):
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"
+curl -v -b cookies.txt -c cookies.txt 
+  -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"googleKey" : "IDDASDASDSA"}'
   
@@ -61,7 +78,8 @@ _The response returns a **variantID** for the Android variant...._
 
 Add an ```android``` variant (e.g. _HR for Android_):
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"
+curl -v -b cookies.txt -c cookies.txt 
+  -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
 
@@ -86,6 +104,7 @@ AGDeviceRegistration *registration =
   // apply the desired info:
   clientInfo.token = @"2c948a843e6404dd013e79d82e5a0009";
   clientInfo.mobileVariantID = @"2c948a843e6404dd013e79d82e5a0009";
+  clientInfo.variantSecret = "top secret"
   clientInfo.deviceType = @"iPhone";
   clientInfo.operatingSystem = @"iOS";
   clientInfo.osVersion = @"6.1.3";
@@ -107,8 +126,8 @@ For now, perform HTTP from Android to register the "MobileVariantInstance".
 Here is a _CURL_ example for how to perform the:
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" 
-   -H "ag-mobile-variant: {id}"
+curl -u "{MobileVariantID}:{secret}"
+   -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
    -d '{
       "deviceToken" : "someTokenString", 
@@ -126,7 +145,8 @@ CURL example for how to register a connected SimplePush client:
 
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"
+curl -u "{MobileVariantID}:{secret}"
+    -v -H "Accept: application/json" -H "Content-type: application/json"
     -H "ag-mobile-variant: {VARIAN_ID}"
     -X POST
     -d '{
@@ -147,12 +167,13 @@ The ```category``` matches the (logical) name of the channel; The ```deviceToken
 Send broadcast push message to ALL mobile apps of a certain Push APP......:
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" 
+curl -u "{PushApplicationID}:{MasterSecret}"
+   -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
    -d '{"key":"value", "alert":"HELLO!", "sound":"default", "badge":7,
        "simple-push":"version=123"}'
 
-http://localhost:8080/ag-push/rest/sender/broadcast/{PushApplicationID}
+http://localhost:8080/ag-push/rest/sender/broadcast
 ```
 
 **TODO:** Add link to message format spec (once published)
@@ -162,7 +183,8 @@ http://localhost:8080/ag-push/rest/sender/broadcast/{PushApplicationID}
 To send a message (version) notification to a selected list of Channels, issue the following command:
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" 
+curl -u "{PushApplicationID}:{MasterSecret}"
+   -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
 
    -d '{
@@ -175,7 +197,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"
 	  }
    }'
 
-http://localhost:8080/ag-push/rest/sender/selected/{PushApplicationID} 
+http://localhost:8080/ag-push/rest/sender/selected 
 ```
 
 **TODO:** Add link to message format spec (once published)
