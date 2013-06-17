@@ -1,0 +1,5 @@
+pushapplication:
+  - id: 1
+    name: "My App"
+    description: "My Testing App"
+    pushApplicationID: "123abc"
