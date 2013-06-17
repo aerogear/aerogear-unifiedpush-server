@@ -27,6 +27,7 @@ import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.request.OAuthAuthzRequest;
 
 @Path("/authz")
+@Deprecated
 public class AuthorizationEndpoint {
 
     // TODO: Add more code :)
