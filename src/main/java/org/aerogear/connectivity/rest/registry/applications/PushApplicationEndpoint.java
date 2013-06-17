@@ -49,7 +49,7 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
-        if (! this.isAdmin()) {
+        if (! this.isDeveloper()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
@@ -60,31 +60,32 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
 
         // create ID...
         pushApp.setPushApplicationID(UUID.randomUUID().toString());
+        // store the "developer:
+        pushApp.setDeveloper(loginName());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp).build();
     }
-    
+
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
-        if (! this.isAdmin()) {
+        if (! this.isDeveloper()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
-
-        return Response.ok(pushAppService.findAllPushApplications()).build();
+        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName())).build();
     }
 
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findById(@PathParam("pushAppID") String id) {
-        if (! this.isAdmin()) {
+    public Response findById(@PathParam("pushAppID") String pushApplicationID) {
+        if (! this.isDeveloper()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
         
         if (pushApp!=null) {
             return Response.ok(pushApp).build();
@@ -97,13 +98,13 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
-        if (! this.isAdmin()) {
+    public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
+        if (! this.isDeveloper()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
-        
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+
         if (pushApp != null) {
 
             // poor validation
@@ -126,12 +127,12 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
     @DELETE
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deletePushApplication(@PathParam("pushAppID") String id) {
-        if (! this.isAdmin()) {
+    public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
+        if (! this.isDeveloper()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
         
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);

@@ -28,6 +28,10 @@ import javax.validation.constraints.NotNull;
 public class iOSVariant extends AbstractMobileVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
+    public iOSVariant() {
+        super();
+    }
+
     @Column
     @NotNull
     private String passphrase;

@@ -27,7 +27,7 @@ public interface SimplePushVariantService {
     SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
     void removeSimplePushVariant(SimplePushVariant simplePushVariant);
     List<SimplePushVariant> findAllSimplePushVariants();
-    SimplePushVariant findByVariantID(String variantID);
+    SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 
 }

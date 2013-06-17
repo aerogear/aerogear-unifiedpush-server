@@ -43,8 +43,8 @@ public class SimplePushVariantServiceImpl implements
     }
 
     @Override
-    public SimplePushVariant findByVariantID(String variantID) {
-        return simplePushApplicationDao.findByVariantID(variantID);
+    public SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName) {
+        return simplePushApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
     }
 
     @Override

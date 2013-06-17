@@ -19,6 +19,7 @@ package org.aerogear.connectivity.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -35,8 +36,12 @@ import org.aerogear.connectivity.jpa.PersistentObject;
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public  class AbstractMobileVariant extends PersistentObject implements MobileVariant {
+public abstract class AbstractMobileVariant extends PersistentObject implements MobileVariant {
     private static final long serialVersionUID = -5028062942838899201L;
+
+    public AbstractMobileVariant() {
+        secret = UUID.randomUUID().toString();
+    }
 
     @Column
     private String name;
@@ -44,6 +49,10 @@ public  class AbstractMobileVariant extends PersistentObject implements MobileVa
     private String description;
     @Column
     private String variantID;
+    @Column 
+    private String secret;
+    @Column
+    private String developer;
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
@@ -82,4 +91,22 @@ public  class AbstractMobileVariant extends PersistentObject implements MobileVa
         this.variantID = variantID;
     }
 
+    @Override
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    @Override
+    public String getSecret() {
+        return secret;
+    }
+
+    public String getDeveloper() {
+        return developer;
+    }
+
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
 }
+

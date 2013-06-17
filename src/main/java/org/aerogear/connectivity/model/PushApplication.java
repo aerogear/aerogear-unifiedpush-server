@@ -19,6 +19,7 @@ package org.aerogear.connectivity.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,19 +28,30 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.aerogear.connectivity.jpa.PersistentObject;
+import org.picketlink.idm.jpa.annotations.IdentityAttribute;
 
 @Entity
-public class PushApplication extends PersistentObject {
+@IdentityAttribute
+public class PushApplication extends PersistentObject implements org.aerogear.connectivity.api.PushApplication {
     private static final long serialVersionUID = 6507691362454032282L;
+    
+    public PushApplication() {
+        masterSecret = UUID.randomUUID().toString();
+    }
 
     @Column
     @NotNull
     private String name;
     @Column
     private String description;
-    
+
     @Column
     private String pushApplicationID;
+    @Column
+    private String masterSecret;
+
+    @Column
+    private String developer;
 
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
@@ -112,5 +124,22 @@ public class PushApplication extends PersistentObject {
 
    public void setPushApplicationID(String pushApplicationID) {
        this.pushApplicationID = pushApplicationID;
+   }
+
+   public void setMasterSecret(String secret) {
+       this.masterSecret = secret;
+   }
+
+   @Override
+   public String getMasterSecret() {
+       return masterSecret;
+   }
+
+   public String getDeveloper() {
+       return developer;
+   }
+
+   public void setDeveloper(String developer) {
+       this.developer = developer;
    }
 }

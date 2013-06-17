@@ -32,8 +32,9 @@ public class AndroidVariantDaoImpl extends AbstractGenericDao<AndroidVariant, St
     }
 
     @Override
-    public AndroidVariant findByVariantID(String variantID) {
-        return getSingleResultForQuery(createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t where t.variantID = :variantID")
-                .setParameter("variantID", variantID));
+    public AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName) {
+        return getSingleResultForQuery(createQuery("select t from "+AndroidVariant.class.getSimpleName()+" t where t.variantID = :variantID and t.developer = :developer")
+                .setParameter("variantID", variantID)
+                .setParameter("developer", loginName));
     }
 }

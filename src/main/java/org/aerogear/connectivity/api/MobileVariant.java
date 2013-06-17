@@ -45,6 +45,12 @@ public interface MobileVariant {
     String getVariantID();
 
     /**
+     * The Variant-specific "secret", used from {@link MobileVariantInstance} to register themselfs against a variant
+     */
+    void setSecret(String secret);
+    String getSecret();
+
+    /**
      * The collection of installed applications. 
      */
     void setInstances(final Set<MobileVariantInstanceImpl> instances);

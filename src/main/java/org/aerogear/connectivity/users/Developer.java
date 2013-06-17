@@ -17,6 +17,7 @@
 
 package org.aerogear.connectivity.users;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
