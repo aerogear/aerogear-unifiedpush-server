@@ -29,7 +29,7 @@ public interface iOSVariantService {
     void removeiOSVariant(iOSVariant iOSVariant);
     
     List<iOSVariant> findAlliOSVariants();
-    iOSVariant findByVariantID(String variantID);
+    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 
 }

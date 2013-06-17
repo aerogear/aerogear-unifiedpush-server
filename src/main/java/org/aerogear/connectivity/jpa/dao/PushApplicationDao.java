@@ -25,6 +25,7 @@ import org.aerogear.connectivity.model.PushApplication;
 public interface PushApplicationDao extends GenericDao<PushApplication, String> {
     
     List<PushApplication> findAll();
+    List<PushApplication> findAllForDeveloper(String loginName);
+    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
     PushApplication findByPushApplicationID(String pushApplicationID);
-
 }

@@ -42,7 +42,15 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public List<PushApplication> findAllPushApplications() {
         return pushApplicationDao.findAll();
     }
+    public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
+        return pushApplicationDao.findAllForDeveloper(loginName);
+    }
     
+    @Override
+    public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
+        return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName);
+    }
+
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
         return pushApplicationDao.findByPushApplicationID(pushApplicationID);

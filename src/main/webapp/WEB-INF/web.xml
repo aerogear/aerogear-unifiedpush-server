@@ -24,25 +24,4 @@
             <http-only>true</http-only>
         </cookie-config>
     </session-config>
-    <!-- Cookie should only be sent using a secure protocol, such as SSL
-    <session-config>
-        <cookie-config>
-            <secure>true</secure>
-        </cookie-config>
-    </session-config>
-    -->
-    <filter>
-        <filter-name>BasicAuthenticationFilter</filter-name>
-        <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
-        <init-param>
-            <param-name>authType</param-name>
-            <param-value>BASIC</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>BasicAuthenticationFilter</filter-name>
-        <url-pattern>/rest/registry/device/*</url-pattern>
-    </filter-mapping>
-
 </web-app>

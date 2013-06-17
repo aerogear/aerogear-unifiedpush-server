@@ -46,25 +46,19 @@ public class PicketLinkDefaultUsers {
 
         // developers!! developers!! developers!! developers!!
 
-        Developer matzew = new Developer();
-        matzew.setLoginName("matzew");
+        Developer admin = new Developer();
+        admin.setLoginName("admin");
 
         /*
          * Note: Password will be encoded in SHA-512 with SecureRandom-1024 salt
          * See http://lists.jboss.org/pipermail/security-dev/2013-January/000650.html for more information
          */
-        this.identityManager.add(matzew);
-        this.identityManager.updateCredential(matzew, new Password("123"));
+        this.identityManager.add(admin);
+        this.identityManager.updateCredential(admin, new Password("123"));
 
 
         Role roleDeveloper = new SimpleRole("developer");
-
-
         this.identityManager.add(roleDeveloper);
-
-
-        identityManager.grantRole(matzew, roleDeveloper);
-
+        identityManager.grantRole(admin, roleDeveloper);
     }
-
 }

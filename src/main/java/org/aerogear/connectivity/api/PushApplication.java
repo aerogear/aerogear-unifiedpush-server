@@ -30,6 +30,12 @@ public interface PushApplication {
     String getPushApplicationID();
 
     /**
+     * The master password, used for sending message to a {@link PushApplication} or its {@link MobileVariant}s.
+     */
+    void setMasterSecret(String secret);
+    String getMasterSecret();
+
+    /**
      * The collection of iOS Variants. 
      */
     void setIOSApps(final Set<iOSVariant> iOSApps);

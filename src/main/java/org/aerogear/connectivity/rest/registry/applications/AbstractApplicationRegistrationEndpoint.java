@@ -23,9 +23,13 @@ import org.picketlink.Identity;
 
 public class AbstractApplicationRegistrationEndpoint {
     
-    @Inject private Identity identity;
-    protected boolean isAdmin() {
+    @Inject protected Identity identity;
+    protected boolean isDeveloper() {
         // add hasRoles(), once needed
         return identity.isLoggedIn();
+    }
+    
+    protected String loginName() {
+        return identity.getAgent().getLoginName();
     }
 }

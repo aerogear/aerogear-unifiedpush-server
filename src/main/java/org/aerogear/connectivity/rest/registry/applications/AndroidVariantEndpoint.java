@@ -64,12 +64,12 @@ public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpo
            @PathParam("pushAppID") String pushApplicationID,
            @Context UriInfo uriInfo) {
 
-       if (! this.isAdmin()) {
+       if (! this.isDeveloper()) {
            return Response.status(Status.UNAUTHORIZED).build();
        }
 
        // find the root push app
-       PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
+       PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
 
        if (pushApp == null) {
            return Response.status(Status.NOT_FOUND).build();
@@ -82,6 +82,8 @@ public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpo
 
        // manually set the ID:
        androidVariant.setVariantID(UUID.randomUUID().toString());
+       // store the "developer:
+       androidVariant.setDeveloper(this.loginName());
 
        // store the Android variant:
        androidVariant = androidVariantService.addAndroidVariant(androidVariant);
@@ -94,22 +96,22 @@ public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpo
    // READ
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-       if (! this.isAdmin()) {
+   public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
+       if (! this.isDeveloper()) {
            return Response.status(Status.UNAUTHORIZED).build();
        }
 
-       return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
+       return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName()).getAndroidApps()).build();
    }
    @GET
    @Path("/{androidID}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-       if (! this.isAdmin()) {
+       if (! this.isDeveloper()) {
            return Response.status(Status.UNAUTHORIZED).build();
        }
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
+       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
 
        if (androidVariant != null) {
            return Response.ok(androidVariant).build();
@@ -125,11 +127,11 @@ public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpo
            @PathParam("androidID") String androidID,
            AndroidVariant updatedAndroidApplication) {
 
-       if (! this.isAdmin()) {
+       if (! this.isDeveloper()) {
            return Response.status(Status.UNAUTHORIZED).build();
        }
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
+       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
        if (androidVariant != null) {
 
            // poor validation
@@ -152,12 +154,12 @@ public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpo
    @DELETE
    @Path("/{androidID}")
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response deleteAndroidVariation(@PathParam("pushAppID") String id, @PathParam("androidID") String androidID) {
-       if (! this.isAdmin()) {
+   public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
+       if (! this.isDeveloper()) {
            return Response.status(Status.UNAUTHORIZED).build();
        }
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantID(androidID);
+       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
        
        if (androidVariant != null) {
            androidVariantService.removeAndroidVariant(androidVariant);

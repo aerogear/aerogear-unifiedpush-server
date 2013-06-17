@@ -28,7 +28,10 @@ public interface PushApplicationService {
     
     PushApplication addPushApplication(PushApplication pushApp);
     List<PushApplication> findAllPushApplications();
+    List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
+    
     PushApplication findByPushApplicationID(String pushApplicationID);
+    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
     PushApplication updatePushApplication(PushApplication pushApp);
     void removePushApplication(PushApplication pushApp);
     
