@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.aerogear.connectivity</groupId>
     <artifactId>pushee</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>war</packaging>
 
     <parent>
@@ -252,7 +252,7 @@
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
-        <aerogear.security.version>1.0.1-SNAPSHOT</aerogear.security.version>
+        <aerogear.security.version>1.0.1</aerogear.security.version>
 
     </properties>
 
