@@ -15,31 +15,21 @@
  * limitations under the License.
  */
 
-package org.aerogear.connectivity.model;
+package org.aerogear.connectivity.rest.registry.applications;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
+import javax.inject.Inject;
 
-@Entity
-@DiscriminatorValue("'android'")
-public class AndroidVariant extends AbstractMobileVariant {
-    private static final long serialVersionUID = -4473752252296190311L;
+import org.picketlink.Identity;
+
+public class AbstractApplicationRegistrationEndpoint {
     
-    public AndroidVariant() {
-        super();
+    @Inject protected Identity identity;
+    protected boolean isDeveloper() {
+        // add hasRoles(), once needed
+        return identity.isLoggedIn();
     }
-
-    @Column
-    @NotNull
-    private String googleKey;
-
-    public String getGoogleKey() {
-        return this.googleKey;
-    }
-
-    public void setGoogleKey(final String googleKey) {
-        this.googleKey = googleKey;
+    
+    protected String loginName() {
+        return identity.getAgent().getLoginName();
     }
 }

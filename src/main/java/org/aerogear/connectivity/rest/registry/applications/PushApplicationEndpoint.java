@@ -35,22 +35,24 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-//import org.aerogear.connectivity.cdi.interceptor.Secure;
 import org.aerogear.connectivity.model.PushApplication;
 import org.aerogear.connectivity.service.PushApplicationService;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-public class PushApplicationEndpoint {
+public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndpoint {
 
     @Inject private PushApplicationService pushAppService;
 
     // CREATE
-    //@Secure({"admin"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
         // poor validation
         if (pushApp.getName() == null) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -58,29 +60,32 @@ public class PushApplicationEndpoint {
 
         // create ID...
         pushApp.setPushApplicationID(UUID.randomUUID().toString());
+        // store the "developer:
+        pushApp.setDeveloper(loginName());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp).build();
     }
-    
+
     // READ
-    //@Secure({"homer"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications()  {
-        // nope...
-//        if (! identity.isLoggedIn()) {
-//            return Response.status(Status.UNAUTHORIZED).build();
-//        }
-
-        return Response.ok(pushAppService.findAllPushApplications()).build();
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName())).build();
     }
 
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findById(@PathParam("pushAppID") String id) {
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
+    public Response findById(@PathParam("pushAppID") String pushApplicationID) {
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
         
         if (pushApp!=null) {
             return Response.ok(pushApp).build();
@@ -93,9 +98,13 @@ public class PushApplicationEndpoint {
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updatePushApplication(@PathParam("pushAppID") String id, PushApplication updatedPushApp) {
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
-        
+    public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+
         if (pushApp != null) {
 
             // poor validation
@@ -118,13 +127,18 @@ public class PushApplicationEndpoint {
     @DELETE
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deletePushApplication(@PathParam("pushAppID") String id) {
-        PushApplication pushApp = pushAppService.findByPushApplicationID(id);
+    public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
         
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).build();
-    }   
+    }
+
 }

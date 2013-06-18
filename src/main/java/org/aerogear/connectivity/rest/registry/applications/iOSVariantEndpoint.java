@@ -46,7 +46,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-public class iOSVariantEndpoint {
+public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;
@@ -67,8 +67,13 @@ public class iOSVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
 
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationID(pushApplicationID);
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).build();
@@ -88,7 +93,8 @@ public class iOSVariantEndpoint {
         
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
-
+        // store the "developer:
+        iOSVariation.setDeveloper(this.loginName());
         // store the iOS variant:
         iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
 
@@ -100,15 +106,23 @@ public class iOSVariantEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushAppID)  {
-        return Response.ok(pushAppService.findByPushApplicationID(pushAppID)).build();
+    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName()).getIOSApps()).build();
     }
 
     @GET
     @Path("/{iOSID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
-        iOSVariant iOSvariant = iOSVariantService.findByVariantID(iOSID);
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        iOSVariant iOSvariant = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
         
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
@@ -126,7 +140,12 @@ public class iOSVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
         if (iOSVariation != null) {
 
             // poor validation
@@ -151,7 +170,11 @@ public class iOSVariantEndpoint {
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
-        iOSVariant iOSVariation = iOSVariantService.findByVariantID(iOSID);
+        if (! this.isDeveloper()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
         
         if (iOSVariation != null) {
             iOSVariantService.removeiOSVariant(iOSVariation);
@@ -159,5 +182,4 @@ public class iOSVariantEndpoint {
         }
         return Response.status(Status.NOT_FOUND).build();
     }
-  
 }

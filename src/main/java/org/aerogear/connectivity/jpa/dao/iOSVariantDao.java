@@ -25,6 +25,6 @@ import org.aerogear.connectivity.model.iOSVariant;
 public interface iOSVariantDao extends GenericDao<iOSVariant, String> {
     
     List<iOSVariant> findAll();
-    iOSVariant findByVariantID(String variantID);
+    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName) ;
 
 }

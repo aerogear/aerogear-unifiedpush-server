@@ -43,7 +43,7 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
     }
 
     public void delete(E e) {
-        entityManager.joinTransaction();
+        //entityManager.joinTransaction();
         entityManager.remove(e);
     }
 
