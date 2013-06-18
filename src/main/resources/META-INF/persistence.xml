@@ -46,7 +46,7 @@
         <class>org.picketlink.idm.jpa.schema.CredentialObjectAttribute</class>
 
         <!-- Custom "extensions" of PL -->
-        <class>org.aerogear.connectivity.users.Developer</class>
+        <class>org.jboss.aerogear.connectivity.users.Developer</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
