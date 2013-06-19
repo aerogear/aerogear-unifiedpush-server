@@ -17,10 +17,16 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import java.util.UUID;
+import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
+import org.jboss.aerogear.connectivity.model.AndroidVariant;
+import org.jboss.aerogear.connectivity.model.PushApplication;
+import org.jboss.aerogear.connectivity.service.AndroidVariantService;
+import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import org.jboss.aerogear.security.auth.LoggedUser;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,139 +39,128 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.connectivity.model.AndroidVariant;
-import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.service.AndroidVariantService;
-import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import javax.ws.rs.core.UriInfo;
+import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-public class AndroidVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
-    
+public class AndroidVariantEndpoint {
+
     @Inject
     private PushApplicationService pushAppService;
     @Inject
     private AndroidVariantService androidVariantService;
-   
+
+    @Inject
+    @LoggedUser
+    private Instance<String> loginName;
+
 
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============         Android          ======================
     // ===============================================================
-   // new Android
-   @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response registerAndroidVariant(
-           AndroidVariant androidVariant,
-           @PathParam("pushAppID") String pushApplicationID,
-           @Context UriInfo uriInfo) {
+    // new Android
+    @Secure("developer")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerAndroidVariant(
+            AndroidVariant androidVariant,
+            @PathParam("pushAppID") String pushApplicationID,
+            @Context UriInfo uriInfo) {
 
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        // find the root push app
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
-       // find the root push app
-       PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+        if (pushApp == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
 
-       if (pushApp == null) {
-           return Response.status(Status.NOT_FOUND).build();
-       }
+        // poor validation
+        if (androidVariant.getGoogleKey() == null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
 
-       // poor validation
-       if (androidVariant.getGoogleKey() == null) {
-           return Response.status(Status.BAD_REQUEST).build();
-       }
+        // manually set the ID:
+        androidVariant.setVariantID(UUID.randomUUID().toString());
+        // store the "developer:
+        androidVariant.setDeveloper(loginName.get());
 
-       // manually set the ID:
-       androidVariant.setVariantID(UUID.randomUUID().toString());
-       // store the "developer:
-       androidVariant.setDeveloper(this.loginName());
+        // store the Android variant:
+        androidVariant = androidVariantService.addAndroidVariant(androidVariant);
+        // add iOS variant, and merge:
+        pushAppService.addAndroidVariant(pushApp, androidVariant);
 
-       // store the Android variant:
-       androidVariant = androidVariantService.addAndroidVariant(androidVariant);
-       // add iOS variant, and merge:
-       pushAppService.addAndroidVariant(pushApp, androidVariant);
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
+    }
 
-       return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
-   }
+    // READ
+    @Secure("developer")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidApps()).build();
+    }
 
-   // READ
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+    @Secure("developer")
+    @GET
+    @Path("/{androidID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
 
-       return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName()).getAndroidApps()).build();
-   }
-   @GET
-   @Path("/{androidID}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
+        if (androidVariant != null) {
+            return Response.ok(androidVariant).build();
+        }
+        return Response.status(Status.NOT_FOUND).build();
+    }
 
-       if (androidVariant != null) {
-           return Response.ok(androidVariant).build();
-       }
-       return Response.status(Status.NOT_FOUND).build();
-   }
-   // UPDATE
-   @PUT
-   @Path("/{androidID}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response updateAndroidVariation(
-           @PathParam("pushAppID") String id,
-           @PathParam("androidID") String androidID,
-           AndroidVariant updatedAndroidApplication) {
+    // UPDATE
+    @Secure("developer")
+    @PUT
+    @Path("/{androidID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateAndroidVariation(
+            @PathParam("pushAppID") String id,
+            @PathParam("androidID") String androidID,
+            AndroidVariant updatedAndroidApplication) {
 
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        if (androidVariant != null) {
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
-       if (androidVariant != null) {
+            // poor validation
+            if (updatedAndroidApplication.getGoogleKey() == null) {
+                return Response.status(Status.BAD_REQUEST).build();
+            }
 
-           // poor validation
-           if (updatedAndroidApplication.getGoogleKey() == null) {
-               return Response.status(Status.BAD_REQUEST).build();
-           }
+            // apply updated data:
+            androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
+            androidVariant.setName(updatedAndroidApplication.getName());
+            androidVariant.setDescription(updatedAndroidApplication.getDescription());
+            androidVariantService.updateAndroidVariant(androidVariant);
+            return Response.noContent().build();
+        }
 
-           // apply updated data:
-           androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
-           androidVariant.setName(updatedAndroidApplication.getName());
-           androidVariant.setDescription(updatedAndroidApplication.getDescription());
-           androidVariantService.updateAndroidVariant(androidVariant);
-           return Response.noContent().build();
-       }
+        return Response.status(Status.NOT_FOUND).build();
+    }
 
-       return Response.status(Status.NOT_FOUND).build();
-   }
+    // DELETE
+    @Secure("developer")
+    @DELETE
+    @Path("/{androidID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
 
-   // DELETE
-   @DELETE
-   @Path("/{androidID}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
 
-       AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName());
-       
-       if (androidVariant != null) {
-           androidVariantService.removeAndroidVariant(androidVariant);
-           return Response.noContent().build();
-       }
+        if (androidVariant != null) {
+            androidVariantService.removeAndroidVariant(androidVariant);
+            return Response.noContent().build();
+        }
 
-       return Response.status(Status.NOT_FOUND).build();
-   }
+        return Response.status(Status.NOT_FOUND).build();
+    }
 }
