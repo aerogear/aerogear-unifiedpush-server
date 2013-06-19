@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.picketlink.Identity;
 
+@Deprecated
 public class AbstractApplicationRegistrationEndpoint {
     
     @Inject protected Identity identity;

@@ -17,10 +17,14 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import java.util.UUID;
+import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
+import org.jboss.aerogear.connectivity.model.PushApplication;
+import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import org.jboss.aerogear.security.auth.LoggedUser;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -34,24 +38,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
-import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndpoint {
+public class PushApplicationEndpoint {
 
-    @Inject private PushApplicationService pushAppService;
+    @Inject
+    private PushApplicationService pushAppService;
+
+    @Inject
+    @LoggedUser
+    private Instance<String> loginName;
 
     // CREATE
+    @Secure("developer")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
         // poor validation
         if (pushApp.getName() == null) {
@@ -61,33 +66,29 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
         // create ID...
         pushApp.setPushApplicationID(UUID.randomUUID().toString());
         // store the "developer:
-        pushApp.setDeveloper(loginName());
+        pushApp.setDeveloper(loginName.get());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp).build();
     }
 
     // READ
+    @Secure("developer")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllPushApplications()  {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName())).build();
+    public Response listAllPushApplications() {
+        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
     }
 
+    @Secure("developer")
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String pushApplicationID) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
-        
-        if (pushApp!=null) {
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+
+        if (pushApp != null) {
             return Response.ok(pushApp).build();
         }
 
@@ -95,15 +96,13 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
     }
 
     // UPDATE
+    @Secure("developer")
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp != null) {
 
@@ -124,16 +123,14 @@ public class PushApplicationEndpoint extends AbstractApplicationRegistrationEndp
     }
 
     // DELETE
+    @Secure("developer")
     @DELETE
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
-        
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();

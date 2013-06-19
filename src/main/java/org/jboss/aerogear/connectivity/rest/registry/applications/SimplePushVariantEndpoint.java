@@ -17,10 +17,16 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import java.util.UUID;
+import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
+import org.jboss.aerogear.connectivity.model.PushApplication;
+import org.jboss.aerogear.connectivity.model.SimplePushVariant;
+import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import org.jboss.aerogear.connectivity.service.SimplePushVariantService;
+import org.jboss.aerogear.security.auth.LoggedUser;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,139 +39,128 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.model.SimplePushVariant;
-import org.jboss.aerogear.connectivity.service.PushApplicationService;
-import org.jboss.aerogear.connectivity.service.SimplePushVariantService;
+import javax.ws.rs.core.UriInfo;
+import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-public class SimplePushVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
+public class SimplePushVariantEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
     @Inject
     private SimplePushVariantService simplePushVariantService;
 
-   // ===============================================================
-   // =============== Mobile variant construct ======================
-   // ===============        SimplePush        ======================
-   // ===============================================================
-   
-   // new SimplePush
-   @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response registerSimplePushVariant(
-           SimplePushVariant spv,
-           @PathParam("pushAppID") String pushApplicationID,
-           @Context UriInfo uriInfo) {
+    @Inject
+    @LoggedUser
+    private Instance<String> loginName;
 
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+    // ===============================================================
+    // =============== Mobile variant construct ======================
+    // ===============        SimplePush        ======================
+    // ===============================================================
 
-       // find the root push app
-       PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+    // new SimplePush
+    @Secure("developer")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerSimplePushVariant(
+            SimplePushVariant spv,
+            @PathParam("pushAppID") String pushApplicationID,
+            @Context UriInfo uriInfo) {
 
-       if (pushApp == null) {
-           return Response.status(Status.NOT_FOUND).build();
-       }
+        // find the root push app
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
-       // poor validation
-       if (spv.getPushNetworkURL() == null) {
-           return Response.status(Status.BAD_REQUEST).build();
-       }
+        if (pushApp == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
 
-       // manually set the ID:
-       spv.setVariantID(UUID.randomUUID().toString());
-       // store the "developer:
-       spv.setDeveloper(this.loginName());
+        // poor validation
+        if (spv.getPushNetworkURL() == null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
 
-       // store the SimplePush variant:
-       spv = simplePushVariantService.addSimplePushVariant(spv);
-       // add iOS variant, and merge:
-       pushAppService.addSimplePushVariant(pushApp, spv);
+        // manually set the ID:
+        spv.setVariantID(UUID.randomUUID().toString());
+        // store the "developer:
+        spv.setDeveloper(loginName.get());
 
-       return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(spv.getVariantID())).build()).entity(spv).build();
-   }
+        // store the SimplePush variant:
+        spv = simplePushVariantService.addSimplePushVariant(spv);
+        // add iOS variant, and merge:
+        pushAppService.addSimplePushVariant(pushApp, spv);
 
-   // READ
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(spv.getVariantID())).build()).entity(spv).build();
+    }
 
-       return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName()).getSimplePushApps()).build();
-   }
+    // READ
+    @Secure("developer")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-   @GET
-   @Path("/{simplePushID}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushApps()).build();
+    }
 
-       SimplePushVariant spv = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName());
-       if (spv != null) {
-           return Response.ok(spv).build();
-       }
+    @Secure("developer")
+    @GET
+    @Path("/{simplePushID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
 
-       return Response.status(Status.NOT_FOUND).build();
-   }
+        SimplePushVariant spv = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        if (spv != null) {
+            return Response.ok(spv).build();
+        }
 
-   // UPDATE
-   @PUT
-   @Path("/{simplePushID}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response updateSimplePushVariation(
-           @PathParam("pushAppID") String id,
-           @PathParam("simplePushID") String simplePushID,
-           SimplePushVariant updatedSimplePushApplication) {
-       
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+        return Response.status(Status.NOT_FOUND).build();
+    }
 
-       SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName());
-       if (spVariant != null) {
+    // UPDATE
+    @Secure("developer")
+    @PUT
+    @Path("/{simplePushID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateSimplePushVariation(
+            @PathParam("pushAppID") String id,
+            @PathParam("simplePushID") String simplePushID,
+            SimplePushVariant updatedSimplePushApplication) {
 
-           // poor validation
-           if (updatedSimplePushApplication.getPushNetworkURL() == null) {
-               return Response.status(Status.BAD_REQUEST).build();
-           }
+        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        if (spVariant != null) {
 
-           // apply updated data:
-           spVariant.setName(updatedSimplePushApplication.getName());
-           spVariant.setDescription(updatedSimplePushApplication.getDescription());
-           spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
-           simplePushVariantService.updateSimplePushVariant(spVariant);
-           return Response.noContent().build();
-       }
+            // poor validation
+            if (updatedSimplePushApplication.getPushNetworkURL() == null) {
+                return Response.status(Status.BAD_REQUEST).build();
+            }
 
-       return Response.status(Status.NOT_FOUND).build();
-   }
-   // DELETE
-   @DELETE
-   @Path("/{simplePushID}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
-       if (! this.isDeveloper()) {
-           return Response.status(Status.UNAUTHORIZED).build();
-       }
+            // apply updated data:
+            spVariant.setName(updatedSimplePushApplication.getName());
+            spVariant.setDescription(updatedSimplePushApplication.getDescription());
+            spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
+            simplePushVariantService.updateSimplePushVariant(spVariant);
+            return Response.noContent().build();
+        }
 
-       SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName());
-       if (spVariant != null) {
-           simplePushVariantService.removeSimplePushVariant(spVariant);
-           return Response.noContent().build();
-       }
+        return Response.status(Status.NOT_FOUND).build();
+    }
 
-       return Response.status(Status.NOT_FOUND).build();
-   }
+    // DELETE
+    @Secure("developer")
+    @DELETE
+    @Path("/{simplePushID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
+
+        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        if (spVariant != null) {
+            simplePushVariantService.removeSimplePushVariant(spVariant);
+            return Response.noContent().build();
+        }
+
+        return Response.status(Status.NOT_FOUND).build();
+    }
 }
