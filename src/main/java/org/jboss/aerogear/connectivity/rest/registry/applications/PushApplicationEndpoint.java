@@ -40,9 +40,11 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import java.util.UUID;
 
+
 @Stateless
 @TransactionAttribute
 @Path("/applications")
+@Secure("developer")
 public class PushApplicationEndpoint {
 
     @Inject
@@ -53,7 +55,6 @@ public class PushApplicationEndpoint {
     private Instance<String> loginName;
 
     // CREATE
-    @Secure("developer")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
@@ -73,14 +74,12 @@ public class PushApplicationEndpoint {
     }
 
     // READ
-    @Secure("developer")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
         return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
     }
 
-    @Secure("developer")
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +95,6 @@ public class PushApplicationEndpoint {
     }
 
     // UPDATE
-    @Secure("developer")
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -123,7 +121,6 @@ public class PushApplicationEndpoint {
     }
 
     // DELETE
-    @Secure("developer")
     @DELETE
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)

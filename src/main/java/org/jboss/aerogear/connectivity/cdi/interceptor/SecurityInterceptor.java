@@ -42,21 +42,35 @@ public class SecurityInterceptor {
     @AroundInvoke
     public Object invoke(InvocationContext ctx) throws Exception {
 
+        Class clazz = ctx.getTarget().getClass();
+
+        if (clazz.isAnnotationPresent(Secure.class)) {
+            authorize(clazzMetadata(ctx));
+        }
+
         Method method = ctx.getMethod();
 
         if (method.isAnnotationPresent(Secure.class)) {
-
-            Secure annotation = ctx.getMethod().getAnnotation(Secure.class);
-            Set<String> roles = new HashSet<String>(Arrays.asList(annotation.value()));
-            LOGGER.info("\n\n\n\n\n   " + roles);
-            boolean hasRoles = identityManagement.hasRoles(roles);
-            LOGGER.info("\n\n\n\n\n   " + hasRoles);
-
-            if (!hasRoles)
-                throw new UnauthorizedException("Not authorized!");
-
+            authorize(methodMetadata(ctx));
         }
 
         return ctx.proceed();
+    }
+
+    private Set<String> clazzMetadata(InvocationContext ctx) {
+        Secure annotation = ctx.getTarget().getClass().getAnnotation(Secure.class);
+        return new HashSet<String>(Arrays.asList(annotation.value()));
+    }
+
+    private Set<String> methodMetadata(InvocationContext ctx) {
+        Secure annotation = ctx.getMethod().getAnnotation(Secure.class);
+        return new HashSet<String>(Arrays.asList(annotation.value()));
+    }
+
+    private void authorize(Set<String> roles) {
+        boolean hasRoles = identityManagement.hasRoles(roles);
+
+        if (!hasRoles)
+            throw new UnauthorizedException("Not authorized!");
     }
 }
