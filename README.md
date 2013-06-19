@@ -125,7 +125,6 @@ For now, perform HTTP from Android to register the "MobileVariantInstance".
 Here is a _CURL_ example for how to perform the:
 
 ```
-<<<<<<< HEAD
 curl -u "{MobileVariantID}:{secret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
