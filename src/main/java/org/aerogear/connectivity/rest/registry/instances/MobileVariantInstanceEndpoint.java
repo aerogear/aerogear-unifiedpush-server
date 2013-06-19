@@ -54,15 +54,17 @@ public class MobileVariantInstanceEndpoint {
     private MobileVariantService mobileApplicationService;
 
     @OPTIONS
-    @Path("")
     public Response CORSregisterInstallation(@HeaderParam("Access-Control-Request-Headers") String requestHeaders) {
         ResponseBuilder response = Response.ok();
 
-        return response.header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-                .header("Access-Control-Allow-Headers", requestHeaders).header("Content-Type", "text/plain").build();
+        return response.header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .header("Access-Control-Allow-Headers", requestHeaders)
+                .header("Content-Type", "text/plain")
+                .build();
     }
 
-    private Response makeCORS(ResponseBuilder rb) {
+    private Response appendAllowOriginHeader(ResponseBuilder rb) {
         return rb.header("Access-Control-Allow-Origin", "*").build();
     }
 
@@ -102,7 +104,7 @@ public class MobileVariantInstanceEndpoint {
             entity = this.updateMobileApplicationInstance(instances.get(0), entity);
         }
 
-        return makeCORS(Response.ok(entity));
+        return appendAllowOriginHeader(Response.ok(entity));
     }
 
     // TODO: move to JQL
@@ -142,6 +144,6 @@ public class MobileVariantInstanceEndpoint {
         // delete them:
         mobileApplicationInstanceService.removeMobileVariantInstances(instances);
 
-        return Response.noContent().build();
+        return appendAllowOriginHeader(Response.noContent());
     }
 }
