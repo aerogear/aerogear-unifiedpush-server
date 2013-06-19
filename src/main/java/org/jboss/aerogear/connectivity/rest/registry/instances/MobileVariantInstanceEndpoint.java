@@ -28,12 +28,12 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -57,13 +57,19 @@ public class MobileVariantInstanceEndpoint {
     private MobileVariantService mobileApplicationService;
 
     @OPTIONS
-    public Response crossOriginForInstallations(@HeaderParam("Access-Control-Request-Headers") String requestHeaders) {
-        ResponseBuilder response = Response.ok();
+    @Path("{token}")
+    public Response crossOriginForInstallations(
+            @Context HttpHeaders headers,
+            @PathParam("token") String token) {
         
-        return response.header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-                .header("Access-Control-Allow-Headers", requestHeaders)
-                .build();
+        return appendPreflightResponseHeaders(headers, Response.ok()).build();
+    }
+    
+    @OPTIONS
+    public Response crossOriginForInstallations(
+            @Context HttpHeaders headers) {
+        
+        return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
     @POST
@@ -106,7 +112,7 @@ public class MobileVariantInstanceEndpoint {
                     entity);
         }
 
-        return appendAllowOriginHeader(Response.ok());
+        return appendAllowOriginHeader(Response.ok(entity), request);
     }
 
     @DELETE
@@ -130,11 +136,24 @@ public class MobileVariantInstanceEndpoint {
         mobileApplicationInstanceService
                 .removeMobileVariantInstances(instances);
 
-        return appendAllowOriginHeader(Response.noContent());
+        return appendAllowOriginHeader(Response.noContent(), request);
+    }
+    
+    private ResponseBuilder appendPreflightResponseHeaders(@Context HttpHeaders headers, ResponseBuilder response) {
+        // add response headers for the preflight request
+        // required
+        response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0))
+                .header("Access-Control-Allow-Methods", headers.getRequestHeader("Access-Control-Request-Method").get(0));
+        // required if the request has an Access-Control-Request-Headers header
+        if (headers.getRequestHeader("Access-Control-Request-Headers") != null
+                && !headers.getRequestHeader("Access-Control-Request-Headers").isEmpty()) {
+            response.header("Access-Control-Allow-Headers", headers.getRequestHeader("Access-Control-Request-Headers").get(0));
+        }
+        return response;
     }
 
-    private Response appendAllowOriginHeader(ResponseBuilder rb) {
-        return rb.header("Access-Control-Allow-Origin", "*").build();
+    private Response appendAllowOriginHeader(ResponseBuilder rb, @Context HttpServletRequest request) {
+        return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")).build();
     }
 
     // TODO: move to JQL
