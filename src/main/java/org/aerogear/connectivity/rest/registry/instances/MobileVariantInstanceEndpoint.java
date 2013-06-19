@@ -25,14 +25,18 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.aerogear.connectivity.api.MobileVariant;
@@ -49,6 +53,23 @@ public class MobileVariantInstanceEndpoint
     @Inject private MobileVariantInstanceService mobileApplicationInstanceService;
     @Inject private MobileVariantService mobileApplicationService;
 
+    
+    @OPTIONS
+    @Path("")
+    public Response CORSregisterInstallation(@Context HttpServletRequest request) {
+        ResponseBuilder response = Response.ok();
+        
+        response.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.header("Access-Control-Allow-Origin", "*");
+        //response.header("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.header("Access-Control-Allow-Headers", "accept, origin, ag-mobile-variant, content-type");
+        response.header("Content-Type", "text/plain");
+
+        //response.header("Access-Control-Allow-Credentials", "true");
+
+        return response.build();
+    }
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
