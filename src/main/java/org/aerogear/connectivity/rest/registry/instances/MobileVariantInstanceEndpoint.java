@@ -28,11 +28,13 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.aerogear.connectivity.api.MobileVariant;
@@ -43,16 +45,32 @@ import org.aerogear.connectivity.service.MobileVariantService;
 @Stateless
 @Path("/registry/device")
 @TransactionAttribute
-public class MobileVariantInstanceEndpoint
-{
-    @Inject private Logger logger;
-    @Inject private MobileVariantInstanceService mobileApplicationInstanceService;
-    @Inject private MobileVariantService mobileApplicationService;
+public class MobileVariantInstanceEndpoint {
+    @Inject
+    private Logger logger;
+    @Inject
+    private MobileVariantInstanceService mobileApplicationInstanceService;
+    @Inject
+    private MobileVariantService mobileApplicationService;
+
+    @OPTIONS
+    public Response CORSregisterInstallation(@HeaderParam("Access-Control-Request-Headers") String requestHeaders) {
+        ResponseBuilder response = Response.ok();
+
+        return response.header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .header("Access-Control-Allow-Headers", requestHeaders)
+                .header("Content-Type", "text/plain")
+                .build();
+    }
+
+    private Response appendAllowOriginHeader(ResponseBuilder rb) {
+        return rb.header("Access-Control-Allow-Origin", "*").build();
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerInstallation(
-            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
+    public Response registerInstallation(@HeaderParam("ag-mobile-variant") String mobileVariantID,
             MobileVariantInstanceImpl entity) {
 
         // we need the VARIANT. We also require the Token!
@@ -78,7 +96,7 @@ public class MobileVariantInstanceEndpoint
             logger.info("Updating received metadata for MobileVariantInstance");
 
             // should be impossible
-            if (instances.size()>1) {
+            if (instances.size() > 1) {
                 logger.severe("Too many registration for one installation");
             }
 
@@ -86,11 +104,12 @@ public class MobileVariantInstanceEndpoint
             entity = this.updateMobileApplicationInstance(instances.get(0), entity);
         }
 
-        return Response.ok().build();
-   }
-    
+        return appendAllowOriginHeader(Response.ok(entity));
+    }
+
     // TODO: move to JQL
-    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(Set<MobileVariantInstanceImpl> instances, String deviceToken) {
+    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(Set<MobileVariantInstanceImpl> instances,
+            String deviceToken) {
         final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
 
         for (MobileVariantInstanceImpl instance : instances) {
@@ -101,7 +120,8 @@ public class MobileVariantInstanceEndpoint
         return instancesWithToken;
     }
 
-    private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate, MobileVariantInstanceImpl postedVariant) {
+    private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate,
+            MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
         toUpdate.setAlias(postedVariant.getAlias());
@@ -109,15 +129,14 @@ public class MobileVariantInstanceEndpoint
         toUpdate.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
         toUpdate.setOsVersion(postedVariant.getOsVersion());
 
-        //update
+        // update
         return mobileApplicationInstanceService.updateMobileVariantInstance(toUpdate);
     }
 
     @DELETE
     @Path("{token}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response unregisterInstallations(
-            @HeaderParam("ag-mobile-variant") String mobileVariantID, 
+    public Response unregisterInstallations(@HeaderParam("ag-mobile-variant") String mobileVariantID,
             @PathParam("token") String token) {
 
         // there can be multiple regs.........
@@ -125,6 +144,6 @@ public class MobileVariantInstanceEndpoint
         // delete them:
         mobileApplicationInstanceService.removeMobileVariantInstances(instances);
 
-        return Response.noContent().build();
-   }
+        return appendAllowOriginHeader(Response.noContent());
+    }
 }
