@@ -28,12 +28,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.connectivity.api.MobileVariant;
@@ -45,50 +48,66 @@ import org.jboss.aerogear.connectivity.service.MobileVariantService;
 @Stateless
 @Path("/registry/device")
 @TransactionAttribute
-public class MobileVariantInstanceEndpoint
-{
-    @Inject private Logger logger;
-    @Inject private MobileVariantInstanceService mobileApplicationInstanceService;
-    @Inject private MobileVariantService mobileApplicationService;
+public class MobileVariantInstanceEndpoint {
+    @Inject
+    private Logger logger;
+    @Inject
+    private MobileVariantInstanceService mobileApplicationInstanceService;
+    @Inject
+    private MobileVariantService mobileApplicationService;
+
+    @OPTIONS
+    public Response crossOriginForInstallations(@HeaderParam("Access-Control-Request-Headers") String requestHeaders) {
+        ResponseBuilder response = Response.ok();
+        
+        return response.header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .header("Access-Control-Allow-Headers", requestHeaders)
+                .build();
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
             MobileVariantInstanceImpl entity,
             @Context HttpServletRequest request) {
-        
+
         // find the matching variation:
         final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
-            return Response.status(Status.UNAUTHORIZED).entity("Unauthorized Request").build();
+            return Response.status(Status.UNAUTHORIZED)
+                    .entity("Unauthorized Request").build();
         }
-            
+
         // Poor validation: We require the Token!
-        if(entity.getDeviceToken() == null) {
+        if (entity.getDeviceToken() == null) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
         // look up all instances for THIS variant:
-        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(mobileVariant.getInstances(), entity.getDeviceToken());
+        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(
+                mobileVariant.getInstances(), entity.getDeviceToken());
         if (instances.isEmpty()) {
             // store the installation:
-            entity = mobileApplicationInstanceService.addMobileVariantInstance(entity);
+            entity = mobileApplicationInstanceService
+                    .addMobileVariantInstance(entity);
             // add installation to the matching variant
             mobileApplicationService.addInstance(mobileVariant, entity);
         } else {
             logger.info("Updating received metadata for MobileVariantInstance");
 
             // should be impossible
-            if (instances.size()>1) {
+            if (instances.size() > 1) {
                 logger.severe("Too many registration for one installation");
             }
 
             // update the entity:
-            entity = this.updateMobileApplicationInstance(instances.get(0), entity);
+            entity = this.updateMobileApplicationInstance(instances.get(0),
+                    entity);
         }
 
-        return Response.ok().build();
-   }
+        return appendAllowOriginHeader(Response.ok());
+    }
 
     @DELETE
     @Path("{token}")
@@ -100,19 +119,27 @@ public class MobileVariantInstanceEndpoint
         // find the matching variation:
         final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
-            return Response.status(Status.UNAUTHORIZED).entity("Unauthorized Request").build();
+            return Response.status(Status.UNAUTHORIZED)
+                    .entity("Unauthorized Request").build();
         }
 
         // there can be multiple regs.........
-        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService.findMobileVariantInstancesByToken(token);
+        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService
+                .findMobileVariantInstancesByToken(token);
         // delete them:
-        mobileApplicationInstanceService.removeMobileVariantInstances(instances);
+        mobileApplicationInstanceService
+                .removeMobileVariantInstances(instances);
 
-        return Response.noContent().build();
-   }
-    
+        return appendAllowOriginHeader(Response.noContent());
+    }
+
+    private Response appendAllowOriginHeader(ResponseBuilder rb) {
+        return rb.header("Access-Control-Allow-Origin", "*").build();
+    }
+
     // TODO: move to JQL
-    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(Set<MobileVariantInstanceImpl> instances, String deviceToken) {
+    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(
+            Set<MobileVariantInstanceImpl> instances, String deviceToken) {
         final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
 
         for (MobileVariantInstanceImpl instance : instances) {
@@ -123,28 +150,37 @@ public class MobileVariantInstanceEndpoint
         return instancesWithToken;
     }
 
-    private MobileVariantInstanceImpl updateMobileApplicationInstance(MobileVariantInstanceImpl toUpdate, MobileVariantInstanceImpl postedVariant) {
+    private MobileVariantInstanceImpl updateMobileApplicationInstance(
+            MobileVariantInstanceImpl toUpdate,
+            MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
         toUpdate.setAlias(postedVariant.getAlias());
         toUpdate.setDeviceType(postedVariant.getDeviceType());
-        toUpdate.setMobileOperatingSystem(postedVariant.getMobileOperatingSystem());
+        toUpdate.setMobileOperatingSystem(postedVariant
+                .getMobileOperatingSystem());
         toUpdate.setOsVersion(postedVariant.getOsVersion());
 
-        //update
-        return mobileApplicationInstanceService.updateMobileVariantInstance(toUpdate);
+        // update
+        return mobileApplicationInstanceService
+                .updateMobileVariantInstance(toUpdate);
     }
 
     /**
-     * returns application if the masterSecret is valid for the request PushApplication
+     * returns application if the masterSecret is valid for the request
+     * PushApplication
      */
-    private MobileVariant loadMobileVariantWhenAuthorized(HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+    private MobileVariant loadMobileVariantWhenAuthorized(
+            HttpServletRequest request) {
+        // extract the pushApplicationID and its secret from the HTTP Basic
+        // header:
+        String[] credentials = HttpBasicHelper
+                .extractUsernameAndPasswordFromBasicHeader(request);
         String mobileVariantID = credentials[0];
         String secret = credentials[1];
 
-        final MobileVariant mobileVariant = mobileApplicationService.findByVariantID(mobileVariantID);
+        final MobileVariant mobileVariant = mobileApplicationService
+                .findByVariantID(mobileVariantID);
         if (mobileVariant != null && mobileVariant.getSecret().equals(secret)) {
             return mobileVariant;
         }
