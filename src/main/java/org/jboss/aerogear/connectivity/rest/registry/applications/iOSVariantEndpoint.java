@@ -78,7 +78,7 @@ public class iOSVariantEndpoint {
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
         // poor validation
@@ -123,7 +123,7 @@ public class iOSVariantEndpoint {
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 
     // UPDATE
@@ -153,7 +153,7 @@ public class iOSVariantEndpoint {
             iOSVariantService.updateiOSVariant(iOSVariation);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 
     // DELETE
@@ -170,6 +170,6 @@ public class iOSVariantEndpoint {
             iOSVariantService.removeiOSVariant(iOSVariation);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 }

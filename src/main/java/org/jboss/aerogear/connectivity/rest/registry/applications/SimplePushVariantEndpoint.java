@@ -75,7 +75,7 @@ public class SimplePushVariantEndpoint {
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
         // poor validation
@@ -114,7 +114,7 @@ public class SimplePushVariantEndpoint {
             return Response.ok(spv).build();
         }
 
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 
     // UPDATE
@@ -142,7 +142,7 @@ public class SimplePushVariantEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 
     // DELETE
@@ -159,6 +159,6 @@ public class SimplePushVariantEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
 }

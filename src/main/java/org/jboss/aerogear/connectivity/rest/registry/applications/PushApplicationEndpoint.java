@@ -91,7 +91,7 @@ public class PushApplicationEndpoint {
             return Response.ok(pushApp).build();
         }
 
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
     // UPDATE
@@ -117,7 +117,7 @@ public class PushApplicationEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
     // DELETE
@@ -132,7 +132,7 @@ public class PushApplicationEndpoint {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
 }
