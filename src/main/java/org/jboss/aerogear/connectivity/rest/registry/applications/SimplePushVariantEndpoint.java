@@ -149,10 +149,12 @@ public class SimplePushVariantEndpoint {
     @DELETE
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteSimplePushVariation(@PathParam("pushAppID") String id, @PathParam("simplePushID") String simplePushID) {
+    public Response deleteSimplePushVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("simplePushID") String simplePushID) {
 
         SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
+            PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+            pushApp.getSimplePushApps().remove(spVariant);
             simplePushVariantService.removeSimplePushVariant(spVariant);
             return Response.noContent().build();
         }

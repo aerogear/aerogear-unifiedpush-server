@@ -25,6 +25,6 @@ public interface MobileVariantInstanceService {
 
     MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
     MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
-    List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(String token);
+    List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token);
     void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
 }

@@ -160,11 +160,13 @@ public class iOSVariantEndpoint {
     @DELETE
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
+    public Response deleteiOSVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("iOSID") String iOSID) {
 
         iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
-        
+
         if (iOSVariation != null) {
+            PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+            pushApp.getIOSApps().remove(iOSVariation);
             iOSVariantService.removeiOSVariant(iOSVariation);
             return Response.noContent().build();
         }

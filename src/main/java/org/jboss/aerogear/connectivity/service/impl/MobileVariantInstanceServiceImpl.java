@@ -35,8 +35,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     }
 
     @Override
-    public List<MobileVariantInstanceImpl> findMobileVariantInstancesByToken(
-            String token) {
+    public List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token) {
         return dao.findByToken(token);
     }
 

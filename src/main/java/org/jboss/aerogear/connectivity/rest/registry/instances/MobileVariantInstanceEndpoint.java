@@ -129,12 +129,21 @@ public class MobileVariantInstanceEndpoint {
                     .entity("Unauthorized Request").build();
         }
 
-        // there can be multiple regs.........
-        List<MobileVariantInstanceImpl> instances = mobileApplicationInstanceService
-                .findMobileVariantInstancesByToken(token);
-        // delete them:
-        mobileApplicationInstanceService
-                .removeMobileVariantInstances(instances);
+        // look up all instances for THIS variant:
+        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(mobileVariant.getInstances(), token);
+
+        if (instances.isEmpty()) {
+            return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
+        } else {
+            logger.info("Deleting metadata MobileVariantInstance");
+
+            // (currently) there is only one:
+            MobileVariantInstanceImpl installationToDelete = instances.get(0);
+
+            // remove
+            mobileVariant.getInstances().remove(installationToDelete);
+            mobileApplicationInstanceService.removeMobileVariantInstances(instances);
+        }
 
         return appendAllowOriginHeader(Response.noContent(), request);
     }
