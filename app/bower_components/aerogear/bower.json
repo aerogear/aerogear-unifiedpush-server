@@ -1,0 +1,42 @@
+{
+  "name": "aerogear",
+  "title": "AeroGear JavaScript Library",
+  "description": "Provides a lightweight set of utilities for communication, security, storage and more.",
+  "homepage": "https://github.com/aerogear/aerogear-js",
+  "author": {
+    "name": "Red Hat, Inc.",
+    "url": "http://aerogear.org"
+  },
+  "maintainers": {
+    "name": "Kris Borchers",
+    "email": "kris@redhat.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aerogear/aerogear-js-dist.git"
+  },
+  "bugs": {
+    "url": "https://issues.jboss.org/browse/AEROGEAR"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "version": "1.0.1",
+  "main": "./aerogear.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "jquery": "1.8.x"
+  },
+  "devDependencies": {},
+  "gitHead": "ab16f174e23f4ea4f7b0e86495090603a2f50a1d",
+  "readme": "## AeroGear.js Distribution Repo",
+  "readmeFilename": "README.md",
+  "_id": "aerogear@1.0.1"
+}
