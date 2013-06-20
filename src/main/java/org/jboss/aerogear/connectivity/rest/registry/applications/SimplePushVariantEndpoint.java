@@ -46,6 +46,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
+@Secure("developer")
 public class SimplePushVariantEndpoint {
 
     @Inject
@@ -63,7 +64,6 @@ public class SimplePushVariantEndpoint {
     // ===============================================================
 
     // new SimplePush
-    @Secure("developer")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerSimplePushVariant(
@@ -97,7 +97,6 @@ public class SimplePushVariantEndpoint {
     }
 
     // READ
-    @Secure("developer")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
@@ -105,7 +104,6 @@ public class SimplePushVariantEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushApps()).build();
     }
 
-    @Secure("developer")
     @GET
     @Path("/{simplePushID}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,7 +118,6 @@ public class SimplePushVariantEndpoint {
     }
 
     // UPDATE
-    @Secure("developer")
     @PUT
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -149,7 +146,6 @@ public class SimplePushVariantEndpoint {
     }
 
     // DELETE
-    @Secure("developer")
     @DELETE
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)

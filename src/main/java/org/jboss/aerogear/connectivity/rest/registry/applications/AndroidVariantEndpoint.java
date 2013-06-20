@@ -46,6 +46,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
+@Secure("developer")
 public class AndroidVariantEndpoint {
 
     @Inject
@@ -63,7 +64,6 @@ public class AndroidVariantEndpoint {
     // ===============         Android          ======================
     // ===============================================================
     // new Android
-    @Secure("developer")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerAndroidVariant(
@@ -97,14 +97,12 @@ public class AndroidVariantEndpoint {
     }
 
     // READ
-    @Secure("developer")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidApps()).build();
     }
 
-    @Secure("developer")
     @GET
     @Path("/{androidID}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -119,7 +117,6 @@ public class AndroidVariantEndpoint {
     }
 
     // UPDATE
-    @Secure("developer")
     @PUT
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -148,7 +145,6 @@ public class AndroidVariantEndpoint {
     }
 
     // DELETE
-    @Secure("developer")
     @DELETE
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
