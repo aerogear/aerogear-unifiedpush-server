@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -36,22 +37,29 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
 import org.jboss.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.connectivity.service.PushApplicationService;
 import org.jboss.aerogear.connectivity.service.iOSVariantService;
+import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint {
+@Secure("developer")
+public class iOSVariantEndpoint {
     
     @Inject
     private PushApplicationService pushAppService;
     @Inject
     private iOSVariantService iOSVariantService;
+
+    @Inject
+    @LoggedUser
+    private Instance<String> loginName;
    
     
     // ===============================================================
@@ -66,14 +74,8 @@ public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint 
             @MultipartForm iOSApplicationUploadForm form, 
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
-
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-
-
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).build();
@@ -94,7 +96,7 @@ public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint 
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
-        iOSVariation.setDeveloper(this.loginName());
+        iOSVariation.setDeveloper(loginName.get());
         // store the iOS variant:
         iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
 
@@ -107,22 +109,16 @@ public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName()).getIOSApps()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSApps()).build();
     }
 
     @GET
     @Path("/{iOSID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        iOSVariant iOSvariant = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
+        iOSVariant iOSvariant = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
@@ -140,12 +136,7 @@ public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint 
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-
-
-        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         if (iOSVariation != null) {
 
             // poor validation
@@ -170,11 +161,8 @@ public class iOSVariantEndpoint extends AbstractApplicationRegistrationEndpoint 
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteiOSVariation(@PathParam("pushAppID") String id, @PathParam("iOSID") String iOSID) {
-        if (! this.isDeveloper()) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
 
-        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName());
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         
         if (iOSVariation != null) {
             iOSVariantService.removeiOSVariant(iOSVariation);
