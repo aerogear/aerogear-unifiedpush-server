@@ -159,12 +159,6 @@
             <version>1.7.14</version>
         </dependency>
 
-        <!-- Apache Oltu -->
-        <dependency>
-            <groupId>org.apache.oltu.oauth2</groupId>
-            <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
-            <version>0.31-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-security</artifactId>
