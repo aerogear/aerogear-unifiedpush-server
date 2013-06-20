@@ -55,6 +55,7 @@ public class SecurityInterceptorTest {
         MockitoAnnotations.initMocks(this);
         mobileAppEndpoint = new MobileAppEndpoint();
         roles = new HashSet<String>();
+        when(invocationContext.getTarget()).thenReturn(mobileAppEndpoint);
     }
 
     @Test
