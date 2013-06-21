@@ -19,7 +19,8 @@ module.exports = function (grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp/admin"
     };
 
     grunt.initConfig({
@@ -223,6 +224,14 @@ module.exports = function (grunt) {
                         'generated/*'
                     ]
                 }]
+            },
+            webapp: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.webapp %>',
+                    src: [ "**", "!**/*.txt" ]
+                }]
             }
         },
         concurrent: {
@@ -274,4 +283,6 @@ module.exports = function (grunt) {
         'test',
         'build'
     ]);
+
+    grunt.registerTask('cw', ['copy:webapp']);
 };

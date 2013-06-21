@@ -13,32 +13,37 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <div id="rcue-login-screen">
-            <img id="logo" src="images/login-screen-logo.png">
-            <form id="login">
-              <fieldset>
-                <legend><strong>AeroGear</strong> Unified Push Server</legend>
-                <p>
-                  <label>Username</label>
-                  <input type="text" name="loginName">
-                </p>
-                <p>
-                  <label>Password</label>
-                  <input type="password" name="password">
-                </p>
-                <small>
-                  <input type="checkbox">Remember Username<br>
-                   Forgot <a href="#">Username</a> or <a href="#">Password</a>?
-                </small>
-                <button class="primary">Log In</button>
-              </fieldset>
-              <aside>
-                <p><strong>Domain:</strong> 10.0.0.1</p>
-                <p><strong>Zone:</strong> Live</p>
-                <p><strong>Appliance:</strong> Yep</p>
-              </aside>
-            </form>
-        </div>
+        <script type="text/x-handlebars">
+        Main Page
+            {{outlet}}
+        </script>
+        <script type="text/x-handlebars" data-template-name="main">
+            Index Page
+            {{description}}
+        </script>
+        <script type="text/x-handlebars" data-template-name="login">
+            <div id="rcue-login-screen">
+                <img id="logo" src="images/login-screen-logo.png">
+                <form id="login" {{action login on="submit"}}>
+                  <fieldset>
+                    <legend><strong>AeroGear</strong> Unified Push Server</legend>
+                    <p>
+                      <label>Username</label>
+                      <input type="text" name="loginName">
+                    </p>
+                    <p>
+                      <label>Password</label>
+                      <input type="password" name="password">
+                    </p>
+                    <small>
+                      <input type="checkbox">Remember Username<br>
+                       Forgot <a href="#">Username</a> or <a href="#">Password</a>?
+                    </small>
+                    <button class="primary">Log In</button>
+                  </fieldset>
+                </form>
+            </div>
+        </script>
 
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
@@ -46,6 +51,8 @@
 
         <!-- build:js scripts/main.js -->
         <script src="bower_components/jquery/jquery.min.js"></script>
+        <script src="bower_components/handlebars/handlebars.js"></script>
+        <script src="bower_components/ember/ember.js"></script>
         <script src="bower_components/aerogear/aerogear.min.js"></script>
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
