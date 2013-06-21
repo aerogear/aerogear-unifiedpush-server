@@ -13,17 +13,31 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <div class="container">
-            <div class="hero-unit">
-                <h1>'Allo, 'Allo!</h1>
-                <p>You now have</p>
-                <ul>
-                    <li>HTML5 Boilerplate</li>
-                    <li>Twitter Bootstrap</li>
-                </ul>
-                <p>installed.</p>
-                <h3>Enjoy coding! - Yeoman</h3>
-            </div>
+        <div id="rcue-login-screen">
+            <img id="logo" src="images/login-screen-logo.png">
+            <form id="login">
+              <fieldset>
+                <legend><strong>AeroGear</strong> Unified Push Server</legend>
+                <p>
+                  <label>Username</label>
+                  <input type="text" name="loginName">
+                </p>
+                <p>
+                  <label>Password</label>
+                  <input type="password" name="password">
+                </p>
+                <small>
+                  <input type="checkbox">Remember Username<br>
+                   Forgot <a href="#">Username</a> or <a href="#">Password</a>?
+                </small>
+                <button class="primary">Log In</button>
+              </fieldset>
+              <aside>
+                <p><strong>Domain:</strong> 10.0.0.1</p>
+                <p><strong>Zone:</strong> Live</p>
+                <p><strong>Appliance:</strong> Yep</p>
+              </aside>
+            </form>
         </div>
 
         <!--[if lt IE 7]>

@@ -33,6 +33,8 @@ var adminApp = {
         //Create AeroGear DataManager store
         //this.aerogear.applicationsStore = AeroGear.DataManager( "applicationsStore" ).stores.applicationsStore;
 
+        //Setup event handlers
+        $( "form#login" ).on( "submit", this.login );
         console.log( "initialized" );
     },
     forceLogin: function() {
@@ -40,9 +42,13 @@ var adminApp = {
         //route to the login page
         console.log( "going to login page" );
     },
-    login: function() {
-        var data = JSON.stringify( { "loginName": "admin", "password": "123" } );
-        this.aerogear.authenticator.login( data, {
+    login: function( event ) {
+        event.preventDefault();
+
+        var form = $( this ),
+            data = form.serializeObject();
+
+        adminApp.aerogear.authenticator.login( JSON.stringify( data ), {
             contentType: "application/json",
             success: function( success ) {
                 console.log( "Logged in", success );
@@ -150,6 +156,23 @@ var adminApp = {
         console.log( pushApplicationId, variantId );
         console.log( "TODO" );
     }
+};
+
+// Serializes a form to a JavaScript Object
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each( a, function() {
+        if ( o[ this.name ] ) {
+            if ( !o[ this.name ].push ) {
+                o[ this.name ] = [ o[ this.name ] ];
+            }
+            o[ this.name ].push( this.value || '' );
+        } else {
+            o[ this.name ] = this.value || '';
+        }
+    });
+    return o;
 };
 
 adminApp.init();
