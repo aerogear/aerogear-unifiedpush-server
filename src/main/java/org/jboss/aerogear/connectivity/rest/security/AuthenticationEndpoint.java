@@ -17,10 +17,12 @@
 
 package org.jboss.aerogear.connectivity.rest.security;
 
+import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
 import org.jboss.aerogear.connectivity.users.Developer;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
+import org.picketlink.idm.IdentityManagementException;
 
 
 import javax.ejb.Stateless;
@@ -41,10 +43,24 @@ public class AuthenticationEndpoint {
     @Inject private IdentityManagement configuration;
 
 
-//    @Path("/enroll")
-//    public void enroll(final SimpleUser user, final String password) {
-//        configuration.create(user, password);
-//    }
+    @POST
+    @Path("/enroll")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secure("developer") // should be something like an Admin
+    public Response enroll(final Developer developer) {
+        // creating a user and granting rights:
+        try {
+            configuration.create(developer, developer.getPassword());
+            configuration.grant("developer").to(developer.getLoginName());
+
+        } catch (IdentityManagementException ime) {
+            return Response.status(Status.BAD_REQUEST).entity("username not available").build();
+        }
+
+        return Response.ok(developer).build();
+        
+    }
 
     @POST
     @Path("/login")
