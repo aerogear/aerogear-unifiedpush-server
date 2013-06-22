@@ -13,17 +13,14 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <script type="text/x-handlebars">
-        Main Page
+        <script type="text/x-handlebars" data-template-name="application">
+        <header>Header</header>
             {{outlet}}
+        <footer>Footer</footer>
         </script>
-        <script type="text/x-handlebars" data-template-name="main">
-            Index Page
-            {{description}}
-        </script>
+
         <script type="text/x-handlebars" data-template-name="login">
-            <div id="rcue-login-screen">
-                <img id="logo" src="images/login-screen-logo.png">
+            <div>
                 <form id="login" {{action login on="submit"}}>
                   <fieldset>
                     <legend><strong>AeroGear</strong> Unified Push Server</legend>
@@ -43,6 +40,16 @@
                   </fieldset>
                 </form>
             </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="applications">
+            Push Applications
+            {{#each app in model.apps}}
+                {{app.description}}
+            {{/each}}
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="applications/variants">
         </script>
 
         <!--[if lt IE 7]>

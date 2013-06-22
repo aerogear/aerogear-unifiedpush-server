@@ -1,4 +1,4 @@
-var adminApp = {
+/*var adminApp = {
     init: function() {
 
         //this.aerogear.applicationsStore = AeroGear.DataManager( "applicationsStore" ).stores.applicationsStore;
@@ -104,9 +104,93 @@ var adminApp = {
         console.log( pushApplicationId, variantId );
         console.log( "TODO" );
     }
-},
-App = Ember.Application.create();
+},*/
 
+var App = Ember.Application.create({
+    LOG_TRANSITIONS: true
+});
+
+
+/*
+Router
+*/
+App.Router.map( function() {
+    this.route( "login" );
+    this.route( "applications" );
+});
+
+App.IndexRoute = Ember.Route.extend({
+    redirect: function() {
+        this.transitionTo( "applications" );
+    }
+});
+
+/*
+An Object Representing a list of Mobile Apps
+*/
+App.MobileApplications = Ember.Object.extend({});
+
+/*
+Login Route
+*/
+App.LoginRoute = Ember.Route.extend({
+    events: {
+        login: function() {
+            var that = this,
+                data = $( "form#login" ).serializeObject();
+
+            App.AeroGear.authenticator.login( JSON.stringify( data ), {
+                contentType: "application/json",
+                success: function( success ) {
+                    that.transitionTo( "applications" );
+                    console.log( "Logged in", success );
+                },
+                error: function( error ) {
+                    console.log( "Error Logging in", error );
+                }
+            });
+        }
+    }
+});
+
+/*
+Mobile Applications Route
+*/
+App.ApplicationsRoute = Ember.Route.extend({
+    model: function() {
+        return App.MobileApplications.create( { apps: [] } );
+    },
+    setupController: function( controller, model ) {
+        model.setProperties(this.getMobileApplication( model ));
+    },
+    getMobileApplication: function( model, applicationPushId ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            that = this;
+
+        applicationPipe.read({
+            id: applicationPushId,
+            success: function( response ) {
+                console.log( "application reponse", response );
+                model.setProperties( { apps: response } );
+            },
+            error: function( error ) {
+                console.log( "error with application endpoint", error );
+                switch( error.status ) {
+                case 401:
+                    that.transitionTo( "login" );
+                    break;
+                default:
+                    that.transitionTo( "login" );
+                    break;
+                }
+            }
+        });
+    }
+});
+
+/*
+AeroGear related things
+*/
 App.AeroGear = {};
 
 App.AeroGear.authenticator = AeroGear.Auth({
@@ -134,78 +218,6 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
         }
     }
 ]);
-
-App.Router.map( function() {
-    this.route( "main" );
-    this.route( "login" );
-});
-
-App.ApplicationRoute = Ember.Route.extend({
-    //Other Setup
-});
-
-App.IndexRoute = Ember.Route.extend({
-    redirect: function(){
-        this.transitionTo( "main" );
-    }
-});
-
-App.MobileApp = Ember.Object.extend({});
-
-App.MainRoute = Ember.Route.extend({
-    model: function() {
-        console.log( "model" );
-        return App.MobileApp.create({"description": "woo"});
-    },
-    forceLogin: function() {
-        this.transitionTo( "login" );
-    },
-    getMobileApplication: function( applicationId ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            that = this;
-
-        applicationPipe.read({
-            id: applicationId,
-            success: function( response ) {
-                console.log( "application reponse", response );
-                return response[ 0 ];
-            },
-            error: function( error ) {
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    that.forceLogin();
-                    break;
-                default:
-                    that.forceLogin();
-                    break;
-                }
-            }
-        });
-    }
-});
-
-App.LoginRoute = Ember.Route.extend({
-    events: {
-        login: function() {
-            var that = this,
-                data = $( "form#login" ).serializeObject();
-
-            App.AeroGear.authenticator.login( JSON.stringify( data ), {
-                contentType: "application/json",
-                success: function( success ) {
-                    that.transitionTo( "main" );
-                    console.log( "Logged in", success );
-                },
-                error: function( error ) {
-                    console.log( "Error Logging in", error );
-                }
-            });
-        }
-    }
-});
-
-
 
 // Serializes a form to a JavaScript Object
 $.fn.serializeObject = function() {
