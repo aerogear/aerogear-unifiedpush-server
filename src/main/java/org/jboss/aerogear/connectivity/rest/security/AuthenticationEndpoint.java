@@ -47,7 +47,7 @@ public class AuthenticationEndpoint {
     @Path("/enroll")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secure("developer") // should be something like an Admin
+    @Secure("admin")
     public Response enroll(final Developer developer) {
         // creating a user and granting rights:
         try {
