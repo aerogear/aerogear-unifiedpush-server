@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.aerogear.connectivity.api.MobileVariant;
@@ -47,6 +48,7 @@ public  class AbstractMobileVariant extends PersistentObject implements MobileVa
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn
     private Set<MobileVariantInstanceImpl> instances = new HashSet<MobileVariantInstanceImpl>();
 
     public String getName() {

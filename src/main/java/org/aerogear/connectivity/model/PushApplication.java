@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -43,14 +44,17 @@ public class PushApplication extends PersistentObject {
 
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn
     private Set<iOSVariant> iOSApps = new HashSet<iOSVariant>();
 
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn
     private Set<AndroidVariant> androidApps = new HashSet<AndroidVariant>();
     
     // TODO: let's do LAZY
     @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn
     private Set<SimplePushVariant> simplePushApps = new HashSet<SimplePushVariant>();
     
     
