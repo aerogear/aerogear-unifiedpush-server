@@ -58,7 +58,10 @@ public class PicketLinkDefaultUsers {
 
 
         Role roleDeveloper = new SimpleRole("developer");
+        Role roleAdmin = new SimpleRole("admin");
         this.identityManager.add(roleDeveloper);
+        this.identityManager.add(roleAdmin);
         identityManager.grantRole(admin, roleDeveloper);
+        identityManager.grantRole(admin, roleAdmin);
     }
 }
