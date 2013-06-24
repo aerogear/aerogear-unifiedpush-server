@@ -82,7 +82,9 @@ public class MobileVariantInstanceEndpoint {
         final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
             return Response.status(Status.UNAUTHORIZED)
-                    .entity("Unauthorized Request").build();
+                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .entity("Unauthorized Request")
+                    .build();
         }
 
         // Poor validation: We require the Token!
@@ -126,7 +128,9 @@ public class MobileVariantInstanceEndpoint {
         final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
             return Response.status(Status.UNAUTHORIZED)
-                    .entity("Unauthorized Request").build();
+                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .entity("Unauthorized Request")
+                    .build();
         }
 
         // look up all instances for THIS variant:
