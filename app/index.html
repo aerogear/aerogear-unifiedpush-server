@@ -10,15 +10,17 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" type="text/css" href="styles/topcoat-desktop-dark.min.css">
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <script type="text/x-handlebars" data-template-name="application">
-        <header>Header</header>
-            {{outlet}}
-        <footer>Footer</footer>
+
+        <!--The Application Template-->
+        <script type="text/x-handlebars">
+                {{outlet}}
         </script>
 
+        <!--The Login Page Template-->
         <script type="text/x-handlebars" data-template-name="login">
             <div>
                 <form id="login" {{action login on="submit"}}>
@@ -42,16 +44,107 @@
             </div>
         </script>
 
-        <script type="text/x-handlebars" data-template-name="applications">
-            Push Applications
-            {{#each app in model.apps}}
-                {{app.description}}
-            {{/each}}
+        <!-- The Main Admin UI Template-->
+        <script type="text/x-handlebars" data-template-name="mobileApps">
+            <div class="topcoat-navigation-bar">
+                <div class="topcoat-navigation-bar__item left half">
+                    <h1 class="topcoat-navigation-bar__title">AeroGear Unified Push Server</h1>
+                </div>
+                <div class="topcoat-navigation-bar__item right half">
+                    <a href="#" {{ action logout this }} >Logout </a>
+                </div>
+            </div>
+            {{outlet}}
         </script>
 
-        <script type="text/x-handlebars" data-template-name="applications/variants">
+        <!-- The Mobile Applications Template -->
+        <script type="text/x-handlebars" data-template-name="mobileApps/index">
+            <div>
+                Push Applications
+                <div>
+                    The AeroGear Unified Push Server sends push notifications to any of your mobile applications using different push networks
+                </div>
+                <div>
+                    {{#if model.isLoaded}}
+                        {{#if model.error}}
+                            There was an error: {{model.error.responseText}}
+                        {{/if}}
+                        {{ partial "appsList" }}
+                    {{else}}
+                        Loading Mobile Applications...Please Wait
+                {{/if}}
+                </div>
+            </div>
         </script>
 
+        <!-- The Mobile Applications List Partial-->
+        <script type="text/x-handlebars" data-template-name="_appsList">
+            <div>
+                <table border=1>
+                    <tr>
+                        <td colspan="3">
+                            Please start by adding a push network - {{#linkTo "appcreate"}}Add New{{/linkTo}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                    {{#each app in model.apps}}
+                        <tr>
+                            <td>
+                                {{#linkTo "app" app.pushApplicationID }}{{ app.name }}{{/linkTo}}
+                            </td>
+                            <td>
+                                TODO
+                            </td>
+                            <td>
+                                {{ app.description }}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="appcreate">
+            <div>Add Push Application</div>
+            <div>
+                <div>
+                    <form {{action add on="submit"}} target="view">
+                  <fieldset>
+                    <p>
+                      <label>Name</label>
+                      {{input type="text" value=name}}
+                    </p>
+                    <p>
+                      <label>Description</label>
+                      {{input type="text" value=description}}
+                    </p>
+                    <button class="primary">Next</button>
+                  </fieldset>
+                </form>
+                </div>
+            </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="app">
+            Mobile Detail Index Template
+            {{model}}
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="app/variants">
+            Variant Template
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="networks">
+            Network Template
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="instances">
+            Instance Template
+        </script>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -63,5 +156,8 @@
         <script src="bower_components/aerogear/aerogear.min.js"></script>
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
+
+        <script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
+        <script src="scripts/mocks/mock.js"></script>
 </body>
 </html>
