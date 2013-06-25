@@ -54,7 +54,10 @@ public class PushNotificationSenderEndpoint {
         
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
-          return Response.status(Status.UNAUTHORIZED).entity("Unauthorized Request").build();
+          return Response.status(Status.UNAUTHORIZED)
+                  .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                  .entity("Unauthorized Request")
+                  .build();
         }
 
         // submitted to @Async EJB:
@@ -72,7 +75,10 @@ public class PushNotificationSenderEndpoint {
         
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
-          return Response.status(Status.UNAUTHORIZED).entity("Unauthorized Request").build();
+          return Response.status(Status.UNAUTHORIZED)
+                  .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                  .entity("Unauthorized Request")
+                  .build();
         }
 
         // submitted to @Async EJB:
