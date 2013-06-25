@@ -1,0 +1,19 @@
+{ "testswarm" : {
+  "name" : "jQuery Mockjax Commit <a href=\"http://github.com/appendto/jquery-mockjax/commit/{$REV_FULL$}\">#{$REV$}</a>",
+  "jobs" : [
+    { "browsers" : "popular",
+      "suites"   : {
+        "jquery-1.3" : "test/index.html?jquery=1.3.2"
+      }
+    },
+    { "browsers" : "popularbetamobile",
+      "suites"   : {
+        "jquery-1.4" : "test/index.html?jquery=1.4.4",
+        "jquery-1.5" : "test/index.html?jquery=1.5.2",
+        "jquery-1.6" : "test/index.html?jquery=1.6.4",
+        "jquery-1.7" : "test/index.html?jquery=1.7"
+      }
+    }
+  ]
+  }
+}

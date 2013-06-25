@@ -1,0 +1,8 @@
+{
+	"globals": {
+		"ActiveXObject": false,
+		"console": false
+	},
+	"browser": true,
+	"jquery": true
+}
