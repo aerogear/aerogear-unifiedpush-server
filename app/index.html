@@ -65,11 +65,12 @@
                     The AeroGear Unified Push Server sends push notifications to any of your mobile applications using different push networks
                 </div>
                 <div>
-                    {{#if model.isLoaded}}
+                    {{#if isLoaded}}
                         {{#if model.error}}
-                            There was an error: {{model.error.responseText}}
+                            There was an error: {{error}}
+                        {{else}}
+                            {{ partial "appsList" }}
                         {{/if}}
-                        {{ partial "appsList" }}
                     {{else}}
                         Loading Mobile Applications...Please Wait
                 {{/if}}
@@ -83,7 +84,7 @@
                 <table border=1>
                     <tr>
                         <td colspan="3">
-                            Please start by adding a push network - {{#linkTo "appcreate"}}Add New{{/linkTo}}
+                            Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +92,7 @@
                         <th>Status</th>
                         <th>Description</th>
                     </tr>
-                    {{#each app in model.apps}}
+                    {{#each app in apps}}
                         <tr>
                             <td>
                                 {{#linkTo "app" app.pushApplicationID }}{{ app.name }}{{/linkTo}}
@@ -130,9 +131,15 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="app">
-            Mobile Detail Index Template
-            {{model}}
+            Mobile Detail Main Page
+            {{ model.id }}
+            {{ outlet }}
         </script>
+
+         <script type="text/x-handlebars" data-template-name="app/index">
+            Super Cool Apps
+             {{model}}
+         </script>
 
         <script type="text/x-handlebars" data-template-name="app/variants">
             Variant Template

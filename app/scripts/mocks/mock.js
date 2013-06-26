@@ -21,7 +21,7 @@ var apps = [
     }
 ];
 
-var baseURL = "ag-push/rest/";
+var baseURL = "/ag-push/rest/";
 
 $.mockjax({
     type: "GET",

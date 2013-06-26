@@ -103,11 +103,6 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 /*
-    Ember Application Controller.
-*/
-//App.ApplicationController = Ember.Controller.extend({});
-
-/*
     Login Route
 */
 App.LoginRoute = Ember.Route.extend({
@@ -123,7 +118,6 @@ App.LoginRoute = Ember.Route.extend({
                     console.log( "Logged in", success );
                 },
                 error: function( error ) {
-                    that.transitionTo( "mobileApps" );
                     console.log( "Error Logging in", error );
                 }
             });
@@ -133,39 +127,16 @@ App.LoginRoute = Ember.Route.extend({
 
 /*
     Mobile Applications Index Route
+
+    Load All Mobile Applications or Load Just One
 */
 App.MobileAppsIndexRoute = Ember.Route.extend({
     model: function() {
-        return App.mobileApplicationsInstance;
-    },
-    setupController: function( controller, model ) {
-        model.setProperties(this.getMobileApplication( model ));
-    },
-    getMobileApplication: function( model, applicationPushId ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            that = this;
-
-        applicationPipe.read({
-            id: applicationPushId,
-            success: function( response ) {
-                console.log( "application reponse", response );
-                model.setProperties( { apps: response, isLoaded: true } );
-            },
-            error: function( error ) {
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionTo( "login" );
-                    break;
-                default:
-                    //that.transitionTo( "login" );
-                    model.setProperties( { isLoaded: true, error: error } );
-                    break;
-                }
-            }
-        });
+        return App.MobileApplication.find();
     }
 });
+
+//App.MobileAppsIndexController = Ember.ArrayController.extend({});
 
 /*
     The Mobile Apps Controller. Put "Global Events" Here
@@ -192,7 +163,12 @@ App.MobileAppsController = Ember.Controller.extend({
 */
 App.AppcreateController = Ember.Controller.extend({
     add: function() {
-        this.saveMobileApplication();
+        var applicationData = {
+            name: this.get( "name" ),
+            description: this.get( "description" )
+        };
+
+        this.saveMobileApplication( applicationData );
     },
     saveMobileApplication: function( applicationData ) {
         var applicationPipe = App.AeroGear.pipelines.pipes.applications,
@@ -200,7 +176,7 @@ App.AppcreateController = Ember.Controller.extend({
 
         applicationPipe.save( applicationData, {
             success: function( response ) {
-                console.log( response );
+                console.log( "Save Mobile Application", response );
                 that.transitionToRoute( "mobileApps" );
             },
             error: function( error ) {
@@ -221,28 +197,63 @@ App.AppcreateController = Ember.Controller.extend({
     }
 });
 
-/*App.AppRoute = Ember.Route.extend({
-    model: function() {
-        console.log( this );
+/*
+    Route for a Single App Variant
+*/
+App.AppRoute = Ember.Route.extend({
+    model: function( params ) {
+        return {id: "12345"};
     }
-});*/
+});
 
-//App.AppVariantsRoute = Ember.Route.extend({});
+App.AppIndexRoute = Ember.Route.extend({
+    model: function( params ) {
+        console.log( params );
+    }
+});
 
-//App.AppNetworksRoute = Ember.Route.extend({});
-
-//App.AppInstancesRoute = Ember.Route.extend({});
+// MODELS
 
 /*
 An Object Representing a list of Mobile Apps
 */
-App.MobileApplications = Ember.Object.extend({ isLoaded: false });
 
+App.MobileApplication = Ember.Object.extend({});
 
-/*
-An instance of the object
-*/
-App.mobileApplicationsInstance = App.MobileApplications.create( { apps: [] } );
+App.MobileApplication.reopenClass({
+    find: function( applicationPushId ) {
+
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            result;
+
+        result = Ember.Object.create({
+            isLoaded: false
+        });
+
+        applicationPipe.read({
+            id: applicationPushId,
+            success: function( response ) {
+                console.log( "application reponse", response );
+                result.set( "apps", response );
+                result.set( "isLoaded", true );
+            },
+            error: function( error ) { // TODO: Maybe Make this a class method?
+                console.log( "error with application endpoint", error );
+                switch( error.status ) {
+                case 401:
+                    App.Router.router.transitionTo("login");
+                    break;
+                default:
+                    //that.transitionTo( "login" );
+                    result.setProperties( { isLoaded: true, error: error } );
+                    break;
+                }
+            }
+        });
+
+        return result;
+    }
+});
 
 /*
 AeroGear related things
@@ -252,7 +263,7 @@ App.AeroGear = {};
 App.AeroGear.authenticator = AeroGear.Auth({
     name: "authenticator",
     settings: {
-        baseURL: "http://localhost:8080/ag-push/rest/"
+        baseURL: "/ag-push/rest/"
     }
 }).modules.authenticator;
 
@@ -261,14 +272,14 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
         name: "applications",
         settings: {
             id: "pushApplicationID",
-            baseURL: "ag-push/rest/",
+            baseURL: "/ag-push/rest/",
             authenticator: App.AeroGear.authenticator
         }
     },
     {   //Might not be needed here,  just on device?
         name: "registration",
         settings: {
-            baseURL: "ag-push/rest/",
+            baseURL: "/ag-push/rest/",
             authenticator: App.AeroGear.authenticator,
             endpoint: "registry/device"
         }
