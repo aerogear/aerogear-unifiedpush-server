@@ -50,6 +50,16 @@ $.mockjax({
     }
 });
 
+$.mockjax({
+    type: "DELETE",
+    url: baseURL + "applications/8a0cf1df-0bcc-4a75-8b2a-78dff2915038",
+    responseTime: 750,
+    dataType: "json",
+    response: function() {
+        this.responseText = apps[0];
+    }
+});
+
 
 $.mockjax({
     type: "POST",

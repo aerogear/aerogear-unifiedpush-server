@@ -81,35 +81,24 @@
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
             <div>
-                <table border=1>
-                    <tr>
-                        <td colspan="3">
-                            Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Description</th>
-                    </tr>
-                    {{#each app in apps}}
-                        <tr>
-                            <td>
-                                {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
-                            </td>
-                            <td>
-                                TODO
-                            </td>
-                            <td>
-                                {{ app.description }}
-                            </td>
-                        </tr>
-                    {{else}}
-                        <tr>
-                            <td colspan="3">Please Add a Thing</td>
-                        </tr>
-                    {{/each}}
-                </table>
+                Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
+            </div>
+            <div id="mobileapps">
+            {{#each app in apps}}
+                <h3>{{ app.description }}</h3>
+                <div>
+                    {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
+                    <br>
+                    Android Variants: {{app.androidApps.length}}
+                    <br>
+                    iOS Variants: {{app.iosapps.length}}
+                    <br>
+                    Simple Push Variants: {{app.simplePushApps.length}}
+                    {{#linkTo "appcreate"}}Edit{{/linkTo}}
+                    <button class="primary" {{ action "remove" app}}>Remove</button>
+                </div>
+            {{else}}
+            {{/each}}
             </div>
         </script>
 
@@ -151,11 +140,6 @@
         <script type="text/x-handlebars" data-template-name="_variantDetail">
             <div>
                 <table border=1>
-                    <tr>
-                        <td colspan="3">
-                            Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
-                        </td>
-                    </tr>
                     <tr>
                         <th>Name</th>
                         <th>Status</th>

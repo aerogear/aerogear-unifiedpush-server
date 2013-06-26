@@ -135,6 +135,12 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
     }
 });
 
+App.MobileAppsIndexController = Ember.ObjectController.extend({
+    remove: function( app ){
+        App.MobileApplication.remove( app.pushApplicationID );
+    }
+});
+
 /*
     The Mobile Apps Controller. Put "Global Events" Here
 */
@@ -253,6 +259,29 @@ App.MobileApplication.reopenClass({
         });
 
         return result;
+    },
+    remove: function( applicationPushId ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications;//,
+            //that = this;
+
+        applicationPipe.remove({
+            id: applicationPushId,
+            success: function( response ) {
+                console.log( "remove response", response );
+            },
+            error: function( error ) { // TODO: Maybe Make this a class method?
+                console.log( "error with application endpoint", error );
+                switch( error.status ) {
+                case 401:
+                    App.Router.router.transitionTo("login");
+                    break;
+                default:
+                    //that.transitionTo( "login" );
+                    //result.setProperties( { isLoaded: true, error: error } );
+                    break;
+                }
+            }
+        });
     }
 });
 
