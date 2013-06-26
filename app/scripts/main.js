@@ -82,7 +82,7 @@ App.Router.map( function() {
     // The Main List of Mobile Applications and the main starting point.  This is a nested route since the header/footer will be similar.
     this.resource( "mobileApps", function() {
         this.resource( "appcreate" );
-        this.resource( "app", { path: "app/:pushApplicationID" }, function(){
+        this.resource( "app", { path: "app/:mobileApplication_id" }, function() {
             this.resource( "variants" );
         });
     });
@@ -136,8 +136,6 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
     }
 });
 
-//App.MobileAppsIndexController = Ember.ArrayController.extend({});
-
 /*
     The Mobile Apps Controller. Put "Global Events" Here
 */
@@ -170,6 +168,7 @@ App.AppcreateController = Ember.Controller.extend({
 
         this.saveMobileApplication( applicationData );
     },
+    // Move this to the Model?
     saveMobileApplication: function( applicationData ) {
         var applicationPipe = App.AeroGear.pipelines.pipes.applications,
             that = this;
@@ -202,15 +201,18 @@ App.AppcreateController = Ember.Controller.extend({
 */
 App.AppRoute = Ember.Route.extend({
     model: function( params ) {
-        return {id: "12345"};
+        console.log( params );
+        return App.MobileApplication.find( params.mobileApplication_id );
+    },
+    setupController: function( controller, model ) {
+        console.log( model );
+        //controller.set( "model", model );
+    },
+    serialize: function( model ) {
+        return { mobileApplication_id: model.pushApplicationID };
     }
 });
 
-App.AppIndexRoute = Ember.Route.extend({
-    model: function( params ) {
-        console.log( params );
-    }
-});
 
 // MODELS
 
@@ -234,8 +236,8 @@ App.MobileApplication.reopenClass({
             id: applicationPushId,
             success: function( response ) {
                 console.log( "application reponse", response );
-                result.set( "apps", response );
-                result.set( "isLoaded", true );
+                result.setProperties( { "apps": response, isLoaded: true  });
+                //result.set( "isLoaded", true );
             },
             error: function( error ) { // TODO: Maybe Make this a class method?
                 console.log( "error with application endpoint", error );

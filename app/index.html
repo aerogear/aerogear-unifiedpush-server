@@ -95,7 +95,7 @@
                     {{#each app in apps}}
                         <tr>
                             <td>
-                                {{#linkTo "app" app.pushApplicationID }}{{ app.name }}{{/linkTo}}
+                                {{#linkTo "app" app}}{{ app.name }}{{/linkTo}}
                             </td>
                             <td>
                                 TODO
@@ -104,11 +104,16 @@
                                 {{ app.description }}
                             </td>
                         </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="3">Please Add a Thing</td>
+                        </tr>
                     {{/each}}
                 </table>
             </div>
         </script>
 
+        <!-- -->
         <script type="text/x-handlebars" data-template-name="appcreate">
             <div>Add Push Application</div>
             <div>
@@ -131,15 +136,17 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="app">
-            Mobile Detail Main Page
-            {{ model.id }}
-            {{ outlet }}
+            <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
+            {{#if isLoaded}}
+                {{apps.name}}
+            {{else}}
+                Loading...
+            {{/if}}
         </script>
 
-         <script type="text/x-handlebars" data-template-name="app/index">
-            Super Cool Apps
-             {{model}}
-         </script>
+        <!--<script type="text/x-handlebars" data-template-name="app/index">
+            {{model}}
+        </script>-->
 
         <script type="text/x-handlebars" data-template-name="app/variants">
             Variant Template
