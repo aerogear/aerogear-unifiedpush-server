@@ -95,7 +95,7 @@
                     {{#each app in apps}}
                         <tr>
                             <td>
-                                {{#linkTo "app" app}}{{ app.name }}{{/linkTo}}
+                                {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
                             </td>
                             <td>
                                 TODO
@@ -135,12 +135,12 @@
             </div>
         </script>
 
-        <script type="text/x-handlebars" data-template-name="app">
+        <script type="text/x-handlebars" data-template-name="variant">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
             {{#if isLoaded}}
                 {{#if error}}
                 {{else}}
-                    {{ partial "appDetail" }}
+                    {{ partial "variantDetail" }}
                 {{/if}}
             {{else}}
                 Loading...
@@ -148,7 +148,7 @@
         </script>
 
         <!-- The Mobile Applications List Partial-->
-        <script type="text/x-handlebars" data-template-name="_appDetail">
+        <script type="text/x-handlebars" data-template-name="_variantDetail">
             <div>
                 <table border=1>
                     <tr>
@@ -174,22 +174,6 @@
                         </tr>
                 </table>
             </div>
-        </script>
-
-        <!--<script type="text/x-handlebars" data-template-name="app/index">
-            {{model}}
-        </script>-->
-
-        <script type="text/x-handlebars" data-template-name="app/variants">
-            Variant Template
-        </script>
-
-        <script type="text/x-handlebars" data-template-name="networks">
-            Network Template
-        </script>
-
-        <script type="text/x-handlebars" data-template-name="instances">
-            Instance Template
         </script>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>

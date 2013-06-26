@@ -82,7 +82,7 @@ App.Router.map( function() {
     // The Main List of Mobile Applications and the main starting point.  This is a nested route since the header/footer will be similar.
     this.resource( "mobileApps", function() {
         this.resource( "appcreate" );
-        this.resource( "app", { path: "app/:mobileApplication_id" }, function() {
+        this.resource( "variant", { path: "variant/:mobileApplication_id" }, function() {
         });
     });
     // The Route for a single Mobile Application.
@@ -198,7 +198,7 @@ App.AppcreateController = Ember.Controller.extend({
 /*
     Route for a Single App Variant
 */
-App.AppRoute = Ember.Route.extend({
+App.VariantRoute = Ember.Route.extend({
     model: function( params ) {
         console.log( params );
         return App.MobileApplication.find( params.mobileApplication_id );
