@@ -83,7 +83,6 @@ App.Router.map( function() {
     this.resource( "mobileApps", function() {
         this.resource( "appcreate" );
         this.resource( "app", { path: "app/:mobileApplication_id" }, function() {
-            this.resource( "variants" );
         });
     });
     // The Route for a single Mobile Application.

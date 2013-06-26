@@ -138,10 +138,42 @@
         <script type="text/x-handlebars" data-template-name="app">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
             {{#if isLoaded}}
-                {{apps.name}}
+                {{#if error}}
+                {{else}}
+                    {{ partial "appDetail" }}
+                {{/if}}
             {{else}}
                 Loading...
             {{/if}}
+        </script>
+
+        <!-- The Mobile Applications List Partial-->
+        <script type="text/x-handlebars" data-template-name="_appDetail">
+            <div>
+                <table border=1>
+                    <tr>
+                        <td colspan="3">
+                            Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                        <tr>
+                            <td>
+                                {{ apps.androids }}
+                            </td>
+                            <td>
+                                TODO
+                            </td>
+                            <td>
+                                {{ apps.description }}
+                            </td>
+                        </tr>
+                </table>
+            </div>
         </script>
 
         <!--<script type="text/x-handlebars" data-template-name="app/index">
