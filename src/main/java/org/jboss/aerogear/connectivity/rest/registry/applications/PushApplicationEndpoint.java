@@ -130,7 +130,7 @@ public class PushApplicationEndpoint {
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
-            return Response.ok().build();
+            return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }

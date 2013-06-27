@@ -160,7 +160,7 @@ public class iOSVariantEndpoint {
             PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
             pushApp.getIOSApps().remove(iOSVariation);
             iOSVariantService.removeiOSVariant(iOSVariation);
-            return Response.ok().build();
+            return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
