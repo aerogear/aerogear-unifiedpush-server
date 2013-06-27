@@ -139,7 +139,7 @@ public class SimplePushVariantEndpoint {
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
             spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
             simplePushVariantService.updateSimplePushVariant(spVariant);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();

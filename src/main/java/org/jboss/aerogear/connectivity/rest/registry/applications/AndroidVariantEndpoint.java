@@ -138,7 +138,7 @@ public class AndroidVariantEndpoint {
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
             androidVariantService.updateAndroidVariant(androidVariant);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();

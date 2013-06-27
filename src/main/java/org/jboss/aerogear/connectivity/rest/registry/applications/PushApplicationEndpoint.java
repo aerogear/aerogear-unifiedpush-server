@@ -114,7 +114,7 @@ public class PushApplicationEndpoint {
             pushApp.setName(updatedPushApp.getName());
             pushAppService.updatePushApplication(pushApp);
 
-            return Response.noContent().build();
+            return Response.ok().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
