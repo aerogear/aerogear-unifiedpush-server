@@ -20,6 +20,7 @@
     "globals": {
         "AeroGear": true,
         "$": true,
-        "Ember": true
+        "Ember": true,
+        "App": true
     }
 }
