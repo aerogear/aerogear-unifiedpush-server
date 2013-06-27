@@ -10,7 +10,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" type="text/css" href="styles/topcoat-desktop-dark.min.css">
+        <link rel="stylesheet" type="text/css" href="styles/topcoat-desktop-light.min.css">
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
@@ -81,29 +81,33 @@
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
             <div>
-                Please start by adding a push application - {{#linkTo "appcreate"}}Add New{{/linkTo}}
+                Please start by adding a push application - {{#linkTo "mobileApps.new"}}Add New{{/linkTo}}
             </div>
-            <div id="mobileapps">
-            {{#each app in apps}}
-                <h3>{{ app.description }}</h3>
-                <div>
-                    {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
-                    <br>
-                    Android Variants: {{app.androidApps.length}}
-                    <br>
-                    iOS Variants: {{app.iosapps.length}}
-                    <br>
-                    Simple Push Variants: {{app.simplePushApps.length}}
-                    {{#linkTo "appcreate"}}Edit{{/linkTo}}
-                    <button class="primary" {{ action "remove" app}}>Remove</button>
-                </div>
-            {{else}}
-            {{/each}}
+            <div class="topcoat-list__container">
+                <ul class="topcoat-list">
+                    {{#each app in apps}}
+                    <h3 class="topcoat-list__header">
+                        {{ app.description }}
+                    </h3>
+                    <li class="topcoat-list__item">
+                        {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
+                        <br>
+                        Android Variants: {{app.androidApps.length}}
+                        <br>
+                        iOS Variants: {{app.iosapps.length}}
+                        <br>
+                        Simple Push Variants: {{app.simplePushApps.length}}
+                        {{#linkTo "mobileApps.new"}}Edit{{/linkTo}}
+                        <button class="primary" {{ action "remove" app}}>Remove</button>
+                    </li>
+                    {{else}}
+                    {{/each}}
+                </ul>
             </div>
         </script>
 
-        <!-- -->
-        <script type="text/x-handlebars" data-template-name="appcreate">
+        <!--Template to create a new push application-->
+        <script type="text/x-handlebars" data-template-name="mobileApps/new">
             <div>Add Push Application</div>
             <div>
                 <div>

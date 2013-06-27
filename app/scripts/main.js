@@ -81,7 +81,7 @@ App.Router.map( function() {
     this.route( "login" );
     // The Main List of Mobile Applications and the main starting point.  This is a nested route since the header/footer will be similar.
     this.resource( "mobileApps", function() {
-        this.resource( "appcreate" );
+        this.route( "new" );
         this.resource( "variant", { path: "variant/:mobileApplication_id" }, function() {
         });
     });
@@ -164,7 +164,7 @@ App.MobileAppsController = Ember.Controller.extend({
 /*
     The Controller for adding new Mobile apps
 */
-App.AppcreateController = Ember.Controller.extend({
+App.MobileAppsNewController = Ember.Controller.extend({
     add: function() {
         var applicationData = {
             name: this.get( "name" ),
@@ -288,12 +288,14 @@ App.MobileApplication.reopenClass({
 /*
 AeroGear related things
 */
+//var reallyTheBaseURL = "http://localhost:8080";
+var reallyTheBaseURL = "";
 App.AeroGear = {};
 
 App.AeroGear.authenticator = AeroGear.Auth({
     name: "authenticator",
     settings: {
-        baseURL: "/ag-push/rest/"
+        baseURL: reallyTheBaseURL + "/ag-push/rest/"
     }
 }).modules.authenticator;
 
@@ -302,14 +304,14 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
         name: "applications",
         settings: {
             id: "pushApplicationID",
-            baseURL: "/ag-push/rest/",
+            baseURL: reallyTheBaseURL + "/ag-push/rest/",
             authenticator: App.AeroGear.authenticator
         }
     },
     {   //Might not be needed here,  just on device?
         name: "registration",
         settings: {
-            baseURL: "/ag-push/rest/",
+            baseURL: reallyTheBaseURL + "/ag-push/rest/",
             authenticator: App.AeroGear.authenticator,
             endpoint: "registry/device"
         }

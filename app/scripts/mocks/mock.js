@@ -18,6 +18,26 @@ var apps = [
         }],
         "simplePushApps": [],
         "iosapps": []
+    },
+    {
+        "id": "402881893f62a12c013f631dc6cd0001",
+        "name": "Application 2",
+        "description": "Application 2 Description",
+        "pushApplicationID": "2a0cf1df-0bcc-4a75-8b2a-78dff2915038",
+        "masterSecret": "a04f822c-2224-45d9-a203-297e37c26c93",
+        "developer": "admin",
+        "androidApps": [{
+            "id": "102881893f62a12c013f66f676c80001",
+            "name": "Application1Android",
+            "description": "An Android Variant of the Mobile App",
+            "variantID": "12cede3c-27df-4eac-b807-65c31fbfeabc",
+            "secret": "66063664-4a87-4b02-8c0b-1d2b0cec0726",
+            "developer": "admin",
+            "instances": [],
+            "googleKey": "12345678901"
+        }],
+        "simplePushApps": [],
+        "iosapps": []
     }
 ];
 
