@@ -139,7 +139,7 @@ public class SimplePushVariantEndpoint {
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
             spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
             simplePushVariantService.updateSimplePushVariant(spVariant);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
@@ -156,7 +156,7 @@ public class SimplePushVariantEndpoint {
             PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
             pushApp.getSimplePushApps().remove(spVariant);
             simplePushVariantService.removeSimplePushVariant(spVariant);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();

@@ -17,26 +17,6 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import java.util.UUID;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
@@ -45,6 +25,18 @@ import org.jboss.aerogear.connectivity.service.PushApplicationService;
 import org.jboss.aerogear.connectivity.service.iOSVariantService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
@@ -151,7 +143,7 @@ public class iOSVariantEndpoint {
             iOSVariation.setCertificate(updatedForm.getCertificate());
 
             iOSVariantService.updateiOSVariant(iOSVariation);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }
@@ -168,7 +160,7 @@ public class iOSVariantEndpoint {
             PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
             pushApp.getIOSApps().remove(iOSVariation);
             iOSVariantService.removeiOSVariant(iOSVariation);
-            return Response.noContent().build();
+            return Response.ok().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
     }

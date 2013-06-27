@@ -17,33 +17,27 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.instances;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
+import org.jboss.aerogear.connectivity.api.MobileVariant;
+import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
+import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.jboss.aerogear.connectivity.service.MobileVariantService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
-import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
-import org.jboss.aerogear.connectivity.service.MobileVariantService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 @Stateless
 @Path("/registry/device")
@@ -149,7 +143,7 @@ public class MobileVariantInstanceEndpoint {
             mobileApplicationInstanceService.removeMobileVariantInstances(instances);
         }
 
-        return appendAllowOriginHeader(Response.noContent(), request);
+        return appendAllowOriginHeader(Response.ok(), request);
     }
     
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
