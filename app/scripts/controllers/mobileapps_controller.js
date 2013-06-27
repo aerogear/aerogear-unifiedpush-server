@@ -1,4 +1,4 @@
-App.MobileAppsIndexController = Ember.ObjectController.extend({
+App.MobileAppsIndexController = Ember.ArrayController.extend({
     remove: function( app ){
         App.MobileApplication.remove( app.pushApplicationID );
     }

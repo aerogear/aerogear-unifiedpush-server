@@ -53,21 +53,17 @@ App.LoginRoute = Ember.Route.extend({
 */
 App.MobileAppsIndexRoute = Ember.Route.extend({
     model: function() {
-        return App.MobileApplications.find();
+        return App.MobileApplication.find();
     }
 });
 
 /*
     Route for a Single App Variant
+    Don't need the model this since it will do find( param ) by default
 */
 App.VariantRoute = Ember.Route.extend({
-    model: function( params ) {
-        console.log( params );
-        return App.MobileApplication.find( params.mobileApplication_id );
-    },
     setupController: function( controller, model ) {
-        console.log( model );
-        //controller.set( "model", model );
+        controller.set( "model", model );
     },
     serialize: function( model ) {
         return { mobileApplication_id: model.pushApplicationID };

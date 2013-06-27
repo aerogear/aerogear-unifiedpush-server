@@ -1,64 +1,34 @@
 /*
-An Object Representing a list of Mobile Apps
+ A Mobile App
 */
-
-
-App.MobileApplications = Ember.Object.extend({});
-
-App.MobileApplications.reopenClass({
-    find: function() {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            result;
-
-        result = Ember.Object.create({
-            isLoaded: false
-        });
-
-        applicationPipe.read({
-            success: function( response ) {
-                var apps = [];
-                console.log( "application reponse", response );
-                response.forEach( function( app ) {
-                    apps.push( App.MobileApplication.create( app ));
-                });
-                result.setProperties( { "apps": apps, isLoaded: true  });
-            },
-            error: function( error ) { // TODO: Maybe Make this a class method?
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    App.Router.router.transitionTo("login");
-                    break;
-                default:
-                    //that.transitionTo( "login" );
-                    result.setProperties( { isLoaded: true, error: error } );
-                    break;
-                }
-            }
-        });
-
-        return result;
-    }
-});
-
-App.MobileApplication = Ember.Object.extend({});
+App.MobileApplication = Ember.Object.extend();
 
 App.MobileApplication.reopenClass({
     find: function( applicationPushId ) {
 
         var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            result;
+            mobileApplication;
 
-        result = Ember.Object.create({
-            isLoaded: false
-        });
+        if( applicationPushId ) {
+            // Looking for 1
+            mobileApplication = Ember.Object.create();
+        } else {
+            //Looking for all
+            mobileApplication = Ember.ArrayProxy.create({ content: [] });
+        }
 
         applicationPipe.read({
             id: applicationPushId,
             success: function( response ) {
-                console.log( "application reponse", response );
-                result.setProperties( { "apps": response, isLoaded: true  });
-                //result.set( "isLoaded", true );
+                if( AeroGear.isArray( response ) ) {
+                    response.forEach( function( data ) {
+                        data.isLoaded = true;
+                        mobileApplication.pushObject( App.MobileApplication.create( data ) );
+                    });
+                } else {
+                    response.isLoaded = true;
+                    mobileApplication.setProperties( response );
+                }
             },
             error: function( error ) { // TODO: Maybe Make this a class method?
                 console.log( "error with application endpoint", error );
@@ -68,13 +38,13 @@ App.MobileApplication.reopenClass({
                     break;
                 default:
                     //that.transitionTo( "login" );
-                    result.setProperties( { isLoaded: true, error: error } );
+                    //result.setProperties( { isLoaded: true, error: error } );
                     break;
                 }
             }
         });
 
-        return result;
+        return mobileApplication;
     },
     remove: function( applicationPushId ) {
         var applicationPipe = App.AeroGear.pipelines.pipes.applications;//,
@@ -98,5 +68,8 @@ App.MobileApplication.reopenClass({
                 }
             }
         });
+    },
+    _finder: function( id ) {
+
     }
 });

@@ -65,15 +65,7 @@
                     The AeroGear Unified Push Server sends push notifications to any of your mobile applications using different push networks
                 </div>
                 <div>
-                    {{#if isLoaded}}
-                        {{#if model.error}}
-                            There was an error: {{error}}
-                        {{else}}
-                            {{ partial "appsList" }}
-                        {{/if}}
-                    {{else}}
-                        Loading Mobile Applications...Please Wait
-                {{/if}}
+                {{partial "appsList"}}
                 </div>
             </div>
         </script>
@@ -85,22 +77,23 @@
             </div>
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
-                    {{#each app in apps}}
+                    {{#each controller}}
                     <h3 class="topcoat-list__header">
-                        {{ app.description }}
+                        {{ description }}
                     </h3>
                     <li class="topcoat-list__item">
-                        {{#linkTo "variant" app}}{{ app.name }}{{/linkTo}}
+                    {{#linkTo "variant" this}}{{name}}{{/linkTo}}
                         <br>
-                        Android Variants: {{app.androidApps.length}}
+                        Android Variants: {{androidApps.length}}
                         <br>
-                        iOS Variants: {{app.iosapps.length}}
+                        iOS Variants: {{iosapps.length}}
                         <br>
-                        Simple Push Variants: {{app.simplePushApps.length}}
+                        Simple Push Variants: {{simplePushApps.length}}
                         {{#linkTo "mobileApps.new"}}Edit{{/linkTo}}
                         <button class="primary" {{ action "remove" app}}>Remove</button>
                     </li>
                     {{else}}
+                        Loading.....
                     {{/each}}
                 </ul>
             </div>
@@ -131,12 +124,9 @@
         <script type="text/x-handlebars" data-template-name="variant">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
             {{#if isLoaded}}
-                {{#if error}}
-                {{else}}
-                    {{ partial "variantDetail" }}
-                {{/if}}
+                {{ partial "variantDetail" }}
             {{else}}
-                Loading...
+                loading....
             {{/if}}
         </script>
 
@@ -151,13 +141,13 @@
                     </tr>
                         <tr>
                             <td>
-                                {{ apps.androids }}
+                                {{ androidApps.length }}
                             </td>
                             <td>
                                 TODO
                             </td>
                             <td>
-                                {{ apps.description }}
+                                {{ description }}
                             </td>
                         </tr>
                 </table>
@@ -171,6 +161,7 @@
         <script src="bower_components/jquery/jquery.min.js"></script>
         <script src="bower_components/handlebars/handlebars.js"></script>
         <script src="bower_components/ember/ember.js"></script>
+        <script src="bower_components/ember-data/ember-data.js"></script>
         <script src="bower_components/aerogear/aerogear.min.js"></script>
         <script src="scripts/app.js"></script>
         <script src="scripts/router.js"></script>
