@@ -68,8 +68,5 @@ App.MobileApplication.reopenClass({
                 }
             }
         });
-    },
-    _finder: function( id ) {
-
     }
 });
