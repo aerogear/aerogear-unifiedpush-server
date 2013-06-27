@@ -9,7 +9,7 @@ App.Router.map( function() {
     // The Main List of Mobile Applications and the main starting point.  This is a nested route since the header/footer will be similar.
     this.resource( "mobileApps", function() {
         this.route( "new" );
-        this.resource( "variant", { path: "variant/:mobileApplication_id" }, function() {
+        this.resource( "variant", { path: ":mobileApplication_id/variants" }, function() {
         });
     });
 });
@@ -53,7 +53,7 @@ App.LoginRoute = Ember.Route.extend({
 */
 App.MobileAppsIndexRoute = Ember.Route.extend({
     model: function() {
-        return App.MobileApplication.find();
+        return App.MobileApplications.find();
     }
 });
 
