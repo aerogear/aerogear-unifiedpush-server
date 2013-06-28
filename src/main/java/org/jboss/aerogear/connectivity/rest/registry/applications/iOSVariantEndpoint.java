@@ -17,7 +17,14 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import java.util.UUID;
+import org.jboss.aerogear.connectivity.model.PushApplication;
+import org.jboss.aerogear.connectivity.model.iOSVariant;
+import org.jboss.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
+import org.jboss.aerogear.connectivity.service.PushApplicationService;
+import org.jboss.aerogear.connectivity.service.iOSVariantService;
+import org.jboss.aerogear.security.auth.LoggedUser;
+import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -36,22 +43,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-
-import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
-import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.model.iOSVariant;
-import org.jboss.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
-import org.jboss.aerogear.connectivity.service.PushApplicationService;
-import org.jboss.aerogear.connectivity.service.iOSVariantService;
-import org.jboss.aerogear.security.auth.LoggedUser;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
 @Secure("developer")
 public class iOSVariantEndpoint {
-    
+
     @Inject
     private PushApplicationService pushAppService;
     @Inject
@@ -60,8 +59,8 @@ public class iOSVariantEndpoint {
     @Inject
     @LoggedUser
     private Instance<String> loginName;
-   
-    
+
+
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============           iOS            ======================
@@ -71,7 +70,7 @@ public class iOSVariantEndpoint {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registeriOSVariant(
-            @MultipartForm iOSApplicationUploadForm form, 
+            @MultipartForm iOSApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
@@ -92,7 +91,7 @@ public class iOSVariantEndpoint {
         iOSVariation.setDescription(form.getDescription());
         iOSVariation.setPassphrase(form.getPassphrase());
         iOSVariation.setCertificate(form.getCertificate());
-        
+
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
@@ -104,11 +103,12 @@ public class iOSVariantEndpoint {
         pushAppService.addiOSVariant(pushApp, iOSVariation);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariation.getVariantID())).build()).entity(iOSVariation).build();
-   }
+    }
+
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID)  {
+    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSApps()).build();
     }
@@ -119,7 +119,7 @@ public class iOSVariantEndpoint {
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
 
         iOSVariant iOSvariant = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
-        
+
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
         }
@@ -132,7 +132,7 @@ public class iOSVariantEndpoint {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateiOSVariant(
-            @MultipartForm iOSApplicationUploadForm updatedForm, 
+            @MultipartForm iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
