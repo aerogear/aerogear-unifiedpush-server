@@ -18,19 +18,19 @@
 
 App.MobileApplication = Ember.Object.extend({
     totalAndroidVariants: function() {
-        return this.androidApps.length;
+        return this.androidApps.get("content").length;
     }.property(),
     totaliOSVariants: function() {
-        return this.iosapps.length;
+        return this.iosapps.get("content").length;
     }.property(),
     totalSimplePushVariants: function() {
-        return this.simplePushApps.length;
+        return this.simplePushApps.get("content").length;
     }.property(),
-    totalInstances: function() {
-        return 100000;
-    }.property(),
-    variants: function() {
+    totalVariants: function() {
         return this.get( "totalAndroidVariants" ) + this.get( "totaliOSVariants" ) + this.get( "totalSimplePushVariants" );
+    }.property(),
+    variantList: function() {
+        return this.androidApps.get("content").concat( this.iosapps.get("content") ).concat( this.simplePushApps.get("content") );
     }.property()
 });
 
@@ -38,7 +38,8 @@ App.MobileApplication.reopenClass({
     find: function( applicationPushId ) {
 
         var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            mobileApplication;
+            mobileApplication,
+            that = this;
 
         if( applicationPushId ) {
             // Looking for 1
@@ -54,11 +55,18 @@ App.MobileApplication.reopenClass({
                 if( AeroGear.isArray( response ) ) {
                     response.forEach( function( data ) {
                         data.isLoaded = true;
+                        data = that._createVariantObject( data );
                         mobileApplication.pushObject( App.MobileApplication.create( data ) );
                     });
                 } else {
+
+                    // Add a loading indicator
                     response.isLoaded = true;
-                    mobileApplication.setProperties( response );
+
+                    // Loop Through the different Variants to create objects
+                    mobileApplication.setProperties( that._createVariantObject( response ) );
+                    console.log( mobileApplication );
+
                 }
             },
             error: function( error ) { // TODO: Maybe Make this a class method?
@@ -99,5 +107,33 @@ App.MobileApplication.reopenClass({
                 }
             }
         });
+    },
+    _createVariantObject: function( response ) {
+
+        // TODO: DRY this out
+        var androidVariants = Ember.ArrayProxy.create({ content: [] }),
+            iosVariants = Ember.ArrayProxy.create({ content: [] }),
+            simplePushVariants = Ember.ArrayProxy.create({ content: [] });
+
+        response.androidApps.forEach( function(  value ) {
+            androidVariants.pushObject( App.MobileVariant.create( value ) );
+        });
+
+        response.androidApps = androidVariants;
+
+        response.iosapps.forEach( function( value ) {
+            iosVariants.pushObject( App.MobileVariant.create( value ) );
+        });
+
+        response.iosapps = iosVariants;
+
+        response.simplePushApps.forEach( function( value ) {
+            simplePushVariants.pushObject( App.MobileVariant.create( value ) );
+        });
+
+        response.simplePushApps = simplePushVariants;
+
+        return response;
+
     }
 });

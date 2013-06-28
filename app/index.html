@@ -59,6 +59,7 @@
 
         <!-- The Mobile Applications Template -->
         <script type="text/x-handlebars" data-template-name="mobileApps/index">
+        total:{{totalApps}}
             <div>
                 Push Applications
                 <div>
@@ -78,17 +79,19 @@
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
                     {{#each controller}}
-                    <h3 class="topcoat-list__header">
+                    {{#view App.HeaderClicker}}
                         {{ description }}
-                    </h3>
+                    {{/view}}
                     <li class="topcoat-list__item">
-                    {{#linkTo "variant" this}}{{name}}{{/linkTo}}
+                    {{#linkTo "variants" this}}{{name}}{{/linkTo}}
                         <br>
-                        Android Variants: {{androidApps.length}}
+                        Android Variants: {{totalAndroidVariants}}
                         <br>
-                        iOS Variants: {{iosapps.length}}
+                        iOS Variants: {{totaliOSVariants}}
                         <br>
-                        Simple Push Variants: {{simplePushApps.length}}
+                        Simple Push Variants: {{totalSimplePushVariants}}
+                        <br>
+                        variants: {{variants}}
                         {{#linkTo "mobileApps.new"}}Edit{{/linkTo}}
                         <button class="primary" {{ action "remove" app}}>Remove</button>
                     </li>
@@ -121,37 +124,44 @@
             </div>
         </script>
 
-        <script type="text/x-handlebars" data-template-name="variant">
+        <script type="text/x-handlebars" data-template-name="variants">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
+            <ul>
+            <li>List all Variants of this push application</li>
+            <li>Create a new variant with a push network</li>
+            </ul>
+            {{ description }}
             {{#if isLoaded}}
+                iOS Variants: {{totaliOSVariants}}
+                Android Variants: {{totalAndroidVariants}}
+                Simple Push Variants: {{totalSimplePushVariants}}
                 {{ partial "variantDetail" }}
             {{else}}
                 loading....
             {{/if}}
         </script>
 
+
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_variantDetail">
-            <div>
-                <table border=1>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Description</th>
-                    </tr>
-                        <tr>
-                            <td>
-                                {{ androidApps.length }}
-                            </td>
-                            <td>
-                                TODO
-                            </td>
-                            <td>
-                                {{ description }}
-                            </td>
-                        </tr>
-                </table>
+            <div class="topcoat-list__container">
+                <ul class="topcoat-list">
+                {{#each variantList }}
+                    {{#view App.HeaderClicker}}
+                        {{ name }}
+                    {{/view}}
+                    <li class="topcoat-list__item">
+                    {{#linkTo "variant" this}}{{name}}{{/linkTo}}
+                        {{ description }}
+                        type:{{ typeFormatted }}
+                    </li>
+                {{/each}}
+                </ul>
             </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="variant">
+            YEA
         </script>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
@@ -166,7 +176,9 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/router.js"></script>
         <script src="scripts/controllers/mobileapps_controller.js"></script>
+        <script src="scripts/views/mobileapp_view.js"></script>
         <script src="scripts/models/mobileapp_model.js"></script>
+        <script src="scripts/models/mobilevariant_model.js"></script>
         <script src="scripts/helpers/aerogear_helper.js"></script>
         <!-- endbuild -->
 

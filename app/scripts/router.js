@@ -30,12 +30,17 @@ App.Router.map( function() {
         this.route( "new" );
 
         // The Nested Route for seeing a variants detail
-        this.resource( "variant", { path: ":mobileApplication_id/variants" }, function() {
+        this.resource( "variants", { path: "variants/:mobileApplication_id" }, function() {
 
             // The Route for creating a new Mobile Application Variant
             this.route( "new" );
 
+            // The Route for the variants detail
+            this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
+
+            });
         });
+
     });
 });
 
@@ -98,7 +103,10 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
     Route for a Single App Variant
     Don't need the model since ember  will do find( id ) by default
 */
-App.VariantRoute = Ember.Route.extend({
+App.VariantsRoute = Ember.Route.extend({
+    /*model: function( params ) {
+        App.MobileApplication.find( params.mobileApplication_id );
+    },*/
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
@@ -110,5 +118,28 @@ App.VariantRoute = Ember.Route.extend({
         // Make our non uniform id of pushApplicationID what ember expects
         return { mobileApplication_id: model.pushApplicationID };
 
+    }
+});
+
+App.VariantRoute = Ember.Route.extend({
+    model: function( params ) {
+        return App.MobileVariant.find( params.mobileApplication_id, params.type, params.mobileVariant_id );
+    },
+    setupController: function( controller, model ) {
+
+        // Force a refresh of this model when coming in from a {{#linkTo}}
+        var pushApplicationID = this.controllerFor( "variants" ).get( "model" ).get( "pushApplicationID" );
+        controller.set( "model", model.variantID ? App.MobileVariant.find( pushApplicationID, model.get( "type" ), model.variantID ) : model );
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id of pushApplicationID what ember expects
+        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
+
+    },
+    renderTemplate: function() {
+        this.render( "variant", {
+            into: "mobileApps"
+        });
     }
 });
