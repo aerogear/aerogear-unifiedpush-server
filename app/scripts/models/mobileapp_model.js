@@ -15,7 +15,24 @@
 /*
  A Mobile App
 */
-App.MobileApplication = Ember.Object.extend();
+
+App.MobileApplication = Ember.Object.extend({
+    totalAndroidVariants: function() {
+        return this.androidApps.length;
+    }.property(),
+    totaliOSVariants: function() {
+        return this.iosapps.length;
+    }.property(),
+    totalSimplePushVariants: function() {
+        return this.simplePushApps.length;
+    }.property(),
+    totalInstances: function() {
+        return 100000;
+    }.property(),
+    variants: function() {
+        return this.get( "totalAndroidVariants" ) + this.get( "totaliOSVariants" ) + this.get( "totalSimplePushVariants" );
+    }.property()
+});
 
 App.MobileApplication.reopenClass({
     find: function( applicationPushId ) {
@@ -25,7 +42,7 @@ App.MobileApplication.reopenClass({
 
         if( applicationPushId ) {
             // Looking for 1
-            mobileApplication = Ember.Object.create();
+            mobileApplication = App.MobileApplication.create();
         } else {
             //Looking for all
             mobileApplication = Ember.ArrayProxy.create({ content: [] });
