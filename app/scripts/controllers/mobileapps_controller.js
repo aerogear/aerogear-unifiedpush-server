@@ -15,7 +15,13 @@
 App.MobileAppsIndexController = Ember.ArrayController.extend({
     remove: function( app ){
         App.MobileApplication.remove( app.pushApplicationID );
-    }
+    },
+    totalApps: function() {
+
+        // Compute the total apps for this controller
+        return this.get("model").get("content").length;
+
+    }.property( "@each" )
 });
 
 /*
