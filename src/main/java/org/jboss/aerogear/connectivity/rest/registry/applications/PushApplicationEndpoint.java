@@ -17,10 +17,10 @@
 
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
+import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

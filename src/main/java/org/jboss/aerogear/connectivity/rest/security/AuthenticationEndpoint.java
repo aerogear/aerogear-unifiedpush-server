@@ -17,13 +17,12 @@
 
 package org.jboss.aerogear.connectivity.rest.security;
 
-import org.jboss.aerogear.connectivity.cdi.interceptor.Secure;
 import org.jboss.aerogear.connectivity.users.Developer;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
+import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.picketlink.idm.IdentityManagementException;
-
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,9 +37,11 @@ import javax.ws.rs.core.Response.Status;
 @Stateless
 @Path("/auth")
 public class AuthenticationEndpoint {
-    
-    @Inject private AuthenticationManager authenticationManager;
-    @Inject private IdentityManagement configuration;
+
+    @Inject
+    private AuthenticationManager authenticationManager;
+    @Inject
+    private IdentityManagement configuration;
 
 
     @POST
@@ -59,7 +60,7 @@ public class AuthenticationEndpoint {
         }
 
         return Response.ok(developer).build();
-        
+
     }
 
     @POST
@@ -77,7 +78,7 @@ public class AuthenticationEndpoint {
     }
 
     @Path("/logout")
-    public Response logout(){
+    public Response logout() {
         try {
             authenticationManager.logout();
         } catch (AeroGearSecurityException agse) {

@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.aerogear.connectivity</groupId>
     <artifactId>pushee</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <parent>
@@ -168,7 +168,7 @@
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-security-picketlink</artifactId>
-            <version>${aerogear.security.version}</version>
+            <version>${aerogear.security.picketlink.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -255,7 +255,8 @@
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
-        <aerogear.security.version>1.0.1</aerogear.security.version>
+        <aerogear.security.version>1.1.1</aerogear.security.version>
+        <aerogear.security.picketlink.version>1.0.2</aerogear.security.picketlink.version>
 
     </properties>
 
