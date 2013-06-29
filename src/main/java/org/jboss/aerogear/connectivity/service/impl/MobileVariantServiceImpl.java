@@ -28,7 +28,7 @@ public class MobileVariantServiceImpl implements MobileVariantService {
 
     @Inject
     private MobileVariantDao mobileApplicationDao;
-    
+
     @Override
     public MobileVariant findByVariantID(String variantID) {
         return mobileApplicationDao.findByVariantID(variantID);
@@ -37,7 +37,7 @@ public class MobileVariantServiceImpl implements MobileVariantService {
     @Override
     public void addInstance(MobileVariant mobileApp,
             MobileVariantInstanceImpl instance) {
-        
+
         mobileApp.getInstances().add(instance);
         mobileApplicationDao.update(mobileApp);
     }

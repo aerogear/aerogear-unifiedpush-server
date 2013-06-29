@@ -21,8 +21,7 @@ import org.jboss.aerogear.connectivity.api.MobileVariant;
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileVariantService {
-    
-    
+
     MobileVariant findByVariantID(String variantID);
 
     void addInstance(MobileVariant mobileApp, MobileVariantInstanceImpl instance);

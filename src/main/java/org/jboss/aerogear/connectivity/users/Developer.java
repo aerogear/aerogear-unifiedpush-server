@@ -17,7 +17,6 @@
 
 package org.jboss.aerogear.connectivity.users;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,9 +33,9 @@ public class Developer extends SimpleUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id = null;
-    
+
     private String password;
-    
+
     public void setId(Long id) {
         this.id = id;
     }

@@ -43,21 +43,24 @@ import org.jboss.aerogear.connectivity.service.SenderService;
 @TransactionAttribute
 public class PushNotificationSenderEndpoint {
 
-    @Inject private Logger logger;
-    @Inject private PushApplicationService pushApplicationService;
-    @Inject private SenderService senderService;
-    
+    @Inject
+    private Logger logger;
+    @Inject
+    private PushApplicationService pushApplicationService;
+    @Inject
+    private SenderService senderService;
+
     @POST
     @Path("/broadcast")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response broadcast(final BroadcastMessage message, @Context HttpServletRequest request) {
-        
+
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
-          return Response.status(Status.UNAUTHORIZED)
-                  .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                  .entity("Unauthorized Request")
-                  .build();
+            return Response.status(Status.UNAUTHORIZED)
+                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .entity("Unauthorized Request")
+                    .build();
         }
 
         // submitted to @Async EJB:
@@ -72,13 +75,13 @@ public class PushNotificationSenderEndpoint {
     @Path("/selected")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response selectedSender(final SelectiveSendMessage message, @Context HttpServletRequest request) {
-        
+
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
-          return Response.status(Status.UNAUTHORIZED)
-                  .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                  .entity("Unauthorized Request")
-                  .build();
+            return Response.status(Status.UNAUTHORIZED)
+                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .entity("Unauthorized Request")
+                    .build();
         }
 
         // submitted to @Async EJB:
@@ -89,7 +92,6 @@ public class PushNotificationSenderEndpoint {
                 .entity("Job submitted").build();
     }
 
-    
     /**
      * returns application if the masterSecret is valid for the request PushApplication
      */

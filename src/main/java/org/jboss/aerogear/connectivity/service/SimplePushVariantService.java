@@ -22,12 +22,15 @@ import java.util.List;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 
 public interface SimplePushVariantService {
-    
-    SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
-    SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
-    void removeSimplePushVariant(SimplePushVariant simplePushVariant);
-    List<SimplePushVariant> findAllSimplePushVariants();
-    SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
+    SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
+
+    SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
+
+    void removeSimplePushVariant(SimplePushVariant simplePushVariant);
+
+    List<SimplePushVariant> findAllSimplePushVariants();
+
+    SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 }

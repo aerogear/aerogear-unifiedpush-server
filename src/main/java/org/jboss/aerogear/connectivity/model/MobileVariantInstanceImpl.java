@@ -40,54 +40,51 @@ public class MobileVariantInstanceImpl extends PersistentObject implements Mobil
     @Column
     private String category;
 
-    
-   public String getDeviceToken() {
-      return this.deviceToken;
-   }
+    public String getDeviceToken() {
+        return this.deviceToken;
+    }
 
-   public void setDeviceToken(final String deviceToken) {
-      this.deviceToken = deviceToken;
-   }
+    public void setDeviceToken(final String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 
-   public String getDeviceType() {
-      return this.deviceType;
-   }
+    public String getDeviceType() {
+        return this.deviceType;
+    }
 
-   public void setDeviceType(final String deviceType) {
-      this.deviceType = deviceType;
-   }
+    public void setDeviceType(final String deviceType) {
+        this.deviceType = deviceType;
+    }
 
+    public String getMobileOperatingSystem() {
+        return this.mobileOperatingSystem;
+    }
 
-   public String getMobileOperatingSystem() {
-      return this.mobileOperatingSystem;
-   }
+    public void setMobileOperatingSystem(final String mobileOperatingSystem) {
+        this.mobileOperatingSystem = mobileOperatingSystem;
+    }
 
-   public void setMobileOperatingSystem(final String mobileOperatingSystem) {
-      this.mobileOperatingSystem = mobileOperatingSystem;
-   }
+    public String getOsVersion() {
+        return this.osVersion;
+    }
 
+    public void setOsVersion(final String osVersion) {
+        this.osVersion = osVersion;
+    }
 
-   public String getOsVersion() {
-      return this.osVersion;
-   }
+    public String getAlias() {
+        return this.alias;
+    }
 
-   public void setOsVersion(final String osVersion) {
-      this.osVersion = osVersion;
-   }
+    public void setAlias(final String alias) {
+        this.alias = alias;
+    }
 
-   public String getAlias() {
-      return this.alias;
-   }
+    public String getCategory() {
+        return category;
+    }
 
-   public void setAlias(final String alias) {
-      this.alias = alias;
-   }
-
-   public String getCategory() {
-       return category;
-   }
-
-   public void setCategory(final String category) {
-       this.category = category;
-   }
+    public void setCategory(final String category) {
+        this.category = category;
+    }
 }

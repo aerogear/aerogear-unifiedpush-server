@@ -25,15 +25,15 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.android.gcm.server.Sender;
 
 @ApplicationScoped
-public class GCMCache implements Serializable{
+public class GCMCache implements Serializable {
 
     private static final long serialVersionUID = 8171485458336202582L;
 
     private final ConcurrentHashMap<String, Sender> cache = new ConcurrentHashMap<String, Sender>();
-    
+
     public Sender getSenderForAPIKey(String googleAPIKey) {
         Sender sender = cache.get(googleAPIKey);
-        
+
         if (sender == null) {
             // create and cache:
             sender = new Sender(googleAPIKey);

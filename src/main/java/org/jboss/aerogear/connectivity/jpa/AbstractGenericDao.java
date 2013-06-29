@@ -25,13 +25,14 @@ import javax.persistence.Query;
 
 public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
 
-    @Inject protected EntityManager entityManager;
+    @Inject
+    protected EntityManager entityManager;
 
     // ---------------------- Transaction methods ----------------------
     public E create(E e) {
         entityManager.joinTransaction();
         entityManager.persist(e);
-        return e; 
+        return e;
     }
 
     public E update(E e) {
@@ -39,7 +40,7 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
         E ent = entityManager.merge(e);
         entityManager.flush();
         return ent;
-        
+
     }
 
     public void delete(E e) {
@@ -51,7 +52,7 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
     public Query createQuery(String jpql) {
         return entityManager.createQuery(jpql);
     }
-    
+
     @SuppressWarnings("unchecked")
     public E find(Class<?> classType, K id) {
         return (E) entityManager.find(classType, id);
@@ -60,7 +61,7 @@ public class AbstractGenericDao<E, K> implements GenericDao<E, K> {
     public E getSingleResultForQuery(Query query) {
         List<E> result = query.getResultList();
 
-        if (! result.isEmpty()) {
+        if (!result.isEmpty()) {
             return result.get(0);
         } else {
             return null;

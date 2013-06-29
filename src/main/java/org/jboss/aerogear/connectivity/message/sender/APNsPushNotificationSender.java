@@ -29,26 +29,27 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 
 @APNsSender
-public class APNsPushNotificationSender  {
-    
-    @Inject APNsCache apnsCache;
-    
+public class APNsPushNotificationSender {
+
+    @Inject
+    APNsCache apnsCache;
+
     public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        
-            String apnsMessage = APNS.newPayload()
+
+        String apnsMessage = APNS.newPayload()
                     // adding recognized key values
-                    .alertBody(pushMessage.getAlert())    // alert dialog, in iOS
-                    .badge(pushMessage.getBadge())        // little badge icon update;
-                    .sound(pushMessage.getSound())        // sound to be played by app
+                .alertBody(pushMessage.getAlert()) // alert dialog, in iOS
+                .badge(pushMessage.getBadge()) // little badge icon update;
+                .sound(pushMessage.getSound()) // sound to be played by app
 
-                    .customFields(pushMessage.getData())  // adding other (submitted) fields
+                .customFields(pushMessage.getData()) // adding other (submitted) fields
 
-                    .build();  // build the JSON payload, for APNs 
+                .build(); // build the JSON payload, for APNs 
 
-            // look up the ApnsService from the cache:
-            ApnsService service = apnsCache.getApnsServiceForVariant(iOSVariant);
+        // look up the ApnsService from the cache:
+        ApnsService service = apnsCache.getApnsServiceForVariant(iOSVariant);
 
-            // send: 
-            service.push(tokens, apnsMessage);
+        // send: 
+        service.push(tokens, apnsMessage);
     }
 }

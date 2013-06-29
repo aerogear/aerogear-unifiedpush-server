@@ -30,9 +30,10 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
     public List<MobileVariantInstanceImpl> findByToken(String token) {
 
         return createQuery(
-                "select mobileApplicationInstance from " + MobileVariantInstanceImpl.class.getSimpleName() +" mobileApplicationInstance where mobileApplicationInstance.deviceToken = :token")
-        .setParameter("token", token)
-        .getResultList();
+                "select mobileApplicationInstance from " + MobileVariantInstanceImpl.class.getSimpleName()
+                        + " mobileApplicationInstance where mobileApplicationInstance.deviceToken = :token")
+                .setParameter("token", token)
+                .getResultList();
     }
 
 }

@@ -44,7 +44,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
             List<MobileVariantInstanceImpl> instances) {
 
         // uh... :)
-        
+
         for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
             dao.delete(mobileApplicationInstance);
         }

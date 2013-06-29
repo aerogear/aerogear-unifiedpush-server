@@ -26,10 +26,11 @@ public class SimpleTest {
     @Before
     public void setup() {
     }
+
     @After
     public void clean() {
     }
-    
+
     @Test
     public void testSomething() {
     }

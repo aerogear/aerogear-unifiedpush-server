@@ -43,7 +43,6 @@ public class AuthenticationEndpoint {
     @Inject
     private IdentityManagement configuration;
 
-
     @POST
     @Path("/enroll")
     @Consumes(MediaType.APPLICATION_JSON)

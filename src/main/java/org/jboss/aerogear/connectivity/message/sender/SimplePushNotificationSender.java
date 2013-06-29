@@ -37,16 +37,15 @@ import java.io.Serializable;
 public class SimplePushNotificationSender implements Serializable {
     private static final long serialVersionUID = 5747687132270998712L;
 
-
-
     private AsyncHttpClient asyncHttpClient;
-    @Inject private Logger logger;    
-    
+    @Inject
+    private Logger logger;
+
     @PostConstruct
     public void createAsyncHttpClient() {
         asyncHttpClient = new AsyncHttpClient();
     }
-    
+
     public void sendMessage(String endpoint, String payload, List<String> channels) {
         // iterate over all the given channels:
         for (String channelID : channels) {
@@ -55,9 +54,9 @@ public class SimplePushNotificationSender implements Serializable {
                 // blocking IO here:
                 com.ning.http.client.Response response =
                         asyncHttpClient.preparePut(endpoint + channelID)
-                          .addHeader("Accept", "application/x-www-form-urlencoded")
-                          .setBody(payload) // should be a string like 'version=123'
-                          .execute().get();
+                                .addHeader("Accept", "application/x-www-form-urlencoded")
+                                .setBody(payload) // should be a string like 'version=123'
+                                .execute().get();
 
                 int simplePushStatusCode = response.getStatusCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);

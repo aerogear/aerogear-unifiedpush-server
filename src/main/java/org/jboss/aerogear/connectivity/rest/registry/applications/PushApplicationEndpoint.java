@@ -40,7 +40,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import java.util.UUID;
 
-
 @Stateless
 @TransactionAttribute
 @Path("/applications")
@@ -70,7 +69,8 @@ public class PushApplicationEndpoint {
         pushApp.setDeveloper(loginName.get());
         pushAppService.addPushApplication(pushApp);
 
-        return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp).build();
+        return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
+                .build();
     }
 
     // READ

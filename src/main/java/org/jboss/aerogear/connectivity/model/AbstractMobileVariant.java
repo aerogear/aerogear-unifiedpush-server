@@ -50,13 +50,13 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
     private String description;
     @Column
     private String variantID;
-    @Column 
+    @Column
     private String secret;
     @Column
     private String developer;
-    
+
     // TODO: let's do LAZY
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private Set<MobileVariantInstanceImpl> instances = new HashSet<MobileVariantInstanceImpl>();
 
@@ -78,11 +78,11 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
 
     @Override
     public Set<MobileVariantInstanceImpl> getInstances() {
-       return this.instances;
+        return this.instances;
     }
 
     public void setInstances(final Set<MobileVariantInstanceImpl> instances) {
-       this.instances = instances;
+        this.instances = instances;
     }
 
     public String getVariantID() {
@@ -111,4 +111,3 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
         this.developer = developer;
     }
 }
-

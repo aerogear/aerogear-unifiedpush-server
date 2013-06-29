@@ -28,29 +28,28 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 
 @ApplicationScoped
-public class APNsCache implements Serializable{
+public class APNsCache implements Serializable {
     private static final long serialVersionUID = -1913999384798892563L;
 
     private final ConcurrentHashMap<String, ApnsService> apnsCache = new ConcurrentHashMap<String, ApnsService>();
-    
+
     public ApnsService getApnsServiceForVariant(iOSVariant iOSVariant) {
         ApnsService variantService = null;
         synchronized (apnsCache) {
-           String variantId = iOSVariant.getId();
-           variantService = apnsCache.get(variantId);
+            String variantId = iOSVariant.getId();
+            variantService = apnsCache.get(variantId);
 
-           if (variantService == null) {
-               variantService = APNS
-                       .newService()
-                       .withCert(
-                               new ByteArrayInputStream(iOSVariant.getCertificate()),
-                               iOSVariant.getPassphrase()).withSandboxDestination()
+            if (variantService == null) {
+                variantService = APNS
+                        .newService()
+                        .withCert(
+                                new ByteArrayInputStream(iOSVariant.getCertificate()),
+                                iOSVariant.getPassphrase()).withSandboxDestination()
                                .asQueued().build();
-           
-           
-               // store it:
-               apnsCache.put(variantId, variantService);
-           }
+
+                // store it:
+                apnsCache.put(variantId, variantService);
+            }
         }
 
         return variantService;

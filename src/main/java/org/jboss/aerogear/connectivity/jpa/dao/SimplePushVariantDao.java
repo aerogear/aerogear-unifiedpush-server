@@ -22,9 +22,10 @@ import java.util.List;
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 
-public interface SimplePushVariantDao extends GenericDao<SimplePushVariant, String>{
-    
+public interface SimplePushVariantDao extends GenericDao<SimplePushVariant, String> {
+
     List<SimplePushVariant> findAll();
+
     SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 }

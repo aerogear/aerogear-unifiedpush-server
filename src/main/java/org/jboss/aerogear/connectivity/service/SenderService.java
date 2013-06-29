@@ -25,5 +25,6 @@ import org.jboss.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage
 public interface SenderService {
 
     void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
+
     void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message);
 }

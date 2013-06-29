@@ -24,7 +24,10 @@ import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 public interface MobileVariantInstanceService {
 
     MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+
     MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+
     List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token);
+
     void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
 }

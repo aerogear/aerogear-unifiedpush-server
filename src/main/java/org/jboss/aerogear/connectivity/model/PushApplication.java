@@ -35,7 +35,7 @@ import org.picketlink.idm.jpa.annotations.IdentityAttribute;
 @IdentityAttribute
 public class PushApplication extends PersistentObject implements org.jboss.aerogear.connectivity.api.PushApplication {
     private static final long serialVersionUID = 6507691362454032282L;
-    
+
     public PushApplication() {
         masterSecret = UUID.randomUUID().toString();
     }
@@ -55,95 +55,93 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     private String developer;
 
     // TODO: let's do LAZY
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private Set<iOSVariant> iOSApps = new HashSet<iOSVariant>();
 
     // TODO: let's do LAZY
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private Set<AndroidVariant> androidApps = new HashSet<AndroidVariant>();
-    
+
     // TODO: let's do LAZY
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private Set<SimplePushVariant> simplePushApps = new HashSet<SimplePushVariant>();
-    
-    
-//    @OneToMany
-//    private Set<AbstractMobileApplication> mobileApplications = new HashSet<AbstractMobileApplication>();
 
+    //    @OneToMany
+    //    private Set<AbstractMobileApplication> mobileApplications = new HashSet<AbstractMobileApplication>();
 
-   public String getName() {
-      return this.name;
-   } 
+    public String getName() {
+        return this.name;
+    }
 
-   public void setName(final String name) {
-      this.name = name;
-   }
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-   public String getDescription() {
-      return this.description;
-   }
+    public String getDescription() {
+        return this.description;
+    }
 
-   public void setDescription(final String description) {
-      this.description = description;
-   }
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-//   public Set<AbstractMobileApplication> getMobileApplications() {
-//       return mobileApplications;
-//   }
-//
-//   public void setMobileApplications(Set<AbstractMobileApplication> mobileApplications) {
-//       this.mobileApplications = mobileApplications;
-//   }
+    //   public Set<AbstractMobileApplication> getMobileApplications() {
+    //       return mobileApplications;
+    //   }
+    //
+    //   public void setMobileApplications(Set<AbstractMobileApplication> mobileApplications) {
+    //       this.mobileApplications = mobileApplications;
+    //   }
 
-   public Set<iOSVariant> getIOSApps() {
-      return this.iOSApps;
-   }
+    public Set<iOSVariant> getIOSApps() {
+        return this.iOSApps;
+    }
 
-   public void setIOSApps(final Set<iOSVariant> iOSApps) {
-      this.iOSApps = iOSApps;
-   }
+    public void setIOSApps(final Set<iOSVariant> iOSApps) {
+        this.iOSApps = iOSApps;
+    }
 
-   public Set<AndroidVariant> getAndroidApps() {
-      return this.androidApps;
-   }
+    public Set<AndroidVariant> getAndroidApps() {
+        return this.androidApps;
+    }
 
-   public void setAndroidApps(final Set<AndroidVariant> androidApps) {
-      this.androidApps = androidApps;
-   }
+    public void setAndroidApps(final Set<AndroidVariant> androidApps) {
+        this.androidApps = androidApps;
+    }
 
-   public Set<SimplePushVariant> getSimplePushApps() {
-       return simplePushApps;
-   }
+    public Set<SimplePushVariant> getSimplePushApps() {
+        return simplePushApps;
+    }
 
-   public void setSimplePushApps(final Set<SimplePushVariant> simplePushApps) {
-       this.simplePushApps = simplePushApps;
-   }
+    public void setSimplePushApps(final Set<SimplePushVariant> simplePushApps) {
+        this.simplePushApps = simplePushApps;
+    }
 
-   public String getPushApplicationID() {
-       return pushApplicationID;
-   }
+    public String getPushApplicationID() {
+        return pushApplicationID;
+    }
 
-   public void setPushApplicationID(String pushApplicationID) {
-       this.pushApplicationID = pushApplicationID;
-   }
+    public void setPushApplicationID(String pushApplicationID) {
+        this.pushApplicationID = pushApplicationID;
+    }
 
-   public void setMasterSecret(String secret) {
-       this.masterSecret = secret;
-   }
+    public void setMasterSecret(String secret) {
+        this.masterSecret = secret;
+    }
 
-   @Override
-   public String getMasterSecret() {
-       return masterSecret;
-   }
+    @Override
+    public String getMasterSecret() {
+        return masterSecret;
+    }
 
-   public String getDeveloper() {
-       return developer;
-   }
+    public String getDeveloper() {
+        return developer;
+    }
 
-   public void setDeveloper(String developer) {
-       this.developer = developer;
-   }
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
 }

@@ -42,10 +42,11 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public List<PushApplication> findAllPushApplications() {
         return pushApplicationDao.findAll();
     }
+
     public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
         return pushApplicationDao.findAllForDeveloper(loginName);
     }
-    
+
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
         return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName);
@@ -68,11 +69,12 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         //pushApp.getMobileApplications().add(androidApp);
         pushApplicationDao.update(pushApp);
     }
+
     @Override
     public void addSimplePushVariant(PushApplication pushApp,
             SimplePushVariant simplePushVariant) {
         pushApp.getSimplePushApps().add(simplePushVariant);
-        
+
         pushApplicationDao.update(pushApp);
     }
 

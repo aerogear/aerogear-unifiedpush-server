@@ -60,7 +60,6 @@ public class iOSVariantEndpoint {
     @LoggedUser
     private Instance<String> loginName;
 
-
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============           iOS            ======================

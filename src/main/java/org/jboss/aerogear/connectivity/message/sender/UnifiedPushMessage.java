@@ -46,7 +46,7 @@ public class UnifiedPushMessage {
         // special key words (for APNs)
         this.alert = (String) data.remove("alert");
         this.sound = (String) data.remove("sound");
-        
+
         Integer badgeVal = (Integer) data.remove("badge");
         if (badgeVal == null) {
             this.badge = -1;

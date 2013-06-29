@@ -31,4 +31,5 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
-public @interface APNsSender {}
+public @interface APNsSender {
+}

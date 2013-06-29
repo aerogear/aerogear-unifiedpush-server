@@ -46,34 +46,35 @@ import org.jboss.aerogear.connectivity.service.SenderService;
 @Stateless
 @Asynchronous
 public class SenderServiceImpl implements SenderService {
-    
-    
-    @Inject @GCMSender
-    private GCMPushNotificationSender gcmSender; 
-    
-    @Inject  @APNsSender
+
+    @Inject
+    @GCMSender
+    private GCMPushNotificationSender gcmSender;
+
+    @Inject
+    @APNsSender
     private APNsPushNotificationSender apnsSender;
-    
-    @Inject @SimplePushSender
+
+    @Inject
+    @SimplePushSender
     private SimplePushNotificationSender simplePushSender;
-    
-    
+
     @Override
     @Asynchronous
     public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
-        
+
         final List<String> submittedAliases = message.getAliases();
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(message.getMessage());
 
         // TODO: Make better...
         final Set<iOSVariant> iOSapps = pushApplication.getIOSApps();
         for (iOSVariant iOSApp : iOSapps) {
-            
+
             final List<String> iOSTokenPerVariant = new ArrayList<String>();
             // get all instances
             final Set<MobileVariantInstanceImpl> instancesPerVariant = iOSApp.getInstances();
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
-                
+
                 // see if the alias does match for the instance
                 if (submittedAliases != null && submittedAliases.contains(instance.getAlias())) {
                     // add it
@@ -87,14 +88,14 @@ public class SenderServiceImpl implements SenderService {
         // TODO: make better :)
         Set<AndroidVariant> androidApps = pushApplication.getAndroidApps();
         for (AndroidVariant androidApplication : androidApps) {
-            
+
             final List<String> androidTokenPerVariant = new ArrayList<String>();
             //final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender(androidApplication.getGoogleKey());
 
             // get all instances
             Set<MobileVariantInstanceImpl> instancesPerVariant = androidApplication.getInstances();
             for (MobileVariantInstanceImpl instance : instancesPerVariant) {
-                
+
                 // see if the alias does match for the instance
                 if (submittedAliases != null && submittedAliases.contains(instance.getAlias())) {
                     // add it
@@ -103,7 +104,7 @@ public class SenderServiceImpl implements SenderService {
             }
             gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage, androidApplication.getGoogleKey());
         }
-        
+
         // TODO: make better :)
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
         if (simplePushCategoriesAndValues == null) {
@@ -112,7 +113,7 @@ public class SenderServiceImpl implements SenderService {
 
         Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
         for (SimplePushVariant simplePushVariant : spApps) {
-            
+
             // the specified category names.....
             final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
             final Map<String, List<String>> tokensPerCategory = new LinkedHashMap<String, List<String>>();
@@ -121,43 +122,42 @@ public class SenderServiceImpl implements SenderService {
             for (String category : categoriesToNotify) {
                 tokensPerCategory.put(category, new ArrayList<String>());
             }
-            
+
             Set<MobileVariantInstanceImpl> allSimplePushVarinatInstancesPerVariant = simplePushVariant.getInstances();
             for (MobileVariantInstanceImpl instance : allSimplePushVarinatInstancesPerVariant) {
 
                 String categoryFromInstance = instance.getCategory();
                 // Does the category match one of the submitted ones?
                 // Does the alias also match ??
-                if (tokensPerCategory.get(categoryFromInstance) != null)  {
-                    
+                if (tokensPerCategory.get(categoryFromInstance) != null) {
+
                     String currentAlias = instance.getAlias();
                     // NO alias at all .....???
                     // alias matches......
-                    if ((submittedAliases == null && currentAlias == null) || (submittedAliases.contains(currentAlias)) )
+                    if ((submittedAliases == null && currentAlias == null) || (submittedAliases.contains(currentAlias)))
 
-                    // add the token, to the matching category list:
-                    tokensPerCategory.get(categoryFromInstance).add(instance.getDeviceToken());
+                        // add the token, to the matching category list:
+                        tokensPerCategory.get(categoryFromInstance).add(instance.getDeviceToken());
                 }
             }
             // send:
             for (String category : categoriesToNotify) {
-                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory.get(category));    
+                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory.get(category));
             }
         }
     }
 
-    
     @Override
     @Asynchronous
     public void broadcast(PushApplication pushApplication,
             Map<String, ? extends Object> jsonMap) {
 
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(jsonMap);
-        
+
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSapps = pushApplication.getIOSApps();
         for (iOSVariant iOSApp : iOSapps) {
-            
+
             // get all the tokens:
             final Set<String> iOStokenz = new HashSet<String>();
             Set<MobileVariantInstanceImpl> iOSinstallations = iOSApp
@@ -182,13 +182,13 @@ public class SenderServiceImpl implements SenderService {
             }
             gcmSender.sendPushMessage(androidtokenz, unifiedPushMessage, androidApplication.getGoogleKey());
         }
-        
+
         // TODO: DISPATCH TO A QUEUE .....
         Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
         for (SimplePushVariant simplePushVariant : spApps) {
-            
+
             final List<String> simplePushTokenz = new ArrayList<String>();
-            
+
             Set<MobileVariantInstanceImpl> simplePushVarinatInstances = simplePushVariant.getInstances();
             for (MobileVariantInstanceImpl instance : simplePushVarinatInstances) {
                 // only the BROADCAST channels:
@@ -203,4 +203,3 @@ public class SenderServiceImpl implements SenderService {
         }
     }
 }
-
