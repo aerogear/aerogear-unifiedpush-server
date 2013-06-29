@@ -56,7 +56,6 @@ public class MobileVariantInstanceEndpoint {
     @Inject
     private MobileVariantService mobileApplicationService;
 
-
     @OPTIONS
     @Path("{token}")
     public Response crossOriginForInstallations(
@@ -65,13 +64,13 @@ public class MobileVariantInstanceEndpoint {
 
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
-    
+
     @OPTIONS
     public Response crossOriginForInstallations(@Context HttpHeaders headers) {
-        
+
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
@@ -151,12 +150,12 @@ public class MobileVariantInstanceEndpoint {
 
         return appendAllowOriginHeader(Response.noContent(), request);
     }
-    
+
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
         // required
         response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
-                .header("Access-Control-Allow-Methods", "POST, DELETE")  // only POST/DELETE are allowed
+                .header("Access-Control-Allow-Methods", "POST, DELETE") // only POST/DELETE are allowed
                 .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization") // explicit Headers!
                 .header("Access-Control-Allow-Credentials", "true");
 
@@ -166,7 +165,7 @@ public class MobileVariantInstanceEndpoint {
     private Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
 
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-                 .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Credentials", "true")
                  .build();
     }
 

@@ -22,8 +22,6 @@ import java.util.LinkedHashMap;
 public class BroadcastMessage extends LinkedHashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
-
-    
     public String getSimplePush() {
         return (String) this.get("simple-push");
     }

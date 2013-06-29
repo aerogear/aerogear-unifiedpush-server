@@ -35,12 +35,12 @@ public class iOSVariant extends AbstractMobileVariant {
     @Column
     @NotNull
     private String passphrase;
-    
+
     @Lob
     @Column(name = "CERT")
     @NotNull
     private byte[] certificate;
-    
+
     public String getPassphrase() {
         return this.passphrase;
     }
@@ -50,8 +50,8 @@ public class iOSVariant extends AbstractMobileVariant {
     }
 
     public byte[] getCertificate() {
-       return certificate;
-   }
+        return certificate;
+    }
 
     public void setCertificate(byte[] cert) {
         this.certificate = cert;

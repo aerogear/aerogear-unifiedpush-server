@@ -36,9 +36,10 @@ import com.google.android.gcm.server.Message.Builder;
 @GCMSender
 @ApplicationScoped
 public class GCMPushNotificationSender {
-    
-    @Inject GCMCache cache;
-    
+
+    @Inject
+    GCMCache cache;
+
     public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
 
         // no need to send empty list
@@ -51,7 +52,7 @@ public class GCMPushNotificationSender {
         // add the "regconized" keys...
         gcmBuilder.addData("alert", pushMessage.getAlert());
         gcmBuilder.addData("sound", pushMessage.getSound());
-        gcmBuilder.addData("badge", ""+pushMessage.getBadge());
+        gcmBuilder.addData("badge", "" + pushMessage.getBadge());
 
         // iterate over the missing keys:
         Set<String> keys = pushMessage.getData().keySet();

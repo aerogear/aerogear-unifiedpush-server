@@ -23,13 +23,15 @@ import org.jboss.aerogear.connectivity.model.iOSVariant;
 
 // TODO: make generic Variant Service:
 public interface iOSVariantService {
-    
-    iOSVariant addiOSVariant(iOSVariant iOSVariant);
-    iOSVariant updateiOSVariant(iOSVariant iOSVariant);
-    void removeiOSVariant(iOSVariant iOSVariant);
-    
-    List<iOSVariant> findAlliOSVariants();
-    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
+    iOSVariant addiOSVariant(iOSVariant iOSVariant);
+
+    iOSVariant updateiOSVariant(iOSVariant iOSVariant);
+
+    void removeiOSVariant(iOSVariant iOSVariant);
+
+    List<iOSVariant> findAlliOSVariants();
+
+    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 }

@@ -58,7 +58,6 @@ public class AndroidVariantEndpoint {
     @LoggedUser
     private Instance<String> loginName;
 
-
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============         Android          ======================

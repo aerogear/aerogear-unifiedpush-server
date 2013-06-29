@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
 @DiscriminatorValue("'android'")
 public class AndroidVariant extends AbstractMobileVariant {
     private static final long serialVersionUID = -4473752252296190311L;
-    
+
     public AndroidVariant() {
         super();
     }

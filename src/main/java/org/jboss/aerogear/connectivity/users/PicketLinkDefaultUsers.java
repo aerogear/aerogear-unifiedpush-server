@@ -56,7 +56,6 @@ public class PicketLinkDefaultUsers {
         this.identityManager.add(admin);
         this.identityManager.updateCredential(admin, new Password("123"));
 
-
         Role roleDeveloper = new SimpleRole("developer");
         Role roleAdmin = new SimpleRole("admin");
         this.identityManager.add(roleDeveloper);

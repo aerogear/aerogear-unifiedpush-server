@@ -21,10 +21,14 @@ import javax.persistence.Query;
 
 public interface GenericDao<E, K> {
     Query createQuery(String jpql);
+
     E find(Class<?> classType, K id);
+
     E create(E e);
+
     E update(E e);
+
     void delete(E e);
-    
+
     E getSingleResultForQuery(Query query);
 }

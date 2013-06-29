@@ -19,12 +19,12 @@ package org.jboss.aerogear.connectivity.rest.util;
 
 import javax.ws.rs.FormParam;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
- 
+
 public class iOSApplicationUploadForm {
- 
+
     public iOSApplicationUploadForm() {
     }
- 
+
     private String passphrase;
     private byte[] certificate;
     private String name;
@@ -51,19 +51,20 @@ public class iOSApplicationUploadForm {
     public String getPassphrase() {
         return passphrase;
     }
-    
+
     @FormParam("passphrase")
     public void setPassphrase(String passphrase) {
         this.passphrase = passphrase;
     }
-    
+
     public byte[] getCertificate() {
         return certificate;
     }
+
     @FormParam("certificate")
     @PartType("application/octet-stream")
     public void setCertificate(byte[] data) {
         this.certificate = data;
     }
- 
+
 }

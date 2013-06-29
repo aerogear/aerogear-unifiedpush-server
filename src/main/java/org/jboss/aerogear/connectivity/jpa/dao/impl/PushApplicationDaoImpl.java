@@ -28,26 +28,27 @@ public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, 
     @SuppressWarnings("unchecked")
     @Override
     public List<PushApplication> findAll() {
-        return createQuery("select t from "+PushApplication.class.getSimpleName()+" t").getResultList();
+        return createQuery("select t from " + PushApplication.class.getSimpleName() + " t").getResultList();
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<PushApplication> findAllForDeveloper(String loginName) {
-        return createQuery("select pa from "+PushApplication.class.getSimpleName()+" pa where pa.developer = :developer")
+        return createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
-        return getSingleResultForQuery(createQuery("select pa from "+PushApplication.class.getSimpleName()+" pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
-        .setParameter("pushApplicationID", pushApplicationID)
-        .setParameter("developer", loginName));
+        return getSingleResultForQuery(createQuery(
+                "select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
+                .setParameter("pushApplicationID", pushApplicationID)
+                .setParameter("developer", loginName));
     }
-    
+
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
-        return getSingleResultForQuery(createQuery("select pa from "+PushApplication.class.getSimpleName()+" pa where pa.pushApplicationID = :pushApplicationID")
-        .setParameter("pushApplicationID", pushApplicationID));
+        return getSingleResultForQuery(createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
+                .setParameter("pushApplicationID", pushApplicationID));
     }
-    
+
 }

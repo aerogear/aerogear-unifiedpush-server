@@ -23,8 +23,9 @@ import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.AndroidVariant;
 
 public interface AndroidVariantDao extends GenericDao<AndroidVariant, String> {
-    
+
     List<AndroidVariant> findAll();
+
     AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 }

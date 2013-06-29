@@ -41,7 +41,7 @@ public class AndroidVariantServiceImpl implements AndroidVariantService {
     }
 
     @Override
-    public AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName){
+    public AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName) {
         return androidApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
     }
 

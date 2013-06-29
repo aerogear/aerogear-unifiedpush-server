@@ -25,21 +25,30 @@ import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
 
 public interface PushApplicationService {
-    
+
     PushApplication addPushApplication(PushApplication pushApp);
+
     List<PushApplication> findAllPushApplications();
+
     List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
-    
+
     PushApplication findByPushApplicationID(String pushApplicationID);
+
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
+
     PushApplication updatePushApplication(PushApplication pushApp);
+
     void removePushApplication(PushApplication pushApp);
-    
+
     void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
+
     void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
+
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
-    
+
     List<iOSVariant> alliOSVariantsForPushApplication(PushApplication pushApp);
+
     List<AndroidVariant> allAndroidVariantsForPushApplication(PushApplication pushApp);
+
     List<SimplePushVariant> allSimplePushVariantsForPushApplication(PushApplication pushApp);
 }

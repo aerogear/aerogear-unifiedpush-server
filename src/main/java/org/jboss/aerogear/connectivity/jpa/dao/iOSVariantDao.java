@@ -23,8 +23,9 @@ import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
 
 public interface iOSVariantDao extends GenericDao<iOSVariant, String> {
-    
+
     List<iOSVariant> findAll();
-    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName) ;
+
+    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
 
 }

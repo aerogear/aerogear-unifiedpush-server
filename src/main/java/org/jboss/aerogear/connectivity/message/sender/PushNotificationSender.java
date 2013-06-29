@@ -20,7 +20,7 @@ package org.jboss.aerogear.connectivity.message.sender;
 import java.util.Collection;
 
 public interface PushNotificationSender {
-    
+
     void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey);
 
 }

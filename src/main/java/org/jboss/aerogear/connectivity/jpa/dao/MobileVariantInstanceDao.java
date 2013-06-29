@@ -23,7 +23,7 @@ import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
-    
+
     List<MobileVariantInstanceImpl> findByToken(String token);
 
 }

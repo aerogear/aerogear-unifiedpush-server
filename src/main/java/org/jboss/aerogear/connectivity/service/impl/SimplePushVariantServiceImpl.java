@@ -30,7 +30,7 @@ public class SimplePushVariantServiceImpl implements
 
     @Inject
     private SimplePushVariantDao simplePushApplicationDao;
-    
+
     @Override
     public SimplePushVariant addSimplePushVariant(
             SimplePushVariant simplePushVariant) {

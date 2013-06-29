@@ -4,7 +4,7 @@ package org.jboss.aerogear.connectivity.api;
  * One installation of a MobileVariant, running on a device or user-agent.
  */
 public interface MobileVariantInstance {
-    
+
     /**
      * Identifies the device/user-agent within its PushNetwork.
      * 
@@ -16,6 +16,7 @@ public interface MobileVariantInstance {
      * 
      */
     void setDeviceToken(final String deviceToken);
+
     String getDeviceToken();
 
     /**
@@ -27,18 +28,21 @@ public interface MobileVariantInstance {
      * 
      */
     void setDeviceType(final String deviceType);
+
     String getDeviceType();
 
     /**
      * The (optional) name of the underlying Operating System.
      */
     void setMobileOperatingSystem(final String mobileOperatingSystem);
+
     String getMobileOperatingSystem();
 
     /**
      * The (optional) version of the used Operating System.
      */
     void setOsVersion(final String osVersion);
+
     String getOsVersion();
 
     /**
@@ -46,11 +50,13 @@ public interface MobileVariantInstance {
      * E.g. email address or username
      */
     void setAlias(final String clientIdentifier);
+
     String getAlias();
 
     /**
      * Used for SimplePush, to "tag" the channel
      */
     void setCategory(final String category);
+
     String getCategory();
 }
