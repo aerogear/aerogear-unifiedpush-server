@@ -15,9 +15,35 @@ var apps = [
             "developer": "admin",
             "instances": [],
             "googleKey": "1234567890"
+        },{
+            "id": "402881893f62a12c013f66f676c80001",
+            "name": "Application2Android",
+            "description": "A Free Android version of the app",
+            "variantID": "32cede3c-27df-4eac-b807-65c31fbfeabc",
+            "secret": "66063664-4a87-4b02-8c0b-1d2b0cec0726",
+            "developer": "admin",
+            "instances": [],
+            "googleKey": "1234567890"
         }],
-        "simplePushApps": [],
-        "iosapps": []
+        "simplePushApps": [{
+            "id": "402881893f62a12c013f66f676c80001",
+            "name": "Simple Push application",
+            "description": "A Simple Push Variant of the Mobile App",
+            "variantID": "32cede3c-27df-4eac-b807-65c31fbfeabc",
+            "secret": "66063664-4a87-4b02-8c0b-1d2b0cec0726",
+            "developer": "admin",
+            "instances": [],
+            "pushNetworkURL": "thing"
+        }],
+        "iosapps": [{
+            "id": "402881893f62a12c013f66f676c80001",
+            "name": "iOS application",
+            "description": "An iOS Variant of the Mobile App",
+            "variantID": "32cede3c-27df-4eac-b807-65c31fbfeabc",
+            "secret": "66063664-4a87-4b02-8c0b-1d2b0cec0726",
+            "developer": "admin",
+            "instances": []
+        }]
     },
     {
         "id": "402881893f62a12c013f631dc6cd0001",
@@ -67,6 +93,17 @@ $.mockjax({
     dataType: "json",
     response: function() {
         this.responseText = apps[0];
+    }
+});
+
+
+$.mockjax({
+    type: "GET",
+    url: baseURL + "applications/8a0cf1df-0bcc-4a75-8b2a-78dff2915038/32cede3c-27df-4eac-b807-65c31fbfeabc",
+    responseTime: 750,
+    dataType: "json",
+    response: function() {
+        this.responseText = apps[0].androidApps[0];
     }
 });
 
