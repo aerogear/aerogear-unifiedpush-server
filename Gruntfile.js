@@ -25,6 +25,18 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         yeoman: yeomanConfig,
+        emberTemplates: {
+            compile: {
+                options: {
+                    templateName: function(sourceFile) {
+                        return sourceFile.replace(/app\/templates\//, '');
+                    }
+                },
+                files: {
+                    "<%= yeoman.app %>/scripts/templates.js": ["<%= yeoman.app %>/templates/**/*.handlebars"]
+                }
+            }
+        },
         watch: {
             options: {
                 nospawn: true
@@ -39,13 +51,17 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
-            }
+            },
+            emberTemplates: {
+                files: '<%= yeoman.app %>/templates/**/*.handlebars',
+                tasks: ['emberTemplates']
+            },
         },
         connect: {
             options: {
                 port: 9000,
                 // change this to '0.0.0.0' to access the server from outside
-                hostname: 'localhost'
+                hostname: '0.0.0.0'
             },
             livereload: {
                 options: {
@@ -253,6 +269,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'concurrent:server',
+            'emberTemplates',
             'connect:livereload',
             'open',
             'watch'
