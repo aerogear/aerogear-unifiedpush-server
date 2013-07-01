@@ -22,17 +22,18 @@
 
         <!--The Login Page Template-->
         <script type="text/x-handlebars" data-template-name="login">
+        {{error}}
             <div>
                 <form id="login" {{action login on="submit"}}>
                   <fieldset>
                     <legend><strong>AeroGear</strong> Unified Push Server</legend>
                     <p>
                       <label>Username</label>
-                      <input type="text" name="loginName">
+                      {{ input type="text" valueBinding="loginName" placeholder="Username"}}
                     </p>
                     <p>
                       <label>Password</label>
-                      <input type="password" name="password">
+                      {{ input type="password" valueBinding="password" placeholder="Password"}}
                     </p>
                     <small>
                       <input type="checkbox">Remember Username<br>
@@ -74,7 +75,7 @@
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
             <div>
-                Please start by adding a push application - {{#linkTo "mobileApps.new"}}Add New{{/linkTo}}
+                Please start by adding a push application - {{#linkTo "mobileApps.edit" this}}Add New{{/linkTo}}
             </div>
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
@@ -92,7 +93,7 @@
                         Simple Push Variants: {{totalSimplePushVariants}}
                         <br>
                         variants: {{variants}}
-                        {{#linkTo "mobileApps.new"}}Edit{{/linkTo}}
+                        {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
                         <button class="primary" {{ action "remove" app}}>Remove</button>
                     </li>
                     {{else}}
@@ -103,7 +104,7 @@
         </script>
 
         <!--Template to create a new push application-->
-        <script type="text/x-handlebars" data-template-name="mobileApps/new">
+        <script type="text/x-handlebars" data-template-name="mobileApps/add">
             <div>Add Push Application</div>
             <div>
                 <div>
@@ -111,11 +112,40 @@
                   <fieldset>
                     <p>
                       <label>Name</label>
-                      {{input type="text" value=name}}
+                      {{input type="text" valueBinding="name"}}
                     </p>
                     <p>
                       <label>Description</label>
-                      {{input type="text" value=description}}
+                      {{input type="text" valueBinding="description"}}
+                    </p>
+                    <button class="primary">Next</button>
+                  </fieldset>
+                </form>
+                </div>
+            </div>
+        </script>
+
+        <!--Template to create a new push application-->
+        <script type="text/x-handlebars" data-template-name="mobileApps/edit">
+            <div>
+                {{#if pushApplicationID}}
+                    Edit a
+                {{else}}
+                    Add a New
+                {{/if}}
+                Push Application
+            </div>
+            <div>
+                <div>
+                    <form {{action edit on="submit"}} target="view">
+                  <fieldset>
+                    <p>
+                      <label>Name</label>
+                      {{input type="text" valueBinding="name"}}
+                    </p>
+                    <p>
+                      <label>Description</label>
+                      {{input type="text" valueBinding="description"}}
                     </p>
                     <button class="primary">Next</button>
                   </fieldset>
@@ -174,6 +204,7 @@
         <script src="bower_components/aerogear/aerogear.min.js"></script>
         <script src="scripts/app.js"></script>
         <script src="scripts/router.js"></script>
+        <script src="scripts/controllers/login_controller.js"></script>
         <script src="scripts/controllers/mobileapps_controller.js"></script>
         <script src="scripts/views/mobileapp_view.js"></script>
         <script src="scripts/models/mobileapp_model.js"></script>

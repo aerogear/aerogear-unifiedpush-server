@@ -45,12 +45,13 @@ App.MobileAppsController = Ember.Controller.extend({
 });
 
 /*
-    The Controller for adding new Mobile apps
+    The Controller for adding/editing Mobile apps
 */
-App.MobileAppsNewController = Ember.Controller.extend({
-    add: function() {
+App.MobileAppsEditController = Ember.ObjectController.extend({
+    edit: function() {
         var applicationData = {
             name: this.get( "name" ),
+            id: this.get( "pushApplicationID" ),
             description: this.get( "description" )
         };
 

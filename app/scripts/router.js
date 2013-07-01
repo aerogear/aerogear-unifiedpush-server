@@ -27,7 +27,10 @@ App.Router.map( function() {
     this.resource( "mobileApps", function() {
 
         // The Route for creating a New Mobile Application
-        this.route( "new" );
+        this.route( "add" );
+
+        // The Route for editing a Mobile Application Name and Description
+        this.route( "edit", { path: "edit/:mobileApplication_id" } );
 
         // The Nested Route for seeing a variants detail
         this.resource( "variants", { path: "variants/:mobileApplication_id" }, function() {
@@ -57,35 +60,6 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 /*
-    Login Route
-*/
-App.LoginRoute = Ember.Route.extend({
-    events: {
-        login: function() {
-
-            var that = this,
-                data = $( "form#login" ).serializeObject();
-
-            // Use AeroGear Authenticator to login
-            App.AeroGear.authenticator.login( JSON.stringify( data ), {
-                contentType: "application/json",
-                success: function() {
-
-                    // Successful Login, now go to /mobileApps
-                    that.transitionTo( "mobileApps" );
-
-                },
-                error: function( error ) {
-
-                    console.log( "Error Logging in", error );
-
-                }
-            });
-        }
-    }
-});
-
-/*
     Mobile Applications Index Route
 
     Load All Mobile Applications
@@ -99,14 +73,23 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
     }
 });
 
+App.MobileAppsEditRoute = Ember.Route.extend({
+    setupController: function( controller, model ) {
+        controller.set( "model", model );
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id of pushApplicationID what ember expects
+        return { mobileApplication_id: model.pushApplicationID };
+
+    }
+});
+
 /*
     Route for a Single App Variant
     Don't need the model since ember  will do find( id ) by default
 */
 App.VariantsRoute = Ember.Route.extend({
-    /*model: function( params ) {
-        App.MobileApplication.find( params.mobileApplication_id );
-    },*/
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
@@ -123,13 +106,19 @@ App.VariantsRoute = Ember.Route.extend({
 
 App.VariantRoute = Ember.Route.extend({
     model: function( params ) {
+
+        // Return All the mobile variants
         return App.MobileVariant.find( params.mobileApplication_id, params.type, params.mobileVariant_id );
+
     },
     setupController: function( controller, model ) {
 
-        // Force a refresh of this model when coming in from a {{#linkTo}}
+        // Get the pushApplicationID from the "variants" controller
         var pushApplicationID = this.controllerFor( "variants" ).get( "model" ).get( "pushApplicationID" );
+
+        // Force a refresh of this model when coming in from a {{#linkTo}}
         controller.set( "model", model.variantID ? App.MobileVariant.find( pushApplicationID, model.get( "type" ), model.variantID ) : model );
+
     },
     serialize: function( model ) {
 
@@ -138,6 +127,8 @@ App.VariantRoute = Ember.Route.extend({
 
     },
     renderTemplate: function() {
+
+        // Tell Ember where to render our template view
         this.render( "variant", {
             into: "mobileApps"
         });
