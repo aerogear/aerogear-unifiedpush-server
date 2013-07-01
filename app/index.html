@@ -75,7 +75,7 @@
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
             <div>
-                Please start by adding a push application - {{#linkTo "mobileApps.edit" this}}Add New{{/linkTo}}
+                Please start by adding a push application - {{#linkTo "mobileApps.edit" this }}Add New{{/linkTo}}
             </div>
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
@@ -94,7 +94,7 @@
                         <br>
                         variants: {{variants}}
                         {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
-                        <button class="primary" {{ action "remove" app}}>Remove</button>
+                        <button class="primary" {{ action "remove" this}}>Remove</button>
                     </li>
                     {{else}}
                         Loading.....

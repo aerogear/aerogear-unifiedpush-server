@@ -16,7 +16,7 @@ App.LoginController = Ember.ObjectController.extend({
                 success: function() {
                     // Successful Login, now go to /mobileApps
                     that.set( "error", "" );
-                    that.transitionTo( "mobileApps" );
+                    that.transitionToRoute( "mobileApps" );
                 },
                 error: function( error ) {
                     //TODO: Show errors on screen
