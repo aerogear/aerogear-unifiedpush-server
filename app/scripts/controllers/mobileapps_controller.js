@@ -13,8 +13,38 @@
 */
 
 App.MobileAppsIndexController = Ember.ArrayController.extend({
-    remove: function( app ){
-        App.MobileApplication.remove( app.pushApplicationID );
+    /*remove: function( app ){
+        App.MobileApplication.remove( app );
+    },*/
+    remove: function( app ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            things = app,
+            that = this;
+
+        applicationPipe.remove( app.pushApplicationID, {
+            success: function( response ) {
+                var content = that.get("model").get("content"),
+                    find;
+
+                find = content.find( function( value ) {
+                    return value.pushApplicationID === things.pushApplicationID;
+                });
+
+                content.removeObject( find );
+            },
+            error: function( error ) { // TODO: Maybe Make this a class method?
+                console.log( "error with application endpoint", error );
+                switch( error.status ) {
+                case 401:
+                    App.Router.router.transitionTo("login");
+                    break;
+                default:
+                    //that.transitionTo( "login" );
+                    //result.setProperties( { isLoaded: true, error: error } );
+                    break;
+                }
+            }
+        });
     },
     totalApps: function() {
 

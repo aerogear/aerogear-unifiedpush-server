@@ -85,29 +85,6 @@ App.MobileApplication.reopenClass({
 
         return mobileApplication;
     },
-    remove: function( applicationPushId ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications;//,
-            //that = this;
-
-        applicationPipe.remove({
-            id: applicationPushId,
-            success: function( response ) {
-                console.log( "remove response", response );
-            },
-            error: function( error ) { // TODO: Maybe Make this a class method?
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    App.Router.router.transitionTo("login");
-                    break;
-                default:
-                    //that.transitionTo( "login" );
-                    //result.setProperties( { isLoaded: true, error: error } );
-                    break;
-                }
-            }
-        });
-    },
     _createVariantObject: function( response ) {
 
         // TODO: DRY this out

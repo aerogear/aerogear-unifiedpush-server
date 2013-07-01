@@ -104,6 +104,15 @@ App.VariantsRoute = Ember.Route.extend({
     }
 });
 
+App.VariantsIndexRoute = Ember.Route.extend({
+    model: function() {
+        console.log( "index model" );
+    },
+    setupController: function( controller, model ) {
+        console.log( controller, model );
+    }
+});
+
 App.VariantRoute = Ember.Route.extend({
     model: function( params ) {
 

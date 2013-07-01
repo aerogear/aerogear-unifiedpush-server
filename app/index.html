@@ -92,7 +92,7 @@
                         <br>
                         Simple Push Variants: {{totalSimplePushVariants}}
                         <br>
-                        variants: {{variants}}
+                        variants: {{totalVariants}}
                         {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
                         <button class="primary" {{ action "remove" this}}>Remove</button>
                     </li>
@@ -191,7 +191,7 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="variant">
-            YEA
+            <div>{{#linkTo "variants" this}}Back To Push Applications{{/linkTo}}</div>
         </script>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
@@ -201,7 +201,7 @@
         <script src="bower_components/jquery/jquery.min.js"></script>
         <script src="bower_components/handlebars/handlebars.js"></script>
         <script src="bower_components/ember/ember.js"></script>
-        <script src="bower_components/aerogear/aerogear.min.js"></script>
+        <script src="bower_components/aerogear/aerogear.js"></script>
         <script src="scripts/app.js"></script>
         <script src="scripts/router.js"></script>
         <script src="scripts/controllers/login_controller.js"></script>
@@ -212,7 +212,7 @@
         <script src="scripts/helpers/aerogear_helper.js"></script>
         <!-- endbuild -->
 
-        <script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
-        <script src="scripts/mocks/mock.js"></script>
+        <!--<script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
+        <script src="scripts/mocks/mock.js"></script>-->
 </body>
 </html>
