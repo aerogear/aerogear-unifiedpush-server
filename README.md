@@ -41,7 +41,7 @@ curl -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Conte
   http://localhost:8080/ag-push/rest/applications
 ```
 
-_The response returns a **pushApplicationID** for the Push App...._
+_The response returns a **pushApplicationID** and a **masterSecret** that will be both used later on when you attempt to send a push message (either Broadcast or Selected Send)._
 
 ##### iOS Variant
 
