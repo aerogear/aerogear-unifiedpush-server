@@ -57,7 +57,7 @@ curl -v -b cookies.txt -c cookies.txt
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
 
-_The response returns a **variantID** for the iOS variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the iOS client SDK.
 
 ##### Android Variant
 
@@ -71,7 +71,7 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android
 ```
 
-_The response returns a **variantID** for the Android variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK.
 
 ##### SimplePush Variant
 
@@ -85,9 +85,9 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
 ```
 
-_The response returns a **variantID** for the SimplePush variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK.
 
-#### Registration of an installation, on a device (iOS)
+#### Registration of an installation, for an iOS device:
 
 Client-side example for how to register an installation:
 
@@ -122,7 +122,7 @@ For _iOS_ the above sample was based on the **EARLY** version of our [iOS Push S
 #### Registration of an installation, for an Android device:
 
 For now, perform HTTP from Android to register the "MobileVariantInstance".
-Here is a _CURL_ example for how to perform the:
+Here is a _CURL_ example for how to perform the registration:
 
 ```
 curl -u "{MobileVariantID}:{secret}"
