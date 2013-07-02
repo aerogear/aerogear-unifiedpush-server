@@ -2,7 +2,11 @@
   "name": "aerogear-unified-push-server-admin-ui",
   "version": "0.0.0",
   "dependencies": {
-    "jquery": "~1.9.1"
+    "jquery": "~1.9.1",
+    "aerogear": "~1.1.1",
+    "ember": "~1.0.0-rc.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jquery-mockjax": "~1.5.2"
+  }
 }
