@@ -43,15 +43,7 @@ App.MobileVariant = Ember.Object.extend({
 App.MobileVariant.reopenClass({
     find: function( applicationPushId, variantType, variantApplicationId ) {
 
-        var mobileVariantPipe = AeroGear.Pipeline({
-            name: "mobileVariant",
-            settings: {
-                baseURL: "/ag-push/rest/applications/",
-                authenticator: App.AeroGear.authenticator,
-                endpoint:  applicationPushId + "/" + variantType
-            }
-        }).pipes.mobileVariant,
-        mobileVariant;
+        var mobileVariant;
 
         if( variantApplicationId ) {
             // Looking for 1
@@ -61,33 +53,59 @@ App.MobileVariant.reopenClass({
             mobileVariant = Ember.ArrayProxy.create({ content: [] });
         }
 
-        mobileVariantPipe.read({
-            id: variantApplicationId,
-            success: function( response ) {
-                if( AeroGear.isArray( response ) ) {
-                    response.forEach( function( data ) {
-                        data.isLoaded = true;
-                        mobileVariant.pushObject( App.MobileApplication.create( data ) );
-                    });
-                } else {
-                    response.isLoaded = true;
-                    mobileVariant.setProperties( response );
-                }
-            },
-            error: function( error ) { // TODO: Maybe Make this a class method?
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    App.Router.router.transitionTo("login");
-                    break;
-                default:
-                    //that.transitionTo( "login" );
-                    //result.setProperties( { isLoaded: true, error: error } );
-                    break;
-                }
-            }
-        });
+        this._fetch( mobileVariant, applicationPushId, variantType, variantApplicationId );
 
         return mobileVariant;
+    },
+    _ajaxy: function( mobileVariant, applicationPushId, variantType, variantApplicationId ) {
+
+        var mobileVariantPipe = AeroGear.Pipeline({
+            name: "mobileVariant",
+            settings: {
+                baseURL: "/ag-push/rest/applications/",
+                authenticator: App.AeroGear.authenticator,
+                endpoint:  applicationPushId + "/" + variantType
+            }
+        }).pipes.mobileVariant;
+
+        return Ember.Deferred.promise( function( promise ) {
+            mobileVariantPipe.read({
+                id: variantApplicationId,
+                success: function( response ) {
+                    Ember.run( promise, promise.resolve, response );
+                },
+                error: function( error ) { // TODO: Maybe Make this a class method?
+                    promise.reject( error );
+                }
+            });
+        });
+    },
+    _fetch: function( mobileVariant, applicationPushId, variantType, variantApplicationId ) {
+        this._ajaxy( mobileVariant, applicationPushId, variantType, variantApplicationId ).then( function( response ) {
+            if( AeroGear.isArray( response ) ) {
+                response.forEach( function( data ) {
+                    data.isLoaded = true;
+                    mobileVariant.pushObject( App.MobileApplication.create( data ) );
+                });
+            } else {
+
+                // Add a loading indicator
+                response.isLoaded = true;
+                // Loop Through the different Variants to create objects
+                mobileVariant.setProperties( response );
+
+            }
+        }).then( null, function( error ) {
+            console.log( "error with application endpoint", error );
+            switch( error.status ) {
+            case 401:
+                App.Router.router.transitionTo("login");
+                break;
+            default:
+                //that.transitionTo( "login" );
+                //result.setProperties( { isLoaded: true, error: error } );
+                break;
+            }
+        });
     }
 });

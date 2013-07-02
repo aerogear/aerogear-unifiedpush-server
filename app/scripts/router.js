@@ -36,12 +36,15 @@ App.Router.map( function() {
         this.resource( "variants", { path: "variants/:mobileApplication_id" }, function() {
 
             // The Route for creating a new Mobile Application Variant
-            this.route( "new" );
+            this.route( "add" );
 
-            // The Route for the variants detail
-            this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
+        });
 
-            });
+        // The Route for the variants detail
+        this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
+
+            this.route( "edit" );
+
         });
 
     });
@@ -90,12 +93,6 @@ App.MobileAppsEditRoute = Ember.Route.extend({
     Don't need the model since ember  will do find( id ) by default
 */
 App.VariantsRoute = Ember.Route.extend({
-    setupController: function( controller, model ) {
-
-        // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.pushApplicationID ? App.MobileApplication.find( model.pushApplicationID ) : model );
-
-    },
     serialize: function( model ) {
 
         // Make our non uniform id of pushApplicationID what ember expects
@@ -104,12 +101,31 @@ App.VariantsRoute = Ember.Route.extend({
     }
 });
 
+
 App.VariantsIndexRoute = Ember.Route.extend({
     model: function() {
-        console.log( "index model" );
+        return this.modelFor( "variants" );
     },
     setupController: function( controller, model ) {
-        console.log( controller, model );
+        controller.set( "model", model.pushApplicationID ? App.MobileApplication.find( model.pushApplicationID ) : model );
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id of pushApplicationID what ember expects
+        return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
+
+    }
+});
+
+App.VariantsAddRoute = Ember.Route.extend({
+    model: function() {
+        return this.modelFor( "variants" );
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id of pushApplicationID what ember expects
+        return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
+
     }
 });
 

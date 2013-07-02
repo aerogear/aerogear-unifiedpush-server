@@ -75,7 +75,7 @@
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
             <div>
-                Please start by adding a push application - {{#linkTo "mobileApps.edit" this }}Add New{{/linkTo}}
+                Please start by adding a push application - {{#linkTo "mobileApps.add" }}Add New{{/linkTo}}
             </div>
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
@@ -112,11 +112,11 @@
                   <fieldset>
                     <p>
                       <label>Name</label>
-                      {{input type="text" valueBinding="name"}}
+                      {{input type="text" value=name}}
                     </p>
                     <p>
                       <label>Description</label>
-                      {{input type="text" valueBinding="description"}}
+                      {{input type="text" value=description}}
                     </p>
                     <button class="primary">Next</button>
                   </fieldset>
@@ -155,6 +155,10 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="variants">
+            {{outlet}}
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="variants/index">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
             <ul>
             <li>List all Variants of this push application</li>
@@ -162,6 +166,8 @@
             </ul>
             {{ description }}
             {{#if isLoaded}}
+            {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
+            Please start by adding a push application - {{#linkTo "variants.add"}}Add New{{/linkTo}}
                 iOS Variants: {{totaliOSVariants}}
                 Android Variants: {{totalAndroidVariants}}
                 Simple Push Variants: {{totalSimplePushVariants}}
@@ -169,6 +175,33 @@
             {{else}}
                 loading....
             {{/if}}
+        </script>
+
+        <!--Template to create a new push application-->
+        <script type="text/x-handlebars" data-template-name="variants/add">
+        {{controller}}
+            <div>Add Push Application</div>
+            <div>
+                <div>
+                    <form {{action add on="submit"}} target="view">
+                  <fieldset>
+                    <p>
+                      <label>Name</label>
+                      {{input type="text" value=variantName}}
+                    </p>
+                    <p>
+                      <label>Description</label>
+                      {{input type="text" value=variantDescription}}
+                    </p>
+                    <p>
+                      <label>Google Key</label>
+                      {{input type="text" value=googleKey}}
+                    </p>
+                    <button class="primary">Next</button>
+                  </fieldset>
+                </form>
+                </div>
+            </div>
         </script>
 
 
@@ -191,6 +224,7 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="variant">
+            {{outlet}}
             <div>{{#linkTo "variants" this}}Back To Push Applications{{/linkTo}}</div>
         </script>
         <!--[if lt IE 7]>
@@ -206,6 +240,7 @@
         <script src="scripts/router.js"></script>
         <script src="scripts/controllers/login_controller.js"></script>
         <script src="scripts/controllers/mobileapps_controller.js"></script>
+        <script src="scripts/controllers/variants_controller.js"></script>
         <script src="scripts/views/mobileapp_view.js"></script>
         <script src="scripts/models/mobileapp_model.js"></script>
         <script src="scripts/models/mobilevariant_model.js"></script>

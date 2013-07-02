@@ -37,9 +37,7 @@ App.MobileApplication = Ember.Object.extend({
 App.MobileApplication.reopenClass({
     find: function( applicationPushId ) {
 
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            mobileApplication,
-            that = this;
+        var mobileApplication;
 
         if( applicationPushId ) {
             // Looking for 1
@@ -49,41 +47,55 @@ App.MobileApplication.reopenClass({
             mobileApplication = Ember.ArrayProxy.create({ content: [] });
         }
 
-        applicationPipe.read({
-            id: applicationPushId,
-            success: function( response ) {
-                if( AeroGear.isArray( response ) ) {
-                    response.forEach( function( data ) {
-                        data.isLoaded = true;
-                        data = that._createVariantObject( data );
-                        mobileApplication.pushObject( App.MobileApplication.create( data ) );
-                    });
-                } else {
+        this._fetch( mobileApplication, applicationPushId );
+        return mobileApplication;
+    },
+    _ajaxy: function( mobileApplication, applicationPushId ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications;
 
-                    // Add a loading indicator
-                    response.isLoaded = true;
-
-                    // Loop Through the different Variants to create objects
-                    mobileApplication.setProperties( that._createVariantObject( response ) );
-                    console.log( mobileApplication );
-
+        return Ember.Deferred.promise( function( promise ) {
+            applicationPipe.read({
+                id: applicationPushId,
+                success: function( response ) {
+                    Ember.run( promise, promise.resolve, response );
+                },
+                error: function( error ) { // TODO: Maybe Make this a class method?
+                    promise.reject( error );
                 }
-            },
-            error: function( error ) { // TODO: Maybe Make this a class method?
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    App.Router.router.transitionTo("login");
-                    break;
-                default:
-                    //that.transitionTo( "login" );
-                    //result.setProperties( { isLoaded: true, error: error } );
-                    break;
-                }
+            });
+        });
+    },
+    _fetch: function( mobileApplication, applicationPushId ) {
+        var model = this;
+
+        this._ajaxy( mobileApplication, applicationPushId ).then( function( response ) {
+            if( AeroGear.isArray( response ) ) {
+                response.forEach( function( data ) {
+                    data.isLoaded = true;
+                    data = model._createVariantObject( data );
+                    mobileApplication.pushObject( App.MobileApplication.create( data ) );
+                });
+            } else {
+
+                // Add a loading indicator
+                response.isLoaded = true;
+                // Loop Through the different Variants to create objects
+                mobileApplication.setProperties( model._createVariantObject( response ) );
+                console.log( mobileApplication );
+
+            }
+        }).then( null, function( error ) {
+            console.log( "error with application endpoint", error );
+            switch( error.status ) {
+            case 401:
+                App.Router.router.transitionTo("login");
+                break;
+            default:
+                //that.transitionTo( "login" );
+                //result.setProperties( { isLoaded: true, error: error } );
+                break;
             }
         });
-
-        return mobileApplication;
     },
     _createVariantObject: function( response ) {
 

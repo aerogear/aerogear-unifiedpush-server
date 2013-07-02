@@ -74,6 +74,40 @@ App.MobileAppsController = Ember.Controller.extend({
     }
 });
 
+
+// DRY THIS OUT
+App.MobileAppsAddController = Ember.Controller.extend({
+    add: function() {
+        var applicationData = {
+            name: this.get( "name" ),
+            description: this.get( "description" )
+        };
+
+        this.saveMobileApplication( applicationData );
+    },
+    // Move this to the Model?
+    saveMobileApplication: function( applicationData ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            that = this;
+
+        applicationPipe.save( applicationData, {
+            success: function() {
+                that.transitionToRoute( "mobileApps" );
+            },
+            error: function( error ) {
+                console.log( "error saving", error );
+                switch( error.status ) {
+                case 401:
+                    that.transitionTo( "login" );
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+    }
+});
+
 /*
     The Controller for adding/editing Mobile apps
 */
