@@ -57,7 +57,7 @@ App.IndexRoute = Ember.Route.extend({
     redirect: function() {
 
         // Redirect to /mobileApps
-        this.transitionTo( "mobileApps" );
+        this.transitionToRoute( "mobileApps" );
 
     }
 });
@@ -109,7 +109,7 @@ App.VariantsIndexRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
         controller.set( "model", model.pushApplicationID ? App.MobileApplication.find( model.pushApplicationID ) : model );
     },
-    serialize: function( model ) {
+    serialize: function() {
 
         // Make our non uniform id of pushApplicationID what ember expects
         return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
@@ -121,7 +121,7 @@ App.VariantsAddRoute = Ember.Route.extend({
     model: function() {
         return this.modelFor( "variants" );
     },
-    serialize: function( model ) {
+    serialize: function() {
 
         // Make our non uniform id of pushApplicationID what ember expects
         return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };

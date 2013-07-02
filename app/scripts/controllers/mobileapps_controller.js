@@ -22,7 +22,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
             that = this;
 
         applicationPipe.remove( app.pushApplicationID, {
-            success: function( response ) {
+            success: function() {
                 var content = that.get("model").get("content"),
                     find;
 
@@ -36,10 +36,10 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                 console.log( "error with application endpoint", error );
                 switch( error.status ) {
                 case 401:
-                    App.Router.router.transitionTo("login");
+                    App.Router.router.transitionToRoute("login");
                     break;
                 default:
-                    //that.transitionTo( "login" );
+                    //that.transitionToRoute( "login" );
                     //result.setProperties( { isLoaded: true, error: error } );
                     break;
                 }
@@ -64,11 +64,11 @@ App.MobileAppsController = Ember.Controller.extend({
             contentType: "application/json",
             success: function( success ) {
                 console.log( "Logged Out", success );
-                that.transitionTo( "login" );
+                that.transitionToRoute( "login" );
             },
             error: function( error ) {
                 console.log( "Error Logging Out", error );
-                that.transitionTo( "login" );
+                that.transitionToRoute( "login" );
             }
         });
     }
@@ -98,7 +98,7 @@ App.MobileAppsAddController = Ember.Controller.extend({
                 console.log( "error saving", error );
                 switch( error.status ) {
                 case 401:
-                    that.transitionTo( "login" );
+                    that.transitionToRoute( "login" );
                     break;
                 default:
                     break;
@@ -135,7 +135,7 @@ App.MobileAppsEditController = Ember.ObjectController.extend({
                 console.log( "error saving", error );
                 switch( error.status ) {
                 case 401:
-                    that.transitionTo( "login" );
+                    that.transitionToRoute( "login" );
                     break;
                 default:
                     break;
