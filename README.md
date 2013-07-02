@@ -94,30 +94,32 @@ Client-side example for how to register an installation:
 ```ObjectiveC
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
-{
-AGDeviceRegistration *registration =
-  [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"http://server/ag-push/"]];
+    AGDeviceRegistration *registration =
+    
+        [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"<# URL of the running AeroGear UnifiedPush Server #>"]];
+    
+    [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
+        [clientInfo setDeviceToken:deviceToken];
 
-[registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
+        [clientInfo setMobileVariantID:@"<Mobile Variant Id #>"];
+        [clientInfo setMobileVariantSecret:@"<Mobile Variant Secret>"];
+        
+        // --optional config--
+        // set some 'useful' hardware information params
+        UIDevice *currentDevice = [UIDevice currentDevice];
+        
+        [clientInfo setOperatingSystem:[currentDevice systemName]];
+        [clientInfo setOsVersion:[currentDevice systemVersion]];
+        [clientInfo setDeviceType: [currentDevice model]];
 
-  // apply the desired info:
-  clientInfo.token = @"2c948a843e6404dd013e79d82e5a0009";
-  clientInfo.mobileVariantID = @"2c948a843e6404dd013e79d82e5a0009";
-  clientInfo.variantSecret = "top secret"
-  clientInfo.deviceType = @"iPhone";
-  clientInfo.operatingSystem = @"iOS";
-  clientInfo.osVersion = @"6.1.3";
-  clientInfo.alias = @"mister@xyz.com";
-
-} success:^(id responseObject) {
-  NSLog(@"\n%@", responseObject);
-} failure:^(NSError *error) {
-  NSLog(@"\nERROR");
-}];
-}
+    } success:^() {
+        // successfully registered!
+    } failure:^(NSError *error) {
+        NSLog(@"PushEE registration Error: %@", error);
+    }]; 
 ```
 
-For _iOS_ the above sample was based on the **EARLY** version of our [iOS Push SDK](https://github.com/matzew/ag-client-push-sdk)
+Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-registration) for more information.
 
 #### Registration of an installation, for an Android device:
 
