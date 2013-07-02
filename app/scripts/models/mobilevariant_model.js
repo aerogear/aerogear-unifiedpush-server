@@ -85,12 +85,14 @@ App.MobileVariant.reopenClass({
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
-                    mobileVariant.pushObject( App.MobileApplication.create( data ) );
+                    data.pushApplicationID = applicationPushId;
+                    mobileVariant.pushObject( App.MobileVariant.create( data ) );
                 });
             } else {
 
                 // Add a loading indicator
                 response.isLoaded = true;
+                response.pushApplicationID = applicationPushId;
                 // Loop Through the different Variants to create objects
                 mobileVariant.setProperties( response );
 

@@ -43,7 +43,7 @@ App.Router.map( function() {
         // The Route for the variants detail
         this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
 
-            this.route( "edit" );
+            this.route( "add" );
 
         });
 
@@ -136,26 +136,28 @@ App.VariantRoute = Ember.Route.extend({
         return App.MobileVariant.find( params.mobileApplication_id, params.type, params.mobileVariant_id );
 
     },
+    serialize: function( model ) {
+
+        // Make our non uniform id of pushApplicationID what ember expects
+        return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "type" ) };
+
+    }
+});
+
+App.VariantIndexRoute = Ember.Route.extend({
+    model: function() {
+        return this.modelFor( "variant" );
+    },
     setupController: function( controller, model ) {
 
-        // Get the pushApplicationID from the "variants" controller
-        var pushApplicationID = this.controllerFor( "variants" ).get( "model" ).get( "pushApplicationID" );
-
         // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.variantID ? App.MobileVariant.find( pushApplicationID, model.get( "type" ), model.variantID ) : model );
+        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get( "type" ), model.variantID ) : model );
 
     },
     serialize: function( model ) {
 
         // Make our non uniform id of pushApplicationID what ember expects
-        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
+        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variant" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
 
-    },
-    renderTemplate: function() {
-
-        // Tell Ember where to render our template view
-        this.render( "variant", {
-            into: "mobileApps"
-        });
     }
 });

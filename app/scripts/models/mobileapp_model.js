@@ -105,18 +105,21 @@ App.MobileApplication.reopenClass({
             simplePushVariants = Ember.ArrayProxy.create({ content: [] });
 
         response.androidApps.forEach( function(  value ) {
+            value.pushApplicationID = response.pushApplicationID;
             androidVariants.pushObject( App.MobileVariant.create( value ) );
         });
 
         response.androidApps = androidVariants;
 
         response.iosapps.forEach( function( value ) {
+            value.pushApplicationID = response.pushApplicationID;
             iosVariants.pushObject( App.MobileVariant.create( value ) );
         });
 
         response.iosapps = iosVariants;
 
         response.simplePushApps.forEach( function( value ) {
+            value.pushApplicationID = response.pushApplicationID;
             simplePushVariants.pushObject( App.MobileVariant.create( value ) );
         });
 

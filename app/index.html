@@ -177,6 +177,24 @@
             {{/if}}
         </script>
 
+         <!-- The Mobile Applications List Partial-->
+        <script type="text/x-handlebars" data-template-name="_variantDetail">
+            <div class="topcoat-list__container">
+                <ul class="topcoat-list">
+                {{#each variantList }}
+                    {{#view App.HeaderClicker}}
+                        {{ name }}
+                    {{/view}}
+                    <li class="topcoat-list__item">
+                    {{#linkTo "variant" this}}{{name}}{{/linkTo}}
+                        {{ description }}
+                        type:{{ typeFormatted }}
+                    </li>
+                {{/each}}
+                </ul>
+            </div>
+        </script>
+
         <!--Template to create a new push application-->
         <script type="text/x-handlebars" data-template-name="variants/add">
         {{controller}}
@@ -204,9 +222,28 @@
             </div>
         </script>
 
+        </script>
 
-        <!-- The Mobile Applications List Partial-->
-        <script type="text/x-handlebars" data-template-name="_variantDetail">
+        <script type="text/x-handlebars" data-template-name="variant">
+            {{outlet}}
+            Blah
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="variant/index">
+            <ul>
+            <li>List all Variant Instances of this push application</li>
+            <li>No creating here,  maybe removing?</li>
+            </ul>
+            {{ description }}
+            {{#if isLoaded}}
+                {{ partial "variantInstanceDetail" }}
+            {{else}}
+                loading....
+            {{/if}}
+        </script>
+
+         <!-- The Mobile Applications List Partial-->
+        <script type="text/x-handlebars" data-template-name="_variantInstanceDetail">
             <div class="topcoat-list__container">
                 <ul class="topcoat-list">
                 {{#each variantList }}
@@ -221,11 +258,6 @@
                 {{/each}}
                 </ul>
             </div>
-        </script>
-
-        <script type="text/x-handlebars" data-template-name="variant">
-            {{outlet}}
-            <div>{{#linkTo "variants" this}}Back To Push Applications{{/linkTo}}</div>
         </script>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
