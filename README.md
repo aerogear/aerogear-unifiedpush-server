@@ -57,7 +57,7 @@ curl -v -b cookies.txt -c cookies.txt
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
 
-_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the iOS client SDK.
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the iOS client SDK._
 
 ##### Android Variant
 
@@ -71,7 +71,7 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android
 ```
 
-_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK.
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK._
 
 ##### SimplePush Variant
 
@@ -85,7 +85,7 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
 ```
 
-_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK.
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
 
 #### Registration of an installation, for an iOS device:
 
