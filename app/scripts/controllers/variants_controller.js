@@ -31,7 +31,7 @@ App.VariantsAddController = Ember.ObjectController.extend({
                 console.log( "error saving", error );
                 switch( error.status ) {
                 case 401:
-                    that.transitionTo( "login" );
+                    that.transitionToRoute( "login" );
                     break;
                 default:
                     break;

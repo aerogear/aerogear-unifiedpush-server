@@ -88,10 +88,10 @@ App.MobileApplication.reopenClass({
             console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:
-                App.Router.router.transitionTo("login");
+                App.Router.router.transitionToRoute("login");
                 break;
             default:
-                //that.transitionTo( "login" );
+                //that.transitionToRoute( "login" );
                 //result.setProperties( { isLoaded: true, error: error } );
                 break;
             }
