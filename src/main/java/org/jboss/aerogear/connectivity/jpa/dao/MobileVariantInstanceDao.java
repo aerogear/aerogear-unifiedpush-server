@@ -26,4 +26,10 @@ public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstan
 
     List<MobileVariantInstanceImpl> findByToken(String token);
 
+    /**
+     * Broadcast/Selective Sender API:
+     * 
+     * Query all tokens for the given variant, by respecting a few criterias (category, aliases and deviceTypes)
+     */
+    List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 }
