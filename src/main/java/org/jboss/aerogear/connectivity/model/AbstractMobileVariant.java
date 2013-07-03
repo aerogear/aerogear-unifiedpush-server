@@ -57,7 +57,7 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
 
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn
+    @JoinColumn(name="variantID", referencedColumnName="variantID")
     private Set<MobileVariantInstanceImpl> instances = new HashSet<MobileVariantInstanceImpl>();
 
     public String getName() {
