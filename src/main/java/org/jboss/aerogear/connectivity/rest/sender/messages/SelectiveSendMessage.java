@@ -35,13 +35,14 @@ public class SelectiveSendMessage extends LinkedHashMap<String, Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, ? extends Object> getMessage() {
-        return (Map<String, ? extends Object>) this.get("message");
+    public Map<String, String> getSimplePush() {
+        return (Map<String, String>) this.get("simple-push");
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, String> getSimplePush() {
-        return (Map<String, String>) this.getMessage().get("simple-push");
+    public Map<String, String> getMessage() {
+        return (Map<String, String>) this.get("message");
     }
+
 
 }

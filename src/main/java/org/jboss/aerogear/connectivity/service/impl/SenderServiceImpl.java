@@ -127,7 +127,7 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        final String simplePushBroadcastValue = unifiedPushMessage.getSimplePush();
+        final String simplePushBroadcastValue = (String) unifiedPushMessage.getSimplePush();
         if (simplePushBroadcastValue == null) {
             return;
         }
