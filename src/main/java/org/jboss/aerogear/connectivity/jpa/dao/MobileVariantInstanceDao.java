@@ -24,8 +24,6 @@ import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
 
-    List<MobileVariantInstanceImpl> findByToken(String token);
-
     /**
      * Broadcast/Selective Sender API:
      * 

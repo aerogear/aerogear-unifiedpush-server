@@ -27,8 +27,6 @@ public interface MobileVariantInstanceService {
 
     MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
 
-    List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token);
-
     /**
      * Used for Broadcast. Query for all IDs on a certain variant
      */
