@@ -11,6 +11,8 @@ table {
   width: 100%;
   text-align: left;
   border-spacing: 0;
+  background-color: transparent;
+
 }
 
 .table tbody tr td {
@@ -18,6 +20,20 @@ table {
     padding: 8px;
 }
 
-.table-zebra tbody tr:nth-child(odd) td {
-    background: gray;
+.table tfoot tr td {
+    border-top: 3px solid black;
+    padding: 8px;
 }
+
+.table-zebra tbody tr:nth-child(odd) td {
+    background-color: gray;
+}
+
+.header h2, .sub-header h3 {
+    margin-bottom:0;
+}
+
+.header span, .sub-header span {
+    font-size: small;
+}
+

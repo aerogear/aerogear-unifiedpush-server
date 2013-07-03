@@ -60,7 +60,6 @@
 
         <!-- The Mobile Applications Template -->
         <script type="text/x-handlebars" data-template-name="mobileApps/index">
-        total:{{totalApps}}
             <div>
                 Push Applications
                 <div>
@@ -102,10 +101,17 @@
                             </tr>
                         {{else}}
                             <tr>
-                                <td>Loadng...</td>
+                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
                             </tr>
                         {{/each}}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                Total Mobile Apps: {{ totalApps }}
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </script>
@@ -167,17 +173,23 @@
 
         <script type="text/x-handlebars" data-template-name="variants/index">
             <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
-            <ul>
-            <li>List all Variants of this push application</li>
-            <li>Create a new variant with a push network</li>
-            </ul>
-            {{ description }}
+            <div class="header">
+                <h2>{{ name }}</h2>
+                <span>{{ description }}</span>
+            </div>
+            <div class="sub-header">
+                <h3>Authentication Info</h3>
+                <span>
+                    Use this Application ID and Secret combination to send notification to all variants
+                </span>
+                <div>
+                    Application ID: {{ pushApplicationID }}
+                    <br>
+                    Secret: {{ masterSecret }}
+                </div>
+            </div>
             {{#if isLoaded}}
-            {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
-            Please start by adding a push application - {{#linkTo "variants.add"}}Add New{{/linkTo}}
-                iOS Variants: {{totaliOSVariants}}
-                Android Variants: {{totalAndroidVariants}}
-                Simple Push Variants: {{totalSimplePushVariants}}
+                {{#linkTo "variants.add"}}Add New{{/linkTo}}
                 {{ partial "variantDetail" }}
             {{else}}
                 loading....
@@ -186,25 +198,40 @@
 
          <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_variantDetail">
-            <div class="topcoat-list__container">
-                <ul class="topcoat-list">
-                {{#each variantList }}
-                    {{#view App.HeaderClicker}}
-                        {{ name }}
-                    {{/view}}
-                    <li class="topcoat-list__item">
-                    {{#linkTo "variant" this}}{{name}}{{/linkTo}}
-                        {{ description }}
-                        type:{{ typeFormatted }}
-                    </li>
-                {{/each}}
-                </ul>
+            <div id="mobile-application-variants-table">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Platform</th>
+                            <th>Mobile Instances</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each variantList }}
+                            <tr>
+                                <td>
+                                    <button class="primary" {{ action "remove" this}}>Remove</button>
+                                </td>
+                                <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
+                                <td>{{ description }}</td>
+                                <td>{{ typeFormatted }}</td>
+                                <td>{{ totalInstances }}</td>
+                            </tr>
+                        {{else}}
+                            <tr>
+                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
             </div>
         </script>
 
         <!--Template to create a new push application-->
         <script type="text/x-handlebars" data-template-name="variants/add">
-        {{controller}}
             <div>Add Push Application</div>
             <div>
                 <div>
@@ -233,7 +260,6 @@
 
         <script type="text/x-handlebars" data-template-name="variant">
             {{outlet}}
-            Blah
         </script>
 
         <script type="text/x-handlebars" data-template-name="variant/index">
