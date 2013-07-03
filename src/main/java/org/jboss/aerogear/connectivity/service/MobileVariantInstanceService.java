@@ -29,5 +29,20 @@ public interface MobileVariantInstanceService {
 
     List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token);
 
+    /**
+     * Used for Broadcast. Query for all IDs on a certain variant
+     */
+    List<String> findAllDeviceTokenForVariantID(String variantID);
+
+
+    // =========================== SELECTIVE SENDER =================================
+
+    List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes);
+
+    
+    List<String> findAllDeviceTokenForVariantIDByCategoryAndAlias(String variantID, String category, List<String> aliases);
+
+    List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category);
+
     void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
 }
