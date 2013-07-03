@@ -57,7 +57,7 @@ App.IndexRoute = Ember.Route.extend({
     redirect: function() {
 
         // Redirect to /mobileApps
-        this.transitionToRoute( "mobileApps" );
+        this.transitionTo( "mobileApps" );
 
     }
 });

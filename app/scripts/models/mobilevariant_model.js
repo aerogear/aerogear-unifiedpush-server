@@ -18,7 +18,7 @@
 
 App.MobileVariant = Ember.Object.extend({
     totalInstances: function() {
-        return 1;
+        return this.get("instances").length;
     }.property(),
     type: function() {
         if( this.get( "googleKey" ) ) {
