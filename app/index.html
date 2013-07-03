@@ -17,7 +17,7 @@
 
         <!--The Application Template-->
         <script type="text/x-handlebars">
-                {{outlet}}
+             {{outlet}}
         </script>
 
         <!--The Login Page Template-->
@@ -81,10 +81,10 @@
                 <ul class="topcoat-list">
                     {{#each controller}}
                     {{#view App.HeaderClicker}}
-                        {{ description }}
+                        {{ name }} - variants: {{totalVariants}} - {{status}}
                     {{/view}}
                     <li class="topcoat-list__item">
-                    {{#linkTo "variants" this}}{{name}}{{/linkTo}}
+                    {{#linkTo "variants" this}}{{description}}{{/linkTo}}
                         <br>
                         Android Variants: {{totalAndroidVariants}}
                         <br>
@@ -92,7 +92,6 @@
                         <br>
                         Simple Push Variants: {{totalSimplePushVariants}}
                         <br>
-                        variants: {{totalVariants}}
                         {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
                         <button class="primary" {{ action "remove" this}}>Remove</button>
                     </li>

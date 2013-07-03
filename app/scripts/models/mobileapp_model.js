@@ -31,6 +31,9 @@ App.MobileApplication = Ember.Object.extend({
     }.property(),
     variantList: function() {
         return this.androidApps.get("content").concat( this.iosapps.get("content") ).concat( this.simplePushApps.get("content") );
+    }.property(),
+    status: function() {
+        return ( this.get( "totalVariants" ) ) ? "Active" : "Inactive";
     }.property()
 });
 
