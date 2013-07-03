@@ -23,6 +23,7 @@ import java.util.Map;
 public class UnifiedPushMessage {
     private final String alert;
     private final String sound;
+    private final String simplePush;
     private final int badge;
     private final Map<String, ? extends Object> data;
 
@@ -32,6 +33,10 @@ public class UnifiedPushMessage {
 
     public String getSound() {
         return sound;
+    }
+
+    public String getSimplePush() {
+        return simplePush;
     }
 
     public int getBadge() {
@@ -46,6 +51,7 @@ public class UnifiedPushMessage {
         // special key words (for APNs)
         this.alert = (String) data.remove("alert");
         this.sound = (String) data.remove("sound");
+        this.simplePush = (String) data.remove("simple-push"); 
 
         Integer badgeVal = (Integer) data.remove("badge");
         if (badgeVal == null) {
