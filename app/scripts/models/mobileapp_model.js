@@ -34,6 +34,9 @@ App.MobileApplication = Ember.Object.extend({
     }.property(),
     status: function() {
         return ( this.get( "totalVariants" ) ) ? "Active" : "Inactive";
+    }.property(),
+    descriptionFormatted: function() {
+        return this.description.substr( 0, 50 );
     }.property()
 });
 

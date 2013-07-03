@@ -77,28 +77,36 @@
             <div>
                 Please start by adding a push application - {{#linkTo "mobileApps.add" }}Add New{{/linkTo}}
             </div>
-            <div class="topcoat-list__container">
-                <ul class="topcoat-list">
-                    {{#each controller}}
-                    {{#view App.HeaderClicker}}
-                        {{ name }} - variants: {{totalVariants}} - {{status}}
-                    {{/view}}
-                    <li class="topcoat-list__item">
-                    {{#linkTo "variants" this}}{{description}}{{/linkTo}}
-                        <br>
-                        Android Variants: {{totalAndroidVariants}}
-                        <br>
-                        iOS Variants: {{totaliOSVariants}}
-                        <br>
-                        Simple Push Variants: {{totalSimplePushVariants}}
-                        <br>
-                        {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
-                        <button class="primary" {{ action "remove" this}}>Remove</button>
-                    </li>
-                    {{else}}
-                        Loading.....
-                    {{/each}}
-                </ul>
+            <div id="mobile-application-table">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th>Variants</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each controller}}
+                            <tr>
+                                <td>
+                                    {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
+                                    <button class="primary" {{ action "remove" this}}>Remove</button>
+                                </td>
+                                <td>{{#linkTo "variants" this}}{{ name }}{{/linkTo}}</td>
+                                <td>{{ status }}</td>
+                                <td>{{ descriptionFormatted }}</td>
+                                <td>{{ totalVariants }}</td>
+                            </tr>
+                        {{else}}
+                            <tr>
+                                <td>Loadng...</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
             </div>
         </script>
 
@@ -115,7 +123,7 @@
                     </p>
                     <p>
                       <label>Description</label>
-                      {{input type="text" value=description}}
+                      {{textarea value=description}}
                     </p>
                     <button class="primary">Next</button>
                   </fieldset>
@@ -144,7 +152,7 @@
                     </p>
                     <p>
                       <label>Description</label>
-                      {{input type="text" valueBinding="description"}}
+                      {{textarea valueBinding="description"}}
                     </p>
                     <button class="primary">Next</button>
                   </fieldset>

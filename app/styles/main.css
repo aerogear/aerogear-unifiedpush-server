@@ -9,4 +9,15 @@ div {
 
 table {
   width: 100%;
+  text-align: left;
+  border-spacing: 0;
+}
+
+.table tbody tr td {
+    border-top: 1px solid black;
+    padding: 8px;
+}
+
+.table-zebra tbody tr:nth-child(odd) td {
+    background: gray;
 }
