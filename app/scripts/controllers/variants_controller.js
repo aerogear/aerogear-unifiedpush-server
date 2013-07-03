@@ -42,13 +42,26 @@ App.VariantsAddController = Ember.ObjectController.extend({
     add: function() {
         var applicationData = {
             name: this.get( "variantName" ),
-            googleKey: this.get( "googleKey" ),
-            //applicationPushId: this.get( "pushApplicationID" ),
-            //variantType: "android",
             description: this.get( "variantDescription" )
         },
-        variantType = "android",
-        applicationPushId = this.get( "pushApplicationID" );
+        applicationPushId = this.get( "pushApplicationID" ),
+        variantType =  $( "input:checked" ).val();
+
+        if( variantType ) {
+            switch( variantType ) {
+            case "android":
+                applicationData.googleKey = this.get( "googleKey" ); //Needs Validation Here
+                break;
+            case "iOS":
+                applicationData.passphrase = this.get( "passphrase" );
+                break;
+            case "simplePush":
+                applicationData.pushNetworkURL = this.get( "pushNetworkURL" );
+                break;
+            default:
+                break;
+            }
+        }
 
         this.saveMobileVariant( applicationData, variantType, applicationPushId  );
     },
