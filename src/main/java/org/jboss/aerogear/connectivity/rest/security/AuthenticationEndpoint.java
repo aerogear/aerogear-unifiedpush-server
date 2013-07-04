@@ -76,6 +76,7 @@ public class AuthenticationEndpoint {
         return Response.ok().build();
     }
 
+    @POST
     @Path("/logout")
     public Response logout() {
         try {
