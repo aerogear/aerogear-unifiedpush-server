@@ -15,16 +15,29 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.connectivity.service;
+package org.jboss.aerogear.connectivity.service.sender.message;
 
 import java.util.Map;
 
-import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
+public interface UnifiedPushMessage {
+    
+    /**
+     * Returns <code>alert</code> key, recognized in native iOS (native) and AGDROID
+     */
+    String getAlert();
+    
+    /**
+     * Returns <code>sound</code> key, recognized in native iOS
+     */
+    String getSound();
 
-public interface SenderService {
-
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
-
-    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message);
+    /**
+     * Returns <code>badge</code> key, recognized in native iOS
+     */
+    int getBadge();
+    
+    /**
+     * Returns <code>Map</code> containing the submitted, JSON without the highlighted keys 
+     */
+    Map<String, Object> getData();
 }

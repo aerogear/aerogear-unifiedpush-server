@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.connectivity.rest.sender.messages;
+package org.jboss.aerogear.connectivity.service.sender;
 
-import java.util.LinkedHashMap;
+import org.jboss.aerogear.connectivity.model.PushApplication;
+import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
 
-public class BroadcastMessage extends LinkedHashMap<String, Object> {
-    private static final long serialVersionUID = 1L;
+public interface SenderService {
 
-    public String getSimplePush() {
-        return (String) this.get("simple-push");
-    }
+    void broadcast(PushApplication pushApplication, BroadcastMessage payload);
+
+    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage payload);
 }

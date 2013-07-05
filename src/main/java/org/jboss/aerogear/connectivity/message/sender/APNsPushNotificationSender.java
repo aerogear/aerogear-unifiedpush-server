@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.connectivity.message.cache.APNsCache;
 import org.jboss.aerogear.connectivity.message.sender.annotations.APNsSender;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
+import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;

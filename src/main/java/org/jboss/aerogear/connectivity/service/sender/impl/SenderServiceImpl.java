@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.connectivity.service.impl;
+package org.jboss.aerogear.connectivity.service.sender.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.connectivity.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.SimplePushNotificationSender;
-import org.jboss.aerogear.connectivity.message.sender.UnifiedPushMessage;
 import org.jboss.aerogear.connectivity.message.sender.annotations.APNsSender;
 import org.jboss.aerogear.connectivity.message.sender.annotations.GCMSender;
 import org.jboss.aerogear.connectivity.message.sender.annotations.SimplePushSender;
@@ -36,9 +35,10 @@ import org.jboss.aerogear.connectivity.model.AndroidVariant;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
-import org.jboss.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
-import org.jboss.aerogear.connectivity.service.SenderService;
+import org.jboss.aerogear.connectivity.service.sender.SenderService;
+import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
 
 @Stateless
 @Asynchronous
@@ -68,37 +68,36 @@ public class SenderServiceImpl implements SenderService {
         final List<String> submittedAliases = message.getAliases();
         final List<String> submittedDeviceTypes = message.getDeviceTypes();
         // TODO: Add getCategory();
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(message.getMessage()); // TODO rename me
 
         // TODO: Make better...
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
             final List<String> selectiveTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
-            apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, unifiedPushMessage);
+            apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
         }
 
         // TODO: make better :)
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
-            gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage, androidVariant.getGoogleKey());
+            gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
         // TODO: make better :)
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
-        if (simplePushCategoriesAndValues == null) {
+
+        // if no SimplePush object is present: skip it.
+        // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
+        if (simplePushCategoriesAndValues == null || (submittedDeviceTypes != null && ! submittedAliases.contains("web"))) {
             return;
         }
 
         Set<SimplePushVariant> spApps = pushApplication.getSimplePushApps();
         for (SimplePushVariant simplePushVariant : spApps) {
-
             // the specified category names.....
             final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
-
             // add empty list for every category:
             for (String category : categoriesToNotify) {
-                
                 final List<String> tokensPerCategory = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, submittedAliases);
                 simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory);
             }
@@ -107,27 +106,24 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     @Asynchronous
-    public void broadcast(PushApplication pushApplication,
-            Map<String, ? extends Object> jsonMap) {
-
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(jsonMap);
+    public void broadcast(PushApplication pushApplication, BroadcastMessage payload) {
 
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
             final List<String> iosTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantID(iOSVariant.getVariantID());
-            apnsSender.sendPushMessage(iOSVariant, iosTokenPerVariant, unifiedPushMessage);
+            apnsSender.sendPushMessage(iOSVariant, iosTokenPerVariant, payload);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
-            gcmSender.sendPushMessage(androidTokenPerVariant, unifiedPushMessage, androidVariant.getGoogleKey());
+            gcmSender.sendPushMessage(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        final String simplePushBroadcastValue = (String) unifiedPushMessage.getSimplePush();
+        final String simplePushBroadcastValue = payload.getSimplePush();
         if (simplePushBroadcastValue == null) {
             return;
         }
