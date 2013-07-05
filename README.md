@@ -41,7 +41,7 @@ curl -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Conte
   http://localhost:8080/ag-push/rest/applications
 ```
 
-_The response returns a **pushApplicationID** for the Push App...._
+_The response returns a **pushApplicationID** and a **masterSecret** that will be both used later on when you attempt to send a push message (either Broadcast or Selected Send)._
 
 ##### iOS Variant
 
@@ -57,7 +57,7 @@ curl -v -b cookies.txt -c cookies.txt
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
 
-_The response returns a **variantID** for the iOS variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the iOS client SDK._
 
 ##### Android Variant
 
@@ -71,7 +71,7 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android
 ```
 
-_The response returns a **variantID** for the Android variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK._
 
 ##### SimplePush Variant
 
@@ -85,44 +85,46 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
 ```
 
-_The response returns a **variantID** for the SimplePush variant...._
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
 
-#### Registration of an installation, on a device (iOS)
+#### Registration of an installation, for an iOS device:
 
 Client-side example for how to register an installation:
 
 ```ObjectiveC
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
-{
-AGDeviceRegistration *registration =
-  [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"http://server/ag-push/"]];
+    AGDeviceRegistration *registration =
+    
+        [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"<# URL of the running AeroGear UnifiedPush Server #>"]];
+    
+    [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
+        [clientInfo setDeviceToken:deviceToken];
 
-[registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
+        [clientInfo setMobileVariantID:@"<Mobile Variant Id #>"];
+        [clientInfo setMobileVariantSecret:@"<Mobile Variant Secret>"];
+        
+        // --optional config--
+        // set some 'useful' hardware information params
+        UIDevice *currentDevice = [UIDevice currentDevice];
+        
+        [clientInfo setOperatingSystem:[currentDevice systemName]];
+        [clientInfo setOsVersion:[currentDevice systemVersion]];
+        [clientInfo setDeviceType: [currentDevice model]];
 
-  // apply the desired info:
-  clientInfo.token = @"2c948a843e6404dd013e79d82e5a0009";
-  clientInfo.mobileVariantID = @"2c948a843e6404dd013e79d82e5a0009";
-  clientInfo.variantSecret = "top secret"
-  clientInfo.deviceType = @"iPhone";
-  clientInfo.operatingSystem = @"iOS";
-  clientInfo.osVersion = @"6.1.3";
-  clientInfo.alias = @"mister@xyz.com";
-
-} success:^(id responseObject) {
-  NSLog(@"\n%@", responseObject);
-} failure:^(NSError *error) {
-  NSLog(@"\nERROR");
-}];
-}
+    } success:^() {
+        // successfully registered!
+    } failure:^(NSError *error) {
+        NSLog(@"PushEE registration Error: %@", error);
+    }]; 
 ```
 
-For _iOS_ the above sample was based on the **EARLY** version of our [iOS Push SDK](https://github.com/matzew/ag-client-push-sdk)
+Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-registration) for more information.
 
 #### Registration of an installation, for an Android device:
 
 For now, perform HTTP from Android to register the "MobileVariantInstance".
-Here is a _CURL_ example for how to perform the:
+Here is a _CURL_ example for how to perform the registration:
 
 ```
 curl -u "{MobileVariantID}:{secret}"
