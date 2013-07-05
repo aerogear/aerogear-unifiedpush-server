@@ -70,21 +70,21 @@ public class SenderServiceImpl implements SenderService {
         final List<String> submittedDeviceTypes = message.getDeviceTypes();
         // TODO: Add getCategory();
 
-        // TODO: Make better...
+        // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
             final List<String> selectiveTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
             apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
         }
 
-        // TODO: make better :)
+        // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
             gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
-        // TODO: make better :)
+        // TODO: DISPATCH TO A QUEUE .....
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
 
         // if no SimplePush object is present: skip it.
