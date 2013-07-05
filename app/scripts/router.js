@@ -165,9 +165,6 @@ App.InstanceRoute = Ember.Route.extend({
     model: function( params ) {
         return App.MobileVariantInstance.find( null, null, params.mobileVariant_id, params.mobileVariantInstance_id );
     },
-    setupController: function( controller, model ) {
-        controller.set( "model", model.variantID ? App.MobileVariantInstance.find( null, null, model.variantID ) : model );
-    },
     serialize: function( model ) {
         return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.deviceType };
     }
@@ -178,7 +175,7 @@ App.InstanceIndexRoute = Ember.Route.extend({
         return this.modelFor( "instance" );
     },
     setupController: function( controller, model ) {
-        controller.set( "model", model.variantID ? App.MobileVariantInstance.find( null, null, model.variantID ) : model );
+        controller.set( "model", model.id ? App.MobileVariantInstance.find( null, null, model.variantID, model.id ) : model );
     },
     serialize: function( model ) {
         return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.deviceType };
