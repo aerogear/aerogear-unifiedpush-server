@@ -45,6 +45,7 @@ import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessa
 public class SenderServiceImpl implements SenderService {
 
     private static final String BROADCAST_CHANNEL = "broadcast";
+
     @Inject
     @GCMSender
     private GCMPushNotificationSender gcmSender;
