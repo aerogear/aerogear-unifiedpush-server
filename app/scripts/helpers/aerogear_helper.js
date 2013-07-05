@@ -34,13 +34,5 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
             baseURL: reallyTheBaseURL + "/ag-push/rest/",
             authenticator: App.AeroGear.authenticator
         }
-    },
-    {   //Might not be needed here,  just on device?
-        name: "registration",
-        settings: {
-            baseURL: reallyTheBaseURL + "/ag-push/rest/",
-            authenticator: App.AeroGear.authenticator,
-            endpoint: "registry/device"
-        }
     }
 ]);
