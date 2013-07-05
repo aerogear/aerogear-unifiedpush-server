@@ -43,7 +43,7 @@ public class BroadcastMessage implements UnifiedPushMessage {
     public BroadcastMessage(Map<String, Object> data) {
         // simple push value
         this.simplePush = (String) data.remove("simple-push");
-        
+
         // special key words (for APNs)
         this.alert = (String) data.remove("alert");  // used in AGDROID as well
         this.sound = (String) data.remove("sound");
@@ -57,7 +57,6 @@ public class BroadcastMessage implements UnifiedPushMessage {
 
         // rest of the data/map:
         this.data = data;
-
     }
 
     public String getSimplePush() {
@@ -79,5 +78,4 @@ public class BroadcastMessage implements UnifiedPushMessage {
     public Map<String, Object> getData() {
         return data;
     }
-
 }
