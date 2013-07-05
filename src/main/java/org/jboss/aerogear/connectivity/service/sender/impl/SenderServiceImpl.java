@@ -89,7 +89,7 @@ public class SenderServiceImpl implements SenderService {
 
         // if no SimplePush object is present: skip it.
         // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
-        if (simplePushCategoriesAndValues == null || (submittedDeviceTypes != null && ! submittedAliases.contains("web"))) {
+        if (simplePushCategoriesAndValues == null || (submittedDeviceTypes != null && ! submittedDeviceTypes.contains("web"))) {
             return;
         }
 
