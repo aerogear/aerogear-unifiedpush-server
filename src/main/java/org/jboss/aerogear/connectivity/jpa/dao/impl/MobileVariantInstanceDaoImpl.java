@@ -32,8 +32,9 @@ import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVariantInstanceImpl, String> implements MobileVariantInstanceDao {
 
     /**
-     * DAO finder for all sorts of queries around selecting Device-Token.
+     * Usage: SenderSerivce: 
      * 
+     * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.
      * The method appends different criterias to the JPQL string, IF PRESENT.
      * 
      * Done in one method, instead of having similar, but error-thrown Strings, in different methods.
