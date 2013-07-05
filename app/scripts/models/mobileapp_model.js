@@ -110,7 +110,7 @@ App.MobileApplication.reopenClass({
             iosVariants = Ember.ArrayProxy.create({ content: [] }),
             simplePushVariants = Ember.ArrayProxy.create({ content: [] });
 
-        response.androidApps.forEach( function(  value ) {
+        response.androidApps.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             androidVariants.pushObject( App.MobileVariant.create( value ) );
         });

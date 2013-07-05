@@ -81,11 +81,16 @@ App.MobileVariant.reopenClass({
         });
     },
     _fetch: function( mobileVariant, applicationPushId, variantType, variantApplicationId ) {
+        var that = this;
         this._ajaxy( mobileVariant, applicationPushId, variantType, variantApplicationId ).then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
                     data.pushApplicationID = applicationPushId;
+
+                    //do the instance thing
+                    data = that._createVariantInstanceObject( data );
+
                     mobileVariant.pushObject( App.MobileVariant.create( data ) );
                 });
             } else {
@@ -93,7 +98,7 @@ App.MobileVariant.reopenClass({
                 // Add a loading indicator
                 response.isLoaded = true;
                 response.pushApplicationID = applicationPushId;
-                // Loop Through the different Variants to create objects
+                response = that._createVariantInstanceObject( response );
                 mobileVariant.setProperties( response );
 
             }
@@ -109,5 +114,21 @@ App.MobileVariant.reopenClass({
                 break;
             }
         });
+    },
+    _createVariantInstanceObject: function( response ) {
+
+        // TODO: DRY this out
+        var variantInstance = Ember.ArrayProxy.create({ content: [] });
+
+        response.instances.forEach( function( value ) {
+            value.pushApplicationID = response.pushApplicationID;
+            value.variantID = response.variantID;
+            variantInstance.pushObject( App.MobileVariant.create( value ) );
+        });
+
+        response.instances = variantInstance;
+
+        return response;
+
     }
 });

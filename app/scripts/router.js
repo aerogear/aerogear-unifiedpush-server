@@ -32,7 +32,7 @@ App.Router.map( function() {
         // The Route for editing a Mobile Application Name and Description
         this.route( "edit", { path: "edit/:mobileApplication_id" } );
 
-        // The Nested Route for seeing a variants detail
+        // The Nested Route for seeing a list of variants for a mobile application
         this.resource( "variants", { path: "variants/:mobileApplication_id" }, function() {
 
             // The Route for creating a new Mobile Application Variant
@@ -40,12 +40,11 @@ App.Router.map( function() {
 
         });
 
-        // The Route for the variants detail
-        this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
+        // The Route for the variants detail, shows the list of instances
+        this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {});
 
-            this.route( "add" );
-
-        });
+        // The Route for showing the detail of an instance
+        this.resource( "instance", { path: "instances/:mobileApplication_id/:type/:mobileVariant_id/:mobileVariantInstance_id" }, function() {} );
 
     });
 });
@@ -161,3 +160,28 @@ App.VariantIndexRoute = Ember.Route.extend({
 
     }
 });
+
+App.InstanceRoute = Ember.Route.extend({
+    model: function( params ) {
+        return App.MobileVariantInstance.find( null, null, params.mobileVariant_id, params.mobileVariantInstance_id );
+    },
+    setupController: function( controller, model ) {
+        controller.set( "model", model.variantID ? App.MobileVariantInstance.find( null, null, model.variantID ) : model );
+    },
+    serialize: function( model ) {
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.deviceType };
+    }
+});
+
+App.InstanceIndexRoute = Ember.Route.extend({
+    model: function() {
+        return this.modelFor( "instance" );
+    },
+    setupController: function( controller, model ) {
+        controller.set( "model", model.variantID ? App.MobileVariantInstance.find( null, null, model.variantID ) : model );
+    },
+    serialize: function( model ) {
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.deviceType };
+    }
+});
+
