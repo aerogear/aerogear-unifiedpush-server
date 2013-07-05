@@ -282,12 +282,23 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="variant/index">
-            <ul>
-            <li>List all Variant Instances of this push application</li>
-            <li>No creating here,  maybe removing?</li>
-            </ul>
-            {{ description }}
-            {{#if isLoaded}}
+        {{#if isLoaded}}
+        <div>{{#linkTo "variants" this}}Back To Push Applications Variant{{/linkTo}}</div>
+            <div class="header">
+                <h2>{{ name }}</h2>
+                <span>{{ description }}</span>
+            </div>
+            <div class="sub-header">
+                <h3>Authentication Info</h3>
+                <span>
+                    Use this Application ID and Secret combination to send notification to all variants
+                </span>
+                <div>
+                    Variant ID: {{ variantID }}
+                    <br>
+                    Secret: {{ secret }}
+                </div>
+            </div>
             {{ variantId }}
                 {{ partial "variantDetail" }}
             {{else}}
@@ -297,18 +308,33 @@
 
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_variantDetail">
-            <div class="topcoat-list__container">
-                <ul class="topcoat-list">
-                {{#each instances }}
-                    {{#view App.HeaderClicker}}
-                        {{ deviceType }}
-                    {{/view}}
-                    <li class="topcoat-list__item">
-                    {{#linkTo "instance" this}}{{deviceToken}}{{/linkTo}}
-                        {{ mobileOperatingSystem }}
-                    </li>
-                {{/each}}
-                </ul>
+            <div id="mobile-application-variant-table">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Token</th>
+                            <th>Description</th>
+                            <th>Platform</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each instances }}
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td>{{#linkTo "instance" this}}{{deviceToken}}{{/linkTo}}</td>
+                                <td>{{ deviceType }}</td>
+                                <td>{{ mobileOperatingSystem }}</td>
+                            </tr>
+                        {{else}}
+                            <tr>
+                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
             </div>
         </script>
 
@@ -317,12 +343,21 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="instance/index">
-            <ul>
-            <li>A Variant Instance</li>
-            <li>No creating here,  maybe removing?</li>
-            </ul>
-            {{ deviceType }}
             {{#if isLoaded}}
+                <div>{{#linkTo "variant" this}}Back To Push Applications Variant{{/linkTo}}</div>
+                <div class="header">
+                    <h2>{{ name }}</h2>
+                    <span>{{ description }}</span>
+                </div>
+                <div class="sub-header">
+                    <h3>Authentication Info</h3>
+                    <span>
+                        Use this Application ID and Secret combination to send notification to all variants
+                    </span>
+                    <div>
+                        Device Token: {{ deviceToken }}
+                    </div>
+                </div>
                 {{ partial "variantInstanceDetail" }}
             {{else}}
                 loading....
@@ -331,16 +366,27 @@
 
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_variantInstanceDetail">
-            <div class="topcoat-list__container">
-                <ul class="topcoat-list">
-                    {{#view App.HeaderClicker}}
-                        {{ deviceType }}
-                    {{/view}}
-                    <li class="topcoat-list__item">
-                        {{ mobileOperatingSystem }}
-                        {{deviceToken}}
-                    </li>
-                </ul>
+            <div id="mobile-application-variant-table">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Alias</th>
+                            <th>Description</th>
+                            <th>Platform</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>{{ alias }}</td>
+                            <td>{{ deviceType }}</td>
+                            <td>{{ mobileOperatingSystem }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </script>
         <!--[if lt IE 7]>
