@@ -84,7 +84,7 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
         // add REQUIRED param:
         jpql.setParameter("variantID", variantID);
 
-        // add the optinals, as needed:
+        // add the optionals, as needed:
         Set<String> paramKeys = parameters.keySet();
         for (String parameterName : paramKeys) {
             jpql.setParameter(parameterName, parameters.get(parameterName));

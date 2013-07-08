@@ -52,7 +52,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     }
 
     // =====================================================================
-    // ======== Various finder serivces for the Sender REST API ============
+    // ======== Various finder services for the Sender REST API ============
     // =====================================================================
 
     @Override
