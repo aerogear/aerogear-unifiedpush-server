@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.rest.sender;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -32,10 +33,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
-import org.jboss.aerogear.connectivity.rest.sender.messages.BroadcastMessage;
-import org.jboss.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
 import org.jboss.aerogear.connectivity.service.PushApplicationService;
-import org.jboss.aerogear.connectivity.service.SenderService;
+import org.jboss.aerogear.connectivity.service.sender.SenderService;
+import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
 
 @Stateless
 @Path("/sender")
@@ -52,7 +53,7 @@ public class PushNotificationSenderEndpoint {
     @POST
     @Path("/broadcast")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response broadcast(final BroadcastMessage message, @Context HttpServletRequest request) {
+    public Response broadcast(final Map<String, Object> message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
@@ -62,8 +63,11 @@ public class PushNotificationSenderEndpoint {
                     .build();
         }
 
+        // transform map to service object:
+        final BroadcastMessage payload = new BroadcastMessage(message);
+
         // submitted to @Async EJB:
-        senderService.broadcast(pushApplication, message);
+        senderService.broadcast(pushApplication, payload);
         logger.info("Message submitted to PushNetworks");
 
         return Response.status(Status.OK)
@@ -73,7 +77,7 @@ public class PushNotificationSenderEndpoint {
     @POST
     @Path("/selected")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response selectedSender(final SelectiveSendMessage message, @Context HttpServletRequest request) {
+    public Response selectedSender(final Map<String, Object> message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
@@ -83,8 +87,11 @@ public class PushNotificationSenderEndpoint {
                     .build();
         }
 
+        // transform map to service object:
+        final SelectiveSendMessage payload = new SelectiveSendMessage(message);
+
         // submitted to @Async EJB:
-        senderService.sendToAliases(pushApplication, message);
+        senderService.sendToAliases(pushApplication, payload);
         logger.info("Message submitted to PushNetworks");
 
         return Response.status(Status.OK)

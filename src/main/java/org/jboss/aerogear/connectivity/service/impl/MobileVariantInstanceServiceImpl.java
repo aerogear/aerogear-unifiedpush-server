@@ -34,11 +34,6 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     }
 
     @Override
-    public List<MobileVariantInstanceImpl> findAllMobileVariantInstancesByToken(String token) {
-        return dao.findByToken(token);
-    }
-
-    @Override
     public void removeMobileVariantInstances(
             List<MobileVariantInstanceImpl> instances) {
 
@@ -53,5 +48,29 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     public MobileVariantInstanceImpl updateMobileVariantInstance(
             MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
+    }
+
+    // =====================================================================
+    // ======== Various finder services for the Sender REST API ============
+    // =====================================================================
+
+    @Override
+    public List<String> findAllDeviceTokenForVariantID(String variantID) {
+        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, null, null);
+    }
+
+    @Override
+    public List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category) {
+        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, category, null, null);
+    }
+
+    @Override
+    public List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes) {
+        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, aliases, deviceTypes);
+    }
+
+    @Override
+    public List<String> findAllDeviceTokenForVariantIDByCategoryAndAlias(String variantID, String category, List<String> aliases) {
+        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, category, aliases, null);
     }
 }
