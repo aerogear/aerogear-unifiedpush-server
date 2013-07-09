@@ -20,7 +20,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Lob;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'ios'")
@@ -32,27 +31,48 @@ public class iOSVariant extends AbstractMobileVariant {
     }
 
     @Column
-    @NotNull
-    private String passphrase;
+    private String developmentPassphrase;
+
+    @Column
+    private String productionPassphrase;
 
     @Lob
-    @Column(name = "CERT")
-    @NotNull
-    private byte[] certificate;
+    @Column
+    private byte[] developmentCertificate;
 
-    public String getPassphrase() {
-        return this.passphrase;
+    @Lob
+    @Column
+    private byte[] productionCertificate;
+
+    public String getDevelopmentPassphrase() {
+        return this.developmentPassphrase;
     }
 
-    public void setPassphrase(final String passphrase) {
-        this.passphrase = passphrase;
+    public void setDevelopmentPassphrase(final String passphrase) {
+        this.developmentPassphrase = passphrase;
     }
 
-    public byte[] getCertificate() {
-        return certificate;
+    public String getProductionPassphrase() {
+        return productionPassphrase;
     }
 
-    public void setCertificate(byte[] cert) {
-        this.certificate = cert;
+    public void setProductionPassphrase(String productionPassphrase) {
+        this.productionPassphrase = productionPassphrase;
+    }
+
+    public byte[] getDevelopmentCertificate() {
+        return developmentCertificate;
+    }
+
+    public void setDevelopmentCertificate(byte[] cert) {
+        this.developmentCertificate = cert;
+    }
+
+    public byte[] getProductionCertificate() {
+        return productionCertificate;
+    }
+
+    public void setProductionCertificate(byte[] productionCertificate) {
+        this.productionCertificate = productionCertificate;
     }
 }
