@@ -26,6 +26,8 @@ public class BroadcastMessage implements UnifiedPushMessage {
     private final String sound;
     private final int badge;
     private final Map<String, Object> data;
+    private final String staging;
+
 
     /**
      * Broadcast messages are submitted as flexible JSON maps, like:
@@ -35,12 +37,16 @@ public class BroadcastMessage implements UnifiedPushMessage {
      *     "alert":"HELLO!",
      *     "sound":"default",
      *     "badge":7,
-     *     "simple-push":"version=123"
+     *     "simple-push":"version=123",
+     *     "staging":"production"
      *   }
      * </pre>
      * This class give some convenient methods to access some <i>highlighted</i> keywords.
      */
     public BroadcastMessage(Map<String, Object> data) {
+        // staging: prod or test ?
+        this.staging = (String) data.remove("staging");
+
         // simple push value
         this.simplePush = (String) data.remove("simple-push");
 
@@ -77,5 +83,10 @@ public class BroadcastMessage implements UnifiedPushMessage {
 
     public Map<String, Object> getData() {
         return data;
+    }
+
+    @Override
+    public String getStaging() {
+        return staging;
     }
 }
