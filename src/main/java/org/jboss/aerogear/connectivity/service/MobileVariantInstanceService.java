@@ -26,6 +26,9 @@ public interface MobileVariantInstanceService {
 
     MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
 
+    MobileVariantInstanceImpl findById(String primaryKey);
+    void removeMobileVariantInstance(MobileVariantInstanceImpl instance);
+
     /**
      * Used for Broadcast. Query for all IDs on a certain variant
      */

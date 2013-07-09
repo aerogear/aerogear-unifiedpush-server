@@ -40,7 +40,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
         // uh... :)
 
         for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
-            dao.delete(mobileApplicationInstance);
+            removeMobileVariantInstance(mobileApplicationInstance);
         }
     }
 
@@ -48,6 +48,16 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     public MobileVariantInstanceImpl updateMobileVariantInstance(
             MobileVariantInstanceImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
+    }
+
+    @Override
+    public MobileVariantInstanceImpl findById(String primaryKey) {
+        return dao.find(MobileVariantInstanceImpl.class, primaryKey);
+    }
+
+    @Override
+    public void removeMobileVariantInstance(MobileVariantInstanceImpl instance) {
+        dao.delete(instance);
     }
 
     // =====================================================================
