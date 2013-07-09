@@ -24,6 +24,8 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
 
     private final List<String> aliases;
     private final List<String> deviceTypes;
+    private final String staging;
+
 
     private final Map<String, String> simplePush;
     private final String alert;
@@ -38,6 +40,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
      *   {
      *     "alias" : ["someUsername"],
      *     "deviceType" : ["someDevice"],
+     *     "staging":"production",
      *     "message":
      *     {
      *       "key":"value",
@@ -60,6 +63,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     public SelectiveSendMessage(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
+        this.staging = (String) this.data.remove("staging");
         
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
@@ -113,5 +117,10 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     @Override
     public Map<String, Object> getData() {
         return data;
+    }
+
+    @Override
+    public String getStaging() {
+        return staging;
     }
 }

@@ -40,4 +40,13 @@ public interface UnifiedPushMessage {
      * Returns <code>Map</code> containing the submitted, JSON without the highlighted keys 
      */
     Map<String, Object> getData();
+
+    /**
+     * Returns the staging and indicates if messages are send to a test (or production)
+     * Push Network.
+     * 
+     * Until AGPUSH-113 this is only for iOS... since APNs does differentiate between 
+     * production and test.
+     */
+    String getStaging();
 }
