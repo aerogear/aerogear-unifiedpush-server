@@ -233,6 +233,18 @@
                 <artifactId>jboss-as-maven-plugin</artifactId>
                 <version>7.4.Final</version>
             </plugin>
+
+            <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
