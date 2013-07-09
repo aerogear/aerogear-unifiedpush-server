@@ -43,8 +43,8 @@ public class APNsCache implements Serializable {
                 variantService = APNS
                         .newService()
                         .withCert(
-                                new ByteArrayInputStream(iOSVariant.getCertificate()),
-                                iOSVariant.getPassphrase()).withSandboxDestination()
+                                new ByteArrayInputStream(iOSVariant.getDevelopmentCertificate()),
+                                iOSVariant.getDevelopmentPassphrase()).withSandboxDestination()
                                .asQueued().build();
 
                 // store it:
