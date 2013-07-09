@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.service;
 
-import java.util.Map;
+package org.jboss.aerogear.connectivity.service.sender;
 
 import org.jboss.aerogear.connectivity.model.PushApplication;
-import org.jboss.aerogear.connectivity.rest.sender.messages.SelectiveSendMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
 
 public interface SenderService {
 
-    void broadcast(PushApplication pushApplication, Map<String, ? extends Object> payload);
+    void broadcast(PushApplication pushApplication, BroadcastMessage payload);
 
-    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message);
+    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage payload);
 }

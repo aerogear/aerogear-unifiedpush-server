@@ -18,7 +18,6 @@ package org.jboss.aerogear.connectivity.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
@@ -47,14 +46,6 @@ public class MobileVariantInstanceServiceImplTest {
                 mock(MobileVariantInstanceImpl.class));
         assertNotNull(mobileVariantInstanceDao.create(mock(MobileVariantInstanceImpl.class)));
         verify(mobileVariantInstanceDao).create(any(MobileVariantInstanceImpl.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testFindAllMobileVariantInstancesByToken() {
-        when(mobileVariantInstanceDao.findByToken(anyString())).thenReturn((List<MobileVariantInstanceImpl>) mock(List.class));
-        assertNotNull(mobileVariantInstanceDao.findByToken(anyString()));
-        verify(mobileVariantInstanceDao).findByToken(any(String.class));
     }
 
     @Test

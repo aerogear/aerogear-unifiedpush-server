@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.connectivity.message.cache.GCMCache;
 import org.jboss.aerogear.connectivity.message.sender.annotations.GCMSender;
+import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
 
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;

@@ -14,14 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.rest.sender.messages;
 
-import java.util.LinkedHashMap;
+package org.jboss.aerogear.connectivity.service.sender.message;
 
-public class BroadcastMessage extends LinkedHashMap<String, Object> {
-    private static final long serialVersionUID = 1L;
+import java.util.Map;
 
-    public String getSimplePush() {
-        return (String) this.get("simple-push");
-    }
+public interface UnifiedPushMessage {
+    
+    /**
+     * Returns <code>alert</code> key, recognized in native iOS (native) and AGDROID
+     */
+    String getAlert();
+    
+    /**
+     * Returns <code>sound</code> key, recognized in native iOS
+     */
+    String getSound();
+
+    /**
+     * Returns <code>badge</code> key, recognized in native iOS
+     */
+    int getBadge();
+    
+    /**
+     * Returns <code>Map</code> containing the submitted, JSON without the highlighted keys 
+     */
+    Map<String, Object> getData();
 }

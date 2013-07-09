@@ -18,6 +18,8 @@ package org.jboss.aerogear.connectivity.message.sender;
 
 import java.util.Collection;
 
+import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
+
 public interface PushNotificationSender {
 
     void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey);
