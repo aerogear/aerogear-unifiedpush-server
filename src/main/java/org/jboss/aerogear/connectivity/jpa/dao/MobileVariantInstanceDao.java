@@ -24,6 +24,11 @@ import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
 
     /**
+     * Loads all installations with the same token for the given Variant
+     */
+    List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+
+    /**
      * Broadcast/Selective Sender API:
      * 
      * Query all tokens for the given variant, by respecting a few criterias (category, aliases and deviceTypes)

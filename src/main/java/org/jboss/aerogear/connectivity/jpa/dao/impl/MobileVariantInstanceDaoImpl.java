@@ -30,6 +30,19 @@ import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 
 public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVariantInstanceImpl, String> implements MobileVariantInstanceDao {
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+
+        return createQuery("select mobileApplicationInstance from " + AbstractMobileVariant.class.getSimpleName() + 
+                " abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance" +
+                " where abstractMobileVariant.variantID = :variantID" + 
+                " and mobileApplicationInstance.deviceToken = :deviceToken")
+                .setParameter("variantID", variantID)
+                .setParameter("deviceToken", deviceToken)
+                .getResultList();
+    }
+    
     /**
      * Usage: SenderSerivce: 
      * 
