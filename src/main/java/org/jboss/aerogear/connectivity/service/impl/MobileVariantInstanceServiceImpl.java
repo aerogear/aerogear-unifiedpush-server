@@ -50,6 +50,11 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
         return dao.update(mobileApplicationInstance);
     }
 
+    @Override
+    public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+        return dao.findMobileVariantInstancesForVariantByToken(variantID, deviceToken);
+    }
+
     // =====================================================================
     // ======== Various finder services for the Sender REST API ============
     // =====================================================================
