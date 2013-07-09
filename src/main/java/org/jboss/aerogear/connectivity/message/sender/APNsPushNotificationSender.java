@@ -47,9 +47,19 @@ public class APNsPushNotificationSender {
                 .build(); // build the JSON payload, for APNs 
 
         // look up the ApnsService from the cache:
-        ApnsService service = apnsCache.getApnsServiceForVariant(iOSVariant);
+        ApnsService service = lookupApnsService(iOSVariant, pushMessage.getStaging());
 
         // send: 
         service.push(tokens, apnsMessage);
+    }
+
+    /**
+     * If "staging" key is present, and it has the "development" value, the method returns
+     * a cached (Sandbox) APNS-Service.
+     * 
+     * Default: PRODUCTION APNS-Service.
+     */
+    private ApnsService lookupApnsService(iOSVariant iOSVariant, String stagingValue) {
+        return "development".equals(stagingValue) ? apnsCache.getDevelopmentService(iOSVariant) : apnsCache.getProductionService(iOSVariant);
     }
 }
