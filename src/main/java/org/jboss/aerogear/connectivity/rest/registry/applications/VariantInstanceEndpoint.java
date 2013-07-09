@@ -25,12 +25,15 @@ import org.jboss.aerogear.security.authz.Secure;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Stateless
 @TransactionAttribute
@@ -63,20 +66,13 @@ public class VariantInstanceEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findVariantInstances(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        //Find the variant using the variantID
-        MobileVariant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
+        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
-        if(mobileVariant == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant").build();
-        }
-
-        List<MobileVariantInstanceImpl> mobileVariantInstance =  findInstanceById(mobileVariant.getInstances(), instanceId);
-
-        if(mobileVariantInstance.size() == 0){
+        if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
         }
 
-        return Response.ok(mobileVariantInstance.get(0)).build();
+        return Response.ok(mobileVariantInstance).build();
     }
 
     @PUT
@@ -84,20 +80,13 @@ public class VariantInstanceEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateVariantInstance(MobileVariantInstanceImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        //Find the variant using the variantID
-        MobileVariant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
+        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
-        if(mobileVariant == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant").build();
-        }
-
-        List<MobileVariantInstanceImpl> mobileVariantInstance =  findInstanceById(mobileVariant.getInstances(), instanceId);
-
-        if(mobileVariantInstance.size() == 0){
+        if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
         }
 
-        updateMobileApplicationInstance(entity, mobileVariantInstance.get(0));
+        updateMobileApplicationInstance(entity, mobileVariantInstance);
 
         return Response.noContent().build();
 
@@ -108,43 +97,19 @@ public class VariantInstanceEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response removeVariantInstance(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        //Find the variant using the variantID
-        MobileVariant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
+        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
-        if(mobileVariant == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant").build();
-        }
-
-        List<MobileVariantInstanceImpl> mobileVariantInstance =  findInstanceById(mobileVariant.getInstances(), instanceId);
-
-        if(mobileVariantInstance.size() == 0){
+        if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
         }
 
-        // (currently) there is only one:
-        MobileVariantInstanceImpl installationToDelete = mobileVariantInstance.get(0);
-
-        // remove
-        mobileVariant.getInstances().remove(installationToDelete);
-        mobileApplicationInstanceService.removeMobileVariantInstances(mobileVariantInstance);
+        // remove it
+        mobileApplicationInstanceService.removeMobileVariantInstance(mobileVariantInstance);
 
         return Response.noContent().build();
-
     }
 
-    private List<MobileVariantInstanceImpl> findInstanceById(
-            Set<MobileVariantInstanceImpl> instances, String instanceId) {
-        final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
-
-        for (MobileVariantInstanceImpl instance : instances) {
-            if (instance.getId().equals(instanceId))
-                instancesWithToken.add(instance);
-        }
-
-        return instancesWithToken;
-    }
-
-    private MobileVariantInstanceImpl updateMobileApplicationInstance(
+    private void updateMobileApplicationInstance(
             MobileVariantInstanceImpl toUpdate,
             MobileVariantInstanceImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
@@ -156,13 +121,8 @@ public class VariantInstanceEndpoint {
         toUpdate.setOsVersion(postedVariant.getOsVersion());
 
         // update
-        return mobileApplicationInstanceService
+        mobileApplicationInstanceService
                 .updateMobileVariantInstance(toUpdate);
     }
 
-
-
-
 }
-
-
