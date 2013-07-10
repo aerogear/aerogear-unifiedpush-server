@@ -30,6 +30,11 @@ public interface MobileVariantInstanceService {
     void removeMobileVariantInstance(MobileVariantInstanceImpl instance);
 
     /**
+     * Used for "Device Registration": loads all installations for one variant, containing the same token
+     */
+    List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+    
+    /**
      * Used for Broadcast. Query for all IDs on a certain variant
      */
     List<String> findAllDeviceTokenForVariantID(String variantID);

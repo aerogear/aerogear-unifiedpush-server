@@ -16,9 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.rest.registry.instances;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -90,9 +88,10 @@ public class MobileVariantInstanceEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        // look up all instances for THIS variant:
-        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(
-                mobileVariant.getInstances(), entity.getDeviceToken());
+        // look up all instances (with same token) for the given variant:
+        List<MobileVariantInstanceImpl> instances = 
+                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
+
         if (instances.isEmpty()) {
             // store the installation:
             entity = mobileApplicationInstanceService
@@ -131,8 +130,9 @@ public class MobileVariantInstanceEndpoint {
                     .build();
         }
 
-        // look up all instances for THIS variant:
-        List<MobileVariantInstanceImpl> instances = findInstanceByDeviceToken(mobileVariant.getInstances(), token);
+        // look up all instances (with same token) for the given variant:
+        List<MobileVariantInstanceImpl> instances = 
+                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), token);
 
         if (instances.isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
@@ -166,19 +166,6 @@ public class MobileVariantInstanceEndpoint {
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
                  .build();
-    }
-
-    // TODO: move to JQL
-    private List<MobileVariantInstanceImpl> findInstanceByDeviceToken(
-            Set<MobileVariantInstanceImpl> instances, String deviceToken) {
-        final List<MobileVariantInstanceImpl> instancesWithToken = new ArrayList<MobileVariantInstanceImpl>();
-
-        for (MobileVariantInstanceImpl instance : instances) {
-            if (instance.getDeviceToken().equals(deviceToken))
-                instancesWithToken.add(instance);
-        }
-
-        return instancesWithToken;
     }
 
     private MobileVariantInstanceImpl updateMobileApplicationInstance(

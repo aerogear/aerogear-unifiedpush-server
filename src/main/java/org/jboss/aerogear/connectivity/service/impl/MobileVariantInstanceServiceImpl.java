@@ -58,6 +58,11 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     @Override
     public void removeMobileVariantInstance(MobileVariantInstanceImpl instance) {
         dao.delete(instance);
+	}
+
+    @Override
+	public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+        return dao.findMobileVariantInstancesForVariantByToken(variantID, deviceToken);
     }
 
     // =====================================================================
