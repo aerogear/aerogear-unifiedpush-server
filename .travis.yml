@@ -5,3 +5,5 @@ jdk:
   - openjdk6
 notifications:
   irc: "irc.freenode.org#aerogear"
+
+script: "mvn verify"
