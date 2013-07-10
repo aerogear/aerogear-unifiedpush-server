@@ -66,8 +66,8 @@ public class APNsCache implements Serializable {
                 apnsService = APNS
                         .newService()
                         .withCert(
-                                new ByteArrayInputStream(iOSVariant.getDevelopmentCertificate()),
-                                iOSVariant.getDevelopmentPassphrase()).withProductionDestination()
+                                new ByteArrayInputStream(iOSVariant.getProductionCertificate()),
+                                iOSVariant.getProductionPassphrase()).withProductionDestination()
                                .asQueued().build();
 
                 // store it:
