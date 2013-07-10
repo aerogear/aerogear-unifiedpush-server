@@ -152,8 +152,6 @@ public class SimplePushVariantEndpoint {
 
         SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
-            PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
-            pushApp.getSimplePushApps().remove(spVariant);
             simplePushVariantService.removeSimplePushVariant(spVariant);
             return Response.noContent().build();
         }

@@ -138,12 +138,7 @@ public class MobileVariantInstanceEndpoint {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
             logger.info("Deleting metadata MobileVariantInstance");
-
-            // (currently) there is only one:
-            MobileVariantInstanceImpl installationToDelete = instances.get(0);
-
             // remove
-            mobileVariant.getInstances().remove(installationToDelete);
             mobileApplicationInstanceService.removeMobileVariantInstances(instances);
         }
 

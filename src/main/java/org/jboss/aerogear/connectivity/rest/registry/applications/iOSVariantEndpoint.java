@@ -163,8 +163,6 @@ public class iOSVariantEndpoint {
         iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
 
         if (iOSVariation != null) {
-            PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
-            pushApp.getIOSApps().remove(iOSVariation);
             iOSVariantService.removeiOSVariant(iOSVariation);
             return Response.noContent().build();
         }

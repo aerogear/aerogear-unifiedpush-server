@@ -151,8 +151,6 @@ public class AndroidVariantEndpoint {
         AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
 
         if (androidVariant != null) {
-            PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
-            pushApp.getAndroidApps().remove(androidVariant);
             androidVariantService.removeAndroidVariant(androidVariant);
             return Response.noContent().build();
         }
