@@ -20,12 +20,6 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import spock.lang.Specification
 
-
-/**
- *
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
- */
 class JsonParserSpecification extends Specification {
 
     def "JSON map and non-map syntax"() {

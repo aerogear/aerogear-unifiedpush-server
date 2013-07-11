@@ -35,11 +35,7 @@ import spock.lang.Specification
 
 import com.jayway.restassured.RestAssured
 
-/**
- *
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
- */
+
 @ArquillianSpecification
 @Mixin(AdminLogin)
 class RegisterPushAppSpecification extends Specification {
