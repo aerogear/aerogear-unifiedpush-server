@@ -33,14 +33,6 @@ import org.jboss.arquillian.spock.ArquillianSpecification
 import org.jboss.connectivity.common.AdminLogin;
 import org.jboss.connectivity.common.Deployments;
 
-
-/**
- *
- * @author <a href="milow-w@live.fr">rozaxe</a>
- * @author <a href="ckrych@redhat.com">Corinne Krych</a>
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
- */
 @ArquillianSpecification
 @Mixin(AdminLogin)
 class RegisterMobileVariantsSpecification extends Specification {
