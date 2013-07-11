@@ -49,8 +49,10 @@ Add an ```iOS``` variant (e.g. _HR for iOS_):
 ```
 curl -v -b cookies.txt -c cookies.txt 
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
-  -F "certificate=@/Users/matzew/Desktop/MyCert.p12"
-  -F "passphrase=TopSecret"
+  -F "developmentCertificate=@/Users/matzew/Desktop/MyDevCert.p12"
+  -F "developmentPassphrase=TopSecret"
+  -F "productionCertificate=@/Users/matzew/Desktop/MyProdCert.p12"
+  -F "productionPassphrase=TopSecret"
 
   -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
 ```
@@ -171,8 +173,14 @@ Send broadcast push message to ALL mobile apps of a certain Push APP......:
 curl -u "{PushApplicationID}:{MasterSecret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
-   -d '{"key":"value", "alert":"HELLO!", "sound":"default", "badge":7,
-       "simple-push":"version=123"}'
+   -d '{
+       "staging":"development",  // if msgs should go to APNs Sandbox server (default: "production")
+       "key":"value",
+       "alert":"HELLO!",
+       "sound":"default",
+       "badge":7,
+       "simple-push":"version=123"
+     }'
 
 http://localhost:8080/ag-push/rest/sender/broadcast
 ```
@@ -189,6 +197,7 @@ curl -u "{PushApplicationID}:{MasterSecret}"
    -X POST
 
    -d '{
+      "staging":"development",  // if msgs should go to APNs Sandbox server (default: "production")
       "alias" : ["user@account.com", "jay@redhat.org", ....],
 
       "deviceType" : ["iPad", "AndroidTablet"],
