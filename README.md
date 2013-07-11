@@ -51,6 +51,7 @@ curl -v -b cookies.txt -c cookies.txt
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
   -F "certificate=@/Users/matzew/Desktop/MyCert.p12"
   -F "passphrase=TopSecret"
+  -F "production=yes"
 
   -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
 ```
