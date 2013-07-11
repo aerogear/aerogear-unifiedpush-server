@@ -17,17 +17,14 @@
 package org.jboss.aerogear.connectivity.rest.user;
 
 
-import org.jboss.aerogear.connectivity.users.Developer;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.query.IdentityQuery;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -47,11 +44,9 @@ public class UserEndpoint {
     @GET
     @Path("/{id}")
     @Produces("application/json")
-    public Response findById(@PathParam("id") String id)
-    {
-        SimpleUser developer = (SimpleUser) identityManager.lookupIdentityById(SimpleUser.class,id);
-        if (developer == null)
-        {
+    public Response findById(@PathParam("id") String id) {
+        SimpleUser developer = (SimpleUser) identityManager.lookupIdentityById(SimpleUser.class, id);
+        if (developer == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
         return Response.ok(developer).build();
@@ -59,18 +54,15 @@ public class UserEndpoint {
 
     @GET
     @Produces("application/json")
-    public List<SimpleUser> listAll()
-    {
-        IdentityQuery<SimpleUser>  identityQuery = identityManager.createIdentityQuery(SimpleUser.class);
+    public List<SimpleUser> listAll() {
+        IdentityQuery<SimpleUser> identityQuery = identityManager.createIdentityQuery(SimpleUser.class);
         return identityQuery.getResultList();
     }
 
     @PUT
     @Path("/{id}")
     @Consumes("application/json")
-    public Response update(@PathParam("id") String id, SimpleUser developer)
-    {
-        //Developer developer = (Developer) identityManagement.findById(id);
+    public Response update(@PathParam("id") String id, SimpleUser developer) {
         identityManager.update(developer);
         return Response.noContent().build();
     }
@@ -78,11 +70,10 @@ public class UserEndpoint {
     @DELETE
     @Path("/{id}")
     public Response deleteById(@PathParam("id") String id) {
-        SimpleUser simpleUser = identityManager.lookupIdentityById(SimpleUser.class,id);
+        SimpleUser simpleUser = identityManager.lookupIdentityById(SimpleUser.class, id);
         identityManager.remove(simpleUser);
         return Response.noContent().build();
     }
-
 
 
 }
