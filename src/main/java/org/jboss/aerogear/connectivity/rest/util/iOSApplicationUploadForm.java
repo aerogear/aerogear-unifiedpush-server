@@ -24,8 +24,10 @@ public class iOSApplicationUploadForm {
     public iOSApplicationUploadForm() {
     }
 
-    private String passphrase;
-    private byte[] certificate;
+    private String developmentPassphrase;
+    private byte[] developmentCertificate;
+    private String productionPassphrase;
+    private byte[] productionCertificate;
     private String name;
     private String description;
 
@@ -47,23 +49,41 @@ public class iOSApplicationUploadForm {
         this.description = description;
     }
 
-    public String getPassphrase() {
-        return passphrase;
+    public String getDevelopmentPassphrase() {
+        return developmentPassphrase;
     }
 
-    @FormParam("passphrase")
-    public void setPassphrase(String passphrase) {
-        this.passphrase = passphrase;
+    @FormParam("developmentPassphrase")
+    public void setDevelopmentPassphrase(String developmentPassphrase) {
+        this.developmentPassphrase = developmentPassphrase;
     }
 
-    public byte[] getCertificate() {
-        return certificate;
+    public String getProductionPassphrase() {
+        return productionPassphrase;
     }
 
-    @FormParam("certificate")
+    @FormParam("productionPassphrase")
+    public void setProductionPassphrase(String productionPassphrase) {
+        this.productionPassphrase = productionPassphrase;
+    }
+
+    public byte[] getDevelopmentCertificate() {
+        return developmentCertificate;
+    }
+
+    @FormParam("developmentCertificate")
     @PartType("application/octet-stream")
-    public void setCertificate(byte[] data) {
-        this.certificate = data;
+    public void setDevelopmentCertificate(byte[] developmentCertificate) {
+        this.developmentCertificate = developmentCertificate;
     }
 
+    public byte[] getProductionCertificate() {
+        return productionCertificate;
+    }
+
+    @FormParam("productionCertificate")
+    @PartType("application/octet-stream")
+    public void setProductionCertificate(byte[] productionCertificate) {
+        this.productionCertificate = productionCertificate;
+    }
 }

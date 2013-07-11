@@ -31,27 +31,51 @@ import com.notnoop.apns.ApnsService;
 public class APNsCache implements Serializable {
     private static final long serialVersionUID = -1913999384798892563L;
 
-    private final ConcurrentHashMap<String, ApnsService> apnsCache = new ConcurrentHashMap<String, ApnsService>();
+    private final ConcurrentHashMap<String, ApnsService> developmentCache = new ConcurrentHashMap<String, ApnsService>();
+    private final ConcurrentHashMap<String, ApnsService> productionCache  = new ConcurrentHashMap<String, ApnsService>();
 
-    public ApnsService getApnsServiceForVariant(iOSVariant iOSVariant) {
-        ApnsService variantService = null;
-        synchronized (apnsCache) {
+    public ApnsService getDevelopmentService(iOSVariant iOSVariant) {
+        ApnsService apnsService = null;
+        synchronized (developmentCache) {
             String variantId = iOSVariant.getId();
-            variantService = apnsCache.get(variantId);
+            apnsService = developmentCache.get(variantId);
 
-            if (variantService == null) {
-                variantService = APNS
+            if (apnsService == null) {
+                apnsService = APNS
                         .newService()
                         .withCert(
-                                new ByteArrayInputStream(iOSVariant.getCertificate()),
-                                iOSVariant.getPassphrase()).withSandboxDestination()
+                                new ByteArrayInputStream(iOSVariant.getDevelopmentCertificate()),
+                                iOSVariant.getDevelopmentPassphrase()).withSandboxDestination()
                                .asQueued().build();
 
                 // store it:
-                apnsCache.put(variantId, variantService);
+                developmentCache.put(variantId, apnsService);
             }
         }
 
-        return variantService;
+        return apnsService;
     }
+
+    public ApnsService getProductionService(iOSVariant iOSVariant) {
+        ApnsService apnsService = null;
+        synchronized (productionCache) {
+            String variantId = iOSVariant.getId();
+            apnsService = productionCache.get(variantId);
+
+            if (apnsService == null) {
+                apnsService = APNS
+                        .newService()
+                        .withCert(
+                                new ByteArrayInputStream(iOSVariant.getProductionCertificate()),
+                                iOSVariant.getProductionPassphrase()).withProductionDestination()
+                               .asQueued().build();
+
+                // store it:
+                productionCache.put(variantId, apnsService);
+            }
+        }
+
+        return apnsService;
+    }
+
 }

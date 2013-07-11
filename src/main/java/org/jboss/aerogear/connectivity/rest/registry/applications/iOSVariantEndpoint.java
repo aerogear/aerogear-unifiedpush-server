@@ -78,17 +78,15 @@ public class iOSVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
-        // poor validation
-        if (form.getCertificate() == null || form.getPassphrase() == null) {
+        // simple validation 
+        if (invalidVariant(form)) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        // extract form values:
+
         iOSVariant iOSVariation = new iOSVariant();
-        iOSVariation.setName(form.getName());
-        iOSVariation.setDescription(form.getDescription());
-        iOSVariation.setPassphrase(form.getPassphrase());
-        iOSVariation.setCertificate(form.getCertificate());
+        // extract form values:
+        applyFormValuesToEntity(iOSVariation, form);
 
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
@@ -137,17 +135,13 @@ public class iOSVariantEndpoint {
         iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         if (iOSVariation != null) {
 
-            // poor validation
-            if (updatedForm.getCertificate() == null || updatedForm.getPassphrase() == null) {
+            // simple validation
+            if (invalidVariant(updatedForm)) {
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
             // apply update:
-            iOSVariation.setName(updatedForm.getName());
-            iOSVariation.setDescription(updatedForm.getDescription());
-            iOSVariation.setPassphrase(updatedForm.getPassphrase());
-            iOSVariation.setCertificate(updatedForm.getCertificate());
-
+            applyFormValuesToEntity(iOSVariation, updatedForm);
             iOSVariantService.updateiOSVariant(iOSVariation);
             return Response.noContent().build();
         }
@@ -167,5 +161,31 @@ public class iOSVariantEndpoint {
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+    }
+
+    /**
+     * We need at least one complete certificate: development or production/
+     * 
+     * @return true if there is NO dev/prod certificate
+     */
+    private boolean invalidVariant(iOSApplicationUploadForm uploadedData) {
+        // TODO: would be nice if that is JSR 303 validator/annoatation ..... 
+        boolean missingDevCert  = (uploadedData.getDevelopmentCertificate() == null || uploadedData.getDevelopmentPassphrase() == null); 
+        boolean missingProdCert = (uploadedData.getProductionCertificate() == null || uploadedData.getProductionPassphrase() == null); 
+
+        // are both missing ? 
+        return (missingDevCert && missingProdCert);
+    }
+
+    /**
+     * Apply POST/PUT form data to the actual JPA entity.
+     */
+    private void applyFormValuesToEntity(iOSVariant iOSVariation, iOSApplicationUploadForm form) {
+        iOSVariation.setName(form.getName());
+        iOSVariation.setDescription(form.getDescription());
+        iOSVariation.setDevelopmentPassphrase(form.getDevelopmentPassphrase());
+        iOSVariation.setDevelopmentCertificate(form.getDevelopmentCertificate());
+        iOSVariation.setProductionPassphrase(form.getProductionPassphrase());
+        iOSVariation.setProductionCertificate(form.getProductionCertificate());
     }
 }
