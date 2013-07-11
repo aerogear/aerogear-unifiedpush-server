@@ -18,14 +18,8 @@ package org.jboss.connectivity.common
 
 import groovy.json.JsonBuilder
 
-
 import com.jayway.restassured.RestAssured
 
-/**
- *
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
- */
 // FIXME this should be done via inheritance, see https://issues.jboss.org/browse/ARQ-1427
 class AdminLogin {
 

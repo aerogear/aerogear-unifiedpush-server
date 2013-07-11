@@ -20,12 +20,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.WebArchive
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter
 
-
-/**
- *
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
- *
- */
 class Deployments {
 
     def static WebArchive unifiedPushServer() {
