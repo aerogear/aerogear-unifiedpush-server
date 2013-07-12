@@ -101,30 +101,7 @@
             </div>
         </script>
 
-        <!--Template to create a new push application-->
-        <script type="text/x-handlebars" data-template-name="mobileApps/add">
-            <div>Add Push Application</div>
-            <div>
-                <div>
-                    <form {{action "add" controller target="controllers.mobileAppsIndex" on="submit" }}>
-                  <fieldset>
-                    <p>
-                      <label>Name</label>
-                      {{input type="text" value=name}}
-                    </p>
-                    <p>
-                      <label>Description</label>
-                      {{textarea value=description}}
-                    </p>
-                    <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
-                    <input type="submit" class="primary" value="Create">
-                  </fieldset>
-                </form>
-                </div>
-            </div>
-        </script>
-
-        <!--Template to edit a push application-->
+        <!--Template to create/edit a push application-->
         <script type="text/x-handlebars" data-template-name="mobileApps/edit">
             <div>
                 {{#if pushApplicationID}}

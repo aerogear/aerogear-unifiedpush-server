@@ -26,9 +26,6 @@ App.Router.map( function() {
     // This is a nested route since the header/footer will be similar.
     this.resource( "mobileApps", function() {
 
-        // The Route for creating a New Mobile Application
-        this.route( "add" );
-
         // The Route for editing a Mobile Application Name and Description
         this.route( "edit", { path: "edit/:mobileApplication_id" } );
 

@@ -97,7 +97,8 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 });
 
 /*
-    The Mobile Apps Controller. Put "Global Events" Here
+    The Mobile Apps Controller. Put "Global Events" Here.
+    TODO: Move more globally
 */
 App.MobileAppsController = Ember.Controller.extend({
     logout: function() {
@@ -116,11 +117,6 @@ App.MobileAppsController = Ember.Controller.extend({
     }
 });
 
-
-// DRY THIS OUT
-App.MobileAppsAddController = Ember.Controller.extend({
-    needs: "mobileAppsIndex"
-});
 
 /*
     The Controller for adding/editing Mobile apps
