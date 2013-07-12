@@ -34,7 +34,7 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
-    public void addInstance(Variant mobileApp,
+    public void addInstallation(Variant mobileApp,
             InstallationImpl instance) {
 
         mobileApp.getInstallations().add(instance);

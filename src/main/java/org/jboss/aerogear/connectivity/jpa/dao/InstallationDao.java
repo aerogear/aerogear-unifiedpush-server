@@ -26,7 +26,7 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     /**
      * Loads all installations with the same token for the given Variant
      */
-    List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+    List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
      * Broadcast/Selective Sender API:

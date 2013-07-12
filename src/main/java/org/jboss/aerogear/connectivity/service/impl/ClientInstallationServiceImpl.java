@@ -29,23 +29,23 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
-    public InstallationImpl addMobileVariantInstance(InstallationImpl mobileApplicationInstance) {
+    public InstallationImpl addInstallation(InstallationImpl mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);
     }
 
     @Override
-    public void removeMobileVariantInstances(
+    public void removeInstallations(
             List<InstallationImpl> instances) {
 
         // uh... :)
 
         for (InstallationImpl mobileApplicationInstance : instances) {
-            removeMobileVariantInstance(mobileApplicationInstance);
+            removeInstallation(mobileApplicationInstance);
         }
     }
 
     @Override
-    public InstallationImpl updateMobileVariantInstance(
+    public InstallationImpl updateInstallation(
             InstallationImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
     }
@@ -56,13 +56,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public void removeMobileVariantInstance(InstallationImpl instance) {
+    public void removeInstallation(InstallationImpl instance) {
         dao.delete(instance);
 	}
 
     @Override
-	public List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
-        return dao.findMobileVariantInstancesForVariantByToken(variantID, deviceToken);
+	public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
+        return dao.findInstallationsForVariantByDeviceToken(variantID, deviceToken);
     }
 
     // =====================================================================

@@ -90,14 +90,14 @@ public class InstallationRegistrationEndpoint {
 
         // look up all instances (with same token) for the given variant:
         List<InstallationImpl> instances = 
-                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
+                mobileApplicationInstanceService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
 
         if (instances.isEmpty()) {
             // store the installation:
             entity = mobileApplicationInstanceService
-                    .addMobileVariantInstance(entity);
+                    .addInstallation(entity);
             // add installation to the matching variant
-            mobileApplicationService.addInstance(mobileVariant, entity);
+            mobileApplicationService.addInstallation(mobileVariant, entity);
         } else {
             logger.info("Updating received metadata for MobileVariantInstance");
 
@@ -132,14 +132,14 @@ public class InstallationRegistrationEndpoint {
 
         // look up all instances (with same token) for the given variant:
         List<InstallationImpl> instances = 
-                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), token);
+                mobileApplicationInstanceService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), token);
 
         if (instances.isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
             logger.info("Deleting metadata MobileVariantInstance");
             // remove
-            mobileApplicationInstanceService.removeMobileVariantInstances(instances);
+            mobileApplicationInstanceService.removeInstallations(instances);
         }
 
         return appendAllowOriginHeader(Response.noContent(), request);
@@ -176,7 +176,7 @@ public class InstallationRegistrationEndpoint {
 
         // update
         return mobileApplicationInstanceService
-                .updateMobileVariantInstance(toUpdate);
+                .updateInstallation(toUpdate);
     }
 
     /**

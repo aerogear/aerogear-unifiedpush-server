@@ -32,7 +32,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
 
         return createQuery("select mobileApplicationInstance from " + AbstractVariant.class.getSimpleName() + 
                 " abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance" +

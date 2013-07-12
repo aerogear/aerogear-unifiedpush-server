@@ -49,7 +49,7 @@ public class InstallationManagementEndpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariantInstances(@PathParam("variantID") String variantId){
+    public Response findInstallations(@PathParam("variantID") String variantId){
 
         //Find the variant using the variantID
         Variant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
@@ -64,7 +64,7 @@ public class InstallationManagementEndpoint {
     @GET
     @Path("/{instanceID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariantInstances(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
         InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
@@ -78,7 +78,7 @@ public class InstallationManagementEndpoint {
     @PUT
     @Path("/{instanceID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateVariantInstance(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
         InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
@@ -86,7 +86,7 @@ public class InstallationManagementEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
         }
 
-        updateMobileApplicationInstance(entity, mobileVariantInstance);
+        updateInstallation(entity, mobileVariantInstance);
 
         return Response.noContent().build();
 
@@ -95,7 +95,7 @@ public class InstallationManagementEndpoint {
     @DELETE
     @Path("/{instanceID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeVariantInstance(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
         InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
@@ -104,12 +104,12 @@ public class InstallationManagementEndpoint {
         }
 
         // remove it
-        mobileApplicationInstanceService.removeMobileVariantInstance(mobileVariantInstance);
+        mobileApplicationInstanceService.removeInstallation(mobileVariantInstance);
 
         return Response.noContent().build();
     }
 
-    private void updateMobileApplicationInstance(
+    private void updateInstallation(
             InstallationImpl toUpdate,
             InstallationImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
@@ -122,7 +122,7 @@ public class InstallationManagementEndpoint {
 
         // update
         mobileApplicationInstanceService
-                .updateMobileVariantInstance(toUpdate);
+                .updateInstallation(toUpdate);
     }
 
 }
