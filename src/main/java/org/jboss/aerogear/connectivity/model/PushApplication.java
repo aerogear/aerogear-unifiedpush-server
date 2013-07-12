@@ -56,20 +56,17 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
-    private Set<iOSVariant> iOSApps = new HashSet<iOSVariant>();
+    private Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
 
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
-    private Set<AndroidVariant> androidApps = new HashSet<AndroidVariant>();
+    private Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
 
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
-    private Set<SimplePushVariant> simplePushApps = new HashSet<SimplePushVariant>();
-
-    //    @OneToMany
-    //    private Set<AbstractMobileApplication> mobileApplications = new HashSet<AbstractMobileApplication>();
+    private Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
     public String getName() {
         return this.name;
@@ -87,36 +84,28 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
         this.description = description;
     }
 
-    //   public Set<AbstractMobileApplication> getMobileApplications() {
-    //       return mobileApplications;
-    //   }
-    //
-    //   public void setMobileApplications(Set<AbstractMobileApplication> mobileApplications) {
-    //       this.mobileApplications = mobileApplications;
-    //   }
-
-    public Set<iOSVariant> getIOSApps() {
-        return this.iOSApps;
+    public Set<iOSVariant> getIOSVariants() {
+        return this.iOSVariants;
     }
 
-    public void setIOSApps(final Set<iOSVariant> iOSApps) {
-        this.iOSApps = iOSApps;
+    public void setIOSVariants(final Set<iOSVariant> iOSVariants) {
+        this.iOSVariants = iOSVariants;
     }
 
-    public Set<AndroidVariant> getAndroidApps() {
-        return this.androidApps;
+    public Set<AndroidVariant> getAndroidVariants() {
+        return this.androidVariants;
     }
 
-    public void setAndroidApps(final Set<AndroidVariant> androidApps) {
-        this.androidApps = androidApps;
+    public void setAndroidVariants(final Set<AndroidVariant> androidVariants) {
+        this.androidVariants = androidVariants;
     }
 
-    public Set<SimplePushVariant> getSimplePushApps() {
-        return simplePushApps;
+    public Set<SimplePushVariant> getSimplePushVariants() {
+        return simplePushVariants;
     }
 
-    public void setSimplePushApps(final Set<SimplePushVariant> simplePushApps) {
-        this.simplePushApps = simplePushApps;
+    public void setSimplePushVariants(final Set<SimplePushVariant> simplePushVariants) {
+        this.simplePushVariants = simplePushVariants;
     }
 
     public String getPushApplicationID() {

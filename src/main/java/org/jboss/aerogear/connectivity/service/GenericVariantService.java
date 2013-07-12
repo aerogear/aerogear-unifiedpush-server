@@ -23,6 +23,6 @@ public interface GenericVariantService {
 
     Variant findByVariantID(String variantID);
 
-    void addInstallation(Variant mobileApp, InstallationImpl installation);
+    void addInstallation(Variant variant, InstallationImpl installation);
 
 }

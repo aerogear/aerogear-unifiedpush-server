@@ -51,7 +51,7 @@ public class InstallationRegistrationEndpoint {
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
-    private GenericVariantService mobileApplicationService;
+    private GenericVariantService genericVariantService;
 
     @OPTIONS
     @Path("{token}")
@@ -75,8 +75,8 @@ public class InstallationRegistrationEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant mobileVariant = loadMobileVariantWhenAuthorized(request);
-        if (mobileVariant == null) {
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                     .entity("Unauthorized Request")
@@ -90,14 +90,14 @@ public class InstallationRegistrationEndpoint {
 
         // look up all installations (with same token) for the given variant:
         List<InstallationImpl> installations = 
-                clientInstallationService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
+                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
 
         if (installations.isEmpty()) {
             // store the installation:
             entity = clientInstallationService
                     .addInstallation(entity);
             // add installation to the matching variant
-            mobileApplicationService.addInstallation(mobileVariant, entity);
+            genericVariantService.addInstallation(variant, entity);
         } else {
             logger.info("Updating received metadata for Installation");
 
@@ -121,8 +121,8 @@ public class InstallationRegistrationEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant mobileVariant = loadMobileVariantWhenAuthorized(request);
-        if (mobileVariant == null) {
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                     .entity("Unauthorized Request")
@@ -131,7 +131,7 @@ public class InstallationRegistrationEndpoint {
 
         // look up all installations (with same token) for the given variant:
         List<InstallationImpl> installations = 
-                clientInstallationService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), token);
+                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), token);
 
         if (installations.isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
@@ -166,19 +166,18 @@ public class InstallationRegistrationEndpoint {
      * returns application if the masterSecret is valid for the request
      * PushApplication
      */
-    private Variant loadMobileVariantWhenAuthorized(
+    private Variant loadVariantWhenAuthorized(
             HttpServletRequest request) {
         // extract the pushApplicationID and its secret from the HTTP Basic
         // header:
         String[] credentials = HttpBasicHelper
                 .extractUsernameAndPasswordFromBasicHeader(request);
-        String mobileVariantID = credentials[0];
+        String variantID = credentials[0];
         String secret = credentials[1];
 
-        final Variant mobileVariant = mobileApplicationService
-                .findByVariantID(mobileVariantID);
-        if (mobileVariant != null && mobileVariant.getSecret().equals(secret)) {
-            return mobileVariant;
+        final Variant variant = genericVariantService.findByVariantID(variantID);
+        if (variant != null && variant.getSecret().equals(secret)) {
+            return variant;
         }
 
         // unauthorized...

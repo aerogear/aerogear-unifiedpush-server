@@ -91,11 +91,11 @@ public class PushApplicationServiceImplTest {
     public void testAddiOSVariant() {
         PushApplication pushApplication = mock(PushApplication.class);
         iOSVariant iOVariant = mock(iOSVariant.class);
-        when(pushApplication.getIOSApps()).thenReturn((Set<iOSVariant>) mock(Set.class));
-        when(pushApplication.getIOSApps().add(any(iOSVariant.class))).thenReturn(true);
-        assertTrue(pushApplication.getIOSApps().add(iOVariant));
-        verify(pushApplication, times(2)).getIOSApps();
-        verify(pushApplication.getIOSApps()).add(iOVariant);
+        when(pushApplication.getIOSVariants()).thenReturn((Set<iOSVariant>) mock(Set.class));
+        when(pushApplication.getIOSVariants().add(any(iOSVariant.class))).thenReturn(true);
+        assertTrue(pushApplication.getIOSVariants().add(iOVariant));
+        verify(pushApplication, times(2)).getIOSVariants();
+        verify(pushApplication.getIOSVariants()).add(iOVariant);
         when(pushApplicationDao.update(any(PushApplication.class))).thenReturn(mock(PushApplication.class));
         assertNotNull(pushApplicationDao.update(any(PushApplication.class)));
         verify(pushApplicationDao).update(any(PushApplication.class));
@@ -106,11 +106,11 @@ public class PushApplicationServiceImplTest {
     public void testAddAndroidVariant() {
         PushApplication pushApplication = mock(PushApplication.class);
         AndroidVariant androidVariant = mock(AndroidVariant.class);
-        when(pushApplication.getAndroidApps()).thenReturn((Set<AndroidVariant>) mock(Set.class));
-        when(pushApplication.getAndroidApps().add(any(AndroidVariant.class))).thenReturn(true);
-        assertTrue(pushApplication.getAndroidApps().add(androidVariant));
-        verify(pushApplication, times(2)).getAndroidApps();
-        verify(pushApplication.getAndroidApps()).add(androidVariant);
+        when(pushApplication.getAndroidVariants()).thenReturn((Set<AndroidVariant>) mock(Set.class));
+        when(pushApplication.getAndroidVariants().add(any(AndroidVariant.class))).thenReturn(true);
+        assertTrue(pushApplication.getAndroidVariants().add(androidVariant));
+        verify(pushApplication, times(2)).getAndroidVariants();
+        verify(pushApplication.getAndroidVariants()).add(androidVariant);
         when(pushApplicationDao.update(any(PushApplication.class))).thenReturn(mock(PushApplication.class));
         assertNotNull(pushApplicationDao.update(any(PushApplication.class)));
         verify(pushApplicationDao).update(any(PushApplication.class));
@@ -121,11 +121,11 @@ public class PushApplicationServiceImplTest {
     public void testAddSimplePushVariant() {
         PushApplication pushApplication = mock(PushApplication.class);
         SimplePushVariant simplePushVariant = mock(SimplePushVariant.class);
-        when(pushApplication.getSimplePushApps()).thenReturn((Set<SimplePushVariant>) mock(Set.class));
-        when(pushApplication.getSimplePushApps().add(any(SimplePushVariant.class))).thenReturn(true);
-        assertTrue(pushApplication.getSimplePushApps().add(simplePushVariant));
-        verify(pushApplication, times(2)).getSimplePushApps();
-        verify(pushApplication.getSimplePushApps()).add(simplePushVariant);
+        when(pushApplication.getSimplePushVariants()).thenReturn((Set<SimplePushVariant>) mock(Set.class));
+        when(pushApplication.getSimplePushVariants().add(any(SimplePushVariant.class))).thenReturn(true);
+        assertTrue(pushApplication.getSimplePushVariants().add(simplePushVariant));
+        verify(pushApplication, times(2)).getSimplePushVariants();
+        verify(pushApplication.getSimplePushVariants()).add(simplePushVariant);
         when(pushApplicationDao.update(any(PushApplication.class))).thenReturn(mock(PushApplication.class));
         assertNotNull(pushApplicationDao.update(any(PushApplication.class)));
         verify(pushApplicationDao).update(any(PushApplication.class));

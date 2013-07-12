@@ -52,13 +52,13 @@ public class InstallationManagementEndpoint {
     public Response findInstallations(@PathParam("variantID") String variantId){
 
         //Find the variant using the variantID
-        Variant mobileVariant =  genericVariantService.findByVariantID(variantId);
+        Variant variant =  genericVariantService.findByVariantID(variantId);
 
-        if(mobileVariant == null){
+        if(variant == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.ok(mobileVariant.getInstallations()).build();
+        return Response.ok(variant.getInstallations()).build();
     }
 
     @GET
