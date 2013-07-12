@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -42,33 +42,33 @@ public class MobileVariantInstanceServiceImplTest {
 
     @Test
     public void testAddMobileVariantInstance() {
-        when(mobileVariantInstanceDao.create(any(MobileVariantInstanceImpl.class))).thenReturn(
-                mock(MobileVariantInstanceImpl.class));
-        assertNotNull(mobileVariantInstanceDao.create(mock(MobileVariantInstanceImpl.class)));
-        verify(mobileVariantInstanceDao).create(any(MobileVariantInstanceImpl.class));
+        when(mobileVariantInstanceDao.create(any(InstallationImpl.class))).thenReturn(
+                mock(InstallationImpl.class));
+        assertNotNull(mobileVariantInstanceDao.create(mock(InstallationImpl.class)));
+        verify(mobileVariantInstanceDao).create(any(InstallationImpl.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testRemoveMobileVariantInstances() {
-        List<MobileVariantInstanceImpl> instances = (List<MobileVariantInstanceImpl>) mock(List.class);
-        when(instances.iterator()).thenReturn((Iterator<MobileVariantInstanceImpl>) mock(Iterator.class));
+        List<InstallationImpl> instances = (List<InstallationImpl>) mock(List.class);
+        when(instances.iterator()).thenReturn((Iterator<InstallationImpl>) mock(Iterator.class));
         when(instances.iterator().hasNext()).thenReturn(true, true, true, false);
-        when(instances.iterator().next()).thenReturn(mock(MobileVariantInstanceImpl.class));
+        when(instances.iterator().next()).thenReturn(mock(InstallationImpl.class));
 
-        for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
+        for (InstallationImpl mobileApplicationInstance : instances) {
             mobileVariantInstanceDao.delete(mobileApplicationInstance);
         }
 
-        verify(mobileVariantInstanceDao, times(3)).delete(any(MobileVariantInstanceImpl.class));
+        verify(mobileVariantInstanceDao, times(3)).delete(any(InstallationImpl.class));
     }
 
     @Test
     public void testUpdateMobileVariantInstance() {
-        when(mobileVariantInstanceDao.update(any(MobileVariantInstanceImpl.class))).thenReturn(
-                mock(MobileVariantInstanceImpl.class));
-        assertNotNull(mobileVariantInstanceDao.update(any(MobileVariantInstanceImpl.class)));
-        verify(mobileVariantInstanceDao).update(any(MobileVariantInstanceImpl.class));
+        when(mobileVariantInstanceDao.update(any(InstallationImpl.class))).thenReturn(
+                mock(InstallationImpl.class));
+        assertNotNull(mobileVariantInstanceDao.update(any(InstallationImpl.class)));
+        verify(mobileVariantInstanceDao).update(any(InstallationImpl.class));
     }
 
 }

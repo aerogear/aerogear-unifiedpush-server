@@ -26,13 +26,13 @@ import javax.persistence.Query;
 import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
 import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVariantInstanceImpl, String> implements MobileVariantInstanceDao {
+public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements MobileVariantInstanceDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+    public List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
 
         return createQuery("select mobileApplicationInstance from " + AbstractMobileVariant.class.getSimpleName() + 
                 " abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance" +

@@ -36,8 +36,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
 import org.jboss.aerogear.connectivity.service.MobileVariantService;
@@ -71,11 +71,11 @@ public class MobileVariantInstanceEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
-            MobileVariantInstanceImpl entity,
+            InstallationImpl entity,
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
+        final Variant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
@@ -89,7 +89,7 @@ public class MobileVariantInstanceEndpoint {
         }
 
         // look up all instances (with same token) for the given variant:
-        List<MobileVariantInstanceImpl> instances = 
+        List<InstallationImpl> instances = 
                 mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
 
         if (instances.isEmpty()) {
@@ -122,7 +122,7 @@ public class MobileVariantInstanceEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
+        final Variant mobileVariant = loadMobileVariantWhenAuthorized(request);
         if (mobileVariant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
@@ -131,7 +131,7 @@ public class MobileVariantInstanceEndpoint {
         }
 
         // look up all instances (with same token) for the given variant:
-        List<MobileVariantInstanceImpl> instances = 
+        List<InstallationImpl> instances = 
                 mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), token);
 
         if (instances.isEmpty()) {
@@ -163,9 +163,9 @@ public class MobileVariantInstanceEndpoint {
                  .build();
     }
 
-    private MobileVariantInstanceImpl updateMobileApplicationInstance(
-            MobileVariantInstanceImpl toUpdate,
-            MobileVariantInstanceImpl postedVariant) {
+    private InstallationImpl updateMobileApplicationInstance(
+            InstallationImpl toUpdate,
+            InstallationImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
         toUpdate.setAlias(postedVariant.getAlias());
@@ -183,7 +183,7 @@ public class MobileVariantInstanceEndpoint {
      * returns application if the masterSecret is valid for the request
      * PushApplication
      */
-    private MobileVariant loadMobileVariantWhenAuthorized(
+    private Variant loadMobileVariantWhenAuthorized(
             HttpServletRequest request) {
         // extract the pushApplicationID and its secret from the HTTP Basic
         // header:
@@ -192,7 +192,7 @@ public class MobileVariantInstanceEndpoint {
         String mobileVariantID = credentials[0];
         String secret = credentials[1];
 
-        final MobileVariant mobileVariant = mobileApplicationService
+        final Variant mobileVariant = mobileApplicationService
                 .findByVariantID(mobileVariantID);
         if (mobileVariant != null && mobileVariant.getSecret().equals(secret)) {
             return mobileVariant;

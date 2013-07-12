@@ -21,7 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
 
 public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
@@ -29,39 +29,39 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     @Inject
     private MobileVariantInstanceDao dao;
 
-    public MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance) {
+    public InstallationImpl addMobileVariantInstance(InstallationImpl mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);
     }
 
     @Override
     public void removeMobileVariantInstances(
-            List<MobileVariantInstanceImpl> instances) {
+            List<InstallationImpl> instances) {
 
         // uh... :)
 
-        for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
+        for (InstallationImpl mobileApplicationInstance : instances) {
             removeMobileVariantInstance(mobileApplicationInstance);
         }
     }
 
     @Override
-    public MobileVariantInstanceImpl updateMobileVariantInstance(
-            MobileVariantInstanceImpl mobileApplicationInstance) {
+    public InstallationImpl updateMobileVariantInstance(
+            InstallationImpl mobileApplicationInstance) {
         return dao.update(mobileApplicationInstance);
     }
 
     @Override
-    public MobileVariantInstanceImpl findById(String primaryKey) {
-        return dao.find(MobileVariantInstanceImpl.class, primaryKey);
+    public InstallationImpl findById(String primaryKey) {
+        return dao.find(InstallationImpl.class, primaryKey);
     }
 
     @Override
-    public void removeMobileVariantInstance(MobileVariantInstanceImpl instance) {
+    public void removeMobileVariantInstance(InstallationImpl instance) {
         dao.delete(instance);
 	}
 
     @Override
-	public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+	public List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
         return dao.findMobileVariantInstancesForVariantByToken(variantID, deviceToken);
     }
 

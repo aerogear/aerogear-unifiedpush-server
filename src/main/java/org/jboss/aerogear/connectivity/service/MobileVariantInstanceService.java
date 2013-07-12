@@ -18,21 +18,21 @@ package org.jboss.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
 public interface MobileVariantInstanceService {
 
-    MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    InstallationImpl addMobileVariantInstance(InstallationImpl mobileApplicationInstance);
 
-    MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    InstallationImpl updateMobileVariantInstance(InstallationImpl mobileApplicationInstance);
 
-    MobileVariantInstanceImpl findById(String primaryKey);
-    void removeMobileVariantInstance(MobileVariantInstanceImpl instance);
+    InstallationImpl findById(String primaryKey);
+    void removeMobileVariantInstance(InstallationImpl instance);
 
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token
      */
-    List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+    List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
     
     /**
      * Used for Broadcast. Query for all IDs on a certain variant
@@ -49,5 +49,5 @@ public interface MobileVariantInstanceService {
 
     List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category);
 
-    void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
+    void removeMobileVariantInstances(List<InstallationImpl> instances);
 }

@@ -49,7 +49,7 @@ public interface PushApplication {
     String getPushApplicationID();
 
     /**
-     * The master password, used for sending message to a {@link PushApplication} or its {@link MobileVariant}s.
+     * The master password, used for sending message to a {@link PushApplication} or its {@link Variant}s.
      */
     void setMasterSecret(String secret);
 

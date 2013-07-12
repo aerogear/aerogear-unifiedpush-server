@@ -30,13 +30,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
+import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.jpa.PersistentObject;
 
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractMobileVariant extends PersistentObject implements MobileVariant {
+public abstract class AbstractMobileVariant extends PersistentObject implements Variant {
     private static final long serialVersionUID = -5028062942838899201L;
 
     public AbstractMobileVariant() {
@@ -57,7 +57,7 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="variantID", referencedColumnName="variantID")
-    private Set<MobileVariantInstanceImpl> instances = new HashSet<MobileVariantInstanceImpl>();
+    private Set<InstallationImpl> installations = new HashSet<InstallationImpl>();
 
     public String getName() {
         return this.name;
@@ -76,12 +76,12 @@ public abstract class AbstractMobileVariant extends PersistentObject implements 
     }
 
     @Override
-    public Set<MobileVariantInstanceImpl> getInstances() {
-        return this.instances;
+    public Set<InstallationImpl> getInstallations() {
+        return this.installations;
     }
 
-    public void setInstances(final Set<MobileVariantInstanceImpl> instances) {
-        this.instances = instances;
+    public void setInstallations(final Set<InstallationImpl> installations) {
+        this.installations = installations;
     }
 
     public String getVariantID() {

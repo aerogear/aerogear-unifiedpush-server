@@ -21,9 +21,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.Set;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
+import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -41,7 +41,7 @@ public class MobileVariantServiceImplTest {
 
     @Test
     public void testFindByVariantID() {
-        when(mobileApplicationDao.findByVariantID(anyString())).thenReturn(mock(MobileVariant.class));
+        when(mobileApplicationDao.findByVariantID(anyString())).thenReturn(mock(Variant.class));
         assertNotNull(mobileApplicationDao.findByVariantID(anyString()));
         verify(mobileApplicationDao).findByVariantID(anyString());
     }
@@ -49,15 +49,15 @@ public class MobileVariantServiceImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAddInstance() {
-        MobileVariant mobileVariant = mock(MobileVariant.class);
-        MobileVariantInstanceImpl instance = mock(MobileVariantInstanceImpl.class);
-        when(mobileVariant.getInstances()).thenReturn((Set<MobileVariantInstanceImpl>) mock(Set.class));
-        when(mobileVariant.getInstances().add(any(MobileVariantInstanceImpl.class))).thenReturn(true);
-        assertTrue(mobileVariant.getInstances().add(instance));
-        verify(mobileVariant, times(2)).getInstances();
-        verify(mobileVariant.getInstances()).add(instance);
-        when(mobileApplicationDao.update(any(MobileVariant.class))).thenReturn(mock(MobileVariant.class));
-        assertNotNull(mobileApplicationDao.update(any(MobileVariant.class)));
-        verify(mobileApplicationDao).update(any(MobileVariant.class));
+        Variant mobileVariant = mock(Variant.class);
+        InstallationImpl instance = mock(InstallationImpl.class);
+        when(mobileVariant.getInstallations()).thenReturn((Set<InstallationImpl>) mock(Set.class));
+        when(mobileVariant.getInstallations().add(any(InstallationImpl.class))).thenReturn(true);
+        assertTrue(mobileVariant.getInstallations().add(instance));
+        verify(mobileVariant, times(2)).getInstallations();
+        verify(mobileVariant.getInstallations()).add(instance);
+        when(mobileApplicationDao.update(any(Variant.class))).thenReturn(mock(Variant.class));
+        assertNotNull(mobileApplicationDao.update(any(Variant.class)));
+        verify(mobileApplicationDao).update(any(Variant.class));
     }
 }

@@ -16,15 +16,15 @@
  */
 package org.jboss.aerogear.connectivity.jpa.dao.impl;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
+import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantDao;
 import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
 
-public class MobileVariantDaoImpl extends AbstractGenericDao<MobileVariant, String> implements MobileVariantDao {
+public class MobileVariantDaoImpl extends AbstractGenericDao<Variant, String> implements MobileVariantDao {
 
     @Override
-    public MobileVariant findByVariantID(String variantID) {
+    public Variant findByVariantID(String variantID) {
         return getSingleResultForQuery(createQuery("select t from " + AbstractMobileVariant.class.getSimpleName() + " t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));
     }

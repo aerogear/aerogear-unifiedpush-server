@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
 import org.jboss.aerogear.connectivity.service.MobileVariantService;
 import org.jboss.aerogear.security.authz.Secure;
@@ -52,13 +52,13 @@ public class VariantInstanceEndpoint {
     public Response findVariantInstances(@PathParam("variantID") String variantId){
 
         //Find the variant using the variantID
-        MobileVariant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
+        Variant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
 
         if(mobileVariant == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant").build();
         }
 
-        return Response.ok(mobileVariant.getInstances()).build();
+        return Response.ok(mobileVariant.getInstallations()).build();
     }
 
     @GET
@@ -66,7 +66,7 @@ public class VariantInstanceEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findVariantInstances(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
         if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
@@ -78,9 +78,9 @@ public class VariantInstanceEndpoint {
     @PUT
     @Path("/{instanceID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateVariantInstance(MobileVariantInstanceImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response updateVariantInstance(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
         if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
@@ -97,7 +97,7 @@ public class VariantInstanceEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response removeVariantInstance(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
 
-        MobileVariantInstanceImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
 
         if(mobileVariantInstance == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
@@ -110,8 +110,8 @@ public class VariantInstanceEndpoint {
     }
 
     private void updateMobileApplicationInstance(
-            MobileVariantInstanceImpl toUpdate,
-            MobileVariantInstanceImpl postedVariant) {
+            InstallationImpl toUpdate,
+            InstallationImpl postedVariant) {
         toUpdate.setCategory(postedVariant.getCategory());
         toUpdate.setDeviceToken(postedVariant.getDeviceToken());
         toUpdate.setAlias(postedVariant.getAlias());
