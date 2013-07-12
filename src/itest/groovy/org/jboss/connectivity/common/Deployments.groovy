@@ -26,8 +26,14 @@ class Deployments {
 
         def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
 
-        return ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
+        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
         .as(WebArchive.class);
+
+        // replace original persistence.xml with testing one
+        war.delete("/WEB-INF/classes/META-INF/persistence.xml")
+        // testing persistence
+        war.addAsResource("META-INF/persistence.xml")
+        return war
     }
 }
 

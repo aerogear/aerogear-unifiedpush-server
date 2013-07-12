@@ -50,11 +50,13 @@ class PushDaoSpecification extends Specification {
                 .addPackage(PersistentObject.class.getPackage()) // jpa
                 .addPackage(Variant.class.getPackage()) // api
                 .addAsManifestResource("META-INF/beans.xml", "beans.xml")
-                .addAsResource("META-INF/persistence.xml")
+                .addAsManifestResource("META-INF/persistence-pushee-only.xml", "persistence.xml")
 
-        // temporary hack to solve https://issues.jboss.org/browse/ARQ-1429
-        JavaArchive asm = Maven.resolver().resolve("org.ow2.asm:asm:4.1").withoutTransitivity().asSingle(JavaArchive.class)
-        jar = jar.merge(asm)
+        // FIXME temporary hack to solve https://issues.jboss.org/browse/ARQ-1429
+        // it seems that more libraries are actually needed to run Groovy in container than originally expected
+        Maven.resolver().resolve("org.ow2.asm:asm:4.1", "antlr:antlr:2.7.7").withoutTransitivity().as(JavaArchive.class).each {
+            jar = jar.merge(it)
+        }
 
         // System.out.println(jar.toString(true));
 
