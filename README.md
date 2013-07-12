@@ -200,10 +200,10 @@ curl -u "{PushApplicationID}:{MasterSecret}"
       "staging":"development",  // if msgs should go to APNs Sandbox server (default: "production")
       "alias" : ["user@account.com", "jay@redhat.org", ....],
 
-      "deviceType" : ["iPad", "AndroidTablet"],
+      "deviceType" : ["iPad", "AndroidTablet", "web"],
 
-      "message": {"key":"value", "key2":"other value", "alert":"HELLO!",
-        "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
+      "message": {"key":"value", "key2":"other value", "alert":"HELLO!"},
+      "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
 	  }
    }'
 
