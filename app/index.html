@@ -61,28 +61,21 @@
         <!-- The Mobile Applications Template -->
         <script type="text/x-handlebars" data-template-name="mobileApps/index">
             <div>
-                Push Applications
+                Push Applications - Total Mobile Apps: {{ totalApps }}
                 <div>
-                    The AeroGear Unified Push Server sends push notifications to any of your mobile applications using different push networks
-                </div>
-                <div>
-                {{partial "appsList"}}
+                    {{partial "appsList"}}
                 </div>
             </div>
         </script>
 
         <!-- The Mobile Applications List Partial-->
         <script type="text/x-handlebars" data-template-name="_appsList">
-            <div>
-                Please start by adding a push application - {{#linkTo "mobileApps.add" }}Add New{{/linkTo}}
-            </div>
-            <div id="mobile-application-table">
+            <div>{{#linkTo "mobileApps.edit" }}Add New{{/linkTo}}</div>
                 <table class="table table-zebra">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Status</th>
                             <th>Description</th>
                             <th>Variants</th>
                         </tr>
@@ -94,24 +87,16 @@
                                     {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
                                     <button class="primary" {{ action "remove" this}}>Remove</button>
                                 </td>
-                                <td>{{#linkTo "variants" this}}{{ name }}{{/linkTo}}</td>
-                                <td>{{ status }}</td>
-                                <td>{{ descriptionFormatted }}</td>
+                                <td>{{ name }}{{#linkTo "variants" this}} >>> {{/linkTo}}</td>
+                                <td><span>{{ descriptionFormatted }}<span></td>
                                 <td>{{ totalVariants }}</td>
                             </tr>
                         {{else}}
                             <tr>
-                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                                <td colspan="4">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
                             </tr>
                         {{/each}}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="5">
-                                Total Mobile Apps: {{ totalApps }}
-                            </td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </script>
@@ -121,7 +106,7 @@
             <div>Add Push Application</div>
             <div>
                 <div>
-                    <form {{action add on="submit"}} target="view">
+                    <form {{action "add" controller target="controllers.mobileAppsIndex" on="submit" }}>
                   <fieldset>
                     <p>
                       <label>Name</label>
@@ -131,14 +116,15 @@
                       <label>Description</label>
                       {{textarea value=description}}
                     </p>
-                    <button class="primary">Next</button>
+                    <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
+                    <input type="submit" class="primary" value="Create">
                   </fieldset>
                 </form>
                 </div>
             </div>
         </script>
 
-        <!--Template to create a new push application-->
+        <!--Template to edit a push application-->
         <script type="text/x-handlebars" data-template-name="mobileApps/edit">
             <div>
                 {{#if pushApplicationID}}
@@ -150,7 +136,7 @@
             </div>
             <div>
                 <div>
-                    <form {{action edit on="submit"}} target="view">
+                    <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" on="submit"}} target="view">
                   <fieldset>
                     <p>
                       <label>Name</label>
@@ -160,7 +146,8 @@
                       <label>Description</label>
                       {{textarea valueBinding="description"}}
                     </p>
-                    <button class="primary">Next</button>
+                    <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
+                    <input type="submit" class="primary" value="Create">
                   </fieldset>
                 </form>
                 </div>
@@ -411,7 +398,7 @@
         <script src="scripts/helpers/aerogear_helper.js"></script>
         <!-- endbuild -->
 
-        <script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
-        <script src="scripts/mocks/mock.js"></script>
+        <!--<script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
+        <script src="scripts/mocks/mock.js"></script>-->
 </body>
 </html>

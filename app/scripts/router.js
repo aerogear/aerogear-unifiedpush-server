@@ -82,7 +82,7 @@ App.MobileAppsEditRoute = Ember.Route.extend({
     serialize: function( model ) {
 
         // Make our non uniform id of pushApplicationID what ember expects
-        return { mobileApplication_id: model.pushApplicationID };
+        return { mobileApplication_id: model ? model.pushApplicationID : "" };
 
     }
 });

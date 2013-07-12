@@ -13,9 +13,51 @@
 */
 
 App.MobileAppsIndexController = Ember.ArrayController.extend({
-    /*remove: function( app ){
-        App.MobileApplication.remove( app );
-    },*/
+    add: function( controller ) {
+        var applicationData = {
+            name: controller.get( "name" ),
+            description: controller.get( "description" )
+        };
+
+        this.saveMobileApplication( applicationData );
+    },
+    edit: function( controller ) {
+        var applicationData = {
+            name: controller.get( "name" ),
+            id: controller.get( "pushApplicationID" ),
+            description: controller.get( "description" )
+        };
+
+        this.saveMobileApplication( applicationData );
+    },
+    cancel: function( controller ) {
+        //Probably a better way
+        controller.set( "name", "" );
+        controller.set( "description", "" );
+
+        this.transitionToRoute( "mobileApps" );
+    },
+    // Move this to the Model?
+    saveMobileApplication: function( applicationData ) {
+        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            that = this;
+
+        applicationPipe.save( applicationData, {
+            success: function() {
+                that.transitionToRoute( "mobileApps" );
+            },
+            error: function( error ) {
+                console.log( "error saving", error );
+                switch( error.status ) {
+                case 401:
+                    that.transitionToRoute( "login" );
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+    },
     remove: function( app ) {
         var applicationPipe = App.AeroGear.pipelines.pipes.applications,
             things = app,
@@ -77,74 +119,12 @@ App.MobileAppsController = Ember.Controller.extend({
 
 // DRY THIS OUT
 App.MobileAppsAddController = Ember.Controller.extend({
-    add: function() {
-        var applicationData = {
-            name: this.get( "name" ),
-            description: this.get( "description" )
-        };
-
-        this.saveMobileApplication( applicationData );
-    },
-    // Move this to the Model?
-    saveMobileApplication: function( applicationData ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            that = this;
-
-        applicationPipe.save( applicationData, {
-            success: function() {
-                that.transitionToRoute( "mobileApps" );
-            },
-            error: function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    break;
-                }
-            }
-        });
-    }
+    needs: "mobileAppsIndex"
 });
 
 /*
     The Controller for adding/editing Mobile apps
 */
 App.MobileAppsEditController = Ember.ObjectController.extend({
-    edit: function() {
-        var applicationData = {
-            name: this.get( "name" ),
-            id: this.get( "pushApplicationID" ),
-            description: this.get( "description" )
-        };
-
-        this.saveMobileApplication( applicationData );
-    },
-    // Move this to the Model?
-    saveMobileApplication: function( applicationData ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            that = this;
-
-        applicationPipe.save( applicationData, {
-            success: function( response ) {
-                console.log( "Save Mobile Application", response );
-                that.transitionToRoute( "mobileApps" );
-            },
-            error: function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    break;
-                }
-            }
-        });
-    },
-    cancel: function() {
-        this.transitionToRoute( "mobileApps" );
-        console.log( "cancel" );
-    }
+    needs: "mobileAppsIndex"
 });

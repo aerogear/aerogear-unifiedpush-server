@@ -18,6 +18,10 @@ table {
 .table tbody tr td {
     border-top: 1px solid black;
     padding: 8px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table tfoot tr td {
@@ -35,5 +39,18 @@ table {
 
 .header span, .sub-header span {
     font-size: small;
+}
+
+.topcoat-list__header {
+  clear: both;
+}
+
+.topcoat-list {
+  clear: both;
+}
+
+.topcoat-list__item {
+  float: left;
+  border: none;
 }
 
