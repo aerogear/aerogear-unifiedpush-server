@@ -39,7 +39,7 @@ import javax.ws.rs.core.Response;
 @TransactionAttribute
 @Path("/applications/{variantID}/instances/")
 @Secure("developer")
-public class VariantInstanceEndpoint {
+public class InstallationManagementEndpoint {
 
     @Inject
     private MobileVariantService mobileApplicationService;

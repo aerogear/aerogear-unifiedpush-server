@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.rest.registry.instances;
+package org.jboss.aerogear.connectivity.rest.registry.installations;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -45,7 +45,7 @@ import org.jboss.aerogear.connectivity.service.MobileVariantService;
 @Stateless
 @Path("/registry/device")
 @TransactionAttribute
-public class MobileVariantInstanceEndpoint {
+public class InstallationRegistrationEndpoint {
     @Inject
     private Logger logger;
     @Inject
