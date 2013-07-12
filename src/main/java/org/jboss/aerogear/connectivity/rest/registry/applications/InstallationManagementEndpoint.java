@@ -18,8 +18,8 @@ package org.jboss.aerogear.connectivity.rest.registry.applications;
 
 import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
-import org.jboss.aerogear.connectivity.service.MobileVariantService;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
@@ -42,10 +42,10 @@ import javax.ws.rs.core.Response;
 public class InstallationManagementEndpoint {
 
     @Inject
-    private MobileVariantService mobileApplicationService;
+    private GenericVariantService mobileApplicationService;
 
     @Inject
-    private MobileVariantInstanceService mobileApplicationInstanceService;
+    private ClientInstallationService mobileApplicationInstanceService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

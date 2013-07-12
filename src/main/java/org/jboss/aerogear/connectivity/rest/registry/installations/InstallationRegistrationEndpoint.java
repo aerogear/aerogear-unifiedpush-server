@@ -39,8 +39,8 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
-import org.jboss.aerogear.connectivity.service.MobileVariantService;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 
 @Stateless
 @Path("/registry/device")
@@ -49,9 +49,9 @@ public class InstallationRegistrationEndpoint {
     @Inject
     private Logger logger;
     @Inject
-    private MobileVariantInstanceService mobileApplicationInstanceService;
+    private ClientInstallationService mobileApplicationInstanceService;
     @Inject
-    private MobileVariantService mobileApplicationService;
+    private GenericVariantService mobileApplicationService;
 
     @OPTIONS
     @Path("{token}")

@@ -35,7 +35,7 @@ import org.jboss.aerogear.connectivity.model.AndroidVariant;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 import org.jboss.aerogear.connectivity.service.sender.SenderService;
 import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
 import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
@@ -59,7 +59,7 @@ public class SenderServiceImpl implements SenderService {
     private SimplePushNotificationSender simplePushSender;
     
     @Inject
-    private MobileVariantInstanceService mobileVariantInstanceService;
+    private ClientInstallationService mobileVariantInstanceService;
 
     @Override
     @Asynchronous

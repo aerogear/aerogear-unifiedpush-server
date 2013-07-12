@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public interface MobileVariantInstanceService {
+public interface ClientInstallationService {
 
     InstallationImpl addMobileVariantInstance(InstallationImpl mobileApplicationInstance);
 

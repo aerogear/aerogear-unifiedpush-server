@@ -22,9 +22,9 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 
-public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
+public class ClientInstallationServiceImpl implements ClientInstallationService {
 
     @Inject
     private InstallationDao dao;

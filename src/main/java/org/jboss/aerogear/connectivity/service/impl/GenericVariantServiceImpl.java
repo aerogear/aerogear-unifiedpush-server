@@ -14,15 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.service;
+package org.jboss.aerogear.connectivity.service.impl;
+
+import javax.inject.Inject;
 
 import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.jpa.dao.VariantDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 
-public interface MobileVariantService {
+public class GenericVariantServiceImpl implements GenericVariantService {
 
-    Variant findByVariantID(String variantID);
+    @Inject
+    private VariantDao mobileApplicationDao;
 
-    void addInstance(Variant mobileApp, InstallationImpl instance);
+    @Override
+    public Variant findByVariantID(String variantID) {
+        return mobileApplicationDao.findByVariantID(variantID);
+    }
+
+    @Override
+    public void addInstance(Variant mobileApp,
+            InstallationImpl instance) {
+
+        mobileApp.getInstallations().add(instance);
+        mobileApplicationDao.update(mobileApp);
+    }
 
 }
