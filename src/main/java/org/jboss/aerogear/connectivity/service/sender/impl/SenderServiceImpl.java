@@ -59,7 +59,7 @@ public class SenderServiceImpl implements SenderService {
     private SimplePushNotificationSender simplePushSender;
     
     @Inject
-    private ClientInstallationService mobileVariantInstanceService;
+    private ClientInstallationService clientInstallationService;
 
     @Override
     @Asynchronous
@@ -73,14 +73,14 @@ public class SenderServiceImpl implements SenderService {
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> selectiveTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
+            final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
             apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
+            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
             gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
@@ -99,7 +99,7 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String category : categoriesToNotify) {
-                final List<String> tokensPerCategory = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, submittedAliases);
+                final List<String> tokensPerCategory = clientInstallationService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, submittedAliases);
                 simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory);
             }
         }
@@ -112,14 +112,14 @@ public class SenderServiceImpl implements SenderService {
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> iosTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantID(iOSVariant.getVariantID());
+            final List<String> iosTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(iOSVariant.getVariantID());
             apnsSender.sendPushMessage(iOSVariant, iosTokenPerVariant, payload);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
+            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
             gcmSender.sendPushMessage(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
         }
 
@@ -133,7 +133,7 @@ public class SenderServiceImpl implements SenderService {
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePusj Service class
-            final List<String> simplePushBroadcastTokens = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByCategory(simplePushVariant.getVariantID(), BROADCAST_CHANNEL);
+            final List<String> simplePushBroadcastTokens = clientInstallationService.findAllDeviceTokenForVariantIDByCategory(simplePushVariant.getVariantID(), BROADCAST_CHANNEL);
             simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
         }
     }

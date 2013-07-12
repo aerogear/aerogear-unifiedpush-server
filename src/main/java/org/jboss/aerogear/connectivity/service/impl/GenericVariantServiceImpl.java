@@ -26,19 +26,18 @@ import org.jboss.aerogear.connectivity.service.GenericVariantService;
 public class GenericVariantServiceImpl implements GenericVariantService {
 
     @Inject
-    private VariantDao mobileApplicationDao;
+    private VariantDao variantDao;
 
     @Override
     public Variant findByVariantID(String variantID) {
-        return mobileApplicationDao.findByVariantID(variantID);
+        return variantDao.findByVariantID(variantID);
     }
 
     @Override
-    public void addInstallation(Variant mobileApp,
-            InstallationImpl instance) {
+    public void addInstallation(Variant variant, InstallationImpl installation) {
 
-        mobileApp.getInstallations().add(instance);
-        mobileApplicationDao.update(mobileApp);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
     }
 
 }

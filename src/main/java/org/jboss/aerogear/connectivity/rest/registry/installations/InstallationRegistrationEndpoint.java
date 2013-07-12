@@ -49,7 +49,7 @@ public class InstallationRegistrationEndpoint {
     @Inject
     private Logger logger;
     @Inject
-    private ClientInstallationService mobileApplicationInstanceService;
+    private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService mobileApplicationService;
 
@@ -88,27 +88,26 @@ public class InstallationRegistrationEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        // look up all instances (with same token) for the given variant:
-        List<InstallationImpl> instances = 
-                mobileApplicationInstanceService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
+        // look up all installations (with same token) for the given variant:
+        List<InstallationImpl> installations = 
+                clientInstallationService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
 
-        if (instances.isEmpty()) {
+        if (installations.isEmpty()) {
             // store the installation:
-            entity = mobileApplicationInstanceService
+            entity = clientInstallationService
                     .addInstallation(entity);
             // add installation to the matching variant
             mobileApplicationService.addInstallation(mobileVariant, entity);
         } else {
-            logger.info("Updating received metadata for MobileVariantInstance");
+            logger.info("Updating received metadata for Installation");
 
             // should be impossible
-            if (instances.size() > 1) {
+            if (installations.size() > 1) {
                 logger.severe("Too many registration for one installation");
             }
 
             // update the entity:
-            entity = this.updateMobileApplicationInstance(instances.get(0),
-                    entity);
+            entity = clientInstallationService.updateInstallation(installations.get(0), entity);
         }
 
         return appendAllowOriginHeader(Response.ok(entity), request);
@@ -130,16 +129,16 @@ public class InstallationRegistrationEndpoint {
                     .build();
         }
 
-        // look up all instances (with same token) for the given variant:
-        List<InstallationImpl> instances = 
-                mobileApplicationInstanceService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), token);
+        // look up all installations (with same token) for the given variant:
+        List<InstallationImpl> installations = 
+                clientInstallationService.findInstallationsForVariantByDeviceToken(mobileVariant.getVariantID(), token);
 
-        if (instances.isEmpty()) {
+        if (installations.isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
-            logger.info("Deleting metadata MobileVariantInstance");
+            logger.info("Deleting metadata Installation");
             // remove
-            mobileApplicationInstanceService.removeInstallations(instances);
+            clientInstallationService.removeInstallations(installations);
         }
 
         return appendAllowOriginHeader(Response.noContent(), request);
@@ -161,22 +160,6 @@ public class InstallationRegistrationEndpoint {
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
                  .build();
-    }
-
-    private InstallationImpl updateMobileApplicationInstance(
-            InstallationImpl toUpdate,
-            InstallationImpl postedVariant) {
-        toUpdate.setCategory(postedVariant.getCategory());
-        toUpdate.setDeviceToken(postedVariant.getDeviceToken());
-        toUpdate.setAlias(postedVariant.getAlias());
-        toUpdate.setDeviceType(postedVariant.getDeviceType());
-        toUpdate.setMobileOperatingSystem(postedVariant
-                .getMobileOperatingSystem());
-        toUpdate.setOsVersion(postedVariant.getOsVersion());
-
-        // update
-        return mobileApplicationInstanceService
-                .updateInstallation(toUpdate);
     }
 
     /**

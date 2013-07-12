@@ -29,35 +29,48 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
-    public InstallationImpl addInstallation(InstallationImpl mobileApplicationInstance) {
-        return dao.create(mobileApplicationInstance);
+    public InstallationImpl addInstallation(InstallationImpl installation) {
+        return dao.create(installation);
     }
 
     @Override
     public void removeInstallations(
-            List<InstallationImpl> instances) {
+            List<InstallationImpl> installations) {
 
         // uh... :)
-
-        for (InstallationImpl mobileApplicationInstance : instances) {
-            removeInstallation(mobileApplicationInstance);
+        for (InstallationImpl installation : installations) {
+            removeInstallation(installation);
         }
     }
 
     @Override
     public InstallationImpl updateInstallation(
-            InstallationImpl mobileApplicationInstance) {
-        return dao.update(mobileApplicationInstance);
+            InstallationImpl installation) {
+        return dao.update(installation);
     }
 
+    @Override
+    public InstallationImpl updateInstallation(InstallationImpl installationToUpdate, InstallationImpl postedInstallation) {
+        // copy the "updateable" values:
+        installationToUpdate.setCategory(postedInstallation.getCategory());
+        installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
+        installationToUpdate.setAlias(postedInstallation.getAlias());
+        installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
+        installationToUpdate.setMobileOperatingSystem(postedInstallation
+                .getMobileOperatingSystem());
+        installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
+
+        // update it:
+        return updateInstallation(installationToUpdate);
+    }
     @Override
     public InstallationImpl findById(String primaryKey) {
         return dao.find(InstallationImpl.class, primaryKey);
     }
 
     @Override
-    public void removeInstallation(InstallationImpl instance) {
-        dao.delete(instance);
+    public void removeInstallation(InstallationImpl installation) {
+        dao.delete(installation);
 	}
 
     @Override

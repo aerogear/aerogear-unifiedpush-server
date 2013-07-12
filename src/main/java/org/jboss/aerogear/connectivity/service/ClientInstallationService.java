@@ -22,12 +22,20 @@ import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
 public interface ClientInstallationService {
 
-    InstallationImpl addInstallation(InstallationImpl mobileApplicationInstance);
+    InstallationImpl addInstallation(InstallationImpl installation);
 
-    InstallationImpl updateInstallation(InstallationImpl mobileApplicationInstance);
+    InstallationImpl updateInstallation(InstallationImpl installation);
+    
+    /**
+     * Updates the first argument with the values from the second, and returns the updated entity.
+     * @param toUpdate entity to be updated
+     * @param postedInstallation entity where we read the "updateable" values from.
+     * @return updated entity
+     */
+    InstallationImpl updateInstallation(InstallationImpl toUpdate, InstallationImpl postedInstallation);
 
     InstallationImpl findById(String primaryKey);
-    void removeInstallation(InstallationImpl instance);
+    void removeInstallation(InstallationImpl installation);
 
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token
@@ -49,5 +57,5 @@ public interface ClientInstallationService {
 
     List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category);
 
-    void removeInstallations(List<InstallationImpl> instances);
+    void removeInstallations(List<InstallationImpl> installations);
 }

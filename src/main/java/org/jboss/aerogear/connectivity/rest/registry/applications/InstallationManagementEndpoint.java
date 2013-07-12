@@ -37,92 +37,75 @@ import javax.ws.rs.core.Response;
 
 @Stateless
 @TransactionAttribute
-@Path("/applications/{variantID}/instances/")
+@Path("/applications/{variantID}/installations/")
 @Secure("developer")
 public class InstallationManagementEndpoint {
 
     @Inject
-    private GenericVariantService mobileApplicationService;
+    private GenericVariantService genericVariantService;
 
     @Inject
-    private ClientInstallationService mobileApplicationInstanceService;
+    private ClientInstallationService clientInstallationService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId){
 
         //Find the variant using the variantID
-        Variant mobileVariant =  mobileApplicationService.findByVariantID(variantId);
+        Variant mobileVariant =  genericVariantService.findByVariantID(variantId);
 
         if(mobileVariant == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
         return Response.ok(mobileVariant.getInstallations()).build();
     }
 
     @GET
-    @Path("/{instanceID}")
+    @Path("/{installationID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
 
-        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(mobileVariantInstance == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
+        if(installation == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
-        return Response.ok(mobileVariantInstance).build();
+        return Response.ok(installation).build();
     }
 
     @PUT
-    @Path("/{instanceID}")
+    @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
 
-        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(mobileVariantInstance == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
+        if(installation == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
-        updateInstallation(entity, mobileVariantInstance);
+        clientInstallationService.updateInstallation(entity, installation);
 
         return Response.noContent().build();
 
     }
 
     @DELETE
-    @Path("/{instanceID}")
+    @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("instanceID") String instanceId){
+    public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
 
-        InstallationImpl mobileVariantInstance = mobileApplicationInstanceService.findById(instanceId);
+        InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(mobileVariantInstance == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Mobile Variant Instance").build();
+        if(installation == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
         // remove it
-        mobileApplicationInstanceService.removeInstallation(mobileVariantInstance);
+        clientInstallationService.removeInstallation(installation);
 
         return Response.noContent().build();
     }
-
-    private void updateInstallation(
-            InstallationImpl toUpdate,
-            InstallationImpl postedVariant) {
-        toUpdate.setCategory(postedVariant.getCategory());
-        toUpdate.setDeviceToken(postedVariant.getDeviceToken());
-        toUpdate.setAlias(postedVariant.getAlias());
-        toUpdate.setDeviceType(postedVariant.getDeviceType());
-        toUpdate.setMobileOperatingSystem(postedVariant
-                .getMobileOperatingSystem());
-        toUpdate.setOsVersion(postedVariant.getOsVersion());
-
-        // update
-        mobileApplicationInstanceService
-                .updateInstallation(toUpdate);
-    }
-
 }
