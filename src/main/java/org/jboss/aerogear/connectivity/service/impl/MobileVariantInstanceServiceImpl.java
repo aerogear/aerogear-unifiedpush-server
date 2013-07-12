@@ -20,14 +20,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
+import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
 
 public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
 
     @Inject
-    private MobileVariantInstanceDao dao;
+    private InstallationDao dao;
 
     public InstallationImpl addMobileVariantInstance(InstallationImpl mobileApplicationInstance) {
         return dao.create(mobileApplicationInstance);

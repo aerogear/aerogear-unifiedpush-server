@@ -36,10 +36,10 @@ import org.jboss.aerogear.connectivity.jpa.PersistentObject;
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractMobileVariant extends PersistentObject implements Variant {
+public abstract class AbstractVariant extends PersistentObject implements Variant {
     private static final long serialVersionUID = -5028062942838899201L;
 
-    public AbstractMobileVariant() {
+    public AbstractVariant() {
         secret = UUID.randomUUID().toString();
     }
 

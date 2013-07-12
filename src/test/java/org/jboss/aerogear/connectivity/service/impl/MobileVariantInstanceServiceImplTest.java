@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
+import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 public class MobileVariantInstanceServiceImplTest {
 
     @Mock
-    private MobileVariantInstanceDao mobileVariantInstanceDao;
+    private InstallationDao mobileVariantInstanceDao;
 
     @Before
     public void setUp() {

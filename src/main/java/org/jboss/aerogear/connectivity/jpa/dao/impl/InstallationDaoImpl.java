@@ -24,17 +24,17 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
-import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
+import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
+import org.jboss.aerogear.connectivity.model.AbstractVariant;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements MobileVariantInstanceDao {
+public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements InstallationDao {
 
     @SuppressWarnings("unchecked")
     @Override
     public List<InstallationImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
 
-        return createQuery("select mobileApplicationInstance from " + AbstractMobileVariant.class.getSimpleName() + 
+        return createQuery("select mobileApplicationInstance from " + AbstractVariant.class.getSimpleName() + 
                 " abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance" +
                 " where abstractMobileVariant.variantID = :variantID" + 
                 " and mobileApplicationInstance.deviceToken = :deviceToken")
@@ -59,7 +59,7 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<Installatio
 
         // the required part: Join + all tokens for variantID;
         StringBuilder jpqlString = new StringBuilder("select mobileApplicationInstance.deviceToken from ");
-        jpqlString.append(AbstractMobileVariant.class.getSimpleName())
+        jpqlString.append(AbstractVariant.class.getSimpleName())
         .append(" abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance where abstractMobileVariant.variantID = :variantID");
 
         // parameter names and values, stored in a map:

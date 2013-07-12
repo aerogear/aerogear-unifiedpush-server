@@ -21,7 +21,7 @@ import java.util.List;
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public interface MobileVariantInstanceDao extends GenericDao<InstallationImpl, String> {
+public interface InstallationDao extends GenericDao<InstallationImpl, String> {
 
     /**
      * Loads all installations with the same token for the given Variant

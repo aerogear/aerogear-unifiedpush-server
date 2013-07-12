@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'simplePush'")
-public class SimplePushVariant extends AbstractMobileVariant {
+public class SimplePushVariant extends AbstractVariant {
     private static final long serialVersionUID = 9046963507735955449L;
 
     public SimplePushVariant() {

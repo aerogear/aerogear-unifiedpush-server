@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'android'")
-public class AndroidVariant extends AbstractMobileVariant {
+public class AndroidVariant extends AbstractVariant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     public AndroidVariant() {

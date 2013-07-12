@@ -14,19 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.jpa.dao.impl;
+package org.jboss.aerogear.connectivity.jpa.dao;
 
 import org.jboss.aerogear.connectivity.api.Variant;
-import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantDao;
-import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
+import org.jboss.aerogear.connectivity.jpa.GenericDao;
 
-public class MobileVariantDaoImpl extends AbstractGenericDao<Variant, String> implements MobileVariantDao {
+public interface VariantDao extends GenericDao<Variant, String> {
 
-    @Override
-    public Variant findByVariantID(String variantID) {
-        return getSingleResultForQuery(createQuery("select t from " + AbstractMobileVariant.class.getSimpleName() + " t where t.variantID = :variantID")
-                .setParameter("variantID", variantID));
-    }
-
+    Variant findByVariantID(String variantID);
 }
