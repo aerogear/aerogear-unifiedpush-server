@@ -72,9 +72,17 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
     }
 });
 
+/*
+    Mobile Applications Edit Route
+
+    Create/Edit A Mobile Application
+*/
 App.MobileAppsEditRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
+
+        //Load the current Model
         controller.set( "model", model );
+
     },
     serialize: function( model ) {
 
@@ -97,13 +105,21 @@ App.VariantsRoute = Ember.Route.extend({
     }
 });
 
-
+/*
+    Route for a Single App Variant Index Page
+*/
 App.VariantsIndexRoute = Ember.Route.extend({
     model: function() {
+
+        // Return the "Variants" Route Model since that is where all the "dynamic segments" are
         return this.modelFor( "variants" );
+
     },
     setupController: function( controller, model ) {
+
+        //Load the current Model
         controller.set( "model", model.pushApplicationID ? App.MobileApplication.find( model.pushApplicationID ) : model );
+
     },
     serialize: function() {
 

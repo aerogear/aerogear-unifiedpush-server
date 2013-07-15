@@ -100,7 +100,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
 /*
     The Mobile Apps Controller. Put "Global Events" Here.
-    TODO: Move more globally, maybe
+    TODO: Move more globally, maybe on the Application Router?
 */
 App.MobileAppsController = Ember.Controller.extend({
     logout: function() {
