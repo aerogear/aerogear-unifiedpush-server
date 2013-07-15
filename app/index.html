@@ -248,7 +248,7 @@
 
         <script type="text/x-handlebars" data-template-name="variant/index">
         {{#if isLoaded}}
-        <div>{{#linkTo "variants" this}}Back To Push Applications Variant{{/linkTo}}</div>
+        <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}}</div>
             <div class="header">
                 <h2>{{ name }}</h2>
                 <span>{{ description }}</span>
@@ -309,7 +309,7 @@
 
         <script type="text/x-handlebars" data-template-name="instance/index">
             {{#if isLoaded}}
-                <div>{{#linkTo "variant" this}}Back To Push Applications Variant{{/linkTo}}</div>
+                <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > {{#linkTo "variant" this}}Variant{{/linkTo}}</div>
                 <div class="header">
                     <h2>{{ name }}</h2>
                     <span>{{ description }}</span>
