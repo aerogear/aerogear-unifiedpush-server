@@ -108,7 +108,7 @@ public class iOSVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSApps()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSVariants()).build();
     }
 
     @GET
@@ -121,7 +121,7 @@ public class iOSVariantEndpoint {
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
     // UPDATE
@@ -151,7 +151,7 @@ public class iOSVariantEndpoint {
             iOSVariantService.updateiOSVariant(iOSVariation);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
     // DELETE
@@ -166,6 +166,6 @@ public class iOSVariantEndpoint {
             iOSVariantService.removeiOSVariant(iOSVariation);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 }

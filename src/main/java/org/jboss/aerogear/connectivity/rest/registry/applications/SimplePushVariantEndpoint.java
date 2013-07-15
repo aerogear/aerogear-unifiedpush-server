@@ -100,7 +100,7 @@ public class SimplePushVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushApps()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushVariants()).build();
     }
 
     @GET
@@ -113,7 +113,7 @@ public class SimplePushVariantEndpoint {
             return Response.ok(spv).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
     // UPDATE
@@ -141,7 +141,7 @@ public class SimplePushVariantEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
     // DELETE
@@ -156,6 +156,6 @@ public class SimplePushVariantEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested MobileVariant").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 }

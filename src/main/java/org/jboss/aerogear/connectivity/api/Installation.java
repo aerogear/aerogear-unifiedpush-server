@@ -17,9 +17,10 @@
 package org.jboss.aerogear.connectivity.api;
 
 /**
- * One installation of a MobileVariant, running on a device or user-agent.
+ * One installation of a push-enabled client, running on a device (Android/iOS)
+ * or user-agent (SimplePush)
  */
-public interface MobileVariantInstance {
+public interface Installation {
 
     /**
      * Identifies the device/user-agent within its PushNetwork.

@@ -19,14 +19,14 @@ package org.jboss.aerogear.connectivity.jpa.dao;
 import java.util.List;
 
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
+public interface InstallationDao extends GenericDao<InstallationImpl, String> {
 
     /**
      * Loads all installations with the same token for the given Variant
      */
-    List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+    List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
      * Broadcast/Selective Sender API:

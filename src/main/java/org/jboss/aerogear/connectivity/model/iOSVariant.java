@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("'ios'")
-public class iOSVariant extends AbstractMobileVariant {
+public class iOSVariant extends AbstractVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     public iOSVariant() {

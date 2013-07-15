@@ -16,13 +16,13 @@
  */
 package org.jboss.aerogear.connectivity.service;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public interface MobileVariantService {
+public interface GenericVariantService {
 
-    MobileVariant findByVariantID(String variantID);
+    Variant findByVariantID(String variantID);
 
-    void addInstance(MobileVariant mobileApp, MobileVariantInstanceImpl instance);
+    void addInstallation(Variant variant, InstallationImpl installation);
 
 }
