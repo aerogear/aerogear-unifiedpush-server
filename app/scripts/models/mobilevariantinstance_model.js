@@ -21,7 +21,15 @@ App.MobileVariantInstance = Ember.Object.extend();
 App.MobileVariantInstance.reopenClass({
     find: function( applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId ) {
 
-        var mobileVariantInstance;
+        var mobileVariantInstance,
+            mobileVariantInstancePipe = AeroGear.Pipeline({
+                name: "mobileVariantInstance",
+                settings: {
+                    baseURL: "/ag-push/rest/applications/",
+                    authenticator: App.AeroGear.authenticator,
+                    endpoint:  variantApplicationId + "/instances"
+                }
+            }).pipes.mobileVariantInstance;
 
         if( variantApplicationInstanceId ) {
             // Looking for 1
@@ -31,35 +39,9 @@ App.MobileVariantInstance.reopenClass({
             mobileVariantInstance = Ember.ArrayProxy.create({ content: [] });
         }
 
-        this._fetch( mobileVariantInstance, applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId );
-
-        return mobileVariantInstance;
-    },
-    _ajaxy: function( mobileVariantInstance, applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId ) {
-
-        var mobileVariantInstancePipe = AeroGear.Pipeline({
-            name: "mobileVariantInstance",
-            settings: {
-                baseURL: "/ag-push/rest/applications/",
-                authenticator: App.AeroGear.authenticator,
-                endpoint:  variantApplicationId + "/instances"
-            }
-        }).pipes.mobileVariantInstance;
-
-        return Ember.Deferred.promise( function( promise ) {
-            mobileVariantInstancePipe.read({
-                id: variantApplicationInstanceId,
-                success: function( response ) {
-                    Ember.run( promise, promise.resolve, response );
-                },
-                error: function( error ) { // TODO: Maybe Make this a class method?
-                    promise.reject( error );
-                }
-            });
-        });
-    },
-    _fetch: function( mobileVariantInstance, applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId ) {
-        this._ajaxy( mobileVariantInstance, applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId ).then( function( response ) {
+        mobileVariantInstancePipe.read({
+            id: variantApplicationInstanceId
+        }).then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
@@ -91,5 +73,7 @@ App.MobileVariantInstance.reopenClass({
                 break;
             }
         });
+
+        return mobileVariantInstance;
     }
 });

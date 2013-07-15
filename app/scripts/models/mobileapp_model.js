@@ -43,7 +43,9 @@ App.MobileApplication = Ember.Object.extend({
 App.MobileApplication.reopenClass({
     find: function( applicationPushId ) {
 
-        var mobileApplication;
+        var mobileApplication,
+            applicationPipe = App.AeroGear.pipelines.pipes.applications,
+            model = this;
 
         if( applicationPushId ) {
             // Looking for 1
@@ -53,28 +55,10 @@ App.MobileApplication.reopenClass({
             mobileApplication = Ember.ArrayProxy.create({ content: [] });
         }
 
-        this._fetch( mobileApplication, applicationPushId );
-        return mobileApplication;
-    },
-    _ajaxy: function( mobileApplication, applicationPushId ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications;
-
-        return Ember.Deferred.promise( function( promise ) {
-            applicationPipe.read({
-                id: applicationPushId,
-                success: function( response ) {
-                    Ember.run( promise, promise.resolve, response );
-                },
-                error: function( error ) { // TODO: Maybe Make this a class method?
-                    promise.reject( error );
-                }
-            });
-        });
-    },
-    _fetch: function( mobileApplication, applicationPushId ) {
-        var model = this;
-
-        this._ajaxy( mobileApplication, applicationPushId ).then( function( response ) {
+        // Need to return a promise for "modelFor" to work.  The formmating looks off here
+        applicationPipe.read({
+            id: applicationPushId
+        }).then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
@@ -82,13 +66,11 @@ App.MobileApplication.reopenClass({
                     mobileApplication.pushObject( App.MobileApplication.create( data ) );
                 });
             } else {
-
                 // Add a loading indicator
                 response.isLoaded = true;
                 // Loop Through the different Variants to create objects
                 mobileApplication.setProperties( model._createVariantObject( response ) );
                 console.log( mobileApplication );
-
             }
         }).then( null, function( error ) {
             console.log( "error with application endpoint", error );
@@ -97,11 +79,13 @@ App.MobileApplication.reopenClass({
                 App.Router.router.transitionTo("login");
                 break;
             default:
-                //that.transitionToRoute( "login" );
-                //result.setProperties( { isLoaded: true, error: error } );
+            //that.transitionToRoute( "login" );
+            //result.setProperties( { isLoaded: true, error: error } );
                 break;
             }
         });
+
+        return mobileApplication;
     },
     _createVariantObject: function( response ) {
 

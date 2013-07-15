@@ -43,7 +43,16 @@ App.MobileVariant = Ember.Object.extend({
 App.MobileVariant.reopenClass({
     find: function( applicationPushId, variantType, variantApplicationId ) {
 
-        var mobileVariant;
+        var mobileVariant,
+            mobileVariantPipe = AeroGear.Pipeline({
+                name: "mobileVariant",
+                settings: {
+                    baseURL: "/ag-push/rest/applications/",
+                    authenticator: App.AeroGear.authenticator,
+                    endpoint:  applicationPushId + "/" + variantType
+                }
+            }).pipes.mobileVariant,
+            model = this;
 
         if( variantApplicationId ) {
             // Looking for 1
@@ -53,43 +62,16 @@ App.MobileVariant.reopenClass({
             mobileVariant = Ember.ArrayProxy.create({ content: [] });
         }
 
-        this._fetch( mobileVariant, applicationPushId, variantType, variantApplicationId );
-
-        return mobileVariant;
-    },
-    _ajaxy: function( mobileVariant, applicationPushId, variantType, variantApplicationId ) {
-
-        var mobileVariantPipe = AeroGear.Pipeline({
-            name: "mobileVariant",
-            settings: {
-                baseURL: "/ag-push/rest/applications/",
-                authenticator: App.AeroGear.authenticator,
-                endpoint:  applicationPushId + "/" + variantType
-            }
-        }).pipes.mobileVariant;
-
-        return Ember.Deferred.promise( function( promise ) {
-            mobileVariantPipe.read({
-                id: variantApplicationId,
-                success: function( response ) {
-                    Ember.run( promise, promise.resolve, response );
-                },
-                error: function( error ) { // TODO: Maybe Make this a class method?
-                    promise.reject( error );
-                }
-            });
-        });
-    },
-    _fetch: function( mobileVariant, applicationPushId, variantType, variantApplicationId ) {
-        var that = this;
-        this._ajaxy( mobileVariant, applicationPushId, variantType, variantApplicationId ).then( function( response ) {
+        mobileVariantPipe.read({
+            id: variantApplicationId
+        }).then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
                     data.pushApplicationID = applicationPushId;
 
                     //do the instance thing
-                    data = that._createVariantInstanceObject( data );
+                    data = model._createVariantInstanceObject( data );
 
                     mobileVariant.pushObject( App.MobileVariant.create( data ) );
                 });
@@ -98,7 +80,7 @@ App.MobileVariant.reopenClass({
                 // Add a loading indicator
                 response.isLoaded = true;
                 response.pushApplicationID = applicationPushId;
-                response = that._createVariantInstanceObject( response );
+                response = model._createVariantInstanceObject( response );
                 mobileVariant.setProperties( response );
 
             }
@@ -114,6 +96,8 @@ App.MobileVariant.reopenClass({
                 break;
             }
         });
+
+        return mobileVariant;
     },
     _createVariantInstanceObject: function( response ) {
 
