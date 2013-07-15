@@ -103,8 +103,8 @@ Client-side example for how to register an installation:
     [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
         [clientInfo setDeviceToken:deviceToken];
 
-        [clientInfo setMobileVariantID:@"<Mobile Variant Id #>"];
-        [clientInfo setMobileVariantSecret:@"<Mobile Variant Secret>"];
+        [clientInfo setVariantID:@"<Variant Id #>"];
+        [clientInfo setVariantSecret:@"<Variant Secret>"];
         
         // --optional config--
         // set some 'useful' hardware information params
@@ -125,11 +125,11 @@ Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-re
 
 #### Registration of an installation, for an Android device:
 
-For now, perform HTTP from Android to register the "MobileVariantInstance".
+For now, perform HTTP from Android to register the "Installation".
 Here is a _CURL_ example for how to perform the registration:
 
 ```
-curl -u "{MobileVariantID}:{secret}"
+curl -u "{variantID}:{secret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
    -d '{
@@ -148,9 +148,8 @@ CURL example for how to register a connected SimplePush client:
 
 
 ```
-curl -u "{MobileVariantID}:{secret}"
+curl -u "{variantID}:{secret}"
     -v -H "Accept: application/json" -H "Content-type: application/json"
-    -H "ag-mobile-variant: {VARIAN_ID}"
     -X POST
     -d '{
        "category" : "broadcast",
