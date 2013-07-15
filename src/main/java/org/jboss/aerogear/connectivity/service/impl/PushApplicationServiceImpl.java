@@ -58,21 +58,20 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
     @Override
     public void addiOSVariant(PushApplication pushApp, iOSVariant iOVariant) {
-        pushApp.getIOSApps().add(iOVariant);
+        pushApp.getIOSVariants().add(iOVariant);
         pushApplicationDao.update(pushApp);
     }
 
     @Override
     public void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant) {
-        pushApp.getAndroidApps().add(androidVariant);
-        //pushApp.getMobileApplications().add(androidApp);
+        pushApp.getAndroidVariants().add(androidVariant);
         pushApplicationDao.update(pushApp);
     }
 
     @Override
     public void addSimplePushVariant(PushApplication pushApp,
             SimplePushVariant simplePushVariant) {
-        pushApp.getSimplePushApps().add(simplePushVariant);
+        pushApp.getSimplePushVariants().add(simplePushVariant);
 
         pushApplicationDao.update(pushApp);
     }

@@ -49,7 +49,7 @@ public interface PushApplication {
     String getPushApplicationID();
 
     /**
-     * The master password, used for sending message to a {@link PushApplication} or its {@link MobileVariant}s.
+     * The master password, used for sending message to a {@link PushApplication} or its {@link Variant}s.
      */
     void setMasterSecret(String secret);
 
@@ -58,22 +58,22 @@ public interface PushApplication {
     /**
      * The collection of iOS Variants. 
      */
-    void setIOSApps(final Set<iOSVariant> iOSApps);
+    void setIOSVariants(final Set<iOSVariant> iOSApps);
 
-    Set<iOSVariant> getIOSApps();
+    Set<iOSVariant> getIOSVariants();
 
     /**
      * The collection of Android Variants. 
      */
-    void setAndroidApps(final Set<AndroidVariant> androidApps);
+    void setAndroidVariants(final Set<AndroidVariant> androidApps);
 
-    Set<AndroidVariant> getAndroidApps();
+    Set<AndroidVariant> getAndroidVariants();
 
     /**
      * The collection of SimplePush Variants. 
      */
-    void setSimplePushApps(final Set<SimplePushVariant> simplePushApps);
+    void setSimplePushVariants(final Set<SimplePushVariant> simplePushApps);
 
-    Set<SimplePushVariant> getSimplePushApps();
+    Set<SimplePushVariant> getSimplePushVariants();
 
 }

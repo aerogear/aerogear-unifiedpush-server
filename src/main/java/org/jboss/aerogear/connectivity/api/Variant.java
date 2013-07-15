@@ -18,12 +18,12 @@ package org.jboss.aerogear.connectivity.api;
 
 import java.util.Set;
 
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
 /**
  * Logical construct which matches a mobile app in the appstore. 
  */
-public interface MobileVariant {
+public interface Variant {
 
     /**
      * The name of the variant (e.g. the name of the matching App in the Appstore) 
@@ -40,24 +40,24 @@ public interface MobileVariant {
     String getDescription();
 
     /**
-     * Identifier used to register variants instances (aka installations) with this Variant
+     * Identifier used to register an {@link Installation} with this Variant
      */
     void setVariantID(String variantID);
 
     String getVariantID();
 
     /**
-     * The Variant-specific "secret", used from {@link MobileVariantInstance} to register themselfs against a variant
+     * The Variant-specific "secret", used from an {@link Installation} to register themselves against this Variant.
      */
     void setSecret(String secret);
 
     String getSecret();
 
     /**
-     * The collection of installed applications. 
+     * The collection of {@link Installation}s for this Variant. 
      */
-    void setInstances(final Set<MobileVariantInstanceImpl> instances);
+    void setInstallations(final Set<InstallationImpl> installations);
 
-    Set<MobileVariantInstanceImpl> getInstances();
+    Set<InstallationImpl> getInstallations();
 
 }

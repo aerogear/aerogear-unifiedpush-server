@@ -20,49 +20,62 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 
-public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
+public class ClientInstallationServiceImpl implements ClientInstallationService {
 
     @Inject
-    private MobileVariantInstanceDao dao;
+    private InstallationDao dao;
 
-    public MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance) {
-        return dao.create(mobileApplicationInstance);
+    public InstallationImpl addInstallation(InstallationImpl installation) {
+        return dao.create(installation);
     }
 
     @Override
-    public void removeMobileVariantInstances(
-            List<MobileVariantInstanceImpl> instances) {
+    public void removeInstallations(
+            List<InstallationImpl> installations) {
 
         // uh... :)
-
-        for (MobileVariantInstanceImpl mobileApplicationInstance : instances) {
-            removeMobileVariantInstance(mobileApplicationInstance);
+        for (InstallationImpl installation : installations) {
+            removeInstallation(installation);
         }
     }
 
     @Override
-    public MobileVariantInstanceImpl updateMobileVariantInstance(
-            MobileVariantInstanceImpl mobileApplicationInstance) {
-        return dao.update(mobileApplicationInstance);
+    public InstallationImpl updateInstallation(
+            InstallationImpl installation) {
+        return dao.update(installation);
     }
 
     @Override
-    public MobileVariantInstanceImpl findById(String primaryKey) {
-        return dao.find(MobileVariantInstanceImpl.class, primaryKey);
+    public InstallationImpl updateInstallation(InstallationImpl installationToUpdate, InstallationImpl postedInstallation) {
+        // copy the "updateable" values:
+        installationToUpdate.setCategory(postedInstallation.getCategory());
+        installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
+        installationToUpdate.setAlias(postedInstallation.getAlias());
+        installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
+        installationToUpdate.setMobileOperatingSystem(postedInstallation
+                .getMobileOperatingSystem());
+        installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
+
+        // update it:
+        return updateInstallation(installationToUpdate);
+    }
+    @Override
+    public InstallationImpl findById(String primaryKey) {
+        return dao.find(InstallationImpl.class, primaryKey);
     }
 
     @Override
-    public void removeMobileVariantInstance(MobileVariantInstanceImpl instance) {
-        dao.delete(instance);
+    public void removeInstallation(InstallationImpl installation) {
+        dao.delete(installation);
 	}
 
     @Override
-	public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
-        return dao.findMobileVariantInstancesForVariantByToken(variantID, deviceToken);
+	public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
+        return dao.findInstallationsForVariantByDeviceToken(variantID, deviceToken);
     }
 
     // =====================================================================

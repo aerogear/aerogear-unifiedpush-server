@@ -18,27 +18,26 @@ package org.jboss.aerogear.connectivity.service.impl;
 
 import javax.inject.Inject;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantDao;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
-import org.jboss.aerogear.connectivity.service.MobileVariantService;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.jpa.dao.VariantDao;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 
-public class MobileVariantServiceImpl implements MobileVariantService {
+public class GenericVariantServiceImpl implements GenericVariantService {
 
     @Inject
-    private MobileVariantDao mobileApplicationDao;
+    private VariantDao variantDao;
 
     @Override
-    public MobileVariant findByVariantID(String variantID) {
-        return mobileApplicationDao.findByVariantID(variantID);
+    public Variant findByVariantID(String variantID) {
+        return variantDao.findByVariantID(variantID);
     }
 
     @Override
-    public void addInstance(MobileVariant mobileApp,
-            MobileVariantInstanceImpl instance) {
+    public void addInstallation(Variant variant, InstallationImpl installation) {
 
-        mobileApp.getInstances().add(instance);
-        mobileApplicationDao.update(mobileApp);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
     }
 
 }

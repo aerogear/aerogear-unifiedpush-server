@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.connectivity.rest.registry.instances;
+package org.jboss.aerogear.connectivity.rest.registry.installations;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,22 +36,22 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.connectivity.api.MobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
-import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
-import org.jboss.aerogear.connectivity.service.MobileVariantService;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 
 @Stateless
 @Path("/registry/device")
 @TransactionAttribute
-public class MobileVariantInstanceEndpoint {
+public class InstallationRegistrationEndpoint {
     @Inject
     private Logger logger;
     @Inject
-    private MobileVariantInstanceService mobileApplicationInstanceService;
+    private ClientInstallationService clientInstallationService;
     @Inject
-    private MobileVariantService mobileApplicationService;
+    private GenericVariantService genericVariantService;
 
     @OPTIONS
     @Path("{token}")
@@ -71,12 +71,12 @@ public class MobileVariantInstanceEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
-            MobileVariantInstanceImpl entity,
+            InstallationImpl entity,
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
-        if (mobileVariant == null) {
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                     .entity("Unauthorized Request")
@@ -88,27 +88,26 @@ public class MobileVariantInstanceEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        // look up all instances (with same token) for the given variant:
-        List<MobileVariantInstanceImpl> instances = 
-                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), entity.getDeviceToken()); 
+        // look up all installations (with same token) for the given variant:
+        List<InstallationImpl> installations = 
+                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
 
-        if (instances.isEmpty()) {
+        if (installations.isEmpty()) {
             // store the installation:
-            entity = mobileApplicationInstanceService
-                    .addMobileVariantInstance(entity);
+            entity = clientInstallationService
+                    .addInstallation(entity);
             // add installation to the matching variant
-            mobileApplicationService.addInstance(mobileVariant, entity);
+            genericVariantService.addInstallation(variant, entity);
         } else {
-            logger.info("Updating received metadata for MobileVariantInstance");
+            logger.info("Updating received metadata for Installation");
 
             // should be impossible
-            if (instances.size() > 1) {
+            if (installations.size() > 1) {
                 logger.severe("Too many registration for one installation");
             }
 
             // update the entity:
-            entity = this.updateMobileApplicationInstance(instances.get(0),
-                    entity);
+            entity = clientInstallationService.updateInstallation(installations.get(0), entity);
         }
 
         return appendAllowOriginHeader(Response.ok(entity), request);
@@ -122,24 +121,24 @@ public class MobileVariantInstanceEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final MobileVariant mobileVariant = loadMobileVariantWhenAuthorized(request);
-        if (mobileVariant == null) {
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                     .entity("Unauthorized Request")
                     .build();
         }
 
-        // look up all instances (with same token) for the given variant:
-        List<MobileVariantInstanceImpl> instances = 
-                mobileApplicationInstanceService.findMobileVariantInstancesForVariantByToken(mobileVariant.getVariantID(), token);
+        // look up all installations (with same token) for the given variant:
+        List<InstallationImpl> installations = 
+                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), token);
 
-        if (instances.isEmpty()) {
+        if (installations.isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
-            logger.info("Deleting metadata MobileVariantInstance");
+            logger.info("Deleting metadata Installation");
             // remove
-            mobileApplicationInstanceService.removeMobileVariantInstances(instances);
+            clientInstallationService.removeInstallations(installations);
         }
 
         return appendAllowOriginHeader(Response.noContent(), request);
@@ -163,39 +162,22 @@ public class MobileVariantInstanceEndpoint {
                  .build();
     }
 
-    private MobileVariantInstanceImpl updateMobileApplicationInstance(
-            MobileVariantInstanceImpl toUpdate,
-            MobileVariantInstanceImpl postedVariant) {
-        toUpdate.setCategory(postedVariant.getCategory());
-        toUpdate.setDeviceToken(postedVariant.getDeviceToken());
-        toUpdate.setAlias(postedVariant.getAlias());
-        toUpdate.setDeviceType(postedVariant.getDeviceType());
-        toUpdate.setMobileOperatingSystem(postedVariant
-                .getMobileOperatingSystem());
-        toUpdate.setOsVersion(postedVariant.getOsVersion());
-
-        // update
-        return mobileApplicationInstanceService
-                .updateMobileVariantInstance(toUpdate);
-    }
-
     /**
      * returns application if the masterSecret is valid for the request
      * PushApplication
      */
-    private MobileVariant loadMobileVariantWhenAuthorized(
+    private Variant loadVariantWhenAuthorized(
             HttpServletRequest request) {
         // extract the pushApplicationID and its secret from the HTTP Basic
         // header:
         String[] credentials = HttpBasicHelper
                 .extractUsernameAndPasswordFromBasicHeader(request);
-        String mobileVariantID = credentials[0];
+        String variantID = credentials[0];
         String secret = credentials[1];
 
-        final MobileVariant mobileVariant = mobileApplicationService
-                .findByVariantID(mobileVariantID);
-        if (mobileVariant != null && mobileVariant.getSecret().equals(secret)) {
-            return mobileVariant;
+        final Variant variant = genericVariantService.findByVariantID(variantID);
+        if (variant != null && variant.getSecret().equals(secret)) {
+            return variant;
         }
 
         // unauthorized...

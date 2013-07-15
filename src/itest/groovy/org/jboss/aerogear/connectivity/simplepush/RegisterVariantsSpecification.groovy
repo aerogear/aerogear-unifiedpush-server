@@ -35,7 +35,7 @@ import org.jboss.connectivity.common.Deployments;
 
 @ArquillianSpecification
 @Mixin(AdminLogin)
-class RegisterMobileVariantsSpecification extends Specification {
+class RegisterVariantsSpecification extends Specification {
 
     @ArquillianResource
     URL root
@@ -86,7 +86,7 @@ class RegisterMobileVariantsSpecification extends Specification {
     // curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}' http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
     def "Registering a simple push mobile variant instance"() {
 
-        given: "Mobile variant of ddd application is about to be registered......"
+        given: "Variant of ddd application is about to be registered......"
         def json = new JsonBuilder()
         def request = RestAssured.given()
                 .contentType("application/json")
@@ -97,17 +97,17 @@ class RegisterMobileVariantsSpecification extends Specification {
                     pushNetworkURL "http://localhost:7777/endpoint/"
                 })
 
-        when: "Mobile variant is registered"
+        when: "Variant is registered"
         def response = RestAssured.given().spec(request).post("${root}rest/applications/${pushAppId}/simplePush ")
         def body = response.body().jsonPath()
 
         then: "Response code 201 is returned"
         response.statusCode() == 201
 
-        and: "Mobile variant Id is not null"
+        and: "Variant Id is not null"
         body.get("variantID") != null
 
-        and: "Mobile Variant name is not null"
+        and: "Variant name is not null"
         body.get("name") == "ddd simple push variant"
 
     }

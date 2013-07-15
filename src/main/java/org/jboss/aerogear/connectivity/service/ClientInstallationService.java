@@ -18,21 +18,29 @@ package org.jboss.aerogear.connectivity.service;
 
 import java.util.List;
 
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public interface MobileVariantInstanceService {
+public interface ClientInstallationService {
 
-    MobileVariantInstanceImpl addMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    InstallationImpl addInstallation(InstallationImpl installation);
 
-    MobileVariantInstanceImpl updateMobileVariantInstance(MobileVariantInstanceImpl mobileApplicationInstance);
+    InstallationImpl updateInstallation(InstallationImpl installation);
+    
+    /**
+     * Updates the first argument with the values from the second, and returns the updated entity.
+     * @param toUpdate entity to be updated
+     * @param postedInstallation entity where we read the "updateable" values from.
+     * @return updated entity
+     */
+    InstallationImpl updateInstallation(InstallationImpl toUpdate, InstallationImpl postedInstallation);
 
-    MobileVariantInstanceImpl findById(String primaryKey);
-    void removeMobileVariantInstance(MobileVariantInstanceImpl instance);
+    InstallationImpl findById(String primaryKey);
+    void removeInstallation(InstallationImpl installation);
 
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token
      */
-    List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken);
+    List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
     
     /**
      * Used for Broadcast. Query for all IDs on a certain variant
@@ -49,5 +57,5 @@ public interface MobileVariantInstanceService {
 
     List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category);
 
-    void removeMobileVariantInstances(List<MobileVariantInstanceImpl> instances);
+    void removeInstallations(List<InstallationImpl> installations);
 }

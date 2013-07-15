@@ -24,20 +24,20 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
-import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
-import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
-import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
+import org.jboss.aerogear.connectivity.model.AbstractVariant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
-public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVariantInstanceImpl, String> implements MobileVariantInstanceDao {
+public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements InstallationDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<MobileVariantInstanceImpl> findMobileVariantInstancesForVariantByToken(String variantID, String deviceToken) {
+    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        return createQuery("select mobileApplicationInstance from " + AbstractMobileVariant.class.getSimpleName() + 
-                " abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance" +
-                " where abstractMobileVariant.variantID = :variantID" + 
-                " and mobileApplicationInstance.deviceToken = :deviceToken")
+        return createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
+                " abstractVariant join abstractVariant.installations installation" +
+                " where abstractVariant.variantID = :variantID" + 
+                " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken)
                 .getResultList();
@@ -58,9 +58,9 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
     public List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
 
         // the required part: Join + all tokens for variantID;
-        StringBuilder jpqlString = new StringBuilder("select mobileApplicationInstance.deviceToken from ");
-        jpqlString.append(AbstractMobileVariant.class.getSimpleName())
-        .append(" abstractMobileVariant join abstractMobileVariant.instances mobileApplicationInstance where abstractMobileVariant.variantID = :variantID");
+        StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
+        jpqlString.append(AbstractVariant.class.getSimpleName())
+        .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID");
 
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
@@ -70,7 +70,7 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
         // are aliases present ??
         if (aliases != null && ! aliases.isEmpty()) {
             // append the string:
-            jpqlString.append(" and mobileApplicationInstance.alias IN :aliases");
+            jpqlString.append(" and installation.alias IN :aliases");
             // add the params:
             parameters.put("aliases", aliases);
         }
@@ -78,7 +78,7 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
         // are devices present ??
         if (deviceTypes != null && ! deviceTypes.isEmpty()) {
             // append the string:
-            jpqlString.append(" and mobileApplicationInstance.deviceType IN :deviceTypes");
+            jpqlString.append(" and installation.deviceType IN :deviceTypes");
             // add the params:
             parameters.put("deviceTypes", deviceTypes);
         }
@@ -86,7 +86,7 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
         // is a category present ?
         if (category != null) {
             // append the string:
-            jpqlString.append(" and mobileApplicationInstance.category = :category");
+            jpqlString.append(" and installation.category = :category");
             // add the params:
             parameters.put("category", category);
         }
