@@ -34,7 +34,6 @@ App.Router.map( function() {
 
             // The Route for creating a new Mobile Application Variant
             this.route( "add" );
-
         });
 
         // The Route for the variants detail, shows the list of instances
@@ -151,7 +150,7 @@ App.VariantRoute = Ember.Route.extend({
     serialize: function( model ) {
 
         // Make our non uniform id of pushApplicationID what ember expects
-        return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "type" ) };
+        return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.variantType ? model.variantType : model.get( "type" ) };
 
     }
 });
@@ -163,7 +162,7 @@ App.VariantIndexRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get( "type" ), model.variantID ) : model );
+        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get("type"), model.variantID ) : model );
 
     },
     serialize: function( model ) {
@@ -176,10 +175,10 @@ App.VariantIndexRoute = Ember.Route.extend({
 
 App.InstanceRoute = Ember.Route.extend({
     model: function( params ) {
-        return App.MobileVariantInstance.find( null, null, params.mobileVariant_id, params.mobileVariantInstance_id );
+        return App.MobileVariantInstance.find( params.mobileApplication_id, params.type, params.mobileVariant_id, params.mobileVariantInstance_id );
     },
     serialize: function( model ) {
-        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.deviceType };
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "type" ) };
     }
 });
 
@@ -188,10 +187,10 @@ App.InstanceIndexRoute = Ember.Route.extend({
         return this.modelFor( "instance" );
     },
     setupController: function( controller, model ) {
-        controller.set( "model", model.id ? App.MobileVariantInstance.find( null, null, model.variantID, model.id ) : model );
+        controller.set( "model", model.id ? App.MobileVariantInstance.find( model.pushApplicationID, model.get( "type" ), model.variantID, model.id ) : model );
     },
     serialize: function( model ) {
-        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.deviceType };
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
     }
 });
 

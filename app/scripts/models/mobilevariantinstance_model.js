@@ -16,7 +16,17 @@
  A Instance of Mobile App Variant
 */
 
-App.MobileVariantInstance = Ember.Object.extend();
+App.MobileVariantInstance = Ember.Object.extend({
+    type: function() {
+        if( this.get( "deviceType" ) === "ANDROID" ) {
+            return "android";
+        } else if( this.get( "deviceType" ) === "iOS" ) {
+            return "ios";
+        } else {
+            return "simplePush";
+        }
+    }.property()
+});
 
 App.MobileVariantInstance.reopenClass({
     find: function( applicationPushId, variantType, variantApplicationId, variantApplicationInstanceId ) {

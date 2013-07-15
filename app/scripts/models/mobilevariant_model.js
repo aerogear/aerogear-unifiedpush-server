@@ -107,7 +107,7 @@ App.MobileVariant.reopenClass({
         response.installations.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             value.variantID = response.variantID;
-            variantInstance.pushObject( App.MobileVariant.create( value ) );
+            variantInstance.pushObject( App.MobileVariantInstance.create( value ) );
         });
 
         response.installations = variantInstance;
