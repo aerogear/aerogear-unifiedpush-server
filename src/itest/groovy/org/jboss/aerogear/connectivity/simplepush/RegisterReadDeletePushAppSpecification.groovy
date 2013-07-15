@@ -56,12 +56,12 @@ class RegisterReadDeletePushAppSpecification extends Specification {
 
     def setup() {
         authCookies = authCookies ? authCookies : login()
-        //RestAssured.filters(new RequestLoggingFilter(System.err), new ResponseLoggingFilter(System.err))
+        RestAssured.filters(new RequestLoggingFilter(System.err), new ResponseLoggingFilter(System.err))
     }
 
     def "Registering a push application"() {
 
-        given: "Application My App is about to be registered"
+        given: "Application RegisterReadDeletePushAppSpecification is about to be registered"
         def json = new JsonBuilder()
         def request = RestAssured.given()
                 .contentType("application/json")
@@ -90,18 +90,17 @@ class RegisterReadDeletePushAppSpecification extends Specification {
         body.get("description") == "RegisterReadDeletePushAppSpecification desc"
     }
 
-    def "Retrieve registered push application and found newly added one"() {
+    def "Retrieve all push applications and found newly registered one in the list"() {
 
-        given: "Read My App"
-        def json = new JsonBuilder()
+        given: "Read all registered apps"
         def request = RestAssured.given()
                 .contentType("application/json")
                 .header("Accept", "application/json")
                 .cookies(authCookies)
 
-        when: "Application is registered"
+        when: "Apps are retrieved"
         def response = RestAssured.given().spec(request).get("${root}rest/applications")
-         def responseString = response.asString()
+        def responseString = response.asString()
         def slurper = new JsonSlurper()
         def apps = slurper.parseText responseString
 
@@ -114,5 +113,51 @@ class RegisterReadDeletePushAppSpecification extends Specification {
         }
         found != null
         found.name == "RegisterReadDeletePushAppSpecification"
+    }
+
+    def "Retrieve registered application"() {
+
+        given: "Read my app RegisterReadDeletePushAppSpecification"
+        def request = RestAssured.given()
+                .contentType("application/json")
+                .header("Accept", "application/json")
+                .cookies(authCookies)
+
+
+        when: "Application is retrieved"
+        def response = RestAssured.given().spec(request).get("${root}rest/applications/${pushAppId}")
+        def responseString = response.asString()
+        def slurper = new JsonSlurper()
+        def responseObject = slurper.parseText responseString
+
+        then: "Response code 200 is returned"
+        response.statusCode() == 200
+
+        and: "App name is RegisterReadDeletePushAppSpecification"
+        responseObject.get("pushApplicationID") == pushAppId
+        responseObject.name == "RegisterReadDeletePushAppSpecification"
+    }
+
+    def "Delete registered push app"() {
+
+        given: "Delete RegisterReadDeletePushAppSpecification"
+        def json = new JsonBuilder()
+        def request = RestAssured.given()
+                .contentType("application/json")
+                .header("Accept", "application/json")
+                .cookies(authCookies)
+                .body( json {
+                    'pushAppId' pushAppId
+                     })
+
+        when: "Application is deleted"
+        def response = RestAssured.given().spec(request).delete("${root}rest/applications/${pushAppId}")
+        def responseString = response.asString()
+
+        then: "Response code 204 is returned"
+        response.statusCode() == 204
+
+        and: "Content is empty"
+        responseString == ""
     }
 }
