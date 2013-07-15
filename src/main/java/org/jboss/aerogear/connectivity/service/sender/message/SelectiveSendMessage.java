@@ -17,13 +17,11 @@
 
 package org.jboss.aerogear.connectivity.service.sender.message;
 
-import java.util.List;
 import java.util.Map;
 
 public class SelectiveSendMessage implements UnifiedPushMessage {
 
-    private final List<String> aliases;
-    private final List<String> deviceTypes;
+    private final SelectiveSendCriterias criterias;
 
     private final Map<String, String> simplePush;
     private final String alert;
@@ -58,9 +56,9 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
      */
     @SuppressWarnings("unchecked")
     public SelectiveSendMessage(Map<String, Object> data) {
-        this.aliases = (List<String>) data.remove("alias");
-        this.deviceTypes = (List<String>) data.remove("deviceType");
-        
+        // extract all the different criterias
+        this.criterias = new SelectiveSendCriterias(data);
+
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
         this.data = (Map<String, Object>) data.remove("message");
@@ -82,15 +80,10 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
 
     }
 
-    public List<String> getAliases() {
-        return aliases;
+    public SelectiveSendCriterias getSendCriterias() {
+        return criterias;
     }
-    
-    public List<String> getDeviceTypes() {
-        return deviceTypes;
-    }
-    
-    
+
     public Map<String, String> getSimplePush() {
         return simplePush;
     }
