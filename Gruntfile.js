@@ -20,7 +20,8 @@ module.exports = function (grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp/admin"
+        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp/admin",
+        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war/admin"
     };
 
     grunt.initConfig({
@@ -50,7 +51,8 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ]
+                ],
+                tasks: [ 'copy:webapp', 'copy:jbossweb' ]
             },
             emberTemplates: {
                 files: '<%= yeoman.app %>/templates/**/*.handlebars',
@@ -246,6 +248,14 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '<%= yeoman.app %>',
                     dest: '<%= yeoman.webapp %>',
+                    src: [ "**", "!**/*.txt" ]
+                }]
+            },
+            jbossweb: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.jbossweb %>',
                     src: [ "**", "!**/*.txt" ]
                 }]
             }
