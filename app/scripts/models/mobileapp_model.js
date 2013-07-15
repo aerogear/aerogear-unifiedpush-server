@@ -18,19 +18,19 @@
 
 App.MobileApplication = Ember.Object.extend({
     totalAndroidVariants: function() {
-        return this.androidApps.get("content").length;
+        return this.androidVariants.get("content").length;
     }.property(),
     totaliOSVariants: function() {
-        return this.iosapps.get("content").length;
+        return this.iosvariants.get("content").length;
     }.property(),
     totalSimplePushVariants: function() {
-        return this.simplePushApps.get("content").length;
+        return this.simplePushVariants.get("content").length;
     }.property(),
     totalVariants: function() {
         return this.get( "totalAndroidVariants" ) + this.get( "totaliOSVariants" ) + this.get( "totalSimplePushVariants" );
     }.property(),
     variantList: function() {
-        return this.androidApps.get("content").concat( this.iosapps.get("content") ).concat( this.simplePushApps.get("content") );
+        return this.androidVariants.get("content").concat( this.iosvariants.get("content") ).concat( this.simplePushVariants.get("content") );
     }.property(),
     status: function() {
         return ( this.get( "totalVariants" ) ) ? "Active" : "Inactive";
@@ -94,26 +94,26 @@ App.MobileApplication.reopenClass({
             iosVariants = Ember.ArrayProxy.create({ content: [] }),
             simplePushVariants = Ember.ArrayProxy.create({ content: [] });
 
-        response.androidApps.forEach( function( value ) {
+        response.androidVariants.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             androidVariants.pushObject( App.MobileVariant.create( value ) );
         });
 
-        response.androidApps = androidVariants;
+        response.androidVariants = androidVariants;
 
-        response.iosapps.forEach( function( value ) {
+        response.iosvariants.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             iosVariants.pushObject( App.MobileVariant.create( value ) );
         });
 
-        response.iosapps = iosVariants;
+        response.iosvariants = iosVariants;
 
-        response.simplePushApps.forEach( function( value ) {
+        response.simplePushVariants.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             simplePushVariants.pushObject( App.MobileVariant.create( value ) );
         });
 
-        response.simplePushApps = simplePushVariants;
+        response.simplePushVariants = simplePushVariants;
 
         return response;
 

@@ -18,7 +18,7 @@
 
 App.MobileVariant = Ember.Object.extend({
     totalInstances: function() {
-        return this.get("instances").length;
+        return this.get("installations").length;
     }.property(),
     type: function() {
         if( this.get( "googleKey" ) ) {
@@ -104,13 +104,13 @@ App.MobileVariant.reopenClass({
         // TODO: DRY this out
         var variantInstance = Ember.ArrayProxy.create({ content: [] });
 
-        response.instances.forEach( function( value ) {
+        response.installations.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;
             value.variantID = response.variantID;
             variantInstance.pushObject( App.MobileVariant.create( value ) );
         });
 
-        response.instances = variantInstance;
+        response.installations = variantInstance;
 
         return response;
 

@@ -27,7 +27,7 @@ App.MobileVariantInstance.reopenClass({
                 settings: {
                     baseURL: "/ag-push/rest/applications/",
                     authenticator: App.AeroGear.authenticator,
-                    endpoint:  variantApplicationId + "/instances"
+                    endpoint:  variantApplicationId + "/installations"
                 }
             }).pipes.mobileVariantInstance;
 
