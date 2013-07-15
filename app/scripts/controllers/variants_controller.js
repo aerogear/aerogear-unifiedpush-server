@@ -35,28 +35,25 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 }
             }
         });
-    }
-});
-
-App.VariantsAddController = Ember.ObjectController.extend({
-    add: function() {
+    },
+    add: function( controller ) {
         var applicationData = {
-            name: this.get( "variantName" ),
-            description: this.get( "variantDescription" )
+            name: controller.get( "variantName" ),
+            description: controller.get( "variantDescription" )
         },
-        applicationPushId = this.get( "pushApplicationID" ),
+        applicationPushId = controller.get( "pushApplicationID" ),
         variantType =  $( "input:checked" ).val();
 
         if( variantType ) {
             switch( variantType ) {
             case "android":
-                applicationData.googleKey = this.get( "googleKey" ); //Needs Validation Here
+                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
                 break;
             case "iOS":
-                applicationData.passphrase = this.get( "passphrase" );
+                applicationData.passphrase = controller.get( "passphrase" );
                 break;
             case "simplePush":
-                applicationData.pushNetworkURL = this.get( "pushNetworkURL" );
+                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
                 break;
             default:
                 break;
@@ -91,5 +88,16 @@ App.VariantsAddController = Ember.ObjectController.extend({
                 }
             }
         });
+    },
+    cancel: function( controller ) {
+        //Probably a better way
+        controller.set( "name", "" );
+        controller.set( "description", "" );
+
+        this.transitionToRoute( "mobileApps" );
     }
+});
+
+App.VariantsAddController = Ember.ObjectController.extend({
+    needs: "variantsIndex"
 });

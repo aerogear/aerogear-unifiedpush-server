@@ -13,6 +13,8 @@
 */
 
 App.MobileAppsIndexController = Ember.ArrayController.extend({
+    sortProperties: [ "pushApplicationID" ],
+    sortAscending: true,
     add: function( controller ) {
         var applicationData = {
             name: controller.get( "name" ),
@@ -98,7 +100,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
 /*
     The Mobile Apps Controller. Put "Global Events" Here.
-    TODO: Move more globally
+    TODO: Move more globally, maybe
 */
 App.MobileAppsController = Ember.Controller.extend({
     logout: function() {

@@ -113,7 +113,7 @@
             </div>
             <div>
                 <div>
-                    <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" on="submit"}} target="view">
+                    <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" }}>
                   <fieldset>
                     <p>
                       <label>Name</label>
@@ -136,7 +136,7 @@
         </script>
 
         <script type="text/x-handlebars" data-template-name="variants/index">
-            <div>{{#linkTo "mobileApps"}}Back To Push Applications{{/linkTo}}</div>
+            <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > Variants</div>
             <div class="header">
                 <h2>{{ name }}</h2>
                 <span>{{ description }}</span>
@@ -199,7 +199,7 @@
             <div>Add Push Application</div>
             <div>
                 <div>
-                    <form {{action add on="submit"}} target="view">
+                    <form {{action "add" controller target="controllers.variantsIndex" on="submit" }} >
                   <fieldset>
                     <p>
                       <label>Name</label>
@@ -210,7 +210,8 @@
                       {{input type="text" value=variantDescription}}
                     </p>
                     {{ partial "addVariantsNetwork" }}
-                    <button class="primary">Next</button>
+                    <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>
+                    <input type="submit" class="primary" value="Create">
                   </fieldset>
                 </form>
                 </div>
