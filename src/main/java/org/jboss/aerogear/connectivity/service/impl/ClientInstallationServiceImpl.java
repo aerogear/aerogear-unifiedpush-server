@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +26,11 @@ import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 
 public class ClientInstallationServiceImpl implements ClientInstallationService {
+
+    // the SimplePush BROADCAST category name:
+    private static final String BROADCAST_CHANNEL = "broadcast";
+    // The allowed SimplePush "device types
+    private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = Arrays.asList("web");
 
     @Inject
     private InstallationDao dao;
@@ -82,23 +88,36 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     // ======== Various finder services for the Sender REST API ============
     // =====================================================================
 
+    /**
+     * For broadcast (Android / iOS) 
+     */
     @Override
     public List<String> findAllDeviceTokenForVariantID(String variantID) {
-        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, null, null);
+        // no criteria needed, for BROADCAST
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, null, null, null);
     }
 
+    /**
+     * For broadcast (SimplePush)
+     */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category) {
-        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, category, null, null);
+    public List<String> findAllSimplePushBroadcastDeviceTokenForVariantID(String variantID) {
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
     }
 
+    /**
+     * For selective send (Android / iOS)
+     */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes) {
-        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, aliases, deviceTypes);
+    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, category, aliases, deviceTypes);
     }
-
+    
+    /**
+     * For selective send  (SimplePush)
+     */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCategoryAndAlias(String variantID, String category, List<String> aliases) {
-        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, category, aliases, null);
+    public List<String> findAllSimplePushDeviceTokenForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
     }
 }

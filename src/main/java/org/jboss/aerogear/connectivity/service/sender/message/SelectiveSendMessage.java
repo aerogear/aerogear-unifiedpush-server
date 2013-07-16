@@ -36,6 +36,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
      *   {
      *     "alias" : ["someUsername"],
      *     "deviceType" : ["someDevice"],
+     *     "category" : "someCategory",
      *     "message":
      *     {
      *       "key":"value",

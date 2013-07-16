@@ -31,7 +31,7 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     /**
      * Broadcast/Selective Sender API:
      * 
-     * Query all tokens for the given variant, by respecting a few criterias (category, aliases and deviceTypes)
+     * Query all tokens for the given variant, by respecting a few criteria arguments (category, aliases and deviceTypes)
      */
-    List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 }

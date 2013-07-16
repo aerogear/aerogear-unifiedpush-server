@@ -91,7 +91,7 @@ public class PushNotificationSenderEndpoint {
         final SelectiveSendMessage payload = new SelectiveSendMessage(message);
 
         // submitted to @Async EJB:
-        senderService.sendToAliases(pushApplication, payload);
+        senderService.selectiveSend(pushApplication, payload);
         logger.info("Message submitted to PushNetworks");
 
         return Response.status(Status.OK)
