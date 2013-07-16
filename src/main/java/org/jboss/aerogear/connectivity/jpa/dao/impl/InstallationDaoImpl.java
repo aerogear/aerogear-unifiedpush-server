@@ -55,7 +55,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriterias(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
 
         // the required part: Join + all tokens for variantID;
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
