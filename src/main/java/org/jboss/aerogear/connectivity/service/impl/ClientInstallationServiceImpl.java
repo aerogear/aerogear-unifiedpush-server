@@ -94,7 +94,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public List<String> findAllDeviceTokenForVariantID(String variantID) {
         // no criteria needed, for BROADCAST
-        return dao.findAllDeviceTokenForVariantIDByCriterias(variantID, null, null, null);
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, null, null, null);
     }
 
     /**
@@ -102,7 +102,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      */
     @Override
     public List<String> findAllSimplePushBroadcastDeviceTokenForVariantID(String variantID) {
-        return dao.findAllDeviceTokenForVariantIDByCriterias(variantID, BROADCAST_CHANNEL, null, null);
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      */
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
-        return dao.findAllDeviceTokenForVariantIDByCriterias(variantID, category, aliases, deviceTypes);
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, category, aliases, deviceTypes);
     }
     
     /**
@@ -118,6 +118,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      */
     @Override
     public List<String> findAllSimplePushDeviceTokenForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {
-        return dao.findAllDeviceTokenForVariantIDByCriterias(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
     }
 }
