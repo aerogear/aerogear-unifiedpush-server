@@ -17,8 +17,11 @@ import org.jboss.connectivity.common.Deployments
 import org.jboss.resteasy.spi.UnauthorizedException;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.picketlink.authentication.UserAlreadyLoggedInException;
 import org.picketlink.idm.model.SimpleUser;
 
@@ -51,25 +54,26 @@ class AuthenticationEndpointSpecification extends Specification {
     @Deployment(testable=true)
     def static WebArchive "create deployment"() {
 
-        File[] libs = Maven.resolver()
-                .loadPomFromFile("pom.xml")
-                .resolve(
-                    "com.notnoop.apns:apns",
-                    "com.google.android.gcm:gcm-server",
-                    "com.ning:async-http-client",
-                    "org.jboss.aerogear:aerogear-security",
-                    "org.jboss.aerogear:aerogear-security-picketlink",
-                    "org.mockito:mockito-core",
-                    "com.jayway.restassured:rest-assured"
-                ).withTransitivity().asFile()
+        def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
 
-        return ShrinkWrap.create(WebArchive.class, "ag-push.war")
-            .addPackages(true, Filters.exclude(PushDaoSpecification.class), "org.jboss.aerogear.connectivity")
-            .addAsLibraries(libs)
-            .addClasses(Specification.class, AuthenticationEndpointSpecification.class)
-            .addAsWebInfResource("META-INF/test-beans.xml", "beans.xml")
-            .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-            .addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
+        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
+                .as(WebArchive.class);
+
+        war.delete("/WEB-INF/classes/META-INF/persistence.xml")
+        war.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
+
+        war.delete("/WEB-INF/classes/META-INF/beans.xml")
+        war.addAsResource("META-INF/test-beans.xml", "META-INF/beans.xml")
+
+        war.delete("/WEB-INF/h2-ds.xml")
+        war.addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
+
+        war.addClass(AuthenticationEndpointSpecification.class)
+
+        File[] asm = Maven.resolver().resolve("org.ow2.asm:asm:4.1").withoutTransitivity().asFile()
+        war = war.addAsLibraries(asm)
+
+        return war
     }
 
     def "verify admin login"() {
