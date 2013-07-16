@@ -36,26 +36,31 @@ public interface ClientInstallationService {
 
     InstallationImpl findById(String primaryKey);
     void removeInstallation(InstallationImpl installation);
+    void removeInstallations(List<InstallationImpl> installations);
 
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token
      */
     List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
+
+    // ===================   SENDER API   ===================
     
     /**
-     * Used for Broadcast. Query for all IDs on a certain variant
+     * Used for (Android/iOS) Broadcast. Query for all IDs on a certain variant
      */
     List<String> findAllDeviceTokenForVariantID(String variantID);
+    /**
+     * Used for (SimplePush) Broadcast. Query for all "Tokens", that are in the (SimplePush) BROADCAST category.
+     */
+    List<String> findAllSimplePushBroadcastDeviceTokenForVariantID(String variantID);
 
+    /**
+     * Used for (Android/iOS) Selective Sender API. Queries the available device-tokens for a given variant, based on provided criteria
+     */
+    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 
-    // =========================== SELECTIVE SENDER =================================
-
-    List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes);
-
-    
-    List<String> findAllDeviceTokenForVariantIDByCategoryAndAlias(String variantID, String category, List<String> aliases);
-
-    List<String> findAllDeviceTokenForVariantIDByCategory(String variantID, String category);
-
-    void removeInstallations(List<InstallationImpl> installations);
+    /**
+     * Used for (SimplePush) Selective Sender API. Queries the available SimplePush device-tokens(device-type : web) for a given variant, based on provided criteria
+     */
+    List<String> findAllSimplePushDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases);
 }

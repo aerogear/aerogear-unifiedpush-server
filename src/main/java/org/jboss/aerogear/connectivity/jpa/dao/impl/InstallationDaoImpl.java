@@ -55,10 +55,10 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllDeviceTokenForVariantIDByCriterias(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
 
         // the required part: Join + all tokens for variantID;
-        StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
+        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
         jpqlString.append(AbstractVariant.class.getSimpleName())
         .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID");
 
@@ -66,7 +66,6 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
         
         // OPTIONAL query arguments, as provided.....
-        
         // are aliases present ??
         if (aliases != null && ! aliases.isEmpty()) {
             // append the string:
@@ -82,7 +81,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
             // add the params:
             parameters.put("deviceTypes", deviceTypes);
         }
-        
+
         // is a category present ?
         if (category != null) {
             // append the string:
@@ -91,10 +90,11 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
             parameters.put("category", category);
         }
 
-        // the JPQL
+        // the entire JPQL string
         Query jpql = createQuery(jpqlString.toString());
         // add REQUIRED param:
         jpql.setParameter("variantID", variantID);
+
 
         // add the optionals, as needed:
         Set<String> paramKeys = parameters.keySet();

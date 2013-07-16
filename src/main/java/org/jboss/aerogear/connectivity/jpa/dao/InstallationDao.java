@@ -33,5 +33,5 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
      * 
      * Query all tokens for the given variant, by respecting a few criterias (category, aliases and deviceTypes)
      */
-    List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+    List<String> findAllDeviceTokenForVariantIDByCriterias(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 }
