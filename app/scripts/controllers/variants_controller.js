@@ -37,12 +37,17 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         });
     },
     add: function( controller ) {
-        var applicationData = {
-            name: controller.get( "variantName" ),
-            description: controller.get( "variantDescription" )
-        },
-        applicationPushId = controller.get( "pushApplicationID" ),
-        variantType =  $( "input:checked" ).val();
+        var that = this,
+            applicationData = {
+                name: controller.get( "variantName" ),
+                description: controller.get( "variantDescription" )
+            },
+            applicationPushId = controller.get( "pushApplicationID" ),
+            variantType =  $( "input:checked" ).val(),
+            url = "/ag-push/rest/applications/" + applicationPushId + "/" + variantType,
+            type = "POST",
+            contentType = "application/json",
+            dataType =  "json";
 
         if( variantType ) {
             switch( variantType ) {
@@ -51,6 +56,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 break;
             case "iOS":
                 applicationData.passphrase = controller.get( "passphrase" );
+                // TODO: need to get the certificate
                 break;
             case "simplePush":
                 applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
@@ -60,20 +66,13 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             }
         }
 
-        this.saveMobileVariant( applicationData, variantType, applicationPushId  );
-    },
-    saveMobileVariant: function( applicationData, variantType, applicationPushId ) {
-        var mobileVariantPipe = AeroGear.Pipeline({
-            name: "mobileVariant",
-            settings: {
-                baseURL: "/ag-push/rest/applications/",
-                authenticator: App.AeroGear.authenticator,
-                endpoint:  applicationPushId + "/" + variantType
-            }
-        }).pipes.mobileVariant,
-        that = this;
-
-        mobileVariantPipe.save( applicationData, {
+        // TODO: use aerogear pipes once we get multi part support
+        $.ajax({
+            "url": url,
+            "type": type,
+            "contentType": contentType,
+            data: JSON.stringify( applicationData ),
+            "dataType": dataType,
             success: function() {
                 that.transitionToRoute( "variants", that.get( "model" ) );
             },
@@ -94,7 +93,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         controller.set( "name", "" );
         controller.set( "description", "" );
 
-        this.transitionToRoute( "mobileApps" );
+        this.transitionToRoute( "variants" );
     }
 });
 
