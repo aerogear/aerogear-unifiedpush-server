@@ -18,6 +18,17 @@ To create a distribtion:
     grunt
 
 
+### Using Mocks
+
+If you want to use the mocks to test,  uncomment these lines from index.html
+
+    <script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
+    <script src="scripts/mocks/mock.js"></script>
+
+Then run
+
+    grunt server
+
 
 ### Using With JBoss EAP/Wildfly
 
