@@ -1,0 +1,30 @@
+<!-- The Mobile Applications List Partial-->
+<div>{{#linkTo "mobileApps.edit" }}Add New{{/linkTo}}</div>
+    <table class="table table-zebra">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Variants</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each controller}}
+                <tr>
+                    <td>
+                        {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
+                        <button class="primary" {{ action "remove" this}}>Remove</button>
+                    </td>
+                    <td>{{ name }}{{#linkTo "variants" this}} >>> {{/linkTo}}</td>
+                    <td><span>{{ descriptionFormatted }}<span></td>
+                    <td>{{ totalVariants }}</td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="4">Loadng...Nothing</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,30 @@
+<!-- The Mobile Applications List Partial-->
+<div id="mobile-application-variant-table">
+    <table class="table table-zebra">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Token</th>
+                <th>Description</th>
+                <th>Platform</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each installations }}
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>{{#linkTo "instance" this}}{{deviceToken}}{{/linkTo}}</td>
+                    <td>{{ deviceType }}</td>
+                    <td>{{ mobileOperatingSystem }}</td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+

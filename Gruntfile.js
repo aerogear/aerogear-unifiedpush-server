@@ -34,7 +34,7 @@ module.exports = function (grunt) {
                     }
                 },
                 files: {
-                    "<%= yeoman.app %>/scripts/templates.js": ["<%= yeoman.app %>/templates/**/*.handlebars"]
+                    "<%= yeoman.app %>/scripts/templates.js": ["<%= yeoman.app %>/templates/**/*.{handlebars,hbs}"]
                 }
             }
         },
@@ -48,16 +48,13 @@ module.exports = function (grunt) {
                 },
                 files: [
                     '<%= yeoman.app %>/*.html',
+                    '<%= yeoman.app %>/templates/{,*/}*.{handlebars,hbs}',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
-                tasks: [ 'copy:webapp', 'copy:jbossweb' ]
-            },
-            emberTemplates: {
-                files: '<%= yeoman.app %>/templates/**/*.handlebars',
-                tasks: ['emberTemplates']
-            },
+                tasks: [ 'emberTemplates', 'copy:webapp', 'copy:jbossweb' ]
+            }
         },
         connect: {
             options: {

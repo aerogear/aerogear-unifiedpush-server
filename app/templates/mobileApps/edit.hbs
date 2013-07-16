@@ -1,0 +1,27 @@
+<!--Template to create/edit a push application-->
+<div>
+    {{#if pushApplicationID}}
+        Edit a
+    {{else}}
+        Add a New
+    {{/if}}
+    Push Application
+</div>
+<div>
+    <div>
+        <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" }}>
+      <fieldset>
+        <p>
+          <label>Name</label>
+          {{input type="text" valueBinding="name"}}
+        </p>
+        <p>
+          <label>Description</label>
+          {{textarea valueBinding="description"}}
+        </p>
+        <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
+        <input type="submit" class="primary" value="Create">
+      </fieldset>
+    </form>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{{#if isLoaded}}
+<div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}}</div>
+<div class="header">
+    <h2>{{ name }}</h2>
+    <span>{{ description }}</span>
+</div>
+<div class="sub-header">
+    <h3>Authentication Info</h3>
+    <span>
+        Use this Application ID and Secret combination to send notification to all variants
+    </span>
+    <div>
+        Variant ID: {{ variantID }}
+        <br>
+        Secret: {{ secret }}
+    </div>
+</div>
+{{ variantId }}
+    {{ partial "variant/variantDetail" }}
+{{else}}
+    loading....
+{{/if}}

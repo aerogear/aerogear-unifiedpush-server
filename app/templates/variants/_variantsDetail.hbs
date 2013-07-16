@@ -1,0 +1,31 @@
+<!-- The Mobile Applications List Partial-->
+            <div id="mobile-application-variants-table">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Platform</th>
+                            <th>Mobile Instances</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each variantList }}
+                            <tr>
+                                <td>
+                                    <button class="primary" {{ action "remove" this}}>Remove</button>
+                                </td>
+                                <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
+                                <td>{{ description }}</td>
+                                <td>{{ typeFormatted }}</td>
+                                <td>{{ totalInstances }}</td>
+                            </tr>
+                        {{else}}
+                            <tr>
+                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
