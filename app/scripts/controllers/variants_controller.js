@@ -46,47 +46,74 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             variantType =  $( "input:checked" ).val(),
             url = "/ag-push/rest/applications/" + applicationPushId + "/" + variantType,
             type = "POST",
-            contentType = "application/json",
-            dataType =  "json";
+            data,
+            contentType = "application/json";
+            //dataType =  "json";
 
         if( variantType ) {
             switch( variantType ) {
             case "android":
                 applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+                data = JSON.stringify( applicationData );
                 break;
             case "iOS":
-                applicationData.passphrase = controller.get( "passphrase" );
+                contentType = "multipart/form-data";
+                //data = $( "form" ).serialize();
                 // TODO: need to get the certificate
                 break;
             case "simplePush":
                 applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+                data = JSON.stringify( applicationData );
                 break;
             default:
                 break;
             }
         }
 
-        // TODO: use aerogear pipes once we get multi part support
-        $.ajax({
-            "url": url,
-            "type": type,
-            "contentType": contentType,
-            data: JSON.stringify( applicationData ),
-            "dataType": dataType,
-            success: function() {
-                that.transitionToRoute( "variants", that.get( "model" ) );
-            },
-            error: function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    break;
+        if( variantType === "iOS" ) {
+            $( "form" ).ajaxSubmit({
+                beforeSubmit: function( formData, jqForm, options ) {
+                    console.log( formData, jqForm, options );
+                },
+                type: "POST",
+                url: url,
+                success: function() {
+                    that.transitionToRoute( "variants", that.get( "model" ) );
+                },
+                error: function( error ) {
+                    console.log( "error saving", error );
+                    switch( error.status ) {
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            // TODO: use aerogear pipes once we get multi part support
+            $.ajax({
+                "url": url,
+                "type": type,
+                "contentType": contentType,
+                "data": data,
+                //"dataType": dataType,
+                success: function() {
+                    that.transitionToRoute( "variants", that.get( "model" ) );
+                },
+                error: function( error ) {
+                    console.log( "error saving", error );
+                    switch( error.status ) {
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            });
+        }
     },
     cancel: function( controller ) {
         //Probably a better way

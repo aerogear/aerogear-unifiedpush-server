@@ -2,15 +2,15 @@
 <div>Add Push Application</div>
 <div>
     <div>
-        <form {{action "add" controller target="controllers.variantsIndex" on="submit" }} >
+      <form method="POST" {{action "add" controller target="controllers.variantsIndex" on="submit" }} >
       <fieldset>
         <p>
           <label>Name</label>
-          {{input type="text" value=variantName}}
+          {{input type="text" name="name" value=variantName}}
         </p>
         <p>
           <label>Description</label>
-          {{input type="text" value=variantDescription}}
+          {{input type="text" name="description" value=variantDescription}}
         </p>
         {{ partial "variants/addVariantsNetwork" }}
         <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>
