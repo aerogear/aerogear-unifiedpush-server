@@ -119,6 +119,7 @@ module.exports = function (grunt) {
                 'Gruntfile.js',
                 '<%= yeoman.app %>/scripts/{,*/}*.js',
                 '!<%= yeoman.app %>/scripts/vendor/*',
+                '!<%= yeoman.app %>/scripts/templates.js',
                 'test/spec/{,*/}*.js'
             ]
         },
@@ -263,7 +264,8 @@ module.exports = function (grunt) {
             dist: [
                 'imagemin',
                 'svgmin',
-                'htmlmin'
+                'htmlmin',
+                'emberTemplates'
             ]
         }
     });
