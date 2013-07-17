@@ -85,27 +85,27 @@ App.MobileAppsEditRoute = Ember.Route.extend({
     },
     serialize: function( model ) {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return { mobileApplication_id: model ? model.pushApplicationID : "" };
 
     }
 });
 
 /*
-    Route for a Single App Variant
+    Route for Application Variants - shows a list of variants
     Don't need the model since ember  will do find( id ) by default
 */
 App.VariantsRoute = Ember.Route.extend({
     serialize: function( model ) {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return { mobileApplication_id: model.pushApplicationID };
 
     }
 });
 
 /*
-    Route for a Single App Variant Index Page
+    Route for Application Variants Index Page
 */
 App.VariantsIndexRoute = Ember.Route.extend({
     model: function() {
@@ -122,24 +122,33 @@ App.VariantsIndexRoute = Ember.Route.extend({
     },
     serialize: function() {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
 
     }
 });
 
+/*
+    Route for adding/editing a variant
+*/
 App.VariantsAddRoute = Ember.Route.extend({
     model: function() {
+
+        // Return the "Variants" Route Model since that is where all the "dynamic segments" are
         return this.modelFor( "variants" );
+
     },
     serialize: function() {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
 
     }
 });
 
+/*
+    Route for the Single Variant - shows a list a instances
+*/
 App.VariantRoute = Ember.Route.extend({
     model: function( params ) {
 
@@ -149,14 +158,20 @@ App.VariantRoute = Ember.Route.extend({
     },
     serialize: function( model ) {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.variantType ? model.variantType : model.get( "type" ) };
 
     }
 });
 
+
+/*
+    Route for the Single Variant index page
+*/
 App.VariantIndexRoute = Ember.Route.extend({
     model: function() {
+
+        // Return the "Variant" Route Model since that is where all the "dynamic segments" are
         return this.modelFor( "variant" );
     },
     setupController: function( controller, model ) {
@@ -167,30 +182,52 @@ App.VariantIndexRoute = Ember.Route.extend({
     },
     serialize: function( model ) {
 
-        // Make our non uniform id of pushApplicationID what ember expects
+        // Make our non uniform id's what ember expects
         return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variant" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
 
     }
 });
 
+/*
+    Route for an Instance
+*/
 App.InstanceRoute = Ember.Route.extend({
     model: function( params ) {
+
+        // Return All the instances of the variants from the params
         return App.MobileVariantInstance.find( params.mobileApplication_id, params.type, params.mobileVariant_id, params.mobileVariantInstance_id );
+
     },
     serialize: function( model ) {
+
+        // Make our non uniform id's what ember expects
         return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "type" ) };
+
     }
 });
 
+
+/*
+    Route for an Instance index page
+*/
 App.InstanceIndexRoute = Ember.Route.extend({
     model: function() {
+
+        // Return the "instance" Route Model since that is where all the "dynamic segments" are
         return this.modelFor( "instance" );
+
     },
     setupController: function( controller, model ) {
+
+        // Force a refresh of this model when coming in from a {{#linkTo}}
         controller.set( "model", model.id ? App.MobileVariantInstance.find( model.pushApplicationID, model.get( "type" ), model.variantID, model.id ) : model );
+
     },
     serialize: function( model ) {
+
+        // Make our non uniform id's what ember expects
         return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
+
     }
 });
 
