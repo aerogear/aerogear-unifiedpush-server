@@ -90,7 +90,9 @@ public class SimplePushNotificationSender implements Serializable {
         } finally {
             // in case something blows up, while writing
             // the payload, we wanna close the stream:
-            out.close();
+            if (out != null) {
+                out.close();
+            }
         }
         return conn;
     }
