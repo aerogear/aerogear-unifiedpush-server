@@ -23,7 +23,19 @@ import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessa
 
 public interface SenderService {
 
+    /**
+     * Broadcast the given message/payload to ALL installations of the variants, that are belonging to the given PushApplication.
+     * 
+     * @param pushApplication the root target for all installations being notified 
+     * @param payload the payload to be sent
+     */
     void broadcast(PushApplication pushApplication, BroadcastMessage payload);
 
-    void sendToAliases(PushApplication pushApplication, SelectiveSendMessage payload);
+    /**
+     * Sends the given message/payload to ALL installations of the variants, matching the given criterias.
+     * 
+     * @param pushApplication the root target for all installations being notified 
+     * @param payload the payload to be sent
+     */
+    void selectiveSend(PushApplication pushApplication, SelectiveSendMessage payload);
 }

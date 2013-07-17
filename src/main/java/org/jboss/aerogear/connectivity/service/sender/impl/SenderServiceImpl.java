@@ -45,8 +45,6 @@ import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessa
 @Asynchronous
 public class SenderServiceImpl implements SenderService {
 
-    private static final String BROADCAST_CHANNEL = "broadcast";
-
     @Inject
     @GCMSender
     private GCMPushNotificationSender gcmSender;
@@ -64,31 +62,31 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     @Asynchronous
-    public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
+    public void selectiveSend(PushApplication pushApplication, SelectiveSendMessage message) {
 
         // get all the criterias:
         final SelectiveSendCriterias criterias = message.getSendCriterias();
-        final List<String>  aliases = criterias.getAliases();
+        final String category = criterias.getCategory();
+        final List<String> aliases = criterias.getAliases();
         final List<String> deviceTypes = criterias.getDeviceTypes();
-        // TODO: Add getCategory();
 
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
         for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), aliases, deviceTypes);
+            final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
             apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidVariants();
         for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), aliases, deviceTypes);
+            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
             gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
+
         // TODO: DISPATCH TO A QUEUE .....
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
-
         // if no SimplePush object is present: skip it.
         // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
         if (simplePushCategoriesAndValues == null || (deviceTypes != null && ! deviceTypes.contains("web"))) {
@@ -98,11 +96,11 @@ public class SenderServiceImpl implements SenderService {
         Set<SimplePushVariant> spApps = pushApplication.getSimplePushVariants();
         for (SimplePushVariant simplePushVariant : spApps) {
             // the specified category names.....
-            final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
+            final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
-            for (String category : categoriesToNotify) {
-                final List<String> tokensPerCategory = clientInstallationService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, aliases);
-                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory);
+            for (String simplePushCategory : simplePushCategories) {
+                final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
+                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
             }
         }
     }
@@ -125,6 +123,7 @@ public class SenderServiceImpl implements SenderService {
             gcmSender.sendPushMessage(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
         }
 
+
         // TODO: DISPATCH TO A QUEUE .....
         final String simplePushBroadcastValue = payload.getSimplePush();
         if (simplePushBroadcastValue == null) {
@@ -135,7 +134,7 @@ public class SenderServiceImpl implements SenderService {
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePusj Service class
-            final List<String> simplePushBroadcastTokens = clientInstallationService.findAllDeviceTokenForVariantIDByCategory(simplePushVariant.getVariantID(), BROADCAST_CHANNEL);
+            final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
             simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
         }
     }
