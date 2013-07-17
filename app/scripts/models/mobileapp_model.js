@@ -55,10 +55,11 @@ App.MobileApplication.reopenClass({
             mobileApplication = Ember.ArrayProxy.create({ content: [] });
         }
 
-        // Need to return a promise for "modelFor" to work.  The formmating looks off here
+        // Need to return a promise for "modelFor" to work.
         applicationPipe.read({
             id: applicationPushId
-        }).then( function( response ) {
+        })
+        .then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
@@ -72,7 +73,8 @@ App.MobileApplication.reopenClass({
                 mobileApplication.setProperties( model._createVariantObject( response ) );
                 console.log( mobileApplication );
             }
-        }).then( null, function( error ) {
+        })
+        .then( null, function( error ) {
             console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:
@@ -89,31 +91,18 @@ App.MobileApplication.reopenClass({
     },
     _createVariantObject: function( response ) {
 
-        // TODO: DRY this out
-        var androidVariants = Ember.ArrayProxy.create({ content: [] }),
-            iosVariants = Ember.ArrayProxy.create({ content: [] }),
-            simplePushVariants = Ember.ArrayProxy.create({ content: [] });
+        Object.keys( response ).forEach( function( data ) {
+            if( AeroGear.isArray( response[ data ] ) ) {
+                var proxy = Ember.ArrayProxy.create({ content: [] });
 
-        response.androidVariants.forEach( function( value ) {
-            value.pushApplicationID = response.pushApplicationID;
-            androidVariants.pushObject( App.MobileVariant.create( value ) );
+                response[ data ].forEach( function( value ) {
+                    value.pushApplicationID = response.pushApplicationID;
+                    proxy.pushObject( App.MobileVariant.create( value ) );
+                });
+
+                response[ data ] = proxy;
+            }
         });
-
-        response.androidVariants = androidVariants;
-
-        response.iosvariants.forEach( function( value ) {
-            value.pushApplicationID = response.pushApplicationID;
-            iosVariants.pushObject( App.MobileVariant.create( value ) );
-        });
-
-        response.iosvariants = iosVariants;
-
-        response.simplePushVariants.forEach( function( value ) {
-            value.pushApplicationID = response.pushApplicationID;
-            simplePushVariants.pushObject( App.MobileVariant.create( value ) );
-        });
-
-        response.simplePushVariants = simplePushVariants;
 
         return response;
 
