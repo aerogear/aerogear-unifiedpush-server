@@ -28,9 +28,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.connectivity.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.SimplePushNotificationSender;
-import org.jboss.aerogear.connectivity.message.sender.annotations.APNsSender;
-import org.jboss.aerogear.connectivity.message.sender.annotations.GCMSender;
-import org.jboss.aerogear.connectivity.message.sender.annotations.SimplePushSender;
 import org.jboss.aerogear.connectivity.model.AndroidVariant;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
@@ -46,15 +43,12 @@ import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessa
 public class SenderServiceImpl implements SenderService {
 
     @Inject
-    @GCMSender
     private GCMPushNotificationSender gcmSender;
 
     @Inject
-    @APNsSender
     private APNsPushNotificationSender apnsSender;
 
     @Inject
-    @SimplePushSender
     private SimplePushNotificationSender simplePushSender;
     
     @Inject
