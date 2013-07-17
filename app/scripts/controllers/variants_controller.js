@@ -62,29 +62,9 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             type = "POST",
             data,
             contentType = "application/json";
-            //dataType =  "json";
-
-        if( variantType ) {
-            switch( variantType ) {
-            case "android":
-                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
-                data = JSON.stringify( applicationData );
-                break;
-            case "iOS":
-                contentType = "multipart/form-data";
-                //data = $( "form" ).serialize();
-                // TODO: need to get the certificate
-                break;
-            case "simplePush":
-                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-                data = JSON.stringify( applicationData );
-                break;
-            default:
-                break;
-            }
-        }
 
         if( variantType === "iOS" ) {
+
             $( "form" ).ajaxSubmit({
                 beforeSubmit: function( formData, jqForm, options ) {
                     console.log( formData, jqForm, options );
@@ -106,13 +86,26 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 }
             });
         } else {
+
+            switch( variantType ) {
+            case "android":
+                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+                data = JSON.stringify( applicationData );
+                break;
+            case "simplePush":
+                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+                data = JSON.stringify( applicationData );
+                break;
+            default:
+                break;
+            }
+
             // TODO: use aerogear pipes once we get multi part support
             $.ajax({
                 "url": url,
                 "type": type,
                 "contentType": contentType,
                 "data": data,
-                //"dataType": dataType,
                 success: function() {
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 },
