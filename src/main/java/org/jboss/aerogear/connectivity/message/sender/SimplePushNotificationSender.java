@@ -19,6 +19,7 @@ package org.jboss.aerogear.connectivity.message.sender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -29,11 +30,14 @@ import org.jboss.aerogear.connectivity.message.sender.annotations.SimplePushSend
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 @SimplePushSender
 @ApplicationScoped
 public class SimplePushNotificationSender implements Serializable {
     private static final long serialVersionUID = 5747687132270998712L;
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     @Inject
     private Logger logger;
@@ -53,7 +57,7 @@ public class SimplePushNotificationSender implements Serializable {
                     logger.severe("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
             } finally {
                 // tear down
                 if (conn != null ) {
@@ -72,16 +76,22 @@ public class SimplePushNotificationSender implements Serializable {
             throw new IllegalArgumentException("arguments cannot be null");
         }
 
-        byte[] bytes = body.getBytes();
+        byte[] bytes = body.getBytes(UTF_8);
         HttpURLConnection conn = getConnection(url);
         conn.setDoOutput(true);
         conn.setUseCaches(false);
         conn.setFixedLengthStreamingMode(bytes.length);
         conn.setRequestProperty("Accept", "application/x-www-form-urlencoded");
         conn.setRequestMethod("PUT");
-        OutputStream out = conn.getOutputStream();
-        out.write(bytes);
-        out.close();
+        OutputStream out = null;
+        try {
+            out = conn.getOutputStream();
+            out.write(bytes);
+        } finally {
+            // in case something blows up, while writing
+            // the payload, we wanna close the stream:
+            out.close();
+        }
         return conn;
     }
 
