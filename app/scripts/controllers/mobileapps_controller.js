@@ -15,36 +15,16 @@
 App.MobileAppsIndexController = Ember.ArrayController.extend({
     sortProperties: [ "pushApplicationID" ],
     sortAscending: true,
-    add: function( controller ) {
-        var applicationData = {
-            name: controller.get( "name" ),
-            description: controller.get( "description" )
-        };
-
-        this.saveMobileApplication( applicationData );
-    },
+    applicationPipe: App.AeroGear.pipelines.pipes.applications,
     edit: function( controller ) {
-        var applicationData = {
-            name: controller.get( "name" ),
-            id: controller.get( "pushApplicationID" ),
-            description: controller.get( "description" )
-        };
+        var that = this,
+            applicationData = {
+                name: controller.get( "name" ),
+                id: controller.get( "pushApplicationID" ),
+                description: controller.get( "description" )
+            };
 
-        this.saveMobileApplication( applicationData );
-    },
-    cancel: function( controller ) {
-        //Probably a better way
-        controller.set( "name", "" );
-        controller.set( "description", "" );
-
-        this.transitionToRoute( "mobileApps" );
-    },
-    // Move this to the Model?
-    saveMobileApplication: function( applicationData ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            that = this;
-
-        applicationPipe.save( applicationData, {
+        this.applicationPipe.save( applicationData, {
             success: function() {
                 that.transitionToRoute( "mobileApps" );
             },
@@ -59,13 +39,20 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                 }
             }
         });
+
+    },
+    cancel: function( controller ) {
+        //Probably a better way
+        controller.set( "name", "" );
+        controller.set( "description", "" );
+
+        this.transitionToRoute( "mobileApps" );
     },
     remove: function( app ) {
-        var applicationPipe = App.AeroGear.pipelines.pipes.applications,
-            things = app,
+        var things = app,
             that = this;
 
-        applicationPipe.remove( app.pushApplicationID, {
+        this.applicationPipe.remove( app.pushApplicationID, {
             success: function() {
                 var content = that.get("model").get("content"),
                     find;
