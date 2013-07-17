@@ -51,7 +51,8 @@ App.MobileVariantInstance.reopenClass({
 
         mobileVariantInstancePipe.read({
             id: variantApplicationInstanceId
-        }).then( function( response ) {
+        })
+        .then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
@@ -71,7 +72,8 @@ App.MobileVariantInstance.reopenClass({
                 mobileVariantInstance.setProperties( response );
 
             }
-        }).then( null, function( error ) {
+        })
+        .then( null, function( error ) {
             console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:

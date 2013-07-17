@@ -64,7 +64,8 @@ App.MobileVariant.reopenClass({
 
         mobileVariantPipe.read({
             id: variantApplicationId
-        }).then( function( response ) {
+        })
+        .then( function( response ) {
             if( AeroGear.isArray( response ) ) {
                 response.forEach( function( data ) {
                     data.isLoaded = true;
@@ -84,7 +85,8 @@ App.MobileVariant.reopenClass({
                 mobileVariant.setProperties( response );
 
             }
-        }).then( null, function( error ) {
+        })
+        .then( null, function( error ) {
             console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:
@@ -101,7 +103,6 @@ App.MobileVariant.reopenClass({
     },
     _createVariantInstanceObject: function( response ) {
 
-        // TODO: DRY this out
         var variantInstance = Ember.ArrayProxy.create({ content: [] });
 
         response.installations.forEach( function( value ) {
