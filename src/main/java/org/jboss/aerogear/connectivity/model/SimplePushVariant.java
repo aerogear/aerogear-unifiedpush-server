@@ -21,6 +21,8 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import org.jboss.aerogear.connectivity.api.VariantType;
+
 @Entity
 @DiscriminatorValue("'simplePush'")
 public class SimplePushVariant extends AbstractVariant {
@@ -28,6 +30,8 @@ public class SimplePushVariant extends AbstractVariant {
 
     public SimplePushVariant() {
         super();
+        // we are SimplePush:
+        this.type = VariantType.SIMPLE_PUSH;
     }
 
     @Column
