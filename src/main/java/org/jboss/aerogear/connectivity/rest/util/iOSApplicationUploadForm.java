@@ -24,10 +24,20 @@ public class iOSApplicationUploadForm {
     public iOSApplicationUploadForm() {
     }
 
+    private Boolean production; // RestEasy needs 'Boolean' here
     private String passphrase;
     private byte[] certificate;
     private String name;
     private String description;
+
+    public Boolean getProduction() {
+        return production;
+    }
+
+    @FormParam("production")
+    public void setProduction(Boolean production) {
+        this.production = production;
+    }
 
     public String getName() {
         return name;

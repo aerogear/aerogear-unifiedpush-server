@@ -89,6 +89,7 @@ public class iOSVariantEndpoint {
         iOSVariation.setDescription(form.getDescription());
         iOSVariation.setPassphrase(form.getPassphrase());
         iOSVariation.setCertificate(form.getCertificate());
+        iOSVariation.setProduction(form.getProduction());
 
         // manually set the ID:
         iOSVariation.setVariantID(UUID.randomUUID().toString());
@@ -147,6 +148,7 @@ public class iOSVariantEndpoint {
             iOSVariation.setDescription(updatedForm.getDescription());
             iOSVariation.setPassphrase(updatedForm.getPassphrase());
             iOSVariation.setCertificate(updatedForm.getCertificate());
+            iOSVariation.setProduction(updatedForm.getProduction());
 
             iOSVariantService.updateiOSVariant(iOSVariation);
             return Response.noContent().build();
