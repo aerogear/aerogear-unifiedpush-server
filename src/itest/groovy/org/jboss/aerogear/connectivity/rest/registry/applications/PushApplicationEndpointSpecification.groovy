@@ -28,6 +28,7 @@ import org.jboss.aerogear.connectivity.service.PushApplicationService;
 import org.jboss.aerogear.connectivity.users.Developer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.spock.ArquillianSpecification;
+import org.jboss.connectivity.common.Deployments;
 import org.jboss.resteasy.spi.UnauthorizedException;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -67,27 +68,7 @@ class PushApplicationEndpointSpecification extends Specification {
 
     @Deployment(testable=true)
     def static WebArchive "create deployment"() {
-
-        def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
-
-        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
-                .as(WebArchive.class)
-
-        war.delete("/WEB-INF/classes/META-INF/persistence.xml")
-        war.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-
-        war.delete("/WEB-INF/classes/META-INF/beans.xml")
-        war.addAsResource("META-INF/test-beans.xml", "META-INF/beans.xml")
-
-        war.delete("/WEB-INF/h2-ds.xml")
-        war.addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
-
-        war.addClass(PushApplicationEndpointSpecification.class)
-
-        File[] asm = Maven.resolver().resolve("org.ow2.asm:asm:4.1").withoutTransitivity().asFile()
-        war = war.addAsLibraries(asm)
-
-        return war
+        Deployments.unifiedPushServerWithClasses(PushApplicationEndpointSpecification.class)
     }
 
     def "test unauthorized registration"() {
@@ -186,10 +167,6 @@ class PushApplicationEndpointSpecification extends Specification {
         pushApp = (PushApplication)registerResponse.getEntity()
         pushAppId = pushApp.getPushApplicationID()
 
-        and:
-        "Searching the registered Push application by id using the underlying service"
-        def PushApplication findPushApp = pushAppService.findByPushApplicationID(pushAppId)
-
         then:
         "Injections have been performed"
         pushApplicationEndpoint!=null && pushAppService != null
@@ -204,6 +181,7 @@ class PushApplicationEndpointSpecification extends Specification {
 
         and:
         "The application was indeed registered"
+        def PushApplication findPushApp = pushAppService.findByPushApplicationID(pushAppId)
         findPushApp != null
     }
 
@@ -246,7 +224,7 @@ class PushApplicationEndpointSpecification extends Specification {
         login()
 
         and:
-        "Finds a push application by id"
+        "Searches for a registered a push application by id"
         def findByIdResponse = pushApplicationEndpoint.findById(pushAppId)
 
         then:
@@ -285,12 +263,8 @@ class PushApplicationEndpointSpecification extends Specification {
         "Updates a registered push application"
         def updateResponse = pushApplicationEndpoint.updatePushApplication(pushAppId, updatedPushApp)
 
-        "Finds a push application by id"
+        "Seraches for the push application by id"
         def findByIdResponse = pushApplicationEndpoint.findById(pushAppId)
-
-        and:
-        "Searching the registered Push application by id using the underlying service"
-        def PushApplication foundPushApp = pushAppService.findByPushApplicationID(pushAppId)
 
         then:
         "Injections have been performed"
@@ -319,6 +293,7 @@ class PushApplicationEndpointSpecification extends Specification {
 
         and:
         "Push application was updated on the underlying service"
+        def PushApplication foundPushApp = pushAppService.findByPushApplicationID(pushAppId)
         foundPushApp != null && PUSH_APPLICATION_UPDATED_DESC.equals(foundPushApp.getDescription()) && PUSH_APPLICATION_UPDATED_NAME.equals(foundPushApp.getName())
     }
 
@@ -329,15 +304,11 @@ class PushApplicationEndpointSpecification extends Specification {
         login()
 
         and:
-        "Delete push application by id"
+        "Deletes push application by id"
         def deleteResponse = pushApplicationEndpoint.deletePushApplication(pushAppId)
 
-        "Finds a push application by id"
+        "Searches for a push application by id"
         def findByIdResponse = pushApplicationEndpoint.findById(pushAppId)
-
-        and:
-        "Searching the registered Push application by id using the underlying service"
-        def PushApplication foundPushApp = pushAppService.findByPushApplicationID(pushAppId)
         
         then:
         "Injections have been performed"
@@ -357,6 +328,7 @@ class PushApplicationEndpointSpecification extends Specification {
 
         and:
         "Deleted push application does not exist"
+        def PushApplication foundPushApp = pushAppService.findByPushApplicationID(pushAppId)
         foundPushApp == null
     }
 
