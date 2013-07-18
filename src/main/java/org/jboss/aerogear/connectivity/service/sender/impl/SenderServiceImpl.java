@@ -17,6 +17,8 @@
 
 package org.jboss.aerogear.connectivity.service.sender.impl;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.connectivity.message.sender.SimplePushNotificationSender;
@@ -33,10 +36,12 @@ import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.SimplePushVariant;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
 import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 import org.jboss.aerogear.connectivity.service.sender.SenderService;
 import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
 import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
 
 @Stateless
 @Asynchronous
@@ -54,28 +59,68 @@ public class SenderServiceImpl implements SenderService {
     @Inject
     private ClientInstallationService clientInstallationService;
 
+    @Inject
+    private GenericVariantService genericVariantService; 
+
     @Override
     @Asynchronous
     public void selectiveSend(PushApplication pushApplication, SelectiveSendMessage message) {
 
-        // get all the criterias:
+        // collections for all the different variants:
+        final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
+        final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
+        final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
+
         final SelectiveSendCriterias criterias = message.getSendCriterias();
+        final List<String> variantIDs = criterias.getVariants();
+
+        // if the "SelectiveSend" did specify the "variants" field,
+        // we look up each of those mentioned variants, by their "variantID":
+        if (variantIDs != null) {
+
+            for (String variantID : variantIDs) {
+                Variant variant = genericVariantService.findByVariantID(variantID);
+                // based on type, we store in the matching collection
+                switch (variant.getType()) {
+                        case ANDROID:
+                            androidVariants.add((AndroidVariant) variant);
+                            break;
+                        case IOS:
+                            iOSVariants.add((iOSVariant) variant);
+                            break;
+                        case SIMPLE_PUSH:
+                            simplePushVariants.add((SimplePushVariant) variant);
+                            break;
+                        default:
+                            // nope; should never enter here
+                            break;
+                        }
+                    }
+        } else {
+            // No specific variants have been requested,
+            // we get all the variants, from the given PushApplication:
+            androidVariants.addAll(pushApplication.getAndroidVariants());
+            iOSVariants.addAll(pushApplication.getIOSVariants());
+            simplePushVariants.addAll(pushApplication.getSimplePushVariants());
+        }
+
+        // all possible criteria
         final String category = criterias.getCategory();
         final List<String> aliases = criterias.getAliases();
         final List<String> deviceTypes = criterias.getDeviceTypes();
 
+        
+        
         // TODO: DISPATCH TO A QUEUE .....
-        final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
         for (iOSVariant iOSVariant : iOSVariants) {
             final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
-            apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
+            this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        Set<AndroidVariant> androidVariants = pushApplication.getAndroidVariants();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
-            gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
+            this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
 
@@ -87,14 +132,13 @@ public class SenderServiceImpl implements SenderService {
             return;
         }
 
-        Set<SimplePushVariant> spApps = pushApplication.getSimplePushVariants();
-        for (SimplePushVariant simplePushVariant : spApps) {
+        for (SimplePushVariant simplePushVariant : simplePushVariants) {
             // the specified category names.....
             final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String simplePushCategory : simplePushCategories) {
                 final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
-                simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
+                this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
             }
         }
     }
@@ -107,14 +151,14 @@ public class SenderServiceImpl implements SenderService {
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
         for (iOSVariant iOSVariant : iOSVariants) {
             final List<String> iosTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(iOSVariant.getVariantID());
-            apnsSender.sendPushMessage(iOSVariant, iosTokenPerVariant, payload);
+            this.sendToAPNs(iOSVariant, iosTokenPerVariant, payload);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidVariants();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
-            gcmSender.sendPushMessage(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
+            this.sendToGCM(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
         }
 
 
@@ -129,7 +173,23 @@ public class SenderServiceImpl implements SenderService {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePusj Service class
             final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
-            simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
+            this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
         }
+    }
+
+    // ============================================================================================================
+    // ======================= Section that deals with the different sender options ===============================
+    // ============================================================================================================
+
+    private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+        apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
+    }
+
+    private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
+        gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
+    }
+
+    private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
+        simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }
