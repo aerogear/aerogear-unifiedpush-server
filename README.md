@@ -45,14 +45,24 @@ _The response returns a **pushApplicationID** and a **masterSecret** that will b
 
 ##### iOS Variant
 
-Add an ```iOS``` variant (e.g. _HR for iOS_):
+Add a *PRODUCTION* ```iOS``` variant (e.g. _HR for iOS_):
 ```
 curl -v -b cookies.txt -c cookies.txt 
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
-  -F "developmentCertificate=@/Users/matzew/Desktop/MyDevCert.p12"
-  -F "developmentPassphrase=TopSecret"
-  -F "productionCertificate=@/Users/matzew/Desktop/MyProdCert.p12"
-  -F "productionPassphrase=TopSecret"
+  -F "certificate=@/Users/matzew/Desktop/MyProdCert.p12"
+  -F "passphrase=TopSecret"
+  -F "production=true"  // make sure you have Production certificate and Provisioning Profile
+
+  -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
+```
+
+Add a *DEVELOPMENT* ```iOS``` variant (e.g. _HR for iOS_):
+```
+curl -v -b cookies.txt -c cookies.txt 
+  -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
+  -F "certificate=@/Users/matzew/Desktop/MyTestCert.p12"
+  -F "passphrase=TopSecret"
+  -F "production=false"  // make sure you have Development certificate and Provisioning Profile
 
   -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
 ```
@@ -173,7 +183,6 @@ curl -u "{PushApplicationID}:{MasterSecret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
    -d '{
-       "staging":"development",  // if msgs should go to APNs Sandbox server (default: "production")
        "key":"value",
        "alert":"HELLO!",
        "sound":"default",
