@@ -87,15 +87,6 @@ class PushApplicationEndpointSpecification extends Specification {
         File[] asm = Maven.resolver().resolve("org.ow2.asm:asm:4.1").withoutTransitivity().asFile()
         war = war.addAsLibraries(asm)
 
-        File[] libs = Maven.resolver().loadPomFromFile("pom.xml").resolve(
-                "com.jayway.restassured:rest-assured",
-                "org.jboss.arquillian.spock:arquillian-spock-container",
-                "com.jayway.restassured:json-path",
-                "org.spockframework:spock-core",
-                "org.codehaus.groovy:groovy-all").withTransitivity().asFile()
-
-        war = war.addAsLibraries(libs)
-
         return war
     }
 
