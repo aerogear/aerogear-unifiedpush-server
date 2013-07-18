@@ -29,8 +29,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.api.VariantType;
 import org.jboss.aerogear.connectivity.jpa.PersistentObject;
 
 @Entity
@@ -43,6 +45,9 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
         secret = UUID.randomUUID().toString();
     }
 
+    @NotNull
+    @Column
+    protected VariantType type;
     @Column
     private String name;
     @Column
@@ -58,6 +63,10 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="variantID", referencedColumnName="variantID")
     private Set<InstallationImpl> installations = new HashSet<InstallationImpl>();
+
+    public VariantType getType() {
+        return type;
+    }
 
     public String getName() {
         return this.name;

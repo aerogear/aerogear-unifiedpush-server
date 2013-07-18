@@ -22,6 +22,8 @@ import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
+import org.jboss.aerogear.connectivity.api.VariantType;
+
 @Entity
 @DiscriminatorValue("'ios'")
 public class iOSVariant extends AbstractVariant {
@@ -29,6 +31,8 @@ public class iOSVariant extends AbstractVariant {
 
     public iOSVariant() {
         super();
+        // we are iOS:
+        this.type = VariantType.IOS;
     }
 
     @Column

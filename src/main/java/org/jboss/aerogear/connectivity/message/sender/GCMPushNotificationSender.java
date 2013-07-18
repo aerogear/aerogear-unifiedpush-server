@@ -38,6 +38,14 @@ public class GCMPushNotificationSender {
     @Inject
     GCMCache cache;
 
+    /**
+     * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
+     * the {@link Collection} of tokens for the given Google API key
+     * 
+     * @param tokens collection of tokens, representing actual Android devices
+     * @param pushMessage the payload to be submitted
+     * @param apiKey the Google API key
+     */
     public void sendPushMessage(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
 
         // no need to send empty list
@@ -55,7 +63,8 @@ public class GCMPushNotificationSender {
         // iterate over the missing keys:
         Set<String> keys = pushMessage.getData().keySet();
         for (String key : keys) {
-            gcmBuilder.addData(key, (String) pushMessage.getData().get(key));
+            // GCM needs stringified values:
+            gcmBuilder.addData(key, "" + pushMessage.getData().get(key));
         }
 
         Message gcmMessage = gcmBuilder.build();
