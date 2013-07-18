@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.connectivity.message.sender;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -32,6 +34,9 @@ public class APNsPushNotificationSender {
     @Inject
     APNsCache apnsCache;
 
+    @Inject
+    private Logger logger;
+
     public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
 
         String apnsMessage = APNS.newPayload()
@@ -45,9 +50,51 @@ public class APNsPushNotificationSender {
                 .build(); // build the JSON payload, for APNs 
 
         // look up the ApnsService from the cache:
-        ApnsService service = apnsCache.getApnsServiceForVariant(iOSVariant);
+        ApnsService service = lookupApnsService(iOSVariant);
 
-        // send: 
-        service.push(tokens, apnsMessage);
+        if (service != null) {
+            try {
+                // send:
+                service.start();
+                service.push(tokens, apnsMessage);
+            }
+            finally {
+                // tear down and release resources:
+                service.stop();
+            }
+        } else {
+            logger.severe("No certificate was found. Could not send messages to APNs");
+        }
+    }
+
+    /**
+     * Returns the ApnsService, based on the required profile (production VS sandbox/test).
+     * Null is returned if there is no "configuration" for the request stage 
+     */
+    private ApnsService lookupApnsService(iOSVariant iOSVariant) {
+
+        // this check should not be needed, but you never know:
+        if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
+
+            if (iOSVariant.isProduction()) {
+
+                return APNS
+                        .newService()
+                        .withCert(
+                                new ByteArrayInputStream(iOSVariant.getCertificate()),
+                                iOSVariant.getPassphrase()).withProductionDestination()
+                               .asQueued().build();
+            } else {
+
+                return APNS
+                        .newService()
+                        .withCert(
+                                new ByteArrayInputStream(iOSVariant.getCertificate()),
+                                iOSVariant.getPassphrase()).withSandboxDestination()
+                               .asQueued().build();
+            }
+        }
+        // null if the request "staging" could not be fulfilled
+        return null;
     }
 }
