@@ -51,7 +51,7 @@ public class UserEndpoint {
     @Path("/{id}")
     @Produces("application/json")
     public Response findById(@PathParam("id") String id) {
-        SimpleUser developer = (SimpleUser) identityManager.lookupIdentityById(SimpleUser.class, id);
+        SimpleUser developer = identityManager.lookupIdentityById(SimpleUser.class, id);
         if (developer == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -66,9 +66,8 @@ public class UserEndpoint {
     }
 
     @PUT
-    @Path("/{id}")
     @Consumes("application/json")
-    public Response update(@PathParam("id") String id, SimpleUser developer) {
+    public Response update(SimpleUser developer) {
         identityManager.update(developer);
         return Response.noContent().build();
     }
