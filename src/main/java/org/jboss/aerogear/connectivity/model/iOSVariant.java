@@ -32,6 +32,9 @@ public class iOSVariant extends AbstractVariant {
     }
 
     @Column
+    private boolean production;
+
+    @Column
     @NotNull
     private String passphrase;
 
@@ -39,6 +42,14 @@ public class iOSVariant extends AbstractVariant {
     @Column(name = "CERT")
     @NotNull
     private byte[] certificate;
+
+    public boolean isProduction() {
+        return production;
+    }
+
+    public void setProduction(boolean production) {
+        this.production = production;
+    }
 
     public String getPassphrase() {
         return this.passphrase;
