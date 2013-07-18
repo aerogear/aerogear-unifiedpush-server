@@ -29,12 +29,14 @@ public class SelectiveSendCriterias {
     private final List<String> aliases;
     private final List<String> deviceTypes;
     private final String category;
+    private final List<String> variants;
 
     @SuppressWarnings("unchecked")
     public SelectiveSendCriterias(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
         this.category = (String) data.remove("category");
+        this.variants = (List<String>) data.remove("variants");
     }
 
     public List<String> getAliases() {
@@ -47,5 +49,9 @@ public class SelectiveSendCriterias {
 
     public String getCategory() {
         return category;
+    }
+
+    public List<String> getVariants() {
+        return variants;
     }
 }
