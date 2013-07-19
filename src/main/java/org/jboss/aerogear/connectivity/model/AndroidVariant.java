@@ -23,6 +23,9 @@ import javax.validation.constraints.NotNull;
 
 import org.jboss.aerogear.connectivity.api.VariantType;
 
+/**
+ * The Android variant class encapsulates GCM specific behavior.
+ */
 @Entity
 @DiscriminatorValue("'android'")
 public class AndroidVariant extends AbstractVariant {
@@ -38,6 +41,9 @@ public class AndroidVariant extends AbstractVariant {
     @NotNull
     private String googleKey;
 
+    /**
+     * The Google API Key from the Google API project, which has been enabled for Android-based GCM.   
+     */
     public String getGoogleKey() {
         return this.googleKey;
     }

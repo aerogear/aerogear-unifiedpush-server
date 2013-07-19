@@ -35,6 +35,9 @@ import org.jboss.aerogear.connectivity.api.Variant;
 import org.jboss.aerogear.connectivity.api.VariantType;
 import org.jboss.aerogear.connectivity.jpa.PersistentObject;
 
+/**
+ * Abstract Base Class for the different supported variant types.
+ */
 @Entity
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)

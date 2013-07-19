@@ -19,25 +19,53 @@ package org.jboss.aerogear.connectivity.service.sender.message;
 
 import java.util.Map;
 
+/**
+ * Base interface for the different Payload objects:
+ * <ul>
+ *   <li>BroadcastMessage</li>
+ *   <li>SelectiveSendMessage</li>
+ * </ul>    
+ *
+ * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
+ */
 public interface UnifiedPushMessage {
-    
+
     /**
-     * Returns <code>alert</code> key, recognized in native iOS (native) and AGDROID
+     * Returns the value of the 'alert' key from the submitted payload.
+     * This key is recognized in native iOS, without any API invocation and
+     * on AeroGear's GCM offerings.
+     * 
+     * Android users that are not using AGDROID can read the value as well,
+     * but need to call specific APIs to show the 'alert' value.
      */
     String getAlert();
     
     /**
-     * Returns <code>sound</code> key, recognized in native iOS
+     * Returns the value of the 'sound' key from the submitted payload.
+     * This key is recognized in native iOS, without any API invocation.
+     * 
+     * Android users can read the value as well, but need to call specific
+     * APIs to play the referenced 'sound' file.
      */
     String getSound();
 
     /**
-     * Returns <code>badge</code> key, recognized in native iOS
+     * Returns the value of the 'badge' key from the submitted payload.
+     * This key is recognized in native iOS, without any API invocation.
+     * 
+     * Android users can read the value as well, but need to call specific
+     * APIs to show the 'badge number'.
      */
     int getBadge();
     
     /**
-     * Returns <code>Map</code> containing the submitted, JSON without the highlighted keys 
+     * Returns a Map, representing any other key-value pairs that were send
+     * to the RESTful Sender API.
+     * 
+     * This map usually contains application specific data, like:
+     * <pre>
+     *  "sport-news-channel15" : "San Francisco 49er won last game" 
+     * </pre>
      */
     Map<String, Object> getData();
 }

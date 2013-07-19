@@ -17,6 +17,9 @@
 
 package org.jboss.aerogear.connectivity.api;
 
+/**
+ * A type-safe identifier for the allowed variant types.
+ */
 public enum VariantType {
     
     /**
