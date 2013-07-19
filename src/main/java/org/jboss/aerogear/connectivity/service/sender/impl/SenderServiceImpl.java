@@ -177,10 +177,6 @@ public class SenderServiceImpl implements SenderService {
         }
     }
 
-    // ============================================================================================================
-    // ======================= Section that deals with the different sender options ===============================
-    // ============================================================================================================
-
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
