@@ -26,6 +26,11 @@ import org.jboss.aerogear.connectivity.model.InstallationImpl;
 public interface Variant {
 
     /**
+     * The type (Android, iOS or SimplePush) of the underlying variant.
+     */
+    VariantType getType();
+
+    /**
      * The name of the variant (e.g. the name of the matching App in the Appstore) 
      */
     void setName(final String name);

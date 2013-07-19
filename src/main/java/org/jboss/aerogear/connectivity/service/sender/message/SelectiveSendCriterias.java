@@ -21,31 +21,53 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Simple class, containing all "query criteria" options for a message,
+ * Simple utility class, containing all "query criteria" options for a message,
  * that has been sent to the "Selective Send" HTTP endpoint.
+ * 
+ * <p>
+ * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class SelectiveSendCriterias {
 
     private final List<String> aliases;
     private final List<String> deviceTypes;
     private final String category;
+    private final List<String> variants;
 
     @SuppressWarnings("unchecked")
     public SelectiveSendCriterias(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
         this.category = (String) data.remove("category");
+        this.variants = (List<String>) data.remove("variants");
     }
 
+    /**
+     * Returns a list of user names or email addresses that will receive
+     * a push notification.
+     */
     public List<String> getAliases() {
         return aliases;
     }
     
+    /**
+     * Returns a list of device types that will receive a push notification. 
+     */
     public List<String> getDeviceTypes() {
         return deviceTypes;
     }
 
+    /**
+     * Returns a category that will receive a push notification. 
+     */
     public String getCategory() {
         return category;
+    }
+
+    /**
+     * Returns a list of variant IDs that will receive a push notification. 
+     */
+    public List<String> getVariants() {
+        return variants;
     }
 }

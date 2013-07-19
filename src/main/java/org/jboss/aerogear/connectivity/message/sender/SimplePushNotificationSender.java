@@ -39,14 +39,22 @@ public class SimplePushNotificationSender implements Serializable {
     @Inject
     private Logger logger;
 
-    public void sendMessage(String endpoint, String payload, List<String> channels) {
+    /**
+     * Sends SimplePush notifications to all connected clients, that are represented by
+     * the {@link Collection} of channelIDs, for the given SimplePush network.  
+     * 
+     * @param endpointBaseURL Base URL of the used SimplePush Network
+     * @param payload the payload, or version string, to be submitted
+     * @param channelIDs collection of channelIDs, representing actual SimplePush client (devices).
+     */
+    public void sendMessage(String endpointBaseURL, String payload, List<String> channelIDs) {
         // iterate over all the given channels:
-        for (String channelID : channels) {
+        for (String channelID : channelIDs) {
 
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer 
-                conn = put(endpoint+channelID, payload);
+                conn = put(endpointBaseURL+channelID, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 

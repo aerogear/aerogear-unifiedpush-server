@@ -17,7 +17,9 @@
 package org.jboss.aerogear.connectivity.message.sender;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -28,6 +30,7 @@ import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.ApnsServiceBuilder;
 
 public class APNsPushNotificationSender {
 
@@ -37,7 +40,18 @@ public class APNsPushNotificationSender {
     @Inject
     private Logger logger;
 
+    /**
+     * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
+     * the {@link Collection} of tokens for the given {@link iOSVariant}.
+     * 
+     * @param iOSVariant the logical construct, needed to lookup the certificate and the passphrase.
+     * @param tokens collection of tokens, representing actual iOS devices
+     * @param pushMessage the payload to be submitted
+     */
     public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+        // no need to send empty list
+        if (tokens.isEmpty())
+            return;
 
         String apnsMessage = APNS.newPayload()
                     // adding recognized key values
@@ -49,16 +63,17 @@ public class APNsPushNotificationSender {
 
                 .build(); // build the JSON payload, for APNs 
 
-        // look up the ApnsService from the cache:
-        ApnsService service = lookupApnsService(iOSVariant);
+        ApnsService service = buildApnsService(iOSVariant);
 
         if (service != null) {
             try {
                 // send:
                 service.start();
                 service.push(tokens, apnsMessage);
+                logger.info("Invalid devices: " + service.getInactiveDevices());
             }
             finally {
+
                 // tear down and release resources:
                 service.stop();
             }
@@ -71,30 +86,35 @@ public class APNsPushNotificationSender {
      * Returns the ApnsService, based on the required profile (production VS sandbox/test).
      * Null is returned if there is no "configuration" for the request stage 
      */
-    private ApnsService lookupApnsService(iOSVariant iOSVariant) {
+    private ApnsService buildApnsService(iOSVariant iOSVariant) {
 
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
+            
+            final ApnsServiceBuilder builder = APNS.newService();
 
-            if (iOSVariant.isProduction()) {
-
-                return APNS
-                        .newService()
-                        .withCert(
-                                new ByteArrayInputStream(iOSVariant.getCertificate()),
-                                iOSVariant.getPassphrase()).withProductionDestination()
-                               .asQueued().build();
-            } else {
-
-                return APNS
-                        .newService()
-                        .withCert(
-                                new ByteArrayInputStream(iOSVariant.getCertificate()),
-                                iOSVariant.getPassphrase()).withSandboxDestination()
-                               .asQueued().build();
+            // add the certificate:
+            ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
+            builder.withCert(stream, iOSVariant.getPassphrase());
+            
+            try {
+                // release the stream
+                stream.close();
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Error reading certificate", e);
             }
+            
+            // pick the destination:
+            if (iOSVariant.isProduction()) {
+                builder.withProductionDestination();
+            } else {
+                builder.withSandboxDestination();
+            }
+
+            // create the service
+            return builder.build();
         }
-        // null if the request "staging" could not be fulfilled
+        // null if, why ever, there was no cert/passphrase
         return null;
     }
 }

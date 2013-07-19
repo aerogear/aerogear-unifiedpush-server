@@ -19,6 +19,13 @@ package org.jboss.aerogear.connectivity.service.sender.message;
 
 import java.util.Map;
 
+/**
+ * Contains the data of the JSON payload that has been sent to the
+ * Broadcast endpoint of the RESTful Sender endpoint.
+ * 
+ * <p>
+ * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
+ */
 public class BroadcastMessage implements UnifiedPushMessage {
 
     private final String simplePush;
@@ -59,22 +66,30 @@ public class BroadcastMessage implements UnifiedPushMessage {
         this.data = data;
     }
 
+    /**
+     * Returns the SimplePush specific version string (e.g. <code>version=123</code>)
+     *  of the broadcast payload.
+     */
     public String getSimplePush() {
         return simplePush;
     }
 
+    @Override
     public String getAlert() {
         return alert;
     }
 
+    @Override
     public String getSound() {
         return sound;
     }
 
+    @Override
     public int getBadge() {
         return badge;
     }
 
+    @Override
     public Map<String, Object> getData() {
         return data;
     }
