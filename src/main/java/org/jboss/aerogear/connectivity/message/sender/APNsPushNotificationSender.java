@@ -93,13 +93,13 @@ public class APNsPushNotificationSender {
             
             final ApnsServiceBuilder builder = APNS.newService();
 
-            // add the certicicate:
-            ByteArrayInputStream bais = new ByteArrayInputStream(iOSVariant.getCertificate());
-            builder.withCert(bais, iOSVariant.getPassphrase());
+            // add the certificate:
+            ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
+            builder.withCert(stream, iOSVariant.getPassphrase());
             
             try {
                 // release the stream
-                bais.close();
+                stream.close();
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error reading certificate", e);
             }
