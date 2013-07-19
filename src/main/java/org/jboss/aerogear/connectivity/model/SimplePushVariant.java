@@ -23,6 +23,9 @@ import javax.validation.constraints.NotNull;
 
 import org.jboss.aerogear.connectivity.api.VariantType;
 
+/**
+ * The SimplePush variant class encapsulates SimplePush specific behavior.
+ */
 @Entity
 @DiscriminatorValue("'simplePush'")
 public class SimplePushVariant extends AbstractVariant {
@@ -38,6 +41,10 @@ public class SimplePushVariant extends AbstractVariant {
     @NotNull
     private String pushNetworkURL;
 
+    /**
+     * The URL of the underlying SimplePush Network, 
+     * which is used to send "Push Messages" to the actual Network.
+     */
     public String getPushNetworkURL() {
         return pushNetworkURL;
     }

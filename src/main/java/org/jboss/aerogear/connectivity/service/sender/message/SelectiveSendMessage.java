@@ -19,6 +19,13 @@ package org.jboss.aerogear.connectivity.service.sender.message;
 
 import java.util.Map;
 
+/**
+ * Contains the data of the JSON payload that has been sent to the
+ * 'Selective Send' endpoint of the RESTful Sender endpoint.
+ * 
+ * <p>
+ * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
+ */
 public class SelectiveSendMessage implements UnifiedPushMessage {
 
     private final SelectiveSendCriterias criterias;
@@ -82,10 +89,22 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
 
     }
 
+    /**
+     * Returns the object that contains all the submitted query criteria.
+     */
     public SelectiveSendCriterias getSendCriterias() {
         return criterias;
     }
 
+    /**
+     * Returns the SimplePush specific Map, containing the requested categories and their version strings:
+     * <pre>
+     *   {
+     *     "SomeCategory":"version=123",
+     *     "anotherCategory":"version=456"
+     *   }
+     * </pre>
+     */
     public Map<String, String> getSimplePush() {
         return simplePush;
     }
