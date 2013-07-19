@@ -44,13 +44,13 @@ class Deployments {
                 .as(WebArchive.class)
 
         war.delete("/WEB-INF/classes/META-INF/persistence.xml")
-        war.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
+        war.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
 
-        war.delete("/WEB-INF/classes/META-INF/beans.xml")
-        war.addAsResource("META-INF/test-beans.xml", "META-INF/beans.xml")
+        //war.delete("/WEB-INF/classes/META-INF/beans.xml")
+        //war.addAsResource("META-INF/beans.xml", "META-INF/beans.xml")
 
-        war.delete("/WEB-INF/h2-ds.xml")
-        war.addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
+        //war.delete("/WEB-INF/h2-ds.xml")
+        //war.addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
 
         war.addClasses(clazz)
 
