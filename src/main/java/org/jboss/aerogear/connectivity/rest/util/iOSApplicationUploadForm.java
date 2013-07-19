@@ -17,8 +17,14 @@
 package org.jboss.aerogear.connectivity.rest.util;
 
 import javax.ws.rs.FormParam;
+
+import org.jboss.aerogear.connectivity.model.iOSVariant;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
+/**
+ * Helper class to read values from the multipart request
+ * that is performed when creating (or updating) an iOS variant. 
+ */
 public class iOSApplicationUploadForm {
 
     public iOSApplicationUploadForm() {
@@ -34,6 +40,13 @@ public class iOSApplicationUploadForm {
         return production;
     }
 
+    /**
+     * Reads the boolean flag from the multipart request,
+     * which indicates if the iOS variant is a 'production' variant or not. 
+     * 
+     * The {@link iOSVariant} model differentiates between production and test
+     * in order to establish connections to different APNs Servers.
+     */
     @FormParam("production")
     public void setProduction(Boolean production) {
         this.production = production;
@@ -43,6 +56,9 @@ public class iOSApplicationUploadForm {
         return name;
     }
 
+    /**
+     * Reads the name field from the multipart request.
+     */
     @FormParam("name")
     public void setName(String name) {
         this.name = name;
@@ -52,6 +68,9 @@ public class iOSApplicationUploadForm {
         return description;
     }
 
+    /**
+     * Reads the description field from the multipart request.
+     */
     @FormParam("description")
     public void setDescription(String description) {
         this.description = description;
@@ -61,6 +80,9 @@ public class iOSApplicationUploadForm {
         return passphrase;
     }
 
+    /**
+     * Reads the passphrase field from the multipart request.
+     */
     @FormParam("passphrase")
     public void setPassphrase(String passphrase) {
         this.passphrase = passphrase;
@@ -70,6 +92,9 @@ public class iOSApplicationUploadForm {
         return certificate;
     }
 
+    /**
+     * Reads the certificate file upload from the multipart request.
+     */
     @FormParam("certificate")
     @PartType("application/octet-stream")
     public void setCertificate(byte[] data) {
