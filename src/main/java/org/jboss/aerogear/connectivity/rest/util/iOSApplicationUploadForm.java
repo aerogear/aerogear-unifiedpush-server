@@ -44,7 +44,7 @@ public class iOSApplicationUploadForm {
      * Reads the boolean flag from the multipart request,
      * which indicates if the iOS variant is a 'production' variant or not. 
      * 
-     * The {@link iOSVariant} model differenciates between production and test
+     * The {@link iOSVariant} model differentiates between production and test
      * in order to establish connections to different APNs Servers.
      */
     @FormParam("production")
