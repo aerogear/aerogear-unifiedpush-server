@@ -20,10 +20,20 @@ import java.util.List;
 
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
+/**
+ * Service class used by the Server to work with Installations
+ * for the different Variants. 
+ */
 public interface ClientInstallationService {
 
+    /**
+     * Store a new Installation object on the database.
+     */
     InstallationImpl addInstallation(InstallationImpl installation);
 
+    /**
+     * Performs an update/merge on the given entity.
+     */
     InstallationImpl updateInstallation(InstallationImpl installation);
     
     /**
@@ -34,26 +44,38 @@ public interface ClientInstallationService {
      */
     InstallationImpl updateInstallation(InstallationImpl toUpdate, InstallationImpl postedInstallation);
 
+    /**
+     * Returns the Installation entity, matching the given primaryKey.
+     */
     InstallationImpl findById(String primaryKey);
+
+    /**
+     * Removes the given installation entity.
+     */
     void removeInstallation(InstallationImpl installation);
+
+    /**
+     * Removes all the installation entities in the {@link List}.
+     */
     void removeInstallations(List<InstallationImpl> installations);
 
     /**
      * Used for "feedback service": Collects the invalid Installations for a Variant, based on the identifier tokens:
      */
     void removeInstallationsForVariantByDeviceTokens(String variantID, List<String> deviceTokens);
-    
+
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token
      */
     List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
 
     // ===================   SENDER API   ===================
-    
+
     /**
      * Used for (Android/iOS) Broadcast. Query for all IDs on a certain variant
      */
     List<String> findAllDeviceTokenForVariantID(String variantID);
+
     /**
      * Used for (SimplePush) Broadcast. Query for all "Tokens", that are in the (SimplePush) BROADCAST category.
      */

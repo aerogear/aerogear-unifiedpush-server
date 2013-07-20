@@ -25,6 +25,10 @@ import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 
+/**
+ * (Default) implementation of the {@code ClientInstallationService} interface.
+ * Delegates work to an injected DAO object.
+ */
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
     // the SimplePush BROADCAST category name:
