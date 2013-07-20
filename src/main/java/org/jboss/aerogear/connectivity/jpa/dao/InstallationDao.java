@@ -21,6 +21,10 @@ import java.util.List;
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
+/**
+ * Data Access Object interface to manage different finders for the 
+ * {@code InstallationImpl} entities.
+ */
 public interface InstallationDao extends GenericDao<InstallationImpl, String> {
 
     /**

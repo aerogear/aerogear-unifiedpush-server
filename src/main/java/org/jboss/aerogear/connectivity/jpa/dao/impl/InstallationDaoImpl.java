@@ -28,6 +28,9 @@ import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.AbstractVariant;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
+/**
+ * JPA based implementation of the InstallationDao interface.
+ */
 public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements InstallationDao {
 
     /**
