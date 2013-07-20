@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,6 +27,11 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
      * Loads all installations with the same token for the given Variant
      */
     List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
+
+    /**
+     * Loads all installations matching the <code>List</code> of deviceTokens, for the given Variant
+     */
+    List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, List<String> deviceTokens);
 
     /**
      * Broadcast/Selective Sender API:
