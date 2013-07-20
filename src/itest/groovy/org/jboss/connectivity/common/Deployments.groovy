@@ -18,6 +18,7 @@ package org.jboss.connectivity.common
 
 import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.WebArchive
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter
 
 class Deployments {
@@ -27,12 +28,39 @@ class Deployments {
         def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
 
         WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
-        .as(WebArchive.class);
+                .as(WebArchive.class);
 
         // replace original persistence.xml with testing one
         war.delete("/WEB-INF/classes/META-INF/persistence.xml")
         // testing persistence
         war.addAsResource("META-INF/persistence.xml")
+        return war
+    }
+
+    def static WebArchive unifiedPushServerWithClasses(Class... clazz) {
+        def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
+
+        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
+                .as(WebArchive.class)
+
+        war.delete("/WEB-INF/classes/META-INF/persistence.xml")
+        war.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+
+        //war.delete("/WEB-INF/classes/META-INF/beans.xml")
+        //war.addAsResource("META-INF/beans.xml", "META-INF/beans.xml")
+
+        //war.delete("/WEB-INF/h2-ds.xml")
+        //war.addAsWebInfResource("WEB-INF/test-h2-ds.xml", "h2-ds.xml")
+
+        war.addClasses(clazz)
+
+        File[] asm = Maven.resolver().resolve("org.ow2.asm:asm:4.1").withoutTransitivity().asFile()
+        war = war.addAsLibraries(asm)
+
+        File[] libs = Maven.resolver().loadPomFromFile("pom.xml").resolve(
+                "org.mockito:mockito-core").withTransitivity().asFile()
+        war = war.addAsLibraries(libs)
+
         return war
     }
 }
