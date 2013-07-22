@@ -17,6 +17,7 @@
 package org.jboss.aerogear.connectivity.jpa.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
@@ -35,7 +36,7 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     /**
      * Loads all installations matching the <code>List</code> of deviceTokens, for the given Variant
      */
-    List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, List<String> deviceTokens);
+    List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
      * Broadcast/Selective Sender API:

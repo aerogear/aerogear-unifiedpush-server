@@ -19,6 +19,8 @@ package org.jboss.aerogear.connectivity.message.sender;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.connectivity.message.cache.APNsCache;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
 
 import com.notnoop.apns.APNS;
@@ -40,6 +43,8 @@ public class APNsPushNotificationSender {
     @Inject
     private Logger logger;
 
+    @Inject
+    private ClientInstallationService clientInstallationService ;
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
@@ -64,13 +69,22 @@ public class APNsPushNotificationSender {
                 .build(); // build the JSON payload, for APNs 
 
         ApnsService service = buildApnsService(iOSVariant);
+        logger.severe("The Tokens: " + tokens.toString());
 
         if (service != null) {
             try {
                 // send:
                 service.start();
                 service.push(tokens, apnsMessage);
-                logger.info("Invalid devices: " + service.getInactiveDevices());
+
+                // after sending, let's ask for the inactive tokens:
+                final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
+
+                // transform the tokens to be all lower-case:
+                final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
+
+                // trigger asynchronous deletion:
+                clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
             }
             finally {
 
@@ -80,6 +94,18 @@ public class APNsPushNotificationSender {
         } else {
             logger.severe("No certificate was found. Could not send messages to APNs");
         }
+    }
+
+    /**
+     * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
+     * LOWER CASE format. This helper method performs a transformation
+     */
+    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
+        final Set<String> lowerCaseTokens = new HashSet<String>();
+        for (String token : inactiveTokens) {
+            lowerCaseTokens.add(token.toLowerCase());
+        }
+        return lowerCaseTokens;
     }
 
     /**
