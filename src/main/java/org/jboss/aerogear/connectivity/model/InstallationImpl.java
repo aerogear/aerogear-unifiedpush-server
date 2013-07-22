@@ -27,6 +27,8 @@ public class InstallationImpl extends PersistentObject implements Installation {
     private static final long serialVersionUID = 7177135979544758234L;
 
     @Column
+    private boolean enabled; 
+    @Column
     private String deviceToken;
     @Column
     private String deviceType;
@@ -39,50 +41,72 @@ public class InstallationImpl extends PersistentObject implements Installation {
     @Column
     private String category;
 
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
     public String getDeviceToken() {
         return this.deviceToken;
     }
 
+    @Override
     public void setDeviceToken(final String deviceToken) {
         this.deviceToken = deviceToken;
     }
 
+    @Override
     public String getDeviceType() {
         return this.deviceType;
     }
 
+    @Override
     public void setDeviceType(final String deviceType) {
         this.deviceType = deviceType;
     }
 
+    @Override
     public String getMobileOperatingSystem() {
         return this.mobileOperatingSystem;
     }
 
+    @Override
     public void setMobileOperatingSystem(final String mobileOperatingSystem) {
         this.mobileOperatingSystem = mobileOperatingSystem;
     }
 
+    @Override
     public String getOsVersion() {
         return this.osVersion;
     }
 
+    @Override
     public void setOsVersion(final String osVersion) {
         this.osVersion = osVersion;
     }
 
+    @Override
     public String getAlias() {
         return this.alias;
     }
 
+    @Override
     public void setAlias(final String alias) {
         this.alias = alias;
     }
 
+    @Override
     public String getCategory() {
         return category;
     }
 
+    @Override
     public void setCategory(final String category) {
         this.category = category;
     }

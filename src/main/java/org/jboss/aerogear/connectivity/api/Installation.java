@@ -23,6 +23,14 @@ package org.jboss.aerogear.connectivity.api;
 public interface Installation {
 
     /**
+     * Flag if the actual client installation is enabled (default) or not.
+     * Used by the admin UI to disable specific clients.  
+     */
+    void setEnabled(boolean enabled);
+
+    boolean isEnabled();
+
+    /**
      * Identifies the device/user-agent within its PushNetwork.
      * 
      * <ul>
