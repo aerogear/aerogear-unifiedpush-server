@@ -17,6 +17,7 @@
 package org.jboss.aerogear.connectivity.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
@@ -62,7 +63,7 @@ public interface ClientInstallationService {
     /**
      * Used for "feedback service": Collects the invalid Installations for a Variant, based on the identifier tokens:
      */
-    void removeInstallationsForVariantByDeviceTokens(String variantID, List<String> deviceTokens);
+    void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
      * Used for "Device Registration": loads all installations for one variant, containing the same token

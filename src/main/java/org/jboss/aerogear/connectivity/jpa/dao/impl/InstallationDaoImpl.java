@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.jpa.dao.impl;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,12 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, List<String> deviceTokens) {
+    public List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
+        // if there are no device-tokens, no need to bug the database
+        if (deviceTokens == null || deviceTokens.isEmpty()) {
+            // be nice and return an empty list...
+            return Collections.EMPTY_LIST;
+        }
 
         return createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
                 " abstractVariant join abstractVariant.installations installation" +
