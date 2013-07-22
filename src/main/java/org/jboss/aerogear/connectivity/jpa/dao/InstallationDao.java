@@ -34,7 +34,7 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
-     * Loads all installations matching the <code>List</code> of deviceTokens, for the given Variant
+     * Loads all installations matching the <code>Set</code> of deviceTokens, for the given Variant
      */
     List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
