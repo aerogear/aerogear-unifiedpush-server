@@ -77,15 +77,16 @@ public class InstallationRegistrationEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
-            return Response.status(Status.UNAUTHORIZED)
+            return appendAllowOriginHeader(
+                    Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request")
-                    .build();
+                    .entity("Unauthorized Request"),
+                    request);
         }
 
         // Poor validation: We require the Token!
         if (entity.getDeviceToken() == null) {
-            return Response.status(Status.BAD_REQUEST).build();
+            return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 
         // look up all installations (with same token) for the given variant:
@@ -123,10 +124,11 @@ public class InstallationRegistrationEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
-            return Response.status(Status.UNAUTHORIZED)
+            return appendAllowOriginHeader(
+                    Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request")
-                    .build();
+                    .entity("Unauthorized Request"),
+                    request);
         }
 
         // look up all installations (with same token) for the given variant:
