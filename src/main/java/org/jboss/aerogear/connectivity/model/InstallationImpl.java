@@ -27,7 +27,7 @@ public class InstallationImpl extends PersistentObject implements Installation {
     private static final long serialVersionUID = 7177135979544758234L;
 
     @Column
-    private boolean enabled; 
+    private boolean enabled = true;
     @Column
     private String deviceToken;
     @Column
