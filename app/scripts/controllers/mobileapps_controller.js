@@ -17,7 +17,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     sortAscending: true,
     applicationPipe: App.AeroGear.pipelines.pipes.applications,
     edit: function( controller ) {
-        var that = this,
+        var that = controller,
             applicationData = {
                 name: controller.get( "name" ),
                 id: controller.get( "pushApplicationID" ),

@@ -17,7 +17,7 @@
 */
 
 App.MobileVariantInstance = Ember.Object.extend({
-    type: function() {
+    vType: function() {
         if( this.get( "deviceType" ) === "ANDROID" ) {
             return "android";
         } else if( this.get( "deviceType" ) === "simplePush" ) {

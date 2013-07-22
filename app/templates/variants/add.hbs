@@ -1,5 +1,11 @@
 <!--Template to create a new push application-->
-<div>Add Push Application</div>
+<div>
+  {{#if variantID}}
+    Edit a Variant
+  {{else}}
+    Add Variant
+  {{/if}}
+</div>
 <div>
     <div>
       <form method="POST" {{action "add" controller target="controllers.variantsIndex" on="submit" }} >
@@ -10,7 +16,7 @@
         </p>
         <p>
           <label>Description</label>
-          {{input type="text" name="description" value=variantDescription}}
+          {{textarea name="description" value=variantDescription}}
         </p>
         {{ partial "variants/addVariantsNetwork" }}
         <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>

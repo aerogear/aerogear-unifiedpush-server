@@ -159,7 +159,7 @@ App.VariantRoute = Ember.Route.extend({
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
-        return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.variantType ? model.variantType : model.get( "type" ) };
+        return {  mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.variantType ? model.variantType : model.get( "vType" ) };
 
     }
 });
@@ -177,13 +177,13 @@ App.VariantIndexRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get("type"), model.variantID ) : model );
+        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get("vType"), model.variantID ) : model );
 
     },
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
-        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variant" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
+        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variant" ).get( "pushApplicationID" ) ,type: model.get( "vType" ) };
 
     }
 });
@@ -201,7 +201,7 @@ App.InstanceRoute = Ember.Route.extend({
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
-        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "type" ) };
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  model.pushApplicationID ,type: model.get( "vType" ) };
 
     }
 });
@@ -220,13 +220,13 @@ App.InstanceIndexRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.id ? App.MobileVariantInstance.find( model.pushApplicationID, model.get( "type" ), model.variantID, model.id ) : model );
+        controller.set( "model", model.id ? App.MobileVariantInstance.find( model.pushApplicationID, model.get( "vType" ), model.variantID, model.id ) : model );
 
     },
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
-        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.get( "type" ) };
+        return {  mobileVariantInstance_id: model.id, mobileVariant_id: model.variantID, mobileApplication_id:  this.modelFor( "instance" ).get( "pushApplicationID" ) ,type: model.get( "vType" ) };
 
     }
 });

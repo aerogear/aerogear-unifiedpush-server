@@ -20,7 +20,7 @@ App.MobileVariant = Ember.Object.extend({
     totalInstances: function() {
         return this.get("installations").length;
     }.property(),
-    type: function() {
+    vType: function() {
         if( this.get( "googleKey" ) ) {
             return "android";
         } else if( this.get( "pushNetworkURL" ) ) {

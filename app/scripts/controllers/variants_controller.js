@@ -21,7 +21,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             settings: {
                 baseURL: "/ag-push/rest/applications/",
                 authenticator: App.AeroGear.authenticator,
-                endpoint:  variant.pushApplicationID + "/" + variant.get( "type" )
+                endpoint:  variant.pushApplicationID + "/" + variant.get( "vType" )
             }
         }).pipes.mobileVariant;
 
@@ -51,7 +51,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         });
     },
     add: function( controller ) {
-        var that = this,
+        var that = controller,
             applicationData = {
                 name: controller.get( "variantName" ),
                 description: controller.get( "variantDescription" )
@@ -66,8 +66,8 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         if( variantType === "iOS" ) {
 
             $( "form" ).ajaxSubmit({
-                beforeSubmit: function( formData, jqForm, options ) {
-                    console.log( formData, jqForm, options );
+                beforeSubmit: function( formData ) {
+                    formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
                 },
                 type: "POST",
                 url: url,
@@ -101,6 +101,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             }
 
             // TODO: use aerogear pipes once we get multi part support
+            // TODO: could probably switch this to aerogear since we are doing ios seperate
             $.ajax({
                 "url": url,
                 "type": type,
