@@ -30,6 +30,11 @@ import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
 public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements InstallationDao {
 
+    /**
+     * Usage: Device Registration:
+     * 
+     * Finder that returns the actual client installation, identified by its device-token, for the given variant.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
@@ -60,7 +65,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // the required part: Join + all tokens for variantID;
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
         jpqlString.append(AbstractVariant.class.getSimpleName())
-        .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID");
+        .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
