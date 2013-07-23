@@ -14,7 +14,7 @@
                 <tr>
                     <td>
                         {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
-                        <button class="primary" {{ action "remove" this}}>Remove</button>
+                        <a href="#" {{ action "remove" this}}>Remove</a>
                     </td>
                     <td>{{ name }}{{#linkTo "variants" this}} >>> {{/linkTo}}</td>
                     <td><span>{{ descriptionFormatted }}<span></td>

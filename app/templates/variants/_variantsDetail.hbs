@@ -15,7 +15,7 @@
                             <tr>
                                 <td>
                                     {{#linkTo "variants.edit" this}}Edit{{/linkTo}}
-                                    <button class="primary" {{ action "remove" this}}>Remove</button>
+                                    <a href="#" {{ action "remove" this}}>Remove</a>
                                 </td>
                                 <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
                                 <td>{{ description }}</td>
