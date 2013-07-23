@@ -1,13 +1,13 @@
 <div>
     <label>
-        <input type="radio" checked name="platform" value="android">
+        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="android" }}
         Google Key
     </label>
     {{input type="text" value=googleKey}}
 </div>
 <div>
     <label>
-        <input type="radio" name="platform" value="iOS">
+        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="iOS" }}
         iOS PassPhrase
     </label>
     {{input type="password" name="passphrase" value=passphrase}}
@@ -16,7 +16,7 @@
 </div>
 <div>
     <label>
-        <input type="radio" name="platform" value="simplePush">
+        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="simplePush" }}
         Web
     </label>
     {{input type="text" value=pushNetworkURL}}
