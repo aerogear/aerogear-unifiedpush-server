@@ -31,7 +31,7 @@ public interface Installation {
      * @param enabled if <code>true</code> the Installation is marked as enabled,
      * setting it to <code>false</code> disables it.
      */
-    void setEnabled(boolean enabled);
+    void setEnabled(final boolean enabled);
 
     boolean isEnabled();
 
