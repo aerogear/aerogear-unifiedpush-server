@@ -18,6 +18,10 @@ package org.jboss.aerogear.connectivity.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+ 
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
 
 import javax.inject.Inject;
 
@@ -25,6 +29,11 @@ import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.ClientInstallationService;
 
+/**
+ * (Default) implementation of the {@code ClientInstallationService} interface.
+ * Delegates work to an injected DAO object.
+ */
+@Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
     // the SimplePush BROADCAST category name:
@@ -78,10 +87,19 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public void removeInstallation(InstallationImpl installation) {
         dao.delete(installation);
-	}
+    }
 
     @Override
-	public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
+    @Asynchronous
+    public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
+        // collect inactive installations for the given variant:
+        List<InstallationImpl> inactiveInstallations = dao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
+        // get rid of them
+        this.removeInstallations(inactiveInstallations);
+    }
+
+    @Override
+    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
         return dao.findInstallationsForVariantByDeviceToken(variantID, deviceToken);
     }
 

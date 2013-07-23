@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.jpa.dao.impl;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,9 @@ import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.AbstractVariant;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 
+/**
+ * JPA based implementation of the InstallationDao interface.
+ */
 public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, String> implements InstallationDao {
 
     /**
@@ -47,7 +51,30 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
                 .setParameter("deviceToken", deviceToken)
                 .getResultList();
     }
-    
+
+    /**
+     * Usage: Clean UP:
+     * 
+     * Finder that returns collection of client installations, identified by given device-tokens.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
+        // if there are no device-tokens, no need to bug the database
+        if (deviceTokens == null || deviceTokens.isEmpty()) {
+            // be nice and return an empty list...
+            return Collections.EMPTY_LIST;
+        }
+
+        return createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
+                " abstractVariant join abstractVariant.installations installation" +
+                " where abstractVariant.variantID = :variantID" + 
+                " and installation.deviceToken IN :deviceTokens")
+                .setParameter("variantID", variantID)
+                .setParameter("deviceTokens", deviceTokens)
+                .getResultList();
+    }
+
     /**
      * Usage: SenderSerivce: 
      * 
