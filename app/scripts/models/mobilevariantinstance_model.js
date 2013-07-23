@@ -25,7 +25,10 @@ App.MobileVariantInstance = Ember.Object.extend({
         } else {
             return "iOS";
         }
-    }.property()
+    }.property(),
+    status: function(){
+        return this.get( "enabled" ) ? "Enabled" : "Disabled";
+    }.property( "enabled" )
 });
 
 App.MobileVariantInstance.reopenClass({

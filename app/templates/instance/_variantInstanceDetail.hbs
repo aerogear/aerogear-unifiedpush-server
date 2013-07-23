@@ -20,7 +20,7 @@
                 <td>{{ category }}</td>
                 <td>{{ deviceType }}</td>
                 <td>{{ mobileOperatingSystem }}</td>
-                 <td>{{ enabled }}</td>
+                <td>{{ status }} <button value="toggle" {{action toggleStatus this}}>Toggle</button> </td>
             </tr>
         </tbody>
     </table>
