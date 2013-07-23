@@ -34,6 +34,8 @@ App.Router.map( function() {
 
             // The Route for creating a new Mobile Application Variant
             this.route( "add" );
+
+            this.route( "edit", { path: ":type/:mobileVariant_id" } );
         });
 
         // The Route for the variants detail, shows the list of instances
@@ -129,7 +131,7 @@ App.VariantsIndexRoute = Ember.Route.extend({
 });
 
 /*
-    Route for adding/editing a variant
+    Route for adding a variant
 */
 App.VariantsAddRoute = Ember.Route.extend({
     model: function() {
@@ -145,6 +147,26 @@ App.VariantsAddRoute = Ember.Route.extend({
 
     }
 });
+
+
+/*
+    Route for adding/editing a variant
+*/
+App.VariantsEditRoute = Ember.Route.extend({
+    model: function() {
+
+        // Return the "Variants" Route Model since that is where all the "dynamic segments" are
+        return this.modelFor( "variants" );
+
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id's what ember expects
+        return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ), mobileVariant_id: model.variantID, type: model.variantType ? model.variantType : model.get( "vType" ) };
+
+    }
+});
+
 
 /*
     Route for the Single Variant - shows a list a instances

@@ -1,0 +1,27 @@
+<!--Template to create a new push application-->
+<div>
+  {{#if variantID}}
+    Edit a Variant
+  {{else}}
+    Add Variant
+  {{/if}}
+</div>
+<div>
+    <div>
+      <form method="POST" {{action "edit" controller target="controllers.variantsIndex" on="submit" }} >
+      <fieldset>
+        <p>
+          <label>Name</label>
+          {{input type="text" name="name" value=name}}
+        </p>
+        <p>
+          <label>Description</label>
+          {{textarea name="description" value=description}}
+        </p>
+        {{ partial "variants/editVariantsNetwork" }}
+        <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>
+        <input type="submit" class="primary" value="Create">
+      </fieldset>
+    </form>
+    </div>
+</div>

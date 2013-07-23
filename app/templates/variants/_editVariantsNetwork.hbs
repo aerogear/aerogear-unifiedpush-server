@@ -1,0 +1,23 @@
+<div>
+    <label>
+        <input type="radio" checked name="platform" value="android">
+        Google Key
+    </label>
+    {{input type="text" value=googleKey}}
+</div>
+<div>
+    <label>
+        <input type="radio" name="platform" value="iOS">
+        iOS PassPhrase
+    </label>
+    {{input type="password" name="passphrase" value=passphrase}}
+    {{input type="file" name="certificate" value=certificate}}
+    <label>Production? {{view Ember.Checkbox checkedBinding="production"}}</label>
+</div>
+<div>
+    <label>
+        <input type="radio" name="platform" value="simplePush">
+        Web
+    </label>
+    {{input type="text" value=pushNetworkURL}}
+</div>

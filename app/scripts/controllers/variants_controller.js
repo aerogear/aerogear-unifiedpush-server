@@ -123,15 +123,70 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             });
         }
     },
+    edit: function( controller ) {
+        //Make this and add one
+        var that = controller,
+            applicationData = {
+                name: controller.get( "name" ),
+                description: controller.get( "description" )
+            },
+            applicationPushId = controller.get( "pushApplicationID" ),
+            variantType =  $( "input:checked" ).val(),
+            url = "/ag-push/rest/applications/" + applicationPushId + "/" + variantType + "/" + controller.get("variantID"),
+            type = "PUT",
+            data,
+            contentType = "application/json";
+
+        switch( variantType ) {
+        case "android":
+            applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+            break;
+        case "simplePush":
+            applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+            break;
+        case "iOS":
+            type =  "PATCH";
+            break;
+        default:
+            break;
+        }
+
+        data = JSON.stringify( applicationData );
+
+        $.ajax({
+            "url": url,
+            "type": type,
+            "contentType": contentType,
+            "data": data,
+            success: function() {
+                that.transitionToRoute( "variants", that.get( "model" ) );
+            },
+            error: function( error ) {
+                console.log( "error saving", error );
+                switch( error.status ) {
+                case 401:
+                    that.transitionToRoute( "login" );
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+
+    },
     cancel: function( controller ) {
         //Probably a better way
         controller.set( "name", "" );
         controller.set( "description", "" );
 
-        this.transitionToRoute( "variants" );
+        controller.transitionToRoute( "variants" );
     }
 });
 
 App.VariantsAddController = Ember.ObjectController.extend({
+    needs: "variantsIndex"
+});
+
+App.VariantsEditController = Ember.ObjectController.extend({
     needs: "variantsIndex"
 });
