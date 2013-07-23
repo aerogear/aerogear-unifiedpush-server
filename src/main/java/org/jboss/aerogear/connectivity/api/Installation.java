@@ -24,7 +24,12 @@ public interface Installation {
 
     /**
      * Flag if the actual client installation is enabled (default) or not.
-     * Used by the admin UI to disable specific clients.  
+     * Disabled installations are not receiving push notifications.
+     * 
+     * Used by the admin UI to disable specific clients.
+     * 
+     * @param enabled if <code>true</code> the Installation is marked as enabled,
+     * setting it to <code>false</code> disables it.
      */
     void setEnabled(boolean enabled);
 
@@ -39,6 +44,7 @@ public interface Installation {
      * <li> SimplePush: <code>channelId</code>
      * </ul>
      * 
+     * @param deviceToken unique string to identify an Installation with its PushNetwork
      */
     void setDeviceToken(final String deviceToken);
 
@@ -51,6 +57,7 @@ public interface Installation {
      * <li> For iOS that could be <code>iPod</code>, <code>iPad</code> or <code>iPhone</code>
      * <li> For Android that could be <code>Phone</code> or <code>Tablet</code>
      * 
+     * @param deviceType the type of the registered device
      */
     void setDeviceType(final String deviceType);
 
@@ -58,6 +65,8 @@ public interface Installation {
 
     /**
      * The (optional) name of the underlying Operating System.
+     * 
+     * @param mobileOperatingSystem the name of the Operating System.
      */
     void setMobileOperatingSystem(final String mobileOperatingSystem);
 
@@ -65,6 +74,8 @@ public interface Installation {
 
     /**
      * The (optional) version of the used Operating System.
+     * 
+     * @param osVersion the version string of the mobile OS.
      */
     void setOsVersion(final String osVersion);
 
@@ -73,6 +84,8 @@ public interface Installation {
     /**
      * Application specific alias to identify users with the system. 
      * E.g. email address or username
+     * 
+     * @param clientIdentifier string to map the Installation to an actual user. 
      */
     void setAlias(final String clientIdentifier);
 
@@ -80,6 +93,8 @@ public interface Installation {
 
     /**
      * Used for SimplePush, to "tag" the channel
+     * 
+     * @param category the name of the 'tagged' category
      */
     void setCategory(final String category);
 
