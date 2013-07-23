@@ -1,13 +1,13 @@
 {{#if isLoaded}}
-    <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > {{#linkTo "variant" this}}Variant{{/linkTo}}</div>
+    <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > {{#linkTo "variant" this}}Installations{{/linkTo}} > Installation</div>
     <div class="header">
         <h2>{{ name }}</h2>
         <span>{{ description }}</span>
     </div>
     <div class="sub-header">
-        <h3>Authentication Info</h3>
+        <h3>Installation</h3>
         <span>
-            Use this Application ID and Secret combination to send notification to all variants
+            An Installation
         </span>
         <div>
             Device Token: {{ deviceToken }}

@@ -199,7 +199,7 @@ App.VariantIndexRoute = Ember.Route.extend({
     setupController: function( controller, model ) {
 
         // Force a refresh of this model when coming in from a {{#linkTo}}
-        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.get("vType"), model.variantID ) : model );
+        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.variantType ? model.variantType : model.get( "vType" ), model.variantID ) : model );
 
     },
     serialize: function( model ) {
