@@ -7,6 +7,7 @@
                 <th>Token</th>
                 <th>Description</th>
                 <th>Platform</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -18,6 +19,7 @@
                     <td>{{#linkTo "instance" this}}{{deviceToken}}{{/linkTo}}</td>
                     <td>{{ deviceType }}</td>
                     <td>{{ mobileOperatingSystem }}</td>
+                    <td>{{ enabled }}</td>
                 </tr>
             {{else}}
                 <tr>
