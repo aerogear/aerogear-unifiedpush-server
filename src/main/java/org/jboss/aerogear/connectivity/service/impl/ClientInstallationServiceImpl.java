@@ -65,6 +65,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installationToUpdate.setMobileOperatingSystem(postedInstallation
                 .getMobileOperatingSystem());
         installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
+        installationToUpdate.setEnabled(postedInstallation.isEnabled());
 
         // update it:
         return updateInstallation(installationToUpdate);
