@@ -26,6 +26,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
         this.applicationPipe.save( applicationData, {
             success: function() {
+                $("form")[0].reset();
                 that.transitionToRoute( "mobileApps" );
             },
             error: function( error ) {
@@ -41,10 +42,9 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
         });
 
     },
-    cancel: function( controller ) {
+    cancel: function() {
         //Probably a better way
-        controller.set( "name", "" );
-        controller.set( "description", "" );
+        $("form")[0].reset();
 
         this.transitionToRoute( "mobileApps" );
     },

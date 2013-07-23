@@ -52,6 +52,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     },
     add: function( controller ) {
         var that = controller,
+            thee = this,
             applicationData = {
                 name: controller.get( "variantName" ),
                 description: controller.get( "variantDescription" )
@@ -72,6 +73,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 type: "POST",
                 url: url,
                 success: function() {
+                    thee.formReset( that );
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 },
                 error: function( error ) {
@@ -108,6 +110,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 "contentType": contentType,
                 "data": data,
                 success: function() {
+                    thee.formReset( that );
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 },
                 error: function( error ) {
@@ -126,6 +129,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     edit: function( controller ) {
         //Make this and add one
         var that = controller,
+            thee = this,
             applicationData = {
                 name: controller.get( "name" ),
                 description: controller.get( "description" )
@@ -159,6 +163,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             "contentType": contentType,
             "data": data,
             success: function() {
+                thee.formReset( that );
                 that.transitionToRoute( "variants", that.get( "model" ) );
             },
             error: function( error ) {
@@ -175,11 +180,17 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
     },
     cancel: function( controller ) {
-        //Probably a better way
-        controller.set( "name", "" );
-        controller.set( "description", "" );
-
+        this.formReset( controller );
         controller.transitionToRoute( "variants" );
+    },
+    formReset: function( controller ) {
+        $("form")[0].reset();
+
+        //figure this out
+        controller.set( "googleKey", "" );
+        controller.set( "passphrase", "" );
+        controller.set( "pushNetworkURL", "" );
+        controller.set( "production", false );
     }
 });
 

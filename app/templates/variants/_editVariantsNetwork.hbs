@@ -3,7 +3,7 @@
         {{view Ember.RadioButton name="platform" selectionBinding="vType" value="android" }}
         Google Key
     </label>
-    {{input type="text" value=googleKey}}
+    {{input type="text" name="googleKey" value=googleKey}}
 </div>
 <div>
     <label>
@@ -19,5 +19,5 @@
         {{view Ember.RadioButton name="platform" selectionBinding="vType" value="simplePush" }}
         Web
     </label>
-    {{input type="text" value=pushNetworkURL}}
+    {{input type="text" name="pushNetworkURL" value=pushNetworkURL}}
 </div>
