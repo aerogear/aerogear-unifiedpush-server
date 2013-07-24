@@ -52,30 +52,32 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
         var things = app,
             that = this;
 
-        this.applicationPipe.remove( app.pushApplicationID, {
-            success: function() {
-                var content = that.get("model").get("content"),
-                    find;
+        if( window.confirm( "Really Delete " + app.name + " ?" ) ) {
+            this.applicationPipe.remove( app.pushApplicationID, {
+                success: function() {
+                    var content = that.get("model").get("content"),
+                        find;
 
-                find = content.find( function( value ) {
-                    return value.pushApplicationID === things.pushApplicationID;
-                });
+                    find = content.find( function( value ) {
+                        return value.pushApplicationID === things.pushApplicationID;
+                    });
 
-                content.removeObject( find );
-            },
-            error: function( error ) { // TODO: Maybe Make this a class method?
-                console.log( "error with application endpoint", error );
-                switch( error.status ) {
-                case 401:
-                    App.Router.router.transitionToRoute("login");
-                    break;
-                default:
-                    //that.transitionToRoute( "login" );
-                    //result.setProperties( { isLoaded: true, error: error } );
-                    break;
+                    content.removeObject( find );
+                },
+                error: function( error ) { // TODO: Maybe Make this a class method?
+                    console.log( "error with application endpoint", error );
+                    switch( error.status ) {
+                    case 401:
+                        App.Router.router.transitionToRoute("login");
+                        break;
+                    default:
+                        //that.transitionToRoute( "login" );
+                        //result.setProperties( { isLoaded: true, error: error } );
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        }
     },
     totalApps: function() {
 
