@@ -76,6 +76,7 @@ public class InstallationRegistrationEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
+            logger.severe("Unauthorized Request to register client: " + entity.getDeviceToken());
             return appendAllowOriginHeader(
                     Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
@@ -85,6 +86,7 @@ public class InstallationRegistrationEndpoint {
 
         // Poor validation: We require the Token!
         if (entity.getDeviceToken() == null) {
+            logger.severe("Bad Request - no device token");
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 
@@ -94,6 +96,7 @@ public class InstallationRegistrationEndpoint {
 
         // new device/client ? 
         if (installation == null) {
+            logger.info("Performing client registration for: " + entity.getDeviceToken());
             // store the installation:
             entity = clientInstallationService.addInstallation(entity);
             // add installation to the matching variant
