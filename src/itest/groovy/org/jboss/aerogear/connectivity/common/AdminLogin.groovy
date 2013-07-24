@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.connectivity.common
+package org.jboss.aerogear.connectivity.common
 
 import groovy.json.JsonBuilder
 
