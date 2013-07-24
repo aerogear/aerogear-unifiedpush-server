@@ -57,89 +57,66 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 name: controller.get( "variantName" ),
                 description: controller.get( "variantDescription" )
             },
-            applicationPushId = controller.get( "pushApplicationID" ),
             variantType =  $( "input:checked" ).val(),
-            url = "/ag-push/rest/applications/" + applicationPushId + "/" + variantType,
-            type = "POST",
-            data,
-            contentType = "application/json";
+            ajaxOptions = {
+                url: "/ag-push/rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType,
+                type: "POST",
+                contentType: "application/json"
+            };
 
         if( variantType === "iOS" ) {
 
-            $( "form" ).ajaxSubmit({
-                beforeSubmit: function( formData ) {
-                    formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-                },
-                type: "POST",
-                url: url,
-                success: function() {
-                    thee.formReset( that );
-                    that.transitionToRoute( "variants", that.get( "model" ) );
-                },
-                error: function( error ) {
-                    console.log( "error saving", error );
-                    switch( error.status ) {
-                    case 401:
-                        that.transitionToRoute( "login" );
-                        break;
-                    default:
-                        break;
-                    }
+            ajaxOptions.success = function() {
+                thee.formReset( that );
+                that.transitionToRoute( "variants", that.get( "model" ) );
+            };
+
+            ajaxOptions.error = function( error ) {
+                console.log( "error saving", error );
+                switch( error.status ) {
+                case 401:
+                    that.transitionToRoute( "login" );
+                    break;
+                default:
+                    break;
                 }
-            });
+            };
+
+            ajaxOptions.beforeSubmit = function( formData ) {
+                formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
+            };
+
+            $( "form" ).ajaxSubmit( ajaxOptions );
         } else {
 
             switch( variantType ) {
             case "android":
                 applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
-                data = JSON.stringify( applicationData );
                 break;
             case "simplePush":
                 applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-                data = JSON.stringify( applicationData );
                 break;
             default:
                 break;
             }
 
-            // TODO: use aerogear pipes once we get multi part support
-            // TODO: could probably switch this to aerogear since we are doing ios seperate
-            $.ajax({
-                "url": url,
-                "type": type,
-                "contentType": contentType,
-                "data": data,
-                success: function() {
-                    thee.formReset( that );
-                    that.transitionToRoute( "variants", that.get( "model" ) );
-                },
-                error: function( error ) {
-                    console.log( "error saving", error );
-                    switch( error.status ) {
-                    case 401:
-                        that.transitionToRoute( "login" );
-                        break;
-                    default:
-                        break;
-                    }
-                }
-            });
+            ajaxOptions.data = JSON.stringify( applicationData );
+
+            this.saveVariants( controller, ajaxOptions );
         }
     },
     edit: function( controller ) {
         //Make this and add one
-        var that = controller,
-            thee = this,
-            applicationData = {
+        var applicationData = {
                 name: controller.get( "name" ),
                 description: controller.get( "description" )
             },
-            applicationPushId = controller.get( "pushApplicationID" ),
-            variantType =  $( "input:checked" ).val(),
-            url = "/ag-push/rest/applications/" + applicationPushId + "/" + variantType + "/" + controller.get("variantID"),
-            type = "PUT",
-            data,
-            contentType = "application/json";
+            variantType =  controller.get("model").get("vType"),
+            ajaxOptions = {
+                url: "/ag-push/rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
+                type: "PUT",
+                contentType: "application/json"
+            };
 
         switch( variantType ) {
         case "android":
@@ -149,44 +126,47 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
             break;
         case "iOS":
-            type =  "PATCH";
+            ajaxOptions.type =  "PATCH";
             break;
         default:
             break;
         }
 
-        data = JSON.stringify( applicationData );
+        ajaxOptions.data = JSON.stringify( applicationData );
 
-        $.ajax({
-            "url": url,
-            "type": type,
-            "contentType": contentType,
-            "data": data,
-            success: function() {
-                thee.formReset( that );
-                that.transitionToRoute( "variants", that.get( "model" ) );
-            },
-            error: function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    break;
-                }
-            }
-        });
-
+        this.saveVariants( controller, ajaxOptions );
     },
     cancel: function( controller ) {
         this.formReset( controller );
         controller.transitionToRoute( "variants" );
     },
+    saveVariants: function( controller, ajaxOptions ) {
+        var that = controller,
+            thee = this;
+
+        ajaxOptions.success = function() {
+            thee.formReset( that );
+            that.transitionToRoute( "variants", that.get( "model" ) );
+        };
+
+        ajaxOptions.error = function( error ) {
+            console.log( "error saving", error );
+            switch( error.status ) {
+            case 401:
+                that.transitionToRoute( "login" );
+                break;
+            default:
+                break;
+            }
+        };
+
+        $.ajax( ajaxOptions );
+    },
     formReset: function( controller ) {
         $("form")[0].reset();
 
         //figure this out
+        controller.set( "variantName", "" );
         controller.set( "googleKey", "" );
         controller.set( "passphrase", "" );
         controller.set( "pushNetworkURL", "" );
