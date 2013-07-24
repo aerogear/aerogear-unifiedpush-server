@@ -179,6 +179,7 @@ public class SenderServiceImpl implements SenderService {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePush Service class
             final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
+            logger.info("Processing SimplePush VariantID: " + simplePushVariant.getVariantID()); 
             this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
         }
     }
@@ -195,6 +196,7 @@ public class SenderServiceImpl implements SenderService {
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
         logger.info(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
+        logger.info(String.format("Number of registered clients: %s ", ""+channels.size()));
         simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }
