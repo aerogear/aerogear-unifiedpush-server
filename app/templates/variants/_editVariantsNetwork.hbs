@@ -1,23 +1,26 @@
+{{#if isAndroid}}
 <div>
     <label>
-        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="android" }}
         Google Key
     </label>
     {{input type="text" name="googleKey" value=googleKey}}
 </div>
+{{/if}}
+{{#if isiOS}}
 <div>
     <label>
-        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="iOS" }}
         iOS PassPhrase
     </label>
     {{input type="password" name="passphrase" value=passphrase}}
     {{input type="file" name="certificate" value=certificate}}
     <label>Production? {{view Ember.Checkbox checkedBinding="production"}}</label>
 </div>
+{{/if}}
+{{#if isSimplePush}}
 <div>
     <label>
-        {{view Ember.RadioButton name="platform" selectionBinding="vType" value="simplePush" }}
         Web
     </label>
     {{input type="text" name="pushNetworkURL" value=pushNetworkURL}}
 </div>
+{{/if}}

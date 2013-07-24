@@ -29,6 +29,15 @@ App.MobileVariant = Ember.Object.extend({
             return "iOS";
         }
     }.property(),
+    isAndroid: function() {
+        return this.get( "vType" ) === "android";
+    }.property( "vType" ),
+    isiOS: function() {
+        return this.get( "vType" ) === "iOS";
+    }.property( "vType" ),
+    isSimplePush: function() {
+        return this.get( "vType" ) === "simplePush";
+    }.property( "vType" ),
     typeFormatted: function() {
         if( this.get( "googleKey" ) ) {
             return "Android";
