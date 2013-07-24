@@ -58,7 +58,7 @@ public class GCMPushNotificationSender {
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
 
-        // add the "regconized" keys...
+        // add the "recognized" keys...
         gcmBuilder.addData("alert", pushMessage.getAlert());
         gcmBuilder.addData("sound", pushMessage.getSound());
         gcmBuilder.addData("badge", "" + pushMessage.getBadge());
