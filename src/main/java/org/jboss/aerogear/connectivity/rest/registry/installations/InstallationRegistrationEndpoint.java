@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.connectivity.rest.registry.installations;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -90,25 +89,22 @@ public class InstallationRegistrationEndpoint {
         }
 
         // look up all installations (with same token) for the given variant:
-        List<InstallationImpl> installations = 
-                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
+        InstallationImpl installation = 
+                clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
 
-        if (installations.isEmpty()) {
+        // new device/client ? 
+        if (installation == null) {
             // store the installation:
-            entity = clientInstallationService
-                    .addInstallation(entity);
+            entity = clientInstallationService.addInstallation(entity);
             // add installation to the matching variant
             genericVariantService.addInstallation(variant, entity);
         } else {
-            logger.info("Updating received metadata for Installation");
-
-            // should be impossible
-            if (installations.size() > 1) {
-                logger.severe("Too many registration for one installation");
+            // We only update the metadata, if the device is enabled: 
+            if (installation.isEnabled()) {
+                logger.info("Updating received metadata for Installation");
+                // update the entity:
+                entity = clientInstallationService.updateInstallation(installation, entity);
             }
-
-            // update the entity:
-            entity = clientInstallationService.updateInstallation(installations.get(0), entity);
         }
 
         return appendAllowOriginHeader(Response.ok(entity), request);
@@ -132,15 +128,15 @@ public class InstallationRegistrationEndpoint {
         }
 
         // look up all installations (with same token) for the given variant:
-        List<InstallationImpl> installations = 
-                clientInstallationService.findInstallationsForVariantByDeviceToken(variant.getVariantID(), token);
+        InstallationImpl installation = 
+                clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), token);
 
-        if (installations.isEmpty()) {
+        if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
             logger.info("Deleting metadata Installation");
             // remove
-            clientInstallationService.removeInstallations(installations);
+            clientInstallationService.removeInstallation(installation);
         }
 
         return appendAllowOriginHeader(Response.noContent(), request);

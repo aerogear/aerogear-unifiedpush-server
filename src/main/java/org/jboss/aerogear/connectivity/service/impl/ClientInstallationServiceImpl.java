@@ -99,8 +99,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
-        return dao.findInstallationsForVariantByDeviceToken(variantID, deviceToken);
+    public InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+        return dao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
 
     // =====================================================================

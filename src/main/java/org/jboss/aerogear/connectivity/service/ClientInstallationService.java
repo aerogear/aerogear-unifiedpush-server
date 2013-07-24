@@ -66,9 +66,11 @@ public interface ClientInstallationService {
     void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
-     * Used for "Device Registration": loads all installations for one variant, containing the same token
+     * Used for "Device Registration":
+     * 
+     * Finder that returns the actual client installation, identified by its device-token, for the given variant.
      */
-    List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
+    InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     // ===================   SENDER API   ===================
 

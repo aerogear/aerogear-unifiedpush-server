@@ -39,17 +39,16 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
      * 
      * Finder that returns the actual client installation, identified by its device-token, for the given variant.
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
+    public InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        return createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
+        return getSingleResultForQuery(
+              createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
                 " abstractVariant join abstractVariant.installations installation" +
                 " where abstractVariant.variantID = :variantID" + 
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
-                .setParameter("deviceToken", deviceToken)
-                .getResultList();
+                .setParameter("deviceToken", deviceToken));
     }
 
     /**
