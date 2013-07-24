@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ import org.jboss.aerogear.connectivity.message.cache.GCMCache;
 import org.jboss.aerogear.connectivity.service.sender.message.UnifiedPushMessage;
 
 import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
 
@@ -36,7 +36,10 @@ import com.google.android.gcm.server.Message.Builder;
 public class GCMPushNotificationSender {
 
     @Inject
-    GCMCache cache;
+    private GCMCache cache;
+
+    @Inject
+    private Logger logger;
 
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
@@ -55,7 +58,7 @@ public class GCMPushNotificationSender {
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
 
-        // add the "regconized" keys...
+        // add the "recognized" keys...
         gcmBuilder.addData("alert", pushMessage.getAlert());
         gcmBuilder.addData("sound", pushMessage.getSound());
         gcmBuilder.addData("badge", "" + pushMessage.getBadge());
@@ -72,9 +75,13 @@ public class GCMPushNotificationSender {
         // send it out.....
         try {
             Sender sender = cache.getSenderForAPIKey(apiKey);
-            MulticastResult result = sender.send(gcmMessage, (List<String>) tokens, 0);
+            sender.send(gcmMessage, (List<String>) tokens, 0);
         } catch (IOException e) {
+            // network related exceptions:
+            logger.warning("Error sending messages to GCM server");
             e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            logger.severe("Error connection to your GCM project. Double check your Google API Key");
         }
     }
 }
