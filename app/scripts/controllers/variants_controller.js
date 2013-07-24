@@ -107,7 +107,9 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     },
     edit: function( controller ) {
         //Make this and add one
-        var applicationData = {
+        var that = controller,
+            thee = this,
+            applicationData = {
                 name: controller.get( "name" ),
                 description: controller.get( "description" )
             },
@@ -116,7 +118,9 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 url: "/ag-push/rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
                 type: "PUT",
                 contentType: "application/json"
-            };
+            },
+            normalAjax = true,
+            file;
 
         switch( variantType ) {
         case "android":
@@ -126,15 +130,44 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
             break;
         case "iOS":
-            ajaxOptions.type =  "PATCH";
+            file = $("form").find("input[name='certificate']").val();
+            //Better validation
+            if( !file ) {
+                ajaxOptions.type =  "PATCH";
+            } else {
+                ajaxOptions.success = function() {
+                    thee.formReset( that );
+                    that.transitionToRoute( "variants", that.get( "model" ) );
+                };
+
+                ajaxOptions.error = function( error ) {
+                    console.log( "error saving", error );
+                    switch( error.status ) {
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        break;
+                    }
+                };
+
+                ajaxOptions.beforeSubmit = function( formData ) {
+                    formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
+                };
+
+                normalAjax = false;
+
+                $( "form" ).ajaxSubmit( ajaxOptions );
+            }
             break;
         default:
             break;
         }
 
-        ajaxOptions.data = JSON.stringify( applicationData );
-
-        this.saveVariants( controller, ajaxOptions );
+        if( normalAjax ) {
+            ajaxOptions.data = JSON.stringify( applicationData );
+            this.saveVariants( controller, ajaxOptions );
+        }
     },
     cancel: function( controller ) {
         this.formReset( controller );
@@ -163,9 +196,8 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         $.ajax( ajaxOptions );
     },
     formReset: function( controller ) {
-        $("form")[0].reset();
-
-        //figure this out
+        //figure this out better
+        controller.set( "variantDescription", "" );
         controller.set( "variantName", "" );
         controller.set( "googleKey", "" );
         controller.set( "passphrase", "" );
