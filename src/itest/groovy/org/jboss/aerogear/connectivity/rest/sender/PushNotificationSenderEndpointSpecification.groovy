@@ -142,6 +142,8 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     private final static String SIMPLE_PUSH_CLIENT_ALIAS = "qa_simple_push_1@aerogear"
     
     private final static String COMMON_IOS_ANDROID_CLIENT_ALIAS = "qa_ios_android@aerogear"
+    
+    private final static String CUSTOM_FIELD_DATA_MSG = "custom field msg"
 
     private final static URL root = new URL("http://localhost:8080/ag-push/")
 
@@ -887,6 +889,51 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         and: "The IOS message is the expected one"
         NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
+    }
+    
+    @RunAsClient
+    def "Selective send to Android by aliases - Custom data case"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(ANDROID_CLIENT_ALIAS)
+        aliases.add(ANDROID_CLIENT_ALIAS_2)
+        Sender.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("custom", NOTIFICATION_ALERT_MSG)
+        messages.put("test", CUSTOM_FIELD_DATA_MSG)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+
+    def "Verify that right GCM notifications were sent - Custom data case"() {
+
+        expect: "Custom GCM Sender send is called with 2 token ids"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                }
+            }
+        )
+
+        and: "The list contains the correct token ids"
+        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2)
+
+        and: "The messages sent are the correct"
+        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("custom"))
+        
+        and:
+        CUSTOM_FIELD_DATA_MSG.equals(Sender.gcmMessage.getData().get("test"))
     }
     
     private ServerSocket createSocket() {
