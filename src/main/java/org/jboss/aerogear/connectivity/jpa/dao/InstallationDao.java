@@ -29,9 +29,9 @@ import org.jboss.aerogear.connectivity.model.InstallationImpl;
 public interface InstallationDao extends GenericDao<InstallationImpl, String> {
 
     /**
-     * Loads all installations with the same token for the given Variant
+     * Finder that returns the actual client installation, identified by its device-token, for the given variant.
      */
-    List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken);
+    InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
      * Loads all installations matching the <code>Set</code> of deviceTokens, for the given Variant
