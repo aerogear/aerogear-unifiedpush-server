@@ -86,7 +86,7 @@ public class InstallationManagementEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
-        clientInstallationService.updateInstallation(entity, installation);
+        clientInstallationService.updateInstallation(installation, entity);
 
         return Response.noContent().build();
 
