@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.connectivity.rest.registry.applications;
 
+import org.jboss.aerogear.connectivity.annotations.PATCH;
 import org.jboss.aerogear.connectivity.model.PushApplication;
 import org.jboss.aerogear.connectivity.model.iOSVariant;
 import org.jboss.aerogear.connectivity.rest.util.iOSApplicationUploadForm;
@@ -121,6 +122,29 @@ public class iOSVariantEndpoint {
 
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
+        }
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+    @PATCH
+    @Path("/{iOSID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateiOSVariant(
+            @PathParam("pushAppID") String pushApplicationId,
+            @PathParam("iOSID") String iOSID,
+            iOSVariant updatediOSVariant) {
+
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+
+        if (iOSVariation != null) {
+
+            // apply update:
+            iOSVariation.setName(updatediOSVariant.getName());
+            iOSVariation.setDescription(updatediOSVariant.getDescription());
+
+            iOSVariantService.updateiOSVariant(iOSVariation);
+            return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
