@@ -6,7 +6,7 @@
     "aerogear": "~1.1.2",
     "ember": "~1.0.0-rc.6",
     "topcoat": "~0.5.1",
-    "jquery-form": "~3.32.0-2013.04.09"
+    "jquery-form": "*"
   },
   "devDependencies": {
     "jquery-mockjax": "~1.5.2"

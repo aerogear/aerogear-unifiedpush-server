@@ -4,6 +4,8 @@
 
 A WIP for the AeroGear Unified Push Server Admin UI
 
+_Bower needs a version of 0.9.1 or Greater_
+
 To install:
 
     npm install
@@ -62,3 +64,7 @@ Now everytime you save a file, grunt is watching and will copy to these director
 This project uses handlebar templates( *.hbs )
 
 Grunt is watching for changes in the "templates" directory and will recomplile "scripts/templates.js" with the new template
+
+### Known Issues
+
+Sometimes the incorrect version of ember templates gets installed when doing a clean `npm install` , running `npm install` a second time can fix it
