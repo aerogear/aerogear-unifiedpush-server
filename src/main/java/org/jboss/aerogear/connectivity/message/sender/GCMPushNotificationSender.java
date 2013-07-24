@@ -74,6 +74,8 @@ public class GCMPushNotificationSender {
 
         // send it out.....
         try {
+            logger.info(String.format("Sending transformed GCM payload: '%s' ", gcmMessage));
+
             Sender sender = cache.getSenderForAPIKey(apiKey);
             sender.send(gcmMessage, (List<String>) tokens, 0);
         } catch (IOException e) {

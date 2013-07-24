@@ -53,8 +53,10 @@ public class SimplePushNotificationSender implements Serializable {
 
             HttpURLConnection conn = null;
             try {
+                final String clientURL = endpointBaseURL+channelID;
                 // PUT the version payload to the SimplePushServer 
-                conn = put(endpointBaseURL+channelID, payload);
+                logger.info(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 

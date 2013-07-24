@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -60,11 +61,15 @@ public class SenderServiceImpl implements SenderService {
     private ClientInstallationService clientInstallationService;
 
     @Inject
-    private GenericVariantService genericVariantService; 
+    private GenericVariantService genericVariantService;
+
+    @Inject
+    private Logger logger;
 
     @Override
     @Asynchronous
     public void selectiveSend(PushApplication pushApplication, SelectiveSendMessage message) {
+        logger.info(String.format("Processing 'selective send' request with '%s' payload", message));
 
         // collections for all the different variants:
         final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
@@ -146,6 +151,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     @Asynchronous
     public void broadcast(PushApplication pushApplication, BroadcastMessage payload) {
+        logger.info(String.format("Processing broadcast request with '%s' payload", payload));
 
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
@@ -178,14 +184,17 @@ public class SenderServiceImpl implements SenderService {
     }
 
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+        logger.info(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
     private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
+        logger.info(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
     }
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
+        logger.info(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
         simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }
