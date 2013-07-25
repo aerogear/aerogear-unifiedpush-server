@@ -70,4 +70,9 @@ public class SelectiveSendCriterias {
     public List<String> getVariants() {
         return variants;
     }
+
+    @Override
+    public String toString() {
+        return "[aliases=" + aliases + ", deviceTypes=" + deviceTypes + ", category=" + category + ", variants=" + variants + "]";
+    }
 }
