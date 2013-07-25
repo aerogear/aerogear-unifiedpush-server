@@ -16,15 +16,15 @@
  */
 package org.jboss.aerogear.connectivity.users;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.Role;
 import org.picketlink.idm.model.SimpleRole;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Inject;
 
 @Singleton
 @Startup
@@ -39,7 +39,7 @@ public class PicketLinkDefaultUsers {
     /**
      * <p>Loads some users during the first construction.</p>
      */
-    //TODO this entire initialization code will be removed
+    //TODO this entire initialization code will be removed - https://issues.jboss.org/browse/AGPUSH-107
     @PostConstruct
     public void create() {
 
@@ -55,11 +55,8 @@ public class PicketLinkDefaultUsers {
         this.identityManager.add(admin);
         this.identityManager.updateCredential(admin, new Password("123"));
 
-        Role roleDeveloper = new SimpleRole("developer");
-        Role roleAdmin = new SimpleRole("admin");
+        Role roleDeveloper = new SimpleRole("user");
         this.identityManager.add(roleDeveloper);
-        this.identityManager.add(roleAdmin);
         identityManager.grantRole(admin, roleDeveloper);
-        identityManager.grantRole(admin, roleAdmin);
     }
 }
