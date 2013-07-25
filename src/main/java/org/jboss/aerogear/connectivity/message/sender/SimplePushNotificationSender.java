@@ -55,7 +55,7 @@ public class SimplePushNotificationSender implements Serializable {
             try {
                 final String clientURL = endpointBaseURL+channelID;
                 // PUT the version payload to the SimplePushServer 
-                logger.finest(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);

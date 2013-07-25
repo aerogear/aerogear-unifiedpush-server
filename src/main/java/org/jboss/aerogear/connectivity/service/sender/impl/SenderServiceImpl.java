@@ -184,17 +184,17 @@ public class SenderServiceImpl implements SenderService {
     }
 
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.finest(String.format("Sending: %s to APNs", pushMessage));
+        logger.fine(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
     private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
-        logger.finest(String.format("Sending: %s to GCM", pushMessage));
+        logger.fine(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
     }
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
-        logger.finest(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
+        logger.fine(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
         simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }
