@@ -556,340 +556,340 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         response != null && response.statusCode() == Status.OK.getStatusCode()
     }
 
-//    @RunAsClient
-//    def "Selective send - Bad request - Empty push application id"() {
-//
-//        given: "A List of aliases"
-//        List<String> aliases = new ArrayList<String>()
-//        aliases.add(ANDROID_CLIENT_ALIAS)
-//        aliases.add(ANDROID_CLIENT_ALIAS_2)
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend("", masterSecret, aliases, null, messages, null, null)
-//
-//        then: "Response status code is 401"
-//        response != null && response.statusCode() == Status.UNAUTHORIZED.getStatusCode()
-//    }
-//
-//    @RunAsClient
-//    def "Selective send to Android by aliases - Filtering by aliases case"() {
-//
-//        given: "A List of aliases"
-//        List<String> aliases = new ArrayList<String>()
-//        aliases.add(ANDROID_CLIENT_ALIAS)
-//        aliases.add(ANDROID_CLIENT_ALIAS_2)
-//        Sender.clear()
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
-//
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//    }
-//
-//    def "Verify that right GCM notifications were sent - Filtering by aliases case"() {
-//
-//        expect: "Custom GCM Sender send is called with 2 token ids"
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//
-//        and: "The list contains the correct token ids"
-//        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2)
-//
-//        and: "The message sent is the correct one"
-//        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
-//    }
-//
-//    @RunAsClient
-//    def "Selective send to IOS by aliases - Filtering by aliases case"() {
-//
-//        given: "A List of aliases"
-//        List<String> aliases = new ArrayList<String>()
-//        aliases.add(IOS_CLIENT_ALIAS)
-//        ApnsServiceImpl.clear()
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//        messages.put("sound", NOTIFICATION_SOUND)
-//        messages.put("badge", NOTIFICATION_BADGE)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
-//
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//    }
-//
-//    def "Verify that the right iOS notifications were sent - Filtering by aliases case"() {
-//
-//        expect: "Custom iOS Sender push is called with 1 token id"
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//
-//        and: "The list contains 1 registration token id"
-//        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN)
-//
-//        and: "The message is the expected one"
-//        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
-//
-//        and: "The sound is the expected one"
-//        NOTIFICATION_SOUND.equals(ApnsServiceImpl.sound)
-//
-//        and: "The badge is the expected one"
-//        NOTIFICATION_BADGE == ApnsServiceImpl.badge
-//    }
-//
-//    @RunAsClient
-//    def "Selective send to Simple Push by aliases and deviceType - Filtering by aliases case"() {
-//
-//        given: "A List of aliases"
-//        List<String> aliases = new ArrayList<String>()
-//        aliases.add(SIMPLE_PUSH_CLIENT_ALIAS)
-//
-//        and: "A List of device types"
-//        List<String> deviceTypes = new ArrayList<String>()
-//        deviceTypes.add(SIMPLE_PUSH_DEVICE_TYPE)
-//
-//        and: "A Map of categories / messages"
-//        Map<String, String> simplePush = new HashMap<String, String>()
-//        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
-//
-//        and: "A socket server"
-//        ServerSocket server = createSocket()
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, new HashMap<String, Object>(), simplePush, null)
-//        
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//
-//        and:
-//        def String serverInput = connectAndRead(server)
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
-//                }
-//            }
-//        )
-//        
-//        and: "The message should have been sent"
-//        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
-//        
-//        and: "The message is sent to the correct channel"
-//        serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
-//    }
-//    
-//    @RunAsClient
-//    def "Selective send to Android by platform OS - Filtering by OS case"() {
-//
-//        given: "A List of platform OS"
-//        List<String> platforms = new ArrayList<String>()
-//        platforms.add(ANDROID_DEVICE_OS)
-//        Sender.clear()
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, null, null, messages, null, platforms)
-//
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//    }
-//    
-//    def "Verify that right GCM notifications were sent - Filtering by OS case"() {
-//        
-//        expect: "Custom GCM Sender send is called with 3 token ids"
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 3 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//
-//        and: "The list contains the correct token ids"
-//        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
-//
-//        and: "The message sent is the correct one"
-//        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
-//    }
-//    
-//    @RunAsClient
-//    def "Selective send to IOS by platform OS - Filtering by OS case"() {
-//
-//        given: "A List of platform OS"
-//        List<String> platforms = new ArrayList<String>()
-//        platforms.add(IOS_DEVICE_OS)
-//        ApnsServiceImpl.clear()
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//        messages.put("sound", NOTIFICATION_SOUND)
-//        messages.put("badge", NOTIFICATION_BADGE)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, null, null, messages, null, platforms)
-//
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//    }
-//
-//    def "Verify that the right iOS notifications were sent - Filtering by OS case"() {
-//
-//        expect: "Custom iOS Sender push is called with 2 token ids"
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 2 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//
-//        and: "The list contains 2 registration token id"
-//        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN) && ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN_2)
-//
-//        and: "The message is the expected one"
-//        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
-//
-//        and: "The sound is the expected one"
-//        NOTIFICATION_SOUND.equals(ApnsServiceImpl.sound)
-//
-//        and: "The badge is the expected one"
-//        NOTIFICATION_BADGE == ApnsServiceImpl.badge
-//    }
-//    
-//    @RunAsClient
-//    def "Selective send to Simple Push by platform OS - Filtering by OS case"() {
-//
-//        given: "A List of platform OS"
-//        List<String> platforms = new ArrayList<String>()
-//        platforms.add(SIMPLE_PUSH_DEVICE_OS)
-//
-//        and: "A Map of categories / messages"
-//        Map<String, String> simplePush = new HashMap<String, String>()
-//        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
-//
-//        and: "A socket server"
-//        ServerSocket server = createSocket()
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, null, null, new HashMap<String, Object>(), simplePush, platforms)
-//        
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//
-//        and:
-//        def String serverInput = connectAndRead(server)
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
-//                }
-//            }
-//        )
-//        
-//        and: "The message should have been sent"
-//        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
-//        
-//        and: "The message is sent to the correct channel"
-//        serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
-//    }
-//    
-//    @RunAsClient
-//    def "Selective send to all devices of a user by alias - Target multiple devices by alias case"() {
-//
-//        given: "A List of aliases"
-//        List<String> aliases = new ArrayList<String>()
-//        aliases.add(COMMON_IOS_ANDROID_CLIENT_ALIAS)
-//        Sender.clear()
-//        ApnsServiceImpl.clear()
-//
-//        and: "A message"
-//        Map<String, Object> messages = new HashMap<String, Object>()
-//        messages.put("alert", NOTIFICATION_ALERT_MSG)
-//
-//        when: "Selective send to aliases"
-//        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
-//
-//        then: "Push application id and master secret are not empty"
-//        pushApplicationId != null && masterSecret != null
-//
-//        and: "Response status code is 200"
-//        response != null && response.statusCode() == Status.OK.getStatusCode()
-//    }
-//
-//    def "Verify that right GCM & APN notifications were sent - Target multiple devices by alias case"() {
-//
-//        expect: "Custom GCM Sender send is called with 1 token id"
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 1 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//        
-//        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-//            new Callable<Boolean>() {
-//                public Boolean call() throws Exception {
-//                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
-//                }
-//            }
-//        )
-//        
-//        and: "The GCM list contains the correct token ids"
-//        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
-//
-//        and: "The GCM message sent is the correct one"
-//        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
-//
-//        and: "The IOS list contains 1 registration token id"
-//        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN_2)
-//
-//        and: "The IOS message is the expected one"
-//        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
-//    }
+    @RunAsClient
+    def "Selective send - Bad request - Empty push application id"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(ANDROID_CLIENT_ALIAS)
+        aliases.add(ANDROID_CLIENT_ALIAS_2)
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend("", masterSecret, aliases, null, messages, null, null)
+
+        then: "Response status code is 401"
+        response != null && response.statusCode() == Status.UNAUTHORIZED.getStatusCode()
+    }
+
+    @RunAsClient
+    def "Selective send to Android by aliases - Filtering by aliases case"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(ANDROID_CLIENT_ALIAS)
+        aliases.add(ANDROID_CLIENT_ALIAS_2)
+        Sender.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+
+    def "Verify that right GCM notifications were sent - Filtering by aliases case"() {
+
+        expect: "Custom GCM Sender send is called with 2 token ids"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                }
+            }
+        )
+
+        and: "The list contains the correct token ids"
+        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2)
+
+        and: "The message sent is the correct one"
+        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
+    }
+
+    @RunAsClient
+    def "Selective send to IOS by aliases - Filtering by aliases case"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(IOS_CLIENT_ALIAS)
+        ApnsServiceImpl.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+        messages.put("sound", NOTIFICATION_SOUND)
+        messages.put("badge", NOTIFICATION_BADGE)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+
+    def "Verify that the right iOS notifications were sent - Filtering by aliases case"() {
+
+        expect: "Custom iOS Sender push is called with 1 token id"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                }
+            }
+        )
+
+        and: "The list contains 1 registration token id"
+        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN)
+
+        and: "The message is the expected one"
+        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
+
+        and: "The sound is the expected one"
+        NOTIFICATION_SOUND.equals(ApnsServiceImpl.sound)
+
+        and: "The badge is the expected one"
+        NOTIFICATION_BADGE == ApnsServiceImpl.badge
+    }
+
+    @RunAsClient
+    def "Selective send to Simple Push by aliases and deviceType - Filtering by aliases case"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(SIMPLE_PUSH_CLIENT_ALIAS)
+
+        and: "A List of device types"
+        List<String> deviceTypes = new ArrayList<String>()
+        deviceTypes.add(SIMPLE_PUSH_DEVICE_TYPE)
+
+        and: "A Map of categories / messages"
+        Map<String, String> simplePush = new HashMap<String, String>()
+        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
+
+        and: "A socket server"
+        ServerSocket server = createSocket()
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, new HashMap<String, Object>(), simplePush, null)
+        
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+
+        and:
+        def String serverInput = connectAndRead(server)
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+                }
+            }
+        )
+        
+        and: "The message should have been sent"
+        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+        
+        and: "The message is sent to the correct channel"
+        serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
+    }
+    
+    @RunAsClient
+    def "Selective send to Android by platform OS - Filtering by OS case"() {
+
+        given: "A List of platform OS"
+        List<String> platforms = new ArrayList<String>()
+        platforms.add(ANDROID_DEVICE_OS)
+        Sender.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, null, null, messages, null, platforms)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+    
+    def "Verify that right GCM notifications were sent - Filtering by OS case"() {
+        
+        expect: "Custom GCM Sender send is called with 3 token ids"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 3 // The condition that must be fulfilled
+                }
+            }
+        )
+
+        and: "The list contains the correct token ids"
+        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
+
+        and: "The message sent is the correct one"
+        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
+    }
+    
+    @RunAsClient
+    def "Selective send to IOS by platform OS - Filtering by OS case"() {
+
+        given: "A List of platform OS"
+        List<String> platforms = new ArrayList<String>()
+        platforms.add(IOS_DEVICE_OS)
+        ApnsServiceImpl.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+        messages.put("sound", NOTIFICATION_SOUND)
+        messages.put("badge", NOTIFICATION_BADGE)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, null, null, messages, null, platforms)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+
+    def "Verify that the right iOS notifications were sent - Filtering by OS case"() {
+
+        expect: "Custom iOS Sender push is called with 2 token ids"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 2 // The condition that must be fulfilled
+                }
+            }
+        )
+
+        and: "The list contains 2 registration token id"
+        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN) && ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN_2)
+
+        and: "The message is the expected one"
+        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
+
+        and: "The sound is the expected one"
+        NOTIFICATION_SOUND.equals(ApnsServiceImpl.sound)
+
+        and: "The badge is the expected one"
+        NOTIFICATION_BADGE == ApnsServiceImpl.badge
+    }
+    
+    @RunAsClient
+    def "Selective send to Simple Push by platform OS - Filtering by OS case"() {
+
+        given: "A List of platform OS"
+        List<String> platforms = new ArrayList<String>()
+        platforms.add(SIMPLE_PUSH_DEVICE_OS)
+
+        and: "A Map of categories / messages"
+        Map<String, String> simplePush = new HashMap<String, String>()
+        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
+
+        and: "A socket server"
+        ServerSocket server = createSocket()
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, null, null, new HashMap<String, Object>(), simplePush, platforms)
+        
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+
+        and:
+        def String serverInput = connectAndRead(server)
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+                }
+            }
+        )
+        
+        and: "The message should have been sent"
+        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+        
+        and: "The message is sent to the correct channel"
+        serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
+    }
+    
+    @RunAsClient
+    def "Selective send to all devices of a user by alias - Target multiple devices by alias case"() {
+
+        given: "A List of aliases"
+        List<String> aliases = new ArrayList<String>()
+        aliases.add(COMMON_IOS_ANDROID_CLIENT_ALIAS)
+        Sender.clear()
+        ApnsServiceImpl.clear()
+
+        and: "A message"
+        Map<String, Object> messages = new HashMap<String, Object>()
+        messages.put("alert", NOTIFICATION_ALERT_MSG)
+
+        when: "Selective send to aliases"
+        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, messages, null, null)
+
+        then: "Push application id and master secret are not empty"
+        pushApplicationId != null && masterSecret != null
+
+        and: "Response status code is 200"
+        response != null && response.statusCode() == Status.OK.getStatusCode()
+    }
+
+    def "Verify that right GCM & APN notifications were sent - Target multiple devices by alias case"() {
+
+        expect: "Custom GCM Sender send is called with 1 token id"
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 1 // The condition that must be fulfilled
+                }
+            }
+        )
+        
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                }
+            }
+        )
+        
+        and: "The GCM list contains the correct token ids"
+        Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
+
+        and: "The GCM message sent is the correct one"
+        Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
+
+        and: "The IOS list contains 1 registration token id"
+        ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN_2)
+
+        and: "The IOS message is the expected one"
+        NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
+    }
     
     @RunAsClient
     def "Selective send to Android by aliases - Custom data case"() {
