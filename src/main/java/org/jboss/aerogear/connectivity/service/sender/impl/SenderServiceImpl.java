@@ -179,24 +179,22 @@ public class SenderServiceImpl implements SenderService {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePush Service class
             final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
-            logger.info("Processing SimplePush VariantID: " + simplePushVariant.getVariantID()); 
             this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
         }
     }
 
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.info(String.format("Sending: %s to APNs", pushMessage));
+        logger.finest(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
     private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
-        logger.info(String.format("Sending: %s to GCM", pushMessage));
+        logger.finest(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
     }
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
-        logger.info(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
-        logger.info(String.format("Number of registered clients: %s ", ""+channels.size()));
+        logger.finest(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
         simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }
