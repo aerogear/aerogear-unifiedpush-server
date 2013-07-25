@@ -70,19 +70,26 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
         this.data = (Map<String, Object>) data.remove("message");
-        // remove the desired keywords:
-        // special key words (for APNs)
-        this.alert = (String) this.data.remove("alert");  // used in AGDROID as well
-        this.sound = (String) this.data.remove("sound");
+        // if 'native' message object is around, let's extract some data:
+        if (this.data != null) {
+            // remove the desired keywords:
+            // special key words (for APNs)
+            this.alert = (String) this.data.remove("alert");  // used in AGDROID as well
+            this.sound = (String) this.data.remove("sound");
 
-        Integer badgeVal = (Integer) this.data.remove("badge");
-        if (badgeVal == null) {
-            this.badge = -1;
+            Integer badgeVal = (Integer) this.data.remove("badge");
+            if (badgeVal == null) {
+                this.badge = -1;
+            } else {
+                this.badge = badgeVal;
+            }
         } else {
-            this.badge = badgeVal;
+            // satisfy the final
+            this.alert = null;
+            this.sound = null;
+            this.badge = -1;
         }
 
-        
         // SimplePush values: 
         this.simplePush = (Map<String, String>) data.remove("simple-push");
 

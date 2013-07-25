@@ -113,20 +113,21 @@ public class SenderServiceImpl implements SenderService {
         final List<String> aliases = criterias.getAliases();
         final List<String> deviceTypes = criterias.getDeviceTypes();
 
-        
-        
-        // TODO: DISPATCH TO A QUEUE .....
-        for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
-            this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
-        }
+        // let's check if we actually have data for native platforms!
+        if (message.getData() != null) {
 
-        // TODO: DISPATCH TO A QUEUE .....
-        for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
-            this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
-        }
+            // TODO: DISPATCH TO A QUEUE .....
+            for (iOSVariant iOSVariant : iOSVariants) {
+                final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
+                this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
+            }
 
+            // TODO: DISPATCH TO A QUEUE .....
+            for (AndroidVariant androidVariant : androidVariants) {
+                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
+                this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
+            }
+        }
 
         // TODO: DISPATCH TO A QUEUE .....
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
