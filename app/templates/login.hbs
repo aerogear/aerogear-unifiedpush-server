@@ -1,22 +1,34 @@
 <!--The Login Page Template-->
 {{error}}
-    <div>
-        <form id="login" {{action login on="submit"}}>
-          <fieldset>
-            <legend><strong>AeroGear</strong> Unified Push Server</legend>
-            <p>
-              <label>Username</label>
-              {{ input type="text" valueBinding="loginName" placeholder="Username"}}
-            </p>
-            <p>
-              <label>Password</label>
-              {{ input type="password" valueBinding="password" placeholder="Password"}}
-            </p>
-            <small>
-              <input type="checkbox">Remember Username<br>
-               Forgot <a href="#">Username</a> or <a href="#">Password</a>?
-            </small>
-            <button class="primary">Log In</button>
-          </fieldset>
-        </form>
-    </div>
+{{#if loginIn}}
+  <div>
+      <form id="login" {{action login on="submit"}}>
+        <fieldset>
+          <legend><strong>AeroGear</strong> Unified Push Server</legend>
+          <p>
+            <label>Username</label>
+            {{ input type="text" valueBinding="loginName" placeholder="Username"}}
+          </p>
+          <p>
+            <label>Password</label>
+            {{ input type="password" valueBinding="password" placeholder="Password"}}
+          </p>
+          <button class="primary">Log In</button>
+        </fieldset>
+      </form>
+  </div>
+{{else}}
+  <div>
+    You must change your password
+    <form id="other" {{action other on="submit"}}>
+      <fieldset>
+        <legend><strong>AeroGear</strong> Unified Push Server</legend>
+        <p>
+          <label>Password</label>
+          {{ input type="password" valueBinding="password" placeholder="Password"}}
+        </p>
+        <button class="primary">Save</button>
+      </fieldset>
+    </form>
+  </div>
+{{/if}}
