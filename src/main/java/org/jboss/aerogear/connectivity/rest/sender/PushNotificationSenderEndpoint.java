@@ -68,7 +68,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to @Async EJB:
         senderService.broadcast(pushApplication, payload);
-        logger.info("Message submitted to PushNetworks");
+        logger.info("Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
@@ -92,7 +92,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to @Async EJB:
         senderService.selectiveSend(pushApplication, payload);
-        logger.info("Message submitted to PushNetworks");
+        logger.info("Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();

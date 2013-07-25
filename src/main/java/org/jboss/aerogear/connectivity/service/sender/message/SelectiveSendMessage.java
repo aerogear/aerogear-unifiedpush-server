@@ -118,7 +118,6 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     public String getSound() {
         return sound;
     }
-
     @Override
     public int getBadge() {
         return badge;
@@ -127,5 +126,11 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     @Override
     public Map<String, Object> getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "SelectiveSendMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
+                + data + "]";
     }
 }
