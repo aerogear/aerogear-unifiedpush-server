@@ -24,8 +24,8 @@ import groovy.json.JsonOutput;
 import org.jboss.arquillian.container.test.api.Deployment
 import org.jboss.arquillian.spock.ArquillianSpecification;
 import org.jboss.arquillian.test.api.ArquillianResource
-import org.jboss.connectivity.common.AdminLogin;
-import org.jboss.connectivity.common.Deployments;
+import org.jboss.aerogear.connectivity.common.AdminLogin;
+import org.jboss.aerogear.connectivity.common.Deployments;
 import org.jboss.modules.AssertionSetting;
 import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.WebArchive

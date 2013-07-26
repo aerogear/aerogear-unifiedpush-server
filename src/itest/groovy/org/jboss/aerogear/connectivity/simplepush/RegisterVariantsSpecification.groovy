@@ -30,8 +30,8 @@ import spock.lang.Specification
 import spock.lang.Shared
 
 import org.jboss.arquillian.spock.ArquillianSpecification
-import org.jboss.connectivity.common.AdminLogin;
-import org.jboss.connectivity.common.Deployments;
+import org.jboss.aerogear.connectivity.common.AdminLogin;
+import org.jboss.aerogear.connectivity.common.Deployments;
 
 @ArquillianSpecification
 @Mixin(AdminLogin)
