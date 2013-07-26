@@ -144,6 +144,8 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     private final static String COMMON_IOS_ANDROID_CLIENT_ALIAS = "qa_ios_android@aerogear"
     
     private final static String CUSTOM_FIELD_DATA_MSG = "custom field msg"
+    
+    private final static String SIMPLE_PUSH_VERSION = "version=15";
 
     private final static URL root = new URL("http://localhost:8080/ag-push/")
 
@@ -677,7 +679,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         and: "A Map of categories / messages"
         Map<String, String> simplePush = new HashMap<String, String>()
-        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
+        simplePush.put(SIMPLE_PUSH_CATEGORY, SIMPLE_PUSH_VERSION)
 
         and: "A socket server"
         ServerSocket server = createSocket()
@@ -696,13 +698,13 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
             new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+                    return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
                 }
             }
         )
         
         and: "The message should have been sent"
-        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+        serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
         
         and: "The message is sent to the correct channel"
         serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
@@ -805,7 +807,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         and: "A Map of categories / messages"
         Map<String, String> simplePush = new HashMap<String, String>()
-        simplePush.put(SIMPLE_PUSH_CATEGORY, NOTIFICATION_ALERT_MSG)
+        simplePush.put(SIMPLE_PUSH_CATEGORY, SIMPLE_PUSH_VERSION)
 
         and: "A socket server"
         ServerSocket server = createSocket()
@@ -824,13 +826,13 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
             new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    return serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+                    return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
                 }
             }
         )
         
         and: "The message should have been sent"
-        serverInput != null && serverInput.contains(NOTIFICATION_ALERT_MSG)
+        serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
         
         and: "The message is sent to the correct channel"
         serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
