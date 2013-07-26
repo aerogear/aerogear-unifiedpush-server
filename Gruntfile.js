@@ -218,6 +218,19 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        replace: {
+            dist: {
+                options: {
+                    variables: {
+                        "baseURL=\"/ag-push/\"": "App.baseURL=\"/\""
+                    },
+                    prefix: 'App.'
+                },
+                files: [
+                    {expand: true, flatten: true, src: ['<%= yeoman.dist %>/scripts/main.js'], dest: '<%= yeoman.dist %>/scripts/'}
+                ]
+            }
+        },
         // Put files not handled in other tasks here
         copy: {
             dist: {
@@ -299,7 +312,7 @@ module.exports = function (grunt) {
         'cssmin',
         'concat',
         'uglify',
-        'copy',
+        'copy:dist',
         'rev',
         'usemin'
     ]);
@@ -308,6 +321,25 @@ module.exports = function (grunt) {
         'jshint',
         'test',
         'build'
+    ]);
+
+    grunt.registerTask('buildOS', [
+        'clean:dist',
+        'useminPrepare',
+        'concurrent:dist',
+        'cssmin',
+        'concat',
+        'uglify',
+        'copy:dist',
+        'replace',
+        'rev',
+        'usemin'
+    ]);
+
+    grunt.registerTask('openshift', [
+        'jshint',
+        'test',
+        'buildOS'
     ]);
 
     grunt.registerTask('cw', ['copy:webapp']);
