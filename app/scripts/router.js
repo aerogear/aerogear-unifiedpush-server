@@ -48,6 +48,26 @@ App.Router.map( function() {
 });
 
 /*
+    Application Route - Mostly For Global Events
+*/
+App.ApplicationRoute = Ember.Route.extend({
+    events: {
+        error: function( controller, errormsg ) {
+            var content = controller.get( "content" );
+            if( content ) {
+                controller.set( "content.errors", errormsg );
+            } else {
+                controller.set( "content", { "errors": errormsg } );
+            }
+            this.render( "error", { into: "application", outlet: "error", controller: controller } );
+        },
+        clearErrors: function(){
+            this.render( "nothing", { into: "application", outlet: "error" } );
+        }
+    }
+});
+
+/*
     Application Index Route
 */
 App.IndexRoute = Ember.Route.extend({

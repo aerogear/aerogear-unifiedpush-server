@@ -13,7 +13,6 @@
 */
 
 App.LoginController = Ember.ObjectController.extend({
-    error: "",
     loginName: "",
     password: "",
     loginIn: true,
@@ -23,7 +22,7 @@ App.LoginController = Ember.ObjectController.extend({
         //TODO: more advanced validation
 
         if( !this.get( "password" ).trim().length ||  !this.get( "loginName" ).trim().length ) {
-            this.set( "error", "A Username and Password are required" );
+            this.send( "error", this, "A Username and Password are required" );
         } else {
             // Use AeroGear Authenticator to login
             App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.loginName, password: this.password } ), {
@@ -32,17 +31,14 @@ App.LoginController = Ember.ObjectController.extend({
                     if( jqXHR.status === 205 ) {
                         //change the password
                         that.set( "loginIn", false );
-                        console.log( "change that shizzel" );
                     } else {
                         // Successful Login, now go to /mobileApps
-                        that.set( "error", "" );
+                        that.send( "clearErrors" );
                         that.transitionToRoute( "mobileApps" );
                     }
                 },
-                error: function( error ) {
-                    //TODO: Show errors on screen
-                    console.log( "Error Logging in", error );
-                    that.set( "error", "Login Error" );
+                error: function() {
+                    that.send( "error", that, "Login Error" );
                 }
             });
         }
@@ -64,12 +60,11 @@ App.LoginController = Ember.ObjectController.extend({
             contentType: "application/json",
             success: function() {
                 that.set( "loginIn", true );
-                that.set( "error", "" );
+                that.send( "clearErrors" );
                 that.transitionToRoute( "mobileApps" );
             },
-            error: function( error ) {
-                that.set( "error", "Save Error" );
-                console.log( "error", error );
+            error: function() {
+                that.send( "error", that, "Save Error" );
             }
         });
     }
