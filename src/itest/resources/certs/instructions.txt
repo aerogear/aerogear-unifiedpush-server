@@ -1,0 +1,4 @@
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout qaAerogearKey.key -out qaAerogear.crt
+openssl pkcs12 -export -out qaAerogear.p12 -inkey qaAerogearKey.key -in qaAerogear.crt
+# password aerogear 
+
