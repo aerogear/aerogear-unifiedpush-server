@@ -19,6 +19,10 @@ package org.jboss.aerogear.connectivity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
 
-public @ApplicationPath("/rest")
-class RestApplication extends Application {
+/**
+ * The JAX-RS {@link Application} representing the base
+ * entry point for all RESTful HTTP requests.
+ */
+@ApplicationPath("/rest")
+public class RestApplication extends Application {
 }
