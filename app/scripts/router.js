@@ -47,6 +47,13 @@ App.Router.map( function() {
     });
 });
 
+App.Route = Ember.Route.extend({
+    activate: function(){
+        this.send( "clearErrors" );
+        console.log( "hmm" );
+    }
+});
+
 /*
     Application Route - Mostly For Global Events
 */
@@ -70,7 +77,7 @@ App.ApplicationRoute = Ember.Route.extend({
 /*
     Application Index Route
 */
-App.IndexRoute = Ember.Route.extend({
+App.IndexRoute = App.Route.extend({
     redirect: function() {
 
         // Redirect to /mobileApps
@@ -84,7 +91,7 @@ App.IndexRoute = Ember.Route.extend({
 
     Load All Mobile Applications
 */
-App.MobileAppsIndexRoute = Ember.Route.extend({
+App.MobileAppsIndexRoute = App.Route.extend({
     model: function() {
 
         // Return All the Mobile Applications
@@ -98,7 +105,7 @@ App.MobileAppsIndexRoute = Ember.Route.extend({
 
     Create/Edit A Mobile Application
 */
-App.MobileAppsEditRoute = Ember.Route.extend({
+App.MobileAppsEditRoute = App.Route.extend({
     setupController: function( controller, model ) {
 
         //Load the current Model
@@ -117,7 +124,7 @@ App.MobileAppsEditRoute = Ember.Route.extend({
     Route for Application Variants - shows a list of variants
     Don't need the model since ember  will do find( id ) by default
 */
-App.VariantsRoute = Ember.Route.extend({
+App.VariantsRoute = App.Route.extend({
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
@@ -129,7 +136,7 @@ App.VariantsRoute = Ember.Route.extend({
 /*
     Route for Application Variants Index Page
 */
-App.VariantsIndexRoute = Ember.Route.extend({
+App.VariantsIndexRoute = App.Route.extend({
     model: function() {
 
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
@@ -153,7 +160,7 @@ App.VariantsIndexRoute = Ember.Route.extend({
 /*
     Route for adding a variant
 */
-App.VariantsAddRoute = Ember.Route.extend({
+App.VariantsAddRoute = App.Route.extend({
     model: function() {
 
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
@@ -172,7 +179,7 @@ App.VariantsAddRoute = Ember.Route.extend({
 /*
     Route for adding/editing a variant
 */
-App.VariantsEditRoute = Ember.Route.extend({
+App.VariantsEditRoute = App.Route.extend({
     model: function() {
 
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
@@ -191,7 +198,7 @@ App.VariantsEditRoute = Ember.Route.extend({
 /*
     Route for the Single Variant - shows a list a instances
 */
-App.VariantRoute = Ember.Route.extend({
+App.VariantRoute = App.Route.extend({
     model: function( params ) {
 
         // Return All the mobile variants
@@ -210,7 +217,7 @@ App.VariantRoute = Ember.Route.extend({
 /*
     Route for the Single Variant index page
 */
-App.VariantIndexRoute = Ember.Route.extend({
+App.VariantIndexRoute = App.Route.extend({
     model: function() {
 
         // Return the "Variant" Route Model since that is where all the "dynamic segments" are
@@ -233,7 +240,7 @@ App.VariantIndexRoute = Ember.Route.extend({
 /*
     Route for an Instance
 */
-App.InstanceRoute = Ember.Route.extend({
+App.InstanceRoute = App.Route.extend({
     model: function( params ) {
 
         // Return All the instances of the variants from the params
@@ -252,7 +259,7 @@ App.InstanceRoute = Ember.Route.extend({
 /*
     Route for an Instance index page
 */
-App.InstanceIndexRoute = Ember.Route.extend({
+App.InstanceIndexRoute = App.Route.extend({
     model: function() {
 
         // Return the "instance" Route Model since that is where all the "dynamic segments" are

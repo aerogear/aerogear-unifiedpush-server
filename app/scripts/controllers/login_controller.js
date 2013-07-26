@@ -33,7 +33,6 @@ App.LoginController = Ember.ObjectController.extend({
                         that.set( "loginIn", false );
                     } else {
                         // Successful Login, now go to /mobileApps
-                        that.send( "clearErrors" );
                         that.transitionToRoute( "mobileApps" );
                     }
                 },
@@ -60,7 +59,6 @@ App.LoginController = Ember.ObjectController.extend({
             contentType: "application/json",
             success: function() {
                 that.set( "loginIn", true );
-                that.send( "clearErrors" );
                 that.transitionToRoute( "mobileApps" );
             },
             error: function() {
