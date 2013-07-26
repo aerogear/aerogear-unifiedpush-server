@@ -50,7 +50,6 @@ App.Router.map( function() {
 App.Route = Ember.Route.extend({
     activate: function(){
         this.send( "clearErrors" );
-        console.log( "hmm" );
     }
 });
 
