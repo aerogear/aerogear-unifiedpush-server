@@ -45,8 +45,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                         App.Router.router.transitionToRoute("login");
                         break;
                     default:
-                        //that.transitionToRoute( "login" );
-                        //result.setProperties( { isLoaded: true, error: error } );
+                        that.send( "error", that, "Error Removing" );
                         break;
                     }
                 }
@@ -81,6 +80,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     that.transitionToRoute( "login" );
                     break;
                 default:
+                    that.send( "error", that, "Error Saving" );
                     break;
                 }
             };
@@ -150,6 +150,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                         that.transitionToRoute( "login" );
                         break;
                     default:
+                        that.send( "error", that, "Error Saving" );
                         break;
                     }
                 };
@@ -192,6 +193,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 that.transitionToRoute( "login" );
                 break;
             default:
+                that.send( "error", that, "Error Saving" );
                 break;
             }
         };

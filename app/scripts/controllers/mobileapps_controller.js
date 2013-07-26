@@ -36,6 +36,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                     that.transitionToRoute( "login" );
                     break;
                 default:
+                    that.send( "error", that, "Error Saving" );
                     break;
                 }
             }
@@ -71,8 +72,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                         App.Router.router.transitionToRoute("login");
                         break;
                     default:
-                        //that.transitionToRoute( "login" );
-                        //result.setProperties( { isLoaded: true, error: error } );
+                        that.send( "error", that, "Error Saving" );
                         break;
                     }
                 }
@@ -96,8 +96,7 @@ App.MobileAppsController = Ember.Controller.extend({
         var that = this;
         App.AeroGear.authenticator.logout({
             contentType: "application/json",
-            success: function( success ) {
-                console.log( "Logged Out", success );
+            success: function() {
                 that.transitionToRoute( "login" );
             },
             error: function( error ) {

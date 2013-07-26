@@ -47,11 +47,9 @@ App.InstanceIndexController = Ember.ObjectController.extend({
         installationPipe.save( data, {
             success: function() {
                 that.set( "enabled", data.enabled );
-                console.log( "good to go" );
             },
-            error: function( error ) {
-                console.log( error );
-                //reset model
+            error: function() {
+                that.send( "error", that, "Error Toggling" );
                 that.set( "enabled", currentStatus );
             }
         });
