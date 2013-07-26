@@ -93,4 +93,9 @@ public class BroadcastMessage implements UnifiedPushMessage {
     public Map<String, Object> getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "BroadcastMessage [simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data=" + data + "]";
+    }
 }

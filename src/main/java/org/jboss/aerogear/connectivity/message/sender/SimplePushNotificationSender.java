@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,13 +48,15 @@ public class SimplePushNotificationSender implements Serializable {
      * @param channelIDs collection of channelIDs, representing actual SimplePush client (devices).
      */
     public void sendMessage(String endpointBaseURL, String payload, List<String> channelIDs) {
-        // iterate over all the given channels:
+        // iterate over all the given channels, if there are channels:
         for (String channelID : channelIDs) {
 
             HttpURLConnection conn = null;
             try {
+                final String clientURL = endpointBaseURL+channelID;
                 // PUT the version payload to the SimplePushServer 
-                conn = put(endpointBaseURL+channelID, payload);
+                logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 

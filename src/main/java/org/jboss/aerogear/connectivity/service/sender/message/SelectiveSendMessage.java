@@ -1,12 +1,12 @@
 /**
  * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors
+ * Copyright Red Hat, Inc., and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.aerogear.connectivity.service.sender.message;
 
 import java.util.Map;
@@ -71,19 +70,26 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
         this.data = (Map<String, Object>) data.remove("message");
-        // remove the desired keywords:
-        // special key words (for APNs)
-        this.alert = (String) this.data.remove("alert");  // used in AGDROID as well
-        this.sound = (String) this.data.remove("sound");
+        // if 'native' message object is around, let's extract some data:
+        if (this.data != null) {
+            // remove the desired keywords:
+            // special key words (for APNs)
+            this.alert = (String) this.data.remove("alert");  // used in AGDROID as well
+            this.sound = (String) this.data.remove("sound");
 
-        Integer badgeVal = (Integer) this.data.remove("badge");
-        if (badgeVal == null) {
-            this.badge = -1;
+            Integer badgeVal = (Integer) this.data.remove("badge");
+            if (badgeVal == null) {
+                this.badge = -1;
+            } else {
+                this.badge = badgeVal;
+            }
         } else {
-            this.badge = badgeVal;
+            // satisfy the final
+            this.alert = null;
+            this.sound = null;
+            this.badge = -1;
         }
 
-        
         // SimplePush values: 
         this.simplePush = (Map<String, String>) data.remove("simple-push");
 
@@ -118,7 +124,6 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     public String getSound() {
         return sound;
     }
-
     @Override
     public int getBadge() {
         return badge;
@@ -127,5 +132,11 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     @Override
     public Map<String, Object> getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "SelectiveSendMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
+                + data + "]";
     }
 }

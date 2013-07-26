@@ -1,12 +1,12 @@
 /**
  * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors
+ * Copyright Red Hat, Inc., and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.aerogear.connectivity.service.sender.impl;
 
 import java.util.Collection;
@@ -22,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -60,11 +60,15 @@ public class SenderServiceImpl implements SenderService {
     private ClientInstallationService clientInstallationService;
 
     @Inject
-    private GenericVariantService genericVariantService; 
+    private GenericVariantService genericVariantService;
+
+    @Inject
+    private Logger logger;
 
     @Override
     @Asynchronous
     public void selectiveSend(PushApplication pushApplication, SelectiveSendMessage message) {
+        logger.info(String.format("Processing 'selective send' request with '%s' payload", message));
 
         // collections for all the different variants:
         final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
@@ -109,20 +113,21 @@ public class SenderServiceImpl implements SenderService {
         final List<String> aliases = criterias.getAliases();
         final List<String> deviceTypes = criterias.getDeviceTypes();
 
-        
-        
-        // TODO: DISPATCH TO A QUEUE .....
-        for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
-            this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
-        }
+        // let's check if we actually have data for native platforms!
+        if (message.getData() != null) {
 
-        // TODO: DISPATCH TO A QUEUE .....
-        for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
-            this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
-        }
+            // TODO: DISPATCH TO A QUEUE .....
+            for (iOSVariant iOSVariant : iOSVariants) {
+                final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
+                this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
+            }
 
+            // TODO: DISPATCH TO A QUEUE .....
+            for (AndroidVariant androidVariant : androidVariants) {
+                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
+                this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
+            }
+        }
 
         // TODO: DISPATCH TO A QUEUE .....
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
@@ -146,6 +151,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     @Asynchronous
     public void broadcast(PushApplication pushApplication, BroadcastMessage payload) {
+        logger.info(String.format("Processing broadcast request with '%s' payload", payload));
 
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
@@ -178,14 +184,17 @@ public class SenderServiceImpl implements SenderService {
     }
 
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+        logger.fine(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
     private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
+        logger.fine(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
     }
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
+        logger.fine(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
         simplePushSender.sendMessage(endpointBaseURL, payload, channels);
     }
 }

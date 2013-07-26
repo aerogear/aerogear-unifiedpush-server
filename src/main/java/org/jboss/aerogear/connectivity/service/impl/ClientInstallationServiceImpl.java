@@ -38,8 +38,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     // the SimplePush BROADCAST category name:
     private static final String BROADCAST_CHANNEL = "broadcast";
+
     // The allowed SimplePush "device types
-    private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = Arrays.asList("web");
+    // TODO: right now there is no 'auto' registration for SP clients that
+    // store 'web' as their device type metadata. That is the reason for null.
+    // Once that happens the null goes away
+    private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = null;
+    //private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = Arrays.asList("web");
 
     @Inject
     private InstallationDao dao;
@@ -99,8 +104,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public List<InstallationImpl> findInstallationsForVariantByDeviceToken(String variantID, String deviceToken) {
-        return dao.findInstallationsForVariantByDeviceToken(variantID, deviceToken);
+    public InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+        return dao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
 
     // =====================================================================

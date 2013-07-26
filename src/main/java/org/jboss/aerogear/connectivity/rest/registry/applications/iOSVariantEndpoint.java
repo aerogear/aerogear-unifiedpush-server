@@ -24,6 +24,7 @@ import org.jboss.aerogear.connectivity.service.PushApplicationService;
 import org.jboss.aerogear.connectivity.service.iOSVariantService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.security.util.PKCS12Util;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
@@ -44,6 +45,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Stateless
 @TransactionAttribute
@@ -60,6 +62,9 @@ public class iOSVariantEndpoint {
     @LoggedUser
     private Instance<String> loginName;
 
+    @Inject
+    private Logger logger;
+    
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============           iOS            ======================
@@ -79,8 +84,9 @@ public class iOSVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
-        // poor validation
-        if (form.getCertificate() == null || form.getPassphrase() == null) {
+        // certificate/passphrase pair OK ?
+        if (! validateCertificateAndPassphrase(form)) {
+            // nope...
             return Response.status(Status.BAD_REQUEST).build();
         }
 
@@ -162,8 +168,9 @@ public class iOSVariantEndpoint {
         iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         if (iOSVariation != null) {
 
-            // poor validation
-            if (updatedForm.getCertificate() == null || updatedForm.getPassphrase() == null) {
+            // certificate/passphrase pair OK ?
+            if (! validateCertificateAndPassphrase(updatedForm)) {
+                // nope...
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
@@ -193,5 +200,34 @@ public class iOSVariantEndpoint {
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+    /** 
+     * Helper to validate if we got a certificate/passphrase pair AND (if present)
+     * if that pair is also valid, and does not contain any bogus content.
+     * 
+     * 
+     *  @return true if valid, otherwise false
+     */
+    private boolean validateCertificateAndPassphrase(iOSApplicationUploadForm form) {
+
+        final byte[] certificate = form.getCertificate() ;
+        final String passphrase = form.getPassphrase();
+
+        // got certificate/passphrase ?
+        if (certificate == null || passphrase == null) {
+            return false;
+        } else {
+            // ok, we got content, but let's check if that makes sense:
+            try {
+                PKCS12Util.validate(certificate, passphrase);
+
+                // ok we are good:
+                return true;
+            } catch (Exception e) {
+                logger.severe("Could not validate the given certificate and passphrase pair");
+                return false;
+            }
+        }
     }
 }
