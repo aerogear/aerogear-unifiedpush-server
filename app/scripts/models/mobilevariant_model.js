@@ -56,7 +56,7 @@ App.MobileVariant.reopenClass({
             mobileVariantPipe = AeroGear.Pipeline({
                 name: "mobileVariant",
                 settings: {
-                    baseURL: "/ag-push/rest/applications/",
+                    baseURL: App.baseURL + "rest/applications/",
                     authenticator: App.AeroGear.authenticator,
                     endpoint:  applicationPushId + "/" + variantType
                 }

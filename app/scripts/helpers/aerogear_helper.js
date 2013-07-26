@@ -20,7 +20,7 @@ App.AeroGear = {};
 App.AeroGear.authenticator = AeroGear.Auth({
     name: "authenticator",
     settings: {
-        baseURL: "/ag-push/rest/"
+        baseURL: App.baseURL + "rest/"
     }
 }).modules.authenticator;
 
@@ -31,7 +31,7 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
         name: "applications",
         settings: {
             id: "pushApplicationID",
-            baseURL: "/ag-push/rest/",
+            baseURL: App.baseURL + "rest/",
             authenticator: App.AeroGear.authenticator
         }
     }

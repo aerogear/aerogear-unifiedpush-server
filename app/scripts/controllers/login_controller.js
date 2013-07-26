@@ -53,7 +53,7 @@ App.LoginController = Ember.ObjectController.extend({
         data = JSON.stringify( { loginName: loginName, password: password } );
 
         $.ajax({
-            url: "/ag-push/rest/auth/update",
+            url: App.baseURL + "rest/auth/update",
             type: "PUT",
             data: data,
             contentType: "application/json",

@@ -38,7 +38,7 @@ App.InstanceIndexController = Ember.ObjectController.extend({
         installationPipe = AeroGear.Pipeline({
             name: "installationPipe",
             settings: {
-                baseURL: "/ag-push/rest/applications/",
+                baseURL: App.baseURL + "rest/applications/",
                 authenticator: App.AeroGear.authenticator,
                 endpoint:  model.variantID + "/installations"
             }

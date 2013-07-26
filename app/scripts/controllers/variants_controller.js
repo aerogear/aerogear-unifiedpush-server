@@ -21,7 +21,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 mobileVariantPipe = AeroGear.Pipeline({
                 name: "mobileVariant",
                 settings: {
-                    baseURL: "/ag-push/rest/applications/",
+                    baseURL: App.baseURL + "rest/applications/",
                     authenticator: App.AeroGear.authenticator,
                     endpoint:  variant.pushApplicationID + "/" + variant.get( "vType" )
                 }
@@ -61,7 +61,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             },
             variantType =  $( "input:checked" ).val(),
             ajaxOptions = {
-                url: "/ag-push/rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType,
+                url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType,
                 type: "POST",
                 contentType: "application/json"
             };
@@ -118,7 +118,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             },
             variantType =  controller.get("model").get("vType"),
             ajaxOptions = {
-                url: "/ag-push/rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
+                url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
                 type: "PUT",
                 contentType: "application/json"
             },
