@@ -168,9 +168,9 @@ class InstallationRegistrationEndpointSpecification extends Specification {
 
         and:
         "Mobile Variant was indeed registered"
-        List<InstallationImpl> installationInstanceList  = clientInstallationService.findInstallationsForVariantByDeviceToken(
+        InstallationImpl instance  = clientInstallationService.findInstallationForVariantByDeviceToken(
                 androidVariantId, mobileVariant.getDeviceToken())
-        installationInstanceList != null && mobileInstanceExistsInList(mobileVariant, installationInstanceList)
+        instance != null
     }
 
     def "test unregister - removal"() {
@@ -195,21 +195,9 @@ class InstallationRegistrationEndpointSpecification extends Specification {
 
         and:
         "Mobile Variant was indeed unregistered"
-        List<InstallationImpl> installationInstanceList  = clientInstallationService.findInstallationsForVariantByDeviceToken(
+        def InstallationImpl instance  = clientInstallationService.findInstallationForVariantByDeviceToken(
                 androidVariantId, installationInstance.getDeviceToken())
-        !mobileInstanceExistsInList(installationInstance, installationInstanceList)
-    }
-
-    private boolean mobileInstanceExistsInList(InstallationImpl instance,
-            List<InstallationImpl> installationInstanceList) {
-        if (instance != null && installationInstanceList != null) {
-            for (InstallationImpl installationInstance : installationInstanceList) {
-                if (installationInstance != null && instance.getDeviceToken().equals(installationInstance.getDeviceToken())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        instance == null
     }
 
     private HttpServletRequest mockHttpServletRequestBasicAuth(String mobileVariantID, String secret) {
