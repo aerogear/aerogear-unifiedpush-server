@@ -16,20 +16,17 @@
  */
 package org.jboss.aerogear.connectivity.rest.sender
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Response.Status
 
+import org.jboss.aerogear.connectivity.common.AndroidVariantUtils
+import org.jboss.aerogear.connectivity.common.AuthenticationUtils
+import org.jboss.aerogear.connectivity.common.InstallationUtils
+import org.jboss.aerogear.connectivity.common.PushApplicationUtils
+import org.jboss.aerogear.connectivity.common.PushNotificationSenderUtils
+import org.jboss.aerogear.connectivity.common.SimplePushVariantUtils
+import org.jboss.aerogear.connectivity.common.iOSVariantUtils
 import org.jboss.aerogear.connectivity.model.AndroidVariant
 import org.jboss.aerogear.connectivity.model.InstallationImpl
 import org.jboss.aerogear.connectivity.model.PushApplication
@@ -38,13 +35,6 @@ import org.jboss.aerogear.connectivity.rest.util.iOSApplicationUploadForm
 import org.jboss.arquillian.container.test.api.Deployment
 import org.jboss.arquillian.container.test.api.RunAsClient
 import org.jboss.arquillian.spock.ArquillianSpecification
-import org.jboss.aerogear.connectivity.common.AndroidVariantUtils
-import org.jboss.aerogear.connectivity.common.AuthenticationUtils
-import org.jboss.aerogear.connectivity.common.InstallationUtils
-import org.jboss.aerogear.connectivity.common.PushApplicationUtils
-import org.jboss.aerogear.connectivity.common.PushNotificationSenderUtils
-import org.jboss.aerogear.connectivity.common.SimplePushVariantUtils
-import org.jboss.aerogear.connectivity.common.iOSVariantUtils
 import org.jboss.shrinkwrap.api.ShrinkWrap
 import org.jboss.shrinkwrap.api.spec.JavaArchive
 import org.jboss.shrinkwrap.api.spec.WebArchive
@@ -57,12 +47,12 @@ import spock.lang.Specification
 import com.google.android.gcm.server.Sender
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsService;
-import com.notnoop.apns.ApnsServiceBuilder;
-import com.notnoop.apns.PayloadBuilder;
-import com.notnoop.apns.internal.ApnsServiceImpl;
-import com.notnoop.exceptions.NetworkIOException;
+import com.notnoop.apns.APNS
+import com.notnoop.apns.ApnsService
+import com.notnoop.apns.ApnsServiceBuilder
+import com.notnoop.apns.PayloadBuilder
+import com.notnoop.apns.internal.ApnsServiceImpl
+import com.notnoop.exceptions.NetworkIOException
 
 
 @ArquillianSpecification
@@ -88,7 +78,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     private final static String ANDROID_DEVICE_TOKEN = "gsmToken__1"
 
     private final static String ANDROID_DEVICE_TOKEN_2 = "gsmToken__2"
-    
+
     private final static String ANDROID_DEVICE_TOKEN_3 = "gsmToken__3"
 
     private final static String ANDROID_DEVICE_OS = "ANDROID"
@@ -112,7 +102,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     private final static String SIMPLE_PUSH_DEVICE_TOKEN = "simplePushToken__1"
 
     private final static String SIMPLE_PUSH_DEVICE_TYPE = "web"
-    
+
     private final static String SIMPLE_PUSH_DEVICE_OS = "MozillaOS"
 
     private final static String NOTIFICATION_ALERT_MSG = "Hello AeroGearers"
@@ -125,9 +115,9 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
     private final static String IOS_VARIANT_DESC = "awesome variant__1"
 
-    private final static String IOS_DEVICE_TOKEN = "iOSToken__1"
-    
-    private final static String IOS_DEVICE_TOKEN_2 = "iOSToken__2"
+    private final static String IOS_DEVICE_TOKEN = "abcd123456"
+
+    private final static String IOS_DEVICE_TOKEN_2 = "abcd456789"
 
     private final static String IOS_DEVICE_OS = "IOS"
 
@@ -140,12 +130,16 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     private final static String SIMPLE_PUSH_CATEGORY = "1234"
 
     private final static String SIMPLE_PUSH_CLIENT_ALIAS = "qa_simple_push_1@aerogear"
-    
+
     private final static String COMMON_IOS_ANDROID_CLIENT_ALIAS = "qa_ios_android@aerogear"
-    
+
     private final static String CUSTOM_FIELD_DATA_MSG = "custom field msg"
+
+    private final static String SIMPLE_PUSH_VERSION = "version=15"
     
-    private final static String SIMPLE_PUSH_VERSION = "version=15";
+    private final static String IOS_CERTIFICATE_PATH = "src/itest/resources/certs/qaAerogear.p12"
+    
+    private final static String IOS_CERTIFICATE_PASS_PHRASE = "aerogear"
 
     private final static URL root = new URL("http://localhost:8080/ag-push/")
 
@@ -154,7 +148,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         def unifiedPushServerPom = System.getProperty("unified.push.server.location", "pom.xml")
 
         WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile(unifiedPushServerPom).importBuildOutput()
-        .as(WebArchive.class)
+                .as(WebArchive.class)
 
         war.delete("/WEB-INF/lib/gcm-server-1.0.2.jar")
 
@@ -162,43 +156,42 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         war.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
 
         war.addClasses(
-            AuthenticationUtils.class,
-            PushApplicationUtils.class,
-            AndroidVariantUtils.class,
-            SimplePushVariantUtils.class,
-            InstallationUtils.class,
-            iOSVariantUtils.class,
-            PushNotificationSenderUtils.class,
-            PushNotificationSenderEndpointSpecification.class
-        )
+                    AuthenticationUtils.class,
+                    PushApplicationUtils.class,
+                    AndroidVariantUtils.class,
+                    SimplePushVariantUtils.class,
+                    InstallationUtils.class,
+                    iOSVariantUtils.class,
+                    PushNotificationSenderUtils.class,
+                    PushNotificationSenderEndpointSpecification.class
+                )
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "gcm-server-1.0.2.jar")
-        .addClasses(
-            com.google.android.gcm.server.Result.class,
-            com.google.android.gcm.server.Message.class,
-            com.google.android.gcm.server.MulticastResult.class,
-            com.google.android.gcm.server.Message.Builder.class,
-            Sender.class
-        )
+                .addClasses(
+                    com.google.android.gcm.server.Result.class,
+                    com.google.android.gcm.server.Message.class,
+                    com.google.android.gcm.server.MulticastResult.class,
+                    com.google.android.gcm.server.Message.Builder.class,
+                    Sender.class
+                )
         war.addAsLibraries(jar)
 
         war.delete("/WEB-INF/lib/apns-0.2.3.jar")
 
         JavaArchive apnsJar = ShrinkWrap.create(JavaArchive.class, "apns-0.2.3.jar")
-        .addClasses(
-            NetworkIOException.class,
-            ApnsService.class,
-            ApnsServiceImpl.class,
-            ApnsServiceBuilder.class,
-            PayloadBuilder.class,
-            APNS.class
-        )
+                .addClasses(
+                    NetworkIOException.class,
+                    ApnsService.class,
+                    ApnsServiceImpl.class,
+                    ApnsServiceBuilder.class,
+                    PayloadBuilder.class,
+                    APNS.class
+                )
         war.addAsLibraries(apnsJar)
 
         File[] libs = Maven.resolver().loadPomFromFile("pom.xml").resolve(
-            "org.mockito:mockito-core",
-            "com.jayway.restassured:rest-assured",
-            "com.jayway.awaitility:awaitility-groovy").withTransitivity().asFile()
+                "com.jayway.restassured:rest-assured",
+                "com.jayway.awaitility:awaitility-groovy").withTransitivity().asFile()
         war = war.addAsLibraries(libs)
 
         return war
@@ -235,7 +228,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a push application - Bad Case - Empty push application"() {
         given: "A Push Application"
         PushApplication pushApp = createPushApplication(null, null,
-        null, null, null)
+                null, null, null)
 
         when: "Application is registered"
         def response = registerPushApplication(pushApp, authCookies, null)
@@ -248,7 +241,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a push application - Bad Case - Missing auth cookies"() {
         given: "A Push Application"
         PushApplication pushApp = createPushApplication(null, null,
-        null, null, null)
+                null, null, null)
 
         when: "Application is registered"
         def response = registerPushApplication(pushApp, new HashMap<String, ?>(), null)
@@ -261,7 +254,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a Push Application"() {
         given: "A Push Application"
         PushApplication pushApp = createPushApplication(PUSH_APPLICATION_NAME, PUSH_APPLICATION_DESC,
-        null, null, null)
+                null, null, null)
 
         when: "Application is registered"
         def response = registerPushApplication(pushApp, authCookies, null)
@@ -286,7 +279,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register an Android Variant"() {
         given: "An Android Variant"
         AndroidVariant variant = createAndroidVariant(ANDROID_VARIANT_NAME, ANDROID_VARIANT_DESC,
-        null, null, null, ANDROID_VARIANT_GOOGLE_KEY)
+                null, null, null, ANDROID_VARIANT_GOOGLE_KEY)
 
         when: "Android Variant is registered"
         def response = registerAndroidVariant(pushApplicationId, variant, authCookies)
@@ -311,7 +304,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register an Android Variant - Bad Case - Missing Google key"() {
         given: "An Android Variant"
         AndroidVariant variant = createAndroidVariant(ANDROID_VARIANT_NAME, ANDROID_VARIANT_DESC,
-        null, null, null, null)
+                null, null, null, null)
 
         when: "Android Variant is registered"
         def response = registerAndroidVariant(pushApplicationId, variant, authCookies)
@@ -327,7 +320,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register an Android Variant - Bad Case - Missing auth cookies"() {
         given: "An Android Variant"
         AndroidVariant variant = createAndroidVariant(ANDROID_VARIANT_NAME, ANDROID_VARIANT_DESC,
-        null, null, null, ANDROID_VARIANT_GOOGLE_KEY)
+                null, null, null, ANDROID_VARIANT_GOOGLE_KEY)
 
         when: "Android Variant is registered"
         def response = registerAndroidVariant(pushApplicationId, variant, new HashMap<String, ?>())
@@ -343,7 +336,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a Simple Push Variant"() {
         given: "A SimplePush Variant"
         SimplePushVariant variant = createSimplePushVariant(SIMPLE_PUSH_VARIANT_NAME, SIMPLE_PUSH_VARIANT_DESC,
-        null, null, null, SIMPLE_PUSH_VARIANT_NETWORK_URL)
+                null, null, null, SIMPLE_PUSH_VARIANT_NETWORK_URL)
 
         when: "Simple Push Variant is registered"
         def response = registerSimplePushVariant(pushApplicationId, variant, authCookies)
@@ -368,7 +361,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a Simple Push Variant - Bad Case - Missing auth cookies"() {
         given: "A SimplePush Variant"
         SimplePushVariant variant = createSimplePushVariant(SIMPLE_PUSH_VARIANT_NAME, SIMPLE_PUSH_VARIANT_DESC,
-        null, null, null, null)
+                null, null, null, null)
 
         when: "Simple Push Variant is registered"
         def response = registerSimplePushVariant(pushApplicationId, variant, new HashMap<String, ?>())
@@ -384,7 +377,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     def "Register a Simple Push Variant - Bad Case - Missing network url"() {
         given: "A SimplePush Variant"
         SimplePushVariant variant = createSimplePushVariant(SIMPLE_PUSH_VARIANT_NAME, SIMPLE_PUSH_VARIANT_DESC,
-        null, null, null, null)
+                null, null, null, null)
 
         when: "Simple Push Variant is registered"
         def response = registerSimplePushVariant(pushApplicationId, variant, authCookies)
@@ -400,11 +393,12 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     @RunAsClient
     def "Register an iOS Variant"() {
         given: "An iOS application form"
-        def variant = createiOSApplicationUploadForm(Boolean.FALSE, "pass", null,
-        IOS_VARIANT_NAME, IOS_VARIANT_DESC)
+        def variant = createiOSApplicationUploadForm(Boolean.FALSE, IOS_CERTIFICATE_PASS_PHRASE, null,
+                IOS_VARIANT_NAME, IOS_VARIANT_DESC)
 
         when: "iOS Variant is registered"
-        def response = registerIOsVariant(pushApplicationId, (iOSApplicationUploadForm)variant, authCookies)
+        def response = registerIOsVariant(pushApplicationId, (iOSApplicationUploadForm)variant, authCookies, 
+            IOS_CERTIFICATE_PATH)
         def body = response.body().jsonPath()
         iOSVariantId = body.get("variantID")
         iOSPushSecret = body.get("secret")
@@ -425,11 +419,12 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     @RunAsClient
     def "Register an iOS Variant - Bad Case - Missing auth cookies"() {
         given: "An iOS application form"
-        def variant = createiOSApplicationUploadForm(Boolean.FALSE, "pass", "".getBytes(),
-        IOS_VARIANT_NAME, IOS_VARIANT_DESC)
+        def variant = createiOSApplicationUploadForm(Boolean.FALSE, IOS_CERTIFICATE_PASS_PHRASE, "".getBytes(),
+                IOS_VARIANT_NAME, IOS_VARIANT_DESC)
 
         when: "iOS Variant is registered"
-        def response = registerIOsVariant(pushApplicationId, (iOSApplicationUploadForm)variant, new HashMap<String, ?>())
+        def response = registerIOsVariant(pushApplicationId, (iOSApplicationUploadForm)variant, new HashMap<String, ?>(),
+            IOS_CERTIFICATE_PATH)
 
         then: "Push Application id is not empty"
         pushApplicationId != null
@@ -443,7 +438,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         given: "An installation for an iOS device"
         InstallationImpl iOSInstallation = createInstallation(IOS_DEVICE_TOKEN, IOS_DEVICE_TYPE,
-        IOS_DEVICE_OS, IOS_DEVICE_OS_VERSION, IOS_CLIENT_ALIAS, null)
+                IOS_DEVICE_OS, IOS_DEVICE_OS_VERSION, IOS_CLIENT_ALIAS, null)
 
         when: "Installation is registered"
         def response = registerInstallation(iOSVariantId, iOSPushSecret, iOSInstallation)
@@ -454,13 +449,13 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "Response status code is 200"
         response != null && response.statusCode() == Status.OK.getStatusCode()
     }
-    
+
     @RunAsClient
     def "Register a second installation for an iOS device"() {
 
         given: "An installation for an iOS device"
         InstallationImpl iOSInstallation = createInstallation(IOS_DEVICE_TOKEN_2, IOS_DEVICE_TYPE,
-        IOS_DEVICE_OS, IOS_DEVICE_OS_VERSION, COMMON_IOS_ANDROID_CLIENT_ALIAS, null)
+                IOS_DEVICE_OS, IOS_DEVICE_OS_VERSION, COMMON_IOS_ANDROID_CLIENT_ALIAS, null)
 
         when: "Installation is registered"
         def response = registerInstallation(iOSVariantId, iOSPushSecret, iOSInstallation)
@@ -495,7 +490,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         given: "An installation for an Android device"
         InstallationImpl androidInstallation = createInstallation(ANDROID_DEVICE_TOKEN, ANDROID_DEVICE_TYPE,
-        ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, ANDROID_CLIENT_ALIAS, null)
+                ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, ANDROID_CLIENT_ALIAS, null)
 
         when: "Installation is registered"
         def response = registerInstallation(androidVariantId, androidSecret, androidInstallation)
@@ -512,7 +507,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         given: "An installation for an Android device"
         InstallationImpl androidInstallation = createInstallation(ANDROID_DEVICE_TOKEN_2, ANDROID_DEVICE_TYPE_2,
-        ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, ANDROID_CLIENT_ALIAS_2, null)
+                ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, ANDROID_CLIENT_ALIAS_2, null)
 
         when: "Installation is registered"
         def response = registerInstallation(androidVariantId, androidSecret, androidInstallation)
@@ -523,13 +518,13 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "Response status code is 200"
         response != null && response.statusCode() == Status.OK.getStatusCode()
     }
-    
+
     @RunAsClient
     def "Register a third installation for an Android device"() {
 
         given: "An installation for an Android device"
         InstallationImpl androidInstallation = createInstallation(ANDROID_DEVICE_TOKEN_3, ANDROID_DEVICE_TYPE,
-        ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, COMMON_IOS_ANDROID_CLIENT_ALIAS, null)
+                ANDROID_DEVICE_OS, ANDROID_DEVICE_OS_VERSION, COMMON_IOS_ANDROID_CLIENT_ALIAS, null)
 
         when: "Installation is registered"
         def response = registerInstallation(androidVariantId, androidSecret, androidInstallation)
@@ -546,7 +541,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         given: "An installation for a Simple Push device"
         InstallationImpl simplePushInstallation = createInstallation(SIMPLE_PUSH_DEVICE_TOKEN, SIMPLE_PUSH_DEVICE_TYPE,
-        SIMPLE_PUSH_DEVICE_OS, "", SIMPLE_PUSH_CLIENT_ALIAS, SIMPLE_PUSH_CATEGORY)
+                SIMPLE_PUSH_DEVICE_OS, "", SIMPLE_PUSH_CLIENT_ALIAS, SIMPLE_PUSH_CATEGORY)
 
         when: "Installation is registered"
         def response = registerInstallation(simplePushVariantId, simplePushSecret, simplePushInstallation)
@@ -604,12 +599,12 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         expect: "Custom GCM Sender send is called with 2 token ids"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
+                )
 
         and: "The list contains the correct token ids"
         Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2)
@@ -646,12 +641,12 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         expect: "Custom iOS Sender push is called with 1 token id"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
+                )
 
         and: "The list contains 1 registration token id"
         ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN)
@@ -686,7 +681,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         when: "Selective send to aliases"
         def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, new HashMap<String, Object>(), simplePush, null)
-        
+
         then: "Push application id and master secret are not empty"
         pushApplicationId != null && masterSecret != null
 
@@ -696,20 +691,20 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and:
         def String serverInput = connectAndRead(server)
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
+                    }
                 }
-            }
-        )
-        
+                )
+
         and: "The message should have been sent"
         serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
-        
+
         and: "The message is sent to the correct channel"
         serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
     }
-    
+
     @RunAsClient
     def "Selective send to Android by platform OS - Filtering by OS case"() {
 
@@ -731,17 +726,17 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "Response status code is 200"
         response != null && response.statusCode() == Status.OK.getStatusCode()
     }
-    
+
     def "Verify that right GCM notifications were sent - Filtering by OS case"() {
-        
+
         expect: "Custom GCM Sender send is called with 3 token ids"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 3 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 3 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
+                )
 
         and: "The list contains the correct token ids"
         Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
@@ -749,7 +744,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "The message sent is the correct one"
         Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("alert"))
     }
-    
+
     @RunAsClient
     def "Selective send to IOS by platform OS - Filtering by OS case"() {
 
@@ -778,12 +773,12 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         expect: "Custom iOS Sender push is called with 2 token ids"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 2 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 2 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
+                )
 
         and: "The list contains 2 registration token id"
         ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN) && ApnsServiceImpl.tokensList.contains(IOS_DEVICE_TOKEN_2)
@@ -797,7 +792,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "The badge is the expected one"
         NOTIFICATION_BADGE == ApnsServiceImpl.badge
     }
-    
+
     @RunAsClient
     def "Selective send to Simple Push by platform OS - Filtering by OS case"() {
 
@@ -814,7 +809,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         when: "Selective send to aliases"
         def response = selectiveSend(pushApplicationId, masterSecret, null, null, new HashMap<String, Object>(), simplePush, platforms)
-        
+
         then: "Push application id and master secret are not empty"
         pushApplicationId != null && masterSecret != null
 
@@ -824,20 +819,20 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and:
         def String serverInput = connectAndRead(server)
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
+                    }
                 }
-            }
-        )
-        
+                )
+
         and: "The message should have been sent"
         serverInput != null && serverInput.contains(SIMPLE_PUSH_VERSION)
-        
+
         and: "The message is sent to the correct channel"
         serverInput != null && serverInput.contains("PUT /endpoint/" + SIMPLE_PUSH_DEVICE_TOKEN)
     }
-    
+
     @RunAsClient
     def "Selective send to all devices of a user by alias - Target multiple devices by alias case"() {
 
@@ -865,21 +860,21 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         expect: "Custom GCM Sender send is called with 1 token id"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 1 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 1 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
-        
+                )
+
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return ApnsServiceImpl.tokensList != null && ApnsServiceImpl.tokensList.size() == 1 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
-        
+                )
+
         and: "The GCM list contains the correct token ids"
         Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_3)
 
@@ -892,7 +887,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         and: "The IOS message is the expected one"
         NOTIFICATION_ALERT_MSG.equals(ApnsServiceImpl.alert)
     }
-    
+
     @RunAsClient
     def "Selective send to Android by aliases - Custom data case"() {
 
@@ -921,35 +916,35 @@ class PushNotificationSenderEndpointSpecification extends Specification {
 
         expect: "Custom GCM Sender send is called with 2 token ids"
         Awaitility.await().atMost(Duration.FIVE_SECONDS).until(
-            new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return Sender.gcmRegIdsList != null && Sender.gcmRegIdsList.size() == 2 // The condition that must be fulfilled
+                    }
                 }
-            }
-        )
+                )
 
         and: "The list contains the correct token ids"
         Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN) && Sender.gcmRegIdsList.contains(ANDROID_DEVICE_TOKEN_2)
 
         and: "The messages sent are the correct"
         Sender.gcmMessage != null && NOTIFICATION_ALERT_MSG.equals(Sender.gcmMessage.getData().get("custom"))
-        
+
         and:
         CUSTOM_FIELD_DATA_MSG.equals(Sender.gcmMessage.getData().get("test"))
     }
-        
-    @RunAsClient
-    def "Selective send - Negative Case"() {
 
-        when: "Selective send"
-        def response = selectiveSend(pushApplicationId, masterSecret, null, null, null, null, null)
-
-        then: "Push application id and master secret are not empty"
-        pushApplicationId != null && masterSecret != null
-
-        and: "Response status code is 400"
-        response != null && response.statusCode() == Status.BAD_REQUEST.getStatusCode()
-    }
+//    @RunAsClient
+//    def "Selective send - Negative Case"() {
+//
+//        when: "Selective send"
+//        def response = selectiveSend(pushApplicationId, masterSecret, null, null, null, null, null)
+//
+//        then: "Push application id and master secret are not empty"
+//        pushApplicationId != null && masterSecret != null
+//
+//        and: "Response status code is 400"
+//        response != null && response.statusCode() == Status.BAD_REQUEST.getStatusCode()
+//    }
 
     @RunAsClient
     def "Selective send - Wrong push application id - Negative case"() {
@@ -969,8 +964,8 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         def wrongPushAppId = "random"
         def response = selectiveSend(wrongPushAppId, masterSecret, aliases, null, messages, null, null)
 
-        then: "Push application id and master secret are not empty"
-        pushApplicationId != null && masterSecret != null
+        then: "Master secret is not empty"
+        masterSecret != null
 
         and: "Response status code is 401"
         response != null && response.statusCode() == Status.UNAUTHORIZED.getStatusCode()
@@ -990,37 +985,37 @@ class PushNotificationSenderEndpointSpecification extends Specification {
         messages.put("custom", NOTIFICATION_ALERT_MSG)
         messages.put("test", CUSTOM_FIELD_DATA_MSG)
 
-        when: "Selective send to aliases using a wrong push application id"
+        when: "Selective send to aliases using a wrong master secret"
         def wrongMasterSecret = "random"
         def response = selectiveSend(pushApplicationId, wrongMasterSecret, aliases, null, messages, null, null)
 
-        then: "Push application id and master secret are not empty"
-        pushApplicationId != null && masterSecret != null
+        then: "Push application id is not empty"
+        pushApplicationId != null
 
         and: "Response status code is 401"
         response != null && response.statusCode() == Status.UNAUTHORIZED.getStatusCode()
     }
 
-    @RunAsClient
-    def "Selective send - Empty messages - Negative case"() {
+//    @RunAsClient
+//    def "Selective send - Empty messages - Negative case"() {
+//
+//        given: "A List of aliases"
+//        List<String> aliases = new ArrayList<String>()
+//        aliases.add(ANDROID_CLIENT_ALIAS)
+//        aliases.add(ANDROID_CLIENT_ALIAS_2)
+//        Sender.clear()
+//        ApnsServiceImpl.clear()
+//
+//        when: "Selective send to aliases using empty message"
+//        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, null, null, null)
+//
+//        then: "Push application id and master secret are not empty"
+//        pushApplicationId != null && masterSecret != null
+//
+//        and: "Response status code is 400"
+//        response != null && response.statusCode() == Status.BAD_REQUEST.getStatusCode()
+//    }
 
-        given: "A List of aliases"
-        List<String> aliases = new ArrayList<String>()
-        aliases.add(ANDROID_CLIENT_ALIAS)
-        aliases.add(ANDROID_CLIENT_ALIAS_2)
-        Sender.clear()
-        ApnsServiceImpl.clear()
-
-        when: "Selective send to aliases using a wrong push application id"
-        def response = selectiveSend(pushApplicationId, masterSecret, aliases, null, null, null, null)
-
-        then: "Push application id and master secret are not empty"
-        pushApplicationId != null && masterSecret != null
-
-        and: "Response status code is 400"
-        response != null && response.statusCode() == Status.BAD_REQUEST.getStatusCode()
-    }
-  
     private ServerSocket createSocket() {
         return new ServerSocket(8081, 0, InetAddress.getByName("localhost"));
     }
@@ -1034,11 +1029,11 @@ class PushNotificationSenderEndpointSpecification extends Specification {
             connection = providerSocket.accept();
             connection.setSoTimeout(2000);
             input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            
+
             int result;
             while ((result = input.read()) != -1) {
                 response.append(Character.toChars(result));
-                
+
                 if (response.toString().contains(NOTIFICATION_ALERT_MSG))
                 {
                     break;
