@@ -23,9 +23,12 @@ import com.jayway.restassured.RestAssured
 // FIXME this should be done via inheritance, see https://issues.jboss.org/browse/ARQ-1427
 class AdminLogin {
 
+    static final String NEWPASSWORD = "aerogear"
+
     def login() {
         assert root !=null
 
+        // login with default password
         def json = new JsonBuilder()
         def response = RestAssured.given()
                 .contentType("application/json")
@@ -34,9 +37,38 @@ class AdminLogin {
                     loginName "admin"
                     password "123"
                 })
-                .expect().statusCode(200)
+                .post("${root}rest/auth/login")
+
+        // we need to change the password
+        if(response.getStatusCode()==205) {
+            def cookies = response.getDetailedCookies()
+            assert cookies !=null
+            response = RestAssured.given()
+                    .contentType("application/json")
+                    .header("Accept", "application/json")
+                    .cookies(cookies)
+                    .body( json {
+                        loginName "admin"
+                        password NEWPASSWORD
+                    })
+                    .put("${root}rest/auth/update")
+
+            assert response.getStatusCode() == 200
+        }
+
+        // try to login with new password
+        response = RestAssured.given()
+                .contentType("application/json")
+                .header("Accept", "application/json")
+                .body( json {
+                    loginName "admin"
+                    password NEWPASSWORD
+                })
+                .expect()
+                .statusCode(200)
                 .when().post("${root}rest/auth/login")
 
+        // return cookies
         response.getDetailedCookies()
     }
 }
