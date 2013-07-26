@@ -54,7 +54,7 @@ public class GCMPushNotificationSender {
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      * 
      * @param androidVariant The android variant entity
-     * @param tokens List of tokens, representing actual Android devices
+     * @param registrationIDs List of tokens, representing actual Android devices
      * @param pushMessage the payload to be submitted
      */
     public void sendPushMessage(AndroidVariant androidVariant, List<String> registrationIDs, UnifiedPushMessage pushMessage) {
@@ -109,7 +109,7 @@ public class GCMPushNotificationSender {
      * 
      * @param variantID id of the actual {@code AndroidVariant}.
      * @param multicastResult the results from the HTTP request to the Google Cloud.
-     * @param tokens list of all tokens that we submitted to GCM.
+     * @param registrationIDs list of all tokens that we submitted to GCM.
      */
     private void cleanupInvalidRegistrationIDsForVariant(String variantID, MulticastResult multicastResult, List<String> registrationIDs) {
 
