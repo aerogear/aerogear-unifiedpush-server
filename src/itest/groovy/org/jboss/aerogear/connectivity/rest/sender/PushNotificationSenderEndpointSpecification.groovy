@@ -419,7 +419,7 @@ class PushNotificationSenderEndpointSpecification extends Specification {
     @RunAsClient
     def "Register an iOS Variant - Bad Case - Missing auth cookies"() {
         given: "An iOS application form"
-        def variant = createiOSApplicationUploadForm(Boolean.FALSE, IOS_CERTIFICATE_PASS_PHRASE, "".getBytes(),
+        def variant = createiOSApplicationUploadForm(Boolean.FALSE, IOS_CERTIFICATE_PASS_PHRASE, null,
                 IOS_VARIANT_NAME, IOS_VARIANT_DESC)
 
         when: "iOS Variant is registered"
