@@ -211,23 +211,15 @@ public class iOSVariantEndpoint {
      */
     private boolean validateCertificateAndPassphrase(iOSApplicationUploadForm form) {
 
-        final byte[] certificate = form.getCertificate() ;
-        final String passphrase = form.getPassphrase();
+        // got certificate/passphrase, with content that makes sense ?
+        try {
+            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
 
-        // got certificate/passphrase ?
-        if (certificate == null || passphrase == null) {
+            // ok we are good:
+            return true;
+        } catch (Exception e) {
+            logger.severe("Could not validate the given certificate and passphrase pair");
             return false;
-        } else {
-            // ok, we got content, but let's check if that makes sense:
-            try {
-                PKCS12Util.validate(certificate, passphrase);
-
-                // ok we are good:
-                return true;
-            } catch (Exception e) {
-                logger.severe("Could not validate the given certificate and passphrase pair");
-                return false;
-            }
         }
     }
 }
