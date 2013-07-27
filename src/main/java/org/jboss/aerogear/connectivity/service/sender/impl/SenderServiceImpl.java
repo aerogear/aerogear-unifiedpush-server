@@ -125,7 +125,7 @@ public class SenderServiceImpl implements SenderService {
             // TODO: DISPATCH TO A QUEUE .....
             for (AndroidVariant androidVariant : androidVariants) {
                 final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
-                this.sendToGCM(androidTokenPerVariant, message, androidVariant.getGoogleKey());
+                this.sendToGCM(androidVariant, androidTokenPerVariant, message);
             }
         }
 
@@ -164,7 +164,7 @@ public class SenderServiceImpl implements SenderService {
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidVariants();
         for (AndroidVariant androidVariant : androidVariants) {
             final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
-            this.sendToGCM(androidTokenPerVariant, payload, androidVariant.getGoogleKey());
+            this.sendToGCM(androidVariant, androidTokenPerVariant, payload);
         }
 
 
@@ -188,9 +188,9 @@ public class SenderServiceImpl implements SenderService {
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
-    private void sendToGCM(Collection<String> tokens, UnifiedPushMessage pushMessage, String apiKey) {
+    private void sendToGCM(AndroidVariant androidVariant, List<String> tokens, UnifiedPushMessage pushMessage) {
         logger.fine(String.format("Sending: %s to GCM", pushMessage));
-        gcmSender.sendPushMessage(tokens, pushMessage, apiKey);
+        gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
     }
 
     private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
