@@ -44,15 +44,17 @@ Then in "Gruntfile.js" edit the "webapp" and "jbossweb" config params:
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp/admin",
-        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war/admin"
+        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp",
+        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war"
     };
 
-This will copy the contents to the "admin" folder of both the cloned repo and the exploded war file( to keep them N'sync )
+This will copy the contents to the "root" folder of both the cloned repo and the exploded war file( to keep them N'sync )
 
 "webapp" should be the path where you cloned the push server.
 
 "jbossweb" is the path of you exploded war running on an app server
+
+_Eventually, this should just be the contents of the dist folder,   but for testing, well, you know_
 
 
 _Make sure to rerun "grunt server" once you change these parameters_
