@@ -20,8 +20,8 @@ module.exports = function (grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp/admin",
-        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war/admin"
+        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp",
+        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war"
     };
 
     grunt.initConfig({
@@ -218,19 +218,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        replace: {
-            dist: {
-                options: {
-                    variables: {
-                        "baseURL=\"/ag-push/\"": "App.baseURL=\"/\""
-                    },
-                    prefix: 'App.'
-                },
-                files: [
-                    {expand: true, flatten: true, src: ['<%= yeoman.dist %>/scripts/main.js'], dest: '<%= yeoman.dist %>/scripts/'}
-                ]
-            }
-        },
         // Put files not handled in other tasks here
         copy: {
             dist: {
@@ -334,12 +321,6 @@ module.exports = function (grunt) {
         'replace',
         'rev',
         'usemin'
-    ]);
-
-    grunt.registerTask('openshift', [
-        'jshint',
-        'test',
-        'buildOS'
     ]);
 
     grunt.registerTask('cw', ['copy:webapp']);

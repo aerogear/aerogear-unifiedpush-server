@@ -16,7 +16,7 @@ window.App = Ember.Application.create({
     LOG_TRANSITIONS: true //remove in production,  for testing and debuging
 });
 
-App.baseURL = "/ag-push/";
+App.baseURL = window.location.pathname;
 
 
 // Serializes a form to a JavaScript Object
