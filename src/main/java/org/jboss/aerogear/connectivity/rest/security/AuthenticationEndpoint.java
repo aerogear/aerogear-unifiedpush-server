@@ -22,11 +22,17 @@ import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.picketlink.idm.IdentityManagementException;
+import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.credential.Password;
+import org.picketlink.idm.model.Role;
+import org.picketlink.idm.model.SimpleRole;
+import org.picketlink.idm.model.SimpleUser;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -41,6 +47,8 @@ public class AuthenticationEndpoint {
     private AuthenticationManager authenticationManager;
     @Inject
     private IdentityManagement configuration;
+    @Inject
+    private IdentityManager identityManager;
 
     @POST
     @Path("/enroll")
@@ -72,6 +80,13 @@ public class AuthenticationEndpoint {
         } catch (AeroGearSecurityException agse) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
+
+        // See if the password is still the default. If it is we need them to change it
+        // Only Temporary until we get scripts in. see https://issues.jboss.org/browse/AGPUSH-107
+        if(developer.getPassword().equals("123")) {
+            return Response.status(205).build();
+        }
+
         return Response.ok().build();
     }
 
@@ -85,4 +100,19 @@ public class AuthenticationEndpoint {
         }
         return Response.ok().build();
     }
+
+    // Temporary. see https://issues.jboss.org/browse/AGPUSH-107
+    @PUT
+    @Path("/update")
+    @Secure("user")
+    public Response updateUserPasswordAndRole(final Developer developer){
+        SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
+        this.identityManager.updateCredential(user, new Password(developer.getPassword()));
+
+        Role roleDeveloper = new SimpleRole("developer");
+        this.identityManager.add(roleDeveloper);
+        this.identityManager.grantRole(user, roleDeveloper);
+        return Response.ok().build();
+    }
+
 }

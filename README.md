@@ -19,13 +19,13 @@ mvn package jboss-as:deploy
 ***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
 
 
-#### Login 
+#### Login
 
-Temporary there is a "admin:123" user...
+Temporary there is a "admin:123" user.  On First login,  you will need to change the password.
 
 ```
-curl -v -b cookies.txt -c cookies.txt 
-  -H "Accept: application/json" -H "Content-type: application/json" 
+curl -v -b cookies.txt -c cookies.txt
+  -H "Accept: application/json" -H "Content-type: application/json"
   -X POST -d '{"loginName": "admin", "password":"123"}'
   http://localhost:8080/ag-push/rest/auth/login
 ```
@@ -47,8 +47,8 @@ _The response returns a **pushApplicationID** and a **masterSecret** that will b
 
 Add a *PRODUCTION* ```iOS``` variant (e.g. _HR for iOS_):
 ```
-curl -v -b cookies.txt -c cookies.txt 
-  -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
+curl -v -b cookies.txt -c cookies.txt
+  -i -H "Accept: application/json" -H "Content-type: multipart/form-data"
   -F "certificate=@/Users/matzew/Desktop/MyProdCert.p12"
   -F "passphrase=TopSecret"
   -F "production=true"  // make sure you have Production certificate and Provisioning Profile
@@ -58,8 +58,8 @@ curl -v -b cookies.txt -c cookies.txt
 
 Add a *DEVELOPMENT* ```iOS``` variant (e.g. _HR for iOS_):
 ```
-curl -v -b cookies.txt -c cookies.txt 
-  -i -H "Accept: application/json" -H "Content-type: multipart/form-data" 
+curl -v -b cookies.txt -c cookies.txt
+  -i -H "Accept: application/json" -H "Content-type: multipart/form-data"
   -F "certificate=@/Users/matzew/Desktop/MyTestCert.p12"
   -F "passphrase=TopSecret"
   -F "production=false"  // make sure you have Development certificate and Provisioning Profile
@@ -75,7 +75,7 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 Add an ```android``` variant (e.g. _HR for Android_):
 ```
-curl -v -b cookies.txt -c cookies.txt 
+curl -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"googleKey" : "IDDASDASDSA"}'
@@ -89,7 +89,7 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 Add an ```simplepush``` variant (e.g. _HR for Browser):
 ```
-curl -v -b cookies.txt -c cookies.txt 
+curl -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
@@ -107,19 +107,19 @@ Client-side example for how to register an installation:
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
     AGDeviceRegistration *registration =
-    
+
         [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"<# URL of the running AeroGear UnifiedPush Server #>"]];
-    
+
     [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
         [clientInfo setDeviceToken:deviceToken];
 
         [clientInfo setVariantID:@"<Variant Id #>"];
         [clientInfo setVariantSecret:@"<Variant Secret>"];
-        
+
         // --optional config--
         // set some 'useful' hardware information params
         UIDevice *currentDevice = [UIDevice currentDevice];
-        
+
         [clientInfo setOperatingSystem:[currentDevice systemName]];
         [clientInfo setOsVersion:[currentDevice systemVersion]];
         [clientInfo setDeviceType: [currentDevice model]];
@@ -128,7 +128,7 @@ Client-side example for how to register an installation:
         // successfully registered!
     } failure:^(NSError *error) {
         NSLog(@"PushEE registration Error: %@", error);
-    }]; 
+    }];
 ```
 
 Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-registration) for more information.
@@ -140,7 +140,7 @@ Here is a _CURL_ example for how to perform the registration:
 
 ```
 curl -u "{variantID}:{secret}"
-   -v -H "Accept: application/json" -H "Content-type: application/json" 
+   -v -H "Accept: application/json" -H "Content-type: application/json"
    -X POST
    -d '{
       "deviceToken" : "someTokenString",
@@ -180,7 +180,7 @@ Send broadcast push message to ALL mobile apps of a certain Push APP......:
 
 ```
 curl -u "{PushApplicationID}:{MasterSecret}"
-   -v -H "Accept: application/json" -H "Content-type: application/json" 
+   -v -H "Accept: application/json" -H "Content-type: application/json"
    -X POST
    -d '{
        "key":"value",
@@ -201,7 +201,7 @@ To send a message (version) notification to a selected list of Channels, issue t
 
 ```
 curl -u "{PushApplicationID}:{MasterSecret}"
-   -v -H "Accept: application/json" -H "Content-type: application/json" 
+   -v -H "Accept: application/json" -H "Content-type: application/json"
    -X POST
 
    -d '{
@@ -213,7 +213,7 @@ curl -u "{PushApplicationID}:{MasterSecret}"
       "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
    }'
 
-http://localhost:8080/ag-push/rest/sender/selected 
+http://localhost:8080/ag-push/rest/sender/selected
 ```
 
 **TODO:** Add link to message format spec (once published)
