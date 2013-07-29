@@ -30,6 +30,15 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/auth/login
 ```
 
+wait until this comes back and then
+
+```
+curl -v -b cookies.txt -c cookies.txt
+  -H "Accept: application/json" -H "Content-type: application/json"
+  -X PUT -d '{"loginName": "admin", "password":"SOMENEWPASSWORD"}'
+  http://localhost:8080/ag-push/rest/auth/update
+```
+
 #### Register Push App
 
 Register a ```PushApplication```, like _Mobile HR_:
