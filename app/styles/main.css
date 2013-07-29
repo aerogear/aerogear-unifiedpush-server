@@ -223,7 +223,7 @@ table {
   cursor: pointer;
 }
 
-.topcoat-button:hover {
+.topcoat-button a:hover {
   text-decoration: none;
 }
 
@@ -315,6 +315,12 @@ td.action a {
 .rcue-table-number {
   text-align: right !important;
   width: 100px;
+}
+
+.rcue-code {
+  font-family: "Courier", monospace !important;
+  opacity: 0.5;
+  font-size: 12px;
 }
 
 

@@ -1,22 +1,29 @@
-<div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > Variants</div>
-<div class="header">
-    <h2>{{ name }}</h2>
-    <span>{{ description }}</span>
-</div>
-<div class="sub-header">
-    <h3>Authentication Info</h3>
-    <span>
-        Use this Application ID and Secret combination to send notification to all variants
-    </span>
-    <div>
-        Application ID: {{ pushApplicationID }}
-        <br>
-        MasterSecret: {{ masterSecret }}
-    </div>
-</div>
-{{#if isLoaded}}
-    {{#linkTo "variants.add"}}Add New{{/linkTo}}
-    {{ partial "variants/variantsDetail" }}
-{{else}}
-    loading....
-{{/if}}
+<div>{{#linkTo "mobileApps"}}&larr; Back to Push Applications{{/linkTo}}</div>
+
+<section>
+        <h2>Application:
+            <strong>&ldquo;{{ name }}&rdquo;</strong>
+        </h2>
+        <span>{{ description }}</span>
+</section>
+
+<section>
+        <h3>Authentication Info</h3>
+        <span>
+            Use this Application ID and Secret combination to send notification to <strong>all variant instances</strong>
+        </span>
+        <!--Make this look better -->
+        <div>
+            Application ID: <span class="rcue-code">{{ pushApplicationID }}</span>
+            <br>
+            MasterSecret: <span class="rcue-code">{{ masterSecret }}</span>
+        </div>
+</section>
+
+<section>
+    {{#if isLoaded}}
+        {{ partial "variants/variantsDetail" }}
+    {{else}}
+        loading....
+    {{/if}}
+</section>

@@ -1,32 +1,39 @@
 <!-- The Mobile Applications List Partial-->
-            <div id="mobile-application-variants-table">
-                <table class="table table-zebra">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Platform</th>
-                            <th>Mobile Instances</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each variantList }}
-                            <tr>
-                                <td>
-                                    {{#linkTo "variants.edit" this}}Edit{{/linkTo}}
-                                    <a href="#" {{ action "remove" this}}>Remove</a>
-                                </td>
-                                <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
-                                <td>{{ description }}</td>
-                                <td>{{ typeFormatted }}</td>
-                                <td>{{ totalInstances }}</td>
-                            </tr>
-                        {{else}}
-                            <tr>
-                                <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
-                            </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+<div id="mobile-application-variants-table">
+    <table class="rcue-table">
+        <thead>
+            <tr>
+                <th colspan="6">
+                    <div class="table-create-btn topcoat-button">{{#linkTo "variants.add"}}Create{{/linkTo}}</div>
+                </th>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Platform</th>
+                <th>Instances</th>
+                <th colspan="2">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each variantList }}
+                <tr>
+                    <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
+                    <td>{{ description }}</td>
+                    <td>{{ typeFormatted }}</td>
+                    <td class="rcue-table-number">{{ totalInstances }}</td>
+                    <td class="action">
+                        {{#linkTo "variants.edit" this}}Edit{{/linkTo}}
+                    </td>
+                    <td class="action">
+                        <a href="#" {{ action "remove" this}}>Remove</a>
+                    </td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="6">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
             </div>

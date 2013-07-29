@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th colspan="5">
-                    <div class="table-create-btn">{{#linkTo "mobileApps.edit" bindAttr class="topcoat-button" }}Create{{/linkTo}}</div>
+                    <div class="table-create-btn topcoat-button">{{#linkTo "mobileApps.edit"}}Create{{/linkTo}}</div>
                 </th>
             </tr>
             <tr>
@@ -21,7 +21,7 @@
                     <td><span>{{ descriptionFormatted }}<span></td>
                     <td class="rcue-table-number">{{ totalVariants }}</td>
                     <td class="action">
-                        {{#linkTo "mobileApps.edit" this}}Rename{{/linkTo}}
+                        {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}
                     </td>
                     <td class="action">
                         <a href="#" {{ action "remove" this}}>Remove</a>
