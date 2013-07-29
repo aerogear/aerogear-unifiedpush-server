@@ -1,10 +1,13 @@
 <!-- The Main Admin UI Template-->
-<div class="topcoat-navigation-bar">
+<div class="topcoat-navigation-bar top-header">
     <div class="topcoat-navigation-bar__item left half">
-        <h1 class="topcoat-navigation-bar__title">AeroGear Unified Push Server</h1>
+        <h1 class="topcoat-navigation-bar__title"><strong>AeroGear</strong> Unified Push Server</h1>
     </div>
     <div class="topcoat-navigation-bar__item right half">
         <a href="#" {{ action logout this }} >Logout </a>
     </div>
 </div>
-{{outlet}}
+<div class="content">
+    {{outlet}}
+</div>
+

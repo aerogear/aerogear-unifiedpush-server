@@ -96,12 +96,22 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-body {
-  margin: 10px;
+
+html, body {
+  font-size: 13.5px;
+  color: #4d5258;
   background: white;
 }
 
-div {
+small {
+  font-size: 11.5px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.content {
   margin: 10px;
 }
 
@@ -131,26 +141,15 @@ table {
     background-color: gray;
 }
 
-.header h2, .sub-header h3 {
-    margin-bottom:0;
+.top-header {
+  border-top: 3px solid #e25027;
+  background: #393f45;
 }
 
-.header span, .sub-header span {
-    font-size: small;
+.topcoat-navigation-bar__title {
+  color: white;
 }
 
-.topcoat-list__header {
-  clear: both;
-}
-
-.topcoat-list {
-  clear: both;
-}
-
-.topcoat-list__item {
-  float: left;
-  border: none;
-}
 
 /* ==========================================================================
    Helper classes
