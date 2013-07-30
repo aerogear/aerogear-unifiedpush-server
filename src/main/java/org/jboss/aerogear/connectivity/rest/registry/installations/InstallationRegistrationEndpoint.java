@@ -91,7 +91,9 @@ public class InstallationRegistrationEndpoint {
         InstallationImpl installation = 
                 clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
 
+        // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
+
         // new device/client ? 
         if (installation == null) {
             logger.fine("Performing client registration for: " + entity.getDeviceToken());
