@@ -1,33 +1,44 @@
+<!-- The Main Admin UI Template-->
+<div class="topcoat-navigation-bar top-header">
+    <div class="topcoat-navigation-bar__item left half">
+        <h1 class="topcoat-navigation-bar__title"><strong>AeroGear</strong> Unified Push Server</h1>
+    </div>
+</div>
 <!--The Login Page Template-->
+<div class="content rcue-dialog">
+  <header>
+    <h1>
+      Login
+    </h1>
+  </header>
 {{#if loginIn}}
-  <div>
+  <div class="rcue-dialog-inner">
       <form id="login" {{action login on="submit"}}>
         <fieldset>
-          <legend><strong>AeroGear</strong> Unified Push Server</legend>
           <p>
             <label>Username</label>
-            {{ input type="text" valueBinding="loginName" placeholder="Username"}}
+            {{ input type="text" valueBinding="loginName" placeholder="Username" classNames="topcoat-text-input"}}
           </p>
           <p>
             <label>Password</label>
-            {{ input type="password" valueBinding="password" placeholder="Password"}}
+            {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input"}}
           </p>
-          <button class="primary">Log In</button>
+          <button class="topcoat-button">Log In</button>
         </fieldset>
       </form>
   </div>
 {{else}}
-  <div>
-    You must change your password
+  <div class="rcue-dialog-inner">
+    <h3>You must change your password</h3>
     <form id="other" {{action other on="submit"}}>
       <fieldset>
-        <legend><strong>AeroGear</strong> Unified Push Server</legend>
         <p>
           <label>Password</label>
-          {{ input type="password" valueBinding="password" placeholder="Password"}}
+          {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input"}}
         </p>
-        <button class="primary">Save</button>
+        <button class="topcoat-button">Save</button>
       </fieldset>
     </form>
   </div>
 {{/if}}
+</div>
