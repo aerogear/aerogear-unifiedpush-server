@@ -102,7 +102,7 @@ public interface Installation {
 
     /**
      * A reliable way of determining the platform type
-     * for an installation
+     * for an installation. FOR ADMIN UI ONLY - Helps with setting up Routes
      *
      * @param platform the name of the platform
      */
