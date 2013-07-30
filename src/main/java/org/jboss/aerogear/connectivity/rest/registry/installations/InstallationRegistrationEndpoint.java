@@ -16,7 +16,11 @@
  */
 package org.jboss.aerogear.connectivity.rest.registry.installations;
 
-import java.util.logging.Logger;
+import org.jboss.aerogear.connectivity.api.Variant;
+import org.jboss.aerogear.connectivity.model.InstallationImpl;
+import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
+import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+import org.jboss.aerogear.connectivity.service.GenericVariantService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,12 +38,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.connectivity.api.Variant;
-import org.jboss.aerogear.connectivity.model.InstallationImpl;
-import org.jboss.aerogear.connectivity.rest.security.util.HttpBasicHelper;
-import org.jboss.aerogear.connectivity.service.ClientInstallationService;
-import org.jboss.aerogear.connectivity.service.GenericVariantService;
+import java.util.logging.Logger;
 
 @Stateless
 @Path("/registry/device")
@@ -92,6 +91,7 @@ public class InstallationRegistrationEndpoint {
         InstallationImpl installation = 
                 clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
 
+        entity.setPlatform(variant.getType().getTypeName());
         // new device/client ? 
         if (installation == null) {
             logger.fine("Performing client registration for: " + entity.getDeviceToken());
