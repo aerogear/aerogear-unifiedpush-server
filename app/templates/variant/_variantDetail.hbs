@@ -1,11 +1,10 @@
 <!-- The Mobile Applications List Partial-->
 <div id="mobile-application-variant-table">
-    <table class="table table-zebra">
+    <table class="rcue-table">
         <thead>
             <tr>
-                <th>#</th>
                 <th>Token</th>
-                <th>Description</th>
+                <th>Device</th>
                 <th>Platform</th>
                 <th>Status</th>
             </tr>
@@ -13,17 +12,14 @@
         <tbody>
             {{#each installations }}
                 <tr>
-                    <td>
-                        &nbsp;
-                    </td>
-                    <td>{{#linkTo "instance" this}}{{deviceToken}}{{/linkTo}}</td>
+                    <td><div class="token">{{#linkTo "instance" this}}{{ deviceToken }}{{/linkTo}}</div></td>
                     <td>{{ deviceType }}</td>
                     <td>{{ mobileOperatingSystem }}</td>
                     <td>{{ status }}</td>
                 </tr>
             {{else}}
                 <tr>
-                    <td colspan="5">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                    <td colspan="4">Loadng...{{#if isLoaded}}Nothing Here{{/if}}</td>
                 </tr>
             {{/each}}
         </tbody>

@@ -1,22 +1,23 @@
 {{#if isLoaded}}
-<div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
-<div class="header">
-    <h2>{{ name }}</h2>
-    <span>{{ description }}</span>
-</div>
-<div class="sub-header">
-    <h3>Authentication Info</h3>
-    <span>
-        Use this Application ID and Secret combination to send notification to all variants
-    </span>
-    <div>
-        Variant ID: {{ variantID }}
-        <br>
-        Secret: {{ secret }}
-    </div>
-</div>
-{{ variantId }}
-    {{ partial "variant/variantDetail" }}
+    <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
+    <section>
+        <h2>{{ name }}</h2>
+        <span>{{ description }}</span>
+    </section>
+    <section>
+            <h3>Authentication Info</h3>
+            <span>
+                Use this Application ID and Secret combination to send notification to all variants
+            </span>
+            <div>
+                Variant ID: <span class="rcue-code">{{ variantID }}</span>
+                <br>
+                Secret: <span class="rcue-code">{{ secret }}</span>
+            </div>
+    </section>
+        {{ variantId }}
+        {{ partial "variant/variantDetail" }}
+    </section>
 {{else}}
     loading....
 {{/if}}

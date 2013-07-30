@@ -323,6 +323,11 @@ td.action a {
   font-size: 12px;
 }
 
+.token {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 
 /* ==========================================================================
    Helper classes
