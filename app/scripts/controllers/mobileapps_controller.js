@@ -88,27 +88,6 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 });
 
 /*
-    The Mobile Apps Controller. Put "Global Events" Here.
-    TODO: Move more globally, maybe on the Application Router?
-*/
-App.MobileAppsController = Ember.Controller.extend({
-    logout: function() {
-        var that = this;
-        App.AeroGear.authenticator.logout({
-            contentType: "application/json",
-            success: function() {
-                that.transitionToRoute( "login" );
-            },
-            error: function( error ) {
-                console.log( "Error Logging Out", error );
-                that.transitionToRoute( "login" );
-            }
-        });
-    }
-});
-
-
-/*
     The Controller for adding/editing Mobile apps
 */
 App.MobileAppsEditController = Ember.ObjectController.extend({

@@ -13,9 +13,6 @@
 */
 
 App.LoginController = Ember.ObjectController.extend({
-    loginName: "",
-    password: "",
-    loginIn: true,
     login: function() {
         var that = this;
 
@@ -25,7 +22,7 @@ App.LoginController = Ember.ObjectController.extend({
             this.send( "error", this, "A Username and Password are required" );
         } else {
             // Use AeroGear Authenticator to login
-            App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.loginName, password: this.password } ), {
+            App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
                 contentType: "application/json",
                 success: function( response, statusText, jqXHR ) {
                     if( jqXHR.status === 205 ) {
