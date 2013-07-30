@@ -337,6 +337,46 @@ td.token {
   width: 300px;
 }
 
+textarea {
+  width: 300px;
+  height: 100px;
+  resize: none;
+}
+
+.rcue-dialog {
+  font-size: 12px;
+  border: 1px solid #6e6d6d;
+}
+
+.rcue-dialog header {
+  padding: 1px 22px;
+  background-color: #f6f6f6;
+}
+
+.rcue-dialog header h1 {
+  font-size: 16px;
+}
+
+.rcue-dialog-inner {
+  padding: 20px;
+}
+
+.rcue-dialog label {
+  min-width: 100px;
+  padding-right: 16px;
+  display: inline-block;
+}
+
+.topcoat-text-input, .topcoat-textarea {
+  margin: 0;
+  background-color: #FFF;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.topcoat-text-input:focus, .topcoat-textarea:focus {
+  border-color: #62afdb;
+}
 
 /* ==========================================================================
    Helper classes

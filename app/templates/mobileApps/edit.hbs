@@ -1,27 +1,28 @@
 <!--Template to create/edit a push application-->
-<div>
-    {{#if pushApplicationID}}
-        Edit a
-    {{else}}
-        Add a New
-    {{/if}}
-    Push Application
-</div>
-<div>
-    <div>
-        <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" }}>
-      <fieldset>
-        <p>
-          <label>Name</label>
-          {{input type="text" valueBinding="name"}}
-        </p>
-        <p>
-          <label>Description</label>
-          {{textarea valueBinding="description"}}
-        </p>
-        <input type="reset" class="primary" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
-        <input type="submit" class="primary" value="Create">
-      </fieldset>
-    </form>
-    </div>
+<div class="rcue-dialog">
+  <header>
+    <h1>
+      {{#if pushApplicationID}}
+          Edit Push Application
+      {{else}}
+          Create Push Application
+      {{/if}}
+    </h1>
+  </header>
+  <div class="rcue-dialog-inner">
+     <form {{action "edit" controller target="controllers.mobileAppsIndex" on="submit" }}>
+     <fieldset>
+       <p>
+         <label>Name</label>
+         {{input type="text" placeholder="e.g. MyApp" valueBinding="name" classNames="topcoat-text-input"}}
+       </p>
+       <p>
+         <label>Description</label>
+         {{textarea placeholder="e.g. My new application." valueBinding="description" classNames="topcoat-textarea"}}
+       </p>
+       <input type="reset" class="topcoat-button" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
+       <input type="submit" class="topcoat-button" value="Create">
+     </fieldset>
+     </form>
+  </div>
 </div>
