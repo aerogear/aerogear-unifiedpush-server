@@ -143,6 +143,10 @@ html, body {
   background: white;
 }
 
+textarea {
+  width: 50%;
+}
+
 small {
   font-size: 11.5px;
 }
@@ -337,12 +341,6 @@ td.token {
   width: 300px;
 }
 
-textarea {
-  width: 300px;
-  height: 100px;
-  resize: none;
-}
-
 .rcue-dialog {
   font-size: 12px;
   border: 1px solid #6e6d6d;
@@ -361,14 +359,18 @@ textarea {
   padding: 20px;
 }
 
+.rcue-dialog-inner-partial {
+  margin-top: 10px;
+}
+
 .rcue-dialog label {
-  min-width: 100px;
+  min-width: 120px;
   padding-right: 16px;
   display: inline-block;
 }
 
 .topcoat-text-input, .topcoat-textarea {
-  margin: 0;
+  margin-left: 0;
   background-color: #FFF;
   -webkit-border-radius: 2px;
   border-radius: 2px;

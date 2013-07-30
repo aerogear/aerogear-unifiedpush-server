@@ -3,7 +3,7 @@
     <label>
         Google Key
     </label>
-    {{input type="text" name="googleKey" value=googleKey}}
+    {{input type="text" name="googleKey" value=googleKey classNames="topcoat-text-input"}}
 </div>
 {{/if}}
 {{#if isiOS}}
@@ -11,7 +11,7 @@
     <label>
         iOS PassPhrase
     </label>
-    {{input type="password" name="passphrase" value=passphrase}}
+    {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
     {{input type="file" name="certificate" value=certificate}}
     <label>Production? {{view Ember.Checkbox checkedBinding="production"}}</label>
 </div>
@@ -21,6 +21,6 @@
     <label>
         Web
     </label>
-    {{input type="text" name="pushNetworkURL" value=pushNetworkURL}}
+    {{input type="text" name="pushNetworkURL" value=pushNetworkURL classNames="topcoat-text-input"}}
 </div>
 {{/if}}
