@@ -1,26 +1,24 @@
 <!-- The Mobile Applications List Partial-->
 <div id="mobile-application-variant-table">
-    <table class="table table-zebra">
+    <table class="rcue-table">
         <thead>
             <tr>
-                <th>#</th>
                 <th>Alias</th>
                 <th>Category</th>
                 <th>Description</th>
                 <th>Platform</th>
                 <th>Status</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>
-                    &nbsp;
-                </td>
                 <td>{{ alias }}</td>
                 <td>{{ category }}</td>
                 <td>{{ deviceType }}</td>
                 <td>{{ mobileOperatingSystem }}</td>
-                <td>{{ status }} <button value="toggle" {{action toggleStatus this}}>Toggle</button> </td>
+                <td>{{ status }}</td>
+                <td class="action"><a href="#" value="toggle" {{action toggleStatus this}}>Toggle</button></td>
             </tr>
         </tbody>
     </table>

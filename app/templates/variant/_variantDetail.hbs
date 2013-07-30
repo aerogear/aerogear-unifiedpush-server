@@ -12,7 +12,7 @@
         <tbody>
             {{#each installations }}
                 <tr>
-                    <td><div class="token">{{#linkTo "instance" this}}{{ deviceToken }}{{/linkTo}}</div></td>
+                    <td class="token"><div class="token table">{{#linkTo "instance" this}}{{ deviceToken }}{{/linkTo}}</div></td>
                     <td>{{ deviceType }}</td>
                     <td>{{ mobileOperatingSystem }}</td>
                     <td>{{ status }}</td>

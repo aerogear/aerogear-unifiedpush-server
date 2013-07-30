@@ -326,6 +326,15 @@ td.action a {
 .token {
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+td .token {
+  width: 250px;
+}
+
+td.token {
+  width: 300px;
 }
 
 
