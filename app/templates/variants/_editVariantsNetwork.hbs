@@ -1,26 +1,34 @@
+<h3>Current Network:</h3>
 {{#if isAndroid}}
-<div>
+<section>
     <label>
         Google Key
     </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     {{input type="text" name="googleKey" value=googleKey classNames="topcoat-text-input"}}
-</div>
+</section>
 {{/if}}
 {{#if isiOS}}
-<div>
+<section>
     <label>
         iOS PassPhrase
     </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
+    <br>
+    <label>Certificate</label>
     {{input type="file" name="certificate" value=certificate}}
-    <label>Production? {{view Ember.Checkbox checkedBinding="production"}}</label>
-</div>
+    <br>
+    <label>Production</label>
+    {{view Ember.Checkbox checkedBinding="production"}}
+</section>
 {{/if}}
 {{#if isSimplePush}}
-<div>
+<section>
     <label>
         Web
     </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     {{input type="text" name="pushNetworkURL" value=pushNetworkURL classNames="topcoat-text-input"}}
-</div>
+</section>
 {{/if}}

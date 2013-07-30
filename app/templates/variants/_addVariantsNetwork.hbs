@@ -1,23 +1,40 @@
-<div>
+<h3>Choose A Network:</h3>
+<section>
     <label>
         <input type="radio" checked name="platform" value="android">
-        Google Key
+        Google Cloud Messaging
     </label>
-    {{input type="text" value=googleKey classNames="topcoat-text-input"}}
-</div>
-<div>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Google API Key</label>
+        {{input type="text" value=googleKey classNames="topcoat-text-input"}}
+    </div>
+</section>
+<section>
     <label>
         <input type="radio" name="platform" value="iOS">
-        iOS PassPhrase
+        Apple Push Network
     </label>
-    {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
-    {{input type="file" name="certificate"}}
-    <label>Production? {{view Ember.Checkbox checkedBinding="production"}}</label>
-</div>
-<div>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Passphrase</label>
+        {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
+        <br>
+        <label>Certificate</label>
+        {{input type="file" name="certificate"}}
+        <br>
+        <label>Production</label>
+        {{view Ember.Checkbox checkedBinding="production"}}
+    </div>
+</section>
+<section>
     <label>
         <input type="radio" name="platform" value="simplePush">
-        Web
+        Simple Push Server
     </label>
-    {{input type="text" value=pushNetworkURL classNames="topcoat-text-input"}}
-</div>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Web</label>
+        {{input type="text" value=pushNetworkURL classNames="topcoat-text-input"}}
+    </div>
+</section>
