@@ -33,7 +33,7 @@ public class InstallationImpl extends PersistentObject implements Installation {
     @Column
     private String deviceType;
     @Column
-    private String mobileOperatingSystem;
+    private String operatingSystem;
     @Column
     private String osVersion;
     @Column
@@ -74,13 +74,13 @@ public class InstallationImpl extends PersistentObject implements Installation {
     }
 
     @Override
-    public String getMobileOperatingSystem() {
-        return this.mobileOperatingSystem;
+    public String getOperatingSystem() {
+        return this.operatingSystem;
     }
 
     @Override
-    public void setMobileOperatingSystem(final String mobileOperatingSystem) {
-        this.mobileOperatingSystem = mobileOperatingSystem;
+    public void setOperatingSystem(final String operatingSystem) {
+        this.operatingSystem = operatingSystem;
     }
 
     @Override

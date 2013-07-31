@@ -154,7 +154,7 @@ curl -u "{variantID}:{secret}"
    -d '{
       "deviceToken" : "someTokenString",
       "deviceType" : "ANDROID",
-      "mobileOperatingSystem" : "android",
+      "operatingSystem" : "android",
       "osVersion" : "4.0.1"
     }'
 
