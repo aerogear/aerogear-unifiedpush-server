@@ -171,32 +171,22 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: '<%= yeoman.app %>/images',
+                    cwd: '<%= yeoman.app %>/img',
                     src: '{,*/}*.{png,jpg,jpeg}',
-                    dest: '<%= yeoman.dist %>/images'
+                    dest: '<%= yeoman.dist %>/img'
                 }]
             }
         },
-        svgmin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.svg',
-                    dest: '<%= yeoman.dist %>/images'
-                }]
-            }
-        },
-        cssmin: {
-            dist: {
-                files: {
-                    '<%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
-        },
+        // svgmin: {
+        //     dist: {
+        //         files: [{
+        //             expand: true,
+        //             cwd: '<%= yeoman.app %>/img',
+        //             src: '{,*/}*.svg',
+        //             dest: '<%= yeoman.dist %>/img'
+        //         }]
+        //     }
+        // },
         htmlmin: {
             dist: {
                 options: {
@@ -229,8 +219,8 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/*'
+                        'img/{,*/}*.{webp,gif,png,svg}',
+                        'fonts/*'
                     ]
                 }, {
                     expand: true,
@@ -263,7 +253,7 @@ module.exports = function (grunt) {
             test: [ ],
             dist: [
                 'imagemin',
-                'svgmin',
+                //'svgmin',
                 'htmlmin',
                 'emberTemplates'
             ]
@@ -296,8 +286,8 @@ module.exports = function (grunt) {
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
-        'cssmin',
         'concat',
+        'cssmin',
         'uglify',
         'copy:dist',
         'rev',
@@ -310,18 +300,6 @@ module.exports = function (grunt) {
         'build'
     ]);
 
-    grunt.registerTask('buildOS', [
-        'clean:dist',
-        'useminPrepare',
-        'concurrent:dist',
-        'cssmin',
-        'concat',
-        'uglify',
-        'copy:dist',
-        'replace',
-        'rev',
-        'usemin'
-    ]);
-
-    grunt.registerTask('cw', ['copy:webapp']);
+    grunt.registerTask('copy_web', ['copy:webapp']);
+    grunt.registerTask('jboss_web', ['copy:jbossweb']);
 };
