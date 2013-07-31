@@ -73,8 +73,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
         installationToUpdate.setAlias(postedInstallation.getAlias());
         installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
-        installationToUpdate.setMobileOperatingSystem(postedInstallation
-                .getMobileOperatingSystem());
+        installationToUpdate.setOperatingSystem(postedInstallation
+                .getOperatingSystem());
         installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
         installationToUpdate.setEnabled(postedInstallation.isEnabled());
         installationToUpdate.setPlatform(postedInstallation.getPlatform());
