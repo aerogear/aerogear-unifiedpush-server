@@ -115,6 +115,7 @@ public class AuthenticationEndpoint {
         SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
         this.identityManager.updateCredential(user, new Password(developer.getPassword()));
 
+        //Update the role so they can access all "developer" endpoints
         Role roleDeveloper = new SimpleRole("developer");
         this.identityManager.add(roleDeveloper);
         this.identityManager.grantRole(user, roleDeveloper);

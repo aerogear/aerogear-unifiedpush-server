@@ -62,7 +62,9 @@ public class PicketLinkDefaultUsers {
 
             /**
              * Only give them a role of "User" since they will be technically logged in when we ask for a
-             * password change and we don't want them to access stuff until they change the password
+             * password change and we don't want them to access stuff until they change the password.
+             *
+             * Once the password is changed,  a role of "developer" will be added.
              */
             Role roleDeveloper = new SimpleRole("user");
             this.identityManager.add(roleDeveloper);
