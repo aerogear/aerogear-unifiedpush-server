@@ -18,29 +18,38 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     applicationPipe: App.AeroGear.pipelines.pipes.applications,
     edit: function( controller ) {
         var that = controller,
+            applicationData,
+            model = controller.get("model");
+
+        model.validate();
+
+        if( !model.get( "isValid" ) ) {
+            this.send( "error", controller, "An Application Name is required" );
+        } else {
             applicationData = {
                 name: controller.get( "name" ),
                 id: controller.get( "pushApplicationID" ),
                 description: controller.get( "description" )
             };
 
-        this.applicationPipe.save( applicationData, {
-            success: function() {
-                $("form")[0].reset();
-                that.transitionToRoute( "mobileApps" );
-            },
-            error: function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    that.send( "error", that, "Error Saving" );
-                    break;
+            this.applicationPipe.save( applicationData, {
+                success: function() {
+                    $("form")[0].reset();
+                    that.transitionToRoute( "mobileApps" );
+                },
+                error: function( error ) {
+                    console.log( "error saving", error );
+                    switch( error.status ) {
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        that.send( "error", that, "Error Saving" );
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        }
 
     },
     cancel: function() {

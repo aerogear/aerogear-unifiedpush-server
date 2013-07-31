@@ -16,7 +16,12 @@
  A Mobile App
 */
 
-App.MobileApplication = Ember.Object.extend({
+App.MobileApplication = Ember.Object.extend( Ember.Validations, {
+    validations:{
+        name: {
+            presence: true
+        }
+    },
     totalAndroidVariants: function() {
         return this.androidVariants.get("content").length;
     }.property(),

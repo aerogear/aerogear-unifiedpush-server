@@ -130,7 +130,7 @@ App.MobileAppsEditRoute = App.Route.extend({
     setupController: function( controller, model ) {
 
         //Load the current Model
-        controller.set( "model", model );
+        controller.set( "model", model.pushApplicationID  ? model : App.MobileApplication.create() );
 
     },
     serialize: function( model ) {
