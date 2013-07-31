@@ -99,4 +99,16 @@ public interface Installation {
     void setCategory(final String category);
 
     String getCategory();
+
+    /**
+     * A reliable way of determining the platform type
+     * for an installation. FOR ADMIN UI ONLY - Helps with setting up Routes
+     *
+     * @param platform the name of the platform
+     */
+    void setPlatform(final String platform);
+
+    String getPlatform();
+
+
 }
