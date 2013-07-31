@@ -65,7 +65,9 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             model = controller.get( "model" ),
             hasErrors = false;
 
+        //Reset
         model.set( "isValid", true );
+        model.validationErrors.clear();
 
         model.validateProperty( "name" );
 
