@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.connectivity.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Column;
-
 import org.jboss.aerogear.connectivity.api.Installation;
 import org.jboss.aerogear.connectivity.jpa.PersistentObject;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
 public class InstallationImpl extends PersistentObject implements Installation {
@@ -40,6 +40,8 @@ public class InstallationImpl extends PersistentObject implements Installation {
     private String alias;
     @Column
     private String category;
+    @Column
+    private String platform;
 
     @Override
     public boolean isEnabled() {
@@ -109,5 +111,15 @@ public class InstallationImpl extends PersistentObject implements Installation {
     @Override
     public void setCategory(final String category) {
         this.category = category;
+    }
+
+    @Override
+    public void setPlatform(String platform) {
+       this.platform = platform;
+    }
+
+    @Override
+    public String getPlatform() {
+        return platform;
     }
 }

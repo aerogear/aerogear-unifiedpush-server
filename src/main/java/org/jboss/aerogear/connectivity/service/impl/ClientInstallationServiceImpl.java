@@ -16,18 +16,15 @@
  */
 package org.jboss.aerogear.connectivity.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
- 
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-
-import javax.inject.Inject;
-
 import org.jboss.aerogear.connectivity.jpa.dao.InstallationDao;
 import org.jboss.aerogear.connectivity.model.InstallationImpl;
 import org.jboss.aerogear.connectivity.service.ClientInstallationService;
+
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Set;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -80,6 +77,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 .getMobileOperatingSystem());
         installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
         installationToUpdate.setEnabled(postedInstallation.isEnabled());
+        installationToUpdate.setPlatform(postedInstallation.getPlatform());
 
         // update it:
         return updateInstallation(installationToUpdate);
