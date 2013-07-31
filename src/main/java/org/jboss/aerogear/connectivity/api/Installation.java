@@ -66,11 +66,11 @@ public interface Installation {
     /**
      * The (optional) name of the underlying Operating System.
      * 
-     * @param mobileOperatingSystem the name of the Operating System.
+     * @param operatingSystem the name of the Operating System.
      */
-    void setMobileOperatingSystem(final String mobileOperatingSystem);
+    void setOperatingSystem(final String operatingSystem);
 
-    String getMobileOperatingSystem();
+    String getOperatingSystem();
 
     /**
      * The (optional) version of the used Operating System.
