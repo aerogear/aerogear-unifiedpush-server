@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.Role;
 import org.picketlink.idm.model.SimpleRole;
+import org.picketlink.idm.model.User;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -37,26 +38,31 @@ public class PicketLinkDefaultUsers {
     private IdentityManager identityManager;
 
     /**
-     * <p>Loads some users during the first construction.</p>
+     * <p>Loads some users during the <b>first</b> construction.</p>
      */
-    //TODO this entire initialization code will be removed - https://issues.jboss.org/browse/AGPUSH-107
+    //TODO this entire initialization code will be removed - https://issues.jboss.org/browse/AGPUSH-223
     @PostConstruct
     public void create() {
 
         // developers!! developers!! developers!! developers!!
+        User adminUser = identityManager.getUser("admin");
 
-        Developer admin = new Developer();
-        admin.setLoginName("admin");
+        // We only create the Admin, if there is none:
+        if (adminUser == null) {
 
-        /*
-         * Note: Password will be encoded in SHA-512 with SecureRandom-1024 salt
-         * See http://lists.jboss.org/pipermail/security-dev/2013-January/000650.html for more information
-         */
-        this.identityManager.add(admin);
-        this.identityManager.updateCredential(admin, new Password("123"));
+            Developer admin = new Developer();
+            admin.setLoginName("admin");
 
-        Role roleDeveloper = new SimpleRole("user");
-        this.identityManager.add(roleDeveloper);
-        identityManager.grantRole(admin, roleDeveloper);
+            /*
+             * Note: Password will be encoded in SHA-512 with SecureRandom-1024 salt
+             * See http://lists.jboss.org/pipermail/security-dev/2013-January/000650.html for more information
+             */
+            this.identityManager.add(admin);
+            this.identityManager.updateCredential(admin, new Password("123"));
+
+            Role roleDeveloper = new SimpleRole("user");
+            this.identityManager.add(roleDeveloper);
+            identityManager.grantRole(admin, roleDeveloper);
+        }
     }
 }
