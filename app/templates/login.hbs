@@ -11,11 +11,11 @@
         <fieldset>
           <p>
             <label>Username</label>
-            {{ input type="text" valueBinding="loginName" placeholder="Username" classNames="topcoat-text-input"}}
+            {{ input type="text" valueBinding="loginName" placeholder="Username" classNames="topcoat-text-input" classNameBindings="validationErrors.loginName:error"}}
           </p>
           <p>
             <label>Password</label>
-            {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input"}}
+            {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input" classNameBindings="validationErrors.password:error"}}
           </p>
           <button class="topcoat-button">Log In</button>
         </fieldset>

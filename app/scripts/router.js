@@ -91,11 +91,7 @@ App.ApplicationRoute = Ember.Route.extend({
 */
 App.LoginRoute = App.Route.extend({
     model: function() {
-        return {
-            loginName: "",
-            password: "",
-            loginIn: true
-        };
+        return App.User.create();
     }
 });
 

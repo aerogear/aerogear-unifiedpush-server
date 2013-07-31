@@ -359,6 +359,11 @@ td.token {
   /*margin-top: -22px;*/
 }
 
+input[type="text"].error,
+input[type="password"].error {
+  border-color: #e30000 !important;
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */

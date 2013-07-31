@@ -13,12 +13,15 @@
 */
 
 App.LoginController = Ember.ObjectController.extend({
+    loginIn: true,
     login: function() {
-        var that = this;
+        var that = this,
+            user = this.get( "model" );
 
-        //TODO: more advanced validation
+        //Validate the form fields with Ember Validations
+        user.validate();
 
-        if( !this.get( "password" ).trim().length ||  !this.get( "loginName" ).trim().length ) {
+        if( !user.get( "isValid" ) ) {
             this.send( "error", this, "A Username and Password are required" );
         } else {
             // Use AeroGear Authenticator to login
