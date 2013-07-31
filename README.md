@@ -62,7 +62,7 @@ curl -v -b cookies.txt -c cookies.txt
   -F "passphrase=TopSecret"
   -F "production=true"  // make sure you have Production certificate and Provisioning Profile
 
-  -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
+  -X POST http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/iOS
 ```
 
 Add a *DEVELOPMENT* ```iOS``` variant (e.g. _HR for iOS_):
@@ -73,7 +73,7 @@ curl -v -b cookies.txt -c cookies.txt
   -F "passphrase=TopSecret"
   -F "production=false"  // make sure you have Development certificate and Provisioning Profile
 
-  -X POST http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/iOS
+  -X POST http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/iOS
 ```
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
@@ -89,7 +89,7 @@ curl -v -b cookies.txt -c cookies.txt
   -X POST
   -d '{"googleKey" : "IDDASDASDSA"}'
 
-  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/android
+  http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/android
 ```
 
 _The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK._
@@ -103,7 +103,7 @@ curl -v -b cookies.txt -c cookies.txt
   -X POST
   -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
 
-  http://localhost:8080/ag-push/rest/applications/{PUSH_ID}/simplePush
+  http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/simplePush
 ```
 
 _The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
