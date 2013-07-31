@@ -1,4 +1,5 @@
 <!--Template to create a new push application-->
+app id:{{pushApplicationID}}
 <div class="rcue-dialog">
   <header>
     <h1>
@@ -14,11 +15,11 @@
       <fieldset>
         <p>
           <label>Name</label>
-          {{input type="text" name="name" value=variantName placeholder="e.g. Android Free" classNames="topcoat-text-input"}}
+          {{input type="text" name="name" value=name placeholder="e.g. Android Free" classNames="topcoat-text-input" classNameBindings="validationErrors.name:error"}}
         </p>
         <p>
           <label>Description</label>
-          {{textarea name="description" value=variantDescription placeholder="e.g. Free Android App" classNames="topcoat-textarea"}}
+          {{textarea name="description" value=description placeholder="e.g. Free Android App" classNames="topcoat-textarea"}}
         </p>
         {{ partial "variants/addVariantsNetwork" }}
         <div class="rcue-dialog-inner-partial">

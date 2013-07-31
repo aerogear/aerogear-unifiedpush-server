@@ -16,7 +16,24 @@
  A Mobile app variant
 */
 
-App.MobileVariant = Ember.Object.extend({
+App.MobileVariant = Ember.Object.extend( Ember.Validations, {
+    validations: {
+        name: {
+            presence: true
+        },
+        googleKey: {
+            presence: true
+        },
+        passphrase: {
+            presence: true
+        },
+        certificate: {
+            presence: true
+        },
+        pushNetworkURL: {
+            presence: true
+        }
+    },
     totalInstances: function() {
         return this.get("installations").length;
     }.property(),

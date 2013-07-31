@@ -55,57 +55,88 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     add: function( controller ) {
         var that = controller,
             thee = this,
-            applicationData = {
-                name: controller.get( "variantName" ),
-                description: controller.get( "variantDescription" )
-            },
+            applicationData,
             variantType =  $( "input:checked" ).val(),
             ajaxOptions = {
                 url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType,
                 type: "POST",
                 contentType: "application/json"
+            },
+            model = controller.get( "model" ),
+            hasErrors = false;
+
+        model.set( "isValid", true );
+
+        model.validateProperty( "name" );
+
+        //Probably shouldn't do this, this way
+        if( !model.get( "isValid" ) ) {
+            this.send( "error", controller, "A Variant Name is required" );
+        } else {
+            applicationData = {
+                name: controller.get( "name" ),
+                description: controller.get( "description" )
             };
 
-        if( variantType === "iOS" ) {
+            if( variantType === "iOS" ) {
 
-            ajaxOptions.success = function() {
-                thee.formReset( that );
-                that.transitionToRoute( "variants", that.get( "model" ) );
-            };
+                //run validation
+                if( model.validateProperty("passphrase") && model.validateProperty("certificate") )
+                {
+                    ajaxOptions.success = function() {
+                        thee.formReset( that );
+                        that.transitionToRoute( "variants", that.get( "model" ) );
+                    };
 
-            ajaxOptions.error = function( error ) {
-                console.log( "error saving", error );
-                switch( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
+                    ajaxOptions.error = function( error ) {
+                        console.log( "error saving", error );
+                        switch( error.status ) {
+                        case 401:
+                            that.transitionToRoute( "login" );
+                            break;
+                        default:
+                            that.send( "error", that, "Error Saving" );
+                            break;
+                        }
+                    };
+
+                    ajaxOptions.beforeSubmit = function( formData ) {
+                        formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
+                    };
+
+                    $( "form" ).ajaxSubmit( ajaxOptions );
+                } else {
+                    this.send( "error", controller, "iOS stuff required" );
+                }
+            } else {
+
+                switch( variantType ) {
+                case "android":
+                    if( model.validateProperty( "googleKey" ) ) {
+                        applicationData.googleKey = controller.get( "googleKey" );
+                    } else {
+                        hasErrors = true;
+                    }
+                    break;
+                case "simplePush":
+                    if( model.validateProperty( "pushNetworkURL" ) ) {
+                        applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+                    } else {
+                        hasErrors = true;
+                    }
                     break;
                 default:
-                    that.send( "error", that, "Error Saving" );
                     break;
                 }
-            };
 
-            ajaxOptions.beforeSubmit = function( formData ) {
-                formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-            };
+                if( !hasErrors ) {
+                    ajaxOptions.data = JSON.stringify( applicationData );
 
-            $( "form" ).ajaxSubmit( ajaxOptions );
-        } else {
-
-            switch( variantType ) {
-            case "android":
-                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
-                break;
-            case "simplePush":
-                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-                break;
-            default:
-                break;
+                    this.saveVariants( controller, ajaxOptions );
+                } else {
+                    this.send( "error", controller, "Stuff Required stuff required" );
+                }
             }
-
-            ajaxOptions.data = JSON.stringify( applicationData );
-
-            this.saveVariants( controller, ajaxOptions );
         }
     },
     edit: function( controller ) {

@@ -184,8 +184,14 @@ App.VariantsIndexRoute = App.Route.extend({
 App.VariantsAddRoute = App.Route.extend({
     model: function() {
 
+        // TODO: figure out how to get the pushApplicationID on refresh
+
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
-        return this.modelFor( "variants" );
+        var variant = App.MobileVariant.create({
+            pushApplicationID: this.modelFor( "variants" ).get( "pushApplicationID" )
+        });
+
+        return variant;
 
     },
     serialize: function() {

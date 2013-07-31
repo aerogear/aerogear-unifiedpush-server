@@ -7,7 +7,7 @@
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     <div class="network">
         <label>Google API Key</label>
-        {{input type="text" value=googleKey classNames="topcoat-text-input"}}
+        {{input type="text" value=googleKey classNames="topcoat-text-input" classNameBindings="validationErrors.googleKey:error"}}
     </div>
 </section>
 <section>
@@ -18,7 +18,7 @@
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     <div class="network">
         <label>Passphrase</label>
-        {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
+        {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input" classNameBindings="validationErrors.passphrase:error"}}
         <br>
         <label>Certificate</label>
         {{input type="file" name="certificate"}}
@@ -35,6 +35,6 @@
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
     <div class="network">
         <label>Web</label>
-        {{input type="text" value=pushNetworkURL classNames="topcoat-text-input"}}
+        {{input type="text" value=pushNetworkURL classNames="topcoat-text-input" classNameBindings="validationErrors.pushNetworkURL:error"}}
     </div>
 </section>
