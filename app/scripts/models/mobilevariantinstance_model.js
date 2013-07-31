@@ -18,13 +18,23 @@
 
 App.MobileVariantInstance = Ember.Object.extend({
     vType: function() {
-        if( this.get( "deviceType" ) === "ANDROID" ) {
-            return "android";
-        } else if( this.get( "deviceType" ) === "web" ) {
-            return "simplePush";
-        } else {
-            return "iOS";
+        var platform;
+
+        switch( this.get( "platform" ) ) {
+        case "android":
+            platform = "android";
+            break;
+        case "ios":
+            platform = "iOS";
+            break;
+        case "simplePush":
+            platform = "simplePush";
+            break;
+        default:
+            break;
         }
+
+        return platform;
     }.property(),
     status: function(){
         return this.get( "enabled" ) ? "Enabled" : "Disabled";
