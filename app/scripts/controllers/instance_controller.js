@@ -24,8 +24,9 @@ App.InstanceIndexController = Ember.ObjectController.extend({
                 category: model.get( "category" ),
                 deviceToken: model.get( "deviceToken" ),
                 deviceType: model.get( "deviceType" ),
-                mobileOperatingSystem: model.get( "mobileOperatingSystem" ),
-                osVersion: model.get( "osVersion" )
+                operatingSystem: model.get( "operatingSystem" ),
+                osVersion: model.get( "osVersion" ),
+                platform: model.get("platform")
             },
             currentStatus = model.get( "enabled" );
 
