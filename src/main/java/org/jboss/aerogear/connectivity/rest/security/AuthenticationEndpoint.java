@@ -84,7 +84,7 @@ public class AuthenticationEndpoint {
         // See if the password is still the default. If it is we need them to change it
         // Only Temporary until we get scripts in. see https://issues.jboss.org/browse/AGPUSH-107
         if(developer.getPassword().equals("123")) {
-            return Response.status(205).build();
+            return Response.status(Status.CONFLICT).build();
         }
 
         return Response.ok().build();
@@ -106,6 +106,12 @@ public class AuthenticationEndpoint {
     @Path("/update")
     @Secure("user")
     public Response updateUserPasswordAndRole(final Developer developer){
+
+        //Check to make sure that the user doesn't just re-enter the default password again
+        if( developer.getPassword().equals("123") ) {
+            return Response.status(Status.CONFLICT).build();
+        }
+
         SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
         this.identityManager.updateCredential(user, new Password(developer.getPassword()));
 
