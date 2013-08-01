@@ -17,6 +17,7 @@
 package org.jboss.aerogear.connectivity.rest.security;
 
 import org.jboss.aerogear.connectivity.users.Developer;
+import org.jboss.aerogear.connectivity.users.UserRoles;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
@@ -24,8 +25,6 @@ import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.picketlink.idm.IdentityManagementException;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.Role;
-import org.picketlink.idm.model.SimpleRole;
 import org.picketlink.idm.model.SimpleUser;
 
 import javax.ejb.Stateless;
@@ -49,6 +48,8 @@ public class AuthenticationEndpoint {
     private IdentityManagement configuration;
     @Inject
     private IdentityManager identityManager;
+
+    private static final String DEFAULT_PASSWORD = "123";
 
     @POST
     @Path("/enroll")
@@ -83,8 +84,8 @@ public class AuthenticationEndpoint {
 
         // See if the password is still the default. If it is we need them to change it
         // Only Temporary until we get scripts in. see https://issues.jboss.org/browse/AGPUSH-107
-        if(developer.getPassword().equals("123")) {
-            return Response.status(Status.CONFLICT).build();
+        if(developer.getPassword().equals(DEFAULT_PASSWORD)) {
+            return Response.status(Status.FORBIDDEN).build();
         }
 
         return Response.ok().build();
@@ -108,22 +109,20 @@ public class AuthenticationEndpoint {
     public Response updateUserPasswordAndRole(final Developer developer){
 
         //Check to make sure that the user doesn't just re-enter the default password again
-        if( developer.getPassword().equals("123") ) {
-            return Response.status(Status.CONFLICT).build();
+        if( developer.getPassword().equals(DEFAULT_PASSWORD) ) {
+            return Response.status(Status.FORBIDDEN).build();
         }
 
         SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
         this.identityManager.updateCredential(user, new Password(developer.getPassword()));
 
         //Update the role so they can access all "developer" endpoints
-        Role roleDeveloper = new SimpleRole("developer");
-        this.identityManager.add(roleDeveloper);
-        this.identityManager.grantRole(user, roleDeveloper);
+        this.configuration.grant(UserRoles.DEVELOPER.getRoleName()).to(user.getLoginName());
 
         // remove the temporary "user" role since they no longer need it
         // This will then make this endpoint unreachable, which is better for security
         // with this temporary fix
-        this.identityManager.revokeRole(user, this.identityManager.getRole("user"));
+        this.identityManager.revokeRole(user, this.identityManager.getRole(UserRoles.USER.getRoleName()));
         return Response.ok().build();
     }
 
