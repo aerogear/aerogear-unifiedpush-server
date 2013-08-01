@@ -308,7 +308,7 @@ td.token {
 }
 
 .rcue-dialog header {
-  padding: 1px 22px;
+  padding: 1px 22px; /* 1px / 900px, 22px / 900px */
   background-color: #f6f6f6;
 }
 
@@ -317,16 +317,16 @@ td.token {
 }
 
 .rcue-dialog-inner {
-  padding: 20px;
+  padding: 2.222222222222%; /*  20px / 900px */
 }
 
 .rcue-dialog-inner-partial {
-  margin-top: 10px;
+  margin-top: 1.136363636364%; /*  10px / 880px */
 }
 
 .rcue-dialog label {
-  min-width: 120px;
-  padding-right: 16px;
+  min-width: 120px; /*  120px / 870px */
+  padding-right: 16px; /*  16px / 870px */
   display: inline-block;
 }
 
