@@ -28,7 +28,7 @@ App.LoginController = Ember.ObjectController.extend({
             App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
                 contentType: "application/json",
                 success: function( response, statusText, jqXHR ) {
-                    if( jqXHR.status === 409 ) {
+                    if( jqXHR.status === 205 ) {
                         //change the password
                         that.set( "loginIn", false );
                     } else {
