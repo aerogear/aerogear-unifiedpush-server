@@ -44,7 +44,7 @@ public class GCMPushNotificationSender {
     private GCMCache cache;
 
     @Inject
-    private ClientInstallationService clientInstallationService ;
+    private ClientInstallationService clientInstallationService;
 
     @Inject
     private Logger logger;
@@ -120,7 +120,7 @@ public class GCMPushNotificationSender {
         final Set<String> inactiveTokens = new HashSet<String>();
 
         // read the results:
-        for (int i=0; i< results.size(); i++) {
+        for (int i = 0; i < results.size(); i++) {
             // use the current index to access the individual results
             Result result = results.get(i);
 
@@ -138,5 +138,5 @@ public class GCMPushNotificationSender {
 
         // trigger asynchronous deletion:
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
-    }        
+    }
 }

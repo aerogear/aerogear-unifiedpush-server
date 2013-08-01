@@ -64,7 +64,7 @@ public class iOSVariantEndpoint {
 
     @Inject
     private Logger logger;
-    
+
     // ===============================================================
     // =============== Mobile variant construct ======================
     // ===============           iOS            ======================
@@ -85,7 +85,7 @@ public class iOSVariantEndpoint {
         }
 
         // certificate/passphrase pair OK ?
-        if (! validateCertificateAndPassphrase(form)) {
+        if (!validateCertificateAndPassphrase(form)) {
             // nope...
             return Response.status(Status.BAD_REQUEST).build();
         }
@@ -169,7 +169,7 @@ public class iOSVariantEndpoint {
         if (iOSVariation != null) {
 
             // certificate/passphrase pair OK ?
-            if (! validateCertificateAndPassphrase(updatedForm)) {
+            if (!validateCertificateAndPassphrase(updatedForm)) {
                 // nope...
                 return Response.status(Status.BAD_REQUEST).build();
             }
