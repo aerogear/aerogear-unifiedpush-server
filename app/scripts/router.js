@@ -127,11 +127,9 @@ App.MobileAppsIndexRoute = App.Route.extend({
     Create/Edit A Mobile Application
 */
 App.MobileAppsEditRoute = App.Route.extend({
-    setupController: function( controller, model ) {
-
-        //Load the current Model
-        controller.set( "model", model.pushApplicationID  ? model : App.MobileApplication.create() );
-
+    model: function( param ) {
+        //don't like the formatting here
+        return ( param.mobileApplication_id === "undefined" || param.mobileApplication_id === undefined ) ? App.MobileApplication.create() : App.MobileApplication.find( param.mobileApplication_id );
     },
     serialize: function( model ) {
 
