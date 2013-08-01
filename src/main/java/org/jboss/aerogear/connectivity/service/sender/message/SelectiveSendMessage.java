@@ -74,7 +74,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
         if (this.data != null) {
             // remove the desired keywords:
             // special key words (for APNs)
-            this.alert = (String) this.data.remove("alert");  // used in AGDROID as well
+            this.alert = (String) this.data.remove("alert"); // used in AGDROID as well
             this.sound = (String) this.data.remove("sound");
 
             Integer badgeVal = (Integer) this.data.remove("badge");
@@ -124,6 +124,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     public String getSound() {
         return sound;
     }
+
     @Override
     public int getBadge() {
         return badge;

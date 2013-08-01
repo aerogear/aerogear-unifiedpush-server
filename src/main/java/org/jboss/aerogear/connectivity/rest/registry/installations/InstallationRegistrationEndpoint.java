@@ -77,8 +77,8 @@ public class InstallationRegistrationEndpoint {
         if (variant == null) {
             return appendAllowOriginHeader(
                     Response.status(Status.UNAUTHORIZED)
-                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request"),
+                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                            .entity("Unauthorized Request"),
                     request);
         }
 
@@ -88,8 +88,8 @@ public class InstallationRegistrationEndpoint {
         }
 
         // look up all installations (with same token) for the given variant:
-        InstallationImpl installation = 
-                clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken()); 
+        InstallationImpl installation =
+                clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
@@ -125,13 +125,13 @@ public class InstallationRegistrationEndpoint {
         if (variant == null) {
             return appendAllowOriginHeader(
                     Response.status(Status.UNAUTHORIZED)
-                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request"),
+                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                            .entity("Unauthorized Request"),
                     request);
         }
 
         // look up all installations (with same token) for the given variant:
-        InstallationImpl installation = 
+        InstallationImpl installation =
                 clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), token);
 
         if (installation == null) {
