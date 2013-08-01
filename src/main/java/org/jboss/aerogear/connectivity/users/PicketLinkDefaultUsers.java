@@ -16,16 +16,22 @@
  */
 package org.jboss.aerogear.connectivity.users;
 
+import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
+import org.picketlink.idm.credential.UsernamePasswordCredentials;
 import org.picketlink.idm.model.Role;
 import org.picketlink.idm.model.SimpleRole;
+import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Logger;
 
 @Singleton
 @Startup
@@ -36,6 +42,12 @@ public class PicketLinkDefaultUsers {
 
     @Inject
     private IdentityManager identityManager;
+
+    @Inject
+    private IdentityManagement configuration;
+
+    private static final Logger LOGGER = Logger.getLogger(PicketLinkDefaultUsers.class.getSimpleName());
+
 
     /**
      * <p>Loads some users during the <b>first</b> construction.</p>
@@ -48,27 +60,43 @@ public class PicketLinkDefaultUsers {
         User adminUser = identityManager.getUser("admin");
 
         // We only create the Admin, if there is none:
-        if (adminUser == null) {
+//        if (adminUser == null) {
 
-            Developer admin = new Developer();
-            admin.setLoginName("admin");
+        Developer admin = new Developer();
+        admin.setLoginName("admin");
 
-            /*
-             * Note: Password will be encoded in SHA-512 with SecureRandom-1024 salt
-             * See http://lists.jboss.org/pipermail/security-dev/2013-January/000650.html for more information
-             */
-            this.identityManager.add(admin);
-            this.identityManager.updateCredential(admin, new Password("123"));
+        Calendar expirationDate = Calendar.getInstance();
 
-            /**
-             * Only give them a role of "User" since they will be technically logged in when we ask for a
-             * password change and we don't want them to access stuff until they change the password.
-             *
-             * Once the password is changed,  a role of "developer" will be added.
-             */
-            Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
-            this.identityManager.add(roleDeveloper);
-            identityManager.grantRole(admin, roleDeveloper);
-        }
+        expirationDate.add(Calendar.HOUR, -5);
+
+        this.identityManager.add(admin);
+        this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate.getTime());
+
+        UsernamePasswordCredentials firstCredential = new UsernamePasswordCredentials(admin.getLoginName(),
+                new Password(admin.getPassword()));
+
+        identityManager.validateCredentials(firstCredential);
+
+        LOGGER.info("============================== " + firstCredential.getStatus());
+        /**
+         * Only give them a role of "User" since they will be technically logged in when we ask for a
+         * password change and we don't want them to access stuff until they change the password.
+         *
+         * Once the password is changed,  a role of "developer" will be added.
+         */
+        Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
+        this.identityManager.add(roleDeveloper);
+        identityManager.grantRole(admin, roleDeveloper);
+
+//        SimpleUser user = (SimpleUser) this.configuration.findByUsername(admin.getLoginName());
+//        this.identityManager.updateCredential(user, new Password(admin.getPassword()));
+//
+//        firstCredential = new UsernamePasswordCredentials(admin.getLoginName(),
+//                new Password(admin.getPassword()));
+//
+//        identityManager.validateCredentials(firstCredential);
+//
+//        LOGGER.info("============================== " + firstCredential.getStatus());
+//        }
     }
 }
