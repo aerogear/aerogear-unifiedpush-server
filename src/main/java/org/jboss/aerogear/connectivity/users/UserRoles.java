@@ -19,26 +19,15 @@ package org.jboss.aerogear.connectivity.users;
 /**
  * A type-safe identifier for the user role types.
  */
-public enum UserRoles {
+public class UserRoles {
     /**
      * The type identifier for a user role.
      */
-    USER("user"),
+    public static final String USER = "user";
 
     /**
      * The type identifier for a developer.
      */
-    DEVELOPER("developer");
+    public static final String DEVELOPER = "developer";
 
-    private final String roleName;
-
-    private UserRoles(String roleName) {
-        this.roleName = roleName;
-    }
-    /**
-     * Returns the actual role
-     */
-    public String getRoleName() {
-        return roleName;
-    }
 }
