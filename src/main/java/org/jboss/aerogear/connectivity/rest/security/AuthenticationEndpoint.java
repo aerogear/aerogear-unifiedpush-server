@@ -49,8 +49,6 @@ public class AuthenticationEndpoint {
     @Inject
     private IdentityManager identityManager;
 
-    private static final String DEFAULT_PASSWORD = "123";
-
     @POST
     @Path("/enroll")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -82,12 +80,6 @@ public class AuthenticationEndpoint {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
-        // See if the password is still the default. If it is we need them to change it
-        // Only Temporary until we get scripts in. see https://issues.jboss.org/browse/AGPUSH-107
-        if(developer.getPassword().equals(DEFAULT_PASSWORD)) {
-            return Response.status(Status.FORBIDDEN).build();
-        }
-
         return Response.ok().build();
     }
 
@@ -105,15 +97,12 @@ public class AuthenticationEndpoint {
     // Temporary. see https://issues.jboss.org/browse/AGPUSH-107
     @PUT
     @Path("/update")
-    @Secure("user")
-    public Response updateUserPasswordAndRole(final Developer developer){
+    public Response updateUserPasswordAndRole(final Developer developer) {
 
         //Check to make sure that the user doesn't just re-enter the default password again
-        if( developer.getPassword().equals(DEFAULT_PASSWORD) ) {
-            return Response.status(Status.FORBIDDEN).build();
-        }
 
-        SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
+        SimpleUser user = (SimpleUser) this.configuration.findByUsername(developer.getLoginName());
+
         this.identityManager.updateCredential(user, new Password(developer.getPassword()));
 
         //Update the role so they can access all "developer" endpoints
