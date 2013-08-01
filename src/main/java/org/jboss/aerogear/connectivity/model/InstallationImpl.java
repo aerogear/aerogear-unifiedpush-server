@@ -115,7 +115,7 @@ public class InstallationImpl extends PersistentObject implements Installation {
 
     @Override
     public void setPlatform(String platform) {
-       this.platform = platform;
+        this.platform = platform;
     }
 
     @Override

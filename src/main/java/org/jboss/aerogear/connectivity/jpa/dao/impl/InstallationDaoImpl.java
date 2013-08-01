@@ -42,10 +42,9 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
     @Override
     public InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        return getSingleResultForQuery(
-              createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
+        return getSingleResultForQuery(createQuery("select installation from " + AbstractVariant.class.getSimpleName() +
                 " abstractVariant join abstractVariant.installations installation" +
-                " where abstractVariant.variantID = :variantID" + 
+                " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
@@ -65,9 +64,9 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
             return Collections.EMPTY_LIST;
         }
 
-        return createQuery("select installation from " + AbstractVariant.class.getSimpleName() + 
+        return createQuery("select installation from " + AbstractVariant.class.getSimpleName() +
                 " abstractVariant join abstractVariant.installations installation" +
-                " where abstractVariant.variantID = :variantID" + 
+                " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)
@@ -91,14 +90,14 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // the required part: Join + all tokens for variantID;
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
         jpqlString.append(AbstractVariant.class.getSimpleName())
-        .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
+                .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
-        
+
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??
-        if (aliases != null && ! aliases.isEmpty()) {
+        if (aliases != null && !aliases.isEmpty()) {
             // append the string:
             jpqlString.append(" and installation.alias IN :aliases");
             // add the params:
@@ -106,7 +105,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         }
 
         // are devices present ??
-        if (deviceTypes != null && ! deviceTypes.isEmpty()) {
+        if (deviceTypes != null && !deviceTypes.isEmpty()) {
             // append the string:
             jpqlString.append(" and installation.deviceType IN :deviceTypes");
             // add the params:
@@ -125,7 +124,6 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         Query jpql = createQuery(jpqlString.toString());
         // add REQUIRED param:
         jpql.setParameter("variantID", variantID);
-
 
         // add the optionals, as needed:
         Set<String> paramKeys = parameters.keySet();

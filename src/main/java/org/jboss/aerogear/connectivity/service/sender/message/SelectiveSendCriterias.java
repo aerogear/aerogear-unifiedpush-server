@@ -48,7 +48,7 @@ public class SelectiveSendCriterias {
     public List<String> getAliases() {
         return aliases;
     }
-    
+
     /**
      * Returns a list of device types that will receive a push notification. 
      */
