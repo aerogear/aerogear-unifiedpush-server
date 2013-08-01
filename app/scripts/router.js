@@ -33,7 +33,7 @@ App.Router.map( function() {
         this.resource( "variants", { path: "variants/:mobileApplication_id" }, function() {
 
             // The Route for creating a new Mobile Application Variant
-            this.route( "add" );
+            this.route( "add", { path: "add/:mobileApplication_id"} ); //Not really thrilled by this
 
             this.route( "edit", { path: ":type/:mobileVariant_id" } );
         });
@@ -180,22 +180,31 @@ App.VariantsIndexRoute = App.Route.extend({
     Route for adding a variant
 */
 App.VariantsAddRoute = App.Route.extend({
-    model: function() {
+    model: function( params ) {
 
         // TODO: figure out how to get the pushApplicationID on refresh
-
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
-        var variant = App.MobileVariant.create({
-            pushApplicationID: this.modelFor( "variants" ).get( "pushApplicationID" )
+        return App.MobileVariant.create({
+            pushApplicationID: params.mobileApplication_id
         });
 
-        return variant;
-
     },
-    serialize: function() {
+    setupController: function( controller, model ) {
+        var myModel;
+
+        if( model instanceof App.MobileVariant ) {
+            myModel = model;
+        } else {
+            myModel = App.MobileVariant.create({
+                pushApplicationID: model.get( "pushApplicationID" )
+            });
+        }
+        controller.set( "model", myModel );
+    },
+    serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
-        return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
+        return { mobileApplication_id: model.get( "pushApplicationID" ) };
 
     }
 });
