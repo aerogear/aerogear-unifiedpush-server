@@ -43,12 +43,6 @@ public class PicketLinkDefaultUsers {
     @Inject
     private IdentityManager identityManager;
 
-    @Inject
-    private IdentityManagement configuration;
-
-    private static final Logger LOGGER = Logger.getLogger(PicketLinkDefaultUsers.class.getSimpleName());
-
-
     /**
      * <p>Loads some users during the <b>first</b> construction.</p>
      */
@@ -56,47 +50,34 @@ public class PicketLinkDefaultUsers {
     @PostConstruct
     public void create() {
 
-        // developers!! developers!! developers!! developers!!
         User adminUser = identityManager.getUser("admin");
 
         // We only create the Admin, if there is none:
-//        if (adminUser == null) {
+        if (adminUser == null) {
 
-        Developer admin = new Developer();
-        admin.setLoginName("admin");
+            Developer admin = new Developer();
+            admin.setLoginName("admin");
 
+            this.identityManager.add(admin);
+            this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate());
+
+            /**
+             * Only give them a role of "User" since they will be technically logged in when we ask for a
+             * password change and we don't want them to access stuff until they change the password.
+             *
+             * Once the password is changed,  a role of "developer" will be added.
+             */
+            Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
+            this.identityManager.add(roleDeveloper);
+            identityManager.grantRole(admin, roleDeveloper);
+
+        }
+    }
+
+    //Expiration date of the password
+    private Date expirationDate() {
         Calendar expirationDate = Calendar.getInstance();
-
-        expirationDate.add(Calendar.HOUR, -5);
-
-        this.identityManager.add(admin);
-        this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate.getTime());
-
-        UsernamePasswordCredentials firstCredential = new UsernamePasswordCredentials(admin.getLoginName(),
-                new Password(admin.getPassword()));
-
-        identityManager.validateCredentials(firstCredential);
-
-        LOGGER.info("============================== " + firstCredential.getStatus());
-        /**
-         * Only give them a role of "User" since they will be technically logged in when we ask for a
-         * password change and we don't want them to access stuff until they change the password.
-         *
-         * Once the password is changed,  a role of "developer" will be added.
-         */
-        Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
-        this.identityManager.add(roleDeveloper);
-        identityManager.grantRole(admin, roleDeveloper);
-
-//        SimpleUser user = (SimpleUser) this.configuration.findByUsername(admin.getLoginName());
-//        this.identityManager.updateCredential(user, new Password(admin.getPassword()));
-//
-//        firstCredential = new UsernamePasswordCredentials(admin.getLoginName(),
-//                new Password(admin.getPassword()));
-//
-//        identityManager.validateCredentials(firstCredential);
-//
-//        LOGGER.info("============================== " + firstCredential.getStatus());
-//        }
+        expirationDate.add(Calendar.HOUR, -1);
+        return expirationDate.getTime();
     }
 }
