@@ -45,7 +45,7 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         } else {
             return "iOS";
         }
-    }.property(),
+    }.property( "type" ),
     isAndroid: function() {
         return this.get( "vType" ) === "android";
     }.property( "vType" ),
