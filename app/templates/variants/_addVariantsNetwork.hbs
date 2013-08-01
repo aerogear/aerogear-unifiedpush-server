@@ -21,7 +21,7 @@
         {{input type="password" name="passphrase" valueBinding="passphrase" classNames="topcoat-text-input" classNameBindings="validationErrors.passphrase:error"}}
         <br>
         <label>Certificate</label>
-        {{input type="file" name="certificate"}}
+        {{input type="file" name="certificate" valueBinding="certificate"}}
         <br>
         <label>Production</label>
         {{view Ember.Checkbox checkedBinding="production"}}
