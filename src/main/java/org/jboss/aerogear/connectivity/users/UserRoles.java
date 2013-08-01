@@ -35,6 +35,7 @@ public enum UserRoles {
     private UserRoles(String roleName) {
         this.roleName = roleName;
     }
+
     /**
      * Returns the actual role
      */

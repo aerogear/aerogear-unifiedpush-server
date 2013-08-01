@@ -64,7 +64,7 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
 
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="variantID", referencedColumnName="variantID")
+    @JoinColumn(name = "variantID", referencedColumnName = "variantID")
     private Set<InstallationImpl> installations = new HashSet<InstallationImpl>();
 
     public VariantType getType() {

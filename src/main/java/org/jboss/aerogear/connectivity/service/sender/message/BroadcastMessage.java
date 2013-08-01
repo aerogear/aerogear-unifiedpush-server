@@ -52,7 +52,7 @@ public class BroadcastMessage implements UnifiedPushMessage {
         this.simplePush = (String) data.remove("simple-push");
 
         // special key words (for APNs)
-        this.alert = (String) data.remove("alert");  // used in AGDROID as well
+        this.alert = (String) data.remove("alert"); // used in AGDROID as well
         this.sound = (String) data.remove("sound");
 
         Integer badgeVal = (Integer) data.remove("badge");
