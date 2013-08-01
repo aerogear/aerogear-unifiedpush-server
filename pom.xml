@@ -199,6 +199,10 @@
             <id>gcm-server-repository</id>
             <url>https://raw.github.com/slorber/gcm-server-repository/master/releases/</url>
         </repository>
+        <repository>
+            <id>jboss-snapshots</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+        </repository>
     </repositories>
 
     <!-- https://issues.jboss.org/browse/AGPUSH-147 -->
