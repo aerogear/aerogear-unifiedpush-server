@@ -21,7 +21,7 @@ mvn package jboss-as:deploy
 
 #### Login
 
-Temporary there is a "admin:123" user.  On First login,  you will need to change the password.
+Temporarily there is a "admin:123" user.  On First login,  you will need to change the password.
 
 ```
 curl -v -b cookies.txt -c cookies.txt
@@ -30,7 +30,9 @@ curl -v -b cookies.txt -c cookies.txt
   http://localhost:8080/ag-push/rest/auth/login
 ```
 
-wait until this comes back and then
+This will return a status code of 409, then do this:
+
+_note: you will be "logged in", but only have a "user" role which is unable to access any other endpoint_
 
 ```
 curl -v -b cookies.txt -c cookies.txt
@@ -38,6 +40,8 @@ curl -v -b cookies.txt -c cookies.txt
   -X PUT -d '{"loginName": "admin", "password":"SOMENEWPASSWORD"}'
   http://localhost:8080/ag-push/rest/auth/update
 ```
+
+_If the default password of "123" is used, a 409 response code will be returned_
 
 #### Register Push App
 
