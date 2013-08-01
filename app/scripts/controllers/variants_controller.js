@@ -68,75 +68,63 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         //Reset
         model.validationErrors.clear();
 
-        model.validateProperty( "name" );
+        hasErrors = !model.validateProperty( "name" );
 
         //Probably shouldn't do this, this way
-        if( !model.get( "isValid" ) ) {
-            this.send( "error", controller, "A Variant Name is required" );
-        } else {
-            applicationData = {
-                name: controller.get( "name" ),
-                description: controller.get( "description" )
-            };
-
-            if( variantType === "iOS" ) {
-
-                //run validation
-                if( model.validateProperty("passphrase") && model.validateProperty("certificate") )
-                {
-                    ajaxOptions.success = function() {
-                        thee.formReset( that );
-                        that.transitionToRoute( "variants", that.get( "model" ) );
-                    };
-
-                    ajaxOptions.error = function( error ) {
-                        console.log( "error saving", error );
-                        switch( error.status ) {
-                        case 401:
-                            that.transitionToRoute( "login" );
-                            break;
-                        default:
-                            that.send( "error", that, "Error Saving" );
-                            break;
-                        }
-                    };
-
-                    ajaxOptions.beforeSubmit = function( formData ) {
-                        formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-                    };
-
-                    $( "form" ).ajaxSubmit( ajaxOptions );
-                } else {
-                    this.send( "error", controller, "iOS stuff required" );
-                }
+        applicationData = {
+            name: controller.get( "name" ),
+            description: controller.get( "description" )
+        };
+        if( variantType === "iOS" ) {
+            //run validation
+            if( model.validateProperty("passphrase") && model.validateProperty("certificate") )
+            {
+                ajaxOptions.success = function() {
+                    thee.formReset( that );
+                    that.transitionToRoute( "variants", that.get( "model" ) );
+                };
+                ajaxOptions.error = function( error ) {
+                    console.log( "error saving", error );
+                    switch( error.status ) {
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        that.send( "error", that, "Error Saving" );
+                        break;
+                    }
+                };
+                ajaxOptions.beforeSubmit = function( formData ) {
+                    formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
+                };
+                $( "form" ).ajaxSubmit( ajaxOptions );
             } else {
-
-                switch( variantType ) {
-                case "android":
-                    if( model.validateProperty( "googleKey" ) ) {
-                        applicationData.googleKey = controller.get( "googleKey" );
-                    } else {
-                        hasErrors = true;
-                    }
-                    break;
-                case "simplePush":
-                    if( model.validateProperty( "pushNetworkURL" ) ) {
-                        applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-                    } else {
-                        hasErrors = true;
-                    }
-                    break;
-                default:
-                    break;
-                }
-
-                if( !hasErrors ) {
-                    ajaxOptions.data = JSON.stringify( applicationData );
-
-                    this.saveVariants( controller, ajaxOptions );
+                this.send( "error", controller, model.get("validationErrors.allMessages") );
+            }
+        } else {
+            switch( variantType ) {
+            case "android":
+                if( model.validateProperty( "googleKey" ) ) {
+                    applicationData.googleKey = controller.get( "googleKey" );
                 } else {
-                    this.send( "error", controller, "Stuff Required stuff required" );
+                    hasErrors = true;
                 }
+                break;
+            case "simplePush":
+                if( model.validateProperty( "pushNetworkURL" ) ) {
+                    applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+                } else {
+                    hasErrors = true;
+                }
+                break;
+            default:
+                break;
+            }
+            if( !hasErrors ) {
+                ajaxOptions.data = JSON.stringify( applicationData );
+                this.saveVariants( controller, ajaxOptions );
+            } else {
+                this.send( "error", controller, model.get("validationErrors.allMessages") );
             }
         }
     },
@@ -206,7 +194,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
                     $( "form" ).ajaxSubmit( ajaxOptions );
                 } else {
-                    this.send( "error", controller, "Stuff Required stuff required" );
+                    this.send( "error", controller, model.get("validationErrors.allMessages") );
                 }
             }
             break;
@@ -222,7 +210,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
             this.saveVariants( controller, ajaxOptions );
         } else {
-            this.send( "error", controller, "Stuff Required stuff required" );
+            this.send( "error", controller, model.get("validationErrors.allMessages") );
         }
     },
     cancel: function( controller ) {

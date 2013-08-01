@@ -24,7 +24,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
         model.validate();
 
         if( !model.get( "isValid" ) ) {
-            this.send( "error", controller, "An Application Name is required" );
+            this.send( "error", controller, model.get("validationErrors.allMessages") );
         } else {
             applicationData = {
                 name: controller.get( "name" ),

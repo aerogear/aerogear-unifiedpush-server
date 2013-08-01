@@ -59,13 +59,21 @@ App.Route = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
     events: {
         error: function( controller, errormsg ) {
-            var content = controller.get( "content" );
+            console.log( errormsg );
+            var content = controller.get( "content" ),
+                templateTarget;
             if( content ) {
                 controller.set( "content.errors", errormsg );
             } else {
                 controller.set( "content", { "errors": errormsg } );
             }
-            this.render( "error", { into: "application", outlet: "error", controller: controller } );
+
+            if( AeroGear.isArray( errormsg ) ) {
+                templateTarget = "error";
+            } else {
+                templateTarget = "error_string";
+            }
+            this.render( templateTarget, { into: "application", outlet: "error", controller: controller } );
         },
         clearErrors: function(){
             this.render( "nothing", { into: "application", outlet: "error" } );
