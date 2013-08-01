@@ -16,13 +16,10 @@
  */
 package org.jboss.aerogear.connectivity.users;
 
-import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.credential.UsernamePasswordCredentials;
 import org.picketlink.idm.model.Role;
 import org.picketlink.idm.model.SimpleRole;
-import org.picketlink.idm.model.SimpleUser;
 import org.picketlink.idm.model.User;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +28,8 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Logger;
+
+import static org.jboss.aerogear.connectivity.users.UserRoles.*;
 
 @Singleton
 @Startup
@@ -67,7 +65,7 @@ public class PicketLinkDefaultUsers {
              *
              * Once the password is changed,  a role of "developer" will be added.
              */
-            Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
+            Role roleDeveloper = new SimpleRole(USER);
             this.identityManager.add(roleDeveloper);
             identityManager.grantRole(admin, roleDeveloper);
 

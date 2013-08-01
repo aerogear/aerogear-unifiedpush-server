@@ -17,7 +17,7 @@
 package org.jboss.aerogear.connectivity.rest.security;
 
 import org.jboss.aerogear.connectivity.users.Developer;
-import org.jboss.aerogear.connectivity.users.UserRoles;
+import static org.jboss.aerogear.connectivity.users.UserRoles.*;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
@@ -106,12 +106,12 @@ public class AuthenticationEndpoint {
         this.identityManager.updateCredential(user, new Password(developer.getPassword()));
 
         //Update the role so they can access all "developer" endpoints
-        this.configuration.grant(UserRoles.DEVELOPER.getRoleName()).to(user.getLoginName());
+        this.configuration.grant(DEVELOPER).to(user.getLoginName());
 
         // remove the temporary "user" role since they no longer need it
         // This will then make this endpoint unreachable, which is better for security
         // with this temporary fix
-        this.identityManager.revokeRole(user, this.identityManager.getRole(UserRoles.USER.getRoleName()));
+        this.identityManager.revokeRole(user, this.identityManager.getRole(USER));
         return Response.ok().build();
     }
 
