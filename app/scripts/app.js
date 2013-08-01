@@ -16,7 +16,19 @@ window.App = Ember.Application.create({
     LOG_TRANSITIONS: true //remove in production,  for testing and debuging
 });
 
-App.baseURL = window.location.pathname;
+App.baseURL = ( function() {
+    var paths = window.location.pathname.split( "/" ),
+        pathName = "",
+        i = 0;
+
+    for( i; i < paths.length; i++ ) {
+        if( paths[ i ].length && paths[ i ].indexOf( ".html" ) < 1 ) {
+            pathName += "/";
+            pathName += paths[ i ];
+        }
+    }
+    return window.location.protocol + "//" + window.location.host + pathName + "/";
+})();
 
 
 // Serializes a form to a JavaScript Object
