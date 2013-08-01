@@ -28,7 +28,8 @@
       <fieldset>
         <p>
           <label>Password</label>
-          {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input"}}
+          {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input"
+          classNameBindings="validationErrors.password:error"}}
         </p>
         <button class="topcoat-button">Save</button>
       </fieldset>

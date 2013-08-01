@@ -27,17 +27,18 @@ App.LoginController = Ember.ObjectController.extend({
             // Use AeroGear Authenticator to login
             App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
                 contentType: "application/json",
-                success: function( response, statusText, jqXHR ) {
-                    if( jqXHR.status === 403 ) {
+                success: function() {
+                    // Successful Login, now go to /mobileApps
+                    that.transitionToRoute( "mobileApps" );
+                },
+                error: function( response ) {
+                    if( response.status === 403 ) {
                         //change the password
+                        that.set( "password", "" );
                         that.set( "loginIn", false );
                     } else {
-                        // Successful Login, now go to /mobileApps
-                        that.transitionToRoute( "mobileApps" );
+                        that.send( "error", that, "Login Error" );
                     }
-                },
-                error: function() {
-                    that.send( "error", that, "Login Error" );
                 }
             });
         }
@@ -46,24 +47,31 @@ App.LoginController = Ember.ObjectController.extend({
     other: function() {
         //need to send to the update endpoint
         var that = this,
-            password = this.get("password"),
+            password = this.get( "password" ),
             loginName = this.get( "loginName" ),
+            user = this.get( "model" ),
             data;
 
-        data = JSON.stringify( { loginName: loginName, password: password } );
+        user.validate();
 
-        $.ajax({
-            url: App.baseURL + "rest/auth/update",
-            type: "PUT",
-            data: data,
-            contentType: "application/json",
-            success: function() {
-                that.set( "loginIn", true );
-                that.transitionToRoute( "mobileApps" );
-            },
-            error: function() {
-                that.send( "error", that, "Save Error" );
-            }
-        });
+        if( user.get( "isValid" ) ) {
+            data = JSON.stringify( { loginName: loginName, password: password } );
+
+            $.ajax({
+                url: App.baseURL + "rest/auth/update",
+                type: "PUT",
+                data: data,
+                contentType: "application/json",
+                success: function() {
+                    that.set( "loginIn", true );
+                    that.transitionToRoute( "mobileApps" );
+                },
+                error: function() {
+                    that.send( "error", that, "Save Error" );
+                }
+            });
+        } else {
+            this.send( "error", this, user.get("validationErrors.allMessages") );
+        }
     }
 });
