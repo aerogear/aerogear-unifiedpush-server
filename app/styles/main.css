@@ -116,12 +116,12 @@ textarea {
 section {
   font-size: 1.22727272727273em;
   line-height: 24px;
-  padding: 24px 0;
+  padding: 2.5% 0; /* 24px / 960px */
   border-top: 1px solid #e9e8e8;
 }
+
 p {
   font-size: 1.22727272727273em;
-  margin: 12px 0;
   line-height: 24px;
 }
 
@@ -141,7 +141,7 @@ a:hover {
 }
 
 .content {
-  margin: 30px;
+  margin: 3.125%; /* 30px / 960px */
 }
 
 table {
@@ -203,7 +203,7 @@ hlyke table code
 */
 
 table td {
-  padding-right: 24px;
+  padding-right: 2.666666666667%; /* 24px / 900px */
   vertical-align: bottom;
 }
 
@@ -215,21 +215,15 @@ table.rcue-table {
 
 }
 
-table.rcue-table caption {
-  text-align: left;
-  font-weight: bold;
-  padding: 11.5px 2px;
-}
-
 table.rcue-table tbody tr:nth-child(even) {
   background-color: #f6f6f6;
 }
 
 
-table.rcue-table tr td,
+table.rcue-table tbody tr td,
 table.rcue-table thead tr th {
   font-weight: normal;
-  padding: 6px 15px;
+  padding: .666666666667% 1.666666666667%; /* 6px / 900px , 15px / 900px */
   font-size: 0.85185185185185em; /* 11.5px / 13.5px */
   border-top: 1px #ebebeb;
   border-right: 1px #dcdcdc solid;
@@ -261,7 +255,7 @@ table.rcue-table thead tr th:last-child {
 
 table.rcue-table tbody tr:first-child td {
   border-top: 1px solid #f2f2f2;
-  padding-top: 9px;
+  padding-top: 1%; /* 9px / 900px */
 }
 
 
@@ -275,7 +269,7 @@ table.rcue-table tbody tr:hover {
 }
 
 td.action {
-  width: 25px;
+  width: 2.777777777778%; /* 25px / 900px */
 }
 
 td.action a, td a {
@@ -285,7 +279,7 @@ td.action a, td a {
 
 .rcue-table-number {
   text-align: right !important;
-  width: 100px;
+  width: 11.111111111111%; /* 100px / 900px */
 }
 
 .rcue-code {
@@ -301,11 +295,11 @@ td.action a, td a {
 }
 
 td .token {
-  width: 250px;
+  width: 27.777777777778%; /* 250px / 900px */
 }
 
 td.token {
-  width: 300px;
+  width: 33.333333333333%; /* 300px / 900px */
 }
 
 .rcue-dialog {
