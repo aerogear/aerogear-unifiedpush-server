@@ -14,11 +14,11 @@
       <fieldset>
         <p>
           <label>Name</label>
-          {{input type="text" placeholder="e.g. Android Free" valueBinding="name" value=name classNames="topcoat-text-input"}}
+          {{input type="text" placeholder="e.g. Android Free" valueBinding="name" classNames="topcoat-text-input" classNameBindings="validationErrors.name:error"}}
         </p>
         <p>
           <label>Description</label>
-          {{textarea name="description" placeholder="e.g. Free Android App" value=description classNames="topcoat-textarea"}}
+          {{textarea name="description" placeholder="e.g. Free Android App" valueBinding="description" classNames="topcoat-textarea"}}
         </p>
           {{ partial "variants/editVariantsNetwork" }}
         <div class="rcue-dialog-inner-partial">

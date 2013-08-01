@@ -66,7 +66,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             hasErrors = false;
 
         //Reset
-        model.set( "isValid", true );
         model.validationErrors.clear();
 
         model.validateProperty( "name" );
@@ -145,10 +144,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         //Make this and add one
         var that = controller,
             thee = this,
-            applicationData = {
-                name: controller.get( "name" ),
-                description: controller.get( "description" )
-            },
+            applicationData = {},
             variantType =  controller.get("model").get("vType"),
             ajaxOptions = {
                 url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
@@ -156,14 +152,27 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 contentType: "application/json"
             },
             normalAjax = true,
-            file;
+            file,
+            model = controller.get( "model" ),
+            hasErrors = false;
+
+        model.validationErrors.clear();
+        hasErrors = !model.validateProperty( "name" );
 
         switch( variantType ) {
         case "android":
-            applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+            if( model.validateProperty( "googleKey" ) ) {
+                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+            } else {
+                hasErrors = true;
+            }
             break;
         case "simplePush":
-            applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+            if( model.validateProperty( "pushNetworkURL" ) ) {
+                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
+            } else {
+                hasErrors = true;
+            }
             break;
         case "iOS":
             file = $("form").find("input[name='certificate']").val();
@@ -171,39 +180,49 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             if( !file ) {
                 ajaxOptions.type =  "PATCH";
             } else {
-                ajaxOptions.success = function() {
-                    thee.formReset( that );
-                    that.transitionToRoute( "variants", that.get( "model" ) );
-                };
+                if( model.validateProperty("passphrase") && model.validateProperty("certificate") ) {
+                    ajaxOptions.success = function() {
+                        thee.formReset( that );
+                        that.transitionToRoute( "variants", that.get( "model" ) );
+                    };
 
-                ajaxOptions.error = function( error ) {
-                    console.log( "error saving", error );
-                    switch( error.status ) {
-                    case 401:
-                        that.transitionToRoute( "login" );
-                        break;
-                    default:
-                        that.send( "error", that, "Error Saving" );
-                        break;
-                    }
-                };
+                    ajaxOptions.error = function( error ) {
+                        console.log( "error saving", error );
+                        switch( error.status ) {
+                        case 401:
+                            that.transitionToRoute( "login" );
+                            break;
+                        default:
+                            that.send( "error", that, "Error Saving" );
+                            break;
+                        }
+                    };
 
-                ajaxOptions.beforeSubmit = function( formData ) {
-                    formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-                };
+                    ajaxOptions.beforeSubmit = function( formData ) {
+                        formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
+                    };
 
-                normalAjax = false;
+                    normalAjax = false;
 
-                $( "form" ).ajaxSubmit( ajaxOptions );
+                    $( "form" ).ajaxSubmit( ajaxOptions );
+                } else {
+                    this.send( "error", controller, "Stuff Required stuff required" );
+                }
             }
             break;
         default:
             break;
         }
 
-        if( normalAjax ) {
+        if( normalAjax && !hasErrors ) {
+            applicationData.name = controller.get( "name" );
+            applicationData.description = controller.get( "description" );
+
             ajaxOptions.data = JSON.stringify( applicationData );
+
             this.saveVariants( controller, ajaxOptions );
+        } else {
+            this.send( "error", controller, "Stuff Required stuff required" );
         }
     },
     cancel: function( controller ) {

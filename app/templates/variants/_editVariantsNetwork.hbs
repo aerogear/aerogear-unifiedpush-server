@@ -5,7 +5,7 @@
         Google Key
     </label>
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
-    {{input type="text" name="googleKey" value=googleKey classNames="topcoat-text-input"}}
+    {{input type="text" name="googleKey" valueBinding="googleKey" classNames="topcoat-text-input" classNameBindings="validationErrors.googleKey:error"}}
 </section>
 {{/if}}
 {{#if isiOS}}
@@ -14,10 +14,10 @@
         iOS PassPhrase
     </label>
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
-    {{input type="password" name="passphrase" value=passphrase classNames="topcoat-text-input"}}
+    {{input type="password" name="passphrase" valueBinding="passphrase" classNames="topcoat-text-input" classNameBindings="validationErrors.passphrase:error"}}
     <br>
     <label>Certificate</label>
-    {{input type="file" name="certificate" value=certificate}}
+    {{input type="file" name="certificate" valueBinding="certificate"}}
     <br>
     <label>Production</label>
     {{view Ember.Checkbox checkedBinding="production"}}
@@ -29,6 +29,6 @@
         Web
     </label>
     <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
-    {{input type="text" name="pushNetworkURL" value=pushNetworkURL classNames="topcoat-text-input"}}
+    {{input type="text" name="pushNetworkURL" valueBinding="pushNetworkURL" classNames="topcoat-text-input" classNameBindings="validationErrors.pushNetworkURL:error"}}
 </section>
 {{/if}}

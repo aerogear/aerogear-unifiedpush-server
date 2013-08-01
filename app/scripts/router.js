@@ -213,6 +213,9 @@ App.VariantsEditRoute = App.Route.extend({
         return this.modelFor( "variants" );
 
     },
+    setupController: function( controller, model ) {
+        controller.set( "model", model );
+    },
     serialize: function( model ) {
 
         // Make our non uniform id's what ember expects
