@@ -82,6 +82,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // update it:
         return updateInstallation(installationToUpdate);
     }
+
     @Override
     public InstallationImpl findById(String primaryKey) {
         return dao.find(InstallationImpl.class, primaryKey);
@@ -134,7 +135,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
         return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, category, aliases, deviceTypes);
     }
-    
+
     /**
      * For selective send  (SimplePush)
      */

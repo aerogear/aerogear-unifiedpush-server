@@ -55,7 +55,7 @@ public class SenderServiceImpl implements SenderService {
 
     @Inject
     private SimplePushNotificationSender simplePushSender;
-    
+
     @Inject
     private ClientInstallationService clientInstallationService;
 
@@ -86,20 +86,20 @@ public class SenderServiceImpl implements SenderService {
                 Variant variant = genericVariantService.findByVariantID(variantID);
                 // based on type, we store in the matching collection
                 switch (variant.getType()) {
-                        case ANDROID:
-                            androidVariants.add((AndroidVariant) variant);
-                            break;
-                        case IOS:
-                            iOSVariants.add((iOSVariant) variant);
-                            break;
-                        case SIMPLE_PUSH:
-                            simplePushVariants.add((SimplePushVariant) variant);
-                            break;
-                        default:
-                            // nope; should never enter here
-                            break;
-                        }
-                    }
+                case ANDROID:
+                    androidVariants.add((AndroidVariant) variant);
+                    break;
+                case IOS:
+                    iOSVariants.add((iOSVariant) variant);
+                    break;
+                case SIMPLE_PUSH:
+                    simplePushVariants.add((SimplePushVariant) variant);
+                    break;
+                default:
+                    // nope; should never enter here
+                    break;
+                }
+            }
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplication:
@@ -118,13 +118,15 @@ public class SenderServiceImpl implements SenderService {
 
             // TODO: DISPATCH TO A QUEUE .....
             for (iOSVariant iOSVariant : iOSVariants) {
-                final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category , aliases, deviceTypes);
+                final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category,
+                        aliases, deviceTypes);
                 this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
             }
 
             // TODO: DISPATCH TO A QUEUE .....
             for (AndroidVariant androidVariant : androidVariants) {
-                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category , aliases, deviceTypes);
+                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category,
+                        aliases, deviceTypes);
                 this.sendToGCM(androidVariant, androidTokenPerVariant, message);
             }
         }
@@ -133,7 +135,7 @@ public class SenderServiceImpl implements SenderService {
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
         // if no SimplePush object is present: skip it.
         // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
-        if (simplePushCategoriesAndValues == null || (deviceTypes != null && ! deviceTypes.contains("web"))) {
+        if (simplePushCategoriesAndValues == null || (deviceTypes != null && !deviceTypes.contains("web"))) {
             return;
         }
 
@@ -142,7 +144,8 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String simplePushCategory : simplePushCategories) {
-                final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
+                final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(),
+                        simplePushCategory, aliases);
                 this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
             }
         }
@@ -166,7 +169,6 @@ public class SenderServiceImpl implements SenderService {
             final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
             this.sendToGCM(androidVariant, androidTokenPerVariant, payload);
         }
-
 
         // TODO: DISPATCH TO A QUEUE .....
         final String simplePushBroadcastValue = payload.getSimplePush();
