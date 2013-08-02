@@ -34,6 +34,7 @@ public class Developer extends SimpleUser {
     private Long id = null;
 
     private String password;
+    private String newPassword;
 
     public void setId(Long id) {
         this.id = id;
@@ -45,6 +46,14 @@ public class Developer extends SimpleUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     @Override

@@ -24,7 +24,6 @@ import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.picketlink.idm.IdentityManagementException;
 import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.SimpleUser;
 
 import javax.ejb.Stateless;
@@ -96,11 +95,11 @@ public class AuthenticationEndpoint {
 
     @PUT
     @Path("/update")
-    public Response updateUserPasswordAndRole(final Developer developer) {
+    public Response updateUserPasswordAndRole(final Developer developer) throws Exception {
 
         SimpleUser user = (SimpleUser) this.configuration.findByUsername(developer.getLoginName());
 
-        this.identityManager.updateCredential(user, new Password(developer.getPassword()));
+        configuration.reset(developer, developer.getPassword(), developer.getNewPassword());
 
         //Update the role so they can access all "developer" endpoints
         this.configuration.grant(DEVELOPER).to(user.getLoginName());
