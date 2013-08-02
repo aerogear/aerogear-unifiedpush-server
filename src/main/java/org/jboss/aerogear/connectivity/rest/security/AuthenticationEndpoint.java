@@ -94,12 +94,9 @@ public class AuthenticationEndpoint {
         return Response.ok().build();
     }
 
-    // Temporary. see https://issues.jboss.org/browse/AGPUSH-107
     @PUT
     @Path("/update")
     public Response updateUserPasswordAndRole(final Developer developer) {
-
-        //Check to make sure that the user doesn't just re-enter the default password again
 
         SimpleUser user = (SimpleUser) this.configuration.findByUsername(developer.getLoginName());
 
