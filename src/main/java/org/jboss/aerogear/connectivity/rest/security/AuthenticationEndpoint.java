@@ -108,7 +108,8 @@ public class AuthenticationEndpoint {
         // remove the temporary "user" role since they no longer need it
         // This will then make this endpoint unreachable, which is better for security
         // with this temporary fix
-        this.identityManager.revokeRole(user, this.identityManager.getRole(USER));
+
+        this.configuration.revoke(USER).to(user);
         return Response.ok().build();
     }
 
