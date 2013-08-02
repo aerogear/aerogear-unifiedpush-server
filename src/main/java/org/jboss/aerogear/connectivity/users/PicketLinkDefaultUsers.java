@@ -26,6 +26,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.jboss.aerogear.connectivity.users.UserRoles.*;
 
 @Singleton
 @Startup
@@ -44,7 +48,6 @@ public class PicketLinkDefaultUsers {
     @PostConstruct
     public void create() {
 
-        // developers!! developers!! developers!! developers!!
         User adminUser = identityManager.getUser("admin");
 
         // We only create the Admin, if there is none:
@@ -53,12 +56,8 @@ public class PicketLinkDefaultUsers {
             Developer admin = new Developer();
             admin.setLoginName("admin");
 
-            /*
-             * Note: Password will be encoded in SHA-512 with SecureRandom-1024 salt
-             * See http://lists.jboss.org/pipermail/security-dev/2013-January/000650.html for more information
-             */
             this.identityManager.add(admin);
-            this.identityManager.updateCredential(admin, new Password("123"));
+            this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate());
 
             /**
              * Only give them a role of "User" since they will be technically logged in when we ask for a
@@ -66,9 +65,17 @@ public class PicketLinkDefaultUsers {
              *
              * Once the password is changed,  a role of "developer" will be added.
              */
-            Role roleDeveloper = new SimpleRole(UserRoles.USER.getRoleName());
+            Role roleDeveloper = new SimpleRole(USER);
             this.identityManager.add(roleDeveloper);
             identityManager.grantRole(admin, roleDeveloper);
+
         }
+    }
+
+    //Expiration date of the password
+    private Date expirationDate() {
+        Calendar expirationDate = Calendar.getInstance();
+        expirationDate.add(Calendar.HOUR, -1);
+        return expirationDate.getTime();
     }
 }

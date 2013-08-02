@@ -110,5 +110,4 @@ public interface Installation {
 
     String getPlatform();
 
-
 }

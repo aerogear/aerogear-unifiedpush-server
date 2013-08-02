@@ -53,7 +53,7 @@ public class SimplePushNotificationSender implements Serializable {
 
             HttpURLConnection conn = null;
             try {
-                final String clientURL = endpointBaseURL+channelID;
+                final String clientURL = endpointBaseURL + channelID;
                 // PUT the version payload to the SimplePushServer 
                 logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
                 conn = put(clientURL, payload);
@@ -67,7 +67,7 @@ public class SimplePushNotificationSender implements Serializable {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
             } finally {
                 // tear down
-                if (conn != null ) {
+                if (conn != null) {
                     conn.disconnect();
                 }
             }
