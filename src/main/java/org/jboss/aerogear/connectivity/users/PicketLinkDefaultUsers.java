@@ -65,7 +65,7 @@ public class PicketLinkDefaultUsers {
              *
              * Once the password is changed,  a role of "developer" will be added.
              */
-            Role roleDeveloper = new SimpleRole(USER);
+            Role roleDeveloper = new SimpleRole(DEVELOPER);
             this.identityManager.add(roleDeveloper);
             identityManager.grantRole(admin, roleDeveloper);
 

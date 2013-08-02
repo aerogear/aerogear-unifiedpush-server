@@ -95,20 +95,11 @@ public class AuthenticationEndpoint {
 
     @PUT
     @Path("/update")
+    @Secure("developer")
     public Response updateUserPasswordAndRole(final Developer developer) throws Exception {
-
-        SimpleUser user = (SimpleUser) this.configuration.findByUsername(developer.getLoginName());
 
         configuration.reset(developer, developer.getPassword(), developer.getNewPassword());
 
-        //Update the role so they can access all "developer" endpoints
-        this.configuration.grant(DEVELOPER).to(user.getLoginName());
-
-        // remove the temporary "user" role since they no longer need it
-        // This will then make this endpoint unreachable, which is better for security
-        // with this temporary fix
-
-        this.configuration.revoke(USER).to(user);
         return Response.ok().build();
     }
 
