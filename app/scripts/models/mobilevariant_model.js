@@ -34,6 +34,15 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         },
         certificate: {
             presence: true
+        },
+        clientId: {
+            presence: true
+        },
+        clientSecret: {
+            presence: true
+        },
+        refreshToken: {
+            presence: true
         }
     },
     totalInstances: function() {
@@ -44,6 +53,8 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
             return "android";
         } else if( this.get( "type" ) === "SIMPLE_PUSH" ) {
             return "simplePush";
+        } else if( this.get( "type" ) === "CHROME_PACKAGED_APP" ) {
+            return "chrome";
         } else {
             return "iOS";
         }
@@ -56,6 +67,9 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
     }.property( "vType" ),
     isSimplePush: function() {
         return this.get( "vType" ) === "simplePush";
+    }.property( "vType" ),
+    isChromePackagedApp: function() {
+        return this.get( "vType" ) === "chrome";
     }.property( "vType" ),
     typeFormatted: function() {
         return this.get( "vType" ); //get rid of this method?

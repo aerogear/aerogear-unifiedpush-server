@@ -125,6 +125,15 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 //         hasErrors = true;
                 //     }
                 //     break;
+            case "chrome":
+                if( model.validateProperty( "clientId" ) && model.validateProperty( "clientSecret" ) && model.validateProperty( "refreshToken" ) ) {
+                    applicationData.clientId = controller.get( "clientId" );
+                    applicationData.clientSecret = controller.get( "clientSecret" );
+                    applicationData.refreshToken = controller.get( "refreshToken" );
+                } else {
+                    hasErrors = true;
+                }
+                break;
             default:
                 break;
             }
@@ -171,6 +180,15 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             //         hasErrors = true;
             //     }
             //     break;
+        case "chrome":
+            if( model.validateProperty( "clientId" ) && model.validateProperty( "clientSecret" ) && model.validateProperty( "refreshToken" ) ) {
+                applicationData.clientId = controller.get( "clientId" );
+                applicationData.clientSecret = controller.get( "clientSecret" );
+                applicationData.refreshToken = controller.get( "refreshToken" );
+            } else {
+                hasErrors = true;
+            }
+            break;
         case "iOS":
             file = $( "form" ).find( "input[name='certificate']" ).val();
             //Better validation
