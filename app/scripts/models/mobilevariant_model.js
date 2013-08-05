@@ -35,7 +35,7 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         }
     },
     totalInstances: function() {
-        return this.get("installations").length;
+        return this.get( "installations" ).length;
     }.property(),
     vType: function() {
         if( this.get( "googleKey" ) ) {
@@ -85,7 +85,7 @@ App.MobileVariant.reopenClass({
             mobileVariant = App.MobileVariant.create();
         } else {
             //Looking for all
-            mobileVariant = Ember.ArrayProxy.create({ content: [] });
+            mobileVariant = Ember.ArrayProxy.create( { content: [] } );
         }
 
         mobileVariantPipe.read({
@@ -115,7 +115,7 @@ App.MobileVariant.reopenClass({
         .then( null, function( error ) {
             switch( error.status ) {
             case 401:
-                App.Router.router.transitionTo("login");
+                App.Router.router.transitionTo( "login" );
                 break;
             default:
                 //result.setProperties( { isLoaded: true, error: error } );
@@ -127,7 +127,7 @@ App.MobileVariant.reopenClass({
     },
     _createVariantInstanceObject: function( response ) {
 
-        var variantInstance = Ember.ArrayProxy.create({ content: [] });
+        var variantInstance = Ember.ArrayProxy.create( { content: [] } );
 
         response.installations.forEach( function( value ) {
             value.pushApplicationID = response.pushApplicationID;

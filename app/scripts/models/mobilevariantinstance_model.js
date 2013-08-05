@@ -59,7 +59,7 @@ App.MobileVariantInstance.reopenClass({
             mobileVariantInstance = App.MobileVariantInstance.create();
         } else {
             //Looking for all
-            mobileVariantInstance = Ember.ArrayProxy.create({ content: [] });
+            mobileVariantInstance = Ember.ArrayProxy.create( { content: [] } );
         }
 
         mobileVariantInstancePipe.read({
@@ -89,7 +89,7 @@ App.MobileVariantInstance.reopenClass({
         .then( null, function( error ) {
             switch( error.status ) {
             case 401:
-                App.Router.router.transitionTo("login");
+                App.Router.router.transitionTo( "login" );
                 break;
             default:
                 break;

@@ -29,4 +29,3 @@ App.baseURL = ( function() {
     }
     return window.location.protocol + "//" + window.location.host + pathName + "/";
 })();
-

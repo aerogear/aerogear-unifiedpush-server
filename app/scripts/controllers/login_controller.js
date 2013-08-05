@@ -22,7 +22,7 @@ App.LoginController = Ember.ObjectController.extend({
         user.validate();
 
         if( !user.get( "isValid" ) ) {
-            this.send( "error", this, user.get("validationErrors.allMessages") );
+            this.send( "error", this, user.get( "validationErrors.allMessages" ) );
         } else {
             // Use AeroGear Authenticator to login
             App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
@@ -71,7 +71,7 @@ App.LoginController = Ember.ObjectController.extend({
                 }
             });
         } else {
-            this.send( "error", this, user.get("validationErrors.allMessages") );
+            this.send( "error", this, user.get( "validationErrors.allMessages" ) );
         }
     }
 });

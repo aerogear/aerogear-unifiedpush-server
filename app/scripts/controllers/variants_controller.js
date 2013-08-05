@@ -29,7 +29,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
             mobileVariantPipe.remove( variant.variantID, {
                 success: function() {
-                    var content = that.get("variantList"),
+                    var content = that.get( "variantList" ),
                         find;
 
                     find = content.find( function( value ) {
@@ -41,7 +41,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 error: function( error ) { // TODO: Maybe Make this a class method?
                     switch( error.status ) {
                     case 401:
-                        App.Router.router.transitionToRoute("login");
+                        App.Router.router.transitionToRoute( "login" );
                         break;
                     default:
                         that.send( "error", that, "Error Removing" );
@@ -69,14 +69,14 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
         hasErrors = !model.validateProperty( "name" );
 
-        //Probably shouldn't do this, this way
         applicationData = {
             name: controller.get( "name" ),
             description: controller.get( "description" )
         };
+
         if( variantType === "iOS" ) {
             //run validation
-            if( model.validateProperty("passphrase") && model.validateProperty("certificate") )
+            if( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) )
             {
                 ajaxOptions.success = function() {
                     thee.formReset( that );
@@ -122,7 +122,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 ajaxOptions.data = JSON.stringify( applicationData );
                 this.saveVariants( controller, ajaxOptions );
             } else {
-                this.send( "error", controller, model.get("validationErrors.allMessages") );
+                this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
             }
         }
     },
@@ -133,7 +133,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             applicationData = {},
             variantType =  controller.get("model").get("vType"),
             ajaxOptions = {
-                url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get("variantID"),
+                url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType + "/" + controller.get( "variantID" ),
                 type: "PUT",
                 contentType: "application/json"
             },
@@ -161,12 +161,12 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             }
             break;
         case "iOS":
-            file = $("form").find("input[name='certificate']").val();
+            file = $( "form" ).find( "input[name='certificate']" ).val();
             //Better validation
             if( !file ) {
                 ajaxOptions.type =  "PATCH";
             } else {
-                if( model.validateProperty("passphrase") && model.validateProperty("certificate") ) {
+                if( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) ) {
                     ajaxOptions.success = function() {
                         thee.formReset( that );
                         that.transitionToRoute( "variants", that.get( "model" ) );
@@ -191,7 +191,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
                     $( "form" ).ajaxSubmit( ajaxOptions );
                 } else {
-                    this.send( "error", controller, model.get("validationErrors.allMessages") );
+                    this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
                 }
             }
             break;
@@ -207,7 +207,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
             this.saveVariants( controller, ajaxOptions );
         } else {
-            this.send( "error", controller, model.get("validationErrors.allMessages") );
+            this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
         }
     },
     cancel: function( controller ) {

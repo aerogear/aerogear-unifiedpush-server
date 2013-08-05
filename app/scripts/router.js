@@ -324,4 +324,3 @@ App.InstanceIndexRoute = App.Route.extend({
 
     }
 });
-

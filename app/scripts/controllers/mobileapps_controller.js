@@ -19,12 +19,12 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     edit: function( controller ) {
         var that = controller,
             applicationData,
-            model = controller.get("model");
+            model = controller.get( "model" );
 
         model.validate();
 
         if( !model.get( "isValid" ) ) {
-            this.send( "error", controller, model.get("validationErrors.allMessages") );
+            this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
         } else {
             applicationData = {
                 name: controller.get( "name" ),
@@ -34,7 +34,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
             this.applicationPipe.save( applicationData, {
                 success: function() {
-                    $("form")[0].reset();
+                    $( "form" )[0].reset();
                     that.transitionToRoute( "mobileApps" );
                 },
                 error: function( error ) {
@@ -53,7 +53,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     },
     cancel: function() {
         //Probably a better way
-        $("form")[0].reset();
+        $( "form" )[0].reset();
 
         this.transitionToRoute( "mobileApps" );
     },
@@ -64,7 +64,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
         if( window.confirm( "Really Delete " + app.name + " ?" ) ) {
             this.applicationPipe.remove( app.pushApplicationID, {
                 success: function() {
-                    var content = that.get("model").get("content"),
+                    var content = that.get( "model" ).get( "content" ),
                         find;
 
                     find = content.find( function( value ) {
@@ -76,7 +76,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                 error: function( error ) { // TODO: Maybe Make this a class method?
                     switch( error.status ) {
                     case 401:
-                        App.Router.router.transitionToRoute("login");
+                        App.Router.router.transitionToRoute( "login" );
                         break;
                     default:
                         that.send( "error", that, "Error Saving" );
@@ -89,7 +89,7 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     totalApps: function() {
 
         // Compute the total apps for this controller
-        return this.get("model").get("content").length;
+        return this.get( "model" ).get( "content" ).length;
 
     }.property( "@each" )
 });

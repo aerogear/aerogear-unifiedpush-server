@@ -23,19 +23,19 @@ App.MobileApplication = Ember.Object.extend( Ember.Validations, {
         }
     },
     totalAndroidVariants: function() {
-        return this.androidVariants.get("content").length;
+        return this.androidVariants.get( "content" ).length;
     }.property(),
     totaliOSVariants: function() {
-        return this.iosvariants.get("content").length;
+        return this.iosvariants.get( "content" ).length;
     }.property(),
     totalSimplePushVariants: function() {
-        return this.simplePushVariants.get("content").length;
+        return this.simplePushVariants.get( "content" ).length;
     }.property(),
     totalVariants: function() {
         return this.get( "totalAndroidVariants" ) + this.get( "totaliOSVariants" ) + this.get( "totalSimplePushVariants" );
     }.property(),
     variantList: function() {
-        return this.androidVariants.get("content").concat( this.iosvariants.get("content") ).concat( this.simplePushVariants.get("content") );
+        return this.androidVariants.get( "content" ).concat( this.iosvariants.get( "content" ) ).concat( this.simplePushVariants.get( "content" ) );
     }.property(),
     status: function() {
         return ( this.get( "totalVariants" ) ) ? "Active" : "Inactive";
@@ -57,7 +57,7 @@ App.MobileApplication.reopenClass({
             mobileApplication = App.MobileApplication.create();
         } else {
             //Looking for all
-            mobileApplication = Ember.ArrayProxy.create({ content: [] });
+            mobileApplication = Ember.ArrayProxy.create( { content: [] } );
         }
 
         // Need to return a promise for "modelFor" to work.
@@ -82,7 +82,7 @@ App.MobileApplication.reopenClass({
             switch( error.status ) {
             case 401:
                 //Possibly should be done somewhere else?
-                App.Router.router.transitionTo("login");
+                App.Router.router.transitionTo( "login" );
                 break;
             default:
                 //console.log( "need to do something here" );
@@ -96,7 +96,7 @@ App.MobileApplication.reopenClass({
 
         Object.keys( response ).forEach( function( data ) {
             if( AeroGear.isArray( response[ data ] ) ) {
-                var proxy = Ember.ArrayProxy.create({ content: [] });
+                var proxy = Ember.ArrayProxy.create( { content: [] } );
 
                 response[ data ].forEach( function( value ) {
                     value.pushApplicationID = response.pushApplicationID;

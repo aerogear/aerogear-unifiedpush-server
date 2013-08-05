@@ -26,7 +26,7 @@ App.InstanceIndexController = Ember.ObjectController.extend({
                 deviceType: model.get( "deviceType" ),
                 operatingSystem: model.get( "operatingSystem" ),
                 osVersion: model.get( "osVersion" ),
-                platform: model.get("platform")
+                platform: model.get( "platform" )
             },
             currentStatus = model.get( "enabled" );
 
