@@ -39,7 +39,7 @@ public class AdminEndpoint {
             configuration.grant(developer.getRole()).to(developer.getLoginName());
 
         } catch (IdentityManagementException ime) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("username not available").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Credential not available").build();
         }
 
         return Response.ok(developer).build();
