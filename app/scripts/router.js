@@ -35,6 +35,7 @@ App.Router.map( function() {
             // The Route for creating a new Mobile Application Variant
             this.route( "add", { path: "add/:mobileApplication_id"} ); //Not really thrilled by this
 
+            // The Route for editing a new Mobile Application Variant
             this.route( "edit", { path: "edit/:mobileApplication_id/:type/:mobileVariant_id" } ); //Not really thrilled by this either
         });
 
@@ -47,6 +48,9 @@ App.Router.map( function() {
     });
 });
 
+/*
+    Extend the Ember.Route Method
+*/
 App.Route = Ember.Route.extend({
     activate: function(){
         this.send( "clearErrors" );
@@ -59,7 +63,6 @@ App.Route = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
     events: {
         error: function( controller, errormsg ) {
-            console.log( errormsg );
             var content = controller.get( "content" ),
                 templateTarget;
             if( content ) {
@@ -85,8 +88,7 @@ App.ApplicationRoute = Ember.Route.extend({
                 success: function() {
                     that.transitionTo( "login" );
                 },
-                error: function( error ) {
-                    console.log( "Error Logging Out", error );
+                error: function() {
                     that.transitionTo( "login" );
                 }
             });
@@ -99,6 +101,7 @@ App.ApplicationRoute = Ember.Route.extend({
 */
 App.LoginRoute = App.Route.extend({
     model: function() {
+
         return App.User.create();
     }
 });
@@ -136,6 +139,7 @@ App.MobileAppsIndexRoute = App.Route.extend({
 */
 App.MobileAppsEditRoute = App.Route.extend({
     model: function( param ) {
+
         //don't like the formatting here
         return ( param.mobileApplication_id === "undefined" || param.mobileApplication_id === undefined ) ? App.MobileApplication.create() : App.MobileApplication.find( param.mobileApplication_id );
     },
@@ -190,7 +194,6 @@ App.VariantsIndexRoute = App.Route.extend({
 App.VariantsAddRoute = App.Route.extend({
     model: function( params ) {
 
-        // TODO: figure out how to get the pushApplicationID on refresh
         // Return the "Variants" Route Model since that is where all the "dynamic segments" are
         return App.MobileVariant.create({
             pushApplicationID: params.mobileApplication_id

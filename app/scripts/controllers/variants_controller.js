@@ -39,7 +39,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     content.removeObject( find );
                 },
                 error: function( error ) { // TODO: Maybe Make this a class method?
-                    console.log( "error with application endpoint", error );
                     switch( error.status ) {
                     case 401:
                         App.Router.router.transitionToRoute("login");
@@ -84,7 +83,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 };
                 ajaxOptions.error = function( error ) {
-                    console.log( "error saving", error );
                     switch( error.status ) {
                     case 401:
                         that.transitionToRoute( "login" );
@@ -175,7 +173,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     };
 
                     ajaxOptions.error = function( error ) {
-                        console.log( "error saving", error );
                         switch( error.status ) {
                         case 401:
                             that.transitionToRoute( "login" );
@@ -227,7 +224,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         };
 
         ajaxOptions.error = function( error ) {
-            console.log( "error saving", error );
             switch( error.status ) {
             case 401:
                 that.transitionToRoute( "login" );

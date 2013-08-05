@@ -76,19 +76,16 @@ App.MobileApplication.reopenClass({
                 response.isLoaded = true;
                 // Loop Through the different Variants to create objects
                 mobileApplication.setProperties( model._createVariantObject( response ) );
-                console.log( mobileApplication );
             }
         })
         .then( null, function( error ) {
-            console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:
                 //Possibly should be done somewhere else?
                 App.Router.router.transitionTo("login");
                 break;
             default:
-                console.log( "need to do something here" );
-            //result.setProperties( { isLoaded: true, error: error } );
+                //console.log( "need to do something here" );
                 break;
             }
         });

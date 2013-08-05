@@ -113,13 +113,11 @@ App.MobileVariant.reopenClass({
             }
         })
         .then( null, function( error ) {
-            console.log( "error with application endpoint", error );
             switch( error.status ) {
             case 401:
                 App.Router.router.transitionTo("login");
                 break;
             default:
-                //that.transitionToRoute( "login" );
                 //result.setProperties( { isLoaded: true, error: error } );
                 break;
             }
