@@ -2,16 +2,19 @@
 
 ## AeroGear Unified Push Server Admin UI
 
-A WIP for the AeroGear Unified Push Server Admin UI
+### Setting Up The Development Environment
 
-_Bower needs a version of 0.9.1 or Greater_
+Pre-reqs:
 
-To install:
+* Node.js - [Download Here](http://nodejs.org/)
+* Bower( version of 0.9.1 or Greater ) - [Download Here](http://bower.io/)
+* Knowledge of Ember.js
+
+Once the pre-reqs have been taken care of, run:
 
     npm install
 
     bower install
-
 
 To run:
 
@@ -36,6 +39,8 @@ Then run
 
 ### Using With JBoss EAP/Wildfly
 
+_note:  The current version of the Unified Push Server now has the the Admin UI distribution "installed",  for development, the instructions below still apply_
+
 Clone and run [https://github.com/aerogear/aerogear-unified-push-server](unified push server) as an exploded war.
 
 Then in "Gruntfile.js" edit the "webapp" and "jbossweb" config params:
@@ -55,7 +60,6 @@ This will copy the contents to the "root" folder of both the cloned repo and the
 "jbossweb" is the path of you exploded war running on an app server
 
 _Eventually, this should just be the contents of the dist folder,   but for testing, well, you know_
-
 
 _Make sure to rerun "grunt server" once you change these parameters_
 
