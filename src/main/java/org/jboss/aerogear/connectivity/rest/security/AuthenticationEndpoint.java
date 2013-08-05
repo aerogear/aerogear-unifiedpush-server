@@ -17,15 +17,10 @@
 package org.jboss.aerogear.connectivity.rest.security;
 
 import org.jboss.aerogear.connectivity.users.Developer;
-import org.jboss.aerogear.connectivity.users.UserRoles;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
-import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
-import org.picketlink.idm.IdentityManagementException;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.SimpleUser;
+import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,30 +40,9 @@ public class AuthenticationEndpoint {
     @Inject
     private AuthenticationManager authenticationManager;
     @Inject
-    private IdentityManagement configuration;
+    private CredentialMatcher credential;
     @Inject
-    private IdentityManager identityManager;
-
-    private static final String DEFAULT_PASSWORD = "123";
-
-    @POST
-    @Path("/enroll")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secure("admin")
-    public Response enroll(final Developer developer) {
-        // creating a user and granting rights:
-        try {
-            configuration.create(developer, developer.getPassword());
-            configuration.grant(developer.getRole()).to(developer.getLoginName());
-
-        } catch (IdentityManagementException ime) {
-            return Response.status(Status.BAD_REQUEST).entity("username not available").build();
-        }
-
-        return Response.ok(developer).build();
-
-    }
+    private IdentityManagement configuration;
 
     @POST
     @Path("/login")
