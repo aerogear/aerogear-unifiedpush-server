@@ -60,7 +60,7 @@ public class AuthenticationEndpoint {
         // creating a user and granting rights:
         try {
             configuration.create(developer, developer.getPassword());
-            configuration.grant("developer").to(developer.getLoginName());
+            configuration.grant(developer.getRole()).to(developer.getLoginName());
 
         } catch (IdentityManagementException ime) {
             return Response.status(Status.BAD_REQUEST).entity("username not available").build();
