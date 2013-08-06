@@ -21,7 +21,11 @@
          {{textarea placeholder="e.g. My new application." valueBinding="description" classNames="topcoat-textarea"}}
        </p>
        <input type="reset" class="topcoat-button" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
-       <input type="submit" class="topcoat-button" value="Create">
+        {{#if pushApplicationID}}
+          <input type="submit" class="topcoat-button" value="Edit">
+        {{else}}
+          <input type="submit" class="topcoat-button" value="Create">
+        {{/if}}
      </fieldset>
      </form>
   </div>
