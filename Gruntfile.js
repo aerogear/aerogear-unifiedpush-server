@@ -220,7 +220,7 @@ module.exports = function (grunt) {
                         '*.{ico,txt}',
                         '.htaccess',
                         'img/{,*/}*.{webp,gif,png,svg}',
-                        'fonts/*'
+                        'font/*'
                     ]
                 }, {
                     expand: true,
