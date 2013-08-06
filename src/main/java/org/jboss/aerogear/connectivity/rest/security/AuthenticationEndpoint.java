@@ -17,14 +17,10 @@
 package org.jboss.aerogear.connectivity.rest.security;
 
 import org.jboss.aerogear.connectivity.users.Developer;
-import org.jboss.aerogear.connectivity.users.UserRoles;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
-import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
-import org.picketlink.idm.IdentityManagementException;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.credential.Password;
+import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
 import org.picketlink.idm.model.SimpleUser;
 
 import javax.ejb.Stateless;
@@ -45,30 +41,9 @@ public class AuthenticationEndpoint {
     @Inject
     private AuthenticationManager authenticationManager;
     @Inject
-    private IdentityManagement configuration;
+    private CredentialMatcher credential;
     @Inject
-    private IdentityManager identityManager;
-
-    private static final String DEFAULT_PASSWORD = "123";
-
-    @POST
-    @Path("/enroll")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secure("admin")
-    public Response enroll(final Developer developer) {
-        // creating a user and granting rights:
-        try {
-            configuration.create(developer, developer.getPassword());
-            configuration.grant("developer").to(developer.getLoginName());
-
-        } catch (IdentityManagementException ime) {
-            return Response.status(Status.BAD_REQUEST).entity("username not available").build();
-        }
-
-        return Response.ok(developer).build();
-
-    }
+    private IdentityManagement configuration;
 
     @POST
     @Path("/login")
@@ -76,17 +51,7 @@ public class AuthenticationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(final Developer developer) {
 
-        try {
-            authenticationManager.login(developer, developer.getPassword());
-        } catch (AeroGearSecurityException agse) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-
-        // See if the password is still the default. If it is we need them to change it
-        // Only Temporary until we get scripts in. see https://issues.jboss.org/browse/AGPUSH-107
-        if(developer.getPassword().equals(DEFAULT_PASSWORD)) {
-            return Response.status(Status.FORBIDDEN).build();
-        }
+        authenticationManager.login(developer, developer.getPassword());
 
         return Response.ok().build();
     }
@@ -102,28 +67,13 @@ public class AuthenticationEndpoint {
         return Response.ok().build();
     }
 
-    // Temporary. see https://issues.jboss.org/browse/AGPUSH-107
     @PUT
     @Path("/update")
-    @Secure("user")
-    public Response updateUserPasswordAndRole(final Developer developer){
+    public Response updateUserPasswordAndRole(final Developer developer) {
 
-        //Check to make sure that the user doesn't just re-enter the default password again
-        if( developer.getPassword().equals(DEFAULT_PASSWORD) ) {
-            return Response.status(Status.FORBIDDEN).build();
-        }
+        SimpleUser simpleUser = (SimpleUser) configuration.findByUsername(developer.getLoginName());
+        configuration.reset(simpleUser, developer.getPassword(), developer.getNewPassword());
 
-        SimpleUser user = (SimpleUser)this.configuration.findByUsername(developer.getLoginName());
-        this.identityManager.updateCredential(user, new Password(developer.getPassword()));
-
-        //Update the role so they can access all "developer" endpoints
-        this.configuration.grant(UserRoles.DEVELOPER.getRoleName()).to(user.getLoginName());
-
-        // remove the temporary "user" role since they no longer need it
-        // This will then make this endpoint unreachable, which is better for security
-        // with this temporary fix
-        this.identityManager.revokeRole(user, this.identityManager.getRole(UserRoles.USER.getRoleName()));
         return Response.ok().build();
     }
-
 }
