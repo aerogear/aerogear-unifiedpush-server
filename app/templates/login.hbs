@@ -7,6 +7,9 @@
   </header>
 {{#if loginIn}}
   <div class="rcue-dialog-inner">
+    {{#if relog}}
+      <h3>Please Re-Login</h3>
+    {{/if}}
       <form id="login" {{action login on="submit"}}>
         <fieldset>
           <p>

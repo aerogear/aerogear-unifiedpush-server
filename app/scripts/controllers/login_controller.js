@@ -14,6 +14,7 @@
 
 App.LoginController = Ember.ObjectController.extend({
     loginIn: true,
+    relog: false,
     login: function() {
         var that = this,
             user = this.get( "model" );
@@ -29,11 +30,13 @@ App.LoginController = Ember.ObjectController.extend({
                 contentType: "application/json",
                 success: function() {
                     // Successful Login, now go to /mobileApps
+                    that.set( "relog", true );
                     that.transitionToRoute( "mobileApps" );
                 },
                 error: function( response ) {
                     if( response.status === 403 ) {
                         //change the password
+                        that.set( "oldPassword", that.get( "password" ) );
                         that.set( "password", "" );
                         that.set( "loginIn", false );
                     } else {
@@ -55,7 +58,7 @@ App.LoginController = Ember.ObjectController.extend({
         user.validate();
 
         if( user.get( "isValid" ) ) {
-            data = JSON.stringify( { loginName: loginName, password: password } );
+            data = JSON.stringify( { loginName: loginName, password: this.get( "oldPassword" ), newPassword: password } );
 
             $.ajax({
                 url: App.baseURL + "rest/auth/update",
@@ -63,8 +66,11 @@ App.LoginController = Ember.ObjectController.extend({
                 data: data,
                 contentType: "application/json",
                 success: function() {
+                    // User Must login Again
+                    that.set( "password", "" );
+                    that.set( "oldPassord", "" );
                     that.set( "loginIn", true );
-                    that.transitionToRoute( "mobileApps" );
+                    that.set( "relog", true );
                 },
                 error: function() {
                     that.send( "error", that, "Save Error" );
