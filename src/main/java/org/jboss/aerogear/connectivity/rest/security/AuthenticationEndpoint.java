@@ -51,11 +51,7 @@ public class AuthenticationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(final Developer developer) {
 
-        try {
-            authenticationManager.login(developer, developer.getPassword());
-        } catch (AeroGearSecurityException agse) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
+        authenticationManager.login(developer, developer.getPassword());
 
         return Response.ok().build();
     }
