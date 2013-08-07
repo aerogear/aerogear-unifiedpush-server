@@ -34,6 +34,11 @@
           {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input"
           classNameBindings="validationErrors.password:error"}}
         </p>
+        <p>
+          <label>Confirm Password</label>
+          {{ input type="password" valueBinding="confirmPassword" placeholder="Confirm Password" classNames="topcoat-text-input"
+          classNameBindings="validationErrors.confirmPassword:error"}}
+        </p>
         <button class="topcoat-button">Save</button>
       </fieldset>
     </form>

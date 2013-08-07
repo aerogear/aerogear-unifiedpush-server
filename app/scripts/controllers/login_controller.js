@@ -20,7 +20,8 @@ App.LoginController = Ember.ObjectController.extend({
             user = this.get( "model" );
 
         //Validate the form fields with Ember Validations
-        user.validate();
+        user.validateProperty( "loginName" );
+        user.validateProperty( "password" );
 
         if( !user.get( "isValid" ) ) {
             this.send( "error", this, user.get( "validationErrors.allMessages" ) );
@@ -55,7 +56,8 @@ App.LoginController = Ember.ObjectController.extend({
             user = this.get( "model" ),
             data;
 
-        user.validate();
+        user.validateProperty( "password" );
+        user.validateProperty( "confirmPassword" );
 
         if( user.get( "isValid" ) ) {
             data = JSON.stringify( { loginName: loginName, password: this.get( "oldPassword" ), newPassword: password } );

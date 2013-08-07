@@ -23,6 +23,12 @@ App.User = Ember.Object.extend( Ember.Validations, {
         },
         password: {
             presence: true
+        },
+        confirmPassword: {
+            presence: true,
+            match: function( object, attribute, value ) {
+                console.log( object, attribute, value );
+            }
         }
     }
 });
