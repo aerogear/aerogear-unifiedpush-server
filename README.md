@@ -1,8 +1,26 @@
-# AeroGear PushEE [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
+# AeroGear UnifiedPush Server [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
 
-AeroGear's Connectivity Server (Java EE poc)
+The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms. The initial version of the server supports [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9), [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html) and [Mozilla’s Simple Push](https://wiki.mozilla.org/WebAPI/SimplePush).
 
-### Some guidance
+<img src="http://people.apache.org/~matzew/AdminUI.png" height="303px" width="510px" />
+
+### Client library support
+
+Besides the server-side offerings the AeroGear project supports a few platforms regarding push.
+
+#### Android
+
+The [AeroGear Android](https://github.com/aerogear/aerogear-android) library has support for device registration with the UnifiedPush Server. In addition it also comes with a handy message listener interface to ease the work of receiving notifications within an Android app.
+
+#### iOS
+
+For iOS there is a little [helper library](https://github.com/aerogear/aerogear-push-ios-registration) that performs registration of the device against the UnifiedPush Server. 
+
+#### JavaScript
+
+The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications as well. Besides that AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
+
+### Getting started with the server
 
 Starting the JBoss Application Server:
 
@@ -18,6 +36,12 @@ mvn package jboss-as:deploy
 
 ***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
 
+
+#### Admin UI
+
+Once the server is running access it via ```http://SERVER:PORT/ag-push``` from there you can use the Admin UI. 
+
+Besides the _AdminUI_ the server can be accessed over RESTful APIs, as explained below.
 
 #### Login
 
