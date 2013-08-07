@@ -1,12 +1,12 @@
 # AeroGear UnifiedPush Server [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
 
-The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms. The initial version of the server supports [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9), [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html) and [Mozilla’s Simple Push](https://wiki.mozilla.org/WebAPI/SimplePush).
+The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms. The initial version of the server supports [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9), [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html) and [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
 <img src="http://people.apache.org/~matzew/AdminUI.png" height="303px" width="510px" />
 
 ### Client library support
 
-Besides the server-side offerings the AeroGear project supports a few platforms regarding push.
+Besides the server-side offerings, the AeroGear project supports a few platforms regarding push.
 
 #### Android
 
@@ -18,7 +18,7 @@ For iOS there is a little [helper library](https://github.com/aerogear/aerogear-
 
 #### JavaScript
 
-The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications as well. Besides that AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
+The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications as well. Besides that, AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
 
 ### Getting started with the server
 
@@ -41,7 +41,7 @@ mvn package jboss-as:deploy
 
 Once the server is running access it via ```http://SERVER:PORT/ag-push``` from there you can use the Admin UI. 
 
-Besides the _AdminUI_ the server can be accessed over RESTful APIs, as explained below.
+Besides the _Admin UI_ the server can be accessed over RESTful APIs, as explained below.
 
 #### Login
 
