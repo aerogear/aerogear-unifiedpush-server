@@ -20,18 +20,19 @@ package org.jboss.aerogear.unifiedpush.rest.user;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.model.SimpleUser;
+import org.picketlink.idm.model.sample.User;
 import org.picketlink.idm.query.IdentityQuery;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
@@ -51,7 +52,7 @@ public class UserEndpoint {
     @Path("/{id}")
     @Produces("application/json")
     public Response findById(@PathParam("id") String id) {
-        SimpleUser developer = identityManager.lookupIdentityById(SimpleUser.class, id);
+        User developer = identityManager.lookupIdentityById(User.class, id);
         if (developer == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -60,14 +61,14 @@ public class UserEndpoint {
 
     @GET
     @Produces("application/json")
-    public List<SimpleUser> listAll() {
-        IdentityQuery<SimpleUser> identityQuery = identityManager.createIdentityQuery(SimpleUser.class);
+    public List<User> listAll() {
+        IdentityQuery<User> identityQuery = identityManager.createIdentityQuery(User.class);
         return identityQuery.getResultList();
     }
 
     @PUT
     @Consumes("application/json")
-    public Response update(SimpleUser developer) {
+    public Response update(User developer) {
         identityManager.update(developer);
         return Response.noContent().build();
     }
@@ -75,7 +76,7 @@ public class UserEndpoint {
     @DELETE
     @Path("/{id}")
     public Response deleteById(@PathParam("id") String id) {
-        SimpleUser simpleUser = identityManager.lookupIdentityById(SimpleUser.class, id);
+        User simpleUser = identityManager.lookupIdentityById(User.class, id);
         identityManager.remove(simpleUser);
         return Response.noContent().build();
     }
