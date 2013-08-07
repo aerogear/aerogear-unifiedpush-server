@@ -13,7 +13,7 @@
 */
 
 window.App = Ember.Application.create({
-    LOG_TRANSITIONS: true //remove in production,  for testing and debuging
+    LOG_TRANSITIONS: false //remove in production,  for testing and debuging
 });
 
 App.baseURL = ( function() {
