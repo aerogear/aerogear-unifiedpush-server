@@ -59,7 +59,7 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         if( this.get( "googleKey" ) ) {
             return "Android";
         } else if( this.get( "pushNetworkURL" ) ) {
-            return "Simple Push";
+            return "SimplePush";
         } else {
             return "iOS";
         }
