@@ -11,6 +11,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+var get = Ember.get;
 
 Ember.ValidationError.addMessage('match', "Fields must be the same");
 
@@ -27,10 +28,14 @@ Ember.Validators.MatchValidator = Ember.Validator.extend({
         return false;
     },
 
-    _validate: function( obj, attr ) {
-      // TODO: this should be more generic
-        if( obj.get( "password" ) !== obj.get( "confirmPassword" ) ) {
-            obj.get('validationErrors').add(attr, "match");
+    /** @private */
+    _validate: function( obj, attr, value ) {
+        var options = get(this, "options" ) || {};
+
+        if( options.field ) {
+            if( obj.get( options.field ) !==  value ) {
+                obj.get( "validationErrors" ).add( attr, "match" );
+            }
         }
     }
 });
