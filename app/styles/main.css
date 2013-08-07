@@ -365,66 +365,6 @@ input[type="password"].error {
   color: red;
 }
 
-/* =================== Footer ======================================================================================= */
-footer {
-    clear:both;
-    background-color: #f2f2f2;
-    border-top: 1px #dadada solid !important;
-    padding: 0 2.5em;
-    margin-top: 1.25em;
-    text-align: center;
-}
-
-footer h3 {
-    margin-top: 0.5em
-}
-
-footer a {
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-footer .column {
-    float: left;
-    min-width: 10em;
-    padding-right: 1.12em;
-    margin-right: 1.12em;
-}
-
-footer .column:last-child {
-    float: left;
-    padding-right: 0;
-    margin-right: 0;
-}
-
-footer h3 {
-    margin-bottom: 15px;
-    color: #555 !important;
-}
-
-footer p,footer ul {
-    margin: 0;
-}
-
-/* =================== Logos in Footer ============================================================================== */
-.logos {
-    clear: both;
-    padding: 0.5em;
-}
-
-.logos p {
-    font-size: 0.75em;
-    text-align: center;
-    max-width: 100%;
-}
-
-.logos img {
-    margin: 0.5em 0;
-}
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
