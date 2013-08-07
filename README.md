@@ -212,7 +212,7 @@ registrar.register(getApplicationContext(), new Callback<Void>() {
 
 JavaScript example for registration of a client:
 
-```java-script
+```javascript
 //Create the UnifiedPush client object:
 var client = AeroGear.UnifiedPushClient(
     "myVariantID",
