@@ -34,10 +34,13 @@ import java.util.Date;
 @Singleton
 @Startup
 /**
- * Dummy Users
+ * Preload a default user into the database
  */
 public class PicketLinkDefaultUsers {
 
+    public static final String DEFAULT_PASSWORD = "123";
+    public static final String DEFAULT_USER = "admin";
+    public static final int EXPIRATION_TIME = -5;
     @Inject
     private IdentityManager identityManager;
     @Inject
@@ -46,33 +49,28 @@ public class PicketLinkDefaultUsers {
     /**
      * <p>Loads some users during the <b>first</b> construction.</p>
      */
-    //TODO this entire initialization code will be removed - https://issues.jboss.org/browse/AGPUSH-223
     @PostConstruct
     public void create() {
 
-        User adminUser = SampleModel.getUser(identityManager, "admin");
+        User adminUser = SampleModel.getUser(identityManager, DEFAULT_USER);
 
-        // We only create the Admin, if there is none:
+        // We only create the Admin, if there is none
         if (adminUser == null) {
 
-            Developer admin = new Developer();
-            admin.setLoginName("admin");
+            adminUser = new User(DEFAULT_USER);
+            identityManager.add(adminUser);
 
-            this.identityManager.add(admin);
-            this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate());
+            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
 
+            Calendar expirationDate = Calendar.getInstance();
+
+            expirationDate.add(Calendar.MINUTE, EXPIRATION_TIME);
+
+            identityManager.updateCredential(adminUser, password, new Date(), expirationDate.getTime());
             Role roleDeveloper = new Role(UserRoles.DEVELOPER);
             this.identityManager.add(roleDeveloper);
             RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
-            SampleModel.grantRole(relationshipManager, admin, roleDeveloper);
-
+            SampleModel.grantRole(relationshipManager, adminUser, roleDeveloper);
         }
-    }
-
-    //Expiration date of the password
-    private Date expirationDate() {
-        Calendar expirationDate = Calendar.getInstance();
-        expirationDate.add(Calendar.HOUR, -1);
-        return expirationDate.getTime();
     }
 }
