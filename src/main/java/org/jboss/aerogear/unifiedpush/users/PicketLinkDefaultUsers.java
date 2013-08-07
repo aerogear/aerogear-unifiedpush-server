@@ -38,9 +38,6 @@ import java.util.Date;
  */
 public class PicketLinkDefaultUsers {
 
-    public static final String DEFAULT_PASSWORD = "123";
-    public static final String DEFAULT_USER = "admin";
-    public static final int EXPIRATION_TIME = -5;
     @Inject
     private IdentityManager identityManager;
     @Inject
@@ -52,25 +49,43 @@ public class PicketLinkDefaultUsers {
     @PostConstruct
     public void create() {
 
-        User adminUser = SampleModel.getUser(identityManager, DEFAULT_USER);
+        final String DEFAULT_PASSWORD = "123";
 
-        // We only create the Admin, if there is none
-        if (adminUser == null) {
+        User adminUser = buildUser();
+        Calendar calendar = expirationDate();
+        Password password = new Password(DEFAULT_PASSWORD.toCharArray());
 
-            adminUser = new User(DEFAULT_USER);
-            identityManager.add(adminUser);
+        identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
 
-            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
+        Role roleDeveloper = new Role(UserRoles.DEVELOPER);
 
-            Calendar expirationDate = Calendar.getInstance();
+        this.identityManager.add(roleDeveloper);
 
-            expirationDate.add(Calendar.MINUTE, EXPIRATION_TIME);
+        grantRoles(adminUser, roleDeveloper);
 
-            identityManager.updateCredential(adminUser, password, new Date(), expirationDate.getTime());
-            Role roleDeveloper = new Role(UserRoles.DEVELOPER);
-            this.identityManager.add(roleDeveloper);
-            RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
-            SampleModel.grantRole(relationshipManager, adminUser, roleDeveloper);
+    }
+
+    // We only create the Admin, if there is none
+    private User buildUser() {
+        final String DEFAULT_USER = "admin";
+        User user = SampleModel.getUser(identityManager, DEFAULT_USER);
+        if (user == null) {
+            user = new User(DEFAULT_USER);
+            identityManager.add(user);
         }
+        return user;
+    }
+
+    private void grantRoles(User user, Role role) {
+        RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
+        SampleModel.grantRole(relationshipManager, user, role);
+    }
+
+    //Expiration date of the password
+    private Calendar expirationDate() {
+        int EXPIRATION_TIME = -5;
+        Calendar expirationDate = Calendar.getInstance();
+        expirationDate.add(Calendar.MINUTE, EXPIRATION_TIME);
+        return expirationDate;
     }
 }
