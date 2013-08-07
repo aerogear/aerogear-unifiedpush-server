@@ -17,10 +17,12 @@
 package org.jboss.aerogear.unifiedpush.users;
 
 import org.picketlink.idm.IdentityManager;
+import org.picketlink.idm.PartitionManager;
+import org.picketlink.idm.RelationshipManager;
 import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.Role;
-import org.picketlink.idm.model.SimpleRole;
-import org.picketlink.idm.model.User;
+import org.picketlink.idm.model.sample.Role;
+import org.picketlink.idm.model.sample.SampleModel;
+import org.picketlink.idm.model.sample.User;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -38,6 +40,8 @@ public class PicketLinkDefaultUsers {
 
     @Inject
     private IdentityManager identityManager;
+    @Inject
+    private PartitionManager partitionManager;
 
     /**
      * <p>Loads some users during the <b>first</b> construction.</p>
@@ -46,7 +50,7 @@ public class PicketLinkDefaultUsers {
     @PostConstruct
     public void create() {
 
-        User adminUser = identityManager.getUser("admin");
+        User adminUser = SampleModel.getUser(identityManager, "admin");
 
         // We only create the Admin, if there is none:
         if (adminUser == null) {
@@ -57,9 +61,10 @@ public class PicketLinkDefaultUsers {
             this.identityManager.add(admin);
             this.identityManager.updateCredential(admin, new Password("123"), new Date(), expirationDate());
 
-            Role roleDeveloper = new SimpleRole(UserRoles.DEVELOPER);
+            Role roleDeveloper = new Role(UserRoles.DEVELOPER);
             this.identityManager.add(roleDeveloper);
-            identityManager.grantRole(admin, roleDeveloper);
+            RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
+            SampleModel.grantRole(relationshipManager, admin, roleDeveloper);
 
         }
     }
