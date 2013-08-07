@@ -68,6 +68,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         model.validationErrors.clear();
 
         hasErrors = !model.validateProperty( "name" );
+        hasErrors = !model.validateProperty( "description" );
 
         applicationData = {
             name: controller.get( "name" ),
@@ -144,6 +145,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
         model.validationErrors.clear();
         hasErrors = !model.validateProperty( "name" );
+        hasErrors = !model.validateProperty( "description" );
 
         switch( variantType ) {
         case "android":

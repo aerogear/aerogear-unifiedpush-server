@@ -21,6 +21,11 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         name: {
             presence: true
         },
+        description: {
+            length: {
+                maximum: 255
+            }
+        },
         googleKey: {
             presence: true
         },

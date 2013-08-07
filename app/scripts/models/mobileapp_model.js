@@ -20,6 +20,11 @@ App.MobileApplication = Ember.Object.extend( Ember.Validations, {
     validations:{
         name: {
             presence: true
+        },
+        description: {
+            length: {
+                maximum: 255
+            }
         }
     },
     totalAndroidVariants: function() {
