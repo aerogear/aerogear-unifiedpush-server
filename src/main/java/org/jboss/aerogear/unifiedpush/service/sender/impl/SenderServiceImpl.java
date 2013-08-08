@@ -142,8 +142,16 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String simplePushCategory : simplePushCategories) {
+                
+                // TODO: instead of a LIST of tokens (aka channelIDs), we need to query a list of (simple)PushEndpoint URLs.
+                //
+                // Currently we only get a list of channelIDs and do an iteration over those, where we append the CHANNEL ID to the "push network URL" from the  simplePushVariant
+                // but that "push network URL" will be gone.
+                
+                // The DAO finders need to be implemented for that, but is simple - just needs a matter of testing...
+                
                 final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
-                this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
+                this.sentToSimplePush(null, simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
             }
         }
     }
@@ -178,8 +186,18 @@ public class SenderServiceImpl implements SenderService {
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePush Service class
+
+            // TODO: instead of a LIST of tokens (aka channelIDs), we need to query a list of (simple)PushEndpoint URLs.
+            //
+            // Currently we only get a list of channelIDs and do an iteration over those, where we append the CHANNEL ID to the "push network URL" from the  simplePushVariant
+            // but that "push network URL" will be gone.
+            
+            // The DAO finders need to be implemented for that, but is simple - just needs a matter of testing...
+            
+
+            
             final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
-            this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
+            this.sentToSimplePush(null, simplePushBroadcastValue, simplePushBroadcastTokens);
         }
     }
 
