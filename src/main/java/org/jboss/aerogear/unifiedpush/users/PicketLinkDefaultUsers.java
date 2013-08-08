@@ -39,15 +39,19 @@ import java.util.Date;
 public class PicketLinkDefaultUsers {
 
     @Inject
-    private IdentityManager identityManager;
-    @Inject
     private PartitionManager partitionManager;
+
+    private IdentityManager identityManager;
+    private RelationshipManager relationshipManager;
 
     /**
      * <p>Loads some users during the <b>first</b> construction.</p>
      */
     @PostConstruct
     public void create() {
+
+        this.identityManager = partitionManager.createIdentityManager();
+        this.relationshipManager = partitionManager.createRelationshipManager();
 
         final String DEFAULT_PASSWORD = "123";
 
@@ -59,7 +63,7 @@ public class PicketLinkDefaultUsers {
 
         Role roleDeveloper = new Role(UserRoles.DEVELOPER);
 
-        this.identityManager.add(roleDeveloper);
+        identityManager.add(roleDeveloper);
 
         grantRoles(adminUser, roleDeveloper);
 
@@ -77,7 +81,6 @@ public class PicketLinkDefaultUsers {
     }
 
     private void grantRoles(User user, Role role) {
-        RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
         SampleModel.grantRole(relationshipManager, user, role);
     }
 
