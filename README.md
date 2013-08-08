@@ -34,7 +34,7 @@ Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 mvn package jboss-as:deploy
 ```
 
-***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
+***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleanup. Consult your browser's docs for help with removing items from local storage.
 
 
 #### Admin UI
@@ -144,7 +144,7 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 #### Registration of an installation, for an iOS device:
 
-Client-side example for how to register an installation:
+iOS example for performing registration of a client:
 
 ```objective-c
 - (void)application:(UIApplication*)application
@@ -178,7 +178,7 @@ Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-re
 
 #### Registration of an installation, for an Android device:
 
-Android example for performing an registration of a client:
+Android example for performing registration of a client:
 
 ```java
 // collect all 'PushRegistrar' objects:
@@ -210,7 +210,7 @@ registrar.register(getApplicationContext(), new Callback<Void>() {
 
 #### Registration of an installation, for a JavaScript/SimplePush client:
 
-JavaScript example for registration of a client:
+JavaScript example for performing registration of a client:
 
 ```javascript
 //Create the UnifiedPush client object:
@@ -290,4 +290,4 @@ For more details take a look at the ["message format specification"](http://aero
 
 #### REST APIs
 
-REST API for AeroGear UnifiedPush Server are documented [here](http://aerogear.org/docs/specs/aerogear-push-rest/).
+Documentation for the REST APIs of the AeroGear UnifiedPush Server can be found [here](http://aerogear.org/docs/specs/aerogear-push-rest/).
