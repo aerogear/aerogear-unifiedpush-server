@@ -1,8 +1,26 @@
-# AeroGear PushEE [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
+# AeroGear UnifiedPush Server [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-server.png)](https://travis-ci.org/aerogear/aerogear-unified-push-server)
 
-AeroGear's Connectivity Server (Java EE poc)
+The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms. The initial version of the server supports [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9), [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html) and [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
-### Some guidance
+<img src="http://people.apache.org/~matzew/AdminUI.png" height="303px" width="510px" />
+
+### Client library support
+
+Besides the server-side offerings, the AeroGear project supports a few platforms regarding push.
+
+#### Android
+
+The [AeroGear Android](https://github.com/aerogear/aerogear-android) library has support for device registration with the UnifiedPush Server. In addition it also comes with a handy message listener interface to ease the work of receiving notifications within an Android app.
+
+#### iOS
+
+For iOS there is a little [helper library](https://github.com/aerogear/aerogear-push-ios-registration) that performs registration of the device against the UnifiedPush Server. 
+
+#### JavaScript
+
+The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications as well. Besides that, AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
+
+### Getting started with the server
 
 Starting the JBoss Application Server:
 
@@ -16,8 +34,14 @@ Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 mvn package jboss-as:deploy
 ```
 
-***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleaup. Consult your browser's docs for help with removing items from local storage.
+***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleanup. Consult your browser's docs for help with removing items from local storage.
 
+
+#### Admin UI
+
+Once the server is running access it via ```http://SERVER:PORT/ag-push``` from there you can use the Admin UI. 
+
+Besides the _Admin UI_ the server can be accessed over RESTful APIs, as explained below.
 
 #### Login
 
@@ -120,9 +144,9 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 #### Registration of an installation, for an iOS device:
 
-Client-side example for how to register an installation:
+iOS example for performing registration of a client:
 
-```ObjectiveC
+```objective-c
 - (void)application:(UIApplication*)application
   didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
     AGDeviceRegistration *registration =
@@ -154,42 +178,58 @@ Check the [iOS client SDK page](https://github.com/aerogear/aerogear-push-ios-re
 
 #### Registration of an installation, for an Android device:
 
-For now, perform HTTP from Android to register the "Installation".
-Here is a _CURL_ example for how to perform the registration:
+Android example for performing registration of a client:
 
-```
-curl -u "{variantID}:{secret}"
-   -v -H "Accept: application/json" -H "Content-type: application/json"
-   -X POST
-   -d '{
-      "deviceToken" : "someTokenString",
-      "deviceType" : "ANDROID",
-      "operatingSystem" : "android",
-      "osVersion" : "4.0.1"
-    }'
+```java
+// collect all 'PushRegistrar' objects:
+private final Registrations registrations = new Registrations();
 
-http://localhost:8080/ag-push/rest/registry/device
-```
+// Create a PushConfig for the UnifiedPush Server:
+PushConfig config = new PushConfig(UNIFIED_PUSH_URL, GCM_SENDER_ID);
+onfig.setVariantID(VARIANT_ID);
+config.setSecret(SECRET);
+config.setAlias(MY_ALIAS);
 
-#### Registration of an installation, for a SimplePush client:
+// create an actual 'PushRegistrar' to register with the UnifiedPush Server:
+PushRegistrar registrar = registrations.push("u", config);
 
-CURL example for how to register a connected SimplePush client:
+// register with the UnifiedPush Server:
+registrar.register(getApplicationContext(), new Callback<Void>() {
+    ...
+    @Override
+    public void onSuccess(Void ignore) {
+      // device metadata stored on UnifiedPush Server:
+    }
 
-
-```
-curl -u "{variantID}:{secret}"
-    -v -H "Accept: application/json" -H "Content-type: application/json"
-    -X POST
-    -d '{
-       "category" : "broadcast",
-       "deviceToken" : "4a81527d-6967-40bb-ac56-755e8cbfb579"
-     }'
-http://localhost:8080/ag-push/rest/registry/device
+    @Override
+    public void onFailure(Exception exception) {
+        // something went wrong
+    }
+});
 ```
 
-The ```category``` matches the (logical) name of the channel; The ```deviceToken``` matches the ```channelID``` from the SimplePushServer.
+#### Registration of an installation, for a JavaScript/SimplePush client:
 
-**NOTE:** For _JavaScript_, an SDK is currently being worked on (see [AG-JS](https://github.com/aerogear/aerogear-js/blob/Notifier-sockjs/src/unified-push/aerogear.unifiedpush.js))
+JavaScript example for performing registration of a client:
+
+```javascript
+//Create the UnifiedPush client object:
+var client = AeroGear.UnifiedPushClient(
+    "myVariantID",
+    "myVariantSecret",
+    "http://SERVER:PORT/CONTEXT/rest/registry/device"
+);
+
+// assemble the metadata for the registration:
+var metadata = {
+    deviceToken: "theDeviceToken",
+    alias: "some_username",
+    category: "email"
+};
+
+// perform the registration against the UnifiedPush server:
+client.registerWithPushServer(metadata);
+```
 
 ### Sender
 
@@ -212,7 +252,7 @@ curl -u "{PushApplicationID}:{MasterSecret}"
 http://localhost:8080/ag-push/rest/sender/broadcast
 ```
 
-**TODO:** Add link to message format spec (once published)
+For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).
 
 #### Selected Send
 
@@ -236,17 +276,18 @@ curl -u "{PushApplicationID}:{MasterSecret}"
 http://localhost:8080/ag-push/rest/sender/selected
 ```
 
-**TODO:** Add link to message format spec (once published)
+For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).
 
 
-## More details
 
-Concepts and ideas are also being developed...:
+## Related documentation
 
-See:
-https://gist.github.com/matzew/69d33a18d4fac9fdedd4
+#### Specifications
 
-REST APIs
+* [AeroGear UnifiedPush Server](http://aerogear.org/docs/specs/aerogear-server-push/)
+* [Client Registration](http://aerogear.org/docs/specs/aerogear-client-push/)
+* [Push Message Format](http://aerogear.org/docs/specs/aerogear-push-messages/)
 
-* Registry: https://gist.github.com/matzew/2da6fc349a4aaf629bce
-* Sender: https://gist.github.com/matzew/b21c1404cc093825f0fb
+#### REST APIs
+
+Documentation for the REST APIs of the AeroGear UnifiedPush Server can be found [here](http://aerogear.org/docs/specs/aerogear-push-rest/).
