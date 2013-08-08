@@ -254,8 +254,8 @@
         -->
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-        <aerogear.security.version>1.2.3-SNAPSHOT</aerogear.security.version>
-        <aerogear.security.picketlink.version>1.1.2-SNAPSHOT</aerogear.security.picketlink.version>
+        <aerogear.security.version>1.1.2</aerogear.security.version>
+        <aerogear.security.picketlink.version>1.1.2</aerogear.security.picketlink.version>
 
     </properties>
 
