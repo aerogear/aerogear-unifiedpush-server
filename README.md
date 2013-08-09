@@ -225,7 +225,7 @@ var metadata = {
     deviceToken: "theDeviceToken",
     alias: "some_username",
     category: "email",
-	simplePushEndpoint: "https://some.server.com/something"
+    simplePushEndpoint: "https://some.server.com/something"
 };
 
 // perform the registration against the UnifiedPush server:
