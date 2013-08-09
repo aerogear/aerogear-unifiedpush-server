@@ -84,8 +84,12 @@ public class SenderServiceImpl implements SenderService {
 
             for (String variantID : variantIDs) {
                 Variant variant = genericVariantService.findByVariantID(variantID);
-                // based on type, we store in the matching collection
-                switch (variant.getType()) {
+
+                // does the variant exist ? 
+                if (variant != null) {
+
+                    // based on type, we store in the matching collection
+                    switch (variant.getType()) {
                         case ANDROID:
                             androidVariants.add((AndroidVariant) variant);
                             break;
@@ -98,8 +102,9 @@ public class SenderServiceImpl implements SenderService {
                         default:
                             // nope; should never enter here
                             break;
-                        }
                     }
+                }
+            }
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplication:
