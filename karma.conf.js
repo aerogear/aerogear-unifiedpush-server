@@ -28,14 +28,18 @@ module.exports = function(config) {
             "app/bower_components/handlebars/handlebars.js",
             "app/bower_components/ember/ember.js",
             "app/bower_components/aerogear/aerogear.min.js",
+            "app/bower_components/jquery-mockjax/jquery.mockjax.js",
             "app/scripts/*.js",
             "app/scripts/vendor/ember-validations.min.js",
             "app/scripts/helpers/*.js",
             "app/scripts/controllers/*.js",
             "app/scripts/models/*.js",
             "app/scripts/views/*.js",
-            "app/templates/*.hbs",
+            "app/templates/**/*.hbs",
             "test/**/*.js",
+            "app/styles/normalize.css",
+            "app/styles/topcoat-desktop-light.min.css",
+            "app/styles/main.css"
         ],
 
 
