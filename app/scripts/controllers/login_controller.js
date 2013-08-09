@@ -26,23 +26,27 @@ App.LoginController = Ember.ObjectController.extend({
         if( !user.get( "isValid" ) ) {
             this.send( "error", this, user.get( "validationErrors.allMessages" ) );
         } else {
-            // Use AeroGear Authenticator to login
+            //Use AeroGear Authenticator to login
             App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
                 contentType: "application/json",
                 success: function() {
                     // Successful Login, now go to /mobileApps
-                    that.set( "relog", true );
-                    that.transitionToRoute( "mobileApps" );
+                    Ember.run( this, function() {
+                        that.set( "relog", false );
+                        that.transitionToRoute( "mobileApps" );
+                    });
                 },
                 error: function( response ) {
-                    if( response.status === 403 ) {
-                        //change the password
-                        that.set( "oldPassword", that.get( "password" ) );
-                        that.set( "password", "" );
-                        that.set( "loginIn", false );
-                    } else {
-                        that.send( "error", that, "Login Error" );
-                    }
+                    Ember.run( this, function() {
+                        if( response.status === 403 ) {
+                            //change the password
+                            that.set( "oldPassword", that.get( "password" ) );
+                            that.set( "password", "" );
+                            that.set( "loginIn", false );
+                        } else {
+                            that.send( "error", that, "Login Error" );
+                        }
+                    });
                 }
             });
         }
@@ -68,14 +72,18 @@ App.LoginController = Ember.ObjectController.extend({
                 data: data,
                 contentType: "application/json",
                 success: function() {
-                    // User Must login Again
-                    that.set( "password", "" );
-                    that.set( "oldPassord", "" );
-                    that.set( "loginIn", true );
-                    that.set( "relog", true );
+                    Ember.run( this, function() {
+                        // User Must login Again
+                        that.set( "password", "" );
+                        that.set( "oldPassord", "" );
+                        that.set( "loginIn", true );
+                        that.set( "relog", true );
+                    });
                 },
                 error: function() {
-                    that.send( "error", that, "Save Error" );
+                    Ember.run( this, function() {
+                        that.send( "error", that, "Save Error" );
+                    });
                 }
             });
         } else {

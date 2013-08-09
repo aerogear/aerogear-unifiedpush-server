@@ -10,36 +10,36 @@
     {{#if relog}}
       <h3>Please Re-Login</h3>
     {{/if}}
-      <form id="login" {{action login on="submit"}}>
+      <form id="login" class="login" {{action login on="submit"}}>
         <fieldset>
           <p>
             <label>Username</label>
-            {{ input type="text" valueBinding="loginName" placeholder="Username" classNames="topcoat-text-input" classNameBindings="validationErrors.loginName:error"}}
+            {{ input type="text" valueBinding="loginName" placeholder="Username" classNames="topcoat-text-input loginName" classNameBindings="validationErrors.loginName:error"}}
           </p>
           <p>
             <label>Password</label>
-            {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input" classNameBindings="validationErrors.password:error"}}
+            {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input password" classNameBindings="validationErrors.password:error"}}
           </p>
-          <button class="topcoat-button">Log In</button>
+          <button class="topcoat-button submit">Log In</button>
         </fieldset>
       </form>
   </div>
 {{else}}
   <div class="rcue-dialog-inner">
     <h3>You must change your password</h3>
-    <form id="other" {{action other on="submit"}}>
+    <form id="other" class="confirm" {{action other on="submit"}}>
       <fieldset>
         <p>
           <label>Password</label>
-          {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input"
+          {{ input type="password" valueBinding="password" placeholder="New Password" classNames="topcoat-text-input password"
           classNameBindings="validationErrors.password:error"}}
         </p>
         <p>
           <label>Confirm Password</label>
-          {{ input type="password" valueBinding="confirmPassword" placeholder="Confirm Password" classNames="topcoat-text-input"
+          {{ input type="password" valueBinding="confirmPassword" placeholder="Confirm Password" classNames="topcoat-text-input confirmPassword"
           classNameBindings="validationErrors.confirmPassword:error"}}
         </p>
-        <button class="topcoat-button">Save</button>
+        <button class="topcoat-button submit">Save</button>
       </fieldset>
     </form>
   </div>
