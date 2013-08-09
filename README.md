@@ -135,7 +135,7 @@ Add an ```simplepush``` variant (e.g. _HR for Browser):
 curl -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
-  -d '{"pushNetworkURL" : "http://localhost:7777/endpoint/"}'
+  -d '{"name" : "My SimplePush Variant"}'
 
   http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/simplePush
 ```
@@ -224,7 +224,8 @@ var client = AeroGear.UnifiedPushClient(
 var metadata = {
     deviceToken: "theDeviceToken",
     alias: "some_username",
-    category: "email"
+    category: "email",
+	simplePushEndpoint: "https://some.server.com/something"
 };
 
 // perform the registration against the UnifiedPush server:

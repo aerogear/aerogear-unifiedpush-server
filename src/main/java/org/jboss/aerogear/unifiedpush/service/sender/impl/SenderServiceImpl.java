@@ -142,16 +142,9 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String simplePushCategory : simplePushCategories) {
-                
-                // TODO: instead of a LIST of tokens (aka channelIDs), we need to query a list of (simple)PushEndpoint URLs.
-                //
-                // Currently we only get a list of channelIDs and do an iteration over those, where we append the CHANNEL ID to the "push network URL" from the  simplePushVariant
-                // but that "push network URL" will be gone.
-                
-                // The DAO finders need to be implemented for that, but is simple - just needs a matter of testing...
-                
-                final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
-                this.sentToSimplePush(null, simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
+
+                final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
+                this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushCategoriesAndValues.get(simplePushCategory));
             }
         }
     }
@@ -187,32 +180,26 @@ public class SenderServiceImpl implements SenderService {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePush Service class
 
-            // TODO: instead of a LIST of tokens (aka channelIDs), we need to query a list of (simple)PushEndpoint URLs.
-            //
-            // Currently we only get a list of channelIDs and do an iteration over those, where we append the CHANNEL ID to the "push network URL" from the  simplePushVariant
-            // but that "push network URL" will be gone.
-            
-            // The DAO finders need to be implemented for that, but is simple - just needs a matter of testing...
-            
-
-            
-            final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
-            this.sentToSimplePush(null, simplePushBroadcastValue, simplePushBroadcastTokens);
+            final List<String> broadcastPushEndpointURLs = clientInstallationService.findAllSimplePushBroadcastPushEndpointURLsForVariantID(simplePushVariant.getVariantID());
+            this.sentToSimplePush(broadcastPushEndpointURLs, simplePushBroadcastValue);
         }
     }
 
+    @Asynchronous
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
         logger.fine(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
+    @Asynchronous
     private void sendToGCM(AndroidVariant androidVariant, List<String> tokens, UnifiedPushMessage pushMessage) {
         logger.fine(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
     }
 
-    private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
-        logger.fine(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
-        simplePushSender.sendMessage(endpointBaseURL, payload, channels);
+    @Asynchronous
+    private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
+        logger.fine(String.format("Sending: %s to SimplePush network/server", payload));
+        simplePushSender.sendMessage(pushEndpointURLs, payload);
     }
 }

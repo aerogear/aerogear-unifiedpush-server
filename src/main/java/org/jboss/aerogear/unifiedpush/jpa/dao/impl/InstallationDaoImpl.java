@@ -74,17 +74,17 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
                 .getResultList();
     }
 
-    /**
-     * Usage: SenderSerivce: 
-     * 
-     * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.
-     * The method appends different criterias to the JPQL string, IF PRESENT.
-     * 
-     * Done in one method, instead of having similar, but error-thrown Strings, in different methods.
-     * 
-     * TODO: perhaps moving to Criteria API for this later
-     */
-    @SuppressWarnings("unchecked")
+    @Override
+    public List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+        
+        // the required part: Join + simplePushEndpoint URLs for given SimplePush variantID;
+        final StringBuilder jpqlString = new StringBuilder("select installation.simplePushEndpoint from ");
+        jpqlString.append(AbstractVariant.class.getSimpleName())
+        .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
+
+        return this.executeDynamicQuery(jpqlString, variantID, category, aliases, deviceTypes);
+    }
+    
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
 
@@ -93,6 +93,21 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         jpqlString.append(AbstractVariant.class.getSimpleName())
         .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
+        return this.executeDynamicQuery(jpqlString, variantID, category, aliases, deviceTypes);
+    }
+
+    /**
+     * 
+     * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.
+     * The method appends different criterias to the given JPQL string, IF PRESENT.
+     * 
+     * Done in one method, instead of having similar, but error-thrown Strings, in different methods.
+     * 
+     * TODO: perhaps moving to Criteria API for this later
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
         
@@ -100,7 +115,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // are aliases present ??
         if (aliases != null && ! aliases.isEmpty()) {
             // append the string:
-            jpqlString.append(" and installation.alias IN :aliases");
+            jpqlBaseString.append(" and installation.alias IN :aliases");
             // add the params:
             parameters.put("aliases", aliases);
         }
@@ -108,7 +123,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // are devices present ??
         if (deviceTypes != null && ! deviceTypes.isEmpty()) {
             // append the string:
-            jpqlString.append(" and installation.deviceType IN :deviceTypes");
+            jpqlBaseString.append(" and installation.deviceType IN :deviceTypes");
             // add the params:
             parameters.put("deviceTypes", deviceTypes);
         }
@@ -116,13 +131,13 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // is a category present ?
         if (category != null) {
             // append the string:
-            jpqlString.append(" and installation.category = :category");
+            jpqlBaseString.append(" and installation.category = :category");
             // add the params:
             parameters.put("category", category);
         }
 
         // the entire JPQL string
-        Query jpql = createQuery(jpqlString.toString());
+        Query jpql = createQuery(jpqlBaseString.toString());
         // add REQUIRED param:
         jpql.setParameter("variantID", variantID);
 

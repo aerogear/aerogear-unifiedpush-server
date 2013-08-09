@@ -123,8 +123,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * For broadcast (SimplePush)
      */
     @Override
-    public List<String> findAllSimplePushBroadcastDeviceTokenForVariantID(String variantID) {
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
+    public List<String> findAllSimplePushBroadcastPushEndpointURLsForVariantID(String variantID) {
+        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * For selective send  (SimplePush)
      */
     @Override
-    public List<String> findAllSimplePushDeviceTokenForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
+    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {
+        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
     }
 }
