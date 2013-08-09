@@ -185,19 +185,16 @@ public class SenderServiceImpl implements SenderService {
         }
     }
 
-    @Asynchronous
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
         logger.fine(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
-    @Asynchronous
     private void sendToGCM(AndroidVariant androidVariant, List<String> tokens, UnifiedPushMessage pushMessage) {
         logger.fine(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
     }
 
-    @Asynchronous
     private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
         logger.fine(String.format("Sending: %s to SimplePush network/server", payload));
         simplePushSender.sendMessage(pushEndpointURLs, payload);
