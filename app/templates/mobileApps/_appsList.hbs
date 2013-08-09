@@ -18,7 +18,7 @@
             {{#each controller}}
                 <tr>
                     <td>{{#linkTo "variants" this}}{{ name }}{{/linkTo}}</td>
-                    <td><span>{{ descriptionFormatted }}<span></td>
+                    <td><span>{{ description }}<span></td>
                     <td class="rcue-table-number">{{ totalVariants }}</td>
                     <td class="action">
                         {{#linkTo "mobileApps.edit" this}}Edit{{/linkTo}}

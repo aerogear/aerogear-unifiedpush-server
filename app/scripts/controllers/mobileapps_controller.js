@@ -34,18 +34,22 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
             this.applicationPipe.save( applicationData, {
                 success: function() {
-                    $( "form" )[0].reset();
-                    that.transitionToRoute( "mobileApps" );
+                    Ember.run( this, function() {
+                        $( "form" )[0].reset();
+                        that.transitionToRoute( "mobileApps" );
+                    });
                 },
                 error: function( error ) {
-                    switch( error.status ) {
-                    case 401:
-                        that.transitionToRoute( "login" );
-                        break;
-                    default:
-                        that.send( "error", that, "Error Saving" );
-                        break;
-                    }
+                    Ember.run( this, function() {
+                        switch( error.status ) {
+                        case 401:
+                            that.transitionToRoute( "login" );
+                            break;
+                        default:
+                            that.send( "error", that, "Error Saving" );
+                            break;
+                        }
+                    });
                 }
             });
         }

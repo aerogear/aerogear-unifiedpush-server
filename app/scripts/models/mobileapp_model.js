@@ -28,25 +28,19 @@ App.MobileApplication = Ember.Object.extend( Ember.Validations, {
         }
     },
     totalAndroidVariants: function() {
-        return this.androidVariants.get( "content" ).length;
+        return this.androidVariants ? this.androidVariants.get( "content" ) : [];
     }.property(),
     totaliOSVariants: function() {
-        return this.iosvariants.get( "content" ).length;
+        return this.iosvariants ? this.iosvariants.get( "content" ) : [];
     }.property(),
     totalSimplePushVariants: function() {
-        return this.simplePushVariants.get( "content" ).length;
+        return this.simplePushVariants ? this.simplePushVariants.get( "content" ) : [];
     }.property(),
     totalVariants: function() {
-        return this.get( "totalAndroidVariants" ) + this.get( "totaliOSVariants" ) + this.get( "totalSimplePushVariants" );
+        return this.get( "totalAndroidVariants" ).length + this.get( "totaliOSVariants" ).length + this.get( "totalSimplePushVariants" ).length;
     }.property(),
     variantList: function() {
-        return this.androidVariants.get( "content" ).concat( this.iosvariants.get( "content" ) ).concat( this.simplePushVariants.get( "content" ) );
-    }.property(),
-    status: function() {
-        return ( this.get( "totalVariants" ) ) ? "Active" : "Inactive";
-    }.property(),
-    descriptionFormatted: function() {
-        return this.get( "description" );
+        return this.get( "totalAndroidVariants" ).concat( this.get( "totaliOSVariants" ) ).concat( this.get( "totalSimplePushVariants" ) );
     }.property()
 });
 
@@ -70,29 +64,33 @@ App.MobileApplication.reopenClass({
             id: applicationPushId
         })
         .then( function( response ) {
-            if( AeroGear.isArray( response ) ) {
-                response.forEach( function( data ) {
-                    data.isLoaded = true;
-                    data = model._createVariantObject( data );
-                    mobileApplication.pushObject( App.MobileApplication.create( data ) );
-                });
-            } else {
-                // Add a loading indicator
-                response.isLoaded = true;
-                // Loop Through the different Variants to create objects
-                mobileApplication.setProperties( model._createVariantObject( response ) );
-            }
+            Ember.run( this, function() {
+                if( AeroGear.isArray( response ) ) {
+                    response.forEach( function( data ) {
+                        data.isLoaded = true;
+                        data = model._createVariantObject( data );
+                        mobileApplication.pushObject( App.MobileApplication.create( data ) );
+                    });
+                } else {
+                    // Add a loading indicator
+                    response.isLoaded = true;
+                    // Loop Through the different Variants to create objects
+                    mobileApplication.setProperties( model._createVariantObject( response ) );
+                }
+            });
         })
         .then( null, function( error ) {
-            switch( error.status ) {
-            case 401:
-                //Possibly should be done somewhere else?
-                App.Router.router.transitionTo( "login" );
-                break;
-            default:
-                //console.log( "need to do something here" );
-                break;
-            }
+            Ember.run( this, function() {
+                switch( error.status ) {
+                case 401:
+                    //Possibly should be done somewhere else?
+                    App.Router.router.transitionTo( "login" );
+                    break;
+                default:
+                    //console.log( "need to do something here" );
+                    break;
+                }
+            });
         });
 
         return mobileApplication;
