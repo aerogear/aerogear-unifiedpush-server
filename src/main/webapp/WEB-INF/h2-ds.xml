@@ -23,7 +23,7 @@
    <datasource jndi-name="java:jboss/datasources/PushEEDS"
       pool-name="ag-push-sql" enabled="true"
       use-java-context="true">
-      <connection-url>jdbc:h2:~/pushee;DB_CLOSE_DELAY=-1</connection-url>
+      <connection-url>jdbc:h2:~/unifiedpush;DB_CLOSE_DELAY=-1</connection-url>
       <driver>h2</driver>
       <security>
          <user-name>sa</user-name>
