@@ -20,7 +20,7 @@ var apps = [
         "id": "4028818b3fe37e75013fe38200200000",
         "name": "Cool App 1",
         "description": "A Cool App for testing",
-        "pushApplicationID": "a1e09fed-b04f-4588-a9c1-b94df0e49bf7",
+        "pushApplicationID": "12345",
         "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
         "developer": "admin",
         "androidVariants": [
@@ -114,6 +114,15 @@ $.mockjax({
 });
 
 $.mockjax({
+    url: "http://localhost:9876/rest/applications/12345",
+    type: "GET",
+    dataType: 'json',
+    response: function( arguments ) {
+        this.responseText = apps[ 0 ];
+    }
+});
+
+$.mockjax({
     url: "http://localhost:9876/rest/applications",
     type: "POST",
     dataType: 'json',
@@ -121,6 +130,22 @@ $.mockjax({
 
         apps.push( apps[0] );
         this.responseText = apps;
+    }
+});
+
+$.mockjax({
+    url: "http://localhost:9876/rest/applications/12345",
+    type: "PUT",
+    dataType: 'json',
+    response: function( arguments ) {
+        var data = JSON.parse(arguments.data),
+            name = data.name,
+            description = data.description;
+
+        apps[ 0 ].name = name;
+        apps[ 0 ].description = description;
+
+        this.responseText = apps[ 0 ];
     }
 });
 
