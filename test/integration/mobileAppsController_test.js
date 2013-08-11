@@ -43,6 +43,14 @@ test( "test click 'Edit' link", function() {
     });
 });
 
+test( "test click 'Push Application' link", function() {
+    visit( "/" ).then( function() {
+        click( "table tbody tr td:eq(0) a" );
+    }).then( function() {
+        equal( find("section div:eq(0)").text().indexOf( "Master Secret" ) > -1, true, "Should be on the Variant page, but not" );
+    });
+});
+
 //TODO: test remove once we get rid of the crappy confirm box
 
 module('App.MobileAppsEditController - Create New', {
