@@ -31,6 +31,7 @@ App.MobileVariantInstance = Ember.Object.extend({
             platform = "simplePush";
             break;
         default:
+            platform = "N/A";
             break;
         }
 
