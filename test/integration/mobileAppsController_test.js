@@ -51,6 +51,8 @@ test( "test click 'Push Application' link", function() {
     });
 });
 
+//Possibly Test the "Variant" commputed properties
+
 //TODO: test remove once we get rid of the crappy confirm box
 
 module('App.MobileAppsEditController - Create New', {
