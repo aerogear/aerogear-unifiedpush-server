@@ -56,13 +56,13 @@ module('App.MobileAppsEditController - Create New', {
     }
 });
 
-test( "visit mobile apps edit page - Create", function() {
+test( "visit push apps edit page - Create", function() {
     visit( "/mobileApps/edit/undefined" ).then( function() {
         equal( find("header h1").text().trim(), "Create Push Application", "Should be on the Create page, but not" );
     });
 });
 
-test( "Create new Mobile App - Empty Values", function() {
+test( "Create new Push App - Empty Values", function() {
     var that = this;
     visit( "/mobileApps/edit/undefined" ).then( function() {
         click( "input[type='submit']" );
@@ -74,7 +74,7 @@ test( "Create new Mobile App - Empty Values", function() {
     });
 });
 
-test( "Create new Mobile App - With Value", function() {
+test( "Create new Push App - With Value", function() {
     var that = this;
 
     visit( "/mobileApps/edit/undefined" ).then( function() {
@@ -116,7 +116,7 @@ module('App.MobileAppsEditController - Edit', {
     }
 });
 
-test( "visit mobile apps edit page - Edit", function() {
+test( "visit push apps edit page - Edit", function() {
     var that = this;
     visit( "/mobileApps/edit/12345" ).then( function() {
         var model = that.controller.get( "model" ),
