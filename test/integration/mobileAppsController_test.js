@@ -105,6 +105,14 @@ test( "Create new Push App - With Value", function() {
     });
 });
 
+test( "Create new Push App - test cancel", function() {
+    visit( "/mobileApps/edit/undefined" ).then( function() {
+        click( "input[type='reset']" );
+    }).then( function() {
+        equal( exists( ".message" ), true, "welcome message should be here but isn't" );
+    });
+});
+
 module('App.MobileAppsEditController - Edit', {
     setup: function() {
         App.reset();
@@ -157,5 +165,13 @@ test( "Edit Push Application", function() {
         wait().then( function() {
             //TODO: a Check that the updated record is there
         });
+    });
+});
+
+test( "Edit Push Application - test cancel", function() {
+    visit( "/mobileApps/edit/undefined" ).then( function() {
+        click( "input[type='reset']" );
+    }).then( function() {
+        equal( exists( ".message" ), true, "welcome message should be here but isn't" );
     });
 });
