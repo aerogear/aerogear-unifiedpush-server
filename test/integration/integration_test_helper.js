@@ -81,7 +81,7 @@ var apps = [
 ];
 
 $.mockjax({
-    url: "http://localhost:9876/rest/auth/login",
+url: App.baseURL + "rest/auth/login",
     type: "POST",
     dataType: 'json',
     response: function( arguments ) {
@@ -98,14 +98,14 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "http://localhost:9876/rest/auth/update",
+    url: App.baseURL + "rest/auth/update",
     type: "PUT",
     status: 204,
     dataType: 'json'
 });
 
 $.mockjax({
-    url: "http://localhost:9876/rest/applications",
+    url: App.baseURL + "rest/applications",
     type: "GET",
     dataType: 'json',
     response: function( arguments ) {
@@ -114,7 +114,7 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "http://localhost:9876/rest/applications/12345",
+    url: App.baseURL + "rest/applications/12345",
     type: "GET",
     dataType: 'json',
     response: function( arguments ) {
@@ -123,7 +123,7 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "http://localhost:9876/rest/applications",
+    url: App.baseURL + "rest/applications",
     type: "POST",
     dataType: 'json',
     response: function( arguments ) {
@@ -134,7 +134,7 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "http://localhost:9876/rest/applications/12345",
+    url: App.baseURL + "rest/applications/12345",
     type: "PUT",
     dataType: 'json',
     response: function( arguments ) {
@@ -148,8 +148,6 @@ $.mockjax({
         this.responseText = apps[ 0 ];
     }
 });
-
-http://localhost:9876/rest/applications
 
 $.mockjaxSettings.logging = false;
 $.mockjaxSettings.responseTime = 0;

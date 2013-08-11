@@ -123,10 +123,8 @@ module.exports = function (grunt) {
                 'test/spec/{,*/}*.js'
             ]
         },
-        karma: {
-            unit: {
-                configFile: 'karma.conf.js'
-            }
+        qunit: {
+            files: ['test/unit/index.html', 'test/integration/index.html']
         },
         // not used since Uglify task does concat,
         // but still available if needed
@@ -276,7 +274,8 @@ module.exports = function (grunt) {
         'clean:server',
         'concurrent:test',
         'connect:test',
-        'karma'
+        'emberTemplates',
+        'qunit'
     ]);
 
     grunt.registerTask('build', [
