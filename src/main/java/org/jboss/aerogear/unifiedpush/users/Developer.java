@@ -16,16 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.users;
 
+import org.picketlink.idm.model.sample.User;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.picketlink.idm.model.SimpleUser;
-
 @Entity
-public class Developer extends SimpleUser {
+public class Developer extends User {
     private static final long serialVersionUID = 619586660464526363L;
 
     @Id

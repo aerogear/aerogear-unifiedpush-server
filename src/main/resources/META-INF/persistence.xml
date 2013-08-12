@@ -38,14 +38,19 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
 
-        <class>org.picketlink.idm.jpa.schema.IdentityObject</class>
-        <class>org.picketlink.idm.jpa.schema.PartitionObject</class>
-        <class>org.picketlink.idm.jpa.schema.RelationshipObject</class>
-        <class>org.picketlink.idm.jpa.schema.RelationshipIdentityObject</class>
-        <class>org.picketlink.idm.jpa.schema.RelationshipObjectAttribute</class>
-        <class>org.picketlink.idm.jpa.schema.IdentityObjectAttribute</class>
-        <class>org.picketlink.idm.jpa.schema.CredentialObject</class>
-        <class>org.picketlink.idm.jpa.schema.CredentialObjectAttribute</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.AttributedTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.AccountTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.RoleTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.GroupTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.IdentityTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.RelationshipTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.RelationshipIdentityTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.PartitionTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.PasswordCredentialTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.DigestCredentialTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.X509CredentialTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.OTPCredentialTypeEntity</class>
+        <class>org.picketlink.idm.jpa.model.sample.simple.AttributeTypeEntity</class>
 
         <!-- Custom "extensions" of PL -->
         <class>org.jboss.aerogear.unifiedpush.users.Developer</class>
