@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.model;
 
-import org.jboss.aerogear.connectivity.jpa.PersistentObject;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,9 +26,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
+
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
-import java.util.UUID;
 
 @Entity
 public class PushApplication extends PersistentObject implements org.jboss.aerogear.unifiedpush.api.PushApplication {
