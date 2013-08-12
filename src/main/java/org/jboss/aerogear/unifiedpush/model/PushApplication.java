@@ -28,10 +28,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
-import org.picketlink.idm.jpa.annotations.IdentityAttribute;
 
 @Entity
-@IdentityAttribute
 public class PushApplication extends PersistentObject implements org.jboss.aerogear.unifiedpush.api.PushApplication {
     private static final long serialVersionUID = 6507691362454032282L;
 

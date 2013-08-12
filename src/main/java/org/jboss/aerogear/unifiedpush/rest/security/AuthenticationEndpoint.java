@@ -21,7 +21,7 @@ import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
-import org.picketlink.idm.model.SimpleUser;
+import org.picketlink.idm.model.sample.User;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -71,7 +71,7 @@ public class AuthenticationEndpoint {
     @Path("/update")
     public Response updateUserPasswordAndRole(final Developer developer) {
 
-        SimpleUser simpleUser = (SimpleUser) configuration.findByUsername(developer.getLoginName());
+        User simpleUser = (User) configuration.findByUsername(developer.getLoginName());
         configuration.reset(simpleUser, developer.getPassword(), developer.getNewPassword());
 
         return Response.ok().build();
