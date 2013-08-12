@@ -34,18 +34,15 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         },
         certificate: {
             presence: true
-        },
-        pushNetworkURL: {
-            presence: true
         }
     },
     totalInstances: function() {
         return this.get( "installations" ).length;
     }.property(),
     vType: function() {
-        if( this.get( "googleKey" ) ) {
+        if( this.get( "type" ) === "ANDROID" ) {
             return "android";
-        } else if( this.get( "pushNetworkURL" ) ) {
+        } else if( this.get( "type" ) === "SIMPLE_PUSH" ) {
             return "simplePush";
         } else {
             return "iOS";
@@ -61,13 +58,14 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         return this.get( "vType" ) === "simplePush";
     }.property( "vType" ),
     typeFormatted: function() {
-        if( this.get( "googleKey" ) ) {
-            return "Android";
-        } else if( this.get( "pushNetworkURL" ) ) {
-            return "SimplePush";
-        } else {
-            return "iOS";
-        }
+        return this.get( "vType" ); //get rid of this method?
+        // if( this.get( "googleKey" ) ) {
+        //     return "Android";
+        // } else if( this.get( "simplePushEndpoint" ) ) {
+        //     return "SimplePush";
+        // } else {
+        //     return "iOS";
+        // }
     }.property()
 });
 

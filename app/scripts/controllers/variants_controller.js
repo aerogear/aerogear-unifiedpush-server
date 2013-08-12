@@ -109,13 +109,13 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     hasErrors = true;
                 }
                 break;
-            case "simplePush":
-                if( model.validateProperty( "pushNetworkURL" ) ) {
-                    applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-                } else {
-                    hasErrors = true;
-                }
-                break;
+            // case "simplePush":
+            //     if( model.validateProperty( "simplePushEndpoint" ) ) {
+            //         applicationData.simplePushEndpoint = controller.get( "simplePushEndpoint" );
+            //     } else {
+            //         hasErrors = true;
+            //     }
+            //     break;
             default:
                 break;
             }
@@ -155,13 +155,13 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 hasErrors = true;
             }
             break;
-        case "simplePush":
-            if( model.validateProperty( "pushNetworkURL" ) ) {
-                applicationData.pushNetworkURL = controller.get( "pushNetworkURL" );
-            } else {
-                hasErrors = true;
-            }
-            break;
+        // case "simplePush":
+        //     if( model.validateProperty( "simplePushEndpoint" ) ) {
+        //         applicationData.simplePushEndpoint = controller.get( "simplePushEndpoint" );
+        //     } else {
+        //         hasErrors = true;
+        //     }
+        //     break;
         case "iOS":
             file = $( "form" ).find( "input[name='certificate']" ).val();
             //Better validation
@@ -244,7 +244,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         controller.set( "variantName", "" );
         controller.set( "googleKey", "" );
         controller.set( "passphrase", "" );
-        controller.set( "pushNetworkURL", "" );
+        //controller.set( "simplePushEndpoint", "" );
         controller.set( "production", false );
     }
 });
