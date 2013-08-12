@@ -39,9 +39,16 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     List<InstallationImpl> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
-     * Broadcast/Selective Sender API:
+     * Broadcast/Selective Sender API for native (Android/iOS) installations:
      * 
      * Query all tokens for the given variant, by respecting a few criteria arguments (category, aliases and deviceTypes)
      */
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+
+    /**
+     * Broadcast/Selective Sender API for SimplePush installations:
+     * 
+     * Query all pushEndpoint URLs for the given SimplePush variant, by respecting a few criteria arguments (category, aliases and deviceTypes)
+     */
+    List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 }

@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.model;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 
@@ -35,21 +33,5 @@ public class SimplePushVariant extends AbstractVariant {
         super();
         // we are SimplePush:
         this.type = VariantType.SIMPLE_PUSH;
-    }
-
-    @Column
-    @NotNull
-    private String pushNetworkURL;
-
-    /**
-     * The URL of the underlying SimplePush Network, 
-     * which is used to send "Push Messages" to the actual Network.
-     */
-    public String getPushNetworkURL() {
-        return pushNetworkURL;
-    }
-
-    public void setPushNetworkURL(String pushNetworkURL) {
-        this.pushNetworkURL = pushNetworkURL;
     }
 }

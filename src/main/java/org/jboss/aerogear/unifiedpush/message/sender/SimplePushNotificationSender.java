@@ -41,19 +41,17 @@ public class SimplePushNotificationSender implements Serializable {
 
     /**
      * Sends SimplePush notifications to all connected clients, that are represented by
-     * the {@link Collection} of channelIDs, for the given SimplePush network.  
+     * the {@link Collection} of pushEndpointURLs, for the given SimplePush network/server.  
      * 
-     * @param endpointBaseURL Base URL of the used SimplePush Network
+     * @param pushEndpointURLs List of URL used for the different clients/endpoints on a SimplePush network/server.
      * @param payload the payload, or version string, to be submitted
-     * @param channelIDs collection of channelIDs, representing actual SimplePush client (devices).
      */
-    public void sendMessage(String endpointBaseURL, String payload, List<String> channelIDs) {
+    public void sendMessage(List<String> pushEndpointURLs, String payload) {
         // iterate over all the given channels, if there are channels:
-        for (String channelID : channelIDs) {
+        for (String clientURL : pushEndpointURLs) {
 
             HttpURLConnection conn = null;
             try {
-                final String clientURL = endpointBaseURL+channelID;
                 // PUT the version payload to the SimplePushServer 
                 logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
                 conn = put(clientURL, payload);
