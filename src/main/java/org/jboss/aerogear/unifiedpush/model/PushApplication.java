@@ -17,8 +17,6 @@
 package org.jboss.aerogear.unifiedpush.model;
 
 import org.jboss.aerogear.connectivity.jpa.PersistentObject;
-import org.picketlink.idm.jpa.annotations.entity.IdentityManaged;
-import org.picketlink.idm.model.IdentityType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +29,6 @@ import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 import java.util.UUID;
 
 @Entity
-@IdentityManaged(IdentityType.class)
 public class PushApplication extends PersistentObject implements org.jboss.aerogear.unifiedpush.api.PushApplication {
     private static final long serialVersionUID = 6507691362454032282L;
 
