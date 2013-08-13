@@ -22,7 +22,19 @@
     <description>UnifiedPush Persistence Unit</description>
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+    <class>org.jboss.aerogear.unifiedpush.jpa.PersistentObject</class>
+
+    <class>org.jboss.aerogear.unifiedpush.model.AbstractVariant</class>
+    <class>org.jboss.aerogear.unifiedpush.model.AndroidVariant</class>
+    <class>org.jboss.aerogear.unifiedpush.model.InstallationImpl</class>
+    <class>org.jboss.aerogear.unifiedpush.model.iOSVariant</class>
+    <class>org.jboss.aerogear.unifiedpush.model.PushApplication</class>
+    <class>org.jboss.aerogear.unifiedpush.model.SimplePushVariant</class>
+
+
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.show_sql" value="false"/>

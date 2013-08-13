@@ -54,30 +54,28 @@ public class PicketLinkDefaultUsers {
         this.relationshipManager = partitionManager.createRelationshipManager();
 
         final String DEFAULT_PASSWORD = "123";
-
-        User adminUser = buildUser();
-        Calendar calendar = expirationDate();
-        Password password = new Password(DEFAULT_PASSWORD.toCharArray());
-
-        identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
-
-        Role roleDeveloper = new Role(UserRoles.DEVELOPER);
-
-        identityManager.add(roleDeveloper);
-
-        grantRoles(adminUser, roleDeveloper);
-
-    }
-
-    // We only create the Admin, if there is none
-    private User buildUser() {
         final String DEFAULT_USER = "admin";
-        User user = SampleModel.getUser(identityManager, DEFAULT_USER);
-        if (user == null) {
-            user = new User(DEFAULT_USER);
-            identityManager.add(user);
+
+        User adminUser = SampleModel.getUser(identityManager, DEFAULT_USER);
+        
+        // We only create the Admin, if there is none;
+        // if present, there is also no need to apply the same 'Developer' role again.
+        if (adminUser == null) {
+            adminUser = new User(DEFAULT_USER);
+            identityManager.add(adminUser);
+
+            Calendar calendar = expirationDate();
+            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
+
+            identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
+
+            Role roleDeveloper = new Role(UserRoles.DEVELOPER);
+
+            identityManager.add(roleDeveloper);
+
+            grantRoles(adminUser, roleDeveloper);
         }
-        return user;
+
     }
 
     private void grantRoles(User user, Role role) {
