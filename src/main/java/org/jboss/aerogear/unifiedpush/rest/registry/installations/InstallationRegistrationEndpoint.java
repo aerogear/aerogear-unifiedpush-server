@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -82,8 +83,8 @@ public class InstallationRegistrationEndpoint {
                     request);
         }
 
-        // Poor validation: We require the Token!
-        if (entity.getDeviceToken() == null) {
+        // Poor validation: We require the Token! And the 'simplePushEndpoint' for SimplePush clients!
+        if (entity.getDeviceToken() == null || (variant.getType() == VariantType.SIMPLE_PUSH && entity.getSimplePushEndpoint() == null)) {
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 

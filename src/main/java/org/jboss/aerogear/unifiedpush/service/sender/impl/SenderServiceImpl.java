@@ -84,8 +84,12 @@ public class SenderServiceImpl implements SenderService {
 
             for (String variantID : variantIDs) {
                 Variant variant = genericVariantService.findByVariantID(variantID);
-                // based on type, we store in the matching collection
-                switch (variant.getType()) {
+
+                // does the variant exist ? 
+                if (variant != null) {
+
+                    // based on type, we store in the matching collection
+                    switch (variant.getType()) {
                         case ANDROID:
                             androidVariants.add((AndroidVariant) variant);
                             break;
@@ -98,8 +102,9 @@ public class SenderServiceImpl implements SenderService {
                         default:
                             // nope; should never enter here
                             break;
-                        }
                     }
+                }
+            }
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplication:
@@ -142,8 +147,9 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String simplePushCategory : simplePushCategories) {
-                final List<String> tokensPerCategory = clientInstallationService.findAllSimplePushDeviceTokenForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
-                this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(simplePushCategory), tokensPerCategory);
+
+                final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant.getVariantID(), simplePushCategory, aliases);
+                this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushCategoriesAndValues.get(simplePushCategory));
             }
         }
     }
@@ -178,8 +184,9 @@ public class SenderServiceImpl implements SenderService {
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             // by convention we use the "AeroGear-specific" broadcast category:
             // TODO: create SimplePush Service class
-            final List<String> simplePushBroadcastTokens = clientInstallationService.findAllSimplePushBroadcastDeviceTokenForVariantID(simplePushVariant.getVariantID());
-            this.sentToSimplePush(simplePushVariant.getPushNetworkURL(), simplePushBroadcastValue, simplePushBroadcastTokens);
+
+            final List<String> broadcastPushEndpointURLs = clientInstallationService.findAllSimplePushBroadcastPushEndpointURLsForVariantID(simplePushVariant.getVariantID());
+            this.sentToSimplePush(broadcastPushEndpointURLs, simplePushBroadcastValue);
         }
     }
 
@@ -193,8 +200,8 @@ public class SenderServiceImpl implements SenderService {
         gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
     }
 
-    private void sentToSimplePush(String endpointBaseURL, String payload, List<String> channels) {
-        logger.fine(String.format("Sending: %s to SimplePushServer ('%s')", payload, endpointBaseURL));
-        simplePushSender.sendMessage(endpointBaseURL, payload, channels);
+    private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
+        logger.fine(String.format("Sending: %s to SimplePush network/server", payload));
+        simplePushSender.sendMessage(pushEndpointURLs, payload);
     }
 }

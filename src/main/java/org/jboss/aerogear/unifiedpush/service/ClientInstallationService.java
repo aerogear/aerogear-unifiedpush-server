@@ -80,9 +80,9 @@ public interface ClientInstallationService {
     List<String> findAllDeviceTokenForVariantID(String variantID);
 
     /**
-     * Used for (SimplePush) Broadcast. Query for all "Tokens", that are in the (SimplePush) BROADCAST category.
+     * Used for (SimplePush) Broadcast. Query for all "pushEndpoint URLs", that are in the (SimplePush) BROADCAST category.
      */
-    List<String> findAllSimplePushBroadcastDeviceTokenForVariantID(String variantID);
+    List<String> findAllSimplePushBroadcastPushEndpointURLsForVariantID(String variantID);
 
     /**
      * Used for (Android/iOS) Selective Sender API. Queries the available device-tokens for a given variant, based on provided criteria
@@ -90,7 +90,7 @@ public interface ClientInstallationService {
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 
     /**
-     * Used for (SimplePush) Selective Sender API. Queries the available SimplePush device-tokens(device-type : web) for a given variant, based on provided criteria
+     * Used for (SimplePush) Selective Sender API. Queries the available SimplePush "pushEndpoint URLs"(device-type : web) for a given variant, based on provided criteria
      */
-    List<String> findAllSimplePushDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases);
+    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases);
 }

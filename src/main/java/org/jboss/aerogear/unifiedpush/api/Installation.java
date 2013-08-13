@@ -110,5 +110,15 @@ public interface Installation {
 
     String getPlatform();
 
+    /**
+     * The <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol#PushServer_-.3E_UserAgent_2">Mozilla SimplePush Protocol Specification</a> returns a (unique) <code>pushEndpoint</code> URL.
+     * The Unified will contact the SimplePush Server at this URL to update the <code>version</code> (aka payload) of the channel identified by <code>channelID</code> (aka deviceToken).
+     * 
+     * <p> This is <b>ONLY</b> relevant for Installations of the <code>SimplePushVariant</code>
+     * @param simplePushEndpoint
+     */
+    void setSimplePushEndpoint(final String simplePushEndpoint);
+
+    String getSimplePushEndpoint();
 
 }

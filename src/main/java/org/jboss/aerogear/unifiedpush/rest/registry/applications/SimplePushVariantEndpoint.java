@@ -77,11 +77,6 @@ public class SimplePushVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
-        // poor validation
-        if (spv.getPushNetworkURL() == null) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-
         // manually set the ID:
         spv.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
@@ -128,15 +123,9 @@ public class SimplePushVariantEndpoint {
         SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
 
-            // poor validation
-            if (updatedSimplePushApplication.getPushNetworkURL() == null) {
-                return Response.status(Status.BAD_REQUEST).build();
-            }
-
             // apply updated data:
             spVariant.setName(updatedSimplePushApplication.getName());
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
-            spVariant.setPushNetworkURL(updatedSimplePushApplication.getPushNetworkURL());
             simplePushVariantService.updateSimplePushVariant(spVariant);
             return Response.noContent().build();
         }
