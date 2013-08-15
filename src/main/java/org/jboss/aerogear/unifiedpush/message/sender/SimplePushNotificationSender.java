@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,9 +54,9 @@ public class SimplePushNotificationSender implements Serializable {
 
     /**
      * Sends SimplePush notifications to all connected clients, that are represented by
+     * the {@link Collection} of channelIDs, for the given SimplePush network.
      *
      * @param pushEndpointURLs List of URL used for the different clients/endpoints on a SimplePush network/server.
-     * the {@link Collection} of channelIDs, for the given SimplePush network.
      *
      * @param payload the payload, or version string, to be submitted
      */
@@ -122,6 +122,11 @@ public class SimplePushNotificationSender implements Serializable {
     protected HttpURLConnection getConnection(String url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         if (conn instanceof HttpsURLConnection) {
+
+            // Workaround for Openshift: See AGPUSH-224
+            // On 'custom' https ports (e.g. 8443) there are self signed certs.
+            // Here, we add a trust store of that, on Openshift.
+            // TODO: remove, once the cert for 8443 has been fixed (bugzilla: 997108)
             setCustomTrustStore(conn, "/openshift.truststore", "password");
         }
         return conn;
