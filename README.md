@@ -186,7 +186,7 @@ private final Registrations registrations = new Registrations();
 
 // Create a PushConfig for the UnifiedPush Server:
 PushConfig config = new PushConfig(UNIFIED_PUSH_URL, GCM_SENDER_ID);
-onfig.setVariantID(VARIANT_ID);
+config.setVariantID(VARIANT_ID);
 config.setSecret(SECRET);
 config.setAlias(MY_ALIAS);
 
