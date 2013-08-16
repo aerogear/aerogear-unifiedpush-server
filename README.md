@@ -37,11 +37,11 @@ mvn package jboss-as:deploy
 ***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleanup. Consult your browser's docs for help with removing items from local storage.
 
 
-#### Admin UI
+#### Administration Console
 
-Once the server is running access it via ```http://SERVER:PORT/ag-push``` from there you can use the Admin UI. 
+Once the server is running access it via ```http://SERVER:PORT/ag-push```. Check the Administration console [user guide](http://aerogear.org/docs/guides/AdminConsoleGuide/) for more information on using the console.
 
-Besides the _Admin UI_ the server can be accessed over RESTful APIs, as explained below.
+Besides the _Administration console_ the server can be accessed over RESTful APIs, as explained below.
 
 #### Login
 
