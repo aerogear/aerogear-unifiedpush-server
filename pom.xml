@@ -37,9 +37,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/aerogear/aerogear-unified-push-server.git</connection>
-        <developerConnection>scm:git:git@github.com:aerogear/aerogear-unified-push-server.git</developerConnection>
-        <url>https://github.com/aerogear/aerogear-unified-push-server</url>
+        <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
+        <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
+        <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
         <tag>HEAD</tag>
     </scm>
 
