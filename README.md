@@ -43,33 +43,38 @@ Once the server is running access it via ```http://SERVER:PORT/ag-push```. Check
 
 Besides the _Administration console_ the server can be accessed over RESTful APIs, as explained below.
 
+
+#### HTTPS
+
+We highly recommend using the _AeroGear UnifiedPush Server_ via *https*! _Note: The ```cURL``` statements below are using SSLv3 (```-3```)_
+
 #### Login
 
 Temporarily there is a "admin:123" user.  On _first_ login,  you will need to change the password.
 
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -H "Accept: application/json" -H "Content-type: application/json"
   -X POST -d '{"loginName": "admin", "password":"123"}'
-  http://localhost:8080/ag-push/rest/auth/login
+  https://SERVER:PORT/CONTEXT/rest/auth/login
 ```
 
 This will return a status code of 403, then do perform the update:
 
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -H "Accept: application/json" -H "Content-type: application/json"
   -X PUT -d '{"loginName": "admin", "password":"123", "newPassword":"SOMENEWPASSWORD"}'
-  http://localhost:8080/ag-push/rest/auth/update
+  https://SERVER:PORT/CONTEXT/rest/auth/update
 ```
 
 To _update_ the initial password, you need to specify the old ```password``` and new password (```newPassword```). Now proceed with a login, by using the new password:
 
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -H "Accept: application/json" -H "Content-type: application/json"
   -X POST -d '{"loginName": "admin", "password":"SOMENEWPASSWORD"}'
-  http://localhost:8080/ag-push/rest/auth/login
+  https://SERVER:PORT/CONTEXT/rest/auth/login
 ```
 
 
@@ -78,10 +83,10 @@ curl -v -b cookies.txt -c cookies.txt
 Register a ```PushApplication```, like _Mobile HR_:
 
 ```
-curl -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Content-type: application/json"
+curl -3 -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"name" : "MyApp", "description" :  "awesome app" }'
-  http://localhost:8080/ag-push/rest/applications
+  https://SERVER:PORT/CONTEXT/rest/applications
 ```
 
 _The response returns a **pushApplicationID** and a **masterSecret** that will be both used later on when you attempt to send a push message (either Broadcast or Selected Send)._
@@ -90,24 +95,24 @@ _The response returns a **pushApplicationID** and a **masterSecret** that will b
 
 Add a *PRODUCTION* ```iOS``` variant (e.g. _HR for iOS_):
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data"
   -F "certificate=@/Users/matzew/Desktop/MyProdCert.p12"
   -F "passphrase=TopSecret"
   -F "production=true"  // make sure you have Production certificate and Provisioning Profile
 
-  -X POST http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/iOS
+  -X POST https://SERVER:PORT/CONTEXT/rest/applications/{pushApplicationID}/iOS
 ```
 
 Add a *DEVELOPMENT* ```iOS``` variant (e.g. _HR for iOS_):
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -i -H "Accept: application/json" -H "Content-type: multipart/form-data"
   -F "certificate=@/Users/matzew/Desktop/MyTestCert.p12"
   -F "passphrase=TopSecret"
   -F "production=false"  // make sure you have Development certificate and Provisioning Profile
 
-  -X POST http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/iOS
+  -X POST https://SERVER:PORT/CONTEXT/rest/applications/{pushApplicationID}/iOS
 ```
 
 **NOTE:** The above is a _multipart/form-data_, since it is required to upload the "Apple Push certificate"!
@@ -118,12 +123,12 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 Add an ```android``` variant (e.g. _HR for Android_):
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"googleKey" : "IDDASDASDSA"}'
 
-  http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/android
+  https://SERVER:PORT/CONTEXT/rest/applications/{pushApplicationID}/android
 ```
 
 _The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the Android client SDK._
@@ -132,12 +137,12 @@ _The response returns a **variantID** and a **secret**, that will be both used l
 
 Add an ```simplepush``` variant (e.g. _HR for Browser):
 ```
-curl -v -b cookies.txt -c cookies.txt
+curl -3 -v -b cookies.txt -c cookies.txt
   -v -H "Accept: application/json" -H "Content-type: application/json"
   -X POST
   -d '{"name" : "My SimplePush Variant"}'
 
-  http://localhost:8080/ag-push/rest/applications/{pushApplicationID}/simplePush
+  https://SERVER:PORT/CONTEXT/rest/applications/{pushApplicationID}/simplePush
 ```
 
 _The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
@@ -239,7 +244,7 @@ client.registerWithPushServer(metadata);
 Send broadcast push message to ALL mobile apps of a certain Push APP......:
 
 ```
-curl -u "{PushApplicationID}:{MasterSecret}"
+curl -3 -u "{PushApplicationID}:{MasterSecret}"
    -v -H "Accept: application/json" -H "Content-type: application/json"
    -X POST
    -d '{
@@ -250,7 +255,7 @@ curl -u "{PushApplicationID}:{MasterSecret}"
        "simple-push":"version=123"
      }'
 
-http://localhost:8080/ag-push/rest/sender/broadcast
+https://SERVER:PORT/CONTEXT/rest/sender/broadcast
 ```
 
 For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).
@@ -260,7 +265,7 @@ For more details take a look at the ["message format specification"](http://aero
 To send a message (version) notification to a selected list of Channels, issue the following command:
 
 ```
-curl -u "{PushApplicationID}:{MasterSecret}"
+curl -3 -u "{PushApplicationID}:{MasterSecret}"
    -v -H "Accept: application/json" -H "Content-type: application/json"
    -X POST
 
@@ -274,7 +279,7 @@ curl -u "{PushApplicationID}:{MasterSecret}"
       "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
    }'
 
-http://localhost:8080/ag-push/rest/sender/selected
+https://SERVER:PORT/CONTEXT/rest/sender/selected
 ```
 
 For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).
