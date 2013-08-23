@@ -133,6 +133,7 @@ public class AndroidVariantEndpoint {
 
             // apply updated data:
             androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
+            androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
             androidVariantService.updateAndroidVariant(androidVariant);
