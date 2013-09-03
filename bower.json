@@ -4,12 +4,14 @@
   "dependencies": {
     "jquery": "~1.9.1",
     "aerogear": "~1.1.2",
-    "ember": "~1.0.0-rc.6.1",
+    "ember": "1.0.0-rc.7",
     "topcoat": "~0.5.1",
-    "jquery-form": "*",
-    "handlebars": "1.0.0-rc.4"
+    "jquery-form": "*"
   },
   "devDependencies": {
     "jquery-mockjax": "~1.5.2"
+  },
+  "resolutions": {
+    "jquery": "~1.9.1"
   }
 }
