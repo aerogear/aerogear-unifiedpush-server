@@ -117,6 +117,7 @@ App.MobileVariant.reopenClass({
         })
         .then( null, function( error ) {
             switch( error.status ) {
+            //Possible this may never happen now that we have a beforeModel on the Router
             case 401:
                 App.Router.router.transitionTo( "login" );
                 break;

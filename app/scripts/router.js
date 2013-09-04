@@ -52,6 +52,14 @@ App.Router.map( function() {
     Extend the Ember.Route Method
 */
 App.Route = Ember.Route.extend({
+    beforeModel: function() {
+        var that = this;
+        return App.AeroGear.pipelines.pipes.applications.read().then( null, function() {
+            Ember.run( function() {
+                that.transitionTo( "login" );
+            });
+        });
+    },
     activate: function(){
         this.send( "clearErrors" );
     }
@@ -99,7 +107,10 @@ App.ApplicationRoute = Ember.Route.extend({
 /*
     Login Route
 */
-App.LoginRoute = App.Route.extend({
+App.LoginRoute = Ember.Route.extend({
+    activate: function(){
+        this.send( "clearErrors" );
+    },
     model: function() {
 
         return App.User.create();

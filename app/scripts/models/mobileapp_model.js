@@ -82,6 +82,7 @@ App.MobileApplication.reopenClass({
         .then( null, function( error ) {
             Ember.run( this, function() {
                 switch( error.status ) {
+                //Possible this may never happen now that we have a beforeModel on the Router
                 case 401:
                     //Possibly should be done somewhere else?
                     App.Router.router.transitionTo( "login" );
