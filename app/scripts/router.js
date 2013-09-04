@@ -69,7 +69,7 @@ App.Route = Ember.Route.extend({
     Application Route - Mostly For Global Events
 */
 App.ApplicationRoute = Ember.Route.extend({
-    events: {
+    actions: {
         error: function( controller, errormsg ) {
             var content = controller.get( "content" ),
                 templateTarget;

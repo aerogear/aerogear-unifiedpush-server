@@ -15,79 +15,81 @@
 App.LoginController = Ember.ObjectController.extend({
     loginIn: true,
     relog: false,
-    login: function() {
-        var that = this,
-            user = this.get( "model" );
+    actions: {
+        login: function() {
+            var that = this,
+                user = this.get( "model" );
 
-        //Validate the form fields with Ember Validations
-        user.validateProperty( "loginName" );
-        user.validateProperty( "password" );
+            //Validate the form fields with Ember Validations
+            user.validateProperty( "loginName" );
+            user.validateProperty( "password" );
 
-        if( !user.get( "isValid" ) ) {
-            this.send( "error", this, user.get( "validationErrors.allMessages" ) );
-        } else {
-            //Use AeroGear Authenticator to login
-            App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
-                contentType: "application/json",
-                success: function() {
-                    // Successful Login, now go to /mobileApps
-                    Ember.run( this, function() {
-                        that.set( "relog", false );
-                        that.transitionToRoute( "mobileApps" );
-                    });
-                },
-                error: function( response ) {
-                    Ember.run( this, function() {
-                        if( response.status === 403 ) {
-                            //change the password
-                            that.set( "oldPassword", that.get( "password" ) );
+            if( !user.get( "isValid" ) ) {
+                this.send( "error", this, user.get( "validationErrors.allMessages" ) );
+            } else {
+                //Use AeroGear Authenticator to login
+                App.AeroGear.authenticator.login( JSON.stringify( { loginName: this.get( "loginName" ), password: this.get( "password" ) } ), {
+                    contentType: "application/json",
+                    success: function() {
+                        // Successful Login, now go to /mobileApps
+                        Ember.run( this, function() {
+                            that.set( "relog", false );
+                            that.transitionToRoute( "mobileApps" );
+                        });
+                    },
+                    error: function( response ) {
+                        Ember.run( this, function() {
+                            if( response.status === 403 ) {
+                                //change the password
+                                that.set( "oldPassword", that.get( "password" ) );
+                                that.set( "password", "" );
+                                that.set( "loginIn", false );
+                            } else {
+                                that.send( "error", that, "Login Error" );
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        //Only Temporary until we can get the user create scripts
+        other: function() {
+            //need to send to the update endpoint
+            var that = this,
+                password = this.get( "password" ),
+                loginName = this.get( "loginName" ),
+                user = this.get( "model" ),
+                data;
+
+            user.validateProperty( "password" );
+            user.validateProperty( "confirmPassword" );
+
+            if( user.get( "isValid" ) ) {
+                data = JSON.stringify( { loginName: loginName, password: this.get( "oldPassword" ), newPassword: password } );
+
+                $.ajax({
+                    url: App.baseURL + "rest/auth/update",
+                    type: "PUT",
+                    data: data,
+                    contentType: "application/json",
+                    success: function() {
+                        Ember.run( this, function() {
+                            // User Must login Again
                             that.set( "password", "" );
-                            that.set( "loginIn", false );
-                        } else {
-                            that.send( "error", that, "Login Error" );
-                        }
-                    });
-                }
-            });
-        }
-    },
-    //Only Temporary until we can get the user create scripts
-    other: function() {
-        //need to send to the update endpoint
-        var that = this,
-            password = this.get( "password" ),
-            loginName = this.get( "loginName" ),
-            user = this.get( "model" ),
-            data;
-
-        user.validateProperty( "password" );
-        user.validateProperty( "confirmPassword" );
-
-        if( user.get( "isValid" ) ) {
-            data = JSON.stringify( { loginName: loginName, password: this.get( "oldPassword" ), newPassword: password } );
-
-            $.ajax({
-                url: App.baseURL + "rest/auth/update",
-                type: "PUT",
-                data: data,
-                contentType: "application/json",
-                success: function() {
-                    Ember.run( this, function() {
-                        // User Must login Again
-                        that.set( "password", "" );
-                        that.set( "oldPassord", "" );
-                        that.set( "loginIn", true );
-                        that.set( "relog", true );
-                    });
-                },
-                error: function() {
-                    Ember.run( this, function() {
-                        that.send( "error", that, "Save Error" );
-                    });
-                }
-            });
-        } else {
-            this.send( "error", this, user.get( "validationErrors.allMessages" ) );
+                            that.set( "oldPassord", "" );
+                            that.set( "loginIn", true );
+                            that.set( "relog", true );
+                        });
+                    },
+                    error: function() {
+                        Ember.run( this, function() {
+                            that.send( "error", that, "Save Error" );
+                        });
+                    }
+                });
+            } else {
+                this.send( "error", this, user.get( "validationErrors.allMessages" ) );
+            }
         }
     }
 });
