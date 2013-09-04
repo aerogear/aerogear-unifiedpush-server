@@ -3,6 +3,10 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk6
+before_install:
+  - git clone git://github.com/aerogear/aerogear-security-picketlink.git
+  - cd $PWD/aerogear-security-picketlink
+  - mvn install -N --quiet
 notifications:
   irc: "irc.freenode.org#aerogear"
 
