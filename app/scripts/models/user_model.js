@@ -27,7 +27,7 @@ App.User = Ember.Object.extend( Ember.Validations, {
         confirmPassword: {
             presence: true,
             match: {
-                field: "password"
+                property: "password"
             }
         }
     }
