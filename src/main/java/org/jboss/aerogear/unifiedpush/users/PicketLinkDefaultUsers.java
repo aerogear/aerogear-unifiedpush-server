@@ -20,9 +20,9 @@ import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.PartitionManager;
 import org.picketlink.idm.RelationshipManager;
 import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.sample.Role;
-import org.picketlink.idm.model.sample.SampleModel;
-import org.picketlink.idm.model.sample.User;
+import org.picketlink.idm.model.basic.Role;
+import org.picketlink.idm.model.basic.BasicModel;
+import org.picketlink.idm.model.basic.User;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -56,7 +56,7 @@ public class PicketLinkDefaultUsers {
         final String DEFAULT_PASSWORD = "123";
         final String DEFAULT_USER = "admin";
 
-        User adminUser = SampleModel.getUser(identityManager, DEFAULT_USER);
+        User adminUser = BasicModel.getUser(identityManager, DEFAULT_USER);
         
         // We only create the Admin, if there is none;
         // if present, there is also no need to apply the same 'Developer' role again.
@@ -79,7 +79,7 @@ public class PicketLinkDefaultUsers {
     }
 
     private void grantRoles(User user, Role role) {
-        SampleModel.grantRole(relationshipManager, user, role);
+        BasicModel.grantRole(relationshipManager, user, role);
     }
 
     //Expiration date of the password

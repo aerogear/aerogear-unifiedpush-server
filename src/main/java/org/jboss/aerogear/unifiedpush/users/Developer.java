@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.users;
 
-import org.picketlink.idm.model.sample.User;
+import org.picketlink.idm.model.basic.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -20,7 +20,7 @@ package org.jboss.aerogear.unifiedpush.rest.user;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.model.sample.User;
+import org.picketlink.idm.model.basic.User;
 import org.picketlink.idm.query.IdentityQuery;
 
 import javax.ejb.Stateless;

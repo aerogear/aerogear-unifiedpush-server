@@ -21,7 +21,7 @@ import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
-import org.picketlink.idm.model.sample.User;
+import org.picketlink.idm.model.basic.User;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
