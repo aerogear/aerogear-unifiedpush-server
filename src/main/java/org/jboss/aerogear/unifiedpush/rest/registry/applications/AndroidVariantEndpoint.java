@@ -45,7 +45,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-@Secure("developer")
+@Secure({"developer","admin"})
 public class AndroidVariantEndpoint {
 
     @Inject

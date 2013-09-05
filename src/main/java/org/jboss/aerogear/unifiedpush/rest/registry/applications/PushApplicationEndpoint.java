@@ -42,7 +42,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-@Secure("developer")
+@Secure({"developer","admin"})
 public class PushApplicationEndpoint {
 
     @Inject

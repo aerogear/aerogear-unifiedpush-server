@@ -54,27 +54,50 @@ public class PicketLinkDefaultUsers {
         this.relationshipManager = partitionManager.createRelationshipManager();
 
         final String DEFAULT_PASSWORD = "123";
-        final String DEFAULT_USER = "admin";
+        final String DEFAULT_DEVELOPER = "developer";
+        final String DEFAULT_ADMIN = "admin";
 
-        User adminUser = BasicModel.getUser(identityManager, DEFAULT_USER);
+        User developerUser = BasicModel.getUser(identityManager, DEFAULT_DEVELOPER);
         
         // We only create the Admin, if there is none;
         // if present, there is also no need to apply the same 'Developer' role again.
-        if (adminUser == null) {
-            adminUser = new User(DEFAULT_USER);
-            identityManager.add(adminUser);
+        if (developerUser  == null) {
+            developerUser  = new User(DEFAULT_DEVELOPER);
+            identityManager.add(developerUser );
 
             Calendar calendar = expirationDate();
             Password password = new Password(DEFAULT_PASSWORD.toCharArray());
 
-            identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
+            identityManager.updateCredential(developerUser , password, new Date(), calendar.getTime());
 
             Role roleDeveloper = new Role(UserRoles.DEVELOPER);
 
             identityManager.add(roleDeveloper);
 
-            grantRoles(adminUser, roleDeveloper);
+            grantRoles(developerUser , roleDeveloper);
         }
+
+        //Temp hack to add user with admin rights
+        User adminUser = BasicModel.getUser(identityManager, DEFAULT_ADMIN);
+
+        // We only create the Admin, if there is none;
+        // if present, there is also no need to apply the same 'Developer' role again.
+        if (adminUser  == null) {
+            adminUser  = new User(DEFAULT_ADMIN);
+            identityManager.add(adminUser );
+
+            Calendar calendar = expirationDate();
+            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
+
+            identityManager.updateCredential(adminUser , password, new Date(), calendar.getTime());
+
+            Role roleAdmin= new Role(UserRoles.ADMIN);
+
+            identityManager.add(roleAdmin);
+
+            grantRoles(adminUser,roleAdmin);
+        }
+
 
     }
 
