@@ -30,4 +30,9 @@ public class UserRoles {
      */
     public static final String DEVELOPER = "developer";
 
+    /**
+     * The type identifier for a admin.
+     */
+    public static final String ADMIN = "admin";
+
 }

@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{variantID}/installations/")
-@Secure("developer")
+@Secure({"developer","admin"})
 public class InstallationManagementEndpoint {
 
     @Inject

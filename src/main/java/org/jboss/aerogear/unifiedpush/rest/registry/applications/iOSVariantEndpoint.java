@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-@Secure("developer")
+@Secure({"developer","admin"})
 public class iOSVariantEndpoint {
 
     @Inject
