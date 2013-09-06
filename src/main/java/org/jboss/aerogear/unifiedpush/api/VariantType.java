@@ -20,7 +20,7 @@ package org.jboss.aerogear.unifiedpush.api;
  * A type-safe identifier for the allowed variant types.
  */
 public enum VariantType {
-    
+
     /**
      * The type identifier for our Android variants. 
      */
@@ -37,10 +37,11 @@ public enum VariantType {
     SIMPLE_PUSH("simplePush");
 
     private final String typeName;
-    
+
     private VariantType(String typeName) {
         this.typeName = typeName;
     }
+
     /**
      * Returns the actual type name of the variant type
      */

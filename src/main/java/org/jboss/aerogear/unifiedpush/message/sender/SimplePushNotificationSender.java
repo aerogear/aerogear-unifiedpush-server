@@ -79,7 +79,7 @@ public class SimplePushNotificationSender implements Serializable {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
             } finally {
                 // tear down
-                if (conn != null ) {
+                if (conn != null) {
                     conn.disconnect();
                 }
             }
@@ -151,7 +151,7 @@ public class SimplePushNotificationSender implements Serializable {
 
     private X509TrustManager getDefaultTrustManager() throws NoSuchAlgorithmException, KeyStoreException {
         final TrustManagerFactory deftmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        deftmf.init((KeyStore)null);
+        deftmf.init((KeyStore) null);
         final TrustManager[] trustManagers = deftmf.getTrustManagers();
         for (TrustManager trustManager : trustManagers) {
             if (trustManager instanceof X509TrustManager) {
@@ -161,7 +161,8 @@ public class SimplePushNotificationSender implements Serializable {
         throw new RuntimeException("Could not find a default trustmanager");
     }
 
-    private KeyStore getCustomTrustStore(final String trustStore, final String password) throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
+    private KeyStore getCustomTrustStore(final String trustStore, final String password) throws NoSuchAlgorithmException, CertificateException, IOException,
+            KeyStoreException {
         final KeyStore customTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         customTrustStore.load(getClass().getResourceAsStream(trustStore), password.toCharArray());
         return customTrustStore;
@@ -170,7 +171,7 @@ public class SimplePushNotificationSender implements Serializable {
     private void setTrustStoreForConnection(final HttpsURLConnection connection, final X509TrustManager trustManager)
             throws KeyManagementException, NoSuchAlgorithmException {
         final SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, new TrustManager[]{trustManager}, null);
+        sslContext.init(null, new TrustManager[] { trustManager }, null);
         connection.setSSLSocketFactory(sslContext.getSocketFactory());
     }
 
