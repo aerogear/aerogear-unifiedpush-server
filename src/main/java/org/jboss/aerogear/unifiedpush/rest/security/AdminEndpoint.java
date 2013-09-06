@@ -41,6 +41,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Stateless
 @Path("/auth")
@@ -57,7 +58,7 @@ public class AdminEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Secure("admin")
-    public Response enroll(final Developer developer) {
+    public Response enroll(Developer developer) {
         try {
 
             this.identityManager = partitionManager.createIdentityManager();
@@ -72,6 +73,10 @@ public class AdminEndpoint {
             Role developerRole= BasicModel.getRole(identityManager,UserRoles.DEVELOPER);
 
             grantRoles(user,developerRole);
+            List<User> list = identityManager.createIdentityQuery(User.class)
+                    .setParameter(User.LOGIN_NAME, user.getLoginName()).getResultList();
+            user = list.get(0);
+            developer.setId(user.getId());
 
         } catch (IdentityManagementException ime) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Credential not available").build();
