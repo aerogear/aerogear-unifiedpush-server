@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.user;
 
-
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.picketlink.idm.IdentityManager;
@@ -80,6 +79,5 @@ public class UserEndpoint {
         identityManager.remove(simpleUser);
         return Response.noContent().build();
     }
-
 
 }

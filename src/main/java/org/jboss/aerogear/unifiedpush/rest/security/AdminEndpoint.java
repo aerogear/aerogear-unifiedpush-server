@@ -64,15 +64,15 @@ public class AdminEndpoint {
             this.identityManager = partitionManager.createIdentityManager();
             this.relationshipManager = partitionManager.createRelationshipManager();
             User user = new User(developer.getLoginName());
-            identityManager.add(user );
+            identityManager.add(user);
             Calendar calendar = expirationDate();
             Password password = new Password(developer.getPassword().toCharArray());
 
-            identityManager.updateCredential(user , password, new Date(), calendar.getTime());
+            identityManager.updateCredential(user, password, new Date(), calendar.getTime());
 
-            Role developerRole= BasicModel.getRole(identityManager,UserRoles.DEVELOPER);
+            Role developerRole = BasicModel.getRole(identityManager, UserRoles.DEVELOPER);
 
-            grantRoles(user,developerRole);
+            grantRoles(user, developerRole);
             List<User> list = identityManager.createIdentityQuery(User.class)
                     .setParameter(User.LOGIN_NAME, user.getLoginName()).getResultList();
             user = list.get(0);
@@ -85,7 +85,6 @@ public class AdminEndpoint {
         return Response.ok(developer).build();
 
     }
-
 
     private void grantRoles(User user, Role role) {
         BasicModel.grantRole(relationshipManager, user, role);

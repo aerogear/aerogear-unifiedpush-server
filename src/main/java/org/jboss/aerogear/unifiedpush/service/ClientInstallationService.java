@@ -36,7 +36,7 @@ public interface ClientInstallationService {
      * Performs an update/merge on the given entity.
      */
     InstallationImpl updateInstallation(InstallationImpl installation);
-    
+
     /**
      * Updates the first argument with the values from the second, and returns the updated entity.
      * @param toUpdate entity to be updated

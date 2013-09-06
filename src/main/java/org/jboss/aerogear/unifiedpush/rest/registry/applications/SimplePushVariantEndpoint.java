@@ -45,7 +45,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-@Secure({"developer","admin"})
+@Secure( { "developer", "admin" })
 public class SimplePushVariantEndpoint {
 
     @Inject

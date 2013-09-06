@@ -39,7 +39,7 @@ public interface UnifiedPushMessage {
      * but need to call specific APIs to show the 'alert' value.
      */
     String getAlert();
-    
+
     /**
      * Returns the value of the 'sound' key from the submitted payload.
      * This key is recognized in native iOS, without any API invocation.
@@ -57,7 +57,7 @@ public interface UnifiedPushMessage {
      * APIs to show the 'badge number'.
      */
     int getBadge();
-    
+
     /**
      * Returns a Map, representing any other key-value pairs that were send
      * to the RESTful Sender API.

@@ -44,7 +44,7 @@ public class APNsPushNotificationSender {
     private Logger logger;
 
     @Inject
-    private ClientInstallationService clientInstallationService ;
+    private ClientInstallationService clientInstallationService;
 
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
@@ -86,8 +86,7 @@ public class APNsPushNotificationSender {
 
                 // trigger asynchronous deletion:
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
-            }
-            finally {
+            } finally {
 
                 // tear down and release resources:
                 service.stop();
@@ -117,20 +116,20 @@ public class APNsPushNotificationSender {
 
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
-            
+
             final ApnsServiceBuilder builder = APNS.newService();
 
             // add the certificate:
             ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
             builder.withCert(stream, iOSVariant.getPassphrase());
-            
+
             try {
                 // release the stream
                 stream.close();
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error reading certificate", e);
             }
-            
+
             // pick the destination:
             if (iOSVariant.isProduction()) {
                 builder.withProductionDestination();

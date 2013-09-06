@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{variantID}/installations/")
-@Secure({"developer","admin"})
+@Secure( { "developer", "admin" })
 public class InstallationManagementEndpoint {
 
     @Inject
@@ -49,12 +49,12 @@ public class InstallationManagementEndpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findInstallations(@PathParam("variantID") String variantId){
+    public Response findInstallations(@PathParam("variantID") String variantId) {
 
         //Find the variant using the variantID
-        Variant variant =  genericVariantService.findByVariantID(variantId);
+        Variant variant = genericVariantService.findByVariantID(variantId);
 
-        if(variant == null){
+        if (variant == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
@@ -64,11 +64,11 @@ public class InstallationManagementEndpoint {
     @GET
     @Path("/{installationID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
+    public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(installation == null){
+        if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
@@ -78,11 +78,11 @@ public class InstallationManagementEndpoint {
     @PUT
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
+    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(installation == null){
+        if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
@@ -95,11 +95,11 @@ public class InstallationManagementEndpoint {
     @DELETE
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId){
+    public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         InstallationImpl installation = clientInstallationService.findById(installationId);
 
-        if(installation == null){
+        if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
         }
 
