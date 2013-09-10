@@ -49,23 +49,6 @@ App.Router.map( function() {
 });
 
 /*
-    Extend the Ember.Route Method
-*/
-App.Route = Ember.Route.extend({
-    beforeModel: function() {
-        var that = this;
-        return App.AeroGear.pipelines.pipes.applications.read().then( null, function() {
-            Ember.run( function() {
-                that.transitionTo( "login" );
-            });
-        });
-    },
-    activate: function(){
-        this.send( "clearErrors" );
-    }
-});
-
-/*
     Application Route - Mostly For Global Events
 */
 App.ApplicationRoute = Ember.Route.extend({
