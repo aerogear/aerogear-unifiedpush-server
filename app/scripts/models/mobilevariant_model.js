@@ -112,36 +112,40 @@ App.MobileVariant.reopenClass({
             id: variantApplicationId
         })
         .then( function( response ) {
-            if( AeroGear.isArray( response ) ) {
-                response.forEach( function( data ) {
-                    data.isLoaded = true;
-                    data.pushApplicationID = applicationPushId;
+            Ember.run( this, function() {
+                if( AeroGear.isArray( response ) ) {
+                    response.forEach( function( data ) {
+                        data.isLoaded = true;
+                        data.pushApplicationID = applicationPushId;
 
-                    //do the instance thing
-                    data = model._createVariantInstanceObject( data );
+                        //do the instance thing
+                        data = model._createVariantInstanceObject( data );
 
-                    mobileVariant.pushObject( App.MobileVariant.create( data ) );
-                });
-            } else {
+                        mobileVariant.pushObject( App.MobileVariant.create( data ) );
+                    });
+                } else {
 
-                // Add a loading indicator
-                response.isLoaded = true;
-                response.pushApplicationID = applicationPushId;
-                response = model._createVariantInstanceObject( response );
-                mobileVariant.setProperties( response );
+                    // Add a loading indicator
+                    response.isLoaded = true;
+                    response.pushApplicationID = applicationPushId;
+                    response = model._createVariantInstanceObject( response );
+                    mobileVariant.setProperties( response );
 
-            }
+                }
+            });
         })
         .then( null, function( error ) {
-            switch( error.status ) {
-            //Possible this may never happen now that we have a beforeModel on the Router
-            case 401:
-                App.Router.router.transitionTo( "login" );
-                break;
-            default:
-                //result.setProperties( { isLoaded: true, error: error } );
-                break;
-            }
+            Ember.run( this, function() {
+                switch( error.status ) {
+                //Possible this may never happen now that we have a beforeModel on the Router
+                case 401:
+                    App.Router.router.transitionTo( "login" );
+                    break;
+                default:
+                    //result.setProperties( { isLoaded: true, error: error } );
+                    break;
+                }
+            });
         });
 
         return mobileVariant;
