@@ -16,79 +16,80 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     sortProperties: [ "pushApplicationID" ],
     sortAscending: true,
     applicationPipe: App.AeroGear.pipelines.pipes.applications,
-    edit: function( controller ) {
-        var that = controller,
-            applicationData,
-            model = controller.get( "model" );
+    actions: {
+        edit: function( controller ) {
+            var that = controller,
+                applicationData,
+                model = controller.get( "model" );
 
-        model.validate();
+            model.validate();
 
-        if( !model.get( "isValid" ) ) {
-            this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
-        } else {
-            applicationData = {
-                name: controller.get( "name" ),
-                id: controller.get( "pushApplicationID" ),
-                description: controller.get( "description" )
-            };
+            if( !model.get( "isValid" ) ) {
+                this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
+            } else {
+                applicationData = {
+                    name: controller.get( "name" ),
+                    id: controller.get( "pushApplicationID" ),
+                    description: controller.get( "description" )
+                };
 
-            this.applicationPipe.save( applicationData, {
-                success: function() {
-                    Ember.run( this, function() {
-                        $( "form" )[0].reset();
-                        that.transitionToRoute( "mobileApps" );
-                    });
-                },
-                error: function( error ) {
-                    Ember.run( this, function() {
+                this.applicationPipe.save( applicationData, {
+                    success: function() {
+                        Ember.run( this, function() {
+                            $( "form" )[0].reset();
+                            that.transitionToRoute( "mobileApps" );
+                        });
+                    },
+                    error: function( error ) {
+                        Ember.run( this, function() {
+                            switch( error.status ) {
+                            case 401:
+                                that.transitionToRoute( "login" );
+                                break;
+                            default:
+                                that.send( "error", that, "Error Saving" );
+                                break;
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        cancel: function() {
+            //Probably a better way
+            $( "form" )[0].reset();
+
+            this.transitionToRoute( "mobileApps" );
+        },
+        remove: function( app ) {
+            var things = app,
+                that = this;
+
+            if( window.confirm( "Really Delete " + app.name + " ?" ) ) {
+                this.applicationPipe.remove( app.pushApplicationID, {
+                    success: function() {
+                        var content = that.get( "model" ).get( "content" ),
+                            find;
+
+                        find = content.find( function( value ) {
+                            return value.pushApplicationID === things.pushApplicationID;
+                        });
+
+                        content.removeObject( find );
+                    },
+                    error: function( error ) { // TODO: Maybe Make this a class method?
                         switch( error.status ) {
                         case 401:
-                            that.transitionToRoute( "login" );
+                            App.Router.router.transitionToRoute( "login" );
                             break;
                         default:
                             that.send( "error", that, "Error Saving" );
                             break;
                         }
-                    });
-                }
-            });
-        }
-
-    },
-    cancel: function() {
-        //Probably a better way
-        $( "form" )[0].reset();
-
-        this.transitionToRoute( "mobileApps" );
-    },
-    remove: function( app ) {
-        var things = app,
-            that = this;
-
-        if( window.confirm( "Really Delete " + app.name + " ?" ) ) {
-            this.applicationPipe.remove( app.pushApplicationID, {
-                success: function() {
-                    var content = that.get( "model" ).get( "content" ),
-                        find;
-
-                    find = content.find( function( value ) {
-                        return value.pushApplicationID === things.pushApplicationID;
-                    });
-
-                    content.removeObject( find );
-                },
-                error: function( error ) { // TODO: Maybe Make this a class method?
-                    switch( error.status ) {
-                    case 401:
-                        App.Router.router.transitionToRoute( "login" );
-                        break;
-                    default:
-                        that.send( "error", that, "Error Saving" );
-                        break;
                     }
-                }
-            });
-        }
+                });
+            }
+        },
     },
     totalApps: function() {
 
