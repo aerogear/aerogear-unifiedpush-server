@@ -3,6 +3,10 @@
     <section>
         <h2>{{ name }}</h2>
         <span>{{ description }}</span>
+        <br>
+        {{#if isAndroid }}
+        <span>{{ googleProjectNumber }}</span>
+        {{/if}}
     </section>
     <section>
             <h3>Authentication Info</h3>

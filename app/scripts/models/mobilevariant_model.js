@@ -66,6 +66,9 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
         // } else {
         //     return "iOS";
         // }
+    }.property(),
+    googleProjectNumber: function() {
+        return this.get( "projectNumber" ) ? this.get( "projectNumber" ) : "N/A";
     }.property()
 });
 

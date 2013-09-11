@@ -105,6 +105,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             case "android":
                 if( model.validateProperty( "googleKey" ) ) {
                     applicationData.googleKey = controller.get( "googleKey" );
+                    applicationData.projectNumber = controller.get( "projectNumber" );
                 } else {
                     hasErrors = true;
                 }
@@ -151,6 +152,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         case "android":
             if( model.validateProperty( "googleKey" ) ) {
                 applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+                applicationData.projectNumber = controller.get( "projectNumber" );
             } else {
                 hasErrors = true;
             }
@@ -243,6 +245,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         controller.set( "variantDescription", "" );
         controller.set( "variantName", "" );
         controller.set( "googleKey", "" );
+        controller.set( "projectNumber", "" );
         controller.set( "passphrase", "" );
         //controller.set( "simplePushEndpoint", "" );
         controller.set( "production", false );

@@ -3,12 +3,13 @@
     <table class="rcue-table">
         <thead>
             <tr>
-                <th colspan="6">
+                <th colspan="7">
                     <div class="table-create-btn topcoat-button">{{#linkTo "variants.add" this}}Add Variant{{/linkTo}}</div>
                 </th>
             </tr>
             <tr>
                 <th>Name</th>
+                <th>Project Number</th>
                 <th>Description</th>
                 <th>Platform</th>
                 <th class="rcue-table-number">Instances</th>
@@ -19,6 +20,7 @@
             {{#each variantList }}
                 <tr>
                     <td>{{#linkTo "variant" this}}{{name}}{{/linkTo}}</td>
+                    <td>{{ googleProjectNumber }}</td>
                     <td>{{ description }}</td>
                     <td>{{ typeFormatted }}</td>
                     <td class="rcue-table-number">{{ totalInstances }}</td>
