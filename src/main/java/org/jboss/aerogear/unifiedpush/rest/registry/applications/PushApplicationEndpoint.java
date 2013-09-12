@@ -122,7 +122,6 @@ public class PushApplicationEndpoint {
     // DELETE
     @DELETE
     @Path("/{pushAppID}")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());

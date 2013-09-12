@@ -146,7 +146,6 @@ public class AndroidVariantEndpoint {
     // DELETE
     @DELETE
     @Path("/{androidID}")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
 
         AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
