@@ -136,7 +136,6 @@ public class SimplePushVariantEndpoint {
     // DELETE
     @DELETE
     @Path("/{simplePushID}")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteSimplePushVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("simplePushID") String simplePushID) {
 
         SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
