@@ -59,8 +59,8 @@ public class PicketLinkDefaultUsers {
 
         User developerUser = BasicModel.getUser(identityManager, DEFAULT_DEVELOPER);
 
-        // We only create the Admin, if there is none;
-        // if present, there is also no need to apply the same 'Developer' role again.
+        // We only create the Developer user, if there is none;
+        // if present, there is also no need to add the same 'Developer' user again.
         if (developerUser == null) {
             developerUser = new User(DEFAULT_DEVELOPER);
             identityManager.add(developerUser);
@@ -80,8 +80,8 @@ public class PicketLinkDefaultUsers {
         //Temp hack to add user with admin rights
         User adminUser = BasicModel.getUser(identityManager, DEFAULT_ADMIN);
 
-        // We only create the Admin, if there is none;
-        // if present, there is also no need to apply the same 'Developer' role again.
+        // We only create the Admin user, if there is none;
+        // if present, there is also no need to apply the same 'Admin' user again.
         if (adminUser == null) {
             adminUser = new User(DEFAULT_ADMIN);
             identityManager.add(adminUser);
