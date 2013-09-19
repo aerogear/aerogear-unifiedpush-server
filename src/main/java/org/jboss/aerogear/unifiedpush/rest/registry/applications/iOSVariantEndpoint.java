@@ -104,8 +104,6 @@ public class iOSVariantEndpoint extends AbstractBaseEndpoint {
         iOSVariation.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
         iOSVariation.setDeveloper(loginName.get());
-        // store the iOS variant:
-        iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
 
         // some model validation on the entity:
         try {
@@ -117,6 +115,9 @@ public class iOSVariantEndpoint extends AbstractBaseEndpoint {
 
             return builder.build();
         }
+
+        // store the iOS variant:
+        iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
 
         // add iOS variant, and merge:
         pushAppService.addiOSVariant(pushApp, iOSVariation);
