@@ -25,6 +25,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -35,15 +36,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+
 import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
 @Secure( { "developer", "admin" })
-public class PushApplicationEndpoint {
+public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -57,9 +60,15 @@ public class PushApplicationEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
 
-        // poor validation
-        if (pushApp.getName() == null) {
-            return Response.status(Status.BAD_REQUEST).build();
+        // some validation
+        try {
+            validateModelClass(pushApp);
+        } catch (ConstraintViolationException cve) {
+
+            // Build and return the 400 (Bad Request) response
+            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+            return builder.build();
         }
 
         // create ID...
@@ -103,10 +112,17 @@ public class PushApplicationEndpoint {
 
         if (pushApp != null) {
 
-            // poor validation
-            if (pushApp.getName() == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+            // some validation
+            try {
+                validateModelClass(pushApp);
+            } catch (ConstraintViolationException cve) {
+
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+                return builder.build();
             }
+
 
             // update name/desc:
             pushApp.setDescription(updatedPushApp.getDescription());

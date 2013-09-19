@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
@@ -46,7 +48,7 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
 @Secure( { "developer", "admin" })
-public class AndroidVariantEndpoint {
+public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -76,9 +78,15 @@ public class AndroidVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
-        // poor validation
-        if (androidVariant.getGoogleKey() == null) {
-            return Response.status(Status.BAD_REQUEST).build();
+        // some validation
+        try {
+            validateModelClass(androidVariant);
+        } catch (ConstraintViolationException cve) {
+
+            // Build and return the 400 (Bad Request) response
+            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+            return builder.build();
         }
 
         // manually set the ID:
@@ -126,9 +134,15 @@ public class AndroidVariantEndpoint {
         AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
         if (androidVariant != null) {
 
-            // poor validation
-            if (updatedAndroidApplication.getGoogleKey() == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+            // some validation
+            try {
+                validateModelClass(updatedAndroidApplication);
+            } catch (ConstraintViolationException cve) {
+
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+                return builder.build();
             }
 
             // apply updated data:

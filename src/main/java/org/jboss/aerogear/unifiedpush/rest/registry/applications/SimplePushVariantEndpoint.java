@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
@@ -46,7 +48,7 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
 @Secure( { "developer", "admin" })
-public class SimplePushVariantEndpoint {
+public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -66,7 +68,7 @@ public class SimplePushVariantEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerSimplePushVariant(
-            SimplePushVariant spv,
+            SimplePushVariant simplePushVariant,
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
 
@@ -77,17 +79,29 @@ public class SimplePushVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
+        // some validation
+        try {
+            validateModelClass(simplePushVariant);
+        } catch (ConstraintViolationException cve) {
+
+            // Build and return the 400 (Bad Request) response
+            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+            return builder.build();
+        }
+
+
         // manually set the ID:
-        spv.setVariantID(UUID.randomUUID().toString());
+        simplePushVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
-        spv.setDeveloper(loginName.get());
+        simplePushVariant.setDeveloper(loginName.get());
 
         // store the SimplePush variant:
-        spv = simplePushVariantService.addSimplePushVariant(spv);
+        simplePushVariant = simplePushVariantService.addSimplePushVariant(simplePushVariant);
         // add iOS variant, and merge:
-        pushAppService.addSimplePushVariant(pushApp, spv);
+        pushAppService.addSimplePushVariant(pushApp, simplePushVariant);
 
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(spv.getVariantID())).build()).entity(spv).build();
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(simplePushVariant.getVariantID())).build()).entity(simplePushVariant).build();
     }
 
     // READ
@@ -122,6 +136,17 @@ public class SimplePushVariantEndpoint {
 
         SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
+
+            // some validation
+            try {
+                validateModelClass(updatedSimplePushApplication);
+            } catch (ConstraintViolationException cve) {
+
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+                return builder.build();
+            }
 
             // apply updated data:
             spVariant.setName(updatedSimplePushApplication.getName());
