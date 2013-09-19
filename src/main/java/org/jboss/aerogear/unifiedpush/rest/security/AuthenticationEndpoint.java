@@ -21,6 +21,7 @@ import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
+import org.picketlink.idm.model.basic.Agent;
 import org.picketlink.idm.model.basic.User;
 
 import javax.ejb.Stateless;
@@ -39,7 +40,8 @@ import javax.ws.rs.core.Response.Status;
 public class AuthenticationEndpoint {
 
     @Inject
-    private AuthenticationManager authenticationManager;
+    private AuthenticationManager<Agent> authenticationManager;
+
     @Inject
     private CredentialMatcher credential;
     @Inject
