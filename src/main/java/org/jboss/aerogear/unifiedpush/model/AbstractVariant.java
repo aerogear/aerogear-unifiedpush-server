@@ -30,6 +30,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -52,8 +53,10 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     @Column
     protected VariantType type;
     @Column
+    @Size(max=255)
     private String name;
     @Column
+    @Size(max=255)
     private String description;
     @Column
     private String variantID;

@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 
@@ -39,16 +40,21 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
 
     @Column
     @NotNull
+    @Size(max=255)
     private String name;
+
     @Column
+    @Size(max=255)
     private String description;
 
     @Column
+    @Size(max=255)
     private String pushApplicationID;
     @Column
     private String masterSecret;
 
     @Column
+    @Size(max=255)
     private String developer;
 
     // TODO: let's do LAZY
