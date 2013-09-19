@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.iOSVariantService;
@@ -31,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -42,6 +44,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
@@ -51,7 +54,7 @@ import java.util.logging.Logger;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
 @Secure( { "developer", "admin" })
-public class iOSVariantEndpoint {
+public class iOSVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -84,9 +87,9 @@ public class iOSVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
         }
 
-        // certificate/passphrase pair OK ?
+        // uploaded certificate/passphrase pair OK (do they match)?
         if (!validateCertificateAndPassphrase(form)) {
-            // nope...
+            // nope, keep 400 response empty to not leak details about cert/passphrase
             return Response.status(Status.BAD_REQUEST).build();
         }
 
@@ -102,6 +105,18 @@ public class iOSVariantEndpoint {
         iOSVariation.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
         iOSVariation.setDeveloper(loginName.get());
+
+        // some model validation on the entity:
+        try {
+            validateModelClass(iOSVariation);
+        } catch (ConstraintViolationException cve) {
+
+            // Build and return the 400 (Bad Request) response
+            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+            return builder.build();
+        }
+
         // store the iOS variant:
         iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
 
@@ -168,9 +183,9 @@ public class iOSVariantEndpoint {
         iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         if (iOSVariation != null) {
 
-            // certificate/passphrase pair OK ?
+            // uploaded certificate/passphrase pair OK (do they match)?
             if (!validateCertificateAndPassphrase(updatedForm)) {
-                // nope...
+                // nope, keep 400 response empty to not leak details about cert/passphrase
                 return Response.status(Status.BAD_REQUEST).build();
             }
 
@@ -180,6 +195,17 @@ public class iOSVariantEndpoint {
             iOSVariation.setPassphrase(updatedForm.getPassphrase());
             iOSVariation.setCertificate(updatedForm.getCertificate());
             iOSVariation.setProduction(updatedForm.getProduction());
+
+            // some model validation on the entity:
+            try {
+                validateModelClass(iOSVariation);
+            } catch (ConstraintViolationException cve) {
+
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+
+                return builder.build();
+            }
 
             iOSVariantService.updateiOSVariant(iOSVariation);
             return Response.noContent().build();
