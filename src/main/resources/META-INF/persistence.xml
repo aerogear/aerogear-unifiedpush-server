@@ -20,7 +20,6 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="unifiedpush-default" transaction-type="JTA">
     <description>UnifiedPush Persistence Unit</description>
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
 
     <class>org.jboss.aerogear.unifiedpush.jpa.PersistentObject</class>
@@ -47,7 +46,6 @@
     <persistence-unit name="picketlink-default"
                       transaction-type="JTA">
         <description>PicketLink Persistence Unit</description>
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/PushEEDS</jta-data-source>
 
         <class>org.picketlink.idm.jpa.model.sample.simple.AttributedTypeEntity</class>
