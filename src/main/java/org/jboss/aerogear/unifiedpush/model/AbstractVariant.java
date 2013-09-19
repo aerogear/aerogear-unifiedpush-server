@@ -53,10 +53,10 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     @Column
     protected VariantType type;
     @Column
-    @Size(max=255)
+    @Size(min=1, max=255)
     private String name;
     @Column
-    @Size(max=255)
+    @Size(min=1, max=255)
     private String description;
     @Column
     private String variantID;

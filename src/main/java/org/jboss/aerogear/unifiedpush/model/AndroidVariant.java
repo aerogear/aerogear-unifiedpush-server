@@ -40,11 +40,11 @@ public class AndroidVariant extends AbstractVariant {
 
     @Column
     @NotNull
-    @Size(max=255)
+    @Size(min=1, max=255)
     private String googleKey;
 
     @Column
-    @Size(max=255)
+    @Size(min=1, max=255)
     private String projectNumber;
 
     /**
