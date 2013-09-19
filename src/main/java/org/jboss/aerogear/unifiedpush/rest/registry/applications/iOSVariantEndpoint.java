@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.iOSVariantService;

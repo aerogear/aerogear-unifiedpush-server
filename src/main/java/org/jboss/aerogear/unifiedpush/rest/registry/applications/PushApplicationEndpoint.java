@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
