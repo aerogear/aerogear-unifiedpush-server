@@ -42,7 +42,7 @@ import java.util.List;
 @Secure("admin")
 public class UserEndpoint {
     @Inject
-    private IdentityManagement identityManagement;
+    private IdentityManagement<User> identityManagement;
 
     @Inject
     private IdentityManager identityManager;

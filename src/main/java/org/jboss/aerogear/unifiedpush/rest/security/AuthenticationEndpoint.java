@@ -45,7 +45,7 @@ public class AuthenticationEndpoint {
     @Inject
     private CredentialMatcher credential;
     @Inject
-    private IdentityManagement configuration;
+    private IdentityManagement<User> configuration;
 
     @POST
     @Path("/login")
