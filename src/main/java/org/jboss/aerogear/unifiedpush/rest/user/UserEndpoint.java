@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.user;
 
-import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.basic.User;
@@ -41,8 +40,6 @@ import java.util.List;
 @Path("/users")
 @Secure("admin")
 public class UserEndpoint {
-    @Inject
-    private IdentityManagement<User> identityManagement;
 
     @Inject
     private IdentityManager identityManager;

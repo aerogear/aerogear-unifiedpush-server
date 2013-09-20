@@ -73,7 +73,7 @@ public class AuthenticationEndpoint {
     @Path("/update")
     public Response updateUserPasswordAndRole(final Developer developer) {
 
-        User simpleUser = (User) configuration.findByUsername(developer.getLoginName());
+        User simpleUser = configuration.findByUsername(developer.getLoginName());
         configuration.reset(simpleUser, developer.getPassword(), developer.getNewPassword());
 
         return Response.ok().build();

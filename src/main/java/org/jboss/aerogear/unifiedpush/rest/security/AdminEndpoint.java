@@ -18,10 +18,8 @@
 package org.jboss.aerogear.unifiedpush.rest.security;
 
 import org.jboss.aerogear.unifiedpush.users.Developer;
-import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.users.UserRoles;
-import org.picketlink.Identity;
 import org.picketlink.idm.IdentityManagementException;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.PartitionManager;
