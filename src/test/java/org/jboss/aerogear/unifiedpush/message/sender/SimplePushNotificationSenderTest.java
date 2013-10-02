@@ -34,7 +34,7 @@ public class SimplePushNotificationSenderTest {
     @Test
     @Ignore("This is intended to be a manual test just to verify that https works in combination with OpenShift")
     public void sendWithHttpsOpenShift() throws Exception {
-        final String url = "https://tls-dbevenius.rhcloud.com:8443/update/124555";
+        final String url = "https://delete-pushee.rhcloud.com:8443/update/124555";
         final HttpURLConnection connection = new SimplePushNotificationSender().put(url, "version=1");
         assertEquals(200, connection.getResponseCode());
     }
