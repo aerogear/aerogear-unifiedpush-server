@@ -116,7 +116,6 @@ public class InstallationRegistrationEndpoint {
 
     @DELETE
     @Path("{token}")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response unregisterInstallations(
             @PathParam("token") String token,
             @Context HttpServletRequest request) {
