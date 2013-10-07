@@ -51,7 +51,7 @@ public class PushNotificationSenderEndpoint {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response selectedSender(final Map<String, Object> message, @Context HttpServletRequest request) {
+    public Response send(final Map<String, Object> message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
