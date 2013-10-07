@@ -18,18 +18,9 @@
 package org.jboss.aerogear.unifiedpush.service.sender;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.sender.message.BroadcastMessage;
 import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendMessage;
 
 public interface SenderService {
-
-    /**
-     * Broadcast the given message/payload to ALL installations of the variants, that are belonging to the given PushApplication.
-     * 
-     * @param pushApplication the root target for all installations being notified 
-     * @param payload the payload to be sent
-     */
-    void broadcast(PushApplication pushApplication, BroadcastMessage payload);
 
     /**
      * Sends the given message/payload to ALL installations of the variants, matching the given criterias.

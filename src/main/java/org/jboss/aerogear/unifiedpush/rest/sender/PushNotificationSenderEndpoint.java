@@ -35,7 +35,6 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.BroadcastMessage;
 import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendMessage;
 
 @Stateless
@@ -51,31 +50,6 @@ public class PushNotificationSenderEndpoint {
     private SenderService senderService;
 
     @POST
-    @Path("/broadcast")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response broadcast(final Map<String, Object> message, @Context HttpServletRequest request) {
-
-        final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
-        if (pushApplication == null) {
-            return Response.status(Status.UNAUTHORIZED)
-                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request")
-                    .build();
-        }
-
-        // transform map to service object:
-        final BroadcastMessage payload = new BroadcastMessage(message);
-
-        // submitted to @Async EJB:
-        senderService.broadcast(pushApplication, payload);
-        logger.info("Message submitted to PushNetworks for further processing");
-
-        return Response.status(Status.OK)
-                .entity("Job submitted").build();
-    }
-
-    @POST
-    @Path("/selected")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response selectedSender(final Map<String, Object> message, @Context HttpServletRequest request) {
 

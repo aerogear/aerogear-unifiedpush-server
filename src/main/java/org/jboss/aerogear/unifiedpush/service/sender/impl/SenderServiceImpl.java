@@ -38,7 +38,6 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.BroadcastMessage;
 import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendCriterias;
 import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendMessage;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
@@ -154,42 +153,6 @@ public class SenderServiceImpl implements SenderService {
                         .getVariantID(), simplePushCategory, aliases);
                 this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushCategoriesAndValues.get(simplePushCategory));
             }
-        }
-    }
-
-    @Override
-    @Asynchronous
-    public void broadcast(PushApplication pushApplication, BroadcastMessage payload) {
-        logger.info(String.format("Processing broadcast request with '%s' payload", payload));
-
-        // TODO: DISPATCH TO A QUEUE .....
-        final Set<iOSVariant> iOSVariants = pushApplication.getIOSVariants();
-        for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> iosTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(iOSVariant.getVariantID());
-            this.sendToAPNs(iOSVariant, iosTokenPerVariant, payload);
-        }
-
-        // TODO: DISPATCH TO A QUEUE .....
-        Set<AndroidVariant> androidVariants = pushApplication.getAndroidVariants();
-        for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantID(androidVariant.getVariantID());
-            this.sendToGCM(androidVariant, androidTokenPerVariant, payload);
-        }
-
-        // TODO: DISPATCH TO A QUEUE .....
-        final String simplePushBroadcastValue = payload.getSimplePush();
-        if (simplePushBroadcastValue == null) {
-            return;
-        }
-
-        Set<SimplePushVariant> simplePushVariants = pushApplication.getSimplePushVariants();
-        for (SimplePushVariant simplePushVariant : simplePushVariants) {
-            // by convention we use the "AeroGear-specific" broadcast category:
-            // TODO: create SimplePush Service class
-
-            final List<String> broadcastPushEndpointURLs = clientInstallationService.findAllSimplePushBroadcastPushEndpointURLsForVariantID(simplePushVariant
-                    .getVariantID());
-            this.sentToSimplePush(broadcastPushEndpointURLs, simplePushBroadcastValue);
         }
     }
 

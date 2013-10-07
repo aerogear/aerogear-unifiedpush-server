@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * Base interface for the different Payload objects:
  * <ul>
- *   <li>BroadcastMessage</li>
  *   <li>SelectiveSendMessage</li>
  * </ul>    
  *

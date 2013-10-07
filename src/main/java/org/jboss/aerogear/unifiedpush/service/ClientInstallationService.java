@@ -75,16 +75,6 @@ public interface ClientInstallationService {
     // ===================   SENDER API   ===================
 
     /**
-     * Used for (Android/iOS) Broadcast. Query for all IDs on a certain variant
-     */
-    List<String> findAllDeviceTokenForVariantID(String variantID);
-
-    /**
-     * Used for (SimplePush) Broadcast. Query for all "pushEndpoint URLs", that are in the (SimplePush) BROADCAST category.
-     */
-    List<String> findAllSimplePushBroadcastPushEndpointURLsForVariantID(String variantID);
-
-    /**
      * Used for (Android/iOS) Selective Sender API. Queries the available device-tokens for a given variant, based on provided criteria
      */
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);

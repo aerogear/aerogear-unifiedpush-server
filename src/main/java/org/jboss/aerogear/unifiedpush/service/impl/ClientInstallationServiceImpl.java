@@ -33,9 +33,6 @@ import java.util.Set;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
-    // the SimplePush BROADCAST category name:
-    private static final String BROADCAST_CHANNEL = "broadcast";
-
     // The allowed SimplePush "device types
     // TODO: right now there is no 'auto' registration for SP clients that
     // store 'web' as their device type metadata. That is the reason for null.
@@ -111,23 +108,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     // =====================================================================
     // ======== Various finder services for the Sender REST API ============
     // =====================================================================
-
-    /**
-     * For broadcast (Android / iOS) 
-     */
-    @Override
-    public List<String> findAllDeviceTokenForVariantID(String variantID) {
-        // no criteria needed, for BROADCAST
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, null, null, null);
-    }
-
-    /**
-     * For broadcast (SimplePush)
-     */
-    @Override
-    public List<String> findAllSimplePushBroadcastPushEndpointURLsForVariantID(String variantID) {
-        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
-    }
 
     /**
      * For selective send (Android / iOS)
