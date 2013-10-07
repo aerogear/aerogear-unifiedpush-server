@@ -20,14 +20,14 @@ import java.util.Map;
 
 /**
  * Contains the data of the JSON payload that has been sent to the
- * 'Selective Send' endpoint of the RESTful Sender endpoint.
+ * RESTful Sender endpoint.
  * 
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class SelectiveSendMessage implements UnifiedPushMessage {
+public class UnifiedPushMessageImpl implements UnifiedPushMessage {
 
-    private final SelectiveSendCriterias criterias;
+    private final SendCriterias criterias;
 
     private final Map<String, String> simplePush;
     private final String alert;
@@ -37,7 +37,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     private final Map<String, Object> data;
 
     /**
-     * Selective Send messages are submitted as flexible JSON maps, like:
+     * Messages are submitted as flexible JSON maps, like:
      * <pre>
      *   {
      *     "alias" : ["someUsername"],
@@ -63,9 +63,9 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
      * the <code>simple-push</code> value or some <i>highlighted</i> keywords.
      */
     @SuppressWarnings("unchecked")
-    public SelectiveSendMessage(Map<String, Object> data) {
+    public UnifiedPushMessageImpl(Map<String, Object> data) {
         // extract all the different criterias
-        this.criterias = new SelectiveSendCriterias(data);
+        this.criterias = new SendCriterias(data);
 
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
@@ -98,7 +98,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
     /**
      * Returns the object that contains all the submitted query criteria.
      */
-    public SelectiveSendCriterias getSendCriterias() {
+    public SendCriterias getSendCriterias() {
         return criterias;
     }
 
@@ -137,7 +137,7 @@ public class SelectiveSendMessage implements UnifiedPushMessage {
 
     @Override
     public String toString() {
-        return "SelectiveSendMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
+        return "UnifiedPushMessageImpl [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
                 + data + "]";
     }
 }

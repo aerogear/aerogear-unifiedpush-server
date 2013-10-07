@@ -38,8 +38,8 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendCriterias;
-import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendMessage;
+import org.jboss.aerogear.unifiedpush.service.sender.message.SendCriterias;
+import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessageImpl;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 @Stateless
@@ -66,18 +66,18 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     @Asynchronous
-    public void selectiveSend(PushApplication pushApplication, SelectiveSendMessage message) {
-        logger.info(String.format("Processing 'selective send' request with '%s' payload", message));
+    public void send(PushApplication pushApplication, UnifiedPushMessageImpl message) {
+        logger.info(String.format("Processing send request with '%s' payload", message));
 
         // collections for all the different variants:
         final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
         final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
         final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
-        final SelectiveSendCriterias criterias = message.getSendCriterias();
+        final SendCriterias criterias = message.getSendCriterias();
         final List<String> variantIDs = criterias.getVariants();
 
-        // if the "SelectiveSend" did specify the "variants" field,
+        // if the criteria payload did specify the "variants" field,
         // we look up each of those mentioned variants, by their "variantID":
         if (variantIDs != null) {
 
@@ -122,9 +122,9 @@ public class SenderServiceImpl implements SenderService {
 
             // TODO: DISPATCH TO A QUEUE .....
             for (iOSVariant iOSVariant : iOSVariants) {
-                final List<String> selectiveTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category,
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category,
                         aliases, deviceTypes);
-                this.sendToAPNs(iOSVariant, selectiveTokenPerVariant, message);
+                this.sendToAPNs(iOSVariant, tokenPerVariant, message);
             }
 
             // TODO: DISPATCH TO A QUEUE .....

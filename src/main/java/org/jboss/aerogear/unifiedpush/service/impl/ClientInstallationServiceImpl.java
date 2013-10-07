@@ -110,7 +110,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     // =====================================================================
 
     /**
-     * For selective send (Android / iOS)
+     * Finder for 'send', used for Android / iOS clients
      */
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
@@ -118,7 +118,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     /**
-     * For selective send  (SimplePush)
+     * Finder for 'send', used for SimplePush clients
      */
     @Override
     public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {

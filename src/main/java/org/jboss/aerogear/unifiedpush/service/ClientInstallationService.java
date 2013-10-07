@@ -75,12 +75,12 @@ public interface ClientInstallationService {
     // ===================   SENDER API   ===================
 
     /**
-     * Used for (Android/iOS) Selective Sender API. Queries the available device-tokens for a given variant, based on provided criteria
+     * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria
      */
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
 
     /**
-     * Used for (SimplePush) Selective Sender API. Queries the available SimplePush "pushEndpoint URLs"(device-type : web) for a given variant, based on provided criteria
+     * Used for (SimplePush) Sender API. Queries the available SimplePush "pushEndpoint URLs"(device-type : web) for a given variant, based on provided criteria
      */
     List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases);
 }

@@ -20,10 +20,7 @@ package org.jboss.aerogear.unifiedpush.service.sender.message;
 import java.util.Map;
 
 /**
- * Base interface for the different Payload objects:
- * <ul>
- *   <li>SelectiveSendMessage</li>
- * </ul>    
+ * Base interface for the different Payload objects.
  *
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */

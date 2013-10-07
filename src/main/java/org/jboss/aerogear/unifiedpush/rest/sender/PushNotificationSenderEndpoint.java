@@ -35,7 +35,7 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.SelectiveSendMessage;
+import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessageImpl;
 
 @Stateless
 @Path("/sender")
@@ -62,10 +62,10 @@ public class PushNotificationSenderEndpoint {
         }
 
         // transform map to service object:
-        final SelectiveSendMessage payload = new SelectiveSendMessage(message);
+        final UnifiedPushMessageImpl payload = new UnifiedPushMessageImpl(message);
 
         // submitted to @Async EJB:
-        senderService.selectiveSend(pushApplication, payload);
+        senderService.send(pushApplication, payload);
         logger.info("Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)
