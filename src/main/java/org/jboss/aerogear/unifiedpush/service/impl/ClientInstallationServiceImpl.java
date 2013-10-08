@@ -33,9 +33,6 @@ import java.util.Set;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
-    // the SimplePush BROADCAST category name:
-    private static final String BROADCAST_CHANNEL = "broadcast";
-
     // The allowed SimplePush "device types
     // TODO: right now there is no 'auto' registration for SP clients that
     // store 'web' as their device type metadata. That is the reason for null.
@@ -113,24 +110,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     // =====================================================================
 
     /**
-     * For broadcast (Android / iOS) 
-     */
-    @Override
-    public List<String> findAllDeviceTokenForVariantID(String variantID) {
-        // no criteria needed, for BROADCAST
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, null, null, null);
-    }
-
-    /**
-     * For broadcast (SimplePush)
-     */
-    @Override
-    public List<String> findAllSimplePushBroadcastPushEndpointURLsForVariantID(String variantID) {
-        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, BROADCAST_CHANNEL, null, null);
-    }
-
-    /**
-     * For selective send (Android / iOS)
+     * Finder for 'send', used for Android / iOS clients
      */
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
@@ -138,7 +118,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     /**
-     * For selective send  (SimplePush)
+     * Finder for 'send', used for SimplePush clients
      */
     @Override
     public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {

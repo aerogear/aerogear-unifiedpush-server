@@ -89,7 +89,7 @@ curl -3 -v -b cookies.txt -c cookies.txt -v -H "Accept: application/json" -H "Co
   https://SERVER:PORT/CONTEXT/rest/applications
 ```
 
-_The response returns a **pushApplicationID** and a **masterSecret** that will be both used later on when you attempt to send a push message (either Broadcast or Selected Send)._
+_The response returns a **pushApplicationID** and a **masterSecret** that will be both used later on when you attempt to send a push message._
 
 ##### iOS Variant
 
@@ -239,30 +239,7 @@ client.registerWithPushServer(metadata);
 
 ### Sender
 
-#### Broadcast Send
-
-Send broadcast push message to ALL mobile apps of a certain Push APP......:
-
-```
-curl -3 -u "{PushApplicationID}:{MasterSecret}"
-   -v -H "Accept: application/json" -H "Content-type: application/json"
-   -X POST
-   -d '{
-       "key":"value",
-       "alert":"HELLO!",
-       "sound":"default",
-       "badge":7,
-       "simple-push":"version=123"
-     }'
-
-https://SERVER:PORT/CONTEXT/rest/sender/broadcast
-```
-
-For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).
-
-#### Selected Send
-
-To send a message (version) notification to a selected list of Channels, issue the following command:
+To send a message (version) notification, issue the following command:
 
 ```
 curl -3 -u "{PushApplicationID}:{MasterSecret}"
@@ -279,7 +256,7 @@ curl -3 -u "{PushApplicationID}:{MasterSecret}"
       "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
    }'
 
-https://SERVER:PORT/CONTEXT/rest/sender/selected
+https://SERVER:PORT/CONTEXT/rest/sender
 ```
 
 For more details take a look at the ["message format specification"](http://aerogear.org/docs/specs/aerogear-push-messages/) and the [RESTful Sender API](http://aerogear.org/docs/specs/aerogear-push-rest/Sender/).

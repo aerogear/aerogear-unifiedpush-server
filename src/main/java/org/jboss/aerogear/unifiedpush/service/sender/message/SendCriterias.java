@@ -21,12 +21,12 @@ import java.util.Map;
 
 /**
  * Simple utility class, containing all "query criteria" options for a message,
- * that has been sent to the "Selective Send" HTTP endpoint.
+ * that has been sent to the Send-HTTP endpoint.
  * 
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class SelectiveSendCriterias {
+public class SendCriterias {
 
     private final List<String> aliases;
     private final List<String> deviceTypes;
@@ -34,7 +34,7 @@ public class SelectiveSendCriterias {
     private final List<String> variants;
 
     @SuppressWarnings("unchecked")
-    public SelectiveSendCriterias(Map<String, Object> data) {
+    public SendCriterias(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
         this.category = (String) data.remove("category");
