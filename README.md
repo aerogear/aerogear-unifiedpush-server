@@ -28,6 +28,20 @@ Starting the JBoss Application Server:
 ./bin/standalone.sh -b 0.0.0.0
 ```
 
+
+#### H2 Database configuration
+
+The UnifiedPush Server requires a datasource with ```java:jboss/datasources/PushEEDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a command line interface script which helps to configure the datasource, using the H2 database, which is included in the JBoss AS:
+
+```
+/Path/to/JBossAS/bin/jboss-cli.sh --file=./h2-database-config.cli
+```
+
+The above script will add the _PushEEDS datasource_.
+
+#### Deploy the UnifiedPush Server
+
+
 Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 
 ```
