@@ -43,7 +43,7 @@ public abstract class AbstractBaseEndpoint {
      * @param model object to validate
      * @throws ConstraintViolationException if constraint violations on the given model have been identified.
      */
-    protected void validateModelClass(Object model) throws ConstraintViolationException {
+    protected void validateModelClass(Object model) {
         final Set<ConstraintViolation<Object>> violations = validator.validate(model);
 
         // in case of an invalid model, we throw a ConstraintViolationException, containing the violations:

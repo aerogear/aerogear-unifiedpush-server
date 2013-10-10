@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response.Status;
 
 @ApplicationScoped
 public class SimplePushNotificationSender implements Serializable {
@@ -59,7 +60,7 @@ public class SimplePushNotificationSender implements Serializable {
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 
-                if (200 != simplePushStatusCode) {
+                if (Status.OK.getStatusCode() != simplePushStatusCode) {
                     logger.severe("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
                 }
             } catch (IOException e) {

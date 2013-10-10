@@ -51,7 +51,7 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
 
     @NotNull
     @Column
-    protected VariantType type;
+    private VariantType type;
     @Column
     @Size(min=1, max=255)
     private String name;
@@ -72,6 +72,10 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
 
     public VariantType getType() {
         return type;
+    }
+    
+    public void setType(VariantType type) {
+        this.type = type;
     }
 
     public String getName() {

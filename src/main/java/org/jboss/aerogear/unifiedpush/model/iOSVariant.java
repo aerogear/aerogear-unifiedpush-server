@@ -36,7 +36,7 @@ public class iOSVariant extends AbstractVariant {
     public iOSVariant() {
         super();
         // we are iOS:
-        this.type = VariantType.IOS;
+        this.setType(VariantType.IOS);
     }
 
     @Column
