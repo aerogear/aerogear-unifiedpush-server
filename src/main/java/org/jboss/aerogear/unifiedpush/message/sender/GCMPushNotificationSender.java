@@ -60,8 +60,9 @@ public class GCMPushNotificationSender {
     public void sendPushMessage(AndroidVariant androidVariant, List<String> registrationIDs, UnifiedPushMessage pushMessage) {
 
         // no need to send empty list
-        if (registrationIDs.isEmpty())
+        if (registrationIDs.isEmpty()) {
             return;
+        }
 
         // payload builder:
         Builder gcmBuilder = new Message.Builder();

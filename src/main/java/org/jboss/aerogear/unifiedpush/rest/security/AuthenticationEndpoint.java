@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.users.Developer;
 import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
-import org.jboss.aerogear.security.picketlink.auth.CredentialMatcher;
 import org.picketlink.idm.model.basic.Agent;
 import org.picketlink.idm.model.basic.User;
 
@@ -42,8 +41,8 @@ public class AuthenticationEndpoint {
     @Inject
     private AuthenticationManager<Agent> authenticationManager;
 
-    @Inject
-    private CredentialMatcher credential;
+    //@Inject
+    //private CredentialMatcher credential;
     @Inject
     private IdentityManagement<User> configuration;
 

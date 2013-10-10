@@ -32,6 +32,6 @@ public class SimplePushVariant extends AbstractVariant {
     public SimplePushVariant() {
         super();
         // we are SimplePush:
-        this.type = VariantType.SIMPLE_PUSH;
+        this.setType(VariantType.SIMPLE_PUSH);
     }
 }
