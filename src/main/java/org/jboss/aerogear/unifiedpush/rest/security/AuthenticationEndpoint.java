@@ -41,8 +41,6 @@ public class AuthenticationEndpoint {
     @Inject
     private AuthenticationManager<Agent> authenticationManager;
 
-    //@Inject
-    //private CredentialMatcher credential;
     @Inject
     private IdentityManagement<User> configuration;
 
