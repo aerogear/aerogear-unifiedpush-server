@@ -42,7 +42,7 @@ public final class HttpBasicHelper {
             String base64Token = authorizationHeader.substring(6);
             String token = new String(Base64.decode(base64Token));
 
-            int delim = token.indexOf(":");
+            int delim = token.indexOf(':');
 
             if (delim != -1) {
                 username = token.substring(0, delim);

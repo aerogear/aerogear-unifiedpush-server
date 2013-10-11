@@ -56,8 +56,9 @@ public class APNsPushNotificationSender {
      */
     public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
         // no need to send empty list
-        if (tokens.isEmpty())
+        if (tokens.isEmpty()) {
             return;
+        }
 
         String apnsMessage = APNS.newPayload()
                 // adding recognized key values

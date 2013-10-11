@@ -35,7 +35,7 @@ public class AndroidVariant extends AbstractVariant {
     public AndroidVariant() {
         super();
         // we are Android:
-        this.type = VariantType.ANDROID;
+        this.setType(VariantType.ANDROID);
     }
 
     @Column
