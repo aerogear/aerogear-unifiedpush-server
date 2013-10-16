@@ -33,10 +33,10 @@ public class Ping {
 
     /**
      * an endpoint for testing the authorization status of a user
-     * @return 200( success ) or 401( not authorized )
+     * @return 204( No Content ) or 401( not authorized )
      */
     @GET
     public Response ping() {
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 }
