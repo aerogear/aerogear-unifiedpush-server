@@ -23,11 +23,18 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+/**
+ * A class to test the Authorization status of a user
+ */
 @Stateless
 @Path("/ping")
 @Secure({ "developer", "admin" })
 public class Ping {
 
+    /**
+     * an endpoint for testing the authorization status of a user
+     * @return 200( success ) or 401( not authorized )
+     */
     @GET
     public Response ping() {
         return Response.ok().build();
