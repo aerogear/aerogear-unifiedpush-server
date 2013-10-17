@@ -18,7 +18,7 @@
 App.Route = Ember.Route.extend({
     beforeModel: function() {
         var that = this;
-        return App.AeroGear.pipelines.pipes.applications.read().then( null, function() {
+        return App.AeroGear.pipelines.pipes.ping.read().then( null, function() {
             Ember.run( function() {
                 that.transitionTo( "login" );
             });

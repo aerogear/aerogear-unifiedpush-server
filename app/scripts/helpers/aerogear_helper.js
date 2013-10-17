@@ -34,5 +34,12 @@ App.AeroGear.pipelines = AeroGear.Pipeline([
             baseURL: App.baseURL + "rest/",
             authenticator: App.AeroGear.authenticator
         }
+    },
+    {
+        name: "ping",
+        settings: {
+            baseURL: App.baseURL + "rest/",
+            authenticator: App.AeroGear.authenticator
+        }
     }
 ]);
