@@ -37,7 +37,7 @@ The UnifiedPush Server requires a datasource with ```java:jboss/datasources/Push
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./h2-database-config.cli
 ```
 
-The above script will add the _PushEEDS datasource_.
+The above script will add the _PushEEDS datasource_, which uses your home directory. If you want to change the location update the ```h2-database-config.cli``` file as needed.
 
 #### Deploy the UnifiedPush Server
 
