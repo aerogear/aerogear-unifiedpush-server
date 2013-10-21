@@ -33,6 +33,7 @@ public class UnifiedPushMessage {
     private final String alert;
     private final String sound;
     private final int badge;
+    private final int timeToLive;
 
     private final Map<String, Object> data;
 
@@ -44,6 +45,7 @@ public class UnifiedPushMessage {
      *     "deviceType" : ["someDevice"],
      *     "category" : "someCategory",
      *     "variants" : ["someVariantIDs"],
+     *     "ttl" : 3600,
      *     "message":
      *     {
      *       "key":"value",
@@ -90,7 +92,15 @@ public class UnifiedPushMessage {
             this.badge = -1;
         }
 
-        // SimplePush values: 
+        // time to live value:
+        Integer timeToLiveValue = (Integer) data.remove("ttl");
+        if (timeToLiveValue == null) {
+            this.timeToLive = -1;
+        } else {
+            this.timeToLive = timeToLiveValue;
+        }
+
+        // SimplePush values:
         this.simplePush = (Map<String, String>) data.remove("simple-push");
 
     }
@@ -125,6 +135,16 @@ public class UnifiedPushMessage {
      */
     public String getAlert() {
         return alert;
+    }
+
+    /**
+     * Returns the value of the 'ttl' key from the submitted payload.
+     * This key is recognized for the Android and iOS Push Notification Service.
+     *
+     * If the 'ttl' key has not been specified on the submitted payload, this method will return -1.
+     */
+    public int getTimeToLive() {
+        return timeToLive;
     }
 
     /**
