@@ -185,6 +185,6 @@ public class UnifiedPushMessage {
     @Override
     public String toString() {
         return "UnifiedPushMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
-                + data + "]";
+                + data + ", time-to-live=" + timeToLive + "]";
     }
 }
