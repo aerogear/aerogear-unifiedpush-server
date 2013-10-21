@@ -72,6 +72,12 @@ public class GCMPushNotificationSender {
         gcmBuilder.addData("sound", pushMessage.getSound());
         gcmBuilder.addData("badge", "" + pushMessage.getBadge());
 
+        // if present, apply the time-to-live metadata:
+        int ttl = pushMessage.getTimeToLive();
+        if (ttl != -1) {
+            gcmBuilder.timeToLive(ttl);
+        }
+
         // iterate over the missing keys:
         Set<String> keys = pushMessage.getData().keySet();
         for (String key : keys) {
