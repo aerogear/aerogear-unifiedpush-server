@@ -29,11 +29,11 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.message.cache.APNsCache;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
+import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 public class APNsPushNotificationSender {
 
