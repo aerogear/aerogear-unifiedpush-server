@@ -213,6 +213,26 @@ public class iOSVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
+    // UPDATE (Secret Reset)
+    @PUT
+    @Path("/{iOSID}/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response resetSecret(@PathParam("iOSID") String iOSID) {
+
+        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+
+        if (iOSVariation != null) {
+            // generate the new 'secret' and apply it:
+            String newSecret = UUID.randomUUID().toString();
+            iOSVariation.setSecret(newSecret);
+            iOSVariantService.updateiOSVariant(iOSVariation);
+
+            return Response.ok(iOSVariation).build();
+        }
+
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+    }
+
     // DELETE
     @DELETE
     @Path("/{iOSID}")

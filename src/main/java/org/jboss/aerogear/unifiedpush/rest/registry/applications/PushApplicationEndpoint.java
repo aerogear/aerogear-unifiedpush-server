@@ -136,6 +136,26 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
+    // UPDATE (MasterSecret Reset)
+    @PUT
+    @Path("/{pushAppID}/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
+
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+
+        if (pushApp != null) {
+            // generate the new 'masterSecret' and apply it:
+            String newMasterSecret = UUID.randomUUID().toString();
+            pushApp.setMasterSecret(newMasterSecret);
+            pushAppService.updatePushApplication(pushApp);
+
+            return Response.ok(pushApp).build();
+        }
+
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+    }
+
     // DELETE
     @DELETE
     @Path("/{pushAppID}")
