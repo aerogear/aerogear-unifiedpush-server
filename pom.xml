@@ -57,13 +57,9 @@
                 of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
                 Here we use
                 the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
-
-            <!-- This BOM builds on the Java EE full profile BOM, adding Arquillian to the mix. It also provides a
-                version of JUnit and TestNG recommended for use with Arquillian.
-                see https://github.com/jboss/jboss-bom/tree/master/jboss-javaee-6.0-with-tools -->
             <dependency>
-                <groupId>org.jboss.bom</groupId>
-                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-6.0</artifactId>
                 <version>${javaee6.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -201,14 +197,6 @@
         </repository>
     </repositories>
 
-    <!-- https://issues.jboss.org/browse/AGPUSH-147 -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jboss.thirdparty.uploads</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/</url>            
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <finalName>ag-push</finalName>
         <plugins>
@@ -246,7 +234,7 @@
 
         <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
             version defined by this BOM -->
-        <javaee6.bom.version>1.0.7.CR8</javaee6.bom.version>
+        <javaee6.bom.version>3.0.2.Final</javaee6.bom.version>
 
         <!--
             Options to override the compiler arguments directly on the compiler arument line to separate between what
