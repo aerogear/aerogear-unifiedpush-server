@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
@@ -36,6 +35,7 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
+import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 @ApplicationScoped
 public class GCMPushNotificationSender {
@@ -71,6 +71,12 @@ public class GCMPushNotificationSender {
         gcmBuilder.addData("alert", pushMessage.getAlert());
         gcmBuilder.addData("sound", pushMessage.getSound());
         gcmBuilder.addData("badge", "" + pushMessage.getBadge());
+
+        // if present, apply the time-to-live metadata:
+        int ttl = pushMessage.getTimeToLive();
+        if (ttl != -1) {
+            gcmBuilder.timeToLive(ttl);
+        }
 
         // iterate over the missing keys:
         Set<String> keys = pushMessage.getData().keySet();

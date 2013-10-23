@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 import java.util.Collection;
-
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 public interface PushNotificationSender {

@@ -14,54 +14,177 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.aerogear.unifiedpush.service.sender.message;
 
 import java.util.Map;
 
 /**
- * Base interface for the different Payload objects.
- *
+ * Contains the data of the JSON payload that has been sent to the
+ * RESTful Sender endpoint.
+ * 
+ * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public interface UnifiedPushMessage {
+public class UnifiedPushMessage {
+
+    private final SendCriterias criterias;
+
+    private final Map<String, String> simplePush;
+    private final String alert;
+    private final String sound;
+    private final int badge;
+    private final int timeToLive;
+
+    private final Map<String, Object> data;
+
+    /**
+     * Messages are submitted as flexible JSON maps, like:
+     * <pre>
+     *   {
+     *     "alias" : ["someUsername"],
+     *     "deviceType" : ["someDevice"],
+     *     "category" : "someCategory",
+     *     "variants" : ["someVariantIDs"],
+     *     "ttl" : 3600,
+     *     "message":
+     *     {
+     *       "key":"value",
+     *       "key2":"other value",
+     *       "alert":"HELLO!",
+     *       "sound":"default",
+     *       "badge":2
+     *     },
+     *     "simple-push":
+     *     {
+     *       "SomeCategory":"version=123",
+     *       "anotherCategory":"version=456"
+     *     }
+     *   }
+     * </pre>
+     * This class give some convenient methods to access the query components (<code>alias</code> or <code>deviceType</code>),
+     * the <code>simple-push</code> value or some <i>highlighted</i> keywords.
+     */
+    @SuppressWarnings("unchecked")
+    public UnifiedPushMessage(Map<String, Object> data) {
+        // extract all the different criterias
+        this.criterias = new SendCriterias(data);
+
+        // ======= Payload ====
+        // the Android/iOS payload of the actual message:
+        this.data = (Map<String, Object>) data.remove("message");
+        // if 'native' message object is around, let's extract some data:
+        if (this.data != null) {
+            // remove the desired keywords:
+            // special key words (for APNs)
+            this.alert = (String) this.data.remove("alert"); // used in AGDROID as well
+            this.sound = (String) this.data.remove("sound");
+
+            Integer badgeVal = (Integer) this.data.remove("badge");
+            if (badgeVal == null) {
+                this.badge = -1;
+            } else {
+                this.badge = badgeVal;
+            }
+        } else {
+            // satisfy the final
+            this.alert = null;
+            this.sound = null;
+            this.badge = -1;
+        }
+
+        // time to live value:
+        Integer timeToLiveValue = (Integer) data.remove("ttl");
+        if (timeToLiveValue == null) {
+            this.timeToLive = -1;
+        } else {
+            this.timeToLive = timeToLiveValue;
+        }
+
+        // SimplePush values:
+        this.simplePush = (Map<String, String>) data.remove("simple-push");
+
+    }
+
+    /**
+     * Returns the object that contains all the submitted query criteria.
+     */
+    public SendCriterias getSendCriterias() {
+        return criterias;
+    }
+
+    /**
+     * Returns the SimplePush specific Map, containing the requested categories and their version strings:
+     * <pre>
+     *   {
+     *     "SomeCategory":"version=123",
+     *     "anotherCategory":"version=456"
+     *   }
+     * </pre>
+     */
+    public Map<String, String> getSimplePush() {
+        return simplePush;
+    }
 
     /**
      * Returns the value of the 'alert' key from the submitted payload.
      * This key is recognized in native iOS, without any API invocation and
      * on AeroGear's GCM offerings.
-     * 
+     *
      * Android users that are not using AGDROID can read the value as well,
      * but need to call specific APIs to show the 'alert' value.
      */
-    String getAlert();
+    public String getAlert() {
+        return alert;
+    }
+
+    /**
+     * Returns the value of the 'ttl' key from the submitted payload.
+     * This key is recognized for the Android and iOS Push Notification Service.
+     *
+     * If the 'ttl' key has not been specified on the submitted payload, this method will return -1.
+     */
+    public int getTimeToLive() {
+        return timeToLive;
+    }
 
     /**
      * Returns the value of the 'sound' key from the submitted payload.
      * This key is recognized in native iOS, without any API invocation.
-     * 
+     *
      * Android users can read the value as well, but need to call specific
      * APIs to play the referenced 'sound' file.
      */
-    String getSound();
+    public String getSound() {
+        return sound;
+    }
 
     /**
      * Returns the value of the 'badge' key from the submitted payload.
      * This key is recognized in native iOS, without any API invocation.
-     * 
+     *
      * Android users can read the value as well, but need to call specific
      * APIs to show the 'badge number'.
      */
-    int getBadge();
+    public int getBadge() {
+        return badge;
+    }
 
     /**
      * Returns a Map, representing any other key-value pairs that were send
      * to the RESTful Sender API.
-     * 
+     *
      * This map usually contains application specific data, like:
      * <pre>
-     *  "sport-news-channel15" : "San Francisco 49er won last game" 
+     *  "sport-news-channel15" : "San Francisco 49er won last game"
      * </pre>
      */
-    Map<String, Object> getData();
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return "UnifiedPushMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
+                + data + ", time-to-live=" + timeToLive + "]";
+    }
 }

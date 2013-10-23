@@ -16,24 +16,24 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.inject.Inject;
-
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.ApnsServiceBuilder;
+import com.notnoop.apns.EnhancedApnsNotification;
 import org.jboss.aerogear.unifiedpush.message.cache.APNsCache;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsService;
-import com.notnoop.apns.ApnsServiceBuilder;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class APNsPushNotificationSender {
 
@@ -77,7 +77,9 @@ public class APNsPushNotificationSender {
                 logger.fine(String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
                 // send:
                 service.start();
-                service.push(tokens, apnsMessage);
+
+                Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
+                service.push(tokens, apnsMessage, expireDate);
 
                 // after sending, let's ask for the inactive tokens:
                 final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
@@ -94,6 +96,21 @@ public class APNsPushNotificationSender {
             }
         } else {
             logger.severe("No certificate was found. Could not send messages to APNs");
+        }
+    }
+
+    /**
+     * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
+     * If no TTL was provided, we use the max date from the APNs library
+     */
+    private Date createFutureDateBasedOnTTL(int ttl) {
+
+        // no TTL was specified on the payload, we use the MAX Default from the APNs library:
+        if (ttl == -1) {
+             return EnhancedApnsNotification.MAXIMUM_DATE;
+        } else {
+            // apply the given TTL to the current time
+            return new Date(System.currentTimeMillis() + ttl);
         }
     }
 

@@ -18,7 +18,7 @@
 package org.jboss.aerogear.unifiedpush.service.sender;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessageImpl;
+import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 public interface SenderService {
 
@@ -28,5 +28,5 @@ public interface SenderService {
      * @param pushApplication the root target for all installations being notified 
      * @param payload the payload to be sent
      */
-    void send(PushApplication pushApplication, UnifiedPushMessageImpl payload);
+    void send(PushApplication pushApplication, UnifiedPushMessage payload);
 }

@@ -39,7 +39,6 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
 import org.jboss.aerogear.unifiedpush.service.sender.message.SendCriterias;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessageImpl;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 @Stateless
@@ -66,7 +65,7 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     @Asynchronous
-    public void send(PushApplication pushApplication, UnifiedPushMessageImpl message) {
+    public void send(PushApplication pushApplication, UnifiedPushMessage message) {
         logger.info(String.format("Processing send request with '%s' payload", message));
 
         // collections for all the different variants:
