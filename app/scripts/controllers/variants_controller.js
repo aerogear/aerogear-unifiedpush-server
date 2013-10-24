@@ -13,6 +13,7 @@
 */
 
 App.VariantsIndexController = Ember.ObjectController.extend({
+
     remove: function( variant ) {
 
         if( window.confirm( "Really Delete " + variant.name + " ?" ) ) {
@@ -238,6 +239,37 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 
         $.ajax( ajaxOptions );
     },
+    resetMaster: function( app ) {
+
+        if( window.confirm( "Really reset " + app.name + " authentification info ?" ) ) {
+            var things = app,
+                that = this,
+                mobileAppPipe = AeroGear.Pipeline({
+                    name: "mobileApp",
+                    settings: {
+                        baseURL: App.baseURL + "rest/applications/",
+                        authenticator: App.AeroGear.authenticator,
+                        endpoint:  app.pushApplicationID
+                    }
+                }).pipes.mobileApp;
+
+            mobileAppPipe.save( {id:"reset"}, {
+                success: function( data ) {
+                    app.set("masterSecret",data['masterSecret']);
+                },
+                error: function( error ) { // TODO: Maybe Make this a class method?
+                    switch( error.status ) {
+                        case 401:
+                            App.Router.router.transitionToRoute( "login" );
+                            break;
+                        default:
+                            that.send( "error", that, "Error Resetting" );
+                            break;
+                    }
+                }
+            });
+        }
+    },
     formReset: function( controller ) {
         //figure this out better
         controller.set( "variantDescription", "" );
@@ -248,6 +280,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         //controller.set( "simplePushEndpoint", "" );
         controller.set( "production", false );
     }
+
 });
 
 App.VariantsAddController = Ember.ObjectController.extend({

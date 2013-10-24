@@ -89,8 +89,8 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                     }
                 });
             }
-        },
-    },
+        }
+          },
     totalApps: function() {
 
         // Compute the total apps for this controller
