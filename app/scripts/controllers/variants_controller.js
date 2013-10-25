@@ -14,7 +14,7 @@
 
 App.VariantsIndexController = Ember.ObjectController.extend( {
     showReset: false,
-    toggleResetOverlay: function () {
+    toggleResetOverlay: function() {
         if ( this.get( "showReset" ) ) {
             this.set( "showReset", false );
         }
@@ -22,7 +22,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             this.set( "showReset", true );
         }
     },
-    remove: function ( variant ) {
+    remove: function( variant ) {
 
         if ( window.confirm( "Really Delete " + variant.name + " ?" ) ) {
             var things = variant,
@@ -37,7 +37,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                 } ).pipes.mobileVariant;
 
             mobileVariantPipe.remove( variant.variantID, {
-                success: function () {
+                success: function() {
                     var content = that.get( "variantList" ),
                         find;
 
@@ -47,7 +47,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
 
                     content.removeObject( find );
                 },
-                error: function ( error ) { // TODO: Maybe Make this a class method?
+                error: function( error ) { // TODO: Maybe Make this a class method?
                     switch ( error.status ) {
                         case 401:
                             App.Router.router.transitionToRoute( "login" );
@@ -57,10 +57,10 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                             break;
                     }
                 }
-            } );
+            });
         }
     },
-    add: function ( controller ) {
+    add: function( controller ) {
         var that = controller,
             thee = this,
             applicationData,
@@ -83,14 +83,15 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             description: controller.get( "description" )
         };
 
-        if ( variantType === "iOS" ) {
+        if( variantType === "iOS" ) {
             //run validation
-            if ( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) ) {
+            if( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) )
+            {
                 ajaxOptions.success = function () {
                     thee.formReset( that );
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 };
-                ajaxOptions.error = function ( error ) {
+                ajaxOptions.error = function( error ) {
                     switch ( error.status ) {
                         case 401:
                             that.transitionToRoute( "login" );
@@ -100,7 +101,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                             break;
                     }
                 };
-                ajaxOptions.beforeSubmit = function ( formData ) {
+                ajaxOptions.beforeSubmit = function( formData ) {
                     formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
                 };
                 $( "form" ).ajaxSubmit( ajaxOptions );
@@ -127,7 +128,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                 default:
                     break;
             }
-            if ( !hasErrors ) {
+            if( !hasErrors ) {
                 ajaxOptions.data = JSON.stringify( applicationData );
                 this.saveVariants( controller, ajaxOptions );
             } else {
@@ -135,7 +136,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             }
         }
     },
-    edit: function ( controller ) {
+    edit: function( controller ) {
         //Make this and add one
         var that = controller,
             thee = this,
@@ -209,7 +210,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                 break;
         }
 
-        if ( normalAjax && !hasErrors ) {
+        if( normalAjax && !hasErrors ) {
             applicationData.name = controller.get( "name" );
             applicationData.description = controller.get( "description" );
 
@@ -220,11 +221,11 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
         }
     },
-    cancel: function ( controller ) {
+    cancel: function( controller ) {
         this.formReset( controller );
         controller.transitionToRoute( "variants" );
     },
-    saveVariants: function ( controller, ajaxOptions ) {
+    saveVariants: function( controller, ajaxOptions ) {
         var that = controller,
             thee = this;
 
@@ -233,7 +234,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             that.transitionToRoute( "variants", that.get( "model" ) );
         };
 
-        ajaxOptions.error = function ( error ) {
+        ajaxOptions.error = function( error ) {
             switch ( error.status ) {
                 case 401:
                     that.transitionToRoute( "login" );
@@ -246,7 +247,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
 
         $.ajax( ajaxOptions );
     },
-    resetMaster: function ( app ) {
+    resetMaster: function( app ) {
         var things = app,
             that = this,
             mobileAppPipe = AeroGear.Pipeline( {
@@ -256,13 +257,13 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                     authenticator: App.AeroGear.authenticator,
                     endpoint: app.pushApplicationID
                 }
-            } ).pipes.mobileApp;
+            }).pipes.mobileApp;
 
         mobileAppPipe.save( {id: "reset"}, {
             success: function ( data ) {
                 app.set( "masterSecret", data['masterSecret'] );
             },
-            error: function ( error ) { // TODO: Maybe Make this a class method?
+            error: function( error ) { // TODO: Maybe Make this a class method?
                 switch ( error.status ) {
                     case 401:
                         App.Router.router.transitionToRoute( "login" );
@@ -272,10 +273,10 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                         break;
                 }
             }
-        } );
+        });
         this.toggleResetOverlay();
     },
-    formReset: function ( controller ) {
+    formReset: function( controller ) {
         //figure this out better
         controller.set( "variantDescription", "" );
         controller.set( "variantName", "" );
