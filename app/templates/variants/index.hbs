@@ -1,3 +1,10 @@
+<aside  {{bind-attr class="showReset:topcoat-overlay:hidden"}}>
+        <h1>Reset Authentification Secret ?</h1>
+        <div class="topcoat-overlay-buttons">
+            <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>No</button>
+            <button role="button" class="topcoat-button--cta" {{action 'resetMaster' this}}>Yes</button>
+        </div>
+</aside>
 <div>{{#linkTo "mobileApps"}}&larr; Back to Push Applications{{/linkTo}}</div>
 
 <section>
@@ -18,7 +25,7 @@
             <br>
             Master Secret: <span class="rcue-code">{{ masterSecret }}</span>
             <br>
-             <input type="reset" class="topcoat-button reset" value="Reset Master Secret" {{ action "resetMaster" this}}>
+             <input type="reset" class="topcoat-button reset" value="Reset Master Secret" {{ action "toggleResetOverlay" this}}>
         </div>
 </section>
 
@@ -29,3 +36,4 @@
         loading....
     {{/if}}
 </section>
+

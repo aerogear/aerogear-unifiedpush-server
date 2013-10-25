@@ -1,3 +1,10 @@
+    <aside  {{bind-attr class="showReset:topcoat-overlay:hidden"}}>
+        <h1>Reset Authentification Secret ?</h1>
+        <div class="topcoat-overlay-buttons">
+            <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>No</button>
+            <button role="button" class="topcoat-button--cta" {{action 'reset' this}}>Yes</button>
+        </div>
+</aside>
 {{#if isLoaded}}
     <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
     <section>
@@ -18,7 +25,7 @@
                 <br>
                 Secret: <span class="rcue-code">{{ secret }}</span>
                 <br>
-               <input type="reset" class="topcoat-button reset" value="Reset Secret" {{ action "reset" this}}>
+               <input type="reset" class="topcoat-button reset" value="Reset Secret" {{ action "toggleResetOverlay"}}>
             </div>
     </section>
     <section>
@@ -27,3 +34,4 @@
 {{else}}
     loading....
 {{/if}}
+

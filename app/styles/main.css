@@ -397,6 +397,13 @@ input[type="password"].error {
     visibility: hidden;
 }
 
+.topcoat-overlay {
+    top: 35%;
+    width: 30%;
+    left: 30%;
+    padding: 10px 10px;
+}
+
 /*
  * Hide only visually, but have it available for screenreaders: h5bp.com/v
  */
@@ -465,7 +472,6 @@ input[type="password"].error {
 .clearfix {
     *zoom: 1;
 }
-
 /* ==========================================================================
    EXAMPLE Media Queries for Responsive Design.
    These examples override the primary ('mobile first') styles.
