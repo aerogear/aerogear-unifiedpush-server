@@ -269,7 +269,7 @@ curl -3 -u "{PushApplicationID}:{MasterSecret}"
       "deviceType" : ["iPad", "AndroidTablet", "web"],
 
       "message": {"key":"value", "key2":"other value", "alert":"HELLO!"},
-      "simple-push": { "SomeCategory":"version=123", "anotherCategory":"version=456"}
+      "simple-push": "version=123"
    }'
 
 https://SERVER:PORT/CONTEXT/rest/sender
