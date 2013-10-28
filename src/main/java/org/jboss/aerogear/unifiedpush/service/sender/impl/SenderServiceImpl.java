@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.service.sender.impl;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -38,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.SendCriterias;
+import org.jboss.aerogear.unifiedpush.service.sender.message.SendCriteria;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 @Stateless
@@ -73,8 +72,8 @@ public class SenderServiceImpl implements SenderService {
         final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
         final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
-        final SendCriterias criterias = message.getSendCriterias();
-        final List<String> variantIDs = criterias.getVariants();
+        final SendCriteria criteria = message.getSendCriteria();
+        final List<String> variantIDs = criteria.getVariants();
 
         // if the criteria payload did specify the "variants" field,
         // we look up each of those mentioned variants, by their "variantID":
@@ -112,9 +111,9 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // all possible criteria
-        final String category = criterias.getCategory();
-        final List<String> aliases = criterias.getAliases();
-        final List<String> deviceTypes = criterias.getDeviceTypes();
+        final String category = criteria.getCategory();
+        final List<String> aliases = criteria.getAliases();
+        final List<String> deviceTypes = criteria.getDeviceTypes();
 
         // let's check if we actually have data for native platforms!
         if (message.getData() != null) {
@@ -135,23 +134,18 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // TODO: DISPATCH TO A QUEUE .....
-        final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
+        final String simplePushVersionPayload = message.getSimplePush();
+
         // if no SimplePush object is present: skip it.
         // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
-        if (simplePushCategoriesAndValues == null || (deviceTypes != null && !deviceTypes.contains("web"))) {
+        if (simplePushVersionPayload == null || (deviceTypes != null && !deviceTypes.contains("web"))) {
             return;
         }
 
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
-            // the specified category names.....
-            final Set<String> simplePushCategories = simplePushCategoriesAndValues.keySet();
-            // add empty list for every category:
-            for (String simplePushCategory : simplePushCategories) {
-
-                final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant
-                        .getVariantID(), simplePushCategory, aliases);
-                this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushCategoriesAndValues.get(simplePushCategory));
-            }
+            final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant
+                    .getVariantID(), category, aliases);
+            this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushVersionPayload);
         }
     }
 

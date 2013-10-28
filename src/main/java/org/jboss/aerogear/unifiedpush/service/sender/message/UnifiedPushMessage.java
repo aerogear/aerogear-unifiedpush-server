@@ -27,9 +27,9 @@ import java.util.Map;
  */
 public class UnifiedPushMessage {
 
-    private final SendCriterias criterias;
+    private final SendCriteria criteria;
 
-    private final Map<String, String> simplePush;
+    private final String simplePush;
     private final String alert;
     private final String sound;
     private final int badge;
@@ -54,11 +54,7 @@ public class UnifiedPushMessage {
      *       "sound":"default",
      *       "badge":2
      *     },
-     *     "simple-push":
-     *     {
-     *       "SomeCategory":"version=123",
-     *       "anotherCategory":"version=456"
-     *     }
+     *     "simple-push":"version=123"
      *   }
      * </pre>
      * This class give some convenient methods to access the query components (<code>alias</code> or <code>deviceType</code>),
@@ -66,8 +62,8 @@ public class UnifiedPushMessage {
      */
     @SuppressWarnings("unchecked")
     public UnifiedPushMessage(Map<String, Object> data) {
-        // extract all the different criterias
-        this.criterias = new SendCriterias(data);
+        // extract all the different criteria
+        this.criteria = new SendCriteria(data);
 
         // ======= Payload ====
         // the Android/iOS payload of the actual message:
@@ -101,27 +97,21 @@ public class UnifiedPushMessage {
         }
 
         // SimplePush values:
-        this.simplePush = (Map<String, String>) data.remove("simple-push");
+        this.simplePush = (String) data.remove("simple-push");
 
     }
 
     /**
      * Returns the object that contains all the submitted query criteria.
      */
-    public SendCriterias getSendCriterias() {
-        return criterias;
+    public SendCriteria getSendCriteria() {
+        return criteria;
     }
 
     /**
-     * Returns the SimplePush specific Map, containing the requested categories and their version strings:
-     * <pre>
-     *   {
-     *     "SomeCategory":"version=123",
-     *     "anotherCategory":"version=456"
-     *   }
-     * </pre>
+     * Returns the SimplePush specific version number.
      */
-    public Map<String, String> getSimplePush() {
+    public String getSimplePush() {
         return simplePush;
     }
 
@@ -184,7 +174,7 @@ public class UnifiedPushMessage {
 
     @Override
     public String toString() {
-        return "UnifiedPushMessage [criterias=" + criterias + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
+        return "UnifiedPushMessage [criteria=" + criteria + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
                 + data + ", time-to-live=" + timeToLive + "]";
     }
 }
