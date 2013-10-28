@@ -72,8 +72,8 @@ public class SenderServiceImpl implements SenderService {
         final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
         final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
-        final SendCriteria criterias = message.getSendCriteria();
-        final List<String> variantIDs = criterias.getVariants();
+        final SendCriteria criteria = message.getSendCriteria();
+        final List<String> variantIDs = criteria.getVariants();
 
         // if the criteria payload did specify the "variants" field,
         // we look up each of those mentioned variants, by their "variantID":
@@ -111,9 +111,9 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // all possible criteria
-        final String category = criterias.getCategory();
-        final List<String> aliases = criterias.getAliases();
-        final List<String> deviceTypes = criterias.getDeviceTypes();
+        final String category = criteria.getCategory();
+        final List<String> aliases = criteria.getAliases();
+        final List<String> deviceTypes = criteria.getDeviceTypes();
 
         // let's check if we actually have data for native platforms!
         if (message.getData() != null) {
