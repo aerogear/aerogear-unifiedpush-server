@@ -121,7 +121,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for SimplePush clients
      */
     @Override
-    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String simplePushCategory, List<String> aliases) {
-        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, simplePushCategory, aliases, SIMPLE_PUSH_DEVICE_TYPES);
+    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases) {
+        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, category, aliases, SIMPLE_PUSH_DEVICE_TYPES);
     }
 }

@@ -26,7 +26,7 @@ import java.util.Map;
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class SendCriterias {
+public class SendCriteria {
 
     private final List<String> aliases;
     private final List<String> deviceTypes;
@@ -34,7 +34,7 @@ public class SendCriterias {
     private final List<String> variants;
 
     @SuppressWarnings("unchecked")
-    public SendCriterias(Map<String, Object> data) {
+    public SendCriteria(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
         this.category = (String) data.remove("category");
