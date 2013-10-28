@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-App.VariantsIndexController = Ember.ObjectController.extend( {
+App.VariantsIndexController = Ember.ObjectController.extend({
     showReset: false,
     toggleResetOverlay: function() {
         if ( this.get( "showReset" ) ) {
@@ -24,7 +24,7 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
     },
     remove: function( variant ) {
 
-        if ( window.confirm( "Really Delete " + variant.name + " ?" ) ) {
+        if( window.confirm( "Really Delete " + variant.name + " ?" ) ) {
             var things = variant,
                 that = this,
                 mobileVariantPipe = AeroGear.Pipeline( {
@@ -41,20 +41,20 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                     var content = that.get( "variantList" ),
                         find;
 
-                    find = content.find( function ( value ) {
+                    find = content.find( function( value ) {
                         return value.variantID === things.variantID;
-                    } );
+                    });
 
                     content.removeObject( find );
                 },
                 error: function( error ) { // TODO: Maybe Make this a class method?
                     switch ( error.status ) {
-                        case 401:
-                            App.Router.router.transitionToRoute( "login" );
-                            break;
-                        default:
-                            that.send( "error", that, "Error Removing" );
-                            break;
+                    case 401:
+                        App.Router.router.transitionToRoute( "login" );
+                        break;
+                    default:
+                        that.send( "error", that, "Error Removing" );
+                        break;
                     }
                 }
             });
@@ -87,18 +87,18 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             //run validation
             if( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) )
             {
-                ajaxOptions.success = function () {
+                ajaxOptions.success = function() {
                     thee.formReset( that );
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 };
                 ajaxOptions.error = function( error ) {
                     switch ( error.status ) {
-                        case 401:
-                            that.transitionToRoute( "login" );
-                            break;
-                        default:
-                            that.send( "error", that, "Error Saving" );
-                            break;
+                    case 401:
+                        that.transitionToRoute( "login" );
+                        break;
+                    default:
+                        that.send( "error", that, "Error Saving" );
+                        break;
                     }
                 };
                 ajaxOptions.beforeSubmit = function( formData ) {
@@ -110,14 +110,14 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             }
         } else {
             switch ( variantType ) {
-                case "android":
-                    if ( model.validateProperty( "googleKey" ) ) {
-                        applicationData.googleKey = controller.get( "googleKey" );
-                        applicationData.projectNumber = controller.get( "projectNumber" );
-                    } else {
-                        hasErrors = true;
-                    }
-                    break;
+            case "android":
+                if ( model.validateProperty( "googleKey" ) ) {
+                    applicationData.googleKey = controller.get( "googleKey" );
+                    applicationData.projectNumber = controller.get( "projectNumber" );
+                } else {
+                    hasErrors = true;
+                }
+                break;
                 // case "simplePush":
                 //     if( model.validateProperty( "simplePushEndpoint" ) ) {
                 //         applicationData.simplePushEndpoint = controller.get( "simplePushEndpoint" );
@@ -125,8 +125,8 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
                 //         hasErrors = true;
                 //     }
                 //     break;
-                default:
-                    break;
+            default:
+                break;
             }
             if( !hasErrors ) {
                 ajaxOptions.data = JSON.stringify( applicationData );
@@ -156,14 +156,14 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
         hasErrors = !model.validateProperty( "name" );
 
         switch ( variantType ) {
-            case "android":
-                if ( model.validateProperty( "googleKey" ) ) {
-                    applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
-                    applicationData.projectNumber = controller.get( "projectNumber" );
-                } else {
-                    hasErrors = true;
-                }
-                break;
+        case "android":
+            if ( model.validateProperty( "googleKey" ) ) {
+                applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
+                applicationData.projectNumber = controller.get( "projectNumber" );
+            } else {
+                hasErrors = true;
+            }
+            break;
             // case "simplePush":
             //     if( model.validateProperty( "simplePushEndpoint" ) ) {
             //         applicationData.simplePushEndpoint = controller.get( "simplePushEndpoint" );
@@ -171,43 +171,43 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             //         hasErrors = true;
             //     }
             //     break;
-            case "iOS":
-                file = $( "form" ).find( "input[name='certificate']" ).val();
-                //Better validation
-                if ( !file ) {
-                    ajaxOptions.type = "PATCH";
-                } else {
-                    if ( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) ) {
-                        ajaxOptions.success = function () {
+        case "iOS":
+            file = $( "form" ).find( "input[name='certificate']" ).val();
+            //Better validation
+            if ( !file ) {
+                ajaxOptions.type = "PATCH";
+            } else {
+                if ( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) ) {
+                    ajaxOptions.success = function() {
                             thee.formReset( that );
                             that.transitionToRoute( "variants", that.get( "model" ) );
                         };
 
-                        ajaxOptions.error = function ( error ) {
+                    ajaxOptions.error = function( error ) {
                             switch ( error.status ) {
-                                case 401:
-                                    that.transitionToRoute( "login" );
-                                    break;
-                                default:
-                                    that.send( "error", that, "Error Saving" );
-                                    break;
+                            case 401:
+                                that.transitionToRoute( "login" );
+                                break;
+                            default:
+                                that.send( "error", that, "Error Saving" );
+                                break;
                             }
                         };
 
-                        ajaxOptions.beforeSubmit = function ( formData ) {
+                    ajaxOptions.beforeSubmit = function( formData ) {
                             formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
                         };
 
-                        normalAjax = false;
+                    normalAjax = false;
 
-                        $( "form" ).ajaxSubmit( ajaxOptions );
-                    } else {
-                        this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
-                    }
+                    $( "form" ).ajaxSubmit( ajaxOptions );
+                } else {
+                    this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
                 }
-                break;
-            default:
-                break;
+            }
+            break;
+        default:
+            break;
         }
 
         if( normalAjax && !hasErrors ) {
@@ -229,27 +229,26 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
         var that = controller,
             thee = this;
 
-        ajaxOptions.success = function () {
+        ajaxOptions.success = function() {
             thee.formReset( that );
             that.transitionToRoute( "variants", that.get( "model" ) );
         };
 
         ajaxOptions.error = function( error ) {
             switch ( error.status ) {
-                case 401:
-                    that.transitionToRoute( "login" );
-                    break;
-                default:
-                    that.send( "error", that, "Error Saving" );
-                    break;
+            case 401:
+                that.transitionToRoute( "login" );
+                break;
+            default:
+                that.send( "error", that, "Error Saving" );
+                break;
             }
         };
 
         $.ajax( ajaxOptions );
     },
     resetMaster: function( app ) {
-        var things = app,
-            that = this,
+        var that = this,
             mobileAppPipe = AeroGear.Pipeline( {
                 name: "mobileApp",
                 settings: {
@@ -260,17 +259,17 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
             }).pipes.mobileApp;
 
         mobileAppPipe.save( {id: "reset"}, {
-            success: function ( data ) {
-                app.set( "masterSecret", data['masterSecret'] );
+            success: function( data ) {
+                app.set( "masterSecret", data.masterSecret );
             },
             error: function( error ) { // TODO: Maybe Make this a class method?
                 switch ( error.status ) {
-                    case 401:
-                        App.Router.router.transitionToRoute( "login" );
-                        break;
-                    default:
-                        that.send( "error", that, "Error Resetting" );
-                        break;
+                case 401:
+                    App.Router.router.transitionToRoute( "login" );
+                    break;
+                default:
+                    that.send( "error", that, "Error Resetting" );
+                    break;
                 }
             }
         });
@@ -287,12 +286,12 @@ App.VariantsIndexController = Ember.ObjectController.extend( {
         controller.set( "production", false );
     }
 
-} );
+});
 
 App.VariantsAddController = Ember.ObjectController.extend( {
     needs: "variantsIndex"
-} );
+});
 
 App.VariantsEditController = Ember.ObjectController.extend( {
     needs: "variantsIndex"
-} );
+});
