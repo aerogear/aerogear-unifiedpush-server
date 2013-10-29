@@ -13,12 +13,12 @@
  */
 App.VariantIndexController = Ember.ObjectController.extend({
     showReset: false,
-    toggleResetOverlay: function() {
-        if(this.get("showReset")){
-            this.set("showReset",false);
+    toggleResetOverlay: function(){
+        if(this.get( "showReset" )){
+            this.set( "showReset", false );
         }
         else{
-            this.set("showReset",true);
+            this.set( "showReset", true );
         }
     },
     reset: function( variant ) {
@@ -29,10 +29,10 @@ App.VariantIndexController = Ember.ObjectController.extend({
                     settings: {
                         baseURL: App.baseURL + "rest/applications/",
                         authenticator: App.AeroGear.authenticator,
-                        endpoint:  variant.pushApplicationID + "/" + variant.get( "vType") + "/" + variant.variantID
+                        endpoint:  variant.pushApplicationID + "/" + variant.get( "vType" ) + "/" + variant.variantID
                     }
                 }).pipes.mobileVariant;
-            mobileVariantPipe.save( {id:"reset"}, {
+            mobileVariantPipe.save( {id: "reset" }, {
                 success: function( data ) {
                     things.set("secret",data.secret);
 

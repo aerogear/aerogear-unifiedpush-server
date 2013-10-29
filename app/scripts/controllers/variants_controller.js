@@ -92,7 +92,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     that.transitionToRoute( "variants", that.get( "model" ) );
                 };
                 ajaxOptions.error = function( error ) {
-                    switch ( error.status ) {
+                    switch( error.status ) {
                     case 401:
                         that.transitionToRoute( "login" );
                         break;
@@ -109,7 +109,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
             }
         } else {
-            switch ( variantType ) {
+            switch( variantType ) {
             case "android":
                 if ( model.validateProperty( "googleKey" ) ) {
                     applicationData.googleKey = controller.get( "googleKey" );
@@ -155,7 +155,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         model.validationErrors.clear();
         hasErrors = !model.validateProperty( "name" );
 
-        switch ( variantType ) {
+        switch( variantType ) {
         case "android":
             if ( model.validateProperty( "googleKey" ) ) {
                 applicationData.googleKey = controller.get( "googleKey" ); //Needs Validation Here
@@ -235,7 +235,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         };
 
         ajaxOptions.error = function( error ) {
-            switch ( error.status ) {
+            switch( error.status ) {
             case 401:
                 that.transitionToRoute( "login" );
                 break;
