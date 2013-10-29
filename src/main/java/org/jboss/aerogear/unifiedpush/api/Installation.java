@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
@@ -96,11 +96,11 @@ public interface Installation {
     /**
      * Used to "tag" the clients. E.g. apply sport, news etc
      * 
-     * @param categories list of all categories the client is in
+     * @param categories set of all categories the client is in
      */
-    void setCategories(final List<String> categories);
+    void setCategories(final Set<String> categories);
 
-    List<String> getCategories();
+    Set<String> getCategories();
 
     /**
      * A reliable way of determining the platform type
