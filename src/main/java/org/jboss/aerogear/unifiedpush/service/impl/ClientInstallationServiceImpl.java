@@ -66,7 +66,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public InstallationImpl updateInstallation(InstallationImpl installationToUpdate, InstallationImpl postedInstallation) {
         // copy the "updateable" values:
-        installationToUpdate.setCategory(postedInstallation.getCategory());
+        installationToUpdate.setCategories(postedInstallation.getCategories());
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
         installationToUpdate.setAlias(postedInstallation.getAlias());
         installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
