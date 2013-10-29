@@ -74,25 +74,25 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
     }
 
     @Override
-    public List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // the required part: Join + simplePushEndpoint URLs for given SimplePush variantID;
         final StringBuilder jpqlString = new StringBuilder("select installation.simplePushEndpoint from ");
         jpqlString.append(AbstractVariant.class.getSimpleName())
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
-        return this.executeDynamicQuery(jpqlString, variantID, category, aliases, deviceTypes);
+        return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
     }
 
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // the required part: Join + all tokens for variantID;
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
         jpqlString.append(AbstractVariant.class.getSimpleName())
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
-        return this.executeDynamicQuery(jpqlString, variantID, category, aliases, deviceTypes);
+        return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
     }
 
     /**
@@ -105,14 +105,14 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
      * TODO: perhaps moving to Criteria API for this later
      */
     @SuppressWarnings("unchecked")
-    private List<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, String category, List<String> aliases, List<String> deviceTypes) {
+    private List<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
 
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??
-        if (aliases != null && !aliases.isEmpty()) {
+        if (isListEmpty(aliases)) {
             // append the string:
             jpqlBaseString.append(" and installation.alias IN :aliases");
             // add the params:
@@ -120,7 +120,7 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         }
 
         // are devices present ??
-        if (deviceTypes != null && !deviceTypes.isEmpty()) {
+        if (isListEmpty(deviceTypes)) {
             // append the string:
             jpqlBaseString.append(" and installation.deviceType IN :deviceTypes");
             // add the params:
@@ -128,11 +128,11 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         }
 
         // is a category present ?
-        if (category != null) {
+        if (isListEmpty(categories)) {
             // append the string:
-            jpqlBaseString.append(" and installation.category = :category");
+            jpqlBaseString.append(" and installation.categories IN :categories");
             // add the params:
-            parameters.put("category", category);
+            parameters.put("categories", categories);
         }
 
         // the entire JPQL string
@@ -147,5 +147,12 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         }
 
         return jpql.getResultList();
+    }
+
+    /**
+     * Checks if the list is empty, and not null
+     */
+    private boolean isListEmpty(List list) {
+        return (list != null && !list.isEmpty());
     }
 }

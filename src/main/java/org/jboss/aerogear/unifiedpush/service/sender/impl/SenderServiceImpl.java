@@ -111,7 +111,7 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // all possible criteria
-        final String category = criteria.getCategory();
+        final List<String> categories = criteria.getCategories();
         final List<String> aliases = criteria.getAliases();
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
@@ -120,14 +120,14 @@ public class SenderServiceImpl implements SenderService {
 
             // TODO: DISPATCH TO A QUEUE .....
             for (iOSVariant iOSVariant : iOSVariants) {
-                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), category,
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), categories,
                         aliases, deviceTypes);
                 this.sendToAPNs(iOSVariant, tokenPerVariant, message);
             }
 
             // TODO: DISPATCH TO A QUEUE .....
             for (AndroidVariant androidVariant : androidVariants) {
-                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), category,
+                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories,
                         aliases, deviceTypes);
                 this.sendToGCM(androidVariant, androidTokenPerVariant, message);
             }
@@ -144,7 +144,7 @@ public class SenderServiceImpl implements SenderService {
 
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant
-                    .getVariantID(), category, aliases);
+                    .getVariantID(), categories, aliases);
             this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushVersionPayload);
         }
     }

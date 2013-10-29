@@ -43,7 +43,7 @@ public class UnifiedPushMessage {
      *   {
      *     "alias" : ["someUsername"],
      *     "deviceType" : ["someDevice"],
-     *     "category" : "someCategory",
+     *     "categories" : ["someCategories"],
      *     "variants" : ["someVariantIDs"],
      *     "ttl" : 3600,
      *     "message":

@@ -30,14 +30,14 @@ public class SendCriteria {
 
     private final List<String> aliases;
     private final List<String> deviceTypes;
-    private final String category;
+    private final List<String> categories;
     private final List<String> variants;
 
     @SuppressWarnings("unchecked")
     public SendCriteria(Map<String, Object> data) {
         this.aliases = (List<String>) data.remove("alias");
         this.deviceTypes = (List<String>) data.remove("deviceType");
-        this.category = (String) data.remove("category");
+        this.categories = (List<String>) data.remove("categories");
         this.variants = (List<String>) data.remove("variants");
     }
 
@@ -59,8 +59,8 @@ public class SendCriteria {
     /**
      * Returns a category that will receive a push notification. 
      */
-    public String getCategory() {
-        return category;
+    public List<String> getCategories() {
+        return categories;
     }
 
     /**
@@ -72,6 +72,6 @@ public class SendCriteria {
 
     @Override
     public String toString() {
-        return "[aliases=" + aliases + ", deviceTypes=" + deviceTypes + ", category=" + category + ", variants=" + variants + "]";
+        return "[aliases=" + aliases + ", deviceTypes=" + deviceTypes + ", categories=" + categories + ", variants=" + variants + "]";
     }
 }

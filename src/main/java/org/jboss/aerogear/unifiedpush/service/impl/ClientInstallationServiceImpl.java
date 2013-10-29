@@ -113,15 +113,15 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android / iOS clients
      */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes) {
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, category, aliases, deviceTypes);
+    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String>  categories, List<String> aliases, List<String> deviceTypes) {
+        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
     }
 
     /**
      * Finder for 'send', used for SimplePush clients
      */
     @Override
-    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases) {
-        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, category, aliases, SIMPLE_PUSH_DEVICE_TYPES);
+    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases) {
+        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, categories, aliases, SIMPLE_PUSH_DEVICE_TYPES);
     }
 }
