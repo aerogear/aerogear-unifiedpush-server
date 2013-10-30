@@ -130,7 +130,8 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
         // is a category present ?
         if (isListEmpty(categories)) {
             // append the string:
-            jpqlBaseString.append(" and installation.categories IN :categories");
+            //jpqlBaseString.append(" and installation.categories IN :categories");
+            jpqlBaseString.append(" and :categories MEMBER OF installation.categories");
             // add the params:
             parameters.put("categories", categories);
         }
