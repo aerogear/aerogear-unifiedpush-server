@@ -29,9 +29,14 @@ Starting the JBoss Application Server:
 ```
 
 
+### Database configuration
+
+The UnifiedPush Server requires a datasource with ```java:jboss/datasources/PushEEDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a few command line interface scripts which helps to configure a datasource of your choice.
+
+
 #### H2 Database configuration
 
-The UnifiedPush Server requires a datasource with ```java:jboss/datasources/PushEEDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a command line interface script which helps to configure the datasource, using the H2 database, which is included in the JBoss AS:
+The H2 database is included in the JBoss AS and is pretty easy to install:
 
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./h2-database-config.cli
@@ -40,6 +45,53 @@ The UnifiedPush Server requires a datasource with ```java:jboss/datasources/Push
 The above script will add the _PushEEDS datasource_, which uses your home directory. If you want to change the location update the ```h2-database-config.cli``` file as needed.
 
 _**Note**_: Make sure you are not using the home directory for production!
+
+#### MySQL Database configuration
+
+For using MySQL a few more steps are required.
+
+##### Create a database and database user
+
+```
+$ mysql -u <user-name>
+mysql> create database unifiedpush;
+mysql> create user 'unifiedpush'@'localhost' identified by 'unifiedpush';
+mysql> GRANT SELECT,INSERT,UPDATE,ALTER,DELETE,CREATE,DROP ON unifiedpush.* TO 'unifiedpush'@'localhost';
+```
+
+##### Add a datasource for the UnifiedPush database
+
+The module for MySQL can be found in ```src/main/resources/modules/com/mysql```. Copy this module to JBoss AS modules directory:
+
+```
+cp -r src/main/resources/modules/com /Path/to/JBossAS/modules/
+```
+
+We also need the mysql driver copied to this module:
+
+```
+mvn dependency:copy -Dartifact=mysql:mysql-connector-java:5.1.18 -DoutputDirectory=/Path/to/JBossAS/modules/com/mysql/jdbc/main/
+```
+
+Next, start your server:
+
+```
+./standalone.sh
+```
+Finally, run the follwing command line interface script:
+
+```
+/Path/to/JBossAS/bin/jboss-cli.sh --file=./mysql-database-config.cli
+```
+    
+The above script will add the mysql driver and a datasource.
+ 
+If you inspect the server console output you should see the following message:
+
+```
+14:41:57,790 INFO  [org.jboss.as.connector.subsystems.datasources] (management-handler-thread - 1) JBAS010404: Deploying non-JDBC-compliant driver class com.mysql.jdbc.Driver (version 5.1)
+14:41:57,794 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-5) JBAS010400: Bound data source [java:jboss/datasources/PushEEDS]
+```
 
 #### Deploy the UnifiedPush Server
 
