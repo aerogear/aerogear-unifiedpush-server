@@ -129,11 +129,23 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
 
         // is a category present ?
         if (isListEmpty(categories)) {
-            // append the string:
-            //jpqlBaseString.append(" and installation.categories IN :categories");
-            jpqlBaseString.append(" and :categories MEMBER OF installation.categories");
-            // add the params:
-            parameters.put("categories", categories);
+
+            // See 'HHH-5209':
+            // the MEMBER OF does not work until Hibernate 4.1.8/4.3.0.Beta1
+            // We are actually on 4.0.1.Final
+            // suggested work around: IN ELEMENTS()
+
+            // iteration over the given categories, to append all of them:
+            for (int i = 0; i < categories.size(); i++) {
+
+                if (i==0) {
+                    jpqlBaseString.append(" and :categories" + i + " IN ELEMENTS(installation.categories)");
+                } else {
+                    jpqlBaseString.append(" OR :categories" + i + " IN ELEMENTS(installation.categories)");
+                }
+                parameters.put("categories"+ i, categories.get(i));
+
+            }
         }
 
         // the entire JPQL string
