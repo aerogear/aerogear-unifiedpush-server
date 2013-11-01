@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
+import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,7 @@ public class InstallationDaoTest {
     private EntityManager em;
     private InstallationDaoImpl installationDao;
     private AndroidVariantDaoImpl variantDao;
+    private SimplePushVariantDaoImpl spVariantDao;
 
     @Before
     public void setUp() {
@@ -44,6 +46,8 @@ public class InstallationDaoTest {
 
         variantDao = new AndroidVariantDaoImpl();
         variantDao.setEntityManager(em);
+        spVariantDao = new SimplePushVariantDaoImpl();
+        spVariantDao.setEntityManager(em);
 
         // start the shindig
         em.getTransaction().begin();
@@ -73,10 +77,10 @@ public class InstallationDaoTest {
     public void findDeviceTokenForOneInstallation() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -85,23 +89,34 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList(alias), null);
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
         assertEquals(1, tokens.size());
         assertEquals("123456", tokens.get(0));
+
+
+        InstallationImpl one = installationDao.findInstallationForVariantByDeviceToken(variant.getVariantID(), "123456");
+        assertEquals("123456", one.getDeviceToken());
+
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add("123456");
+        tokenz.add("foobar223");
+        List<InstallationImpl> list = installationDao.findInstallationsForVariantByDeviceTokens(variant.getVariantID(), tokenz);
+        assertEquals(1, list.size());
+        assertEquals("123456", list.get(0).getDeviceToken());
     }
 
     @Test
     public void findDeviceTokenForMultipleInstallations() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         for (int i=0;i<10; i++) {
 
@@ -112,24 +127,23 @@ public class InstallationDaoTest {
             installationDao.create(installation);
 
             // register the installation:
-            androidVariant.getInstallations().add(installation);
-            variantDao.update(androidVariant);
+            variant.getInstallations().add(installation);
+            variantDao.update(variant);
         }
 
         String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList(alias), null);
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
         assertEquals(10, tokens.size());
     }
-
 
     @Test
     public void findDeviceTokensForAlias() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -138,8 +152,8 @@ public class InstallationDaoTest {
         installation.setDeviceToken("123456");
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -149,11 +163,11 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList(alias), null);
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
     }
 
@@ -161,10 +175,10 @@ public class InstallationDaoTest {
     public void findEnabledDeviceTokensForAlias() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -173,8 +187,8 @@ public class InstallationDaoTest {
         installation.setDeviceToken("123456");
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -185,24 +199,23 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList(alias), null);
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
         assertEquals(1, tokens.size());
         assertEquals("123456", tokens.get(0));
-
     }
 
     @Test
     public void findDeviceTokensForAliasAndDeviceType() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -211,8 +224,8 @@ public class InstallationDaoTest {
         installation.setDeviceToken("123456");
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -222,12 +235,12 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
         String[] types = {"Android Tablet"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), Arrays.asList(types));
         assertEquals(1, tokens.size());
         assertEquals("678901", tokens.get(0));
 
@@ -237,10 +250,10 @@ public class InstallationDaoTest {
     public void findZeroDeviceTokensForAliasAndCategoriesAndDeviceType() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -249,8 +262,8 @@ public class InstallationDaoTest {
         installation.setDeviceToken("123456");
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -260,13 +273,13 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias =     {"foo@bar.org"};
         String[] types =     {"Android Tablet"};
         String[] categories = {"soccer"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList(categories), Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(categories), Arrays.asList(alias), Arrays.asList(types));
         assertEquals(0, tokens.size());
     }
 
@@ -275,10 +288,10 @@ public class InstallationDaoTest {
     public void findOneDeviceTokensForAliasAndCategoriesAndDeviceType() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -292,8 +305,8 @@ public class InstallationDaoTest {
 
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -303,13 +316,13 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
         String[] types = {"Android Phone"};
         String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
         assertEquals(1, tokens.size());
         assertEquals("123456", tokens.get(0));
 
@@ -319,10 +332,10 @@ public class InstallationDaoTest {
     public void findTwoDeviceTokensForAliasAndCategoriesAndDeviceType() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -336,8 +349,8 @@ public class InstallationDaoTest {
 
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -353,13 +366,13 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] alias = {"foo@bar.org"};
         String[] types = {"Android Phone"};
         String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
         assertEquals(2, tokens.size());
 
     }
@@ -368,10 +381,10 @@ public class InstallationDaoTest {
     public void findTwoDeviceTokensCategories() {
 
         // create and save variant:
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setVariantID(UUID.randomUUID().toString());
-        androidVariant.setGoogleKey("Key");
-        variantDao.create(androidVariant);
+        AndroidVariant variant = new AndroidVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        variant.setGoogleKey("Key");
+        variantDao.create(variant);
 
         // create and save installation:
         InstallationImpl installation = new InstallationImpl();
@@ -385,8 +398,8 @@ public class InstallationDaoTest {
 
         installationDao.create(installation);
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         // a different
         installation = new InstallationImpl();
@@ -402,13 +415,251 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         // register the installation:
-        androidVariant.getInstallations().add(installation);
-        variantDao.update(androidVariant);
+        variant.getInstallations().add(installation);
+        variantDao.update(variant);
 
         String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList(cats), null, null);
+        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), null, null);
         assertEquals(2, tokens.size());
 
     }
-}
 
+    @Test
+    public void findPushEndpointForMultipleInstallations() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        for (int i=0;i<10; i++) {
+
+            // create and save installation:
+            InstallationImpl installation = new InstallationImpl();
+            installation.setAlias("foo@bar.org");
+            installation.setDeviceToken(UUID.randomUUID().toString());
+            installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+            installationDao.create(installation);
+
+            // register the installation:
+            variant.getInstallations().add(installation);
+            spVariantDao.update(variant);
+        }
+
+        String[] alias = {"foo@bar.org"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
+        assertEquals(10, tokens.size());
+        assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
+        assertTrue(tokens.get(9).startsWith("http://server:8080/update/"));
+    }
+
+
+    @Test
+    public void findPushEndpointsForAlias() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        // create and save installation:
+        InstallationImpl installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("123456");
+        installationDao.create(installation);
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        // a different
+        installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("678901");
+        installationDao.create(installation);
+
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        String[] alias = {"foo@bar.org"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), null, Arrays.asList(alias), null);
+        assertEquals(2, tokens.size());
+        assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
+        assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
+    }
+
+    @Test
+    public void findZeroPushEndpointsForAliasAndCategories() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        // create and save installation:
+        InstallationImpl installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("123456");
+        installationDao.create(installation);
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        // a different
+        installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("678901");
+        installationDao.create(installation);
+
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        String[] alias =     {"foo@bar.org"};
+        String[] categories = {"soccer"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(categories), Arrays.asList(alias), null);
+        assertEquals(0, tokens.size());
+    }
+
+
+    @Test
+    public void findOnePushEndpointForAliasAndCategories() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        // create and save installation:
+        InstallationImpl installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("123456");
+
+        final Set<String> categories = new HashSet<String>();
+        categories.add("soccer");
+        installation.setCategories(categories);
+
+        installationDao.create(installation);
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        // a different
+        installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("678901");
+        installationDao.create(installation);
+
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        String[] alias = {"foo@bar.org"};
+        String[] cats  = {"soccer", "news", "weather"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), null);
+        assertEquals(1, tokens.size());
+        assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
+
+    }
+
+    @Test
+    public void findTwoPushEndpointsForAliasAndCategories() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        // create and save installation:
+        InstallationImpl installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("123456");
+
+        Set<String> categories = new HashSet<String>();
+        categories.add("soccer");
+        installation.setCategories(categories);
+
+        installationDao.create(installation);
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        // a different
+        installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+
+        categories = new HashSet<String>();
+        categories.add("news");
+        installation.setCategories(categories);
+
+
+        installation.setDeviceToken("678901");
+        installationDao.create(installation);
+
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        String[] alias = {"foo@bar.org"};
+        String[] cats  = {"soccer", "news", "weather"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), Arrays.asList(alias), null);
+        assertEquals(2, tokens.size());
+        assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
+        assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
+    }
+
+    @Test
+    public void findTwoPushEndpointsForCategories() {
+
+        // create and save variant:
+        SimplePushVariant variant = new SimplePushVariant();
+        variant.setVariantID(UUID.randomUUID().toString());
+        spVariantDao.create(variant);
+
+        // create and save installation:
+        InstallationImpl installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        installation.setDeviceToken("123456");
+
+        Set<String> categories = new HashSet<String>();
+        categories.add("soccer");
+        installation.setCategories(categories);
+
+        installationDao.create(installation);
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        // a different
+        installation = new InstallationImpl();
+        installation.setAlias("foo@bar.org");
+        installation.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+
+        categories = new HashSet<String>();
+        categories.add("news");
+        installation.setCategories(categories);
+
+
+        installation.setDeviceToken("678901");
+        installationDao.create(installation);
+
+        // register the installation:
+        variant.getInstallations().add(installation);
+        spVariantDao.update(variant);
+
+        String[] cats  = {"soccer", "news", "weather"};
+        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(variant.getVariantID(), Arrays.asList(cats), null, null);
+        assertEquals(2, tokens.size());
+        assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
+        assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
+    }
+}
