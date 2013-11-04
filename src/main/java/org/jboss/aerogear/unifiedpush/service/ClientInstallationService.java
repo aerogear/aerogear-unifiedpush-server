@@ -77,10 +77,10 @@ public interface ClientInstallationService {
     /**
      * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria
      */
-    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 
     /**
      * Used for (SimplePush) Sender API. Queries the available SimplePush "pushEndpoint URLs"(device-type : web) for a given variant, based on provided criteria
      */
-    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases);
+    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases);
 }

@@ -19,8 +19,9 @@ package org.jboss.aerogear.unifiedpush.model;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class InstallationImpl extends PersistentObject implements Installation {
@@ -38,8 +39,10 @@ public class InstallationImpl extends PersistentObject implements Installation {
     private String osVersion;
     @Column
     private String alias;
-    @Column
-    private String category;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "category")
+    private Set<String> categories;
     @Column
     private String platform;
     @Column
@@ -106,13 +109,13 @@ public class InstallationImpl extends PersistentObject implements Installation {
     }
 
     @Override
-    public String getCategory() {
-        return category;
+    public Set<String> getCategories() {
+        return categories;
     }
 
     @Override
-    public void setCategory(final String category) {
-        this.category = category;
+    public void setCategories(final Set<String> categories) {
+        this.categories = categories;
     }
 
     @Override

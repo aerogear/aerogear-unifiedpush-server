@@ -41,14 +41,14 @@ public interface InstallationDao extends GenericDao<InstallationImpl, String> {
     /**
      * Sender API for native (Android/iOS) installations:
      * 
-     * Query all tokens for the given variant, by respecting a few criteria arguments (category, aliases and deviceTypes)
+     * Query all tokens for the given variant, by respecting a few criteria arguments (categories, aliases and deviceTypes)
      */
-    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 
     /**
      * Sender API for SimplePush installations:
      * 
-     * Query all pushEndpoint URLs for the given SimplePush variant, by respecting a few criteria arguments (category, aliases and deviceTypes)
+     * Query all pushEndpoint URLs for the given SimplePush variant, by respecting a few criteria arguments (categories, aliases and deviceTypes)
      */
-    List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+    List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 }

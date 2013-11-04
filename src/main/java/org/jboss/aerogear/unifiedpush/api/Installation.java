@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import java.util.Set;
+
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
  * or user-agent (SimplePush)
@@ -92,13 +94,13 @@ public interface Installation {
     String getAlias();
 
     /**
-     * Used for SimplePush, to "tag" the channel
+     * Used to "tag" the clients. E.g. apply sport, news etc
      * 
-     * @param category the name of the 'tagged' category
+     * @param categories set of all categories the client is in
      */
-    void setCategory(final String category);
+    void setCategories(final Set<String> categories);
 
-    String getCategory();
+    Set<String> getCategories();
 
     /**
      * A reliable way of determining the platform type
