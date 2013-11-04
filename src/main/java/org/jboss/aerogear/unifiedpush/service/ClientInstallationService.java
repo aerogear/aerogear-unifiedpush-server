@@ -82,5 +82,5 @@ public interface ClientInstallationService {
     /**
      * Used for (SimplePush) Sender API. Queries the available SimplePush "pushEndpoint URLs"(device-type : web) for a given variant, based on provided criteria
      */
-    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categorie, List<String> aliases);
+    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases);
 }
