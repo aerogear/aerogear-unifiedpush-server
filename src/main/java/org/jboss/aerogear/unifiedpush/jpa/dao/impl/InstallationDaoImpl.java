@@ -135,17 +135,18 @@ public class InstallationDaoImpl extends AbstractGenericDao<InstallationImpl, St
             // We are actually on 4.0.1.Final
             // suggested work around: IN ELEMENTS()
 
-            // iteration over the given categories, to append all of them:
+            // iteration over the given categories, to append all of them (as an OR...)
             for (int i = 0; i < categories.size(); i++) {
 
                 if (i==0) {
-                    jpqlBaseString.append(" and :categories" + i + " IN ELEMENTS(installation.categories)");
+                    jpqlBaseString.append(" and ( :categories" + i + " IN ELEMENTS(installation.categories)");
                 } else {
                     jpqlBaseString.append(" OR :categories" + i + " IN ELEMENTS(installation.categories)");
                 }
                 parameters.put("categories"+ i, categories.get(i));
 
             }
+            jpqlBaseString.append(')');
         }
 
         // the entire JPQL string
