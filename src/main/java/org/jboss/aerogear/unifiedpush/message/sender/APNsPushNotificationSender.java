@@ -107,7 +107,7 @@ public class APNsPushNotificationSender {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
-             return EnhancedApnsNotification.MAXIMUM_DATE;
+            return EnhancedApnsNotification.MAXIMUM_DATE;
         } else {
             // apply the given TTL to the current time
             return new Date(System.currentTimeMillis() + ttl);

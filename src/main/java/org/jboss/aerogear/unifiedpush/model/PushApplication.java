@@ -40,21 +40,21 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
 
     @Column
     @NotNull
-    @Size(min=1, max=255)
+    @Size(min = 1, max = 255)
     private String name;
 
     @Column
-    @Size(min=1, max=255)
+    @Size(min = 1, max = 255)
     private String description;
 
     @Column
-    @Size(min=1, max=255)
+    @Size(min = 1, max = 255)
     private String pushApplicationID;
     @Column
     private String masterSecret;
 
     @Column
-    @Size(min=1, max=255)
+    @Size(min = 1, max = 255)
     private String developer;
 
     // TODO: let's do LAZY

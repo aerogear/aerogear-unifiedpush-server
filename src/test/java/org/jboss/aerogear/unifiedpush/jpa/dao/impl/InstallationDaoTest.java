@@ -48,7 +48,6 @@ public class InstallationDaoTest {
         this.createTestData(entityManager);
     }
 
-
     private void createTestData(EntityManager entityManager) {
 
         // create abd configure all the DAOs:
@@ -127,7 +126,7 @@ public class InstallationDaoTest {
         // ============== SimplePush client installations =========
         InstallationImpl simplePush1 = new InstallationImpl();
         simplePush1.setAlias("foo@bar.org");
-        simplePush1.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        simplePush1.setSimplePushEndpoint("http://server:8080/update/" + UUID.randomUUID().toString());
         simplePush1.setDeviceToken("123456");
         simplePush1.setCategories(categoriesOne);
 
@@ -135,12 +134,11 @@ public class InstallationDaoTest {
 
         InstallationImpl simplePush2 = new InstallationImpl();
         simplePush2.setAlias("foo@bar.org");
-        simplePush2.setSimplePushEndpoint("http://server:8080/update/"+UUID.randomUUID().toString());
+        simplePush2.setSimplePushEndpoint("http://server:8080/update/" + UUID.randomUUID().toString());
         simplePush2.setCategories(categoriesTwo);
         simplePush2.setDeviceToken("1234567865432");
 
         installationDao.create(simplePush2);
-
 
         // register the installation:
         sp.getInstallations().add(simplePush1);
@@ -157,8 +155,8 @@ public class InstallationDaoTest {
 
     @Test
     public void findDeviceTokensForOneInstallationOfOneVariant() {
-        String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
 
         InstallationImpl one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, "123456");
@@ -174,75 +172,76 @@ public class InstallationDaoTest {
 
     @Test
     public void findDeviceTokensForAliasOfVariant() {
-        String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
     }
 
     @Test
     public void findNoDeviceTokensForAliasOfVariant() {
-        String[] alias = {"bar@foo.org"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        String[] alias = { "bar@foo.org" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
         assertEquals(0, tokens.size());
     }
 
     @Test
     public void findDeviceTokensForAliasAndDeviceType() {
-        String[] alias = {"foo@bar.org"};
-        String[] types = {"Android Tablet"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
+        String[] alias = { "foo@bar.org" };
+        String[] types = { "Android Tablet" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
         assertEquals(1, tokens.size());
         assertEquals("678901", tokens.get(0));
     }
 
     @Test
     public void findNoDeviceTokensForAliasAndUnusedDeviceType() {
-        String[] alias = {"foo@bar.org"};
-        String[] types = {"Android Clock"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
+        String[] alias = { "foo@bar.org" };
+        String[] types = { "Android Clock" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
         assertEquals(0, tokens.size());
     }
 
     @Test
     public void findZeroDeviceTokensForAliasAndCategoriesAndDeviceType() {
-        String[] alias =     {"foo@bar.org"};
-        String[] types =     {"Android Tablet"};
-        String[] categories = {"soccer"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories), Arrays.asList(alias), Arrays.asList(types));
+        String[] alias = { "foo@bar.org" };
+        String[] types = { "Android Tablet" };
+        String[] categories = { "soccer" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories), Arrays.asList(alias), Arrays
+                .asList(types));
         assertEquals(0, tokens.size());
     }
 
     @Test
     public void findOneDeviceTokensForAliasAndCategoriesAndDeviceType() {
-        String[] alias = {"foo@bar.org"};
-        String[] types = {"Android Phone"};
-        String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
+        String[] alias = { "foo@bar.org" };
+        String[] types = { "Android Phone" };
+        String[] cats = { "soccer", "news", "weather" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
         assertEquals(1, tokens.size());
         assertEquals("123456", tokens.get(0));
     }
 
     @Test
     public void findTwoDeviceTokensForAliasAndCategories() {
-        String[] alias = {"foo@bar.org"};
-        String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        String[] cats = { "soccer", "news", "weather" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
 
     }
 
     @Test
     public void findTwoDeviceTokensCategories() {
-        String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
+        String[] cats = { "soccer", "news", "weather" };
+        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
         assertEquals(2, tokens.size());
 
     }
 
     @Test
     public void findPushEndpointsForAlias() {
-        String[] alias = {"foo@bar.org"};
-        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
         assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
         assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
@@ -250,17 +249,17 @@ public class InstallationDaoTest {
 
     @Test
     public void findZeroPushEndpointsForAliasAndCategories() {
-        String[] alias =     {"foo@bar.org"};
-        String[] categories = {"US Football"};
-        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories), Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        String[] categories = { "US Football" };
+        List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories), Arrays.asList(alias), null);
         assertEquals(0, tokens.size());
     }
 
     @Test
     public void findOnePushEndpointForAliasAndCategories() {
-        String[] alias = {"foo@bar.org"};
-        String[] cats  = {"soccer", "weather"};
-        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        String[] cats = { "soccer", "weather" };
+        List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertEquals(1, tokens.size());
         assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
 
@@ -268,9 +267,9 @@ public class InstallationDaoTest {
 
     @Test
     public void findTwoPushEndpointsForAliasAndCategories() {
-        String[] alias = {"foo@bar.org"};
-        String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        String[] alias = { "foo@bar.org" };
+        String[] cats = { "soccer", "news", "weather" };
+        List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
         assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
         assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
@@ -278,8 +277,8 @@ public class InstallationDaoTest {
 
     @Test
     public void findTwoPushEndpointsForCategories() {
-       String[] cats  = {"soccer", "news", "weather"};
-        List<String> tokens =   installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
+        String[] cats = { "soccer", "news", "weather" };
+        List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
         assertEquals(2, tokens.size());
         assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
         assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));

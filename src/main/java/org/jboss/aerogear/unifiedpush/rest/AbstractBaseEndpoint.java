@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
  */
 public abstract class AbstractBaseEndpoint {
-    
+
     @Inject
     private Validator validator;
 
@@ -49,7 +49,7 @@ public abstract class AbstractBaseEndpoint {
         // in case of an invalid model, we throw a ConstraintViolationException, containing the violations:
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(
-                new HashSet<ConstraintViolation<?>>(violations));
+                    new HashSet<ConstraintViolation<?>>(violations));
         }
     }
 
@@ -60,14 +60,14 @@ public abstract class AbstractBaseEndpoint {
      * @return 400 Bad Request response, containing details on the constraint violations 
      */
     protected ResponseBuilder createBadRequestResponse(Set<ConstraintViolation<?>> violations) {
-            final Map<String, String> responseObj = new HashMap<String, String>();
+        final Map<String, String> responseObj = new HashMap<String, String>();
 
-            for (ConstraintViolation<?> violation : violations) {
-                responseObj.put(violation.getPropertyPath().toString(),
+        for (ConstraintViolation<?> violation : violations) {
+            responseObj.put(violation.getPropertyPath().toString(),
                                 violation.getMessage());
-            }
+        }
 
-            return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);
     }
 

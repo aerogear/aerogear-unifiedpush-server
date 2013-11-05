@@ -91,7 +91,6 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
             return builder.build();
         }
 
-
         // manually set the ID:
         simplePushVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:

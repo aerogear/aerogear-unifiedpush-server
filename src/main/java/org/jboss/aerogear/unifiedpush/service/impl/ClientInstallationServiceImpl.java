@@ -113,7 +113,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android / iOS clients
      */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String>  categories, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
     }
 

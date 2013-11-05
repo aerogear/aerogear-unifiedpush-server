@@ -124,7 +124,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
                 return builder.build();
             }
 
-
             // update name/desc:
             pushApp.setDescription(updatedPushApp.getDescription());
             pushApp.setName(updatedPushApp.getName());

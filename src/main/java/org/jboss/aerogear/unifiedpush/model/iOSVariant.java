@@ -44,7 +44,7 @@ public class iOSVariant extends AbstractVariant {
 
     @Column
     @NotNull
-    @Size(max=255)
+    @Size(max = 255)
     private String passphrase;
 
     @Lob
