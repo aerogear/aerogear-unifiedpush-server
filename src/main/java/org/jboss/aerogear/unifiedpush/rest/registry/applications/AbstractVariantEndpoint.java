@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,12 +41,16 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected Logger logger;
 
+    @Inject
+    @LoggedUser
+    protected Instance<String> loginName;
+
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantID(variantId);
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
         logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
 
         if (variant != null) {
@@ -65,7 +71,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     public Response deleteSimplePushVariation(@PathParam("variantId") String variantId) {
 
         //SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-        Variant variant = variantService.findByVariantID(variantId);
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
         if (variant != null) {
             variantService.removeVariant(variant);
             return Response.noContent().build();

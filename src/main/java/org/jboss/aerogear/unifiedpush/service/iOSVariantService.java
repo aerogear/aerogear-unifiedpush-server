@@ -25,5 +25,4 @@ public interface iOSVariantService {
 
     iOSVariant addiOSVariant(iOSVariant iOSVariant);
 
-    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
 }

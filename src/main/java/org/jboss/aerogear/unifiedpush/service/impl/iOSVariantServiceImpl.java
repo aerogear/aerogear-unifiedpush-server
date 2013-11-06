@@ -33,9 +33,4 @@ public class iOSVariantServiceImpl implements iOSVariantService {
     public iOSVariant addiOSVariant(iOSVariant iOSApp) {
         return iOSApplicationDao.create(iOSApp);
     }
-
-    @Override
-    public iOSVariant findByVariantIDForDeveloper(String variantID, String loginName) {
-        return iOSApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
-    }
 }

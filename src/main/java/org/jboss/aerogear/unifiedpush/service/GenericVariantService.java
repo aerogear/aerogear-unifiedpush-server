@@ -23,6 +23,8 @@ public interface GenericVariantService {
 
     Variant findByVariantID(String variantID);
 
+    Variant findByVariantIDForDeveloper(String variantID, String loginName);
+
     void addInstallation(Variant variant, InstallationImpl installation);
 
     Variant updateVariant(Variant variant);

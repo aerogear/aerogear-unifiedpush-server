@@ -34,6 +34,11 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
+    public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
+        return variantDao.findByVariantIDForDeveloper(variantID, loginName);
+    }
+
+    @Override
     public void addInstallation(Variant variant, InstallationImpl installation) {
 
         variant.getInstallations().add(installation);

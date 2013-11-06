@@ -24,5 +24,4 @@ public interface AndroidVariantService {
 
     AndroidVariant addAndroidVariant(AndroidVariant androidVariant);
 
-    AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName);
 }

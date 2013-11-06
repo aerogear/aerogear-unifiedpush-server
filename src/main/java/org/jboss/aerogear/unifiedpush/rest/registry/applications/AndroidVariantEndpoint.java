@@ -20,12 +20,10 @@ import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.AndroidVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -53,10 +51,6 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     private PushApplicationService pushAppService;
     @Inject
     private AndroidVariantService androidVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
 
     // ===============================================================
     // =============== Mobile variant construct ======================
@@ -113,7 +107,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
 
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
 
         if (androidVariant != null) {
             return Response.ok(androidVariant).build();
@@ -130,7 +124,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
         if (androidVariant != null) {
 
             // some validation

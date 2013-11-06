@@ -35,8 +35,4 @@ public class SimplePushVariantServiceImpl implements SimplePushVariantService {
         return simplePushApplicationDao.create(simplePushVariant);
     }
 
-    @Override
-    public SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName) {
-        return simplePushApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
-    }
 }

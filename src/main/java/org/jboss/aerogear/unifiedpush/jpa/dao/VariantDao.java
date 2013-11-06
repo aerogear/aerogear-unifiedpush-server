@@ -22,4 +22,5 @@ import org.jboss.aerogear.unifiedpush.jpa.GenericDao;
 public interface VariantDao extends GenericDao<Variant, String> {
 
     Variant findByVariantID(String variantID);
+    Variant findByVariantIDForDeveloper(String variantID, String loginName);
 }

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -24,6 +25,7 @@ import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -47,12 +49,16 @@ public class InstallationManagementEndpoint {
     @Inject
     private ClientInstallationService clientInstallationService;
 
+    @Inject
+    @LoggedUser
+    private Instance<String> loginName;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId) {
 
         //Find the variant using the variantID
-        Variant variant = genericVariantService.findByVariantID(variantId);
+        Variant variant = genericVariantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();

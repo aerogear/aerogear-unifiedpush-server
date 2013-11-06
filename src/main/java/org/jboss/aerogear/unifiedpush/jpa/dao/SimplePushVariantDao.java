@@ -24,7 +24,4 @@ import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 public interface SimplePushVariantDao extends GenericDao<SimplePushVariant, String> {
 
     List<SimplePushVariant> findAll();
-
-    SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
-
 }

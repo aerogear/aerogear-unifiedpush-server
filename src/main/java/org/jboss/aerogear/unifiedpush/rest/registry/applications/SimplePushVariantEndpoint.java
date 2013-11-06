@@ -20,12 +20,10 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -53,10 +51,6 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     private PushApplicationService pushAppService;
     @Inject
     private SimplePushVariantService simplePushVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
 
     // ===============================================================
     // =============== Mobile variant construct ======================
@@ -115,7 +109,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
 
-        SimplePushVariant spv = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        SimplePushVariant spv = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spv != null) {
             return Response.ok(spv).build();
         }
@@ -132,7 +126,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
 
             // some validation

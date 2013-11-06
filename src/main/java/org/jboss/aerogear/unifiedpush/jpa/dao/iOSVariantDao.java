@@ -24,7 +24,4 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 public interface iOSVariantDao extends GenericDao<iOSVariant, String> {
 
     List<iOSVariant> findAll();
-
-    iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
-
 }

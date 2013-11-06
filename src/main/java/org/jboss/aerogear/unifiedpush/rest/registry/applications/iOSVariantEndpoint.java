@@ -22,14 +22,12 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.iOSVariantService;
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.util.PKCS12Util;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -57,10 +55,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     private PushApplicationService pushAppService;
     @Inject
     private iOSVariantService iOSVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
 
     // ===============================================================
     // =============== Mobile variant construct ======================
@@ -133,7 +127,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSvariant = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSvariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
 
         if (iOSvariant != null) {
             return Response.ok(iOSvariant).build();
@@ -150,7 +144,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariation = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
 
         if (iOSVariation != null) {
 
@@ -174,7 +168,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariation = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
         if (iOSVariation != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?

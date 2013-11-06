@@ -23,6 +23,4 @@ import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 public interface SimplePushVariantService {
 
     SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
-
-    SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
 }

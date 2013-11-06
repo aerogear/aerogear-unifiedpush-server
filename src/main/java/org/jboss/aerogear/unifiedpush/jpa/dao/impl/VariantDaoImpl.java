@@ -29,4 +29,11 @@ public class VariantDaoImpl extends AbstractGenericDao<Variant, String> implemen
                 .setParameter("variantID", variantID));
     }
 
+    @Override
+    public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
+        return getSingleResultForQuery(createQuery("select t from " + AbstractVariant.class.getSimpleName() + " t where t.variantID = :variantID and t.developer = :developer")
+                .setParameter("variantID", variantID)
+                .setParameter("developer", loginName));
+    }
+
 }

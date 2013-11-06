@@ -25,6 +25,4 @@ public interface AndroidVariantDao extends GenericDao<AndroidVariant, String> {
 
     List<AndroidVariant> findAll();
 
-    AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName);
-
 }
