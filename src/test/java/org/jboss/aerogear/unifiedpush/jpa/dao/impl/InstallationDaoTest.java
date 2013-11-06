@@ -32,7 +32,7 @@ import java.util.*;
 
 public class InstallationDaoTest {
 
-    EntityManager entityManager;
+    private EntityManager entityManager;
     private InstallationDaoImpl installationDao;
     private String androidVariantID;
     private String simplePushVariantID;
