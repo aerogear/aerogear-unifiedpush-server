@@ -30,6 +30,10 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+/**
+ * Abstract base class for all the concrete variant endpoints. Shares common
+ * functionality.
+ */
 public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
@@ -38,14 +42,13 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     private Logger logger;
 
-
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
-        logger.severe(String.format("\n\n%s\n\n", variant));
+        logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
 
         if (variant != null) {
             // generate the new 'secret' and apply it:
