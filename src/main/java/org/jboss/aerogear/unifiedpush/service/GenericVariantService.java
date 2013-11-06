@@ -25,4 +25,6 @@ public interface GenericVariantService {
 
     void addInstallation(Variant variant, InstallationImpl installation);
 
+    Variant updateVariant(Variant variant);
+
 }

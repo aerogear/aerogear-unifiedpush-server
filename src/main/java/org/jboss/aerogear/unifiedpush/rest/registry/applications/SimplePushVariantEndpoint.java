@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
 import org.jboss.aerogear.security.auth.LoggedUser;
@@ -49,7 +48,7 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
 @Secure( { "developer", "admin" })
-public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
+public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
@@ -156,26 +155,6 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
-    // UPDATE (Secret Reset)
-    @PUT
-    @Path("/{simplePushID}/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-
-        if (spVariant != null) {
-            // generate the new 'secret' and apply it:
-            String newSecret = UUID.randomUUID().toString();
-            spVariant.setSecret(newSecret);
-            simplePushVariantService.updateSimplePushVariant(spVariant);
-
-            return Response.ok(spVariant).build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
     // DELETE
