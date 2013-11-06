@@ -33,7 +33,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -47,7 +46,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Stateless
 @TransactionAttribute
@@ -63,9 +61,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Inject
     @LoggedUser
     private Instance<String> loginName;
-
-    @Inject
-    private Logger logger;
 
     // ===============================================================
     // =============== Mobile variant construct ======================
@@ -163,7 +158,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             iOSVariation.setName(updatediOSVariant.getName());
             iOSVariation.setDescription(updatediOSVariant.getDescription());
 
-            iOSVariantService.updateiOSVariant(iOSVariation);
+            variantService.updateVariant(iOSVariation);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
@@ -206,27 +201,13 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
                 return builder.build();
             }
 
-            iOSVariantService.updateiOSVariant(iOSVariation);
+            variantService.updateVariant(iOSVariation);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    // DELETE
-    @DELETE
-    @Path("/{iOSID}")
-    public Response deleteiOSVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("iOSID") String iOSID) {
-
-        iOSVariant iOSVariation = iOSVariantService.findByVariantIDForDeveloper(iOSID, loginName.get());
-
-        if (iOSVariation != null) {
-            iOSVariantService.removeiOSVariant(iOSVariation);
-            return Response.noContent().build();
-        }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
-    /** 
+    /**
      * Helper to validate if we got a certificate/passphrase pair AND (if present)
      * if that pair is also valid, and does not contain any bogus content.
      * 

@@ -24,8 +24,7 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.SimplePushVariantDao;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
 
-public class SimplePushVariantServiceImpl implements
-        SimplePushVariantService {
+public class SimplePushVariantServiceImpl implements SimplePushVariantService {
 
     @Inject
     private SimplePushVariantDao simplePushApplicationDao;
@@ -37,23 +36,7 @@ public class SimplePushVariantServiceImpl implements
     }
 
     @Override
-    public List<SimplePushVariant> findAllSimplePushVariants() {
-        return simplePushApplicationDao.findAll();
-    }
-
-    @Override
     public SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName) {
         return simplePushApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
-    }
-
-    @Override
-    public SimplePushVariant updateSimplePushVariant(
-            SimplePushVariant simplePushVariant) {
-        return simplePushApplicationDao.update(simplePushVariant);
-    }
-
-    @Override
-    public void removeSimplePushVariant(SimplePushVariant simplePushVariant) {
-        simplePushApplicationDao.delete(simplePushVariant);
     }
 }

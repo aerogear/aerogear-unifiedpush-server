@@ -35,24 +35,7 @@ public class AndroidVariantServiceImpl implements AndroidVariantService {
     }
 
     @Override
-    public List<AndroidVariant> findAllAndroidVariants() {
-        return androidApplicationDao.findAll();
-    }
-
-    @Override
     public AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName) {
         return androidApplicationDao.findByVariantIDForDeveloper(variantID, loginName);
     }
-
-    @Override
-    public AndroidVariant updateAndroidVariant(
-            AndroidVariant androidApp) {
-        return androidApplicationDao.update(androidApp);
-    }
-
-    @Override
-    public void removeAndroidVariant(AndroidVariant androidApp) {
-        androidApplicationDao.delete(androidApp);
-    }
-
 }

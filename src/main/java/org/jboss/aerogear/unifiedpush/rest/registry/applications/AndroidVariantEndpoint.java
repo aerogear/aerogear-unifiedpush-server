@@ -29,7 +29,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -150,22 +149,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
-            androidVariantService.updateAndroidVariant(androidVariant);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
-    // DELETE
-    @DELETE
-    @Path("/{androidID}")
-    public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
-
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
-
-        if (androidVariant != null) {
-            androidVariantService.removeAndroidVariant(androidVariant);
+            variantService.updateVariant(androidVariant);
             return Response.noContent().build();
         }
 

@@ -29,7 +29,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -150,24 +149,11 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             // apply updated data:
             spVariant.setName(updatedSimplePushApplication.getName());
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
-            simplePushVariantService.updateSimplePushVariant(spVariant);
+            variantService.updateVariant(spVariant);
             return Response.noContent().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    // DELETE
-    @DELETE
-    @Path("/{simplePushID}")
-    public Response deleteSimplePushVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-        if (spVariant != null) {
-            simplePushVariantService.removeSimplePushVariant(spVariant);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
 }

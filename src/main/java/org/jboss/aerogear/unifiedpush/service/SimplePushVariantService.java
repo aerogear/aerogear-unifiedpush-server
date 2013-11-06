@@ -24,12 +24,5 @@ public interface SimplePushVariantService {
 
     SimplePushVariant addSimplePushVariant(SimplePushVariant simplePushVariant);
 
-    SimplePushVariant updateSimplePushVariant(SimplePushVariant simplePushVariant);
-
-    void removeSimplePushVariant(SimplePushVariant simplePushVariant);
-
-    List<SimplePushVariant> findAllSimplePushVariants();
-
     SimplePushVariant findByVariantIDForDeveloper(String variantID, String loginName);
-
 }

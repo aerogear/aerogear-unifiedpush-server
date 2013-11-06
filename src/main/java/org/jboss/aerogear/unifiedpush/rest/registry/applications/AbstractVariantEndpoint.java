@@ -21,10 +21,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
@@ -37,10 +34,10 @@ import java.util.logging.Logger;
 public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
-    private GenericVariantService variantService;
+    protected GenericVariantService variantService;
 
     @Inject
-    private Logger logger;
+    protected Logger logger;
 
     @PUT
     @Path("/{variantId}/reset")
@@ -62,4 +59,18 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
+    // DELETE
+    @DELETE
+    @Path("/{variantId}")
+    public Response deleteSimplePushVariation(@PathParam("variantId") String variantId) {
+
+        //SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        Variant variant = variantService.findByVariantID(variantId);
+        if (variant != null) {
+            variantService.removeVariant(variant);
+            return Response.noContent().build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
 }

@@ -27,4 +27,6 @@ public interface GenericVariantService {
 
     Variant updateVariant(Variant variant);
 
+    void removeVariant(Variant variant);
+
 }

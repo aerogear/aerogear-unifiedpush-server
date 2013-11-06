@@ -24,11 +24,5 @@ public interface AndroidVariantService {
 
     AndroidVariant addAndroidVariant(AndroidVariant androidVariant);
 
-    AndroidVariant updateAndroidVariant(AndroidVariant androidVariant);
-
-    void removeAndroidVariant(AndroidVariant androidVariant);
-
-    List<AndroidVariant> findAllAndroidVariants();
-
     AndroidVariant findByVariantIDForDeveloper(String variantID, String loginName);
 }

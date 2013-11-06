@@ -25,12 +25,5 @@ public interface iOSVariantService {
 
     iOSVariant addiOSVariant(iOSVariant iOSVariant);
 
-    iOSVariant updateiOSVariant(iOSVariant iOSVariant);
-
-    void removeiOSVariant(iOSVariant iOSVariant);
-
-    List<iOSVariant> findAlliOSVariants();
-
     iOSVariant findByVariantIDForDeveloper(String variantID, String loginName);
-
 }
