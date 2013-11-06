@@ -52,13 +52,12 @@ public class InstallationDaoTest {
 
         // create abd configure all the DAOs:
         PushApplicationDaoImpl pushApplicationDao = new PushApplicationDaoImpl();
-        AndroidVariantDaoImpl androidVariantDao = new AndroidVariantDaoImpl();
-        SimplePushVariantDaoImpl simplePushVariantDao = new SimplePushVariantDaoImpl();
-        iOSVariantDaoImpl iOSVariantDao = new iOSVariantDaoImpl();
+
+        // generic variant DAO:
+        VariantDaoImpl variantDao = new VariantDaoImpl();
+
         pushApplicationDao.setEntityManager(entityManager);
-        androidVariantDao.setEntityManager(entityManager);
-        simplePushVariantDao.setEntityManager(entityManager);
-        iOSVariantDao.setEntityManager(entityManager);
+        variantDao.setEntityManager(entityManager);
 
         this.installationDao = new InstallationDaoImpl();
         this.installationDao.setEntityManager(entityManager);
@@ -74,14 +73,14 @@ public class InstallationDaoTest {
         av.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.androidVariantID = av.getVariantID();
-        androidVariantDao.create(av);
+        variantDao.create(av);
 
         SimplePushVariant sp = new SimplePushVariant();
         sp.setName("SimplePush");
         sp.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.simplePushVariantID = sp.getVariantID();
-        simplePushVariantDao.create(sp);
+        variantDao.create(sp);
 
         // register the variants with the Push Application:
         pa.getAndroidVariants().add(av);
@@ -121,7 +120,7 @@ public class InstallationDaoTest {
         // register them:
         av.getInstallations().add(android1);
         av.getInstallations().add(android2);
-        androidVariantDao.update(av);
+        variantDao.update(av);
 
         // ============== SimplePush client installations =========
         InstallationImpl simplePush1 = new InstallationImpl();
@@ -143,7 +142,7 @@ public class InstallationDaoTest {
         // register the installation:
         sp.getInstallations().add(simplePush1);
         sp.getInstallations().add(simplePush2);
-        simplePushVariantDao.update(sp);
+        variantDao.update(sp);
     }
 
     @After
