@@ -16,23 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.SimplePushVariantDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
 
 public class SimplePushVariantServiceImpl implements SimplePushVariantService {
 
     @Inject
-    private SimplePushVariantDao simplePushApplicationDao;
+    private VariantDao variantDao;
 
     @Override
     public SimplePushVariant addSimplePushVariant(
             SimplePushVariant simplePushVariant) {
-        return simplePushApplicationDao.create(simplePushVariant);
+        return (SimplePushVariant) variantDao.create(simplePushVariant);
     }
 
 }

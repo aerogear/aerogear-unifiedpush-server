@@ -16,21 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.iOSVariantDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.iOSVariantService;
 
 public class iOSVariantServiceImpl implements iOSVariantService {
 
     @Inject
-    private iOSVariantDao iOSApplicationDao;
+    private VariantDao variantDao;
 
     @Override
     public iOSVariant addiOSVariant(iOSVariant iOSApp) {
-        return iOSApplicationDao.create(iOSApp);
+        return (iOSVariant) variantDao.create(iOSApp);
     }
 }

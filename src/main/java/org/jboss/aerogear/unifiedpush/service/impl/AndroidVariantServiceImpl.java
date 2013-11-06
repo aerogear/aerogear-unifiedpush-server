@@ -16,22 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.AndroidVariantDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.service.AndroidVariantService;
 
 public class AndroidVariantServiceImpl implements AndroidVariantService {
 
     @Inject
-    private AndroidVariantDao androidApplicationDao;
+    private VariantDao variantDao;
 
     @Override
     public AndroidVariant addAndroidVariant(AndroidVariant app) {
-        return androidApplicationDao.create(app);
+        return (AndroidVariant) variantDao.create(app);
     }
 
 }
