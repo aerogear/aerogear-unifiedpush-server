@@ -20,6 +20,7 @@ import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -34,6 +35,9 @@ import java.util.logging.Logger;
  * functionality.
  */
 public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
+
+    @Inject
+    protected PushApplicationService pushAppService;
 
     @Inject
     protected GenericVariantService variantService;

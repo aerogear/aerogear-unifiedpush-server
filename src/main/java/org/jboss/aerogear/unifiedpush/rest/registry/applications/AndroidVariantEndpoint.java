@@ -18,13 +18,10 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.AndroidVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -47,15 +44,6 @@ import java.util.UUID;
 @Secure( { "developer", "admin" })
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private AndroidVariantService androidVariantService;
-
-    // ===============================================================
-    // =============== Mobile variant construct ======================
-    // ===============         Android          ======================
-    // ===============================================================
     // new Android
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -88,7 +76,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         androidVariant.setDeveloper(loginName.get());
 
         // store the Android variant:
-        androidVariant = androidVariantService.addAndroidVariant(androidVariant);
+        androidVariant = (AndroidVariant) variantService.addVariant(androidVariant);
         // add iOS variant, and merge:
         pushAppService.addAndroidVariant(pushApp, androidVariant);
 

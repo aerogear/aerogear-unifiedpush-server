@@ -20,15 +20,12 @@ import org.jboss.aerogear.unifiedpush.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.iOSVariantService;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.util.PKCS12Util;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -51,15 +48,6 @@ import java.util.UUID;
 @Secure( { "developer", "admin" })
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private iOSVariantService iOSVariantService;
-
-    // ===============================================================
-    // =============== Mobile variant construct ======================
-    // ===============           iOS            ======================
-    // ===============================================================
     // new iOS
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -106,7 +94,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the iOS variant:
-        iOSVariation = iOSVariantService.addiOSVariant(iOSVariation);
+        iOSVariation = (iOSVariant) variantService.addVariant(iOSVariation);
 
         // add iOS variant, and merge:
         pushAppService.addiOSVariant(pushApp, iOSVariation);

@@ -18,13 +18,10 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -46,16 +43,6 @@ import java.util.UUID;
 @Path("/applications/{pushAppID}/simplePush")
 @Secure( { "developer", "admin" })
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
-
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private SimplePushVariantService simplePushVariantService;
-
-    // ===============================================================
-    // =============== Mobile variant construct ======================
-    // ===============        SimplePush        ======================
-    // ===============================================================
 
     // new SimplePush
     @POST
@@ -89,7 +76,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         simplePushVariant.setDeveloper(loginName.get());
 
         // store the SimplePush variant:
-        simplePushVariant = simplePushVariantService.addSimplePushVariant(simplePushVariant);
+        simplePushVariant = (SimplePushVariant) variantService.addVariant(simplePushVariant);
         // add iOS variant, and merge:
         pushAppService.addSimplePushVariant(pushApp, simplePushVariant);
 
