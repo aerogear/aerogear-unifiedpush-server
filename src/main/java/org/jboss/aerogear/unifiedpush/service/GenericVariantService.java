@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 
 public interface GenericVariantService {
 
+    Variant addVariant(Variant variant);
+
     Variant findByVariantID(String variantID);
 
     Variant findByVariantIDForDeveloper(String variantID, String loginName);
