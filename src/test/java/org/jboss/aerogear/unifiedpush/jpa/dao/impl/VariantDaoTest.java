@@ -71,4 +71,19 @@ public class VariantDaoTest {
         assertNull(variantDao.findByVariantIDForDeveloper(null, "admin"));
         assertNull(variantDao.findByVariantIDForDeveloper(uuid, "mr x"));
     }
+
+    @Test
+    public void findVariantById() {
+
+        final AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String uuid  = UUID.randomUUID().toString();
+        av.setVariantID(uuid);
+
+        variantDao.create(av);
+
+        assertNotNull(variantDao.findByVariantID(uuid));
+        assertNull(variantDao.findByVariantID(null));
+    }
 }
