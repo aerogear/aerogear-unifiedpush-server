@@ -49,6 +49,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @LoggedUser
     protected Instance<String> loginName;
 
+    // Secret Reset
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,13 +70,32 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
+
+    @GET
+    @Path("/{variantId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findVariationById(@PathParam("variantId") String variantId) {
+
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        logger.finest(String.format("Requested: %s", variant));
+
+        if (variant != null) {
+            return Response.ok(variant).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+
+
     // DELETE
     @DELETE
     @Path("/{variantId}")
     public Response deleteSimplePushVariation(@PathParam("variantId") String variantId) {
 
-        //SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
+
         if (variant != null) {
             variantService.removeVariant(variant);
             return Response.noContent().build();

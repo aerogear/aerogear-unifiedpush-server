@@ -90,19 +90,6 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidVariants()).build();
     }
 
-    @GET
-    @Path("/{androidID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
-
-        if (androidVariant != null) {
-            return Response.ok(androidVariant).build();
-        }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     // UPDATE
     @PUT
     @Path("/{androidID}")

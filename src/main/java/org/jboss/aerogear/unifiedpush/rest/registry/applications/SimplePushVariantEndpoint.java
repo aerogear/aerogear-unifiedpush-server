@@ -91,19 +91,6 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushVariants()).build();
     }
 
-    @GET
-    @Path("/{simplePushID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spv = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-        if (spv != null) {
-            return Response.ok(spv).build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     // UPDATE
     @PUT
     @Path("/{simplePushID}")

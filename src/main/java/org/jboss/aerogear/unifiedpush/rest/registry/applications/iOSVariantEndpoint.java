@@ -110,19 +110,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSVariants()).build();
     }
 
-    @GET
-    @Path("/{iOSID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findiOSVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("iOSID") String iOSID) {
-
-        iOSVariant iOSvariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
-
-        if (iOSvariant != null) {
-            return Response.ok(iOSvariant).build();
-        }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     @PATCH
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
