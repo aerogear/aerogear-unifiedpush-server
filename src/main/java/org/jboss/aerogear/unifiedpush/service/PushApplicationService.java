@@ -27,8 +27,6 @@ public interface PushApplicationService {
 
     PushApplication addPushApplication(PushApplication pushApp);
 
-    List<PushApplication> findAllPushApplications();
-
     List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
 
     PushApplication findByPushApplicationID(String pushApplicationID);
@@ -44,10 +42,4 @@ public interface PushApplicationService {
     void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
 
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
-
-    List<iOSVariant> alliOSVariantsForPushApplication(PushApplication pushApp);
-
-    List<AndroidVariant> allAndroidVariantsForPushApplication(PushApplication pushApp);
-
-    List<SimplePushVariant> allSimplePushVariantsForPushApplication(PushApplication pushApp);
 }

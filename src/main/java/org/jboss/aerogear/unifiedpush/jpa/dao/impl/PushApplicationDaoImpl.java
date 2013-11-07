@@ -26,11 +26,6 @@ public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PushApplication> findAll() {
-        return createQuery("select t from " + PushApplication.class.getSimpleName() + " t").getResultList();
-    }
-
-    @SuppressWarnings("unchecked")
     public List<PushApplication> findAllForDeveloper(String loginName) {
         return createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
@@ -49,5 +44,4 @@ public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, 
         return getSingleResultForQuery(createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));
     }
-
 }
