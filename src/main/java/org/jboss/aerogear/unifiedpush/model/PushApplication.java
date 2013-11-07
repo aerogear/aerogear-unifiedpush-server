@@ -67,6 +67,11 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     @JoinColumn
     private Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
+    // TODO: let's do LAZY
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn
+    private Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
+
     public String getName() {
         return this.name;
     }
@@ -105,6 +110,14 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
 
     public void setSimplePushVariants(final Set<SimplePushVariant> simplePushVariants) {
         this.simplePushVariants = simplePushVariants;
+    }
+
+    public Set<ChromePackagedAppVariant> getChromePackagedAppVariants() {
+        return chromePackagedAppVariants;
+    }
+
+    public void setChromePackagedAppVariants(final Set<ChromePackagedAppVariant> chromePackagedAppVariants) {
+        this.chromePackagedAppVariants = chromePackagedAppVariants;
     }
 
     public String getPushApplicationID() {

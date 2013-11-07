@@ -28,9 +28,11 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender;
+import org.jboss.aerogear.unifiedpush.message.sender.GCMForChromePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
@@ -54,6 +56,9 @@ public class SenderServiceImpl implements SenderService {
     private SimplePushNotificationSender simplePushSender;
 
     @Inject
+    private GCMForChromePushNotificationSender gcmForChromePushNotificationSender;
+
+    @Inject
     private ClientInstallationService clientInstallationService;
 
     @Inject
@@ -71,6 +76,7 @@ public class SenderServiceImpl implements SenderService {
         final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
         final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
         final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
+        final Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
 
         final SendCriteria criteria = message.getSendCriteria();
         final List<String> variantIDs = criteria.getVariants();
@@ -96,6 +102,8 @@ public class SenderServiceImpl implements SenderService {
                     case SIMPLE_PUSH:
                         simplePushVariants.add((SimplePushVariant) variant);
                         break;
+                    case CHROME_PACKAGED_APP:
+                        chromePackagedAppVariants.add((ChromePackagedAppVariant) variant);
                     default:
                         // nope; should never enter here
                         break;
@@ -108,6 +116,7 @@ public class SenderServiceImpl implements SenderService {
             androidVariants.addAll(pushApplication.getAndroidVariants());
             iOSVariants.addAll(pushApplication.getIOSVariants());
             simplePushVariants.addAll(pushApplication.getSimplePushVariants());
+            chromePackagedAppVariants.addAll(pushApplication.getChromePackagedAppVariants());
         }
 
         // all possible criteria
@@ -130,6 +139,13 @@ public class SenderServiceImpl implements SenderService {
                 final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories,
                         aliases, deviceTypes);
                 this.sendToGCM(androidVariant, androidTokenPerVariant, message);
+            }
+
+            // TODO: DISPATCH TO A QUEUE .....
+            for(ChromePackagedAppVariant chromePackagedAppVariant : chromePackagedAppVariants) {
+                final List<String> chromePackagedAppTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(chromePackagedAppVariant.getVariantID(), categories,
+                        aliases, deviceTypes);
+                this.sendToGCMForChrome(chromePackagedAppVariant, chromePackagedAppTokenPerVariant, message);
             }
         }
 
@@ -162,5 +178,11 @@ public class SenderServiceImpl implements SenderService {
     private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
         logger.fine(String.format("Sending: %s to SimplePush network/server", payload));
         simplePushSender.sendMessage(pushEndpointURLs, payload);
+    }
+
+    private void sendToGCMForChrome( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage pushMessage ) {
+        logger.fine(String.format("Sending: %s to GCM For Chrome", pushMessage));
+        gcmForChromePushNotificationSender.sendMessage(chromePackagedAppVariant, channelIDs, pushMessage);
+
     }
 }

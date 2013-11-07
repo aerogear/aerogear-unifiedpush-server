@@ -34,7 +34,12 @@ public enum VariantType {
     /**
      * The type identifier for our SimplePush variants. 
      */
-    SIMPLE_PUSH("simplePush");
+    SIMPLE_PUSH("simplePush"),
+
+    /**
+     * The type identifier for our Chrome Packaged App variants.
+     */
+    CHROME_PACKAGED_APP("chromePackagedApp");
 
     private final String typeName;
 
