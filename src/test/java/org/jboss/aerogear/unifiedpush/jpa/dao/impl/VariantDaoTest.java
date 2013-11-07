@@ -46,7 +46,6 @@ public class VariantDaoTest {
 
         variantDao = new VariantDaoImpl();
         variantDao.setEntityManager(entityManager);
-
     }
 
     @After
@@ -85,5 +84,58 @@ public class VariantDaoTest {
 
         assertNotNull(variantDao.findByVariantID(uuid));
         assertNull(variantDao.findByVariantID(null));
+    }
+
+    @Test
+    public void updateVariant() {
+
+        final AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String uuid  = UUID.randomUUID().toString();
+        av.setVariantID(uuid);
+
+        variantDao.create(av);
+
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        final String primaryKey = queriedVariant.getId();
+        assertNotNull(queriedVariant);
+        assertEquals("KEY", queriedVariant.getGoogleKey());
+
+        queriedVariant.setGoogleKey("NEW_KEY");
+        variantDao.update(queriedVariant);
+
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        assertNotNull(queriedVariant);
+        assertEquals("NEW_KEY", queriedVariant.getGoogleKey());
+        assertEquals(primaryKey, queriedVariant.getId());
+    }
+
+    @Test
+    public void updateAndDeleteVariant() {
+
+        final AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String uuid  = UUID.randomUUID().toString();
+        av.setVariantID(uuid);
+
+        variantDao.create(av);
+
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        final String primaryKey = queriedVariant.getId();
+        assertNotNull(queriedVariant);
+        assertEquals("KEY", queriedVariant.getGoogleKey());
+
+        queriedVariant.setGoogleKey("NEW_KEY");
+        variantDao.update(queriedVariant);
+
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        assertNotNull(queriedVariant);
+        assertEquals("NEW_KEY", queriedVariant.getGoogleKey());
+        assertEquals(primaryKey, queriedVariant.getId());
+
+        variantDao.delete(queriedVariant);
+        assertNull(variantDao.findByVariantID(uuid));
     }
 }
