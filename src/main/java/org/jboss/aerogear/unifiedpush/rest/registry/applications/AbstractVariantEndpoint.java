@@ -70,7 +70,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
     }
 
-
     @GET
     @Path("/{variantId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,8 +84,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
-
-
 
     // DELETE
     @DELETE
