@@ -73,7 +73,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{variantId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariationById(@PathParam("variantId") String variantId) {
+    public Response findVariantById(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
         logger.finest(String.format("Requested: %s", variant));
@@ -88,7 +88,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     // DELETE
     @DELETE
     @Path("/{variantId}")
-    public Response deleteSimplePushVariation(@PathParam("variantId") String variantId) {
+    public Response deleteVariant(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
         logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
