@@ -29,7 +29,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.*;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class InstallationDaoTest {
