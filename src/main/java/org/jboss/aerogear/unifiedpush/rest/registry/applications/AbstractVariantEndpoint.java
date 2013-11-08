@@ -67,7 +67,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
             return Response.ok(variant).build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
     @GET

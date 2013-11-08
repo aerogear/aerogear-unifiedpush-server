@@ -70,21 +70,21 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // extract form values:
-        iOSVariant iOSVariation = new iOSVariant();
-        iOSVariation.setName(form.getName());
-        iOSVariation.setDescription(form.getDescription());
-        iOSVariation.setPassphrase(form.getPassphrase());
-        iOSVariation.setCertificate(form.getCertificate());
-        iOSVariation.setProduction(form.getProduction());
+        iOSVariant iOSVariant = new iOSVariant();
+        iOSVariant.setName(form.getName());
+        iOSVariant.setDescription(form.getDescription());
+        iOSVariant.setPassphrase(form.getPassphrase());
+        iOSVariant.setCertificate(form.getCertificate());
+        iOSVariant.setProduction(form.getProduction());
 
         // manually set the ID:
-        iOSVariation.setVariantID(UUID.randomUUID().toString());
+        iOSVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
-        iOSVariation.setDeveloper(loginName.get());
+        iOSVariant.setDeveloper(loginName.get());
 
         // some model validation on the entity:
         try {
-            validateModelClass(iOSVariation);
+            validateModelClass(iOSVariant);
         } catch (ConstraintViolationException cve) {
 
             // Build and return the 400 (Bad Request) response
@@ -94,18 +94,18 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the iOS variant:
-        iOSVariation = (iOSVariant) variantService.addVariant(iOSVariation);
+        iOSVariant = (iOSVariant) variantService.addVariant(iOSVariant);
 
         // add iOS variant, and merge:
-        pushAppService.addiOSVariant(pushApp, iOSVariation);
+        pushAppService.addiOSVariant(pushApp, iOSVariant);
 
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariation.getVariantID())).build()).entity(iOSVariation).build();
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariant.getVariantID())).build()).entity(iOSVariant).build();
     }
 
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlliOSVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+    public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSVariants()).build();
     }
@@ -119,15 +119,15 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariation = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
 
-        if (iOSVariation != null) {
+        if (iOSVariant != null) {
 
             // apply update:
-            iOSVariation.setName(updatediOSVariant.getName());
-            iOSVariation.setDescription(updatediOSVariant.getDescription());
+            iOSVariant.setName(updatediOSVariant.getName());
+            iOSVariant.setDescription(updatediOSVariant.getDescription());
 
-            variantService.updateVariant(iOSVariation);
+            variantService.updateVariant(iOSVariant);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
@@ -143,8 +143,8 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariation = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
-        if (iOSVariation != null) {
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?
             if (!validateCertificateAndPassphrase(updatedForm)) {
@@ -153,15 +153,15 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             }
 
             // apply update:
-            iOSVariation.setName(updatedForm.getName());
-            iOSVariation.setDescription(updatedForm.getDescription());
-            iOSVariation.setPassphrase(updatedForm.getPassphrase());
-            iOSVariation.setCertificate(updatedForm.getCertificate());
-            iOSVariation.setProduction(updatedForm.getProduction());
+            iOSVariant.setName(updatedForm.getName());
+            iOSVariant.setDescription(updatedForm.getDescription());
+            iOSVariant.setPassphrase(updatedForm.getPassphrase());
+            iOSVariant.setCertificate(updatedForm.getCertificate());
+            iOSVariant.setProduction(updatedForm.getProduction());
 
             // some model validation on the entity:
             try {
-                validateModelClass(iOSVariation);
+                validateModelClass(iOSVariant);
             } catch (ConstraintViolationException cve) {
 
                 // Build and return the 400 (Bad Request) response
@@ -170,7 +170,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
                 return builder.build();
             }
 
-            variantService.updateVariant(iOSVariation);
+            variantService.updateVariant(iOSVariant);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
