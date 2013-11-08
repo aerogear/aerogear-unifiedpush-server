@@ -37,11 +37,6 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         return pushApplicationDao.create(pushApp);
     }
 
-    @Override
-    public List<PushApplication> findAllPushApplications() {
-        return pushApplicationDao.findAll();
-    }
-
     public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
         return pushApplicationDao.findAllForDeveloper(loginName);
     }
@@ -74,27 +69,6 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         pushApp.getSimplePushVariants().add(simplePushVariant);
 
         pushApplicationDao.update(pushApp);
-    }
-
-    @Override
-    public List<iOSVariant> alliOSVariantsForPushApplication(
-            PushApplication pushApp) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<AndroidVariant> allAndroidVariantsForPushApplication(
-            PushApplication pushApp) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<SimplePushVariant> allSimplePushVariantsForPushApplication(
-            PushApplication pushApp) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

@@ -18,19 +18,12 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.SimplePushVariantService;
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -49,21 +42,7 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
 @Secure( { "developer", "admin" })
-public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
-
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private SimplePushVariantService simplePushVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
-
-    // ===============================================================
-    // =============== Mobile variant construct ======================
-    // ===============        SimplePush        ======================
-    // ===============================================================
+public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
     // new SimplePush
     @POST
@@ -97,7 +76,7 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
         simplePushVariant.setDeveloper(loginName.get());
 
         // store the SimplePush variant:
-        simplePushVariant = simplePushVariantService.addSimplePushVariant(simplePushVariant);
+        simplePushVariant = (SimplePushVariant) variantService.addVariant(simplePushVariant);
         // add iOS variant, and merge:
         pushAppService.addSimplePushVariant(pushApp, simplePushVariant);
 
@@ -112,19 +91,6 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushVariants()).build();
     }
 
-    @GET
-    @Path("/{simplePushID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findSimplePushVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spv = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-        if (spv != null) {
-            return Response.ok(spv).build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     // UPDATE
     @PUT
     @Path("/{simplePushID}")
@@ -134,7 +100,7 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
         if (spVariant != null) {
 
             // some validation
@@ -151,44 +117,11 @@ public class SimplePushVariantEndpoint extends AbstractBaseEndpoint {
             // apply updated data:
             spVariant.setName(updatedSimplePushApplication.getName());
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
-            simplePushVariantService.updateSimplePushVariant(spVariant);
+            variantService.updateVariant(spVariant);
             return Response.noContent().build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    // UPDATE (Secret Reset)
-    @PUT
-    @Path("/{simplePushID}/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-
-        if (spVariant != null) {
-            // generate the new 'secret' and apply it:
-            String newSecret = UUID.randomUUID().toString();
-            spVariant.setSecret(newSecret);
-            simplePushVariantService.updateSimplePushVariant(spVariant);
-
-            return Response.ok(spVariant).build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
-    }
-
-    // DELETE
-    @DELETE
-    @Path("/{simplePushID}")
-    public Response deleteSimplePushVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("simplePushID") String simplePushID) {
-
-        SimplePushVariant spVariant = simplePushVariantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
-        if (spVariant != null) {
-            simplePushVariantService.removeSimplePushVariant(spVariant);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
 }

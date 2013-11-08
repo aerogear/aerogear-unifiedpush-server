@@ -18,19 +18,12 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.AndroidVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -49,21 +42,8 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
 @Secure( { "developer", "admin" })
-public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
+public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private AndroidVariantService androidVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
-
-    // ===============================================================
-    // =============== Mobile variant construct ======================
-    // ===============         Android          ======================
-    // ===============================================================
     // new Android
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -96,7 +76,7 @@ public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
         androidVariant.setDeveloper(loginName.get());
 
         // store the Android variant:
-        androidVariant = androidVariantService.addAndroidVariant(androidVariant);
+        androidVariant = (AndroidVariant) variantService.addVariant(androidVariant);
         // add iOS variant, and merge:
         pushAppService.addAndroidVariant(pushApp, androidVariant);
 
@@ -110,19 +90,6 @@ public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidVariants()).build();
     }
 
-    @GET
-    @Path("/{androidID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findAndroidVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("androidID") String androidID) {
-
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
-
-        if (androidVariant != null) {
-            return Response.ok(androidVariant).build();
-        }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     // UPDATE
     @PUT
     @Path("/{androidID}")
@@ -132,7 +99,7 @@ public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
         if (androidVariant != null) {
 
             // some validation
@@ -151,42 +118,7 @@ public class AndroidVariantEndpoint extends AbstractBaseEndpoint {
             androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
-            androidVariantService.updateAndroidVariant(androidVariant);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
-    // UPDATE (Secret Reset)
-    @PUT
-    @Path("/{androidID}/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("androidID") String androidID) {
-
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
-
-        if (androidVariant != null) {
-            // generate the new 'secret' and apply it:
-            String newSecret = UUID.randomUUID().toString();
-            androidVariant.setSecret(newSecret);
-            androidVariantService.updateAndroidVariant(androidVariant);
-
-            return Response.ok(androidVariant).build();
-        }
-
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
-    }
-
-    // DELETE
-    @DELETE
-    @Path("/{androidID}")
-    public Response deleteAndroidVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
-
-        AndroidVariant androidVariant = androidVariantService.findByVariantIDForDeveloper(androidID, loginName.get());
-
-        if (androidVariant != null) {
-            androidVariantService.removeAndroidVariant(androidVariant);
+            variantService.updateVariant(androidVariant);
             return Response.noContent().build();
         }
 

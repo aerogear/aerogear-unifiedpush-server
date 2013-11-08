@@ -23,16 +23,18 @@ import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.*;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
 public class InstallationDaoTest {
 
-    EntityManager entityManager;
+    private EntityManager entityManager;
     private InstallationDaoImpl installationDao;
     private String androidVariantID;
     private String simplePushVariantID;
@@ -52,13 +54,12 @@ public class InstallationDaoTest {
 
         // create abd configure all the DAOs:
         PushApplicationDaoImpl pushApplicationDao = new PushApplicationDaoImpl();
-        AndroidVariantDaoImpl androidVariantDao = new AndroidVariantDaoImpl();
-        SimplePushVariantDaoImpl simplePushVariantDao = new SimplePushVariantDaoImpl();
-        iOSVariantDaoImpl iOSVariantDao = new iOSVariantDaoImpl();
+
+        // generic variant DAO:
+        VariantDaoImpl variantDao = new VariantDaoImpl();
+
         pushApplicationDao.setEntityManager(entityManager);
-        androidVariantDao.setEntityManager(entityManager);
-        simplePushVariantDao.setEntityManager(entityManager);
-        iOSVariantDao.setEntityManager(entityManager);
+        variantDao.setEntityManager(entityManager);
 
         this.installationDao = new InstallationDaoImpl();
         this.installationDao.setEntityManager(entityManager);
@@ -74,14 +75,14 @@ public class InstallationDaoTest {
         av.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.androidVariantID = av.getVariantID();
-        androidVariantDao.create(av);
+        variantDao.create(av);
 
         SimplePushVariant sp = new SimplePushVariant();
         sp.setName("SimplePush");
         sp.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.simplePushVariantID = sp.getVariantID();
-        simplePushVariantDao.create(sp);
+        variantDao.create(sp);
 
         // register the variants with the Push Application:
         pa.getAndroidVariants().add(av);
@@ -121,7 +122,7 @@ public class InstallationDaoTest {
         // register them:
         av.getInstallations().add(android1);
         av.getInstallations().add(android2);
-        androidVariantDao.update(av);
+        variantDao.update(av);
 
         // ============== SimplePush client installations =========
         InstallationImpl simplePush1 = new InstallationImpl();
@@ -143,7 +144,7 @@ public class InstallationDaoTest {
         // register the installation:
         sp.getInstallations().add(simplePush1);
         sp.getInstallations().add(simplePush2);
-        simplePushVariantDao.update(sp);
+        variantDao.update(sp);
     }
 
     @After
@@ -227,7 +228,6 @@ public class InstallationDaoTest {
         String[] cats = { "soccer", "news", "weather" };
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
-
     }
 
     @Test
@@ -236,6 +236,46 @@ public class InstallationDaoTest {
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
         assertEquals(2, tokens.size());
 
+    }
+
+    @Test
+    public void findAndDeleteOneInstallation() {
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add("123456");
+        tokenz.add("foobar223");
+        List<InstallationImpl> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(1, list.size());
+
+        InstallationImpl installation = list.get(0);
+        assertEquals("123456", installation.getDeviceToken());
+
+        installationDao.delete(installation);
+
+        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void findAndDeleteTwoInstallations() {
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add("123456");
+        tokenz.add("678901");
+        List<InstallationImpl> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(2, list.size());
+
+        for (InstallationImpl installation : list) {
+            installationDao.delete(installation);
+        }
+
+        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void deleteNonExistingInstallation() {
+        InstallationImpl installation = new InstallationImpl();
+
+        installationDao.delete(installation);
     }
 
     @Test

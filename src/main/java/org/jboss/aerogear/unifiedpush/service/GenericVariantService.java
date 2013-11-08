@@ -19,10 +19,42 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 
+/**
+ * Service class that offers functionality to deal with the different variants (e.g. Android, iOS or SimplePush variants).
+ */
 public interface GenericVariantService {
 
+    /**
+     * Store a new Variant object on the database.
+     */
+    Variant addVariant(Variant variant);
+
+    /**
+     * Performs an update/merge on the given entity.
+     */
+    Variant updateVariant(Variant variant);
+
+    /**
+     * Returns the Variant entity, matching the given variantID.
+     */
     Variant findByVariantID(String variantID);
 
+    /**
+     * Finder that returns the actual variant, identified by its ID and its owner/developer.
+     */
+    Variant findByVariantIDForDeveloper(String variantID, String loginName);
+
+    /**
+     * Adds a installation (device/client) to the given variant
+     *
+     * @param variant the container/owner the installation belongs to
+     * @param installation the device/client to be registered
+     */
     void addInstallation(Variant variant, InstallationImpl installation);
+
+    /**
+     * Removes the given variant entity.
+     */
+    void removeVariant(Variant variant);
 
 }

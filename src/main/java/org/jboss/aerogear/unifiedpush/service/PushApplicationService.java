@@ -25,29 +25,48 @@ import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 
 public interface PushApplicationService {
 
+    /**
+     * Store a new PushApplication object on the database.
+     */
     PushApplication addPushApplication(PushApplication pushApp);
 
-    List<PushApplication> findAllPushApplications();
-
-    List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
-
-    PushApplication findByPushApplicationID(String pushApplicationID);
-
-    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
-
+    /**
+     * Performs an update/merge on the given entity.
+     */
     PushApplication updatePushApplication(PushApplication pushApp);
 
+    /**
+     * Finder that returns all pushApplication object for the given owner/developer.
+     */
+    List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
+
+    /**
+     * Returns the PushApplication entity, matching the given ID.
+     */
+    PushApplication findByPushApplicationID(String pushApplicationID);
+
+    /**
+     * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
+     */
+    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
+
+    /**
+     * Removes the given PushApplication entity.
+     */
     void removePushApplication(PushApplication pushApp);
 
+    /**
+     * Registers the given iOSVariant object with the given PushApplication.
+     */
     void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
 
+    /**
+     * Registers the given AndroidVariant object with the given PushApplication.
+     */
     void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
 
+    /**
+     * Registers the given SimplePushVariant object with the given PushApplication.
+     */
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
-
-    List<iOSVariant> alliOSVariantsForPushApplication(PushApplication pushApp);
-
-    List<AndroidVariant> allAndroidVariantsForPushApplication(PushApplication pushApp);
-
-    List<SimplePushVariant> allSimplePushVariantsForPushApplication(PushApplication pushApp);
 }

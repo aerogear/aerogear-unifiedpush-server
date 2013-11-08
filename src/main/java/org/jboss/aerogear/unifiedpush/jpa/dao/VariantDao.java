@@ -19,7 +19,19 @@ package org.jboss.aerogear.unifiedpush.jpa.dao;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.jpa.GenericDao;
 
+/**
+ * Data Access Object interface to manage different finders for the
+ * {@code Variant} entities.
+ */
 public interface VariantDao extends GenericDao<Variant, String> {
 
+    /**
+     * Returns the Variant entity, matching the given variantID.
+     */
     Variant findByVariantID(String variantID);
+
+    /**
+     * Finder that returns the actual variant, identified by its ID and its owner/developer.
+     */
+    Variant findByVariantIDForDeveloper(String variantID, String loginName);
 }

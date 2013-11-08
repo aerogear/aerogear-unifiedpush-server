@@ -29,8 +29,18 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     private VariantDao variantDao;
 
     @Override
+    public Variant addVariant(Variant variant) {
+        return variantDao.create(variant);
+    }
+
+    @Override
     public Variant findByVariantID(String variantID) {
         return variantDao.findByVariantID(variantID);
+    }
+
+    @Override
+    public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
+        return variantDao.findByVariantIDForDeveloper(variantID, loginName);
     }
 
     @Override
@@ -40,4 +50,13 @@ public class GenericVariantServiceImpl implements GenericVariantService {
         variantDao.update(variant);
     }
 
+    @Override
+    public Variant updateVariant(Variant variant) {
+        return variantDao.update(variant);
+    }
+
+    @Override
+    public void removeVariant(Variant variant) {
+        variantDao.delete(variant);
+    }
 }
