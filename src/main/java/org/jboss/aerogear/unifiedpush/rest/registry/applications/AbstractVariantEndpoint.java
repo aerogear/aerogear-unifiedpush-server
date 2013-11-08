@@ -56,9 +56,10 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
-        logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
 
         if (variant != null) {
+            logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
+
             // generate the new 'secret' and apply it:
             String newSecret = UUID.randomUUID().toString();
             variant.setSecret(newSecret);
@@ -76,9 +77,10 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     public Response findVariantById(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
-        logger.finest(String.format("Requested: %s", variant));
 
         if (variant != null) {
+            logger.finest(String.format("Requested: %s", variant));
+
             return Response.ok(variant).build();
         }
 
@@ -91,9 +93,10 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     public Response deleteVariant(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
-        logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
 
         if (variant != null) {
+            logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
+
             variantService.removeVariant(variant);
             return Response.noContent().build();
         }
