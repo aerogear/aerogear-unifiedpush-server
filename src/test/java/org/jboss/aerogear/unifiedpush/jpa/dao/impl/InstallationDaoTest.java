@@ -228,7 +228,6 @@ public class InstallationDaoTest {
         String[] cats = { "soccer", "news", "weather" };
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertEquals(2, tokens.size());
-
     }
 
     @Test
@@ -237,6 +236,39 @@ public class InstallationDaoTest {
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
         assertEquals(2, tokens.size());
 
+    }
+
+    @Test
+    public void findAndDeleteOneInstallation() {
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add("123456");
+        tokenz.add("foobar223");
+        List<InstallationImpl> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(1, list.size());
+
+        InstallationImpl installation = list.get(0);
+        assertEquals("123456", installation.getDeviceToken());
+
+        installationDao.delete(installation);
+
+        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void findAndDeleteTwoInstallations() {
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add("123456");
+        tokenz.add("678901");
+        List<InstallationImpl> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(2, list.size());
+
+        for (InstallationImpl installation : list) {
+            installationDao.delete(installation);
+        }
+
+        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertEquals(0, list.size());
     }
 
     @Test
