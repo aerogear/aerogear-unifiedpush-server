@@ -272,6 +272,13 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void deleteNonExistingInstallation() {
+        InstallationImpl installation = new InstallationImpl();
+
+        installationDao.delete(installation);
+    }
+
+    @Test
     public void findPushEndpointsForAlias() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);

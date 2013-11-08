@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.junit.After;
 import org.junit.Before;
@@ -138,4 +139,13 @@ public class VariantDaoTest {
         variantDao.delete(queriedVariant);
         assertNull(variantDao.findByVariantID(uuid));
     }
+
+
+    @Test
+    public void lookupNonExistingVariant() {
+        Variant variant = variantDao.findByVariantIDForDeveloper("NOT-IN-DATABASE", "admin");
+        assertNull(variant);
+    }
+
+
 }
