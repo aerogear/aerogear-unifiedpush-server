@@ -35,6 +35,7 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     private static final long serialVersionUID = 6507691362454032282L;
 
     public PushApplication() {
+        pushApplicationID = UUID.randomUUID().toString();
         masterSecret = UUID.randomUUID().toString();
     }
 
@@ -114,10 +115,6 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
 
     public String getPushApplicationID() {
         return pushApplicationID;
-    }
-
-    public void setPushApplicationID(String pushApplicationID) {
-        this.pushApplicationID = pushApplicationID;
     }
 
     public void setMasterSecret(String secret) {

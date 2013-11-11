@@ -118,13 +118,6 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- contains the @GenericGenerator class -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.0.1.Final</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- Import the Servlet API, we use provided scope as the API is included
             in JBoss -->
         <dependency>

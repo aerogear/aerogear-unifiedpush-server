@@ -25,7 +25,6 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -62,8 +61,7 @@ public class VariantDaoTest {
         final AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("KEY");
         av.setDeveloper("admin");
-        final String uuid  = UUID.randomUUID().toString();
-        av.setVariantID(uuid);
+        final String uuid  = av.getVariantID();
 
         variantDao.create(av);
 
@@ -78,8 +76,7 @@ public class VariantDaoTest {
         final AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("KEY");
         av.setDeveloper("admin");
-        final String uuid  = UUID.randomUUID().toString();
-        av.setVariantID(uuid);
+        final String uuid  = av.getVariantID();
 
         variantDao.create(av);
 
@@ -93,8 +90,7 @@ public class VariantDaoTest {
         final AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("KEY");
         av.setDeveloper("admin");
-        final String uuid  = UUID.randomUUID().toString();
-        av.setVariantID(uuid);
+        final String uuid  = av.getVariantID();
 
         variantDao.create(av);
 
@@ -118,8 +114,7 @@ public class VariantDaoTest {
         final AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("KEY");
         av.setDeveloper("admin");
-        final String uuid  = UUID.randomUUID().toString();
-        av.setVariantID(uuid);
+        final String uuid  = av.getVariantID();
 
         variantDao.create(av);
 
@@ -140,12 +135,50 @@ public class VariantDaoTest {
         assertNull(variantDao.findByVariantID(uuid));
     }
 
-
     @Test
     public void lookupNonExistingVariant() {
         Variant variant = variantDao.findByVariantIDForDeveloper("NOT-IN-DATABASE", "admin");
         assertNull(variant);
     }
 
+    @Test
+    public void variantIDUnmodifiedAfterUpdate() {
+
+        final AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String uuid  = av.getVariantID();
+
+        variantDao.create(av);
+
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        final String primaryKey = queriedVariant.getId();
+        assertEquals(uuid, queriedVariant.getVariantID());
+        assertNotNull(queriedVariant);
+
+        queriedVariant.setGoogleKey("NEW_KEY");
+        variantDao.update(queriedVariant);
+
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        assertNotNull(queriedVariant);
+        assertEquals(uuid, queriedVariant.getVariantID());
+        assertEquals(primaryKey, queriedVariant.getId());
+    }
+
+    @Test
+    public void primaryKeyUnmodifiedAfterUpdate() {
+        AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String id  = av.getId();
+
+        variantDao.create(av);
+        assertEquals(id, av.getId());
+
+        av.setGoogleKey("NEW_KEY");
+        av = (AndroidVariant) variantDao.update(av);
+
+        assertEquals(id, av.getId());
+    }
 
 }

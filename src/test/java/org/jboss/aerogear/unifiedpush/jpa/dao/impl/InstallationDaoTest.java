@@ -72,14 +72,12 @@ public class InstallationDaoTest {
         AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("Key");
         av.setName("Android");
-        av.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.androidVariantID = av.getVariantID();
         variantDao.create(av);
 
         SimplePushVariant sp = new SimplePushVariant();
         sp.setName("SimplePush");
-        sp.setVariantID(UUID.randomUUID().toString());
         // stash the ID:
         this.simplePushVariantID = sp.getVariantID();
         variantDao.create(sp);
@@ -322,5 +320,26 @@ public class InstallationDaoTest {
         assertEquals(2, tokens.size());
         assertTrue(tokens.get(0).startsWith("http://server:8080/update/"));
         assertTrue(tokens.get(1).startsWith("http://server:8080/update/"));
+    }
+
+    @Test
+    public void primaryKeyUnmodifiedAfterUpdate() {
+        InstallationImpl android1 = new InstallationImpl();
+        android1.setAlias("foo@bar.org");
+        android1.setDeviceToken("123456");
+        android1.setDeviceType("Android Phone");
+        final Set<String> categoriesOne = new HashSet<String>();
+        categoriesOne.add("soccer");
+        android1.setCategories(categoriesOne);
+        final String id = android1.getId();
+
+        installationDao.create(android1);
+
+        assertEquals(id, android1.getId());
+
+        android1.setAlias("foobar@bar.org");
+        android1 = installationDao.update(android1);
+
+        assertEquals(id, android1.getId());
     }
 }

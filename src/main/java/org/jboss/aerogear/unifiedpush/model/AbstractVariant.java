@@ -46,6 +46,7 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     private static final long serialVersionUID = -5028062942838899201L;
 
     public AbstractVariant() {
+        variantID = UUID.randomUUID().toString();
         secret = UUID.randomUUID().toString();
     }
 
@@ -105,10 +106,6 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
 
     public String getVariantID() {
         return variantID;
-    }
-
-    public void setVariantID(String variantID) {
-        this.variantID = variantID;
     }
 
     @Override

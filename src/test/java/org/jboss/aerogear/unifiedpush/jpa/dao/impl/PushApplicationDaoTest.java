@@ -24,7 +24,6 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -58,22 +57,16 @@ public class PushApplicationDaoTest {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = UUID.randomUUID().toString();
-        pushApplication1.setPushApplicationID(pushApplicationID1);
         pushApplicationDao.create(pushApplication1);
 
         final PushApplication pushApplication2 = new PushApplication();
         pushApplication2.setName("Push App 2");
         pushApplication2.setDeveloper("Admin");
-        final String pushApplicationID2 = UUID.randomUUID().toString();
-        pushApplication2.setPushApplicationID(pushApplicationID2);
         pushApplicationDao.create(pushApplication2);
 
         final PushApplication pushApplication3 = new PushApplication();
         pushApplication3.setName("Push App 3");
         pushApplication3.setDeveloper("Dave The Drummer");
-        final String pushApplicationID3 = UUID.randomUUID().toString();
-        pushApplication3.setPushApplicationID(pushApplicationID3);
         pushApplicationDao.create(pushApplication3);
 
         assertEquals(2, pushApplicationDao.findAllForDeveloper("Admin").size());
@@ -89,8 +82,7 @@ public class PushApplicationDaoTest {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = UUID.randomUUID().toString();
-        pushApplication1.setPushApplicationID(pushApplicationID1);
+        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
         pushApplicationDao.create(pushApplication1);
 
         assertNotNull(pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID1, "Admin"));
@@ -106,8 +98,7 @@ public class PushApplicationDaoTest {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = UUID.randomUUID().toString();
-        pushApplication1.setPushApplicationID(pushApplicationID1);
+        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
         pushApplicationDao.create(pushApplication1);
 
         assertNotNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
@@ -120,8 +111,7 @@ public class PushApplicationDaoTest {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = UUID.randomUUID().toString();
-        pushApplication1.setPushApplicationID(pushApplicationID1);
+        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
         pushApplicationDao.create(pushApplication1);
 
         assertNotNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
@@ -140,8 +130,7 @@ public class PushApplicationDaoTest {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = UUID.randomUUID().toString();
-        pushApplication1.setPushApplicationID(pushApplicationID1);
+        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
         pushApplicationDao.create(pushApplication1);
 
         assertNotNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
@@ -158,4 +147,37 @@ public class PushApplicationDaoTest {
         assertNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
     }
 
+    @Test
+    public void pushApplicationIDUnmodifiedAfterUpdate() {
+        final PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        pushApplication1.setDeveloper("Admin");
+        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
+        pushApplicationDao.create(pushApplication1);
+
+        assertNotNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
+        assertEquals("Push App 1", pushApplicationDao.findByPushApplicationID(pushApplicationID1).getName());
+
+
+        pushApplication1.setName("Cool Push App 1");
+        pushApplicationDao.update(pushApplication1);
+
+        assertNotNull(pushApplicationDao.findByPushApplicationID(pushApplicationID1));
+        assertEquals(pushApplicationID1, pushApplicationDao.findByPushApplicationID(pushApplicationID1).getPushApplicationID());
+    }
+
+    @Test
+    public void primaryKeyUnmodifiedAfterUpdate() {
+        PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        final String id = pushApplication1.getId();
+        pushApplicationDao.create(pushApplication1);
+
+        assertEquals(id, pushApplication1.getId());
+
+        pushApplication1.setName("Cool Push App 1");
+        pushApplication1 = pushApplicationDao.update(pushApplication1);
+
+        assertEquals(id, pushApplication1.getId());
+    }
 }
