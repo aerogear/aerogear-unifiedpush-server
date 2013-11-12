@@ -117,6 +117,10 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
         return pushApplicationID;
     }
 
+    public void setPushApplicationID(String pushApplicationID) {
+        this.pushApplicationID = pushApplicationID;
+    }
+
     public void setMasterSecret(String secret) {
         this.masterSecret = secret;
     }

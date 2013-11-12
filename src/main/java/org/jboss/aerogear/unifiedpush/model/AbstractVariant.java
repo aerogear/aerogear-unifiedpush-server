@@ -108,6 +108,10 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
         return variantID;
     }
 
+    public void setVariantID(String variantID) {
+        this.variantID = variantID;
+    }
+
     @Override
     public void setSecret(String secret) {
         this.secret = secret;

@@ -47,6 +47,8 @@ public interface Variant {
     /**
      * Identifier used to register an {@link Installation} with this Variant
      */
+    void setVariantID(String variantID);
+
     String getVariantID();
 
     /**

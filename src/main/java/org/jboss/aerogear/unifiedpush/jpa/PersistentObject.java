@@ -38,4 +38,8 @@ public abstract class PersistentObject implements Serializable {
     public String getId() {
         return this.id;
     }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
 }

@@ -44,6 +44,8 @@ public interface PushApplication {
     /**
      * Identifier used to register variants with this PushApplication
      */
+    void setPushApplicationID(String pushApplicationID);
+
     String getPushApplicationID();
 
     /**
