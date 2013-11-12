@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.jpa;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -32,7 +31,6 @@ public abstract class PersistentObject implements Serializable {
     }
 
     @Id
-    @Column(name = "id", updatable = false, nullable = false)
     private String id = null;
 
     public String getId() {
