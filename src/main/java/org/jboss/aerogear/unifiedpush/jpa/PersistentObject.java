@@ -26,12 +26,8 @@ import javax.persistence.MappedSuperclass;
 public abstract class PersistentObject implements Serializable {
     private static final long serialVersionUID = -2604260447891156143L;
 
-    public PersistentObject() {
-        id = UUID.randomUUID().toString();
-    }
-
     @Id
-    private String id = null;
+    private String id = UUID.randomUUID().toString();
 
     public String getId() {
         return this.id;
