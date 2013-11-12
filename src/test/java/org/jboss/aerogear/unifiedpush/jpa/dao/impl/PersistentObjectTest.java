@@ -89,6 +89,4 @@ public class PersistentObjectTest {
         av.setId(UUID.randomUUID().toString());
         variantDao.update(av);
     }
-
-
 }

@@ -48,16 +48,21 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     @NotNull
     @Column
     private VariantType type;
+
     @Column
     @Size(min = 1, max = 255)
     private String name;
+
     @Column
     @Size(min = 0, max = 255)
     private String description;
+
     @Column
     private String variantID = UUID.randomUUID().toString();
+
     @Column
     private String secret = UUID.randomUUID().toString();
+
     @Column
     private String developer;
 

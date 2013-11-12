@@ -354,7 +354,5 @@ public class InstallationDaoTest {
         installation = installationDao.find(InstallationImpl.class, id);
 
         assertEquals(alias, installation.getAlias());
-
-
     }
 }

@@ -44,7 +44,6 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     private String description;
 
     @Column
-    @Size(min = 1, max = 255)
     private String pushApplicationID = UUID.randomUUID().toString();
     @Column
     private String masterSecret = UUID.randomUUID().toString();

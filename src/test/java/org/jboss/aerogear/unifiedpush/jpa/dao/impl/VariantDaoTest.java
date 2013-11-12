@@ -179,7 +179,6 @@ public class VariantDaoTest {
         // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
         entityManager.clear();
 
-
         AndroidVariant variant = (AndroidVariant) variantDao.find(AndroidVariant.class, id);
 
         assertEquals(id, variant.getId());
