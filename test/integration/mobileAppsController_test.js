@@ -31,7 +31,7 @@ test( "test click 'Create' link", function() {
     visit( "/" ).then( function() {
         click( ".table-create-btn" );
     }).then( function() {
-        equal( find( "header h1" ).text().trim(), "Create Push Application", "Should be on the Create page, but not" );
+        equal( find( "header h1" ).text().trim(), "Create Application", "Should be on the Create page, but not" );
     });
 });
 
@@ -39,7 +39,7 @@ test( "test click 'Edit' link", function() {
     visit( "/" ).then( function() {
         click( ".action a:eq(0)" );
     }).then( function() {
-        equal( find( "header h1" ).text().trim(), "Edit Push Application", "Should be on the Edit page, but not" );
+        equal( find( "header h1" ).text().trim(), "Rename Application", "Should be on the Edit page, but not" );
     });
 });
 
@@ -68,7 +68,7 @@ module('App.MobileAppsEditController - Create New', {
 
 test( "visit push apps edit page - Create", function() {
     visit( "/mobileApps/edit/undefined" ).then( function() {
-        equal( find("header h1").text().trim(), "Create Push Application", "Should be on the Create page, but not" );
+        equal( find("header h1").text().trim(), "Create Application", "Should be on the Create page, but not" );
     });
 });
 
@@ -141,7 +141,7 @@ test( "visit push apps edit page - Edit", function() {
             name = find( ".name" ).val().trim(),
             description = find( ".description" ).val().trim();
 
-        equal( find("header h1").text().trim(), "Edit Push Application", "Should be on the Create page, but not" );
+        equal( find("header h1").text().trim(), "Rename Application", "Should be on the Create page, but not" );
 
         equal( model.get( "name" ), "Cool App 1" );
         equal( model.get( "description" ), "A Cool App for testing" );
