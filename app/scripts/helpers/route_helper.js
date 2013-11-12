@@ -17,9 +17,11 @@
 */
 App.Route = Ember.Route.extend({
     beforeModel: function() {
+        this.controllerFor("login").set("isLogged", true);
         var that = this;
         return App.AeroGear.pipelines.pipes.ping.read().then( null, function() {
             Ember.run( function() {
+                that.controllerFor("login").set("isLogged", false);
                 that.transitionTo( "login" );
             });
         });

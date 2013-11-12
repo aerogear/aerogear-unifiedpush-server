@@ -71,18 +71,6 @@ App.ApplicationRoute = Ember.Route.extend({
         },
         clearErrors: function(){
             this.render( "nothing", { into: "application", outlet: "error" } );
-        },
-        logout: function() {
-            var that = this;
-            App.AeroGear.authenticator.logout({
-                contentType: "application/json",
-                success: function() {
-                    that.transitionTo( "login" );
-                },
-                error: function() {
-                    that.transitionTo( "login" );
-                }
-            });
         }
     }
 });

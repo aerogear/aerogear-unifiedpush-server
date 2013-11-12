@@ -3,9 +3,9 @@
   <header>
     <h1>
       {{#if pushApplicationID}}
-          Edit Push Application
+          Rename Application
       {{else}}
-          Create Push Application
+          Create Application
       {{/if}}
     </h1>
   </header>
@@ -20,12 +20,14 @@
          <label>Description</label>
          {{textarea placeholder="e.g. My new application." valueBinding="description" classNames="topcoat-textarea description"}}
        </p>
+       <span class="buttonBar">
        <input type="reset" class="topcoat-button reset" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
         {{#if pushApplicationID}}
-          <input type="submit" class="topcoat-button" value="Edit">
+          <input type="submit" class="topcoat-button" value="Rename">
         {{else}}
           <input type="submit" class="topcoat-button" value="Create">
         {{/if}}
+        </span>
      </fieldset>
      </form>
   </div>

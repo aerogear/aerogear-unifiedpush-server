@@ -15,6 +15,7 @@
 App.LoginController = Ember.ObjectController.extend({
     loginIn: true,
     relog: false,
+    isLogged: false,
     actions: {
         login: function() {
             var that = this,
@@ -34,6 +35,7 @@ App.LoginController = Ember.ObjectController.extend({
                         // Successful Login, now go to /mobileApps
                         Ember.run( this, function() {
                             that.set( "relog", false );
+                            that.set( "isLogged", true);
                             that.transitionToRoute( "mobileApps" );
                         });
                     },
@@ -90,6 +92,19 @@ App.LoginController = Ember.ObjectController.extend({
             } else {
                 this.send( "error", this, user.get( "validationErrors.allMessages" ) );
             }
+        },
+        logout: function() {
+            var that = this;
+            App.AeroGear.authenticator.logout({
+                contentType: "application/json",
+                success: function() {
+                    that.set( "isLogged", false );
+                    that.transitionTo( "login" );
+                },
+                error: function() {
+                    that.transitionTo( "login" );
+                }
+            });
         }
     }
 });

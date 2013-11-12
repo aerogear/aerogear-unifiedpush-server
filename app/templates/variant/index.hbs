@@ -6,7 +6,7 @@
         </div>
 </aside>
 {{#if isLoaded}}
-    <div>{{#linkTo "mobileApps"}}Push Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
+    <div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
     <section>
         <h2>{{ name }}</h2>
         <span>{{ description }}</span>
@@ -21,11 +21,9 @@
                 Use this Variant ID and Secret combination in your mobile client SDK to register your mobile installation with the UnifiedPush Server
             </span>
             <div>
-                Variant ID: <span class="rcue-code">{{ variantID }}</span>
+                Variant ID: {{input type="text" disabled="true" class="rcue-code" valueBinding="variantID"}}
                 <br>
-                Secret: <span class="rcue-code">{{ secret }}</span>
-                <br>
-               <input type="reset" class="topcoat-button reset" value="Reset Secret" {{ action "toggleResetOverlay"}}>
+                Secret: {{input type="text" class="rcue-code" valueBinding="secret" disabled="true"}} <a href="#" {{ action "toggleResetOverlay" this}}>Renew...</a>
             </div>
     </section>
     <section>

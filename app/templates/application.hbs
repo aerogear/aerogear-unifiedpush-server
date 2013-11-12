@@ -3,6 +3,9 @@
     <div class="topcoat-navigation-bar__item left half">
         <h1 class="topcoat-navigation-bar__title"><strong>AeroGear</strong> UnifiedPush Server (0.9.0)</h1>
     </div>
+     <div class="topcoat-navigation-bar__item right half">
+         <span {{bind-attr class="controllers.login.isLogged::hidden"}}><a href="#" {{ action logout target="controllers.login" }} >Logout </a></span>
+     </div>
 </div>
 {{outlet error}}
 {{outlet}}

@@ -5,7 +5,7 @@
             <button role="button" class="topcoat-button--cta" {{action 'resetMaster' this}}>Yes</button>
         </div>
 </aside>
-<div>{{#linkTo "mobileApps"}}&larr; Back to Push Applications{{/linkTo}}</div>
+<div>{{#linkTo "mobileApps"}}&larr; Back to Applications{{/linkTo}}</div>
 
 <section>
         <h2>Application:
@@ -17,19 +17,18 @@
 <section>
         <h3>Authentication Info</h3>
         <span>
-            Use this Application ID and Master Secret combination to send push notification
+            Use this Application ID and Master Secret combination to send push notifications
         </span>
         <!--Make this look better -->
         <div>
-            Application ID: <span class="rcue-code">{{ pushApplicationID }}</span>
+            Application ID:   {{input type="text" disabled="true" class="rcue-code" valueBinding="pushApplicationID"}}
             <br>
-            Master Secret: <span class="rcue-code">{{ masterSecret }}</span>
-            <br>
-             <input type="reset" class="topcoat-button reset" value="Reset Master Secret" {{ action "toggleResetOverlay" this}}>
+            Master Secret:    {{input type="text" class="rcue-code" valueBinding="masterSecret" disabled="true"}}  <a href="#" {{ action "toggleResetOverlay" this}}>Renew...</a>
         </div>
 </section>
 
 <section>
+    <h3>Variants</h3>
     {{#if isLoaded}}
         {{ partial "variants/variantsDetail" }}
     {{else}}

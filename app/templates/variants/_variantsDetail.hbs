@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th colspan="7">
-                    <div class="table-create-btn topcoat-button">{{#linkTo "variants.add" this}}Add Variant{{/linkTo}}</div>
+                    <div class="table-create-btn topcoat-button">{{#linkTo "variants.add" this}}Add...{{/linkTo}}</div>
                 </th>
             </tr>
             <tr>
@@ -33,7 +33,7 @@
                 </tr>
             {{else}}
                 <tr>
-                    <td colspan="6">Loading...{{#if isLoaded}}Nothing Here{{/if}}</td>
+                    <td colspan="6">{{#if isLoaded}}No Variant Yet{{/if}}</td>
                 </tr>
             {{/each}}
         </tbody>

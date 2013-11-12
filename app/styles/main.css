@@ -286,6 +286,10 @@ td.action a, td a {
   font-family: "Courier", monospace !important;
   opacity: 0.5;
   font-size: 0.85714285714286em; /* 12px / 14px */
+  border: none;
+  background-color: transparent;
+  width: 300px;
+  padding-left: 10px;
 }
 
 .token {
@@ -400,8 +404,12 @@ input[type="password"].error {
 .topcoat-overlay {
     top: 35%;
     width: 30%;
-    left: 30%;
+    left: 60%;
     padding: 10px 10px;
+}
+
+.buttonBar {
+    padding-left: 47.7%;
 }
 
 /*
