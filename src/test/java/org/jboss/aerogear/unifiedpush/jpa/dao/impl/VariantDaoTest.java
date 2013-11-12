@@ -173,10 +173,26 @@ public class VariantDaoTest {
         final String id  = av.getId();
 
         variantDao.create(av);
-        assertEquals(id, av.getId());
+
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
+
+
+        AndroidVariant variant = (AndroidVariant) variantDao.find(AndroidVariant.class, id);
+
+        assertEquals(id, variant.getId());
 
         av.setGoogleKey("NEW_KEY");
-        av = (AndroidVariant) variantDao.update(av);
+        variantDao.update(av);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        variant = (AndroidVariant) variantDao.find(AndroidVariant.class, id);
+
+        assertEquals("NEW_KEY", variant.getGoogleKey());
 
         assertEquals(id, av.getId());
     }

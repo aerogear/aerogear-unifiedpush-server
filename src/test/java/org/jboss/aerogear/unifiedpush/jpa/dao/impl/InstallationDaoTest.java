@@ -335,11 +335,26 @@ public class InstallationDaoTest {
 
         installationDao.create(android1);
 
-        assertEquals(id, android1.getId());
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
 
-        android1.setAlias("foobar@bar.org");
-        android1 = installationDao.update(android1);
+        InstallationImpl installation = installationDao.find(InstallationImpl.class, id);
 
-        assertEquals(id, android1.getId());
+        assertEquals(id, installation.getId());
+        assertEquals("Android Phone", installation.getDeviceType());
+
+        final String alias = "foobar@bar.org";
+        android1.setAlias(alias);
+        installationDao.update(android1);
+        entityManager.flush();
+        entityManager.clear();
+
+        installation = installationDao.find(InstallationImpl.class, id);
+
+        assertEquals(alias, installation.getAlias());
+
+
     }
 }

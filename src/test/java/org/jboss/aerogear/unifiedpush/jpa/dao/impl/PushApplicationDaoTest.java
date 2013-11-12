@@ -173,11 +173,24 @@ public class PushApplicationDaoTest {
         final String id = pushApplication1.getId();
         pushApplicationDao.create(pushApplication1);
 
-        assertEquals(id, pushApplication1.getId());
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
+
+
+        PushApplication pa = pushApplicationDao.find(PushApplication.class, id);
+
+        assertEquals(id, pa.getId());
 
         pushApplication1.setName("Cool Push App 1");
-        pushApplication1 = pushApplicationDao.update(pushApplication1);
+        pushApplicationDao.update(pushApplication1);
 
-        assertEquals(id, pushApplication1.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        pa = pushApplicationDao.find(PushApplication.class, id);
+
+        assertEquals("Cool Push App 1", pa.getName());
     }
 }
