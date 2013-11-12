@@ -1,4 +1,4 @@
-# aerogear-unified-pushserver-admin-ui [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui)
+# aerogear-unifiedpush-server-admin-ui [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui)
 
 ## AeroGear Unified Push Server Admin UI
 
