@@ -40,7 +40,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
@@ -77,8 +76,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant.setCertificate(form.getCertificate());
         iOSVariant.setProduction(form.getProduction());
 
-        // manually set the ID:
-        iOSVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
         iOSVariant.setDeveloper(loginName.get());
 

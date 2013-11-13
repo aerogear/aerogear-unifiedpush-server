@@ -45,23 +45,24 @@ import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 public abstract class AbstractVariant extends PersistentObject implements Variant {
     private static final long serialVersionUID = -5028062942838899201L;
 
-    public AbstractVariant() {
-        secret = UUID.randomUUID().toString();
-    }
-
     @NotNull
     @Column
     private VariantType type;
+
     @Column
     @Size(min = 1, max = 255)
     private String name;
+
     @Column
     @Size(min = 0, max = 255)
     private String description;
+
     @Column
-    private String variantID;
+    private String variantID = UUID.randomUUID().toString();
+
     @Column
-    private String secret;
+    private String secret = UUID.randomUUID().toString();
+
     @Column
     private String developer;
 

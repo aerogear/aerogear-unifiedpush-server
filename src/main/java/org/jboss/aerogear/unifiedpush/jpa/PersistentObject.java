@@ -17,23 +17,17 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
 public abstract class PersistentObject implements Serializable {
     private static final long serialVersionUID = -2604260447891156143L;
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id = null;
+    private String id = UUID.randomUUID().toString();
 
     public String getId() {
         return this.id;

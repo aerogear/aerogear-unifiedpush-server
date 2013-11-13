@@ -72,8 +72,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return builder.build();
         }
 
-        // create ID...
-        pushApp.setPushApplicationID(UUID.randomUUID().toString());
         // store the "developer:
         pushApp.setDeveloper(loginName.get());
         pushAppService.addPushApplication(pushApp);

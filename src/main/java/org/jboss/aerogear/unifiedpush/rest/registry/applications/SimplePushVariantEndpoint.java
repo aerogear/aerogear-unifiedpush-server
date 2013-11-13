@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
@@ -70,8 +69,6 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
-        // manually set the ID:
-        simplePushVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
         simplePushVariant.setDeveloper(loginName.get());
 

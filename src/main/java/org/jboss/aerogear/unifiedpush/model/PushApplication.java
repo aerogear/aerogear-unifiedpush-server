@@ -34,10 +34,6 @@ import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 public class PushApplication extends PersistentObject implements org.jboss.aerogear.unifiedpush.api.PushApplication {
     private static final long serialVersionUID = 6507691362454032282L;
 
-    public PushApplication() {
-        masterSecret = UUID.randomUUID().toString();
-    }
-
     @Column
     @NotNull
     @Size(min = 1, max = 255)
@@ -48,10 +44,9 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     private String description;
 
     @Column
-    @Size(min = 1, max = 255)
-    private String pushApplicationID;
+    private String pushApplicationID = UUID.randomUUID().toString();
     @Column
-    private String masterSecret;
+    private String masterSecret = UUID.randomUUID().toString();
 
     @Column
     @Size(min = 1, max = 255)
