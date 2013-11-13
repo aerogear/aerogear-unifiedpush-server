@@ -8,7 +8,9 @@
         <div class="rcue-code token">
             Device Token: {{ deviceToken }}
             <br>
+            {{#if isSimplePush}}
             SimplePush Endpoint: {{ simplePushEndpoint }}
+            {{/if}}
         </div>
     </div>
     {{ partial "instance/variantInstanceDetail" }}
