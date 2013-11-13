@@ -316,7 +316,7 @@ curl -3 -u "{PushApplicationID}:{MasterSecret}"
 
    -d '{
       "variants" : ["c3f0a94f-48de-4b77-a08e-68114460857e", "444939cd-ae63-4ce1-96a4-de74b77e3737" ....],
-      "category" : "someCategory",
+      "categories" : ["someCategory"],
       "alias" : ["user@account.com", "jay@redhat.org", ....],
       "deviceType" : ["iPad", "AndroidTablet", "web"],
 
