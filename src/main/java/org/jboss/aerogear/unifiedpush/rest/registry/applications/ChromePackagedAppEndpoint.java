@@ -16,19 +16,13 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
  * limitations under the License.
  */
 
-import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.ChromePackagedAppVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -45,22 +39,13 @@ import java.util.UUID;
 @TransactionAttribute
 @Path("/applications/{pushAppID}/chrome")
 @Secure({ "developer", "admin" })
-public class ChromePackagedAppEndpoint {
-
-    @Inject
-    private PushApplicationService pushAppService;
-    @Inject
-    private ChromePackagedAppVariantService chromePackagedAppVariantService;
-
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
+public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
 
     // ===============================================================
     // =============== Mobile variant construct ======================
-    // ===============         Android          ======================
+    // ===============     Chrome Packaged App  ======================
     // ===============================================================
-    // new Android
+    // new Chrome Packaged App
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerChromePackagedAppVariant(
@@ -85,9 +70,8 @@ public class ChromePackagedAppEndpoint {
         // store the "developer:
         chromePackagedAppVariant.setDeveloper(loginName.get());
 
-        // store the Android variant:
-        chromePackagedAppVariant = chromePackagedAppVariantService.addChromePackagedApp(chromePackagedAppVariant);
-        // add iOS variant, and merge:
+        // store the Chrome Packaged App variant:
+        chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);
         pushAppService.addChromePackagedAppVariant(pushApp, chromePackagedAppVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(chromePackagedAppVariant.getVariantID())).build()).entity(chromePackagedAppVariant).build();
@@ -100,19 +84,6 @@ public class ChromePackagedAppEndpoint {
         return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getChromePackagedAppVariants()).build();
     }
 
-    @GET
-    @Path("/{chromeAppID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findChromePackagedAppVariationById(@PathParam("pushAppID") String pushAppID, @PathParam("chromeAppID") String chromeAppID) {
-
-        ChromePackagedAppVariant chromePackagedAppVariant = chromePackagedAppVariantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
-
-        if (chromePackagedAppVariant != null) {
-            return Response.ok(chromePackagedAppVariant).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
     // UPDATE
     @PUT
     @Path("/{chromeAppID}")
@@ -122,7 +93,7 @@ public class ChromePackagedAppEndpoint {
             @PathParam("chromeAppID") String chromeAppID,
             ChromePackagedAppVariant updatedChromePackagedApplication) {
 
-        ChromePackagedAppVariant chromePackagedAppVariant = chromePackagedAppVariantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
+        ChromePackagedAppVariant chromePackagedAppVariant =  (ChromePackagedAppVariant)variantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
         if (chromePackagedAppVariant != null) {
 
             // poor validation
@@ -137,27 +108,10 @@ public class ChromePackagedAppEndpoint {
             chromePackagedAppVariant.setRefreshToken(updatedChromePackagedApplication.getRefreshToken());
             chromePackagedAppVariant.setName(updatedChromePackagedApplication.getName());
             chromePackagedAppVariant.setDescription(updatedChromePackagedApplication.getDescription());
-            chromePackagedAppVariantService.updateChromePackagedApp(chromePackagedAppVariant);
+            variantService.updateVariant(chromePackagedAppVariant);
             return Response.noContent().build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
-
-    // DELETE
-    @DELETE
-    @Path("/{chromeAppID}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteChromePackagedAppVariation(@PathParam("pushAppID") String pushApplicationID, @PathParam("chromeAppID") String chromeAppID) {
-
-        ChromePackagedAppVariant chromePackagedAppVariant = chromePackagedAppVariantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
-
-        if (chromePackagedAppVariant != null) {
-            chromePackagedAppVariantService.removeChromePackagedApp(chromePackagedAppVariant);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
-    }
-
 }
