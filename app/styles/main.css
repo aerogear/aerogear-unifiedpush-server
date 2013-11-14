@@ -292,6 +292,10 @@ td.action a, td a {
   padding-left: 10px;
 }
 
+.secret {
+    padding-left: 31px;
+}
+
 .token {
   white-space: nowrap;
   text-overflow: ellipsis;
