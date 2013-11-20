@@ -119,7 +119,7 @@ cp -r src/main/resources/modules/org /Path/to/JBossAS/modules/
 We also need the Postgres driver copied to this module:
 
 ```
-mvn dependency:copy -Dartifact=org.postgresql:postgresql:9.2-1004-jdbc41 -DoutputDirectory=/Path/to/JBossAS/modules/com/mysql/jdbc/main/
+mvn dependency:copy -Dartifact=org.postgresql:postgresql:9.2-1004-jdbc41 -DoutputDirectory=/Path/to/JBossAS/modules/org/postgresql/main/
 ```
 
 Next, start your server:
