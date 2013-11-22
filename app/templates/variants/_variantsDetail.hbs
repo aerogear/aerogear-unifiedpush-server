@@ -25,15 +25,15 @@
                     <td>{{ typeFormatted }}</td>
                     <td class="rcue-table-number">{{ totalInstances }}</td>
                     <td class="action">
-                        {{#linkTo "variants.edit" this}}Edit{{/linkTo}}
+                        {{#linkTo "variants.edit" this}}Rename...{{/linkTo}}
                     </td>
                     <td class="action">
-                        <a href="#" {{ action "remove" this}}>Remove</a>
+                        <a href="#" {{ action "remove" this}}>Remove...</a>
                     </td>
                 </tr>
             {{else}}
                 <tr>
-                    <td colspan="6">{{#if isLoaded}}No Variant Yet{{/if}}</td>
+                    <td colspan="6">{{#if isLoaded}}This application doesn't have any variants yet.{{/if}}</td>
                 </tr>
             {{/each}}
         </tbody>
