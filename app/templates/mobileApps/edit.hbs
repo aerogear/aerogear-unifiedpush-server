@@ -1,10 +1,13 @@
+
 <!--Template to create/edit a push application-->
 <div class="rcue-dialog">
   <header>
     <h1>
       {{#if pushApplicationID}}
+          {{headEditAppTitle name 'Rename'}}
           Rename Application
       {{else}}
+          {{headEditAppTitle "Application" 'Create'}}
           Create Application
       {{/if}}
     </h1>

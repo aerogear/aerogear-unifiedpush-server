@@ -20,8 +20,8 @@ module.exports = function (grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp",
-        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war"
+        webapp: "/home/sebastien/aerogear/aerogear-unifiedpush-server/src/main/webapp",
+        jbossweb: "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war"
     };
 
     grunt.initConfig({
