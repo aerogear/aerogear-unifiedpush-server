@@ -54,7 +54,7 @@ For using MySQL a few more steps are required.
 
 ```
 $ mysql -u <user-name>
-mysql> create database unifiedpush;
+mysql> create database unifiedpush default character set = "UTF8" default collate = "utf8_general_ci";
 mysql> create user 'unifiedpush'@'localhost' identified by 'unifiedpush';
 mysql> GRANT SELECT,INSERT,UPDATE,ALTER,DELETE,CREATE,DROP ON unifiedpush.* TO 'unifiedpush'@'localhost';
 ```
