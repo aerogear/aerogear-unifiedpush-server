@@ -60,50 +60,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
             return;
         }
 
-        HttpURLConnection accessTokenConn = null;
-        JSONParser jsonParser = new JSONParser();
-        ChromePackagedAppTokenCache accessTokenObject = null;
-        String accessToken = null;
-        long expireTime = 0; // in milliseconds
-
-        try {
-            // Not good practice to always get a new access token. so only get one if it is expired or null
-            accessTokenObject = accessTokenMap.get(chromePackagedAppVariant.getClientId());
-
-            if( accessTokenObject != null ) {
-                accessToken = accessTokenObject.getAccessToken();
-                expireTime = accessTokenObject.getExpiresIn();
-            }
-
-            if( accessToken == null || expireTime < new Date().getTime() ) {
-                accessTokenConn = refreshAccessToken(chromePackagedAppVariant);
-                String stringResponse = getString(accessTokenConn.getInputStream());
-                accessToken = ((JSONObject)jsonParser.parse(stringResponse)).get("access_token").toString();
-                String expiresIn = ((JSONObject)jsonParser.parse(stringResponse)).get("expires_in").toString();
-
-                // Convert to millis
-                long ex = Long.parseLong( expiresIn );
-                expireTime = new Date().getTime() + (ex * 1000);
-
-                if( accessTokenObject == null ) {
-                    accessTokenObject = new ChromePackagedAppTokenCache();
-                }
-
-                accessTokenObject.setAccessToken(accessToken);
-                accessTokenObject.setExpiresIn(expireTime);
-
-                accessTokenMap.put(chromePackagedAppVariant.getClientId(),accessTokenObject);
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network For access token refresh", e);
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, "Error during Parse of Response ", e);
-        } finally {
-            // tear down
-            if (accessTokenConn != null ) {
-                accessTokenConn.disconnect();
-            }
-        }
+        String accessToken = fetchAccessToken(chromePackagedAppVariant);
 
         // iterate over all the given channelIDs
         for (String channelID : channelIDs) {
@@ -184,6 +141,61 @@ public class GCMForChromePushNotificationSender implements Serializable {
             }
         }
         return conn;
+    }
+
+    /**
+     *
+     * @param chromePackagedAppVariant
+     * @return a valid access token
+     */
+
+    protected String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
+        HttpURLConnection accessTokenConn = null;
+        JSONParser jsonParser = new JSONParser();
+        ChromePackagedAppTokenCache accessTokenObject = null;
+        String accessToken = null;
+        long expireTime = 0; // in milliseconds
+
+        try {
+            // Not good practice to always get a new access token. so only get one if it is expired or null
+            accessTokenObject = accessTokenMap.get(chromePackagedAppVariant.getClientId());
+
+            if( accessTokenObject != null ) {
+                accessToken = accessTokenObject.getAccessToken();
+                expireTime = accessTokenObject.getExpiresIn();
+            }
+
+            if( accessToken == null || expireTime < new Date().getTime() ) {
+                accessTokenConn = refreshAccessToken(chromePackagedAppVariant);
+                String stringResponse = getString(accessTokenConn.getInputStream());
+                accessToken = ((JSONObject)jsonParser.parse(stringResponse)).get("access_token").toString();
+                String expiresIn = ((JSONObject)jsonParser.parse(stringResponse)).get("expires_in").toString();
+
+                // Convert to millis
+                long ex = Long.parseLong( expiresIn );
+                expireTime = new Date().getTime() + (ex * 1000);
+
+                if( accessTokenObject == null ) {
+                    accessTokenObject = new ChromePackagedAppTokenCache();
+                }
+
+                accessTokenObject.setAccessToken(accessToken);
+                accessTokenObject.setExpiresIn(expireTime);
+
+                accessTokenMap.put(chromePackagedAppVariant.getClientId(),accessTokenObject);
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network For access token refresh", e);
+        } catch (ParseException e) {
+            logger.log(Level.SEVERE, "Error during Parse of Response ", e);
+        } finally {
+            // tear down
+            if (accessTokenConn != null ) {
+                accessTokenConn.disconnect();
+            }
+        }
+
+        return accessToken;
     }
 
     /**
