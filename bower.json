@@ -4,7 +4,7 @@
   "dependencies": {
     "jquery": "~1.9.1",
     "aerogear": "~1.1.2",
-    "ember": "1.0.0",
+    "ember": "1.2.0",
     "topcoat": "~0.5.1",
     "jquery-form": "*"
   },
