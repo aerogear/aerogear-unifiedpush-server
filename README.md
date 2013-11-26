@@ -18,7 +18,7 @@ For iOS there is a little [helper library](https://github.com/aerogear/aerogear-
 
 #### JavaScript
 
-The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications as well. Besides that, AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
+The [AeroGear.js](https://github.com/aerogear/aerogear-js) library has support for device registration with the UnifiedPush Server. This can be used from Apache Cordova applications or Chrome Packaged Apps as well. Besides that, AeroGear.js comes with a polyfill implementation of Mozilla's SimplePush API, which makes it easy to run SimplePush in any browser, there is **_no_** limitation to Firefox OS or the Firefox browsers.
 
 ### Getting started with the server
 
@@ -215,6 +215,24 @@ curl -3 -v -b cookies.txt -c cookies.txt
 
 _The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
 
+##### Chrome Packaged App Variant
+
+Add a ```chromepackagedapp``` variant ( e.g. _HR for a Chrome Packaged App )
+```
+curl -3 -v -b cookies.txt -c cookies.txt
+  -v -H "Accept: application/json" -H "Content-type: application/json"
+  -X POST
+  -d '{
+        "clientId" : "CLIENT_ID",
+        "clientSecret" : "CLIENT_SECRET",
+        "refreshToken" : "REFRESH_TOKEN"
+      }'
+
+  https://SERVER:PORT/CONTEXT/rest/applications/{pushApplicationID}/chrome
+```
+
+_The response returns a **variantID** and a **secret**, that will be both used later on when registering your installation through the UnifiedPush JS SDK._
+
 #### Registration of an installation, for an iOS device:
 
 iOS example for performing registration of a client:
@@ -299,6 +317,27 @@ var metadata = {
     alias: "some_username",
     category: "email",
     simplePushEndpoint: "https://some.server.com/something"
+};
+
+// perform the registration against the UnifiedPush server:
+client.registerWithPushServer(metadata);
+```
+
+#### Registration of an installation, for a JavaScript/ChromePackagedApp client:
+
+JavaScript example for performing registration of a client:
+
+```javascript
+//Create the UnifiedPush client object:
+var client = AeroGear.UnifiedPushClient(
+    "myVariantID",
+    "myVariantSecret",
+    "http://SERVER:PORT/CONTEXT/rest/registry/device"
+);
+
+// assemble the metadata for the registration:
+var metadata = {
+    deviceToken: "theDeviceToken"
 };
 
 // perform the registration against the UnifiedPush server:

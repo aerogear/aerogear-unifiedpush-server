@@ -30,6 +30,7 @@
     <class>org.jboss.aerogear.unifiedpush.model.iOSVariant</class>
     <class>org.jboss.aerogear.unifiedpush.model.PushApplication</class>
     <class>org.jboss.aerogear.unifiedpush.model.SimplePushVariant</class>
+    <class>org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant</class>
 
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.jpa.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
@@ -67,6 +68,14 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public void addSimplePushVariant(PushApplication pushApp,
             SimplePushVariant simplePushVariant) {
         pushApp.getSimplePushVariants().add(simplePushVariant);
+
+        pushApplicationDao.update(pushApp);
+    }
+
+    @Override
+    public void addChromePackagedAppVariant(PushApplication pushApp,
+            ChromePackagedAppVariant chromePackagedAppVariant) {
+        pushApp.getChromePackagedAppVariants().add(chromePackagedAppVariant);
 
         pushApplicationDao.update(pushApp);
     }

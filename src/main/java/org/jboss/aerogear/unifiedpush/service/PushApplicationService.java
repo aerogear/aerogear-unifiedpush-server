@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
+import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 
 public interface PushApplicationService {
 
@@ -69,4 +70,9 @@ public interface PushApplicationService {
      * Registers the given SimplePushVariant object with the given PushApplication.
      */
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
+
+    /**
+     * Registers the given ChromePackagedAppVariant object with the given PushApplication.
+     */
+    void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
 }
