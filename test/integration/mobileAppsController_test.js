@@ -28,25 +28,25 @@ test( "total apps and table rows", function() {
 });
 
 test( "test click 'Create' link", function() {
-    visit( "/" ).then( function() {
-        click( ".table-create-btn" );
-    }).then( function() {
+    visit( "/" )
+    .click( ".table-create-btn" )
+    .then( function() {
         equal( find( "header h1" ).text().trim(), "Create Application", "Should be on the Create page, but not" );
     });
 });
 
 test( "test click 'Edit' link", function() {
-    visit( "/" ).then( function() {
-        click( ".action a:eq(0)" );
-    }).then( function() {
+    visit( "/" )
+    .click( ".action a:eq(0)" )
+    .then( function() {
         equal( find( "header h1" ).text().trim(), "Rename Application", "Should be on the Edit page, but not" );
     });
 });
 
 test( "test click 'Push Application' link", function() {
-    visit( "/" ).then( function() {
-        click( "table tbody tr td:eq(0) a" );
-    }).then( function() {
+    visit( "/" )
+    .click( "table tbody tr td:eq(0) a" )
+    .then( function() {
         equal( find("section div:eq(0)").text().indexOf( "Master Secret" ) > -1, true, "Should be on the Variant page, but not" );
     });
 });
@@ -74,9 +74,9 @@ test( "visit push apps edit page - Create", function() {
 
 test( "Create new Push App - Empty Values", function() {
     var that = this;
-    visit( "/mobileApps/edit/undefined" ).then( function() {
-        click( "input[type='submit']" );
-    }).then( function() {
+    visit( "/mobileApps/edit/undefined" )
+    .click( "input[type='submit']" )
+    .then( function() {
         var model = that.controller.get( "model" );
 
         equal( exists( ".errors" ), true, "error class should exists but doesn't" );
@@ -87,20 +87,18 @@ test( "Create new Push App - Empty Values", function() {
 test( "Create new Push App - With Value", function() {
     var that = this;
 
-    visit( "/mobileApps/edit/undefined" ).then( function() {
-        fillIn( ".name", "Cool App" );
-        fillIn( ".description", "Cool App Description" );
-
+    visit( "/mobileApps/edit/undefined" )
+    .fillIn( ".name", "Cool App" )
+    .fillIn( ".description", "Cool App Description" )
+    .click( "input[type='submit']" )
+    .then(function() {
         that.model = that.controller.get( "model" );
-
         equal( that.model.get( "name" ), "Cool App" );
         equal( that.model.get( "description" ), "Cool App Description" );
-
-        click( "input[type='submit']" );
-    }).then( function() {
         equal( that.model.get( "isValid" ), true );
         equal( exists( ".errors" ), false, "error class should not exists but does" );
-    }).then( function(){
+        })
+    .then( function(){
         wait().then( function() {
             var controller = App.__container__.lookup("controller:mobileAppsIndex"),
                 rows = find("table tbody tr").length,
@@ -116,9 +114,9 @@ test( "Create new Push App - With Value", function() {
 });
 
 test( "Create new Push App - test cancel", function() {
-    visit( "/mobileApps/edit/undefined" ).then( function() {
-        click( "input[type='reset']" );
-    }).then( function() {
+    visit( "/mobileApps/edit/undefined" )
+    .click( "input[type='reset']" )
+    .then( function() {
         equal( exists( ".message" ), true, "welcome message should be here but isn't" );
     });
 });
@@ -156,22 +154,19 @@ test( "visit push apps edit page - Edit", function() {
 
 test( "Edit Push Application", function() {
     var that = this;
-    visit( "/mobileApps/edit/12345" ).then( function() {
-        var name = "New Name",
-            description = "New Description";
-
+    var name = "New Name",
+        description = "New Description";
+    visit( "/mobileApps/edit/12345" )
+    .fillIn( ".name", name )
+    .fillIn( ".description", description )
+    .click( "input[type='submit']" )
+    .then(function() {
         that.model = that.controller.get( "model" );
-
-        fillIn( ".name", name );
-        fillIn( ".description", description );
-
         equal( that.model.get( "name" ), name );
         equal( that.model.get( "description" ), description );
-
-        click( "input[type='submit']" );
-    }).then( function() {
         equal( exists( ".errors" ), false, "error class should not exists but does" );
-    }).then( function() {
+            })
+    .then( function() {
         wait().then( function() {
             //TODO: a Check that the updated record is there
         });
@@ -179,9 +174,9 @@ test( "Edit Push Application", function() {
 });
 
 test( "Edit Push Application - test cancel", function() {
-    visit( "/mobileApps/edit/undefined" ).then( function() {
-        click( "input[type='reset']" );
-    }).then( function() {
+    visit( "/mobileApps/edit/undefined" )
+    .click( "input[type='reset']" )
+    .then( function() {
         equal( exists( ".message" ), true, "welcome message should be here but isn't" );
     });
 });
