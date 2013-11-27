@@ -1,11 +1,45 @@
 module('App.LoginController', {
     setup: function() {
+        //Setup Mocks that we need for this Module
+        $.mockjax({
+            url: App.baseURL + "rest/auth/login",
+            type: "POST",
+            dataType: 'json',
+            response: function( arguments ) {
+                var password = JSON.parse(arguments.data).password;
+
+                if( password === "123" ) {
+                    this.status = 403;
+                } else if( password === "1234" ) {
+                    this.status = 204;
+                } else {
+                    this.status = 401;
+                }
+            }
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/auth/update",
+            type: "PUT",
+            status: 204,
+            dataType: 'json'
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = {};
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:login");
         this.controller = controller;
     },
     teardown: function() {
-        //$.mockjaxClear();
+        $.mockjaxClear();
     }
 });
 
