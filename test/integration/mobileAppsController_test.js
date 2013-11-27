@@ -1,11 +1,47 @@
 module('App.MobileAppsIndexController', {
     setup: function() {
+        //Setup Mocks that we need for this Module
+        var apps = [
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 1",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            },
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 2",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            }
+        ];
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps;
+            }
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications/12345",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps[ 0 ];
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:mobileAppsIndex");
         this.controller = controller;
     },
     teardown: function() {
-        //$.mockjaxClear();
+        $.mockjaxClear();
     }
 });
 
@@ -57,12 +93,50 @@ test( "test click 'Push Application' link", function() {
 
 module('App.MobileAppsEditController - Create New', {
     setup: function() {
+        //Setup Mocks that we need for this Module
+        var apps = [
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 1",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            },
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 2",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            }
+        ];
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps;
+            }
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications",
+            type: "POST",
+            dataType: 'json',
+            response: function( arguments ) {
+
+                apps.push( apps[0] );
+                this.responseText = apps;
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:mobileAppsEdit");
         this.controller = controller;
     },
     teardown: function() {
-        //$.mockjaxClear();
+        $.mockjaxClear();
     }
 });
 
@@ -123,12 +197,64 @@ test( "Create new Push App - test cancel", function() {
 
 module('App.MobileAppsEditController - Edit', {
     setup: function() {
+        //Setup Mocks that we need for this Module
+        var apps = [
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 1",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            },
+            {
+                "id": "4028818b3fe37e75013fe38200200000",
+                "name": "Cool App 2",
+                "description": "A Cool App for testing",
+                "pushApplicationID": "12345",
+                "masterSecret": "3ababa8f-cc35-455b-8fc1-311ffe206538",
+            }
+        ];
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps;
+            }
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications/12345",
+            type: "PUT",
+            dataType: 'json',
+            response: function( arguments ) {
+                var data = JSON.parse(arguments.data),
+                    name = data.name,
+                    description = data.description;
+
+                apps[ 0 ].name = name;
+                apps[ 0 ].description = description;
+
+                this.responseText = apps[ 0 ];
+            }
+        });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications/12345",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps[ 0 ];
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:mobileAppsEdit");
         this.controller = controller;
     },
     teardown: function() {
-        //$.mockjaxClear();
+        $.mockjaxClear();
     }
 });
 
@@ -165,7 +291,7 @@ test( "Edit Push Application", function() {
         equal( that.model.get( "name" ), name );
         equal( that.model.get( "description" ), description );
         equal( exists( ".errors" ), false, "error class should not exists but does" );
-            })
+    })
     .then( function() {
         wait().then( function() {
             //TODO: a Check that the updated record is there
