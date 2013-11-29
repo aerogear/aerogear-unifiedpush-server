@@ -5,6 +5,8 @@ var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
+var currentVersion = require('./package.json').version;
+var semver = require('semver');
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -16,13 +18,16 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    // load custom tasks
+    grunt.loadTasks('tasks');
+
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist',
-        webapp: "PATH_TO_WEBAPP",
-        jbossweb: "PATH_TO_JBOSS_SERVER"
+        dist: 'dist'
     };
+
+    //grunt.task.run('initLocalConfig');
 
     grunt.initConfig({
         yeoman: yeomanConfig,
@@ -129,14 +134,14 @@ module.exports = function (grunt) {
         // not used since Uglify task does concat,
         // but still available if needed
         /*concat: {
-            dist: {}
-        },*/
+         dist: {}
+         },*/
         // not enabled since usemin task does concat and uglify
         // check index.html to edit your build targets
         // enable this task if you prefer defining your build targets here
         /*uglify: {
-            dist: {}
-        },*/
+         dist: {}
+         },*/
         rev: {
             dist: {
                 files: {
@@ -186,14 +191,14 @@ module.exports = function (grunt) {
             dist: {
                 options: {
                     /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
+                     // https://github.com/yeoman/grunt-usemin/issues/44
+                     //collapseWhitespace: true,
+                     collapseBooleanAttributes: true,
+                     removeAttributeQuotes: true,
+                     removeRedundantAttributes: true,
+                     useShortDoctype: true,
+                     removeEmptyAttributes: true,
+                     removeOptionalTags: true*/
                 },
                 files: [{
                     expand: true,
@@ -241,6 +246,14 @@ module.exports = function (grunt) {
                     dest: '<%= yeoman.jbossweb %>',
                     src: [ "**", "!**/*.txt" ]
                 }]
+            },
+            server_dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= release.home %>/dist',
+                    dest: '<%= release.ups_repo %>/src/main/webapp',
+                    src: [ "**", "!**/*.txt" ]
+                }]
             }
         },
         concurrent: {
@@ -252,6 +265,76 @@ module.exports = function (grunt) {
                 'htmlmin',
                 'emberTemplates'
             ]
+        },
+        prompt: {
+            release: {
+                options: {
+                    questions: [
+                        {
+                            config: 'release.tagVersion',
+                            type: 'input',
+                            message: 'Tag version',
+                            "default": currentVersion.slice(0,-4),
+                            validate: function(value) {
+                                if (value === '') {
+                                    return 'A value is required.';
+                                }
+                                return true;
+                            }
+                        },
+                        {
+                            config: 'release.bumpType',
+                            type: 'list',
+                            message: 'Bump type',
+                            choices: [
+                                {
+                                    value: semver.inc(currentVersion, 'patch') + '-dev',
+                                    name: 'Patch:  '.yellow + semver.inc(currentVersion, 'patch').yellow + '-dev'.yellow
+                                },
+                                {
+                                    value: semver.inc(currentVersion, 'minor') + '-dev',
+                                    name: 'Minor:  '.yellow + semver.inc(currentVersion, 'minor').yellow + '-dev'.yellow
+                                },
+                                {
+                                    value: semver.inc(currentVersion, 'major') + '-dev',
+                                    name: 'Major:  '.yellow + semver.inc(currentVersion, 'major').yellow + '-dev'.yellow
+                                },
+                                {
+                                    value: 'custom',
+                                    name: 'Custom: x.x.x'.yellow +
+                                        '   Specify version...'
+                                }
+                            ],
+                            "default": 'patch'
+                        },
+                        {
+                            config: 'release.nextVersion',
+                            type: 'input',
+                            message: 'Custom Version ?',
+                            when: function (answers) {
+                                return answers['release.bumpType'] === 'custom';
+                            },
+                            validate: function(value) {
+                                if (value === '') {
+                                    return 'A value is required.';
+                                }
+                                return true;
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+
+        shell: {
+            branch: {
+                command: [
+                    'cd <%= yeoman.ups_repo %>',
+                    'git checkout -b ui_update',
+                    'cp  <%= yeoman.home %>/dist <%= yeoman.ups_repo %>/src/main/webapp',
+                    'git commit . -m "new Admin UI version"'
+                ].join('&&')
+            }
         }
     });
 
@@ -298,4 +381,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('copy_web', ['copy:webapp']);
     grunt.registerTask('jboss_web', ['copy:jbossweb']);
+    grunt.registerTask('release', ['initLocalConfig','default','prompt:release','tag','commitBranch']);
+
 };
