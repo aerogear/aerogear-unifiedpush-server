@@ -87,19 +87,19 @@ test( "test refresh secret link", function() {
     .click( "a:contains('Renew')" ) // Click the renew button
     .then( function() {
         // Reset Dialog should be there
-        equal( $( "aside h1:contains('Reset Authentification Secret ?')" ).parent().hasClass( 'hidden' ), false, "Reset Dialog should be visible but is not" );
+        equal( $( "aside h1:contains('Renew Master Secret')" ).parent().hasClass( 'hidden' ), false, "Reset Dialog should be visible but is not" );
     })
-    .click( "aside button:contains('No')" ) // Click No to remove the dialog
+    .click( "aside button:contains('Cancel')" ) // Click No to remove the dialog
     .then( function() {
-        equal( $( "aside h1:contains('Reset Authentification Secret ?')" ).parent().hasClass( 'hidden' ), true, "Reset Dialog should not be visible but is" );
+        equal( $( "aside h1:contains('Renew Master Secret')" ).parent().hasClass( 'hidden' ), true, "Reset Dialog should not be visible but is" );
     })
     .click( "a:contains('Renew')" ) // Click the renew button again
-    .click( "aside button:contains('Yes')" )
+    .click( "aside button:contains('Renew Master Secret')" )
     .then( function() {
         // check that master secret is differnt
         var newMasterSecret = $("section div:contains('Master Secret:') input")[1].value;
         notEqual( oldMasterSecret, newMasterSecret, "Master Secrets should be different but are not" );
-        equal( $( "aside h1:contains('Reset Authentification Secret ?')" ).parent().hasClass( 'hidden' ), true, "Reset Dialog should not be visible but is" );
+        equal( $( "aside h1:contains('Renew Master Secret')" ).parent().hasClass( 'hidden' ), true, "Reset Dialog should not be visible but is" );
     });
 });
 
