@@ -13,50 +13,53 @@
 */
 
 App.InstanceIndexController = Ember.ObjectController.extend({
-    toggleStatus: function( model ) {
+    actions: {
+        toggleStatus: function( model ) {
         //TODO: persist to the server
-        var installationPipe,
-            that = model,
-            data = {
-                //Perhaps a better way?
-                id: model.get( "id" ),
-                alias: model.get( "alias" ),
-                category: model.get( "category" ),
-                deviceToken: model.get( "deviceToken" ),
-                deviceType: model.get( "deviceType" ),
-                operatingSystem: model.get( "operatingSystem" ),
-                osVersion: model.get( "osVersion" ),
-                platform: model.get( "platform" )
-            },
-            currentStatus = model.get( "enabled" );
+            var installationPipe,
+                thee = this,
+                that = model,
+                data = {
+                    //Perhaps a better way?
+                    id: model.get( "id" ),
+                    alias: model.get( "alias" ),
+                    category: model.get( "category" ),
+                    deviceToken: model.get( "deviceToken" ),
+                    deviceType: model.get( "deviceType" ),
+                    operatingSystem: model.get( "operatingSystem" ),
+                    osVersion: model.get( "osVersion" ),
+                    platform: model.get( "platform" )
+                },
+                currentStatus = model.get( "enabled" );
 
-        if( currentStatus ) {
-            data.enabled = false;
-        } else {
-            data.enabled = true;
+            if( currentStatus ) {
+                data.enabled = false;
+            } else {
+                data.enabled = true;
+            }
+
+            installationPipe = AeroGear.Pipeline({
+                name: "installationPipe",
+                settings: {
+                    baseURL: App.baseURL + "rest/applications/",
+                    authenticator: App.AeroGear.authenticator,
+                    endpoint:  model.variantID + "/installations"
+                }
+            }).pipes.installationPipe;
+
+            installationPipe.save( data, {
+                success: function() {
+                    Ember.run( this, function() {
+                        that.set( "enabled", data.enabled );
+                    });
+                },
+                error: function() {
+                    Ember.run( this, function() {
+                        thee.send( "error", that, "Error Toggling" );
+                        that.set( "enabled", currentStatus );
+                    });
+                }
+            });
         }
-
-        installationPipe = AeroGear.Pipeline({
-            name: "installationPipe",
-            settings: {
-                baseURL: App.baseURL + "rest/applications/",
-                authenticator: App.AeroGear.authenticator,
-                endpoint:  model.variantID + "/installations"
-            }
-        }).pipes.installationPipe;
-
-        installationPipe.save( data, {
-            success: function() {
-                Ember.run( this, function() {
-                    that.set( "enabled", data.enabled );
-                });
-            },
-            error: function() {
-                Ember.run( this, function() {
-                    that.send( "error", that, "Error Toggling" );
-                    that.set( "enabled", currentStatus );
-                });
-            }
-        });
     }
 });
