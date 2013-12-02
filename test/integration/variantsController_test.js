@@ -49,6 +49,16 @@ module('App.VariantsIndexController', {
                 this.responseText = apps[ 0 ];
             }
         });
+
+        $.mockjax({
+            url: App.baseURL + "rest/applications/12345/android/12345",
+            type: "GET",
+            dataType: 'json',
+            response: function( arguments ) {
+                this.responseText = apps[ 0 ].androidVariants[ 0 ];
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:variantsIndex");
         this.controller = controller;
