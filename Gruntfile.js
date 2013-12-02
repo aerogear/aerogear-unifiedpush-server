@@ -27,8 +27,6 @@ module.exports = function (grunt) {
         dist: 'dist'
     };
 
-    //grunt.task.run('initLocalConfig');
-
     grunt.initConfig({
         yeoman: yeomanConfig,
         emberTemplates: {
@@ -235,7 +233,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>',
-                    dest: '<%= yeoman.webapp %>',
+                    dest: '<%= local.webapp %>',
                     src: [ "**", "!**/*.txt" ]
                 }]
             },
@@ -243,15 +241,15 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>',
-                    dest: '<%= yeoman.jbossweb %>',
+                    dest: '<%= local.jbossweb %>',
                     src: [ "**", "!**/*.txt" ]
                 }]
             },
             server_dist: {
                 files: [{
                     expand: true,
-                    cwd: '<%= release.home %>/dist',
-                    dest: '<%= release.ups_repo %>/src/main/webapp',
+                    cwd: '<%= local.home %>/dist',
+                    dest: '<%= local.ups_repo %>/src/main/webapp',
                     src: [ "**", "!**/*.txt" ]
                 }]
             }
@@ -329,9 +327,9 @@ module.exports = function (grunt) {
         shell: {
             branch: {
                 command: [
-                    'cd <%= yeoman.ups_repo %>',
+                    'cd <%= local.ups_repo %>',
                     'git checkout -b ui_update',
-                    'cp  <%= yeoman.home %>/dist <%= yeoman.ups_repo %>/src/main/webapp',
+                    'cp  <%= local.home %>/dist <%= local.ups_repo %>/src/main/webapp',
                     'git commit . -m "new Admin UI version"'
                 ].join('&&')
             }
