@@ -43,14 +43,13 @@ _note:  The current version of the Unified Push Server now has the the Admin UI 
 
 Clone and run [https://github.com/aerogear/aerogear-unified-push-server](unified push server) as an exploded war.
 
-Then in "Gruntfile.js" edit the "webapp" and "jbossweb" config params:
+Then run ``` grunt initLocalConfig ``` this will create a ``` local-config.json ``` file. Open it and edit the "webapp" and "jbossweb" config params:
 
-     // configurable paths
-    var yeomanConfig = {
-        app: 'app',
-        dist: 'dist',
-        webapp: "/Users/lholmquist/develop/projects/aerogear-unified-push-server/src/main/webapp",
-        jbossweb: "/Users/lholmquist/develop/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war"
+   {
+       "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
+       "webapp": "/home/sebastien/aerogear/aerogear-unifiedpush-server/src/main/webapp",
+       "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war",
+       "ups_repo": "/home/sebastien/aerogear/ui_update/aerogear-unifiedpush-server"
     };
 
 This will copy the contents to the "root" folder of both the cloned repo and the exploded war file( to keep them N'sync )
@@ -70,6 +69,10 @@ Now everytime you save a file, grunt is watching and will copy to these director
 This project uses handlebar templates( *.hbs )
 
 Grunt is watching for changes in the "templates" directory and will recomplile "scripts/templates.js" with the new template
+
+### Making a release
+
+There is a Grunt task to perform a release, please refer to this [doc](https://github.com/aerogear/collateral/wiki/UPS-Admin-Console-Process) for more information and instructions.
 
 ### Known Issues
 
