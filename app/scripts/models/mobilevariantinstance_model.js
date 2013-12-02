@@ -70,35 +70,39 @@ App.MobileVariantInstance.reopenClass({
             id: variantApplicationInstanceId
         })
         .then( function( response ) {
-            if( AeroGear.isArray( response ) ) {
-                response.forEach( function( data ) {
-                    data.isLoaded = true;
-                    data.pushApplicationID = applicationPushId;
-                    data.variantID = variantApplicationId;
-                    data.variantType = variantType;
-                    mobileVariantInstance.pushObject( App.MobileVariant.create( data ) );
-                });
-            } else {
+            Ember.run( this, function() {
+                if( AeroGear.isArray( response ) ) {
+                    response.forEach( function( data ) {
+                        data.isLoaded = true;
+                        data.pushApplicationID = applicationPushId;
+                        data.variantID = variantApplicationId;
+                        data.variantType = variantType;
+                        mobileVariantInstance.pushObject( App.MobileVariant.create( data ) );
+                    });
+                } else {
 
-                // Add a loading indicator
-                response.isLoaded = true;
-                response.pushApplicationID = applicationPushId;
-                response.variantID = variantApplicationId;
-                response.variantType = variantType;
-                // Loop Through the different Variants to create objects
-                mobileVariantInstance.setProperties( response );
+                    // Add a loading indicator
+                    response.isLoaded = true;
+                    response.pushApplicationID = applicationPushId;
+                    response.variantID = variantApplicationId;
+                    response.variantType = variantType;
+                    // Loop Through the different Variants to create objects
+                    mobileVariantInstance.setProperties( response );
 
-            }
+                }
+            });
         })
         .then( null, function( error ) {
-            switch( error.status ) {
-            //Possible this may never happen now that we have a beforeModel on the Router
-            case 401:
-                App.Router.router.transitionTo( "login" );
-                break;
-            default:
-                break;
-            }
+            Ember.run( this, function() {
+                switch( error.status ) {
+                //Possible this may never happen now that we have a beforeModel on the Router
+                case 401:
+                    App.Router.router.transitionTo( "login" );
+                    break;
+                default:
+                    break;
+                }
+            });
         });
 
         return mobileVariantInstance;
