@@ -95,9 +95,9 @@ If you inspect the server console output you should see the following message:
 ```
 
 
-#### Postgres Database configuration
+#### PostgreSQL Database configuration
 
-For using Postgres a few more steps are required.
+For using PostgreSQL a few more steps are required.
 
 ##### Create a database and database user
 
@@ -110,13 +110,13 @@ psql> GRANT ALL PRIVILEGES ON DATABASE unifiedpush to unifiedpush;
 
 ##### Add a datasource for the UnifiedPush database
 
-The module for Postgres can be found in ```src/main/resources/modules/org/postgresql```. Copy this module to JBoss AS modules directory:
+The module for PostgreSQL can be found in ```src/main/resources/modules/org/postgresql```. Copy this module to JBoss AS modules directory:
 
 ```
 cp -r src/main/resources/modules/org /Path/to/JBossAS/modules/
 ```
 
-We also need the Postgres driver copied to this module:
+We also need the PostgreSQL driver copied to this module:
 
 ```
 mvn dependency:copy -Dartifact=org.postgresql:postgresql:9.2-1004-jdbc41 -DoutputDirectory=/Path/to/JBossAS/modules/org/postgresql/main/
