@@ -224,6 +224,15 @@
     </repositories>
 
     <build>
+        <resources>
+            <resource>
+                <!-- no need to include the database modules --> 
+                <directory>src/main/resources/</directory>
+                <excludes>
+                    <exclude>modules/**/*.*</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <finalName>ag-push</finalName>
         <plugins>
             <plugin>
