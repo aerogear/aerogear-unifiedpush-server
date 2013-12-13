@@ -36,6 +36,8 @@ public class Developer extends User {
     private String password;
     private String newPassword;
 
+    private String registrationLink;
+
     private String role;
 
     public void setId(Long id) {
@@ -64,6 +66,15 @@ public class Developer extends User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+
+    public String getRegistrationLink() {
+        return registrationLink;
+    }
+
+    public void setRegistrationLink(String registrationLink) {
+        this.registrationLink = registrationLink;
     }
 
     @Override

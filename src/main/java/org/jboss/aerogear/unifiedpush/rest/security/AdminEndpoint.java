@@ -17,6 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.rest.security;
 
+import org.jboss.aerogear.security.token.service.TokenService;
 import org.jboss.aerogear.unifiedpush.users.Developer;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.users.UserRoles;
@@ -48,6 +49,9 @@ public class AdminEndpoint {
     @Inject
     private PartitionManager partitionManager;
 
+    @Inject
+    private TokenService tokenService;
+
     private IdentityManager identityManager;
     private RelationshipManager relationshipManager;
 
@@ -63,10 +67,11 @@ public class AdminEndpoint {
             this.relationshipManager = partitionManager.createRelationshipManager();
             User user = new User(developer.getLoginName());
             identityManager.add(user);
-            Calendar calendar = expirationDate();
-            Password password = new Password(developer.getPassword().toCharArray());
 
-            identityManager.updateCredential(user, password, new Date(), calendar.getTime());
+            Calendar calendar = expirationDate();
+            //Password password = new Password(developer.getPassword().toCharArray());
+
+            //identityManager.updateCredential(user, password, new Date(), calendar.getTime());
 
             Role developerRole = BasicModel.getRole(identityManager, UserRoles.DEVELOPER);
 
@@ -75,6 +80,7 @@ public class AdminEndpoint {
                     .setParameter(User.LOGIN_NAME, user.getLoginName()).getResultList();
             user = list.get(0);
             developer.setId(user.getId());
+            developer.setRegistrationLink(tokenService.send(developer.getEmail()));
 
         } catch (IdentityManagementException ime) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Credential not available").build();

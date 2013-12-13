@@ -21,6 +21,7 @@ import org.jboss.aerogear.security.auth.AuthenticationManager;
 import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.exception.AeroGearSecurityException;
 import org.picketlink.idm.model.basic.Agent;
+import org.picketlink.idm.model.basic.BasicModel;
 import org.picketlink.idm.model.basic.User;
 
 import javax.ejb.Stateless;
@@ -51,7 +52,6 @@ public class AuthenticationEndpoint {
     public Response login(final Developer developer) {
 
         authenticationManager.login(developer, developer.getPassword());
-
         return Response.ok().build();
     }
 

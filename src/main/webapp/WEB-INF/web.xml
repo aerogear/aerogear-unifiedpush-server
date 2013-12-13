@@ -20,6 +20,27 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+    <filter>
+        <filter-name>PasswordHandler</filter-name>
+        <filter-class>org.jboss.aerogear.security.token.filter.PasswordHandler</filter-class>
+        <init-param>
+            <param-name>url</param-name>
+            <param-value>http://push-sblanc.rhcloud.com/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>redirect-page</param-name>
+            <param-value>/</param-value>
+        </init-param>
+    </filter>
+
+
+    <filter-mapping>
+        <filter-name>PasswordHandler</filter-name>
+        <url-pattern>/reset/*</url-pattern>
+        <url-pattern>/forgot/*</url-pattern>
+    </filter-mapping>
+
     <!-- HttpOnly flag is an additional flag that is used to prevent an XSS -->
     <session-config>
         <cookie-config>

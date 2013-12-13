@@ -10,7 +10,12 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="styles/18f782f6.main.css">
+        <!-- build:css styles/main.css -->
+        <link rel="stylesheet" type="text/css" href="styles/topcoat-desktop-light.min.css">
+        <link rel="stylesheet" type="text/css" href="styles/topcoat-overlay.min.css">
+        <link rel="stylesheet" type="text/css" href="styles/normalize.css">
+        <link rel="stylesheet" type="text/css" href="styles/main.css">
+        <!-- endbuild -->
     </head>
     <body>
 
@@ -18,7 +23,33 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-        <script src="scripts/c95cfa76.main.js"></script>
+        <!-- build:js scripts/main.js -->
+        <script src="bower_components/jquery/jquery.min.js"></script>
+        <script src="bower_components/jquery-form/jquery.form.js"></script>
+        <script src="bower_components/handlebars/handlebars.runtime.js"></script>
+        <script src="bower_components/ember/ember.prod.js"></script>
+        <script src="bower_components/aerogear/aerogear.min.js"></script>
+        <script src="scripts/plugins.js"></script>
+        <script src="scripts/vendor/ember-validations.min.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="scripts/helpers/aerogear_helper.js"></script>
+        <script src="scripts/helpers/route_helper.js"></script>
+        <script src="scripts/router.js"></script>
+        <script src="scripts/helpers/base.js"></script>
+        <script src="scripts/controllers/login_controller.js"></script>
+        <script src="scripts/controllers/user_controller.js"></script>
+        <script src="scripts/controllers/mobileapps_controller.js"></script>
+        <script src="scripts/controllers/variants_controller.js"></script>
+        <script src="scripts/controllers/variant_controller.js"></script>
+        <script src="scripts/controllers/instance_controller.js"></script>
+        <script src="scripts/controllers/application_controller.js"></script>
+        <script src="scripts/views/error_view.js"></script>
+        <script src="scripts/models/user_model.js"></script>
+        <script src="scripts/models/mobileapp_model.js"></script>
+        <script src="scripts/models/mobilevariant_model.js"></script>
+        <script src="scripts/models/mobilevariantinstance_model.js"></script>
+        <script src="scripts/templates.js"></script>
+        <!-- endbuild -->
 
         <!--<script src="bower_components/jquery-mockjax/jquery.mockjax.js"></script>
         <script src="scripts/mocks/mock.js"></script>-->
