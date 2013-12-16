@@ -84,6 +84,7 @@ public class InstallationManagementEndpoint {
     @PUT
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         InstallationImpl installation = clientInstallationService.findById(installationId);
@@ -100,6 +101,7 @@ public class InstallationManagementEndpoint {
 
     @DELETE
     @Path("/{installationID}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         InstallationImpl installation = clientInstallationService.findById(installationId);
