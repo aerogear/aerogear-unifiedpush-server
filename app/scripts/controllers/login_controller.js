@@ -16,10 +16,12 @@ App.LoginController = Ember.ObjectController.extend({
     loginIn: true,
     relog: false,
     isLogged: false,
+    previousTransition: null,
     actions: {
         login: function() {
             var that = this,
-                user = this.get( "model" );
+                user = this.get( "model" ),
+                previousTransition = this.get( "previousTransition" );
 
             //Validate the form fields with Ember Validations
             user.validateProperty( "loginName" );
@@ -36,7 +38,12 @@ App.LoginController = Ember.ObjectController.extend({
                         Ember.run( this, function() {
                             that.set( "relog", false );
                             that.set( "isLogged", true);
-                            that.transitionToRoute( "mobileApps" );
+                            if( previousTransition ) {
+                                that.set( "previousTransition", null );
+                                previousTransition.retry();
+                            } else {
+                                that.transitionToRoute( "mobileApps" );
+                            }
                         });
                     },
                     error: function( response ) {

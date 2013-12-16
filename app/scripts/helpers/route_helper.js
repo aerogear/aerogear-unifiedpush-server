@@ -16,12 +16,15 @@
     Extend the Ember.Route Method
 */
 App.Route = Ember.Route.extend({
-    beforeModel: function() {
-        this.controllerFor( "login" ).set( "isLogged", true );
-        var that = this;
+    beforeModel: function( transition ) {
+        var that = this,
+            loginController = this.controllerFor( "login" );
+
+        loginController.set( "isLogged", true );
         return App.AeroGear.pipelines.pipes.ping.read().then( null, function() {
             Ember.run( function() {
-                that.controllerFor( "login" ).set( "isLogged", false );
+                loginController.set( "isLogged", false );
+                loginController.set( "previousTransition", transition );
                 that.transitionTo( "login" );
             });
         });
