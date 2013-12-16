@@ -46,6 +46,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     // new SimplePush
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registerSimplePushVariant(
             SimplePushVariant simplePushVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -92,6 +93,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     @PUT
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateSimplePushVariation(
             @PathParam("pushAppID") String id,
             @PathParam("simplePushID") String simplePushID,
