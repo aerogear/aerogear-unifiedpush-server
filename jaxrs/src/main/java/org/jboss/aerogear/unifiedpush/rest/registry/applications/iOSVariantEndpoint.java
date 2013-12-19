@@ -43,7 +43,6 @@ import java.util.logging.Level;
 
 @Stateless
 @Path("/applications/{pushAppID}/iOS")
-@Secure( { "developer", "admin" })
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     // new iOS

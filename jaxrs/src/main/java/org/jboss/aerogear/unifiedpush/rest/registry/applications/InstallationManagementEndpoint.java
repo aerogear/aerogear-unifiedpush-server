@@ -38,7 +38,6 @@ import javax.ws.rs.core.Response;
 
 @Stateless
 @Path("/applications/{variantID}/installations/")
-@Secure( { "developer", "admin" })
 public class InstallationManagementEndpoint {
 
     @Inject
