@@ -40,7 +40,6 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-@Secure( { "developer", "admin" })
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
     // new Android

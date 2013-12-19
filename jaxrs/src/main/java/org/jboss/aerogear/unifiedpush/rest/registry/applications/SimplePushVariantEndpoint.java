@@ -40,7 +40,6 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-@Secure( { "developer", "admin" })
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
     // new SimplePush
