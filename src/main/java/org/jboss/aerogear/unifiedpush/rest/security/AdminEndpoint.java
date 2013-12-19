@@ -80,7 +80,7 @@ public class AdminEndpoint {
                     .setParameter(User.LOGIN_NAME, user.getLoginName()).getResultList();
             user = list.get(0);
             developer.setId(user.getId());
-            developer.setRegistrationLink(tokenService.send(developer.getEmail()));
+            developer.setRegistrationLink(tokenService.generate());
 
         } catch (IdentityManagementException ime) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Credential not available").build();

@@ -41,7 +41,7 @@ public class PasswordResetEndpoint {
     @Path("/forgot")
     @Produces(MediaType.APPLICATION_JSON)
     public Response forgot(@QueryParam("email") String email) {
-        tokenService.send(email);
+        tokenService.generate();
         return Response.status(NO_CONTENT).build();
     }
 

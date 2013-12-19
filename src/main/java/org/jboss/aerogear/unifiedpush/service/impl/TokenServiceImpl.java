@@ -71,7 +71,7 @@ public class TokenServiceImpl implements TokenService {
 
     //Send to some place the url for password reset
     @Override
-    public String send(String email) {
+    public String generate() {
 
         Token token;
 
