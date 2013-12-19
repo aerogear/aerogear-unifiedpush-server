@@ -44,7 +44,6 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-@Secure( { "developer", "admin" })
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     // new iOS

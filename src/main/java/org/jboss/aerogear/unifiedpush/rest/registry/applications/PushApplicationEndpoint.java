@@ -46,7 +46,6 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-@Secure( { "developer", "admin" })
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject

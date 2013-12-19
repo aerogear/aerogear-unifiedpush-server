@@ -38,7 +38,6 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/chrome")
-@Secure({ "developer", "admin" })
 public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
 
     // ===============================================================
