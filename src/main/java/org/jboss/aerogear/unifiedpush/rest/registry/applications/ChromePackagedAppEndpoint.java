@@ -16,7 +16,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
  * limitations under the License.
  */
 
-import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 
@@ -71,7 +70,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         chromePackagedAppVariant.setDeveloper(loginName.get());
 
         // store the Chrome Packaged App variant:
-        chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);
+        chromePackagedAppVariant = (ChromePackagedAppVariant) variantService.addVariant(chromePackagedAppVariant);
         pushAppService.addChromePackagedAppVariant(pushApp, chromePackagedAppVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(chromePackagedAppVariant.getVariantID())).build()).entity(chromePackagedAppVariant).build();
@@ -93,7 +92,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @PathParam("chromeAppID") String chromeAppID,
             ChromePackagedAppVariant updatedChromePackagedApplication) {
 
-        ChromePackagedAppVariant chromePackagedAppVariant =  (ChromePackagedAppVariant)variantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
+        ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) variantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
         if (chromePackagedAppVariant != null) {
 
             // poor validation
