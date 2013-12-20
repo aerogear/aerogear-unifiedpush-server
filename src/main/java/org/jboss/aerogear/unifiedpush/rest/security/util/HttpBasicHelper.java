@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.security.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.picketlink.common.util.Base64;
+//import org.picketlink.common.util.Base64;
 
 public final class HttpBasicHelper {
 
@@ -34,7 +34,7 @@ public final class HttpBasicHelper {
     }
 
     public static String[] extractUsernameAndPasswordFromBasicHeader(HttpServletRequest request) {
-        String username = "";
+        /*String username = "";
         String password = "";
         String authorizationHeader = getAuthorizationHeader(request);
 
@@ -49,6 +49,7 @@ public final class HttpBasicHelper {
                 password = token.substring(delim + 1);
             }
         }
-        return new String[] { username, password };
+        return new String[] { username, password };    */
+        return null;
     }
 }

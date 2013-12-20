@@ -16,30 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.cdi;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-
-import org.picketlink.annotations.PicketLink;
+import java.util.logging.Logger;
 
 /**
  * CDI Utility class, which contains various producer / factory methods.
  */
 public class Factory {
 
-    @Produces
-    @PicketLink
-    @PersistenceContext(unitName = "picketlink-default")
-    private EntityManager picketLinkEntityManager;
-
     /**
      * Creates a {@code Logger} object for the given {@code InjectionPoint}
-     * 
+     *
      * @param injectionPoint represents an <code>@Inject</code> for a {@code Logger} object inside of a class.
      * @return the desired {@code Logger} object.
      */
@@ -53,7 +45,7 @@ public class Factory {
 
     /**
      * Creates the {@code EntityManager} object for the UnifiedPush server.
-     * 
+     *
      * @return the {@code EntityManager} object for the UnifiedPush server.
      */
     @Produces
@@ -62,8 +54,8 @@ public class Factory {
     }
 
     /**
-     * A disposer method performs cleanup for the {@code EntityManager} object. 
-     * 
+     * A disposer method performs cleanup for the {@code EntityManager} object.
+     *
      * @param entityManager the provided {@code EntityManager} for which we perform the cleanup.
      */
     public void dispose(@Disposes EntityManager entityManager) {
