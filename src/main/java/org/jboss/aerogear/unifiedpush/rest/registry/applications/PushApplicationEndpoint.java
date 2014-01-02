@@ -59,6 +59,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     // CREATE
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registerPushApplication(PushApplication pushApp) {
 
         // some validation
@@ -105,6 +106,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
@@ -137,6 +139,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @PUT
     @Path("/{pushAppID}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
@@ -156,6 +159,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     // DELETE
     @DELETE
     @Path("/{pushAppID}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());

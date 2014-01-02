@@ -46,6 +46,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     // new Android
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registerAndroidVariant(
             AndroidVariant androidVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -91,6 +92,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @PUT
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariation(
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
