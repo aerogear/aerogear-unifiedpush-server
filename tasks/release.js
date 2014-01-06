@@ -1,6 +1,9 @@
 'use strict';
 var exec = require('child_process').exec;
 var semver = require('semver');
+var path = require('path')
+
+
 
 module.exports = function ( grunt ) {
 
@@ -11,8 +14,9 @@ module.exports = function ( grunt ) {
      */
     grunt.registerTask( 'initLocalConfig',function(){
         if(!grunt.file.exists('./local-config.json')){
+            var parentDir = path.resolve(process.cwd(), '.');
             var sampleContent = {
-                home: '<PATH TO THE CURRENT DIRECTORY>',
+                home: parentDir,
                 webapp: "<PATH TO YOUR UPS REPO>/src/main/webapp",
                 jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war",
                 ups_repo:"<PATH TO YOUR UPS REPO FOR RELEASE (IN CLEAN STATE)>"
