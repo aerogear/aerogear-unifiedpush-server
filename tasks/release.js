@@ -1,7 +1,7 @@
 'use strict';
 var exec = require('child_process').exec;
 var semver = require('semver');
-var path = require('path')
+var path = require('path');
 
 
 
@@ -17,9 +17,9 @@ module.exports = function ( grunt ) {
             var parentDir = path.resolve(process.cwd(), '.');
             var sampleContent = {
                 home: parentDir,
+                ups_repo:"<PATH TO YOUR UPS REPO FOR RELEASE (IN CLEAN STATE)>",
                 webapp: "<PATH TO YOUR UPS REPO>/src/main/webapp",
-                jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war",
-                ups_repo:"<PATH TO YOUR UPS REPO FOR RELEASE (IN CLEAN STATE)>"
+                jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war"
             }
             grunt.file.write('./local-config.json',JSON.stringify(sampleContent,null,'\t'));
             grunt.fatal('please update local-config.json with your custom values');
