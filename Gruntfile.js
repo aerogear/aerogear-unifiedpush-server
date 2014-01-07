@@ -342,6 +342,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'initLocalConfig',
             'clean:server',
             'concurrent:server',
             'emberTemplates',
