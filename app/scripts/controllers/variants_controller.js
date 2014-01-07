@@ -65,7 +65,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             var that = controller,
                 thee = this,
                 applicationData,
-                variantType = $( "input:checked" ).val(),
+                variantType = $( "input[name=platform]:checked" ).val(),
                 ajaxOptions = {
                     url: App.baseURL + "rest/applications/" + controller.get( "pushApplicationID" ) + "/" + variantType,
                     type: "POST",
