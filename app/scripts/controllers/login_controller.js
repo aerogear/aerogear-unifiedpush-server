@@ -88,6 +88,7 @@ App.LoginController = Ember.ObjectController.extend({
                             that.set( "oldPassord", "" );
                             that.set( "loginIn", true );
                             that.set( "relog", true );
+                            that.send( "clearErrors" );
                         });
                     },
                     error: function() {
