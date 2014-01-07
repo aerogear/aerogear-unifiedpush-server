@@ -45,8 +45,15 @@
         <label>Certificate</label>
         {{input type="file" name="certificate" valueBinding="certificate"}}
         <br>
-        <label>Production</label>
-        {{view Ember.Checkbox checkedBinding="production"}}
+        <label>
+            <input type="radio" name="production" value="true" checked="true">
+            Production
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="production" value="false">
+            Development
+        </label>
     </div>
 </section>
 <section>

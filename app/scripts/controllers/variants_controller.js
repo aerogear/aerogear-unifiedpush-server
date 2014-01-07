@@ -106,9 +106,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                             }
                         });
                     };
-                    ajaxOptions.beforeSubmit = function( formData ) {
-                        formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-                    };
+
                     $( "form" ).ajaxSubmit( ajaxOptions );
                 } else {
                     this.send( "error", controller, model.get( "validationErrors.allMessages" ) );
@@ -202,7 +200,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 } else {
                     if ( model.validateProperty( "passphrase" ) && model.validateProperty( "certificate" ) ) {
                         ajaxOptions.success = function() {
-                                thee.formReset( that );
+                                thee.send( "formReset", that );
                                 that.transitionToRoute( "variants", that.get( "model" ) );
                             };
 
@@ -216,11 +214,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                                     break;
                                 }
                             };
-
-                        ajaxOptions.beforeSubmit = function( formData ) {
-                                formData.push( { name: "production", value: that.get( "production" ) ? true : false } );
-                            };
-
                         normalAjax = false;
 
                         $( "form" ).ajaxSubmit( ajaxOptions );
