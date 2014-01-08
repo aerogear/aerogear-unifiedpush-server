@@ -39,6 +39,7 @@ App.VariantIndexController = Ember.ObjectController.extend({
                 success: function( data ) {
                     Ember.run( this, function() {
                         things.set("secret",data.secret);
+                        that.get('controllers.application' ).set( "isProcessing", false );
                     });
 
                 },

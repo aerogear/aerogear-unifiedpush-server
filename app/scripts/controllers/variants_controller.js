@@ -284,6 +284,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 success: function( data ) {
                     Ember.run( this, function() {
                         app.set( "masterSecret", data.masterSecret );
+                        that.get('controllers.application' ).set( "isProcessing", false );
                     });
                 },
                 error: function( error ) { // TODO: Maybe Make this a class method?
