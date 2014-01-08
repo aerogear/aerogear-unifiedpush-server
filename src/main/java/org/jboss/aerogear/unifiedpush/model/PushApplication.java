@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,22 +54,22 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     private String developer;
 
     // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
 
     // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
 
     // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
 
     // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
 

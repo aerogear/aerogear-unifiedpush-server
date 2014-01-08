@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -67,7 +68,7 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     private String developer;
 
     // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "variantID", referencedColumnName = "variantID")
     private Set<InstallationImpl> installations = new HashSet<InstallationImpl>();
 

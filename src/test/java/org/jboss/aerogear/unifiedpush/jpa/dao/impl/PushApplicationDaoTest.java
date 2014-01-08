@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.jpa.AbstractGenericDao;
+import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +34,8 @@ public class PushApplicationDaoTest {
 
     private EntityManager entityManager;
     private PushApplicationDaoImpl pushApplicationDao;
+    private VariantDaoImpl variantDao;
+    private InstallationDaoImpl installationDao;
 
     @Before
     public void setUp() {
@@ -42,6 +47,10 @@ public class PushApplicationDaoTest {
 
         pushApplicationDao = new PushApplicationDaoImpl();
         pushApplicationDao.setEntityManager(entityManager);
+        variantDao = new VariantDaoImpl();
+        variantDao.setEntityManager(entityManager);
+        installationDao = new InstallationDaoImpl();
+        installationDao.setEntityManager(entityManager);
     }
 
     @After
@@ -192,5 +201,53 @@ public class PushApplicationDaoTest {
         pa = pushApplicationDao.find(PushApplication.class, id);
 
         assertEquals("Cool Push App 1", pa.getName());
+    }
+
+    @Test
+    public void deletePushApplicationIncludingVariantAndInstallations() {
+        PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        final String id = pushApplication1.getId();
+        pushApplicationDao.create(pushApplication1);
+
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
+
+        PushApplication pa = pushApplicationDao.find(PushApplication.class, id);
+        assertEquals(id, pa.getId());
+
+        AndroidVariant av = new AndroidVariant();
+        av.setName("Android Variant");
+        av.setGoogleKey("KEY...");
+        variantDao.create(av);
+
+        InstallationImpl androidInstallation1 = new InstallationImpl();
+        androidInstallation1.setDeviceToken("12345432122323");
+        installationDao.create(androidInstallation1);
+
+        av.getInstallations().add(androidInstallation1);
+        variantDao.update(av);
+
+        pa.getAndroidVariants().add(av);
+        pushApplicationDao.update(pa);
+
+        assertNotNull(((AbstractGenericDao) pushApplicationDao).find(InstallationImpl.class, androidInstallation1.getId()));
+
+        pushApplicationDao.delete(pa);
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
+
+        // Installation should be gone:
+        assertNull(((AbstractGenericDao) pushApplicationDao).find(InstallationImpl.class, androidInstallation1.getId()));
+
+        // Variant should be gone:
+        assertNull(((AbstractGenericDao) pushApplicationDao).find(AndroidVariant.class, av.getId()));
+
+        // PushApp should be gone:
+        assertNull(pushApplicationDao.find(PushApplication.class, id));
     }
 }

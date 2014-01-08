@@ -17,7 +17,9 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.jpa.AbstractGenericDao;
 import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,7 @@ public class VariantDaoTest {
 
     private EntityManager entityManager;
     private VariantDaoImpl variantDao;
+    private InstallationDaoImpl installationDao;
 
 
     @Before
@@ -46,6 +49,8 @@ public class VariantDaoTest {
 
         variantDao = new VariantDaoImpl();
         variantDao.setEntityManager(entityManager);
+        installationDao = new InstallationDaoImpl();
+        installationDao.setEntityManager(entityManager);
     }
 
     @After
@@ -196,4 +201,35 @@ public class VariantDaoTest {
         assertEquals(id, av.getId());
     }
 
+    @Test
+    public void deleteVariantIncludingInstallations() {
+
+        final AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String uuid  = av.getVariantID();
+
+        variantDao.create(av);
+
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        assertNotNull(queriedVariant);
+        assertEquals("KEY", queriedVariant.getGoogleKey());
+
+        InstallationImpl androidInstallation1 = new InstallationImpl();
+        androidInstallation1.setDeviceToken("12345432122323");
+        installationDao.create(androidInstallation1);
+
+        queriedVariant.getInstallations().add(androidInstallation1);
+        variantDao.update(queriedVariant);
+
+        assertNotNull(((AbstractGenericDao) variantDao).find(InstallationImpl.class, androidInstallation1.getId()));
+        InstallationImpl storedInstallation = (InstallationImpl) ((AbstractGenericDao) variantDao).find(InstallationImpl.class, androidInstallation1.getId());
+        assertEquals(androidInstallation1.getId(), storedInstallation.getId());
+
+        variantDao.delete(queriedVariant);
+        assertNull(variantDao.findByVariantID(uuid));
+
+        // Installation should be gone...
+        assertNull(((AbstractGenericDao) variantDao).find(InstallationImpl.class, androidInstallation1.getId()));
+    }
 }
