@@ -25,7 +25,7 @@
         {{ partial "variants/addVariantsNetwork" }}
         <div class="rcue-dialog-inner-partial">
           <input type="reset" class="topcoat-button" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>
-          <input type="submit" class="topcoat-button" value="Create">
+          <input type="submit" class="topcoat-button" value="Create" {{bindAttr disabled="controllers.application.isProcessing"}}>
         </div>
       </fieldset>
     </form>

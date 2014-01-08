@@ -54,6 +54,9 @@ App.Router.map( function() {
 App.ApplicationRoute = Ember.Route.extend({
     actions: {
         error: function( controller, errormsg ) {
+            //enable again any submit button
+            controller.get('controllers.application' ).set( "isProcessing", false );
+
             var content = controller.get( "content" ),
                 templateTarget;
             if( content ) {

@@ -4,7 +4,7 @@
         <p>This means that you can no longer use this Variant Secret to register new installations to this variant. A new Variant Secret will be created for you. You may want to do this for security reasons.</p>
         <p>Are you sure you want to renew the Variant Secret?</p>
         <div class="topcoat-overlay-buttons">
-            <button role="button" class="topcoat-button--cta" {{action 'reset' this}}>Renew Variant Secret</button>
+            <button role="button" class="topcoat-button--cta" {{action 'reset' this}} {{bindAttr disabled="controllers.application.isProcessing"}}>Renew Variant Secret</button>
             <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>Cancel</button>
         </div>
     </aside>

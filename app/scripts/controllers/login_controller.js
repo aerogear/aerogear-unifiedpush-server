@@ -13,12 +13,14 @@
 */
 
 App.LoginController = Ember.ObjectController.extend({
+    needs: "application",
     loginIn: true,
     relog: false,
     isLogged: false,
     previousTransition: null,
     actions: {
         login: function() {
+            this.get('controllers.application' ).set( "isProcessing", true );
             var that = this,
                 user = this.get( "model" ),
                 previousTransition = this.get( "previousTransition" );
@@ -63,6 +65,7 @@ App.LoginController = Ember.ObjectController.extend({
         },
         //Only Temporary until we can get the user create scripts
         other: function() {
+            this.get('controllers.application' ).set( "isProcessing", true );
             //need to send to the update endpoint
             var that = this,
                 password = this.get( "password" ),

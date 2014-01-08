@@ -13,6 +13,7 @@
  */
 
 App.VariantsIndexController = Ember.ObjectController.extend({
+    needs: "application",
     showReset: false,
     actions: {
         toggleResetOverlay: function() {
@@ -73,6 +74,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 },
                 model = controller.get( "model" ),
                 hasErrors = false;
+            this.get('controllers.application' ).set( "isProcessing", true );
 
             //Reset
             model.validationErrors.clear();
@@ -163,7 +165,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 file,
                 model = controller.get( "model" ),
                 hasErrors = false;
-
+            this.get('controllers.application' ).set( "isProcessing", true );
             model.validationErrors.clear();
             hasErrors = !model.validateProperty( "name" );
 
@@ -244,7 +246,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
         saveVariants: function( controller, ajaxOptions ) {
             var that = controller,
                 thee = this;
-
+            this.get('controllers.application' ).set( "isProcessing", true );
             ajaxOptions.success = function() {
                 Ember.run( this, function() {
                     thee.send( "formReset", that );
@@ -277,7 +279,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                         endpoint: app.pushApplicationID
                     }
                 }).pipes.mobileApp;
-
+            this.get('controllers.application' ).set( "isProcessing", true );
             mobileAppPipe.save( {id: "reset"}, {
                 success: function( data ) {
                     Ember.run( this, function() {
@@ -313,9 +315,9 @@ App.VariantsIndexController = Ember.ObjectController.extend({
 });
 
 App.VariantsAddController = Ember.ObjectController.extend( {
-    needs: "variantsIndex"
+    needs: ["variantsIndex","application"]
 });
 
 App.VariantsEditController = Ember.ObjectController.extend( {
-    needs: "variantsIndex"
+    needs: ["variantsIndex","application"]
 });

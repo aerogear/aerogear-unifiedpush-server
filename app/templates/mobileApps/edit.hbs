@@ -26,9 +26,9 @@
        <span class="buttonBar">
        <input type="reset" class="topcoat-button reset" value="Cancel" {{ action "cancel" controller target="controllers.mobileAppsIndex"}}>
         {{#if pushApplicationID}}
-          <input type="submit" class="topcoat-button" value="Rename">
+          <input type="submit" class="topcoat-button" value="Rename" {{bindAttr disabled="controllers.application.isProcessing"}}>
         {{else}}
-          <input type="submit" class="topcoat-button" value="Create">
+          <input type="submit" class="topcoat-button" value="Create" {{bindAttr disabled="controllers.application.isProcessing"}}>
         {{/if}}
         </span>
      </fieldset>

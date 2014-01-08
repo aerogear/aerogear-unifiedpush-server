@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 App.VariantIndexController = Ember.ObjectController.extend({
+    needs: "application",
     showReset: false,
     actions: {
         toggleResetOverlay: function(){
@@ -23,6 +24,7 @@ App.VariantIndexController = Ember.ObjectController.extend({
             }
         },
         reset: function( variant ) {
+            this.get('controllers.application' ).set( "isProcessing", true );
             var things = variant,
                 that = this,
                 mobileVariantPipe = AeroGear.Pipeline({

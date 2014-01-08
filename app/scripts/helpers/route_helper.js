@@ -30,6 +30,7 @@ App.Route = Ember.Route.extend({
         });
     },
     activate: function(){
+        this.controllerFor( "application" ).set("isProcessing",false);
         this.send( "clearErrors" );
     }
 });

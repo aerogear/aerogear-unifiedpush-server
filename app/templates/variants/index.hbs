@@ -4,7 +4,7 @@
         <p>This means that you can no longer use this Master Secret to send push notifications to installations. A new Master Secret will be created for you. You may want to do this for security reasons.</p>
         <p>Are you sure you want to renew the Master Secret?</p>
         <div class="topcoat-overlay-buttons">
-            <button role="button" class="topcoat-button--cta" {{action 'resetMaster' this}}>Renew Master Secret</button>
+            <button role="button" class="topcoat-button--cta" {{action 'resetMaster' this}} {{bindAttr disabled="controllers.application.isProcessing"}}>Renew Master Secret</button>
             <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>Cancel</button>
         </div>
 </aside>

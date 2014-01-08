@@ -13,5 +13,6 @@
  */
 
 App.ApplicationController = Ember.Controller.extend({
+    isProcessing: false,
     needs: "login"
 });

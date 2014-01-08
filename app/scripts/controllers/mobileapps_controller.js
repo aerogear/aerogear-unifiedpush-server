@@ -13,11 +13,13 @@
 */
 
 App.MobileAppsIndexController = Ember.ArrayController.extend({
+    needs: "application",
     sortProperties: [ "pushApplicationID" ],
     sortAscending: true,
     applicationPipe: App.AeroGear.pipelines.pipes.applications,
     actions: {
         edit: function( controller ) {
+            this.get('controllers.application' ).set( "isProcessing", true );
             var that = controller,
                 applicationData,
                 model = controller.get( "model" );
@@ -103,5 +105,5 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     The Controller for adding/editing Mobile apps
 */
 App.MobileAppsEditController = Ember.ObjectController.extend({
-    needs: "mobileAppsIndex"
+    needs: ["mobileAppsIndex","application"]
 });

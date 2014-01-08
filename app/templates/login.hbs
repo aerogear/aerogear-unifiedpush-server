@@ -20,7 +20,7 @@
             <label>Password</label>
             {{ input type="password" valueBinding="password" placeholder="Password" classNames="topcoat-text-input password" classNameBindings="validationErrors.password:error"}}
           </p>
-          <button class="topcoat-button submit">Log In</button>
+          <button class="topcoat-button submit" {{bindAttr disabled="controllers.application.isProcessing"}}>Log In</button>
         </fieldset>
       </form>
   </div>
@@ -39,7 +39,7 @@
           {{ input type="password" valueBinding="confirmPassword" placeholder="Confirm Password" classNames="topcoat-text-input confirmPassword"
           classNameBindings="validationErrors.confirmPassword:error"}}
         </p>
-        <button class="topcoat-button submit">Save</button>
+        <button class="topcoat-button submit" {{bindAttr disabled="controllers.application.isProcessing"}}>Save</button>
       </fieldset>
     </form>
   </div>
