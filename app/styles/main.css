@@ -167,6 +167,9 @@ table {
 .top-header {
   border-top: 3px solid #e25027;
   background: #393f45;
+  position: fixed;
+  width: 100%;
+  margin-top: -40px;
 }
 
 .topcoat-navigation-bar__title {
