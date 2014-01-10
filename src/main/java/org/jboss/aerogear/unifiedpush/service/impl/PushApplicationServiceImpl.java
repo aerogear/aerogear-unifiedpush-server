@@ -38,6 +38,10 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         return pushApplicationDao.create(pushApp);
     }
 
+    public List<PushApplication> findAllPushApplications() {
+        return pushApplicationDao.findAll();
+    }
+
     public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
         return pushApplicationDao.findAllForDeveloper(loginName);
     }

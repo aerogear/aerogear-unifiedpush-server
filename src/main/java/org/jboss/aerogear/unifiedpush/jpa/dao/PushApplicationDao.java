@@ -28,6 +28,11 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 public interface PushApplicationDao extends GenericDao<PushApplication, String> {
 
     /**
+     * Finder that returns all pushApplication objects.
+     */
+    List<PushApplication> findAll();
+
+    /**
      * Finder that returns all pushApplication object for the given owner/developer.
      */
     List<PushApplication> findAllForDeveloper(String loginName);

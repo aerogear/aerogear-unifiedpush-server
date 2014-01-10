@@ -37,6 +37,11 @@ public interface PushApplicationService {
     PushApplication updatePushApplication(PushApplication pushApp);
 
     /**
+     * Finder that returns all pushApplication objects.
+     */
+    List<PushApplication> findAllPushApplications();
+
+    /**
      * Finder that returns all pushApplication object for the given owner/developer.
      */
     List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
