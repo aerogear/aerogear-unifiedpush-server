@@ -17,11 +17,13 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.crypto.Hmac;
+import org.jboss.aerogear.security.authz.IdentityManagement;
 import org.jboss.aerogear.security.token.ExpirationTime;
 import org.jboss.aerogear.security.token.service.TokenService;
-import org.jboss.aerogear.security.token.util.Configuration;
-
+import org.jboss.aerogear.security.web.filter.PasswordHandlerConfig;
 import org.jboss.aerogear.unifiedpush.model.token.Token;
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.picketlink.idm.model.basic.User;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +33,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Logger;
 
+/**
+ * The purpose of this class is to generate, store and validate tokens.
+ * Tokens are generated using a keyed-hash message authentication code (HMAC)
+ */
 @Stateless
 public class TokenServiceImpl implements TokenService {
 
@@ -41,6 +47,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Inject
     private ExpirationTime expirationTime;
+
+    @Inject
+    private IdentityManagement<User> configuration;
 
     @Override
     public void destroy(String id) {
@@ -53,6 +62,12 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    /**
+     * First we retrieve the persisted Token, then we check for its validity by looking at the expiration time.
+     *
+     * @param id
+     * @return if the token is valid or not
+     */
     @Override
     public boolean isValid(String id) {
 
@@ -69,30 +84,39 @@ public class TokenServiceImpl implements TokenService {
         return (token != null && !expirationTime.isExpired(token.getExpiration()));
     }
 
-    //Send to some place the url for password reset
+    /**
+     * Here the token is generate after checking that the user exist.
+     *
+     * @param loginName of the user
+     * @return the token appended to the "reset" URL.
+     */
     @Override
-    public String generate() {
-
+    public String generate(String loginName) {
+        User user =  configuration.findByUsername(loginName);
         Token token;
-
-        //Here of course we need to validate the e-mail against the database or PicketLink
-        //if (FakeService.userExists(email)) {
-
-            String secret = Configuration.getSecret();
+        //make sure this user exist
+        if(user != null) {
+         String secret = PasswordHandlerConfig.getSecret();
             try {
                 Hmac hmac = new Hmac(secret);
                 token = save(hmac.digest());
-                return Configuration.uri(token.getId());
+                return PasswordHandlerConfig.uri(token.getId());
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (InvalidKeySpecException e) {
                 e.printStackTrace();
             }
-        //}
+        }
         return null;
     }
 
-    //Private method because it' up to the implementer
+
+    /**
+     * Persist the token
+     *
+     * @param id representing the token
+     * @return
+     */
     private Token save(String id) {
 
         Token token = null;

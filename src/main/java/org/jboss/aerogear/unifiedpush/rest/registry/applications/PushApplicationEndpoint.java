@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -85,7 +86,13 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
+        //if we have the admin role then retrieves all the things, otherwise just by loginName
+        if(loginName.get().equals(UserRoles.ADMIN)){
+            return Response.ok(pushAppService.findAllPushApplications()).build();
+        }
+        else {
+            return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
+        }
     }
 
     @GET
