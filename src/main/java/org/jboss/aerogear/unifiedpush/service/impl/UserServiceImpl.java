@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Developer enroll(Developer developer) {
         User user = new User(developer.getLoginName());
-        //user.setEnabled(false);
+        user.setEnabled(false);
         identityManager.add(user);
         Role developerRole = BasicModel.getRole(identityManager, developer.getRole());
 
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
             developer.setId(user.getId());
             developer.setLoginName(user.getLoginName());
             developer.setRole(this.getRole(user));
-            //developer.setEnabled(user.isEnabled());
+            developer.setEnabled(user.isEnabled());
             if(developer.getLoginName().equals(loginName.get())){
                 developer.setLoggedIn(true);
             }
