@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -40,7 +41,7 @@ import javax.ws.rs.core.Response;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{variantID}/installations/")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class InstallationManagementEndpoint {
 
     @Inject
@@ -58,7 +59,7 @@ public class InstallationManagementEndpoint {
     public Response findInstallations(@PathParam("variantID") String variantId) {
 
         //Find the variant using the variantID
-        Variant variant = genericVariantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        Variant variant = this.getVariantById(variantId);
 
         if (variant == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
@@ -81,6 +82,7 @@ public class InstallationManagementEndpoint {
         return Response.ok(installation).build();
     }
 
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,6 +101,7 @@ public class InstallationManagementEndpoint {
 
     }
 
+    @Secure( { "developer", "admin"} )
     @DELETE
     @Path("/{installationID}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -114,5 +117,15 @@ public class InstallationManagementEndpoint {
         clientInstallationService.removeInstallation(installation);
 
         return Response.noContent().build();
+    }
+
+    protected Variant getVariantById(String variantId) {
+        if(loginName.get().equals(UserRoles.ADMIN)) {
+            return genericVariantService.findByVariantID(variantId);
+        }
+        else
+        {
+            return genericVariantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        }
     }
 }

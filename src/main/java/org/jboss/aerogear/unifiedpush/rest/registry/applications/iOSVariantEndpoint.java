@@ -44,10 +44,11 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     // new iOS
+    @Secure( { "developer", "admin"} )
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,7 +57,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
@@ -116,7 +117,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariant = (iOSVariant) this.getVariantById(iOSID);
 
         if (iOSVariant != null) {
 
@@ -131,6 +132,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     }
 
     // UPDATE
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{iOSID}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -140,7 +142,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariant = (iOSVariant) this.getVariantById(iOSID);
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?

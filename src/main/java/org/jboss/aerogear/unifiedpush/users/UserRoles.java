@@ -23,7 +23,7 @@ public class UserRoles {
     /**
      * The type identifier for a user role.
      */
-    public static final String USER = "user";
+    public static final String VIEWER = "viewer";
 
     /**
      * The type identifier for a developer.

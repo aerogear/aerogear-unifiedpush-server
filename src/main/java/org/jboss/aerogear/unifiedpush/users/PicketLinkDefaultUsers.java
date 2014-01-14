@@ -98,6 +98,13 @@ public class PicketLinkDefaultUsers {
             grantRoles(adminUser, roleAdmin);
         }
 
+        //let's create the viewer role
+        Role viewerRole = BasicModel.getRole(identityManager,UserRoles.VIEWER);
+        if(viewerRole==null){
+            identityManager.add(new Role(UserRoles.VIEWER));
+        }
+
+
     }
 
     private void grantRoles(User user, Role role) {
