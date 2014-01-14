@@ -98,10 +98,9 @@ public interface UserService {
     /**
      * Finds a developer by login name.
      *
-     * @param loginName, a string representing the login name
      * @return User
      */
-    User findUserByLoginName(String loginName);
+    Developer findUserByLoginName(String loginName);
 
     String getRoleByLoginName(String loginName);
 

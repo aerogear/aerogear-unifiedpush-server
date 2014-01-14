@@ -85,8 +85,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByLoginName(String loginName) {
-        return configuration.findByUsername(loginName);
+    public Developer findUserByLoginName(String loginName) {
+        User user = configuration.findByUsername(loginName);
+        return convertToDeveloper(user);
     }
 
     @Override
@@ -125,13 +126,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Developer findById(String id) {
-        //TODO that has to be refactored once Developer is correctly mapped into PicketLink model
         User user = identityManager.lookupIdentityById(User.class, id);
-        Developer developer = new Developer();
-        developer.setId(user.getId());
-        developer.setLoginName(user.getLoginName());
-        developer.setRole(this.getRole(user));
-        return developer;
+        return convertToDeveloper(user);
     }
 
     @Override
@@ -199,5 +195,14 @@ public class UserServiceImpl implements UserService {
 
     private void grantRoles(User user, Role role) {
         BasicModel.grantRole(relationshipManager, user, role);
+    }
+
+    //TODO that has to be refactored once Developer is correctly mapped into PicketLink model
+    private Developer convertToDeveloper(User user) {
+        Developer developer = new Developer();
+        developer.setId(user.getId());
+        developer.setLoginName(user.getLoginName());
+        developer.setRole(this.getRole(user));
+        return developer;
     }
 }
