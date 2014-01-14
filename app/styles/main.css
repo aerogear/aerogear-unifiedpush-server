@@ -287,14 +287,15 @@ td.action a, td a {
 
 .rcue-code {
   font-family: "Courier", monospace !important;
-  opacity: 0.5;
   font-size: 0.85714285714286em; /* 12px / 14px */
   border: none;
   background-color: transparent;
   width: 300px;
   padding-left: 10px;
 }
-
+.network-details {
+    width: 100%;
+}
 .secret {
     padding-left: 31px;
 }
