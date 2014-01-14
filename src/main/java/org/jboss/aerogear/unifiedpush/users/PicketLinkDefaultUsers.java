@@ -91,9 +91,9 @@ public class PicketLinkDefaultUsers {
 
             identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
 
-            Role roleAdmin = BasicModel.getRole(identityManager,UserRoles.ADMIN);
+            Role roleAdmin = new Role(UserRoles.ADMIN);
 
-            //identityManager.add(roleAdmin);
+            identityManager.add(roleAdmin);
 
             grantRoles(adminUser, roleAdmin);
         }
