@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.service.UserService;
 import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.ejb.Stateless;
@@ -49,6 +50,9 @@ public class InstallationManagementEndpoint {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     @LoggedUser
@@ -120,7 +124,7 @@ public class InstallationManagementEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(loginName.get().equals(UserRoles.ADMIN)) {
+        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return genericVariantService.findByVariantID(variantId);
         }
         else

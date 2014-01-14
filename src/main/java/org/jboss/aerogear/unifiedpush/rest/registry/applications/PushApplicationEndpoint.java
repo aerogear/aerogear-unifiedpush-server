@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.service.UserService;
 import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.ejb.Stateless;
@@ -52,6 +53,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     @LoggedUser
@@ -88,7 +92,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
         //if we have the admin role then retrieves all the things, otherwise just by loginName
-        if(loginName.get().equals(UserRoles.ADMIN) || loginName.get().equals(UserRoles.VIEWER)){
+        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)){
             return Response.ok(pushAppService.findAllPushApplications()).build();
         }
         else {
@@ -183,7 +187,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     private PushApplication getPushApplicationById(String pushApplicationID){
-        if(loginName.get().equals(UserRoles.ADMIN)) {
+        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else

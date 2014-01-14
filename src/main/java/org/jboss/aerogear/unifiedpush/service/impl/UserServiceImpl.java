@@ -176,15 +176,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public String getRoleByLoginName(String loginName) {
+        return getRole(this.findUserByLoginName(loginName));
+    }
+
     private String getRole(User user) {
         //not really liking this but atm seems the only way to retrieve the roles of an user
         Role developer  =   BasicModel.getRole(identityManager, UserRoles.DEVELOPER);
         Role admin  =   BasicModel.getRole(identityManager, UserRoles.ADMIN );
+        Role viewer  =   BasicModel.getRole(identityManager, UserRoles.VIEWER );
         if(BasicModel.hasRole(relationshipManager,user,developer)){
             return UserRoles.DEVELOPER;
         }
-        else {
+        else  if(BasicModel.hasRole(relationshipManager,user,admin)) {
             return UserRoles.ADMIN;
+        }
+        else{
+            return UserRoles.VIEWER;
         }
     }
 

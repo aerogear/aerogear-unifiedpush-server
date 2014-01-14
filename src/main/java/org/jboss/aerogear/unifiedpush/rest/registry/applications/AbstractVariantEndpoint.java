@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.UserService;
 import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.enterprise.inject.Instance;
@@ -43,6 +44,9 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     protected GenericVariantService variantService;
+
+    @Inject
+    protected UserService userService;
 
     @Inject
     protected Logger logger;
@@ -117,7 +121,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected PushApplication getPushApplicationById(String pushApplicationID){
-        if(loginName.get().equals(UserRoles.ADMIN) || loginName.get().equals(UserRoles.VIEWER)) {
+        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else

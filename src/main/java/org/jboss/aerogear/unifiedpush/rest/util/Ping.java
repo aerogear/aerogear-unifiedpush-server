@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/ping")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class Ping {
 
     /**
