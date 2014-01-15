@@ -28,8 +28,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 
 @Entity
