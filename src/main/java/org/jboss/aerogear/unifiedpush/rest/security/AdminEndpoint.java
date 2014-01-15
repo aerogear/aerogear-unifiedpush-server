@@ -24,10 +24,13 @@ import org.picketlink.idm.IdentityManagementException;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -38,15 +41,18 @@ public class AdminEndpoint {
     @Inject
     private UserService userService;
 
+
+
     @POST
     @Path("/enroll")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Secure("admin")
-    public Response enroll(Developer developer) {
+    public Response enroll(@Context HttpServletRequest req, Developer developer) {
         try {
-
-          userService.enroll(developer);
+          String baseURL = req.getRequestURL().substring(0,req.getRequestURL().indexOf("rest")-1);
+            userService.enroll(developer);
+          developer.setRegistrationLink(baseURL + developer.getRegistrationLink());
 
         } catch (IdentityManagementException ime) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Credential not available").build();

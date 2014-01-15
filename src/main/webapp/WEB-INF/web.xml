@@ -26,7 +26,7 @@
         <filter-class>org.jboss.aerogear.security.web.filter.PasswordHandler</filter-class>
         <init-param>
             <param-name>url</param-name>
-            <param-value>http://localhost:8080/ag-push/</param-value>
+            <param-value>/</param-value>
         </init-param>
         <init-param>
             <param-name>redirect-page</param-name>

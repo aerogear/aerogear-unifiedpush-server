@@ -101,7 +101,8 @@ public class TokenServiceImpl implements TokenService {
             try {
                 Hmac hmac = new Hmac(secret);
                 token = save(hmac.digest());
-                return PasswordHandlerConfig.uri(token.getId());
+                String relativeUri = PasswordHandlerConfig.uri(token.getId());
+                return relativeUri;
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (InvalidKeySpecException e) {

@@ -57,26 +57,6 @@ public class PicketLinkDefaultUsers {
         final String DEFAULT_DEVELOPER = "developer";
         final String DEFAULT_ADMIN = "admin";
 
-        User developerUser = BasicModel.getUser(identityManager, DEFAULT_DEVELOPER);
-
-        // We only create the Developer user, if there is none;
-        // if present, there is also no need to add the same 'Developer' user again.
-        if (developerUser == null) {
-            developerUser = new User(DEFAULT_DEVELOPER);
-            identityManager.add(developerUser);
-
-            Calendar calendar = expirationDate();
-            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
-
-            identityManager.updateCredential(developerUser, password, new Date(), calendar.getTime());
-
-            Role roleDeveloper = new Role(UserRoles.DEVELOPER);
-
-            identityManager.add(roleDeveloper);
-
-            grantRoles(developerUser, roleDeveloper);
-        }
-
         //Temp hack to add user with admin rights
         User adminUser = BasicModel.getUser(identityManager, DEFAULT_ADMIN);
 
