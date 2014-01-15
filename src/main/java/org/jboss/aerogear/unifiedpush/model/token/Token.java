@@ -21,6 +21,9 @@ import org.jboss.aerogear.security.token.ExpirationTime;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * Entity that persist the token generated for new created users or users that have been reset.
+ */
 @Entity
 public class Token {
 

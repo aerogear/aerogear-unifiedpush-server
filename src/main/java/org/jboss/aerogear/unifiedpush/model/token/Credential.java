@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.model.token;
 
+/**
+ * Class used for passing information when the user confirms his registration.
+ */
 public class Credential {
 
     private String token;

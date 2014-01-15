@@ -37,7 +37,8 @@ public class PasswordResetEndpoint {
     @Inject
     private UserService userService;
 
-    private static final Logger LOGGER = Logger.getLogger(PasswordResetEndpoint.class.getSimpleName());
+    @Inject
+    protected Logger logger;
 
     @POST
     @Path("/reset")

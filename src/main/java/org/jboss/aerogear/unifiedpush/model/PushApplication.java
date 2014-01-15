@@ -57,7 +57,6 @@ public class PushApplication extends PersistentObject implements org.jboss.aerog
     // TODO: let's do LAZY
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn
-    @JsonProperty("iOSVariants")
     private Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
 
     // TODO: let's do LAZY

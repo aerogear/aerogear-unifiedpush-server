@@ -40,7 +40,8 @@ import java.util.logging.Logger;
 @Stateless
 public class TokenServiceImpl implements TokenService {
 
-    private static final Logger LOGGER = Logger.getLogger(TokenServiceImpl.class.getSimpleName());
+    @Inject
+    protected Logger logger;
 
     @Inject
     private EntityManager em;

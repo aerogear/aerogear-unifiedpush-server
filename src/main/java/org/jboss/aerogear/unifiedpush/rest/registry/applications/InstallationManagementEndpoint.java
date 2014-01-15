@@ -127,8 +127,7 @@ public class InstallationManagementEndpoint {
         if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return genericVariantService.findByVariantID(variantId);
         }
-        else
-        {
+        else {
             return genericVariantService.findByVariantIDForDeveloper(variantId, loginName.get());
         }
     }

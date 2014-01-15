@@ -59,7 +59,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
+    public Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = getVariantById(variantId);
 
@@ -114,8 +114,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         if(loginName.get().equals(UserRoles.ADMIN)) {
             return variantService.findByVariantID(variantId);
         }
-        else
-        {
+        else {
             return variantService.findByVariantIDForDeveloper(variantId, loginName.get());
         }
     }
@@ -124,8 +123,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
-        else
-        {
+        else {
             return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
         }
     }
