@@ -84,6 +84,12 @@ public class PicketLinkDefaultUsers {
             identityManager.add(new Role(UserRoles.VIEWER));
         }
 
+        //let's create the developer role
+        Role developerRole = BasicModel.getRole(identityManager,UserRoles.DEVELOPER);
+        if(developerRole==null){
+            identityManager.add(new Role(UserRoles.DEVELOPER));
+        }
+
 
     }
 
