@@ -148,6 +148,47 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void contentAvailable() {
+
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "Howdy");
+        messageObject.put("sound", "default");
+        messageObject.put("someKey", "someValue");
+        messageObject.put("content-available", true);
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+
+        assertEquals("Howdy", unifiedPushMessage.getAlert());
+        assertEquals(-1, unifiedPushMessage.getBadge());
+        assertTrue(unifiedPushMessage.isContentAvailable());
+    }
+
+    @Test
+    public void noContentAvailable() {
+
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "Howdy");
+        messageObject.put("sound", "default");
+        messageObject.put("someKey", "someValue");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+
+        assertEquals("Howdy", unifiedPushMessage.getAlert());
+        assertEquals(-1, unifiedPushMessage.getBadge());
+        assertFalse(unifiedPushMessage.isContentAvailable());
+    }
+
+    @Test
     public void testAliasCriteria() {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();

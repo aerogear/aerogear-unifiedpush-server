@@ -20,6 +20,7 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
+import com.notnoop.apns.PayloadBuilder;
 import org.jboss.aerogear.unifiedpush.message.cache.APNsCache;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -60,15 +61,22 @@ public class APNsPushNotificationSender {
             return;
         }
 
-        String apnsMessage = APNS.newPayload()
+        PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
                 .alertBody(pushMessage.getAlert()) // alert dialog, in iOS
                 .badge(pushMessage.getBadge()) // little badge icon update;
-                .sound(pushMessage.getSound()) // sound to be played by app
+                .sound(pushMessage.getSound()); // sound to be played by app
 
-                .customFields(pushMessage.getData()) // adding other (submitted) fields
+                // apply the 'content-available:1' value:
+                if (pushMessage.isContentAvailable()) {
+                    // content-available:1 is (with iOS7) not only used
+                    // Newsstand, however 'notnoop' names it this way (legacy)...
+                    builder = builder.forNewsstand();
+                }
 
-                .build(); // build the JSON payload, for APNs 
+                builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
+
+        final String apnsMessage  =  builder.build(); // build the JSON payload, for APNs
 
         ApnsService service = buildApnsService(iOSVariant);
 
