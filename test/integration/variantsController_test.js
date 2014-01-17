@@ -12,7 +12,7 @@ module('App.VariantsIndexController', {
                         "variantID": "12345",
                         "description": "An Android Variant",
                         "type": "ANDROID",
-                        "installations": [],
+                        "installations": []
                     }
                 ],
                 "simplePushVariants": [],
@@ -146,6 +146,13 @@ test( "Edit Variant - test cancel", function() {
     });
 });
 
+test( "test click 'Remove' link", function() {
+    visit( "/mobileApps/variants/12345" )
+        .click( ".action a:eq(1)" )
+        .then( function() {
+            equal( find( ".topcoat-overlay h1" ).text().trim(), "Remove Variant", "Should be on the Remove overlay, but not" );
+        });
+});
 
 module('App.VariantsAddController - Add New', {
     setup: function() {

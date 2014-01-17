@@ -8,6 +8,16 @@
             <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>Cancel</button>
         </div>
 </aside>
+<aside  {{bind-attr class="showVariantDelete:topcoat-overlay:hidden"}} id="deleteVariantOverlay">
+        <h1>Remove Variant</h1>
+        <p>Are you ABSOLUTELY sure ?</p>
+        <p>Please type in the name of the Variant to confirm.</p>
+        <p>{{input type="text" placeholder="Application Name to be deleted" valueBinding="confirmVariantName" classNames="name topcoat-text-input" }}</p>
+        <div class="topcoat-overlay-buttons">
+            <button role="button" id="deleteVariantButton" class="topcoat-button--cta" {{action 'remove' }} {{bindAttr disabled="disableVariantDeleteButton"}}>Remove</button>
+            <button role="button" class="topcoat-button" {{action 'toggleVariantDeleteOverlay'}}>Cancel</button>
+        </div>
+</aside>
 <div>{{#linkTo "mobileApps"}}&larr; Back to Applications{{/linkTo}}</div>
 
 <section>

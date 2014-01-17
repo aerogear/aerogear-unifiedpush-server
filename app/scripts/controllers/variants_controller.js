@@ -15,7 +15,30 @@
 App.VariantsIndexController = Ember.ObjectController.extend({
     needs: "application",
     showReset: false,
+    showDelete: false,
+    disableVariantDeleteButton: true,
+    enableVariantDelete: function() {
+        var variant = this.get( "content" ).get("variantToDelete" );
+        if ( variant ) {
+            if ( this.get( "content" ).get( "confirmVariantName" ) === variant.name ) {
+                this.set( "disableVariantDeleteButton", false );
+            }
+            else {
+                this.set( "disableVariantDeleteButton", true );
+            }
+        }
+    }.observes("confirmVariantName" ),
     actions: {
+        toggleVariantDeleteOverlay: function( variant ) {
+            if ( this.get( "showVariantDelete" ) ) {
+                this.set( "showVariantDelete", false );
+                this.set("confirmVariantName","");
+            }
+            else {
+                this.set( "showVariantDelete", true );
+                this.get( "model" ).set( "variantToDelete", variant );
+            }
+        },
         toggleResetOverlay: function() {
             if ( this.get( "showReset" ) ) {
                 this.set( "showReset", false );
@@ -24,32 +47,35 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 this.set( "showReset", true );
             }
         },
-        remove: function( variant ) {
+        remove: function() {
 
-            if( window.confirm( "Really Delete " + variant.name + " ?" ) ) {
-                var things = variant,
-                    that = this,
-                    mobileVariantPipe = AeroGear.Pipeline( {
-                        name: "mobileVariant",
-                        settings: {
-                            baseURL: App.baseURL + "rest/applications/",
-                            authenticator: App.AeroGear.authenticator,
-                            endpoint: variant.pushApplicationID + "/" + variant.get( "vType" )
-                        }
-                    } ).pipes.mobileVariant;
 
-                mobileVariantPipe.remove( variant.variantID, {
-                    success: function() {
+            var things = this.get( "content" ).get("variantToDelete" ),
+                that = this,
+                mobileVariantPipe = AeroGear.Pipeline( {
+                    name: "mobileVariant",
+                    settings: {
+                        baseURL: App.baseURL + "rest/applications/",
+                        authenticator: App.AeroGear.authenticator,
+                        endpoint: things.pushApplicationID + "/" + things.get( "vType" )
+                    }
+                } ).pipes.mobileVariant;
+
+            mobileVariantPipe.remove( things.variantID, {
+                success: function () {
+                    Ember.run( this, function() {
                         var content = that.get( "variantList" ),
                             find;
 
-                        find = content.find( function( value ) {
+                        find = content.find( function ( value ) {
                             return value.variantID === things.variantID;
-                        });
-
+                        } );
+                        that.set("confirmVariantName","");
                         content.removeObject( find );
-                    },
-                    error: function( error ) { // TODO: Maybe Make this a class method?
+                    });
+                },
+                error: function ( error ) { // TODO: Maybe Make this a class method?
+                    Ember.run(this, function(){
                         switch ( error.status ) {
                         case 401:
                             App.Router.router.transitionToRoute( "login" );
@@ -58,9 +84,10 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                             that.send( "error", that, "Error Removing" );
                             break;
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
+            this.send( "toggleVariantDeleteOverlay" );
         },
         add: function( controller ) {
             var that = controller,

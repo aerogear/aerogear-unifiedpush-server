@@ -36,6 +36,16 @@ module('App.MobileAppsIndexController', {
             }
         });
 
+        $.mockjax({
+            url: App.baseURL + "rest/applications/12345",
+            type: "DELETE",
+            dataType: 'json',
+            response: function( arguments ) {
+                apps.removeObject( apps[0] );
+                this.responseText = apps;
+            }
+        });
+
         App.reset();
         var controller = App.__container__.lookup("controller:mobileAppsIndex");
         this.controller = controller;
@@ -79,6 +89,14 @@ test( "test click 'Edit' link", function() {
     });
 });
 
+test( "test click 'Remove' link", function() {
+    visit( "/" )
+        .click( ".action a:eq(1)" )
+        .then( function() {
+            equal( find( "aside h1" ).text().trim(), "Remove Application", "Should be on the Remove overlay, but not" );
+        });
+});
+
 test( "test click 'Push Application' link", function() {
     visit( "/" )
     .click( "table tbody tr td:eq(0) a" )
@@ -87,9 +105,49 @@ test( "test click 'Push Application' link", function() {
     });
 });
 
+
+test( "Delete App - Wrong name confirmation", function() {
+    var that = this;
+    visit( "/" )
+        .click( ".action a:eq(1)" )
+        .fillIn(".name","foo")
+        .then( function() {
+            var model = that.controller.get( "model" );
+            equal(exists(".topcoat-button--cta:disabled"),true,"Delete button should be disabled but isn't");
+        });
+});
+
+test( "Delete App - Good name confirmation", function() {
+    var that = this;
+    visit( "/" )
+        .click( ".action a:eq(1)" )
+        .fillIn(".name","Cool App 2")
+        .then( function() {
+            var model = that.controller.get( "model" );
+            equal(exists(".topcoat-button--cta:disabled"),false,"Delete button should be enabled but isn't");
+        });
+});
+
+// fails with TypeError: 'undefined' is not a function (evaluating 'fn.call(null, val)')
+/*test( "Delete App - Click remove", function() {
+    var that = this;
+    visit( "/" )
+        .click( ".action a:eq(1)" )
+        .fillIn(".name","Cool App 2")
+        .click(".topcoat-button--cta")
+        .then(
+            wait().then( function()  {
+                var model = that.controller.get( "model" );
+                var  totalApps = that.controller.get("totalApps");
+                equal( totalApps, 1, "should be 1, instead is " + totalApps );
+             })
+        );
+});*/
+
+
 //Possibly Test the "Variant" commputed properties
 
-//TODO: test remove once we get rid of the crappy confirm box
+
 
 module('App.MobileAppsEditController - Create New', {
     setup: function() {
@@ -139,6 +197,7 @@ module('App.MobileAppsEditController - Create New', {
         $.mockjaxClear();
     }
 });
+
 
 test( "visit push apps edit page - Create", function() {
     visit( "/mobileApps/edit/undefined" ).then( function() {

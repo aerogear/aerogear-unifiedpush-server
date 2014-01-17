@@ -28,7 +28,7 @@
                         {{#linkTo "variants.edit" this}}Rename...{{/linkTo}}
                     </td>
                     <td class="action">
-                        <a href="#" {{ action "remove" this}}>Remove...</a>
+                        <a href="#" {{ action "toggleVariantDeleteOverlay" this }}>Remove...</a>
                     </td>
                 </tr>
             {{else}}
@@ -38,4 +38,4 @@
             {{/each}}
         </tbody>
     </table>
-            </div>
+</div>

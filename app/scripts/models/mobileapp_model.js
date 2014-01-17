@@ -15,7 +15,6 @@
 /*
  A Mobile App
 */
-
 App.MobileApplication = Ember.Object.extend( Ember.Validations, {
     validations:{
         name: {
@@ -27,6 +26,7 @@ App.MobileApplication = Ember.Object.extend( Ember.Validations, {
             }
         }
     },
+
     totalAndroidVariants: function() {
         return this.androidVariants ? this.androidVariants.get( "content" ) : [];
     }.property(),
@@ -45,6 +45,7 @@ App.MobileApplication = Ember.Object.extend( Ember.Validations, {
     variantList: function() {
         return this.get( "totalAndroidVariants" ).concat( this.get( "totaliOSVariants" ) ).concat( this.get( "totalSimplePushVariants" ) ).concat( this.get( "totalChromePackagedAppVariants" ) );
     }.property()
+
 });
 
 App.MobileApplication.reopenClass({

@@ -16,8 +16,30 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
     needs: "application",
     sortProperties: [ "pushApplicationID" ],
     sortAscending: true,
+    showVariantDelete: false,
+    disableDeleteButton: true,
     applicationPipe: App.AeroGear.pipelines.pipes.applications,
+    enableDelete: function() {
+        var app = this.get( "content" ).get("appToDelete" );
+        if(this.get("confirmAppName") ===  app.name){
+            this.set("disableDeleteButton", false);
+        }
+        else {
+            this.set("disableDeleteButton", true);
+        }
+    }.observes("confirmAppName" ),
     actions: {
+        toggleDeleteOverlay: function( app ) {
+            if ( this.get( "showDelete" ) ) {
+                this.set( "showDelete", false );
+                this.set("confirmAppName","");
+            }
+            else {
+                this.set( "showDelete", true );
+                this.get( "model" ).set( "appToDelete", app );
+            }
+        },
+
         edit: function( controller ) {
             this.get('controllers.application' ).set( "isProcessing", true );
             var that = controller,
@@ -63,23 +85,24 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
 
             this.transitionToRoute( "mobileApps" );
         },
-        remove: function( app ) {
-            var things = app,
+        remove: function() {
+            var things = this.get( "model" ).get("appToDelete"),
                 that = this;
-
-            if( window.confirm( "Really Delete " + app.name + " ?" ) ) {
-                this.applicationPipe.remove( app.pushApplicationID, {
-                    success: function() {
+            this.applicationPipe.remove( things.pushApplicationID, {
+                success: function() {
+                    Ember.run( this, function() {
                         var content = that.get( "model" ).get( "content" ),
-                            find;
+                           find;
 
                         find = content.find( function( value ) {
                             return value.pushApplicationID === things.pushApplicationID;
                         });
-
+                        that.set("confirmAppName","");
                         content.removeObject( find );
-                    },
-                    error: function( error ) { // TODO: Maybe Make this a class method?
+                    });
+                },
+                error: function( error ) { // TODO: Maybe Make this a class method?
+                    Ember.run( this, function() {
                         switch( error.status ) {
                         case 401:
                             App.Router.router.transitionToRoute( "login" );
@@ -88,9 +111,10 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                             that.send( "error", that, "Error Saving" );
                             break;
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
+            this.send( "toggleDeleteOverlay" );
         }
     },
     totalApps: function() {

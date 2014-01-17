@@ -17,6 +17,7 @@
 */
 
 App.MobileVariant = Ember.Object.extend( Ember.Validations, {
+    confirmVariantName: null,
     validations: {
         name: {
             presence: true
