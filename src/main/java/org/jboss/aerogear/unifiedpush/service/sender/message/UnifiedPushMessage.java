@@ -82,7 +82,7 @@ public class UnifiedPushMessage {
                 this.contentAvailable = false;
             }
             else {
-                this.contentAvailable = true;
+                this.contentAvailable = contentValue.booleanValue();
             }
 
             Integer badgeVal = (Integer) this.data.remove("badge");
@@ -196,6 +196,6 @@ public class UnifiedPushMessage {
     @Override
     public String toString() {
         return "UnifiedPushMessage [criteria=" + criteria + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
-                + data + ", time-to-live=" + timeToLive + "]";
+                + data + ", time-to-live=" + timeToLive + ", content-available=" + contentAvailable +"]";
     }
 }
