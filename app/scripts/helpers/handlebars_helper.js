@@ -2,6 +2,10 @@ Ember.Handlebars.helper( 'headAppsTitle', function(numberOfApps) {
     if(numberOfApps > 0){
         Ember.$('head').find('title').text("Applications ("+ numberOfApps +") - AeroGear UnifiedPush Server");
     }
+    else
+    {
+        Ember.$('head').find('title').text("Welcome! - AeroGear UnifiedPush Server");
+    }
 }, 'title');
 
 //these could be probably DRYed out
