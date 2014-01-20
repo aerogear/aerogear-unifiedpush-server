@@ -9,10 +9,10 @@
         </div>
 </aside>
 <aside  {{bind-attr class="showVariantDelete:topcoat-overlay:hidden"}} id="deleteVariantOverlay">
-        <h1>Remove Variant</h1>
+        <h1>Remove <strong>" {{ content.variantToDelete.name }} "</strong></h1>
         <p>Are you ABSOLUTELY sure ?</p>
         <p>Please type in the name of the Variant to confirm.</p>
-        <p>{{input type="text" placeholder="Application Name to be deleted" valueBinding="confirmVariantName" classNames="name topcoat-text-input" }}</p>
+        <p>{{input type="text" placeholder="Variant name" valueBinding="confirmVariantName" classNames="name topcoat-text-input" }}</p>
         <div class="topcoat-overlay-buttons">
             <button role="button" id="deleteVariantButton" class="topcoat-button--cta" {{action 'remove' }} {{bindAttr disabled="disableVariantDeleteButton"}}>Remove</button>
             <button role="button" class="topcoat-button" {{action 'toggleVariantDeleteOverlay'}}>Cancel</button>

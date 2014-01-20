@@ -1,9 +1,9 @@
 <!-- The Mobile Applications Template -->
 <aside  {{bind-attr class="showDelete:topcoat-overlay:hidden"}}>
-        <h1>Remove Application</h1>
+        <h1>Remove <strong>" {{ content.appToDelete.name }} "</strong></h1>
         <p>Are you ABSOLUTELY sure ?</p>
         <p>Please type in the name of the Application to confirm.</p>
-        <p>{{input type="text" placeholder="Application Name to be deleted" valueBinding="confirmAppName" classNames="name topcoat-text-input" }}</p>
+        <p>{{input type="text" placeholder="Application Name" valueBinding="confirmAppName" classNames="name topcoat-text-input" }}</p>
         <div class="topcoat-overlay-buttons">
             <button role="button" class="topcoat-button--cta" {{action 'remove' }} {{bindAttr disabled="disableDeleteButton"}}>Remove</button>
             <button role="button" class="topcoat-button" {{action 'toggleDeleteOverlay'}}>Cancel</button>
