@@ -54,7 +54,6 @@ public class PicketLinkDefaultUsers {
         this.relationshipManager = partitionManager.createRelationshipManager();
 
         final String DEFAULT_PASSWORD = "123";
-        final String DEFAULT_DEVELOPER = "developer";
         final String DEFAULT_ADMIN = "admin";
 
         //Temp hack to add user with admin rights
