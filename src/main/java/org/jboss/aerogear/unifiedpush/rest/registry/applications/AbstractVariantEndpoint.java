@@ -111,7 +111,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(loginName.get().equals(UserRoles.ADMIN)) {
+        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
             return variantService.findByVariantID(variantId);
         }
         else {
