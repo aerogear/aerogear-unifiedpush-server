@@ -70,6 +70,8 @@ public class PicketLinkDefaultUsers {
 
             identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
 
+            //an user with the role "admin" can list all the application and the variants, he has create/edit or delete
+            //rights and can manage users.
             Role roleAdmin = new Role(UserRoles.ADMIN);
 
             identityManager.add(roleAdmin);
@@ -78,12 +80,15 @@ public class PicketLinkDefaultUsers {
         }
 
         //let's create the viewer role
+        //an user with the role "viewer" can list all the application and the variants but can not create/edit or delete
         Role viewerRole = BasicModel.getRole(identityManager,UserRoles.VIEWER);
         if(viewerRole==null){
             identityManager.add(new Role(UserRoles.VIEWER));
         }
 
         //let's create the developer role
+        //an user with the role "developer" can create/edit/delete applications or variants that he owns.
+        //He can not see other applications/variants
         Role developerRole = BasicModel.getRole(identityManager,UserRoles.DEVELOPER);
         if(developerRole==null){
             identityManager.add(new Role(UserRoles.DEVELOPER));

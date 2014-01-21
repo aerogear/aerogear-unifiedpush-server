@@ -78,7 +78,10 @@ public abstract class AbstractBaseEndpoint {
     }
 
     /**
-     * Helper method to check if the current logged in user has the role Admin or Viewer. Mainly used for the listAll* mehtods
+     * Helper method to check if the current logged in user has the role Admin or Viewer.
+     * Mainly used for the listAll* methods : an user with the role "Viewer" must be able
+     * to see all the applications / variants (with just "read" rights), same for a user
+     * with role "admin" (except that this one has all the rights).
      *
      * @return true  if one of the role is present, otherwise false
      */
