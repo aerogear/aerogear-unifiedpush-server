@@ -209,6 +209,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-core-hibernate</artifactId>
+            <version>4.6.0</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
