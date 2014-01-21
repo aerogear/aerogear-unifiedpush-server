@@ -46,9 +46,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     protected GenericVariantService variantService;
 
     @Inject
-    protected UserService userService;
-
-    @Inject
     protected Logger logger;
 
     // Secret Reset
@@ -107,7 +104,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
+        if(isUserAdminOrViewer()) {
             return variantService.findByVariantID(variantId);
         }
         else {
@@ -116,11 +113,12 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected PushApplication getPushApplicationById(String pushApplicationID){
-        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
+        if(isUserAdminOrViewer()) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else {
             return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName());
         }
     }
+
 }

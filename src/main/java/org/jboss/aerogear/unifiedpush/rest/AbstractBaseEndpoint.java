@@ -17,6 +17,9 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.jboss.aerogear.unifiedpush.users.UserRoles;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,6 +39,9 @@ public abstract class AbstractBaseEndpoint {
 
     @Inject
     private Validator validator;
+
+    @Inject
+    protected UserService userService;
 
     /**
      * Generic validator used to identify constraint violations of the given model class. 
@@ -69,6 +75,15 @@ public abstract class AbstractBaseEndpoint {
 
         return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);
+    }
+
+    /**
+     * Helper method to check if the current logged in user has the role Admin or Viewer. Mainly used for the listAll* mehtods
+     *
+     * @return true  if one of the role is present, otherwise false
+     */
+    protected boolean isUserAdminOrViewer(){
+        return userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER);
     }
 
 }

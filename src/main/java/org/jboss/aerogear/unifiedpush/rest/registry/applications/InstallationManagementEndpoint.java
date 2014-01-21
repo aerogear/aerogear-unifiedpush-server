@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.security.authz.Secure;
@@ -43,16 +44,13 @@ import javax.ws.rs.core.Response;
 @TransactionAttribute
 @Path("/applications/{variantID}/installations/")
 @Secure( { "developer", "admin", "viewer" })
-public class InstallationManagementEndpoint {
+public class InstallationManagementEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private GenericVariantService genericVariantService;
 
     @Inject
     private ClientInstallationService clientInstallationService;
-
-    @Inject
-    private UserService userService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,7 +118,7 @@ public class InstallationManagementEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
+        if(isUserAdminOrViewer()) {
             return genericVariantService.findByVariantID(variantId);
         }
         else {

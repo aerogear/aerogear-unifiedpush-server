@@ -54,9 +54,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private PushApplicationService pushAppService;
 
-    @Inject
-    private UserService userService;
-
     // CREATE
     @Secure( { "developer", "admin"} )
     @POST
@@ -183,7 +180,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     private PushApplication getPushApplicationById(String pushApplicationID){
-        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
+        if(isUserAdminOrViewer()) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else
