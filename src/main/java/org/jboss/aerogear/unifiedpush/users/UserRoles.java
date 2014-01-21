@@ -21,17 +21,24 @@ package org.jboss.aerogear.unifiedpush.users;
  */
 public class UserRoles {
     /**
-     * The type identifier for a user role.
+     * The type identifier for the viewer role.
+     * an user with the role "viewer" can list all the applications and the variants
+     * but can not create/edit or delete
+     *
      */
     public static final String VIEWER = "viewer";
 
     /**
-     * The type identifier for a developer.
+     * The type identifier for the developer role.
+     * an user with the role "developer" can create/edit/delete applications or variants that he owns.
+     * He can not see other applications/variants
      */
     public static final String DEVELOPER = "developer";
 
     /**
-     * The type identifier for a admin.
+     * The type identifier for the admin.
+     * an user with the role "admin" can list all the application and the variants,
+     * he has create/edit or delete rights and can manage users.
      */
     public static final String ADMIN = "admin";
 
