@@ -70,7 +70,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         // manually set the ID:
         chromePackagedAppVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
-        chromePackagedAppVariant.setDeveloper(loginName.get());
+        chromePackagedAppVariant.setDeveloper(userService.getLoginName());
 
         // store the Chrome Packaged App variant:
         chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);

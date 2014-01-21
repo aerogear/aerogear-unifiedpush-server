@@ -36,9 +36,6 @@ import javax.ws.rs.core.Response;
 @Secure( { "developer", "admin", "viewer" })
 public class Ping {
 
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
 
     @Inject
     private UserService userService;
@@ -49,8 +46,8 @@ public class Ping {
      */
     @GET
     public Response ping() {
-        if(loginName != null){
-            return Response.ok(userService.findUserByLoginName(loginName.get())).build();
+        if(userService.getLoginName() != null){
+            return Response.ok(userService.findUserByLoginName(userService.getLoginName())).build();
         }
         return Response.noContent().build();
     }

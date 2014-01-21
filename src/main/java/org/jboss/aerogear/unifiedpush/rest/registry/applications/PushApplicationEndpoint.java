@@ -57,10 +57,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private UserService userService;
 
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
-
     // CREATE
     @Secure( { "developer", "admin"} )
     @POST
@@ -80,7 +76,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         // store the "developer:
-        pushApp.setDeveloper(loginName.get());
+        pushApp.setDeveloper(userService.getLoginName());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
@@ -92,11 +88,11 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
         //if we have the admin role then retrieves all the things, otherwise just by loginName
-        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)){
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)){
             return Response.ok(pushAppService.findAllPushApplications()).build();
         }
         else {
-            return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
+            return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(userService.getLoginName())).build();
         }
     }
 
@@ -187,12 +183,12 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     private PushApplication getPushApplicationById(String pushApplicationID){
-        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else
         {
-            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName());
         }
     }
 

@@ -54,10 +54,6 @@ public class InstallationManagementEndpoint {
     @Inject
     private UserService userService;
 
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId) {
@@ -124,11 +120,11 @@ public class InstallationManagementEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
             return genericVariantService.findByVariantID(variantId);
         }
         else {
-            return genericVariantService.findByVariantIDForDeveloper(variantId, loginName.get());
+            return genericVariantService.findByVariantIDForDeveloper(variantId, userService.getLoginName());
         }
     }
 }

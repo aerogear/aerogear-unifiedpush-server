@@ -72,7 +72,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        simplePushVariant.setDeveloper(loginName.get());
+        simplePushVariant.setDeveloper(userService.getLoginName());
 
         // store the SimplePush variant:
         simplePushVariant = (SimplePushVariant) variantService.addVariant(simplePushVariant);

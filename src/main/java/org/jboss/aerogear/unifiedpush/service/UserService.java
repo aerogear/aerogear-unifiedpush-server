@@ -104,4 +104,6 @@ public interface UserService {
 
     String getRoleByLoginName(String loginName);
 
+    String getLoginName();
+
 }

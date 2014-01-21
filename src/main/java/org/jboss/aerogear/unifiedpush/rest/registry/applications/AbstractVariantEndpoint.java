@@ -51,10 +51,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected Logger logger;
 
-    @Inject
-    @LoggedUser
-    protected Instance<String> loginName;
-
     // Secret Reset
     @PUT
     @Path("/{variantId}/reset")
@@ -111,20 +107,20 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected Variant getVariantById(String variantId) {
-        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
             return variantService.findByVariantID(variantId);
         }
         else {
-            return variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+            return variantService.findByVariantIDForDeveloper(variantId, userService.getLoginName());
         }
     }
 
     protected PushApplication getPushApplicationById(String pushApplicationID){
-        if(userService.getRoleByLoginName(loginName.get()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(loginName.get()).equals(UserRoles.VIEWER)) {
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)) {
             return pushAppService.findByPushApplicationID(pushApplicationID);
         }
         else {
-            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName());
         }
     }
 }

@@ -78,7 +78,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant.setProduction(form.getProduction());
 
         // store the "developer:
-        iOSVariant.setDeveloper(loginName.get());
+        iOSVariant.setDeveloper(userService.getLoginName());
 
         // some model validation on the entity:
         try {
@@ -105,7 +105,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSVariants()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName()).getIOSVariants()).build();
     }
 
     @PATCH

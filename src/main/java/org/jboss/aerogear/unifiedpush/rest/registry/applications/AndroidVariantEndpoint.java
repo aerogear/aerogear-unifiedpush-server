@@ -72,7 +72,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        androidVariant.setDeveloper(loginName.get());
+        androidVariant.setDeveloper(userService.getLoginName());
 
         // store the Android variant:
         androidVariant = (AndroidVariant) variantService.addVariant(androidVariant);
