@@ -153,14 +153,13 @@ public class SenderServiceImpl implements SenderService {
         final String simplePushVersionPayload = message.getSimplePush();
 
         // if no SimplePush object is present: skip it.
-        // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
-        if (simplePushVersionPayload == null || (deviceTypes != null && !deviceTypes.contains("web"))) {
+        if (simplePushVersionPayload == null) {
             return;
         }
 
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
             final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant
-                    .getVariantID(), categories, aliases);
+                    .getVariantID(), categories, aliases, deviceTypes);
             this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushVersionPayload);
         }
     }
