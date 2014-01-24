@@ -26,6 +26,13 @@ public class PushApplicationDaoImpl extends AbstractGenericDao<PushApplication, 
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<PushApplication> findAll() {
+        return createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa")
+                .getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public List<PushApplication> findAllForDeveloper(String loginName) {
         return createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();

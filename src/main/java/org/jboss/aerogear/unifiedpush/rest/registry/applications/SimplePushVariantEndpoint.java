@@ -40,10 +40,11 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/simplePush")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
     // new SimplePush
+    @Secure( { "developer", "admin"} )
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,7 +54,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
@@ -71,7 +72,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        simplePushVariant.setDeveloper(loginName.get());
+        simplePushVariant.setDeveloper(userService.getLoginName());
 
         // store the SimplePush variant:
         simplePushVariant = (SimplePushVariant) variantService.addVariant(simplePushVariant);
@@ -86,10 +87,11 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getSimplePushVariants()).build();
+        return Response.ok(this.getPushApplicationById(pushApplicationID).getSimplePushVariants()).build();
     }
 
     // UPDATE
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,7 +101,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, loginName.get());
+        SimplePushVariant spVariant = (SimplePushVariant) this.getVariantById(simplePushID);
         if (spVariant != null) {
 
             // some validation

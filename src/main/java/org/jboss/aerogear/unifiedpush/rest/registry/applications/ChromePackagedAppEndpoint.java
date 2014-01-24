@@ -38,7 +38,7 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/chrome")
-@Secure({ "developer", "admin" })
+@Secure({ "developer", "admin", "viewer" })
 public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
 
     // ===============================================================
@@ -46,6 +46,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
     // ===============     Chrome Packaged App  ======================
     // ===============================================================
     // new Chrome Packaged App
+    @Secure( { "developer", "admin"} )
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,7 +56,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
@@ -69,7 +70,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         // manually set the ID:
         chromePackagedAppVariant.setVariantID(UUID.randomUUID().toString());
         // store the "developer:
-        chromePackagedAppVariant.setDeveloper(loginName.get());
+        chromePackagedAppVariant.setDeveloper(userService.getLoginName());
 
         // store the Chrome Packaged App variant:
         chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);
@@ -82,10 +83,11 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllChromePackagedAppVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getChromePackagedAppVariants()).build();
+        return Response.ok(this.getPushApplicationById(pushApplicationID).getChromePackagedAppVariants()).build();
     }
 
     // UPDATE
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{chromeAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -94,7 +96,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @PathParam("chromeAppID") String chromeAppID,
             ChromePackagedAppVariant updatedChromePackagedApplication) {
 
-        ChromePackagedAppVariant chromePackagedAppVariant =  (ChromePackagedAppVariant)variantService.findByVariantIDForDeveloper(chromeAppID, loginName.get());
+        ChromePackagedAppVariant chromePackagedAppVariant =  (ChromePackagedAppVariant) this.getVariantById(chromeAppID);
         if (chromePackagedAppVariant != null) {
 
             // poor validation

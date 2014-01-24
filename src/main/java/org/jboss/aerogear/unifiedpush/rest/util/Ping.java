@@ -16,9 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.jboss.aerogear.unifiedpush.users.Developer;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -28,15 +33,23 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/ping")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class Ping {
+
+
+    @Inject
+    private UserService userService;
 
     /**
      * an endpoint for testing the authorization status of a user
-     * @return 204( No Content ) or 401( not authorized )
+     * @return 200 if user is logged in, 401( not authorized )
      */
     @GET
     public Response ping() {
+        if(userService.getLoginName() != null){
+            return Response.ok(userService.findUserByLoginName(userService.getLoginName())).build();
+        }
         return Response.noContent().build();
     }
+
 }

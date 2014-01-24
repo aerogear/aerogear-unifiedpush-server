@@ -54,28 +54,7 @@ public class PicketLinkDefaultUsers {
         this.relationshipManager = partitionManager.createRelationshipManager();
 
         final String DEFAULT_PASSWORD = "123";
-        final String DEFAULT_DEVELOPER = "developer";
         final String DEFAULT_ADMIN = "admin";
-
-        User developerUser = BasicModel.getUser(identityManager, DEFAULT_DEVELOPER);
-
-        // We only create the Developer user, if there is none;
-        // if present, there is also no need to add the same 'Developer' user again.
-        if (developerUser == null) {
-            developerUser = new User(DEFAULT_DEVELOPER);
-            identityManager.add(developerUser);
-
-            Calendar calendar = expirationDate();
-            Password password = new Password(DEFAULT_PASSWORD.toCharArray());
-
-            identityManager.updateCredential(developerUser, password, new Date(), calendar.getTime());
-
-            Role roleDeveloper = new Role(UserRoles.DEVELOPER);
-
-            identityManager.add(roleDeveloper);
-
-            grantRoles(developerUser, roleDeveloper);
-        }
 
         //Temp hack to add user with admin rights
         User adminUser = BasicModel.getUser(identityManager, DEFAULT_ADMIN);
@@ -91,12 +70,30 @@ public class PicketLinkDefaultUsers {
 
             identityManager.updateCredential(adminUser, password, new Date(), calendar.getTime());
 
+            //an user with the role "admin" can list all the application and the variants, he has create/edit or delete
+            //rights and can manage users.
             Role roleAdmin = new Role(UserRoles.ADMIN);
 
             identityManager.add(roleAdmin);
 
             grantRoles(adminUser, roleAdmin);
         }
+
+        //let's create the viewer role
+        //an user with the role "viewer" can list all the application and the variants but can not create/edit or delete
+        Role viewerRole = BasicModel.getRole(identityManager,UserRoles.VIEWER);
+        if(viewerRole==null){
+            identityManager.add(new Role(UserRoles.VIEWER));
+        }
+
+        //let's create the developer role
+        //an user with the role "developer" can create/edit/delete applications or variants that he owns.
+        //He can not see other applications/variants
+        Role developerRole = BasicModel.getRole(identityManager,UserRoles.DEVELOPER);
+        if(developerRole==null){
+            identityManager.add(new Role(UserRoles.DEVELOPER));
+        }
+
 
     }
 

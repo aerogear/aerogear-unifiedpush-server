@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.rest.user;
 
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.jboss.aerogear.unifiedpush.users.Developer;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.model.basic.User;
 import org.picketlink.idm.query.IdentityQuery;
@@ -42,13 +44,13 @@ import java.util.List;
 public class UserEndpoint {
 
     @Inject
-    private IdentityManager identityManager;
+    private UserService userService;
 
     @GET
     @Path("/{id}")
     @Produces("application/json")
     public Response findById(@PathParam("id") String id) {
-        User developer = identityManager.lookupIdentityById(User.class, id);
+        User developer = userService.findById(id);
         if (developer == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -57,23 +59,15 @@ public class UserEndpoint {
 
     @GET
     @Produces("application/json")
-    public List<User> listAll() {
-        IdentityQuery<User> identityQuery = identityManager.createIdentityQuery(User.class);
-        return identityQuery.getResultList();
+    public List<Developer> listAll() {
+       return userService.listAll();
     }
 
-    @PUT
-    @Consumes("application/json")
-    public Response update(User developer) {
-        identityManager.update(developer);
-        return Response.noContent().build();
-    }
 
     @DELETE
     @Path("/{id}")
     public Response deleteById(@PathParam("id") String id) {
-        User simpleUser = identityManager.lookupIdentityById(User.class, id);
-        identityManager.remove(simpleUser);
+        userService.deleteById(id);
         return Response.noContent().build();
     }
 

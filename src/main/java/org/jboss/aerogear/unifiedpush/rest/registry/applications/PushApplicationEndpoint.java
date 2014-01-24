@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -46,17 +48,14 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
 
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
-
     // CREATE
+    @Secure( { "developer", "admin"} )
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,7 +73,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         // store the "developer:
-        pushApp.setDeveloper(loginName.get());
+        pushApp.setDeveloper(userService.getLoginName());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
@@ -85,7 +84,13 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
+        //if we have the admin role then retrieves all the things, otherwise just by loginName
+        if(userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.ADMIN) || userService.getRoleByLoginName(userService.getLoginName()).equals(UserRoles.VIEWER)){
+            return Response.ok(pushAppService.findAllPushApplications()).build();
+        }
+        else {
+            return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(userService.getLoginName())).build();
+        }
     }
 
     @GET
@@ -93,7 +98,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp != null) {
             return Response.ok(pushApp).build();
@@ -103,13 +108,14 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     // UPDATE
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp != null) {
 
@@ -136,13 +142,14 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     // UPDATE (MasterSecret Reset)
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{pushAppID}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = getPushApplicationById(pushApplicationID);
 
         if (pushApp != null) {
             // generate the new 'masterSecret' and apply it:
@@ -157,18 +164,29 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     }
 
     // DELETE
+    @Secure( { "developer", "admin"} )
     @DELETE
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = getPushApplicationById(pushApplicationID);
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+    }
+
+    private PushApplication getPushApplicationById(String pushApplicationID){
+        if(isUserAdminOrViewer()) {
+            return pushAppService.findByPushApplicationID(pushApplicationID);
+        }
+        else
+        {
+            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName());
+        }
     }
 
 }

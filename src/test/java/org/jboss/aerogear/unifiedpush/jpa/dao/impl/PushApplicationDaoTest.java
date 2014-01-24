@@ -62,6 +62,26 @@ public class PushApplicationDaoTest {
 
 
     @Test
+    public void findAll() {
+        final PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        pushApplication1.setDeveloper("Admin");
+        pushApplicationDao.create(pushApplication1);
+
+        final PushApplication pushApplication2 = new PushApplication();
+        pushApplication2.setName("Push App 2");
+        pushApplication2.setDeveloper("Admin");
+        pushApplicationDao.create(pushApplication2);
+
+        final PushApplication pushApplication3 = new PushApplication();
+        pushApplication3.setName("Push App 3");
+        pushApplication3.setDeveloper("Dave The Drummer");
+        pushApplicationDao.create(pushApplication3);
+
+        assertEquals(3, pushApplicationDao.findAll().size());
+    }
+
+    @Test
     public void findAllForDeveloper() {
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");

@@ -40,10 +40,11 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @TransactionAttribute
 @Path("/applications/{pushAppID}/android")
-@Secure( { "developer", "admin" })
+@Secure( { "developer", "admin", "viewer" })
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
     // new Android
+    @Secure( { "developer", "admin"} )
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,7 +54,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = this.getPushApplicationById(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
@@ -71,7 +72,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        androidVariant.setDeveloper(loginName.get());
+        androidVariant.setDeveloper(userService.getLoginName());
 
         // store the Android variant:
         androidVariant = (AndroidVariant) variantService.addVariant(androidVariant);
@@ -85,10 +86,11 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidVariants()).build();
+        return Response.ok(this.getPushApplicationById(pushApplicationID).getAndroidVariants()).build();
     }
 
     // UPDATE
+    @Secure( { "developer", "admin"} )
     @PUT
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,7 +100,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        AndroidVariant androidVariant = (AndroidVariant) this.getVariantById(androidID);
         if (androidVariant != null) {
 
             // some validation

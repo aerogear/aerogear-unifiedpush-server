@@ -164,6 +164,18 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-crypto</artifactId>
+            <version>0.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>140</version>
+        </dependency>
+
         <!-- Test stuff -->
         <dependency>
             <groupId>junit</groupId>

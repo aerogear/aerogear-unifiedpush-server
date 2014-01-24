@@ -18,29 +18,19 @@ package org.jboss.aerogear.unifiedpush.users;
 
 import org.picketlink.idm.model.basic.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-@Entity
 public class Developer extends User {
     private static final long serialVersionUID = 619586660464526363L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
-    private Long id = null;
 
     private String password;
     private String newPassword;
 
+    private String registrationLink;
+
     private String role;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private boolean loggedIn;
 
     public String getPassword() {
         return password;
@@ -66,28 +56,22 @@ public class Developer extends User {
         this.role = role;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        if (id != null) {
-            return id.equals(((Developer) that).id);
-        }
-        return super.equals(that);
+
+    public String getRegistrationLink() {
+        return registrationLink;
     }
 
-    @Override
-    public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
-        }
-        return super.hashCode();
+    public void setRegistrationLink(String registrationLink) {
+        this.registrationLink = registrationLink;
     }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+
 }

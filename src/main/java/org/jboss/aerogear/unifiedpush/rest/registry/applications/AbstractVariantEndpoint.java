@@ -18,9 +18,12 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.UserService;
+import org.jboss.aerogear.unifiedpush.users.UserRoles;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -45,17 +48,13 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected Logger logger;
 
-    @Inject
-    @LoggedUser
-    protected Instance<String> loginName;
-
     // Secret Reset
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
+    public Response resetSecret(@PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        Variant variant = getVariantById(variantId);
 
         if (variant != null) {
             logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
@@ -76,7 +75,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findVariantById(@PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        Variant variant = getVariantById(variantId);
 
         if (variant != null) {
             logger.finest(String.format("Requested: %s", variant));
@@ -92,7 +91,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Path("/{variantId}")
     public Response deleteVariant(@PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
+        Variant variant = getVariantById(variantId);
 
         if (variant != null) {
             logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
@@ -103,4 +102,23 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
+
+    protected Variant getVariantById(String variantId) {
+        if(isUserAdminOrViewer()) {
+            return variantService.findByVariantID(variantId);
+        }
+        else {
+            return variantService.findByVariantIDForDeveloper(variantId, userService.getLoginName());
+        }
+    }
+
+    protected PushApplication getPushApplicationById(String pushApplicationID){
+        if(isUserAdminOrViewer()) {
+            return pushAppService.findByPushApplicationID(pushApplicationID);
+        }
+        else {
+            return pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, userService.getLoginName());
+        }
+    }
+
 }
