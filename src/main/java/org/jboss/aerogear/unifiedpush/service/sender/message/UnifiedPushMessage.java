@@ -32,6 +32,7 @@ public class UnifiedPushMessage {
     private final String simplePush;
     private final String alert;
     private final String sound;
+    private final boolean contentAvailable;
     private final int badge;
     private final int timeToLive;
 
@@ -52,7 +53,8 @@ public class UnifiedPushMessage {
      *       "key2":"other value",
      *       "alert":"HELLO!",
      *       "sound":"default",
-     *       "badge":2
+     *       "badge":2,
+     *       "content-available" : true
      *     },
      *     "simple-push":"version=123"
      *   }
@@ -75,6 +77,14 @@ public class UnifiedPushMessage {
             this.alert = (String) this.data.remove("alert"); // used in AGDROID as well
             this.sound = (String) this.data.remove("sound");
 
+            Boolean contentValue = (Boolean) this.data.remove("content-available");
+            if (contentValue == null) {
+                this.contentAvailable = false;
+            }
+            else {
+                this.contentAvailable = contentValue.booleanValue();
+            }
+
             Integer badgeVal = (Integer) this.data.remove("badge");
             if (badgeVal == null) {
                 this.badge = -1;
@@ -86,6 +96,7 @@ public class UnifiedPushMessage {
             this.alert = null;
             this.sound = null;
             this.badge = -1;
+            this.contentAvailable = false;
         }
 
         // time to live value:
@@ -160,6 +171,16 @@ public class UnifiedPushMessage {
     }
 
     /**
+     * Used for in iOS specific feature, to indicate if content (for Newsstand or silent messages) has marked as
+     * being available
+     *
+     * Not supported on other platforms.
+     */
+    public boolean isContentAvailable() {
+        return contentAvailable;
+    }
+
+    /**
      * Returns a Map, representing any other key-value pairs that were send
      * to the RESTful Sender API.
      *
@@ -175,6 +196,6 @@ public class UnifiedPushMessage {
     @Override
     public String toString() {
         return "UnifiedPushMessage [criteria=" + criteria + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
-                + data + ", time-to-live=" + timeToLive + "]";
+                + data + ", time-to-live=" + timeToLive + ", content-available=" + contentAvailable +"]";
     }
 }
