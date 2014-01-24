@@ -33,13 +33,6 @@ import java.util.Set;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
-    // The allowed SimplePush "device types
-    // TODO: right now there is no 'auto' registration for SP clients that
-    // store 'web' as their device type metadata. That is the reason for null.
-    // Once that happens the null goes away
-    private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = null;
-    //private static final List<String> SIMPLE_PUSH_DEVICE_TYPES = Arrays.asList("web");
-
     @Inject
     private InstallationDao dao;
 
@@ -121,7 +114,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for SimplePush clients
      */
     @Override
-    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases) {
-        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, categories, aliases, SIMPLE_PUSH_DEVICE_TYPES);
+    public List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        return dao.findAllPushEndpointURLsForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
     }
 }
