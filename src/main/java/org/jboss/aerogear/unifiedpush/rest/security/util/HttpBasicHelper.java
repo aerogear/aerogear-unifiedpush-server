@@ -16,7 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.security.util;
 
+import net.iharder.Base64;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 //import org.picketlink.common.util.Base64;
 
@@ -34,13 +37,18 @@ public final class HttpBasicHelper {
     }
 
     public static String[] extractUsernameAndPasswordFromBasicHeader(HttpServletRequest request) {
-        /*String username = "";
+        String username = "";
         String password = "";
         String authorizationHeader = getAuthorizationHeader(request);
 
         if (authorizationHeader != null && isBasic(authorizationHeader)) {
             String base64Token = authorizationHeader.substring(6);
-            String token = new String(Base64.decode(base64Token));
+            String token = "";
+            try {
+                token = new String(Base64.decode(base64Token));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             int delim = token.indexOf(':');
 
@@ -49,7 +57,6 @@ public final class HttpBasicHelper {
                 password = token.substring(delim + 1);
             }
         }
-        return new String[] { username, password };    */
-        return null;
+        return new String[] { username, password };
     }
 }

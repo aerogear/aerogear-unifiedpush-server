@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.security.util;
 
-import org.junit.Ignore;
+import net.iharder.Base64;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,14 +26,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@Ignore
 public class HttpBasicHelperTest {
 
     @Test
     public void extractUsernameAndPasswordFromBasicHeader() {
         final HttpServletRequest request = mock(HttpServletRequest.class);
-//        final String encodedUserPassword = Base64.encodeBytes("user:password".getBytes());
-//        when(request.getHeader("Authorization")).thenReturn("Basic " + encodedUserPassword);
+        final String encodedUserPassword = Base64.encodeBytes("user:password".getBytes());
+        when(request.getHeader("Authorization")).thenReturn("Basic " + encodedUserPassword);
 
         final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
         assertNotNull(credentials);
