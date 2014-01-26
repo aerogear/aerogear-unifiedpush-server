@@ -1,4 +1,4 @@
-**
+/**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
  *
@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class HttpBasicHelperTest {
 
