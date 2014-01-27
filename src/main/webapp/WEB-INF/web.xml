@@ -26,4 +26,7 @@
             <http-only>true</http-only>
         </cookie-config>
     </session-config>
+    <listener>
+        <listener-class>org.jboss.aerogear.unifiedpush.config.SecretKeySetup</listener-class>
+    </listener>
 </web-app>
