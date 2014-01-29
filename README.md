@@ -40,12 +40,15 @@ The H2 database is included in the JBoss AS and is pretty easy to install. First
 and afterwards issue the following command:
 
 ```
-/Path/to/JBossAS/bin/jboss-cli.sh --file=./h2-database-config.cli
+/Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/h2-database-config.cli
 ```
 
-The above script will add the _PushEEDS datasource_, which uses your home directory. If you want to change the location update the ```h2-database-config.cli``` file as needed.
+The above script will add the _PushEEDS datasource_, inside of the application server (```${jboss.server.data.dir}/unifiedpush```).
 
-_**Note**_: Make sure you are not using the home directory for production!
+##### Deployable Data-Source
+
+Another option is to just copy the ```databases/unifiedpush-h2-ds.xml``` file into the ```deployments``` folder of the application server.
+
 
 #### MySQL Database configuration
 
@@ -82,7 +85,7 @@ Next, start your server:
 Finally, run the follwing command line interface script:
 
 ```
-/Path/to/JBossAS/bin/jboss-cli.sh --file=./mysql-database-config.cli
+/Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/mysql-database-config.cli
 ```
     
 The above script will add the mysql driver and a datasource.
@@ -130,7 +133,7 @@ Next, start your server:
 Finally, run the follwing command line interface script:
 
 ```
-/Path/to/JBossAS/bin/jboss-cli.sh --file=./postgresql-database-config.cli
+/Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/postgresql-database-config.cli
 ```
     
 The above script will add the postgresql driver and a datasource.
