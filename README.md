@@ -28,6 +28,14 @@ The UnifiedPush Server requires a databases before it is able to run. The follow
 
 The UnifiedPush Server requires a datasource with ```java:jboss/datasources/PushEEDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a few command line interface scripts which helps to configure a datasource of your choice.
 
+#### Known issues
+In some cases (like when using WildFly.8.0.0.CR1) you might face a `PushEEDS is already registered` exception while executing the command line interface scripts which set the datasource configuration. This happens because the datasource is already enabled after it is [added](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/h2-database-config.cli#L6) and the [datasource enable command](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/h2-database-config.cli#L7) fails to enable an already enabled datasource. To overcome this issue add the `--enabled=false` attribute in the command which adds the datasource. 
+
+For instance the h2-database-config.cli the datasource add command should be modified to: 
+
+```
+data-source add --name=PushEEDS --driver-name=h2 --enabled=false --jndi-name=java:jboss/datasources/PushEEDS --connection-url="jdbc:h2:~/unifiedpush;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true
+```
 
 #### H2 Database configuration
 
