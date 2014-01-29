@@ -1,0 +1,10 @@
+# $WILDFLY_HOME/bin/jboss-cli.sh --file=/path/to/this/file.
+connect
+batch
+
+## Add SimplePush Datasource
+data-source add --name=PushEEDS --driver-name=h2 --jndi-name=java:jboss/datasources/PushEEDS --connection-url="jdbc:h2:${jboss.server.data.dir}/unifiedpush_11111111;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true
+data-source enable --name=PushEEDS
+
+run-batch
+#:reload
