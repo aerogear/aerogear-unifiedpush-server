@@ -217,6 +217,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Keycloak dependencies -->
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-as7-adapter</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -284,8 +291,7 @@
         -->
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-        <aerogear.security.version>1.3.1</aerogear.security.version>
-        <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
+        <keycloak.version>1.0-alpha-1-SNAPSHOT</keycloak.version>
 
     </properties>
 
