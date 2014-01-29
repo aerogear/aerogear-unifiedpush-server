@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import org.jboss.aerogear.security.authz.Secure;
-
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,12 +26,12 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/ping")
-@Secure( { "developer", "admin" })
 public class Ping {
 
     /**
      * an endpoint for testing the authorization status of a user
-     * @return 204( No Content ) or 401( not authorized )
+     *
+     * @return 204(No Content) or 401( not authorized )
      */
     @GET
     public Response ping() {

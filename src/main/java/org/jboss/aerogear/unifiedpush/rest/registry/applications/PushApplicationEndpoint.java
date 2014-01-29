@@ -19,12 +19,9 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.security.auth.LoggedUser;
-import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -35,26 +32,28 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
-
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Stateless
 @TransactionAttribute
 @Path("/applications")
-@Secure( { "developer", "admin" })
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
 
-    @Inject
-    @LoggedUser
-    private Instance<String> loginName;
+    @Context
+    private SecurityContext sec;
+
+    private static final Logger LOGGER = Logger.getLogger(PushApplicationEndpoint.class.getSimpleName());
 
     // CREATE
     @POST
@@ -74,7 +73,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         // store the "developer:
-        pushApp.setDeveloper(loginName.get());
+        pushApp.setDeveloper(sec.getUserPrincipal().getName());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
@@ -85,7 +84,10 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications() {
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(loginName.get())).build();
+        LOGGER.info("===================================================");
+        LOGGER.info(sec.getUserPrincipal().getName());
+        LOGGER.info("===================================================");
+        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(sec.getUserPrincipal().getName())).build();
     }
 
     @GET
@@ -93,7 +95,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp != null) {
             return Response.ok(pushApp).build();
@@ -109,7 +111,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp != null) {
 
@@ -142,7 +144,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp != null) {
             // generate the new 'masterSecret' and apply it:
@@ -162,7 +164,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);

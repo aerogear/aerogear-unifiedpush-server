@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.security.util;
 
+import net.iharder.Base64;
 import org.junit.Test;
-import org.picketlink.common.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 

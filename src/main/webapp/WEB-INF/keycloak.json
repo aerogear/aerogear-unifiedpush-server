@@ -1,0 +1,10 @@
+{
+  "realm": "AeroGear-UnifiedPush",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAbi/V+QXMdpmvUTRSiZc39DaiiWaU8qkzezNfwNQQOxWSLJ86qJPueqASJ5I9oKr/gM6Zj1jaFRjWjcUesRJ4djj+vHbt62GUBTAWblJjvE+8Mi9u8ufDSykpt/GyWvqxTatud421ukdBF+b6O1klJEW8twDBKgcjW81GnPJnIQIDAQAB",
+  "auth-server-url": "http://localhost:8080/auth",
+  "ssl-not-required": true,
+  "resource": "ag-push",
+  "credentials": {
+    "password": "password"
+  }
+}
