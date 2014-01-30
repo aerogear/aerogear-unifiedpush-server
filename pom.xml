@@ -210,13 +210,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Keycloak dependencies -->
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-as7-adapter</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
-
     </dependencies>
 
     <repositories>
@@ -247,6 +240,12 @@
                 <extensions>false</extensions>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!-- add additional WEB-INF resources based on activated server profile -->
+                    <webResources>
+                        <resources>
+                            <directory>src/main/webapp-${server.overlay}</directory>
+                        </resources>
+                    </webResources>
                 </configuration>
             </plugin>
             <!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
@@ -270,6 +269,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Activate this profile if you deploying Unified Push Server on AS7/EAP6. This is default behavior.  -->
+
+        <profile>
+            <id>jboss-as7</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <server.overlay>jboss-as7</server.overlay>
+            </properties>
+        </profile>
+
+        <!-- Activate this profile if you are deploying to Unified Push Server to WF8 -->
+        <profile>
+            <id>wildfly</id>
+
+            <properties>
+                <server.overlay>wildfly</server.overlay>
+            </properties>
+        </profile>
+    </profiles>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
