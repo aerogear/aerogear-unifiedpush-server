@@ -197,9 +197,9 @@ curl -3 -v -b cookies.txt -c cookies.txt
 
 #### Password reset
 
-The Unified Push Server makes use of servlet filters from AeroGear Security responsible for intercept the HTTP requests and  provide password recovery functionality. For this reason is necessary to include a file *config.properties" and provide a secret key.
+The UnifiedPush Server makes use of servlet filters from AeroGear Security that are responsible for intercepting the HTTP requests and provide the password recovery functionality. For this reason, it is necessary to include a file *config.properties" and provide the secret key.
 
-To generate a cryptographically strong *secret_key* we provided the following script inside at the root path of the project:
+To generate a cryptographically strong secret_key we provided the following script at the root path of the project:
 
     #!/bin/sh
 
