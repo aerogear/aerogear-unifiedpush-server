@@ -198,6 +198,18 @@ curl -3 -v -b cookies.txt -c cookies.txt
   https://SERVER:PORT/CONTEXT/rest/auth/login
 ```
 
+#### Password reset
+
+The UnifiedPush Server makes use of servlet filters from AeroGear Security that are responsible for intercepting the HTTP requests and provide the password recovery functionality. For this reason, it is necessary to include a file *config.properties" and provide the secret key.
+
+To generate a cryptographically strong secret_key we provided the following script at the root path of the project:
+
+    #!/bin/sh
+
+    SECRET_KEY=`openssl rand -rand /dev/urandom -hex 64`
+    echo "secret_key=$SECRET_KEY" > src/main/resources/config.properties
+
+For more details please refer to the [documentation](http://aerogear.org/docs/guides/aerogear-security/).
 
 #### Register Push App
 
