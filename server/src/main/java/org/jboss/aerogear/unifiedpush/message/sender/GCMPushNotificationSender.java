@@ -46,8 +46,7 @@ public class GCMPushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    @Inject
-    private Logger logger;
+    private Logger logger = Logger.getLogger(GCMPushNotificationSender.class.getName());
 
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 

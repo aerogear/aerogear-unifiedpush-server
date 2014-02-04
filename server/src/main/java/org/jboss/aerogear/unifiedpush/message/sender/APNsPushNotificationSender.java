@@ -41,8 +41,7 @@ public class APNsPushNotificationSender {
     @Inject
     APNsCache apnsCache;
 
-    @Inject
-    private Logger logger;
+    private Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
 
     @Inject
     private ClientInstallationService clientInstallationService;

@@ -28,7 +28,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
@@ -41,9 +40,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     protected GenericVariantService variantService;
-
-    @Inject
-    protected Logger logger;
 
     @Inject
     @LoggedUser

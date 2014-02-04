@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -33,6 +34,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
  */
 public abstract class AbstractBaseEndpoint {
+
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Inject
     private Validator validator;

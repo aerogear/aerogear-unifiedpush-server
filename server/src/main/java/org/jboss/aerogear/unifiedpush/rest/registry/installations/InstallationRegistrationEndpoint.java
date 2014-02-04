@@ -45,8 +45,8 @@ import java.util.logging.Logger;
 @Path("/registry/device")
 @TransactionAttribute
 public class InstallationRegistrationEndpoint {
-    @Inject
-    private Logger logger;
+
+    private Logger logger = Logger.getLogger(InstallationRegistrationEndpoint.class.getName());
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject

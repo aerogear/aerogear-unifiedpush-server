@@ -48,8 +48,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     private static final String MESSAGE_URL = "https://www.googleapis.com/gcm_for_chrome/v1/messages";
     private static final String ACCESS_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
 
-    @Inject
-    private Logger logger;
+    private Logger logger = Logger.getLogger(GCMForChromePushNotificationSender.class.getName());
 
     // We need a place to hold the current access token/expire time for each GCM for Chrome application. Not good practice to always get a new access token
     private Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
