@@ -129,7 +129,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- You need the MAVEN ANDROID SDK DEPLOYER.... -->
+
         <dependency>
             <groupId>com.google.android.gcm</groupId>
             <artifactId>gcm-server</artifactId>
