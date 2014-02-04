@@ -20,14 +20,11 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 
-@ApplicationScoped
 public class APNsCache implements Serializable {
     private static final long serialVersionUID = -1913999384798892563L;
 

@@ -38,9 +38,6 @@ import java.util.logging.Logger;
 
 public class APNsPushNotificationSender {
 
-    @Inject
-    APNsCache apnsCache;
-
     private Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
 
     @Inject
