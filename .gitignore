@@ -5,7 +5,10 @@
 *.war
 *.ear
 
-/target/
+#Build targets
+/target
+*/target
+
 .idea/
 *.class
 *.iml
