@@ -150,7 +150,7 @@ test( "test click 'Remove' link", function() {
     visit( "/mobileApps/variants/12345" )
         .click( ".action a:eq(1)" )
         .then( function() {
-            equal( find( ".topcoat-overlay h1" ).text().trim(), "Remove Variant", "Should be on the Remove overlay, but not" );
+            equal( find( ".topcoat-overlay h1" ).text().trim(), "Remove \" Android Version \"", "Should be on the Remove overlay, but not" );
         });
 });
 

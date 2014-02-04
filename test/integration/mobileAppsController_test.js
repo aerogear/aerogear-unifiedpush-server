@@ -93,7 +93,7 @@ test( "test click 'Remove' link", function() {
     visit( "/" )
         .click( ".action a:eq(1)" )
         .then( function() {
-            equal( find( "aside h1" ).text().trim(), "Remove Application", "Should be on the Remove overlay, but not" );
+            equal( find( "aside h1" ).text().trim(), "Remove \" Cool App 2 \"", "Should be on the Remove overlay, but not" );
         });
 });
 
