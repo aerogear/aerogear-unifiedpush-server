@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 
 public class APNsPushNotificationSender {
 
-    private Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
+    private final Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
 
     @Inject
     private ClientInstallationService clientInstallationService;

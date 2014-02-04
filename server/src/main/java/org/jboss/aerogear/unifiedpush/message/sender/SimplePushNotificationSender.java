@@ -37,7 +37,7 @@ public class SimplePushNotificationSender implements Serializable {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private Logger logger = Logger.getLogger(SimplePushNotificationSender.class.getName());
+    private final Logger logger = Logger.getLogger(SimplePushNotificationSender.class.getName());
 
     /**
      * Sends SimplePush notifications to all connected clients, that are represented by

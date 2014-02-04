@@ -64,7 +64,7 @@ public class SenderServiceImpl implements SenderService {
     @Inject
     private GenericVariantService genericVariantService;
 
-    private Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
+    private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
 
     @Override
     @Asynchronous

@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 @TransactionAttribute
 public class InstallationRegistrationEndpoint {
 
-    private Logger logger = Logger.getLogger(InstallationRegistrationEndpoint.class.getName());
+    private final Logger logger = Logger.getLogger(InstallationRegistrationEndpoint.class.getName());
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
