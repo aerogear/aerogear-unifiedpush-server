@@ -42,8 +42,7 @@ import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 @TransactionAttribute
 public class PushNotificationSenderEndpoint {
 
-    @Inject
-    private Logger logger;
+    private final Logger logger = Logger.getLogger(PushNotificationSenderEndpoint.class.getName());
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
