@@ -16,11 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.cdi;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -36,17 +33,6 @@ public class Factory {
     @PicketLink
     @PersistenceContext(unitName = "picketlink-default")
     private EntityManager picketLinkEntityManager;
-
-    /**
-     * Creates a {@code Logger} object for the given {@code InjectionPoint}
-     * 
-     * @param injectionPoint represents an <code>@Inject</code> for a {@code Logger} object inside of a class.
-     * @return the desired {@code Logger} object.
-     */
-    @Produces
-    public Logger produceLog(InjectionPoint injectionPoint) {
-        return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
-    }
 
     @PersistenceContext(unitName = "unifiedpush-default", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;

@@ -19,11 +19,8 @@ package org.jboss.aerogear.unifiedpush.message.cache;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import com.google.android.gcm.server.Sender;
 
-@ApplicationScoped
 public class GCMCache implements Serializable {
 
     private static final long serialVersionUID = 8171485458336202582L;

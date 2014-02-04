@@ -40,14 +40,12 @@ import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 @ApplicationScoped
 public class GCMPushNotificationSender {
 
-    @Inject
-    private GCMCache cache;
+    private final GCMCache cache = new GCMCache();
 
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    @Inject
-    private Logger logger;
+    private final Logger logger = Logger.getLogger(GCMPushNotificationSender.class.getName());
 
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
