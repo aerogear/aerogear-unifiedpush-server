@@ -28,14 +28,17 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
  * The Android variant class encapsulates GCM specific behavior.
  */
 @Entity
-@DiscriminatorValue("'android'")
+@DiscriminatorValue("android")
 public class AndroidVariant extends AbstractVariant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     public AndroidVariant() {
         super();
-        // we are Android:
-        this.setType(VariantType.ANDROID);
+    }
+    
+    @Override
+    public VariantType getType() {
+    	return VariantType.ANDROID;
     }
 
     @Column

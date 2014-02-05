@@ -25,13 +25,16 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
  * The SimplePush variant class encapsulates SimplePush specific behavior.
  */
 @Entity
-@DiscriminatorValue("'simplePush'")
+@DiscriminatorValue("simplePush")
 public class SimplePushVariant extends AbstractVariant {
     private static final long serialVersionUID = 9046963507735955449L;
 
     public SimplePushVariant() {
         super();
-        // we are SimplePush:
-        this.setType(VariantType.SIMPLE_PUSH);
+    }
+    
+    @Override
+    public VariantType getType() {
+    	return VariantType.SIMPLE_PUSH;
     }
 }

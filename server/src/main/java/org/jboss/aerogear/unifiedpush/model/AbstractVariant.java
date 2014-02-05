@@ -46,10 +46,6 @@ import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 public abstract class AbstractVariant extends PersistentObject implements Variant {
     private static final long serialVersionUID = -5028062942838899201L;
 
-    @NotNull
-    @Column
-    private VariantType type;
-
     @Column
     @Size(min = 1, max = 255)
     private String name;
@@ -71,14 +67,6 @@ public abstract class AbstractVariant extends PersistentObject implements Varian
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "variantID", referencedColumnName = "variantID")
     private Set<InstallationImpl> installations = new HashSet<InstallationImpl>();
-
-    public VariantType getType() {
-        return type;
-    }
-
-    public void setType(VariantType type) {
-        this.type = type;
-    }
 
     public String getName() {
         return this.name;
