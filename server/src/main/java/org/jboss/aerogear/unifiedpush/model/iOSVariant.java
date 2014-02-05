@@ -29,14 +29,17 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
  * The iOS variant class encapsulates APNs specific behavior.
  */
 @Entity
-@DiscriminatorValue("'ios'")
+@DiscriminatorValue("ios")
 public class iOSVariant extends AbstractVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     public iOSVariant() {
         super();
-        // we are iOS:
-        this.setType(VariantType.IOS);
+    }
+    
+    @Override
+    public VariantType getType() {
+    	return VariantType.IOS;
     }
 
     @Column
