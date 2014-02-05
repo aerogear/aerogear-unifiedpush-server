@@ -28,14 +28,17 @@ import javax.validation.constraints.NotNull;
  * see http://developer.chrome.com/apps/cloudMessaging.html for more details
  */
 @Entity
-@DiscriminatorValue("'chromePackagedApp'")
+@DiscriminatorValue("chromePackagedApp")
 public class ChromePackagedAppVariant extends AbstractVariant {
     private static final long serialVersionUID = -5473752252296190311L;
 
     public ChromePackagedAppVariant() {
         super();
-
-        this.setType(VariantType.CHROME_PACKAGED_APP);
+    }
+    
+    @Override
+    public VariantType getType() {
+    	return VariantType.CHROME_PACKAGED_APP;
     }
 
     /**
