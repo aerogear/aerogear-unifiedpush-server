@@ -6,7 +6,8 @@
     "aerogear": "~1.1.2",
     "ember": "1.2.2",
     "topcoat": "~0.5.1",
-    "jquery-form": "*"
+    "jquery-form": "*",
+    "handlebars": "1.2.1"
   },
   "devDependencies": {
     "jquery-mockjax": "~1.5.2"
