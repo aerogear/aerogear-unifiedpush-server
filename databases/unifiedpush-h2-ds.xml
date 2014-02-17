@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <datasources xmlns="http://www.jboss.org/ironjacamar/schema">
-    <datasource jndi-name="java:jboss/datasources/PushEEDS" pool-name="PushEEDS" enabled="true" use-java-context="true">
+    <datasource jndi-name="java:jboss/datasources/UnifiedPushDS" pool-name="UnifiedPushDS" enabled="true" use-java-context="true">
         <connection-url>jdbc:h2:${jboss.server.data.dir}/unifiedpush;DB_CLOSE_DELAY=-1</connection-url>
         <driver>h2</driver>
         <security>
