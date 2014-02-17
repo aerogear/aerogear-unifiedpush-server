@@ -155,7 +155,7 @@ Deploying the server to JBoss AS using the jboss-as-maven-plugin:
 mvn package jboss-as:deploy
 ```
 
-***Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleanup. Consult your browser's docs for help with removing items from local storage.
+**Note:** When testing functionality with the included webapp, it may be necessary to clear the browser's local storage occasionally to get accurate testing results. This is due to the client library storing channel information for later reuse after losing a connection (via refresh, browser close, internet drop, etc.) The functionality to cleanly handle this issue is in development and will be added soon thus removing the need for manual local storage cleanup. Consult your browser's docs for help with removing items from local storage.
 
 
 #### Administration Console
@@ -333,7 +333,7 @@ PushConfig config = new PushConfig(UNIFIED_PUSH_URL, GCM_SENDER_ID);
 config.setVariantID(VARIANT_ID);
 config.setSecret(SECRET);
 config.setAlias(MY_ALIAS);
-
+n
 // create an actual 'PushRegistrar' to register with the UnifiedPush Server:
 PushRegistrar registrar = registrations.push("u", config);
 
