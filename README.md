@@ -333,7 +333,7 @@ PushConfig config = new PushConfig(UNIFIED_PUSH_URL, GCM_SENDER_ID);
 config.setVariantID(VARIANT_ID);
 config.setSecret(SECRET);
 config.setAlias(MY_ALIAS);
-n
+
 // create an actual 'PushRegistrar' to register with the UnifiedPush Server:
 PushRegistrar registrar = registrations.push("u", config);
 
