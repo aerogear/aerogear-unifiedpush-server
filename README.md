@@ -14,7 +14,7 @@ The [AeroGear Android](https://github.com/aerogear/aerogear-android) library has
 
 #### iOS
 
-For iOS there is a little [helper library](https://github.com/aerogear/aerogear-push-ios-registration) that performs registration of the device against the UnifiedPush Server. 
+For iOS there is a little [helper library](https://github.com/aerogear/aerogear-push-ios-registration) that performs registration of the device against the UnifiedPush Server.
 
 #### JavaScript
 
@@ -26,7 +26,7 @@ The UnifiedPush Server requires a databases before it is able to run. The follow
 
 ### Database configuration
 
-The UnifiedPush Server requires a datasource with ```java:jboss/datasources/PushEEDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a few command line interface scripts which helps to configure a datasource of your choice.
+The UnifiedPush Server requires a datasource with ```java:jboss/datasources/UnifiedPushDS``` as its _JNDI name_. You are free to use the Database of your choice (e.g. MariaDB or MySQL). However for your convenience we have a few command line interface scripts which helps to configure a datasource of your choice.
 
 
 #### H2 Database configuration
@@ -43,7 +43,7 @@ and afterwards issue the following command:
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/h2-database-config.cli
 ```
 
-The above script will add the _PushEEDS datasource_, inside of the application server (```${jboss.server.data.dir}/unifiedpush```).
+The above script will add the _UnifiedPushDS datasource_, inside of the application server (```${jboss.server.data.dir}/unifiedpush```).
 
 ##### Deployable Data-Source
 
@@ -87,14 +87,14 @@ Finally, run the follwing command line interface script:
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/mysql-database-config.cli
 ```
-    
+
 The above script will add the mysql driver and a datasource.
- 
+
 If you inspect the server console output you should see the following message:
 
 ```
 14:41:57,790 INFO  [org.jboss.as.connector.subsystems.datasources] (management-handler-thread - 1) JBAS010404: Deploying non-JDBC-compliant driver class com.mysql.jdbc.Driver (version 5.1)
-14:41:57,794 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-5) JBAS010400: Bound data source [java:jboss/datasources/PushEEDS]
+14:41:57,794 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-5) JBAS010400: Bound data source [java:jboss/datasources/UnifiedPushDS]
 ```
 
 
@@ -135,14 +135,14 @@ Finally, run the follwing command line interface script:
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/postgresql-database-config.cli
 ```
-    
+
 The above script will add the postgresql driver and a datasource.
- 
+
 If you inspect the server console output you should see the following message:
 
 ```
 14:41:57,790 INFO  [org.jboss.as.connector.subsystems.datasources] (management-handler-thread - 1) JBAS010404: Deploying non-JDBC-compliant driver class org.postgresql.Driver (version 9.2)
-14:41:57,794 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-5) JBAS010400: Bound data source [java:jboss/datasources/PushEEDS]
+14:41:57,794 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-5) JBAS010400: Bound data source [java:jboss/datasources/UnifiedPushDS]
 ```
 
 
