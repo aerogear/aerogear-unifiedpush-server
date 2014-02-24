@@ -16,7 +16,10 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     needs: "application",
     showReset: false,
     showDelete: false,
+    showSend: false,
     disableVariantDeleteButton: true,
+    testMessage: '{"message":{"alert":"hello"}}',
+    outputTestMessage: Ember.computed.oneWay("testMessage"),
     enableVariantDelete: function() {
         var variant = this.get( "content" ).get("variantToDelete" );
         if ( variant ) {
@@ -45,6 +48,14 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             }
             else {
                 this.set( "showReset", true );
+            }
+        },
+        toggleSendOverlay:function() {
+            if ( this.get( "showSend" ) ) {
+                this.set( "showSend", false );
+            }
+            else {
+                this.set( "showSend", true );
             }
         },
         remove: function() {
@@ -338,6 +349,22 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             controller.set( "passphrase", "" );
             //controller.set( "simplePushEndpoint", "" );
             controller.set( "production", false );
+        },
+        sendTestMessage: function( message ) {
+            var that = this;
+            $.ajax
+            ({
+                contentType: "application/json",
+                type: "POST",
+                url: 'rest/sender',
+                dataType: 'json',
+                username: this.get("content").get("pushApplicationID"),
+                password: this.get("content").get("masterSecret"),
+                data: message,
+                complete: function (){
+                    that.set("showSend", false);
+                }
+            });
         }
     }
 });
