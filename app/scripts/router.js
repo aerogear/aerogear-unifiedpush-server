@@ -35,6 +35,9 @@ App.Router.map( function() {
             // The Route for creating a new Mobile Application Variant
             this.route( "add", { path: "add/:mobileApplication_id"} ); //Not really thrilled by this
 
+            // The Route for composing a push message
+            this.route( "compose", { path: "compose/:mobileApplication_id"} ); //Not really thrilled by this
+
             // The Route for editing a new Mobile Application Variant
             this.route( "edit", { path: "edit/:mobileApplication_id/:type/:mobileVariant_id" } ); //Not really thrilled by this either
         });
@@ -201,6 +204,27 @@ App.VariantsAddRoute = App.Route.extend({
 
         // Make our non uniform id's what ember expects
         return { mobileApplication_id: model.get( "pushApplicationID" ) };
+
+    }
+});
+
+App.VariantsComposeRoute = App.Route.extend({
+    model: function() {
+
+        // Return the "Variants" Route Model since that is where all the "dynamic segments" are
+        return this.modelFor( "variants" );
+
+    },
+    setupController: function( controller, model ) {
+
+        //Load the current Model
+        controller.set( "model", model.pushApplicationID ? App.MobileApplication.find( model.pushApplicationID ) : model );
+
+    },
+    serialize: function() {
+
+        // Make our non uniform id's what ember expects
+        return { mobileApplication_id: this.modelFor( "variants" ).get( "pushApplicationID" ) };
 
     }
 });

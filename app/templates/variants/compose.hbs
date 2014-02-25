@@ -1,0 +1,40 @@
+<div>{{#linkTo "mobileApps"}}&larr; Back to Applications{{/linkTo}}</div>
+<section>
+        <h2>
+       Audience
+        </h2>
+       <span>Send To :{{view Ember.Select
+                             content=options
+                             value=selectedOption
+                      }}
+</section>
+
+<section {{bind-attr class="showCondition:test:hidden"}}>
+Installation must match (provide values separated by commas) :
+<table id="criterias">
+    <tr>
+        <td>
+        {{view Ember.Select
+             content=conditions
+             value=selectedCondition
+         }}
+         </td>
+         <td>
+        <input type="text"
+         </td>
+     </tr>
+</table>
+<div class="topcoat-button" {{action 'addCriteria'}}>Add Criteria ...</div>
+</section>
+<section>
+     <h2>
+      Compose Message
+     </h2>
+     <div>
+       <textarea class="composer">Hello World</textarea>
+     </div>
+     <div>
+     <br>
+      <button role="button" class="topcoat-button--cta">Send Push Message</button>
+     </div>
+</section>

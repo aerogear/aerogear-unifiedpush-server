@@ -47,7 +47,7 @@
             Master Secret:    {{input type="text" class="rcue-code" valueBinding="masterSecret" disabled="true"}}  <a href="#" {{ action "toggleResetOverlay" this}}>Renew...</a>
         </div>
         <div>
-         <a href="#" {{ action "toggleSendOverlay" this}}>Test Message ...</a>
+         {{#linkTo "variants.compose" this}}Compose Message...{{/linkTo}}
 
 </section>
 

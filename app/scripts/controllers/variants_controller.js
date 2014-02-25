@@ -376,3 +376,24 @@ App.VariantsAddController = Ember.ObjectController.extend( {
 App.VariantsEditController = Ember.ObjectController.extend( {
     needs: ["variantsIndex","application"]
 });
+
+App.VariantsComposeController = Ember.ObjectController.extend( {
+    needs: ["variantsIndex","application"],
+    options: ["Everyone", "Section"],
+    conditions: ["Variant", "DeviceType", "alias","category"],
+    dummyVariant: ["iPhone Premium", "Android Free"],
+    showCondition: false,
+    selectedOption: null,
+    selectedCondition: null,
+    showConditions: function() {
+     if(this.get("selectedOption")=="Section"){
+       this.set("showCondition",true);
+     }
+
+    }.observes("selectedOption"),
+    actions: {
+        addCriteria: function(){
+            $('#criterias tr:last').after('<tr><td><select><option value="Variant">Variant</option><option value="DeviceType">DeviceType</option><option value="Alias">Alias</option><option value="Category">Category</option></select></td><td><input type="text" </td></tr>');
+        }
+    }
+});
