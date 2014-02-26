@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.Response.Status;
 
 @ApplicationScoped
@@ -106,9 +105,8 @@ public class SimplePushNotificationSender implements Serializable {
     /**
      * Convenience method to open/establish a HttpURLConnection.
      */
-    protected HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        return conn;
+    HttpURLConnection getConnection(String url) throws IOException {
+        return (HttpURLConnection) new URL(url).openConnection();
     }
 
 }

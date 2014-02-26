@@ -23,7 +23,7 @@ import org.picketlink.common.util.Base64;
 public final class HttpBasicHelper {
 
     private HttpBasicHelper() {
-    };
+    }
 
     private static boolean isBasic(String authorizationHeader) {
         return authorizationHeader.startsWith("Basic ");

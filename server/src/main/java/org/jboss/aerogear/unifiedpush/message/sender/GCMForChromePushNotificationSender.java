@@ -24,7 +24,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +50,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     private final Logger logger = Logger.getLogger(GCMForChromePushNotificationSender.class.getName());
 
     // We need a place to hold the current access token/expire time for each GCM for Chrome application. Not good practice to always get a new access token
-    private Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
+    private final Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
 
     public void sendMessage( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage unifiedPushMessage) {
         // no need to send empty list
@@ -89,7 +88,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     /**
      * Returns HttpURLConnection that 'posts' the given body to the given URL.
      */
-    protected HttpURLConnection post(String url, String body, String accessToken) throws IOException {
+    HttpURLConnection post(String url, String body, String accessToken) throws IOException {
 
         if (url == null || body == null) {
             throw new IllegalArgumentException("arguments cannot be null");
@@ -117,7 +116,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
         return conn;
     }
 
-    protected HttpURLConnection refreshAccessToken( ChromePackagedAppVariant chromePackagedAppVariant ) throws IOException{
+    HttpURLConnection refreshAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) throws IOException{
 
         String body = "client_secret="+chromePackagedAppVariant.getClientSecret()+"&grant_type=refresh_token&refresh_token="+chromePackagedAppVariant.getRefreshToken()+"&client_id="+chromePackagedAppVariant.getClientId();
 
@@ -148,10 +147,10 @@ public class GCMForChromePushNotificationSender implements Serializable {
      * @return a valid access token
      */
 
-    protected String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
+    String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
         HttpURLConnection accessTokenConn = null;
         JSONParser jsonParser = new JSONParser();
-        ChromePackagedAppTokenCache accessTokenObject = null;
+        ChromePackagedAppTokenCache accessTokenObject;
         String accessToken = null;
         long expireTime = 0; // in milliseconds
 
@@ -200,9 +199,8 @@ public class GCMForChromePushNotificationSender implements Serializable {
     /**
      * Convenience method to open/establish a HttpURLConnection.
      */
-    protected HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        return conn;
+    HttpURLConnection getConnection(String url) throws IOException {
+        return (HttpURLConnection) new URL(url).openConnection();
     }
 
     /**
@@ -211,7 +209,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
      * <p>
      * If the stream ends in a newline character, it will be stripped.
      */
-    protected static String getString(InputStream stream) throws IOException {
+    private static String getString(InputStream stream) throws IOException {
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(nonNull(stream)));
         StringBuilder content = new StringBuilder();
@@ -229,7 +227,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
         return content.toString();
     }
 
-    static <T> T nonNull(T argument) {
+    private static <T> T nonNull(T argument) {
         if (argument == null) {
             throw new IllegalArgumentException("argument cannot be null");
         }

@@ -31,7 +31,7 @@ public class APNsCache implements Serializable {
     private final ConcurrentHashMap<String, ApnsService> apnsCache = new ConcurrentHashMap<String, ApnsService>();
 
     public ApnsService getApnsServiceForVariant(iOSVariant iOSVariant) {
-        ApnsService variantService = null;
+        ApnsService variantService;
         synchronized (apnsCache) {
             String variantId = iOSVariant.getId();
             variantService = apnsCache.get(variantId);

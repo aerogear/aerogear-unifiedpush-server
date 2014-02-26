@@ -48,7 +48,6 @@ public class AdminEndpoint {
     @Inject
     private PartitionManager partitionManager;
 
-    private IdentityManager identityManager;
     private RelationshipManager relationshipManager;
 
     @POST
@@ -59,8 +58,9 @@ public class AdminEndpoint {
     public Response enroll(Developer developer) {
         try {
 
-            this.identityManager = partitionManager.createIdentityManager();
             this.relationshipManager = partitionManager.createRelationshipManager();
+
+            IdentityManager identityManager = partitionManager.createIdentityManager();
             User user = new User(developer.getLoginName());
             identityManager.add(user);
             Calendar calendar = expirationDate();
