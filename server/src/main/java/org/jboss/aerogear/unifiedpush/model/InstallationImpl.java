@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
