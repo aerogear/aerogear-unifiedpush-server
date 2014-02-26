@@ -22,7 +22,7 @@ Installation must match  :
          }}
          </td>
          <td>
-        {{input type="text" name="answers" valueBinding="answers" placeholder="provide values separated by commas" }}
+        {{input type="text" class="criteriaInput" name="answers" valueBinding="answers" placeholder="provide values separated by commas" }}
          </td>
      </tr>
       {{/each}}
@@ -35,10 +35,10 @@ Installation must match  :
       Compose Message
      </h2>
      <div>
-       <textarea class="composer">Hello World</textarea>
+       {{textarea class="composer" type="text" value=testMessage}}
      </div>
      <div>
      <br>
-      <button role="button" class="topcoat-button--cta" {{action 'sendMessage' App.tableController}}>Send Push Message</button>
+      <button role="button" class="topcoat-button--cta" {{action 'sendMessage' this}}>Send Push Message</button>
      </div>
 </section>

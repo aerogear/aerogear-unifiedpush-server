@@ -398,8 +398,27 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
             //$('#criterias tr:last').after('<tr><td><select><option value="Variant">Variant</option><option value="DeviceType">DeviceType</option><option value="Alias">Alias</option><option value="Category">Category</option></select></td><td><input type="text" </td></tr>');
             App.tableController.createCondition();
         },
-        sendMessage: function() {
-            //var criterias = App.tableController.content;
+        sendMessage: function(controller) {
+            var pushData = {"message":{"alert":controller.get("testMessage")}};
+            var criterias = App.tableController.content;
+            if(this.get("selectedOption")==="Section"){
+                criterias.forEach(function(item){
+                    pushData[item.selectedCriteria] = item.answers.split(",");
+                });
+            }
+            $.ajax
+            ({
+                contentType: "application/json",
+                type: "POST",
+                url: 'rest/sender',
+                dataType: 'json',
+                username: controller.get("pushApplicationID"),
+                password: controller.get("masterSecret"),
+                data: JSON.stringify(pushData),
+                complete: function (){
+                    //that.set("showSend", false);
+                }
+            });
         }
     }
 });
@@ -413,7 +432,7 @@ App.Cell = Ember.Object.extend({
 App.TableController = Ember.ArrayController.extend({
     createCondition: function() {
         var cell = App.Cell.create({
-            criteria: ["Variant", "DeviceType", "alias","category"] ,
+            criteria: ["alias", "categories","deviceType", "variants"] ,
             answers:""
         });
         this.get('content').pushObject(cell);
@@ -421,5 +440,5 @@ App.TableController = Ember.ArrayController.extend({
 });
 
 App.tableController = App.TableController.create({
-    content: [{criteria: ["Variant", "DeviceType", "alias","category"]}]
+    content: [{criteria: ["alias", "categories","deviceType", "variants"]}]
 });
