@@ -386,14 +386,40 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
     selectedOption: null,
     selectedCondition: null,
     showConditions: function() {
-     if(this.get("selectedOption")=="Section"){
-       this.set("showCondition",true);
-     }
-
+        if(this.get("selectedOption")==="Section"){
+            this.set("showCondition",true);
+        }
+        else {
+            this.set("showCondition",false);
+        }
     }.observes("selectedOption"),
     actions: {
         addCriteria: function(){
-            $('#criterias tr:last').after('<tr><td><select><option value="Variant">Variant</option><option value="DeviceType">DeviceType</option><option value="Alias">Alias</option><option value="Category">Category</option></select></td><td><input type="text" </td></tr>');
+            //$('#criterias tr:last').after('<tr><td><select><option value="Variant">Variant</option><option value="DeviceType">DeviceType</option><option value="Alias">Alias</option><option value="Category">Category</option></select></td><td><input type="text" </td></tr>');
+            App.tableController.createCondition();
+        },
+        sendMessage: function() {
+            //var criterias = App.tableController.content;
         }
     }
+});
+
+
+App.Cell = Ember.Object.extend({
+    criteria: null,
+    answers: null,
+    selectedCriteria: null
+});
+App.TableController = Ember.ArrayController.extend({
+    createCondition: function() {
+        var cell = App.Cell.create({
+            criteria: ["Variant", "DeviceType", "alias","category"] ,
+            answers:""
+        });
+        this.get('content').pushObject(cell);
+    }
+});
+
+App.tableController = App.TableController.create({
+    content: [{criteria: ["Variant", "DeviceType", "alias","category"]}]
 });

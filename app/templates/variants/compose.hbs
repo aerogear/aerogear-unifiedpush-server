@@ -10,19 +10,23 @@
 </section>
 
 <section {{bind-attr class="showCondition:test:hidden"}}>
-Installation must match (provide values separated by commas) :
+Installation must match  :
 <table id="criterias">
+  <tbody>
+      {{#each App.tableController}}
     <tr>
         <td>
         {{view Ember.Select
-             content=conditions
-             value=selectedCondition
+             content=criteria
+             value=selectedCriteria
          }}
          </td>
          <td>
-        <input type="text"
+        {{input type="text" name="answers" valueBinding="answers" placeholder="provide values separated by commas" }}
          </td>
      </tr>
+      {{/each}}
+    </tbody>
 </table>
 <div class="topcoat-button" {{action 'addCriteria'}}>Add Criteria ...</div>
 </section>
@@ -35,6 +39,6 @@ Installation must match (provide values separated by commas) :
      </div>
      <div>
      <br>
-      <button role="button" class="topcoat-button--cta">Send Push Message</button>
+      <button role="button" class="topcoat-button--cta" {{action 'sendMessage' App.tableController}}>Send Push Message</button>
      </div>
 </section>
