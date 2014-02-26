@@ -419,6 +419,10 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
                     //that.set("showSend", false);
                 }
             });
+        },
+
+        remove: function(model){
+            App.tableController.removeCondition(model);
         }
     }
 });
@@ -436,6 +440,9 @@ App.TableController = Ember.ArrayController.extend({
             answers:""
         });
         this.get('content').pushObject(cell);
+    },
+    removeCondition: function(condition){
+        this.get('content').removeObject(condition);
     }
 });
 
