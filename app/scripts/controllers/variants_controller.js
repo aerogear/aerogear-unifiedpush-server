@@ -365,7 +365,7 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
     }.observes("selectedOption"),
     actions: {
         addCriteria: function(){
-            App.tableController.createCondition();
+            App.tableController.send("createCondition",this);
         },
         sendMessage: function(controller) {
             var pushData = {"message":{"sound":"default","alert":controller.get("testMessage")}};
@@ -391,7 +391,7 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
         },
 
         remove: function(model){
-            App.tableController.removeCondition(model);
+            App.tableController.send("removeCondition",model);
         }
     }
 });
@@ -403,15 +403,17 @@ App.Cell = Ember.Object.extend({
     selectedCriteria: null
 });
 App.TableController = Ember.ArrayController.extend({
-    createCondition: function() {
-        var cell = App.Cell.create({
-            criteria: ["alias", "categories","deviceType", "variants"] ,
-            answers:""
-        });
-        this.get('content').pushObject(cell);
-    },
-    removeCondition: function(condition){
-        this.get('content').removeObject(condition);
+    actions : {
+        createCondition: function() {
+            var cell = App.Cell.create({
+                criteria: ["alias", "categories","deviceType", "variants"] ,
+                answers:""
+            });
+            this.get('content').pushObject(cell);
+        },
+        removeCondition: function(condition){
+            this.get('content').removeObject(condition);
+        }
     }
 });
 
