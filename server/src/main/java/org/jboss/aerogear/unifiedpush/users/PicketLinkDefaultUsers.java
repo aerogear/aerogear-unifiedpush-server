@@ -41,7 +41,6 @@ public class PicketLinkDefaultUsers {
     @Inject
     private PartitionManager partitionManager;
 
-    private IdentityManager identityManager;
     private RelationshipManager relationshipManager;
 
     /**
@@ -50,8 +49,9 @@ public class PicketLinkDefaultUsers {
     @PostConstruct
     public void create() {
 
-        this.identityManager = partitionManager.createIdentityManager();
         this.relationshipManager = partitionManager.createRelationshipManager();
+
+        IdentityManager identityManager = partitionManager.createIdentityManager();
 
         final String DEFAULT_PASSWORD = "123";
         final String DEFAULT_DEVELOPER = "developer";
