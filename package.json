@@ -2,7 +2,7 @@
   "name": "aerogear-unified-push-server-admin-ui",
   "title": "AeroGear Unified Push Server Admin UI",
   "description": "User Interface for interacting with the AeroGear Unified Push Server",
-  "version": "0.0.14-dev",
+  "version": "0.0.14",
   "homepage": "https://github.com/aerogear/aerogear-unified-push-server-admin-ui",
   "author": {
     "name": "Red Hat, Inc.",
