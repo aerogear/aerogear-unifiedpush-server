@@ -210,7 +210,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
      * <p>
      * If the stream ends in a newline character, it will be stripped.
      */
-    protected static String getString(InputStream stream) throws IOException {
+    private static String getString(InputStream stream) throws IOException {
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(nonNull(stream)));
         StringBuilder content = new StringBuilder();
@@ -228,7 +228,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
         return content.toString();
     }
 
-    static <T> T nonNull(T argument) {
+    private static <T> T nonNull(T argument) {
         if (argument == null) {
             throw new IllegalArgumentException("argument cannot be null");
         }
