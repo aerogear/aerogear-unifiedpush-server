@@ -150,7 +150,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
         HttpURLConnection accessTokenConn = null;
         JSONParser jsonParser = new JSONParser();
-        ChromePackagedAppTokenCache accessTokenObject = null;
+        ChromePackagedAppTokenCache accessTokenObject;
         String accessToken = null;
         long expireTime = 0; // in milliseconds
 

@@ -24,5 +24,5 @@ import javax.ws.rs.ApplicationPath;
  * entry point for all RESTful HTTP requests.
  */
 @ApplicationPath("/rest")
-class RestApplication extends Application {
+public class RestApplication extends Application {
 }
