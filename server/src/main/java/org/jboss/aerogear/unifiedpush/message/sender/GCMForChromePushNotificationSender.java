@@ -51,7 +51,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     private final Logger logger = Logger.getLogger(GCMForChromePushNotificationSender.class.getName());
 
     // We need a place to hold the current access token/expire time for each GCM for Chrome application. Not good practice to always get a new access token
-    private Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
+    private final Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
 
     public void sendMessage( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage unifiedPushMessage) {
         // no need to send empty list
