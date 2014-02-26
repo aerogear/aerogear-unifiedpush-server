@@ -399,7 +399,9 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
             App.tableController.createCondition();
         },
         sendMessage: function(controller) {
-            var pushData = {"message":{"alert":controller.get("testMessage")}};
+            var pushData = {"message":{"sound":"default","alert":controller.get("testMessage")}};
+            //add the default sound
+
             var criterias = App.tableController.content;
             if(this.get("selectedOption")==="Section"){
                 criterias.forEach(function(item){
@@ -416,7 +418,7 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
                 password: controller.get("masterSecret"),
                 data: JSON.stringify(pushData),
                 complete: function (){
-                    //that.set("showSend", false);
+                    controller.set("testMessage", "");
                 }
             });
         },
