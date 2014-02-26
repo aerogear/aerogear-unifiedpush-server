@@ -200,9 +200,8 @@ public class GCMForChromePushNotificationSender implements Serializable {
     /**
      * Convenience method to open/establish a HttpURLConnection.
      */
-    protected HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        return conn;
+    HttpURLConnection getConnection(String url) throws IOException {
+        return (HttpURLConnection) new URL(url).openConnection();
     }
 
     /**
