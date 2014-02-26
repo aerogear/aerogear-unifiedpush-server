@@ -8,16 +8,6 @@
             <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>Cancel</button>
         </div>
 </aside>
-<aside  {{bind-attr class="showSend:topcoat-overlay:hidden"}}>
-        <h1>Send test message</h1>
-     <div>
-       {{textarea type="text" value=testMessage}}
-     </div>
-        <div class="topcoat-overlay-buttons">
-            <button role="button" class="topcoat-button--cta" {{action 'sendTestMessage' testMessage}} {{bindAttr disabled="controllers.application.isProcessing"}}>Send Test Message</button>
-            <button role="button" class="topcoat-button" {{action 'toggleSendOverlay'}}>Cancel</button>
-        </div>
-</aside>
 <aside  {{bind-attr class="showVariantDelete:topcoat-overlay:hidden"}} id="deleteVariantOverlay">
         <h1>Remove <strong>" {{ content.variantToDelete.name }} "</strong></h1>
         <p>Are you ABSOLUTELY sure ?</p>

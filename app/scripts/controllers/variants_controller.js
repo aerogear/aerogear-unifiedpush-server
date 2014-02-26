@@ -16,10 +16,7 @@ App.VariantsIndexController = Ember.ObjectController.extend({
     needs: "application",
     showReset: false,
     showDelete: false,
-    showSend: false,
     disableVariantDeleteButton: true,
-    testMessage: '{"message":{"alert":"hello"}}',
-    outputTestMessage: Ember.computed.oneWay("testMessage"),
     enableVariantDelete: function() {
         var variant = this.get( "content" ).get("variantToDelete" );
         if ( variant ) {
@@ -48,14 +45,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             }
             else {
                 this.set( "showReset", true );
-            }
-        },
-        toggleSendOverlay:function() {
-            if ( this.get( "showSend" ) ) {
-                this.set( "showSend", false );
-            }
-            else {
-                this.set( "showSend", true );
             }
         },
         remove: function() {
@@ -349,22 +338,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
             controller.set( "passphrase", "" );
             //controller.set( "simplePushEndpoint", "" );
             controller.set( "production", false );
-        },
-        sendTestMessage: function( message ) {
-            var that = this;
-            $.ajax
-            ({
-                contentType: "application/json",
-                type: "POST",
-                url: 'rest/sender',
-                dataType: 'json',
-                username: this.get("content").get("pushApplicationID"),
-                password: this.get("content").get("masterSecret"),
-                data: message,
-                complete: function (){
-                    that.set("showSend", false);
-                }
-            });
         }
     }
 });
@@ -380,11 +353,8 @@ App.VariantsEditController = Ember.ObjectController.extend( {
 App.VariantsComposeController = Ember.ObjectController.extend( {
     needs: ["variantsIndex","application"],
     options: ["Everyone", "Section"],
-    conditions: ["Variant", "DeviceType", "alias","category"],
-    dummyVariant: ["iPhone Premium", "Android Free"],
     showCondition: false,
     selectedOption: null,
-    selectedCondition: null,
     showConditions: function() {
         if(this.get("selectedOption")==="Section"){
             this.set("showCondition",true);
@@ -395,13 +365,10 @@ App.VariantsComposeController = Ember.ObjectController.extend( {
     }.observes("selectedOption"),
     actions: {
         addCriteria: function(){
-            //$('#criterias tr:last').after('<tr><td><select><option value="Variant">Variant</option><option value="DeviceType">DeviceType</option><option value="Alias">Alias</option><option value="Category">Category</option></select></td><td><input type="text" </td></tr>');
             App.tableController.createCondition();
         },
         sendMessage: function(controller) {
             var pushData = {"message":{"sound":"default","alert":controller.get("testMessage")}};
-            //add the default sound
-
             var criterias = App.tableController.content;
             if(this.get("selectedOption")==="Section"){
                 criterias.forEach(function(item){
