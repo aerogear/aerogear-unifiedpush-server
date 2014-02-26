@@ -106,7 +106,7 @@ public class SimplePushNotificationSender implements Serializable {
     /**
      * Convenience method to open/establish a HttpURLConnection.
      */
-    protected HttpURLConnection getConnection(String url) throws IOException {
+    HttpURLConnection getConnection(String url) throws IOException {
         return (HttpURLConnection) new URL(url).openConnection();
     }
 

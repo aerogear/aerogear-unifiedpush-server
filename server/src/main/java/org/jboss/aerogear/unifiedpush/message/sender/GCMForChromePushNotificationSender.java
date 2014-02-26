@@ -89,7 +89,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
     /**
      * Returns HttpURLConnection that 'posts' the given body to the given URL.
      */
-    protected HttpURLConnection post(String url, String body, String accessToken) throws IOException {
+    HttpURLConnection post(String url, String body, String accessToken) throws IOException {
 
         if (url == null || body == null) {
             throw new IllegalArgumentException("arguments cannot be null");
@@ -117,7 +117,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
         return conn;
     }
 
-    protected HttpURLConnection refreshAccessToken( ChromePackagedAppVariant chromePackagedAppVariant ) throws IOException{
+    HttpURLConnection refreshAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) throws IOException{
 
         String body = "client_secret="+chromePackagedAppVariant.getClientSecret()+"&grant_type=refresh_token&refresh_token="+chromePackagedAppVariant.getRefreshToken()+"&client_id="+chromePackagedAppVariant.getClientId();
 
@@ -148,7 +148,7 @@ public class GCMForChromePushNotificationSender implements Serializable {
      * @return a valid access token
      */
 
-    protected String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
+    String fetchAccessToken(ChromePackagedAppVariant chromePackagedAppVariant) {
         HttpURLConnection accessTokenConn = null;
         JSONParser jsonParser = new JSONParser();
         ChromePackagedAppTokenCache accessTokenObject = null;
