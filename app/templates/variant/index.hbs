@@ -28,6 +28,9 @@
                 <br>
                 Secret: {{input type="text" class="rcue-code secret" valueBinding="secret" disabled="true"}} <a href="#" {{ action "toggleResetOverlay" this}}>Renew...</a>
             </div>
+            <div style=" text-align: right; ">
+                     {{#linkTo "variant.snippets" this}}Registration Code Snippets...{{/linkTo}}
+             </div>
     </section>
     <section>
         {{ partial "variant/variantDetail" }}

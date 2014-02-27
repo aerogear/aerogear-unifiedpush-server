@@ -12,6 +12,7 @@
 * limitations under the License.
 */
 
+
 window.App = Ember.Application.create({
     LOG_TRANSITIONS: false //remove in production,  for testing and debuging
 });

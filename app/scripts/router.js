@@ -43,7 +43,9 @@ App.Router.map( function() {
         });
 
         // The Route for the variants detail, shows the list of instances
-        this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {});
+        this.resource( "variant", { path: "variant/:mobileApplication_id/:type/:mobileVariant_id" }, function() {
+            this.route( "snippets", { path: "snippets"} );
+        });
 
         // The Route for showing the detail of an instance
         this.resource( "instance", { path: "instances/:mobileApplication_id/:type/:mobileVariant_id/:mobileVariantInstance_id" }, function() {} );
@@ -272,6 +274,29 @@ App.VariantRoute = App.Route.extend({
     Route for the Single Variant index page
 */
 App.VariantIndexRoute = App.Route.extend({
+    model: function() {
+
+        // Return the "Variant" Route Model since that is where all the "dynamic segments" are
+        return this.modelFor( "variant" );
+    },
+    setupController: function( controller, model ) {
+
+        // Force a refresh of this model when coming in from a {{#linkTo}}
+        controller.set( "model", model.variantID ? App.MobileVariant.find( model.pushApplicationID, model.variantType ? model.variantType : model.get( "vType" ), model.variantID ) : model );
+
+    },
+    serialize: function( model ) {
+
+        // Make our non uniform id's what ember expects
+        return {  mobileVariant_id: model.variantID, mobileApplication_id: this.modelFor( "variant" ).get( "pushApplicationID" ) ,type: model.get( "vType" ) };
+
+    }
+});
+
+/*
+ Route for the Single Variant index page
+ */
+App.VariantSnippetsRoute = App.Route.extend({
     model: function() {
 
         // Return the "Variant" Route Model since that is where all the "dynamic segments" are
