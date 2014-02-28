@@ -21,7 +21,6 @@ import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
-import org.jboss.aerogear.unifiedpush.message.cache.APNsCache;
 import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
@@ -93,6 +92,8 @@ public class APNsPushNotificationSender {
 
                 // trigger asynchronous deletion:
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+            } catch (RuntimeException e) {
+                logger.log(Level.SEVERE, "Error sending messages to APN server", e);
             } finally {
 
                 // tear down and release resources:
