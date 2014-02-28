@@ -92,6 +92,8 @@ public class APNsPushNotificationSender {
 
                 // trigger asynchronous deletion:
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+            } catch (RuntimeException e) {
+                logger.log(Level.SEVERE, "Error sending messages to APN server", e);
             } finally {
 
                 // tear down and release resources:
