@@ -60,3 +60,19 @@ App.VariantIndexController = Ember.ObjectController.extend({
         }
     }
 });
+
+App.VariantSnippetsController = Ember.ObjectController.extend( {
+    needs: ["variantIndex","application"],
+    showCordova: false,
+    showNative: true,
+    actions: {
+        toggleNative: function(){
+            this.set( "showNative", true );
+            this.set( "showCordova", false );
+        },
+        toggleCordova: function() {
+            this.set( "showNative", false );
+            this.set( "showCordova", true );
+        }
+    }
+});

@@ -1,0 +1,73 @@
+{{#view App.SnippetsView}}
+<pre><code>
+ (function() {
+     var endpoint, endpointRequest, SPClient, UPClient;
+
+     // config params for UnifiedPush server
+     var variantId = "{{variantID}}";
+     var variantSecret = "{{secret}}";
+     var unifiedPushUrl = "{{upsUrl}}";
+     var simplePushUrl = "<URL of the running SimplePush server>";
+
+      // create the 'UnifiedPush' client object:
+     UPClient = AeroGear.UnifiedPushClient(variantId, variantSecret, unifiedPushUrl + "/rest/registry/device");
+
+     // onConnect callback function called when SimplePush
+     // successfully establishes connection to the server
+     function spConnect() {
+
+         // use 'PushManager' to request a new PushServer URL endpoint for 'Mail' notifications:
+         endpointRequest = navigator.push.register();
+          // the DOMRequest returns 'successfully':
+         endpointRequest.onsuccess = function( event ) {
+             // extract the endpoint object from the event:
+             endpoint = event.target.result;
+
+             // if it is the first registration, need to register
+             // the 'pushEndpoint' with the UnifiedPush server.
+             if ( endpoint.pushEndpoint ) {
+                 // assemble the metadata for registration with the UnifiedPush server
+                 var metadata = {
+                     deviceToken: mailEndpoint.channelID,
+                     simplePushEndpoint: mailEndpoint.pushEndpoint
+                 };
+
+                 var settings = {
+                     success: function() {
+                        //success handler
+                     },
+                     error: function() {
+                        //error handler
+                     }
+                 };
+
+                 settings.metadata = metadata;
+
+                 // register with the server
+                 UPClient.registerWithPushServer(settings);
+             } else {
+                 console.log("'Endpoint' was already registered!");
+             }
+         };
+         // set the notification handler:
+         navigator.setMessageHandler( "push", function( message ) {
+             if ( message.channelID === mailEndpoint.channelID ) {
+                 // let's react on the endpoint
+             }
+         });
+     }
+
+     // onClose callback function:
+     function spClose() {
+         $("#reconnect").show();
+         appendTextArea("\nConnection Lost!\n");
+     }
+
+     SPClient = AeroGear.SimplePushClient({
+         simplePushServerURL: simplePushUrl,
+         onConnect: spConnect,
+         onClose: spClose
+    });
+ })();
+<code></pre>
+{{/view}}

@@ -56,7 +56,7 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
             return "simplePush";
         } else if( this.get( "type" ) === "CHROME_PACKAGED_APP" ) {
             return "chrome";
-        } else {
+        } else if( this.get( "type" ) === "IOS") {
             return "iOS";
         }
     }.property( "type" ),

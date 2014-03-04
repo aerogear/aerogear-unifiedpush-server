@@ -17,6 +17,7 @@
     "trailing": true,
     "smarttabs": true,
     "globals": {
+        "hljs": true,
         "AeroGear": true,
         "$": true,
         "Ember": true,

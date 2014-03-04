@@ -32,4 +32,9 @@ Ember.Handlebars.helper('headInstallationTitle', function(deviceToken) {
 }, 'title');
 
 
+Ember.Handlebars.helper('upsUrl', function() {
+    var href = window.location.href;
+    return href.substr(0,href.lastIndexOf('#'));
+});
+
 
