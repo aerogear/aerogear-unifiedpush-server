@@ -1,10 +1,11 @@
+{{#view App.SnippetsView}}
 <pre><code>
  - (void)application:(UIApplication *)application
  didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
    AGDeviceRegistration *registration =
      [[AGDeviceRegistration alloc] initWithServerURL:
-        [NSURL URLWithString:@"http://YOUR_SERVER/ag-push/"]];
+        [NSURL URLWithString:@"{{upsUrl}}"]];
 
    [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
 
@@ -23,4 +24,5 @@
        NSLog(@"PushEE registration Error: %@", error);
    }];
  }
-<code></pre>
+</code></pre>
+{{/view}}

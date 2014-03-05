@@ -1,4 +1,5 @@
-<div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > {{#linkTo "variant" this}}Variant{{/linkTo}}</div>
+<div>
+<div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > <a href="#" {{ action "back" this}} >Variant</a> > Snippets</div>
 <section>
 <a href="#" {{ action "toggleNative" this}}>{{vType}}</a> | <a href="#" {{ action "toggleCordova" this}}>Cordova</a> |<a href="#">Download Client SDK </a>
 </section>
@@ -20,3 +21,4 @@
 <section {{bind-attr class="showCordova:codeContainer:hidden"}} >
 {{partial "variant/cordova" }}
 </section>
+</div>

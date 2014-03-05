@@ -73,6 +73,9 @@ App.VariantSnippetsController = Ember.ObjectController.extend( {
         toggleCordova: function() {
             this.set( "showNative", false );
             this.set( "showCordova", true );
+        },
+        back: function(){
+            this.transitionToRoute( "variant", this.get( "model" ) );
         }
     }
 });
