@@ -35,7 +35,7 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 @ApplicationScoped
 public class GCMPushNotificationSender {
