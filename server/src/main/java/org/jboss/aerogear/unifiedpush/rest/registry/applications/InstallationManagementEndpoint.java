@@ -17,8 +17,8 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.security.auth.LoggedUser;
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.security.authz.Secure;
@@ -72,7 +72,7 @@ public class InstallationManagementEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
-        InstallationImpl installation = clientInstallationService.findById(installationId);
+        Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
@@ -85,9 +85,9 @@ public class InstallationManagementEndpoint {
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateInstallation(InstallationImpl entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
+    public Response updateInstallation(Installation entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
-        InstallationImpl installation = clientInstallationService.findById(installationId);
+        Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
@@ -104,7 +104,7 @@ public class InstallationManagementEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
-        InstallationImpl installation = clientInstallationService.findById(installationId);
+        Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();

@@ -17,8 +17,9 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.model.jpa.iOSVariantEntity;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.security.util.PKCS12Util;
@@ -59,7 +60,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
         }
 
         // uploaded certificate/passphrase pair OK (do they match)?
@@ -69,7 +70,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // extract form values:
-        iOSVariant iOSVariant = new iOSVariant();
+        iOSVariant iOSVariant = new iOSVariantEntity();
         iOSVariant.setName(form.getName());
         iOSVariant.setDescription(form.getDescription());
         iOSVariant.setPassphrase(form.getPassphrase());

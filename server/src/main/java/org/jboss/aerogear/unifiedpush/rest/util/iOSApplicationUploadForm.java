@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.util;
 
 import javax.ws.rs.FormParam;
 
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 /**

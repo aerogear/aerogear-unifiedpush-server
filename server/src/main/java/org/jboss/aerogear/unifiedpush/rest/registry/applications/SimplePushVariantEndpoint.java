@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -56,7 +56,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
         }
 
         // some validation

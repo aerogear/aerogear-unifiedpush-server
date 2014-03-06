@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import javax.ejb.Asynchronous;
@@ -36,28 +36,28 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
-    public InstallationImpl addInstallation(InstallationImpl installation) {
+    public Installation addInstallation(Installation installation) {
         return dao.create(installation);
     }
 
     @Override
     public void removeInstallations(
-            List<InstallationImpl> installations) {
+            List<Installation> installations) {
 
         // uh... :)
-        for (InstallationImpl installation : installations) {
+        for (Installation installation : installations) {
             removeInstallation(installation);
         }
     }
 
     @Override
-    public InstallationImpl updateInstallation(
-            InstallationImpl installation) {
+    public Installation updateInstallation(
+            Installation installation) {
         return dao.update(installation);
     }
 
     @Override
-    public InstallationImpl updateInstallation(InstallationImpl installationToUpdate, InstallationImpl postedInstallation) {
+    public Installation updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
         installationToUpdate.setCategories(postedInstallation.getCategories());
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
@@ -75,12 +75,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public InstallationImpl findById(String primaryKey) {
-        return dao.find(InstallationImpl.class, primaryKey);
+    public Installation findById(String primaryKey) {
+        return dao.find(primaryKey);
     }
 
     @Override
-    public void removeInstallation(InstallationImpl installation) {
+    public void removeInstallation(Installation installation) {
         dao.delete(installation);
     }
 
@@ -88,13 +88,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Asynchronous
     public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
         // collect inactive installations for the given variant:
-        List<InstallationImpl> inactiveInstallations = dao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
+        List<Installation> inactiveInstallations = dao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
         // get rid of them
         this.removeInstallations(inactiveInstallations);
     }
 
     @Override
-    public InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+    public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return dao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
 
