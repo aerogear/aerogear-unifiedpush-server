@@ -70,7 +70,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // extract form values:
-        iOSVariant iOSVariant = new iOSVariantEntity();
+        iOSVariant iOSVariant = new iOSVariant();
         iOSVariant.setName(form.getName());
         iOSVariant.setDescription(form.getDescription());
         iOSVariant.setPassphrase(form.getPassphrase());
