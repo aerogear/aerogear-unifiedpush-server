@@ -30,6 +30,5 @@
     <modules>
         <module>api</module>
         <module>jpa</module>
-        <module>picketlink</module>
     </modules>
 </project>
