@@ -51,6 +51,7 @@
 	<modules>
         <module>model</module>
         <module>server</module>
+        <module>service</module>
 	</modules>
 
     <dependencyManagement>
