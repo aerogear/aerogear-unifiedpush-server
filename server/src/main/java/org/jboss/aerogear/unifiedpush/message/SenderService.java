@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.unifiedpush.service.sender;
+package org.jboss.aerogear.unifiedpush.message;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 public interface SenderService {
 
