@@ -16,18 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+
 import java.util.List;
 
-import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
-import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
 
 public interface PushApplicationService {
 
     /**
-     * Store a new PushApplication object on the database.
+     * Store a new PushApplicationEntity object on the database.
      */
     PushApplication addPushApplication(PushApplication pushApp);
 
@@ -42,37 +43,37 @@ public interface PushApplicationService {
     List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
 
     /**
-     * Returns the PushApplication entity, matching the given ID.
+     * Returns the PushApplicationEntity entity, matching the given ID.
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
     /**
-     * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
+     * Finder that returns an actual PushApplicationEntity, identified by its ID and its owner/developer.
      */
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
 
     /**
-     * Removes the given PushApplication entity.
+     * Removes the given PushApplicationEntity entity.
      */
     void removePushApplication(PushApplication pushApp);
 
     /**
-     * Registers the given iOSVariant object with the given PushApplication.
+     * Registers the given iOSVariantEntity object with the given PushApplicationEntity.
      */
     void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
 
     /**
-     * Registers the given AndroidVariant object with the given PushApplication.
+     * Registers the given AndroidVariantEntity object with the given PushApplicationEntity.
      */
     void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
 
     /**
-     * Registers the given SimplePushVariant object with the given PushApplication.
+     * Registers the given SimplePushVariantEntity object with the given PushApplicationEntity.
      */
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
 
     /**
-     * Registers the given ChromePackagedAppVariant object with the given PushApplication.
+     * Registers the given ChromePackagedAppVariantEntity object with the given PushApplicationEntity.
      */
     void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
 }

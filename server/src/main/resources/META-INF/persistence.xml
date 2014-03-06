@@ -24,13 +24,13 @@
 
     <class>org.jboss.aerogear.unifiedpush.jpa.PersistentObject</class>
 
-    <class>org.jboss.aerogear.unifiedpush.model.AbstractVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.AndroidVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.InstallationImpl</class>
-    <class>org.jboss.aerogear.unifiedpush.model.iOSVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.PushApplication</class>
-    <class>org.jboss.aerogear.unifiedpush.model.SimplePushVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.AbstractVariantEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.AndroidVariantEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.InstallationEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.iOSVariantEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.PushApplicationEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.SimplePushVariantEntity</class>
+    <class>org.jboss.aerogear.unifiedpush.model.jpa.ChromePackagedAppVariantEntity</class>
 
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>

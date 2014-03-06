@@ -17,7 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.service.sender;
 
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 
 public interface SenderService {

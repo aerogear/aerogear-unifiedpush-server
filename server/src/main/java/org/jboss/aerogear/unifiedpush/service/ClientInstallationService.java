@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
+
 import java.util.List;
 import java.util.Set;
-
-import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 
 /**
  * Service class used by the Server to work with Installations
@@ -30,12 +30,12 @@ public interface ClientInstallationService {
     /**
      * Store a new Installation object on the database.
      */
-    InstallationImpl addInstallation(InstallationImpl installation);
+    Installation addInstallation(Installation installation);
 
     /**
      * Performs an update/merge on the given entity.
      */
-    InstallationImpl updateInstallation(InstallationImpl installation);
+    Installation updateInstallation(Installation installation);
 
     /**
      * Updates the first argument with the values from the second, and returns the updated entity.
@@ -43,22 +43,22 @@ public interface ClientInstallationService {
      * @param postedInstallation entity where we read the "updateable" values from.
      * @return updated entity
      */
-    InstallationImpl updateInstallation(InstallationImpl toUpdate, InstallationImpl postedInstallation);
+    Installation updateInstallation(Installation toUpdate, Installation postedInstallation);
 
     /**
      * Returns the Installation entity, matching the given primaryKey.
      */
-    InstallationImpl findById(String primaryKey);
+    Installation findById(String primaryKey);
 
     /**
      * Removes the given installation entity.
      */
-    void removeInstallation(InstallationImpl installation);
+    void removeInstallation(Installation installation);
 
     /**
      * Removes all the installation entities in the {@link List}.
      */
-    void removeInstallations(List<InstallationImpl> installations);
+    void removeInstallations(List<Installation> installations);
 
     /**
      * Used for "feedback service": Collects the invalid Installations for a Variant, based on the identifier tokens:
@@ -70,7 +70,7 @@ public interface ClientInstallationService {
      * 
      * Finder that returns the actual client installation, identified by its device-token, for the given variant.
      */
-    InstallationImpl findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+    Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     // ===================   SENDER API   ===================
 

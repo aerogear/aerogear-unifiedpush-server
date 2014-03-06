@@ -19,8 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.apache.openejb.jee.Beans;
 import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.testing.Module;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.PushApplicationDaoImpl;
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.model.jpa.PushApplicationEntity;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,14 +56,14 @@ public class PushApplicationServiceTest {
 
     @Test
     public void addPushApplication() {
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+        PushApplicationEntity stored = (PushApplicationEntity) pushApplicationService.findByPushApplicationID(uuid);
         assertNotNull(stored);
         assertNotNull(stored.getId());
         assertEquals(pa.getName(), stored.getName());
@@ -73,38 +72,38 @@ public class PushApplicationServiceTest {
 
     @Test
     public void updatePushApplication() {
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+        PushApplicationEntity stored = (PushApplicationEntity) pushApplicationService.findByPushApplicationID(uuid);
         assertNotNull(stored);
 
         stored.setName("FOO");
         pushApplicationService.updatePushApplication(stored);
-        stored = pushApplicationService.findByPushApplicationID(uuid);
+        stored = (PushApplicationEntity) pushApplicationService.findByPushApplicationID(uuid);
         assertEquals("FOO", stored.getName());
     }
 
     @Test
     public void findByPushApplicationID() {
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+        PushApplicationEntity stored =(PushApplicationEntity)  pushApplicationService.findByPushApplicationID(uuid);
         assertNotNull(stored);
         assertNotNull(stored.getId());
         assertEquals(pa.getName(), stored.getName());
         assertEquals(pa.getPushApplicationID(), stored.getPushApplicationID());
 
-        stored = pushApplicationService.findByPushApplicationID("123");
+        stored = (PushApplicationEntity) pushApplicationService.findByPushApplicationID("123");
         assertNull(stored);
 
     }
@@ -114,7 +113,7 @@ public class PushApplicationServiceTest {
 
         assertTrue(pushApplicationService.findAllPushApplicationsForDeveloper("admin").isEmpty());
 
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
@@ -128,7 +127,7 @@ public class PushApplicationServiceTest {
 
     @Test
     public void removePushApplication() {
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
@@ -147,7 +146,7 @@ public class PushApplicationServiceTest {
 
     @Test
     public void findByPushApplicationIDForDeveloper() {
-        PushApplication pa = new PushApplication();
+        PushApplicationEntity pa = new PushApplicationEntity();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
         pa.setPushApplicationID(uuid);
@@ -155,7 +154,7 @@ public class PushApplicationServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried = pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
+        PushApplicationEntity queried = (PushApplicationEntity) pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
         assertNotNull(queried);
         assertEquals(uuid, queried.getPushApplicationID());
 

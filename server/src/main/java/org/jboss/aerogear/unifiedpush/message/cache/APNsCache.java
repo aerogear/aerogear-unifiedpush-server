@@ -20,10 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
-
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 
 public class APNsCache implements Serializable {
     private static final long serialVersionUID = -1913999384798892563L;
@@ -33,7 +32,7 @@ public class APNsCache implements Serializable {
     public ApnsService getApnsServiceForVariant(iOSVariant iOSVariant) {
         ApnsService variantService = null;
         synchronized (apnsCache) {
-            String variantId = iOSVariant.getId();
+            String variantId = iOSVariant.getVariantID();
             variantService = apnsCache.get(variantId);
 
             if (variantService == null) {

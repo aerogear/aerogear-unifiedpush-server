@@ -28,31 +28,6 @@
 
     <name>Server-WAR</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
-            <!-- https://issues.jboss.org/browse/JDF-417 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
-            </dependency>
-
-            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
-                of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
-                Here we use
-                the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
-            <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <version>${javaee6.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -148,6 +123,14 @@
             <version>${aerogear.security.picketlink.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-model-jpa</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!-- Test stuff -->
         <dependency>
@@ -257,13 +240,8 @@
     </build>
 
     <properties>
-        <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
-            version defined by this BOM -->
-        <javaee6.bom.version>3.0.2.Final</javaee6.bom.version>
-
         <aerogear.security.version>1.3.1</aerogear.security.version>
         <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
-
     </properties>
 
 </project>

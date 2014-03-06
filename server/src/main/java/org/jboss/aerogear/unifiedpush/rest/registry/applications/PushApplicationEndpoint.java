@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
@@ -99,7 +99,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.ok(pushApp).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
     // UPDATE
@@ -132,7 +132,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
     // UPDATE (MasterSecret Reset)
@@ -153,7 +153,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.ok(pushApp).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
     // DELETE
@@ -168,7 +168,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
 }

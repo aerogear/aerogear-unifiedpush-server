@@ -26,16 +26,16 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMForChromePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
-import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
-import org.jboss.aerogear.unifiedpush.model.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
@@ -111,7 +111,7 @@ public class SenderServiceImpl implements SenderService {
             }
         } else {
             // No specific variants have been requested,
-            // we get all the variants, from the given PushApplication:
+            // we get all the variants, from the given PushApplicationEntity:
             androidVariants.addAll(pushApplication.getAndroidVariants());
             iOSVariants.addAll(pushApplication.getIOSVariants());
             simplePushVariants.addAll(pushApplication.getSimplePushVariants());

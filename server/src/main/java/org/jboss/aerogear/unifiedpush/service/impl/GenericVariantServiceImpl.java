@@ -18,9 +18,9 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.jpa.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
 public class GenericVariantServiceImpl implements GenericVariantService {
@@ -44,7 +44,7 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
-    public void addInstallation(Variant variant, InstallationImpl installation) {
+    public void addInstallation(Variant variant, Installation installation) {
 
         variant.getInstallations().add(installation);
         variantDao.update(variant);
