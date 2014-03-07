@@ -35,7 +35,7 @@ public interface PushApplicationService {
     /**
      * Performs an update/merge on the given entity.
      */
-    PushApplication updatePushApplication(PushApplication pushApp);
+    void updatePushApplication(PushApplication pushApp);
 
     /**
      * Finder that returns all pushApplication object for the given owner/developer.

@@ -51,8 +51,8 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
-    public Variant updateVariant(Variant variant) {
-        return variantDao.update(variant);
+    public void updateVariant(Variant variant) {
+        variantDao.update(variant);
     }
 
     @Override

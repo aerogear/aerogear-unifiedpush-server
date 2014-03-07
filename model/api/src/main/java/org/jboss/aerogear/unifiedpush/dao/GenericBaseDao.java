@@ -11,7 +11,7 @@ public interface GenericBaseDao<O, K> {
 
     O create(O o);
 
-    O update(O o);
+    void update(O o);
 
     void delete(O o);
 

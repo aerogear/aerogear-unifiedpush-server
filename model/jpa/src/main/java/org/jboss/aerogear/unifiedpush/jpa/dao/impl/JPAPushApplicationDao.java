@@ -36,12 +36,10 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     }
 
     @Override
-    public PushApplication update(PushApplication pushApplication) {
+    public void update(PushApplication pushApplication) {
         PushApplicationEntity entity = JPATransformHelper.toEntity(pushApplication);
 
         merge(entity);
-
-        return null;
     }
 
     @Override

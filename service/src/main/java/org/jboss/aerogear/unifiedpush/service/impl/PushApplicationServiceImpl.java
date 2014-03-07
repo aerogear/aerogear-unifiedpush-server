@@ -81,8 +81,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public PushApplication updatePushApplication(PushApplication pushApp) {
-        return pushApplicationDao.update(pushApp);
+    public void updatePushApplication(PushApplication pushApp) {
+        pushApplicationDao.update(pushApp);
     }
 
     @Override

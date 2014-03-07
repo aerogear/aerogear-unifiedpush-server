@@ -35,7 +35,7 @@ public interface ClientInstallationService {
     /**
      * Performs an update/merge on the given entity.
      */
-    Installation updateInstallation(Installation installation);
+    void updateInstallation(Installation installation);
 
     /**
      * Updates the first argument with the values from the second, and returns the updated entity.
@@ -43,7 +43,7 @@ public interface ClientInstallationService {
      * @param postedInstallation entity where we read the "updateable" values from.
      * @return updated entity
      */
-    Installation updateInstallation(Installation toUpdate, Installation postedInstallation);
+    void updateInstallation(Installation toUpdate, Installation postedInstallation);
 
     /**
      * Returns the Installation entity, matching the given primaryKey.
