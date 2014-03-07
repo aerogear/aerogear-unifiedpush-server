@@ -25,7 +25,7 @@ import java.io.IOException;
 public final class HttpBasicHelper {
 
     private HttpBasicHelper() {
-    };
+    }
 
     private static boolean isBasic(String authorizationHeader) {
         return authorizationHeader.startsWith("Basic ");
