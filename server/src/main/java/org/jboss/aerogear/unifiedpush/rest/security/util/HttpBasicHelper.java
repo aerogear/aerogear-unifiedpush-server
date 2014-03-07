@@ -49,11 +49,11 @@ public final class HttpBasicHelper {
                 //
             }
 
-            int delim = token.indexOf(':');
+            int delimiter = token.indexOf(':');
 
-            if (delim != -1) {
-                username = token.substring(0, delim);
-                password = token.substring(delim + 1);
+            if (delimiter != -1) {
+                username = token.substring(0, delimiter);
+                password = token.substring(delimiter + 1);
             }
         }
         return new String[] { username, password };
