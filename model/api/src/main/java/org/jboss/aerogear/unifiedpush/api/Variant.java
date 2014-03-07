@@ -72,8 +72,9 @@ public interface Variant {
 
     Set<Installation> getInstallations();
 
-
-    // hrm:
+    /**
+     * The name of the developer, that is owning the variant. 
+     */
     String getDeveloper();
 
     void setDeveloper(String developer);
