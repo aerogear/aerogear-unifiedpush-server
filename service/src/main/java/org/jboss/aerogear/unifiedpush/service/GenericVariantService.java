@@ -32,7 +32,7 @@ public interface GenericVariantService {
     /**
      * Performs an update/merge on the given entity.
      */
-    Variant updateVariant(Variant variant);
+    void updateVariant(Variant variant);
 
     /**
      * Returns the Variant entity, matching the given variantID.

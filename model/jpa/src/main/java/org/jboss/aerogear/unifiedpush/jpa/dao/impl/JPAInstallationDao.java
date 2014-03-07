@@ -42,13 +42,10 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
     @Override
-    public Installation update(Installation installation) {
+    public void update(Installation installation) {
         InstallationEntity entity = JPATransformHelper.toEntity(installation);
 
         merge(entity);
-
-        // Do we really need to return ?
-        return null;
     }
 
     @Override

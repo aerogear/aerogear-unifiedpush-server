@@ -107,7 +107,7 @@ public class InstallationRegistrationEndpoint {
             if (installation.isEnabled()) {
                 logger.info("Updating received metadata for Installation");
                 // update the entity:
-                entity = clientInstallationService.updateInstallation(installation, entity);
+                clientInstallationService.updateInstallation(installation, entity);
             }
         }
 

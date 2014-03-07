@@ -51,13 +51,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public Installation updateInstallation(
+    public void updateInstallation(
             Installation installation) {
-        return dao.update(installation);
+        dao.update(installation);
     }
 
     @Override
-    public Installation updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
+    public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
         installationToUpdate.setCategories(postedInstallation.getCategories());
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
@@ -71,7 +71,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installationToUpdate.setPlatform(postedInstallation.getPlatform());
 
         // update it:
-        return updateInstallation(installationToUpdate);
+        updateInstallation(installationToUpdate);
     }
 
     @Override
