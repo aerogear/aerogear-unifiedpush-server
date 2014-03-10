@@ -74,7 +74,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         androidVariant.setDeveloper(loginName.get());
 
         // store the Android variant:
-        androidVariant = (AndroidVariant) variantService.addVariant(androidVariant);
+        variantService.addVariant(androidVariant);
         // add iOS variant, and merge:
         pushAppService.addAndroidVariant(pushApp, androidVariant);
 

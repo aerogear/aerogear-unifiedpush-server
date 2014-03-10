@@ -72,7 +72,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         chromePackagedAppVariant.setDeveloper(loginName.get());
 
         // store the Chrome Packaged App variant:
-        chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);
+        variantService.addVariant(chromePackagedAppVariant);
         pushAppService.addChromePackagedAppVariant(pushApp, chromePackagedAppVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(chromePackagedAppVariant.getVariantID())).build()).entity(chromePackagedAppVariant).build();
