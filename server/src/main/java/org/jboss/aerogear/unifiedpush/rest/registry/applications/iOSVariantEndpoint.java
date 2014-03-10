@@ -92,7 +92,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the iOS variant:
-        iOSVariant = (iOSVariant) variantService.addVariant(iOSVariant);
+        variantService.addVariant(iOSVariant);
 
         // add iOS variant, and merge:
         pushAppService.addiOSVariant(pushApp, iOSVariant);

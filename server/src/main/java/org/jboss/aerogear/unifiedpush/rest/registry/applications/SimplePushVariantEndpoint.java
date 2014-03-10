@@ -74,7 +74,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         simplePushVariant.setDeveloper(loginName.get());
 
         // store the SimplePush variant:
-        simplePushVariant = (SimplePushVariant) variantService.addVariant(simplePushVariant);
+        variantService.addVariant(simplePushVariant);
         // add iOS variant, and merge:
         pushAppService.addSimplePushVariant(pushApp, simplePushVariant);
 
