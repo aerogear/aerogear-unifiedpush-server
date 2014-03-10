@@ -1,15 +1,15 @@
 {{#view App.SnippetsView}}
 <pre><code>
-package com.push.pushapplication;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import android.app.Application;
+import android.widget.Toast;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.Registrations;
 
-import android.app.Application;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 
 public class PushApplication extends Application {
 
@@ -20,39 +20,38 @@ public class PushApplication extends Application {
 
     private PushRegistrar registration;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+     @Override
+       public void onCreate() {
+           super.onCreate();
 
-        Registrations registrations = new Registrations();
+           try {
 
-        try {
-            PushConfig config = new PushConfig(new URI(UNIFIED_PUSH_URL), GCM_SENDER_ID);
-            config.setVariantID(VARIANT_ID);
-            config.setSecret(SECRET);
-            config.setAlias(MY_ALIAS);
+               Registrations registrations = new Registrations();
 
-            registration = registrations.push("unifiedpush", config);
+               PushConfig config = new PushConfig(new URI(UNIFIED_PUSH_URL), GCM_SENDER_ID);
+               config.setVariantID(VARIANT_ID);
+               config.setSecret(SECRET);
 
-            registration.register(getApplicationContext(), new Callback<Void>() {
-                private static final long serialVersionUID = 1L;
+               registration = registrations.push("unifiedpush", config);
 
-                @Override
-                public void onSuccess(Void ignore) {
-                     Toast.makeText(MainActivity.this, "Registration Succeeded!",
-                             Toast.LENGTH_LONG).show();
-               }
+               registration.register(getApplicationContext(), new Callback<Void>() {
+                   @Override
+                   public void onSuccess(Void ignore) {
+                       Toast.makeText(getApplicationContext(), "Registration Succeeded!",
+                               Toast.LENGTH_LONG).show();
+                   }
 
-               @Override
-               public void onFailure(Exception exception) {
-                     Log.e("MainActivity", exception.getMessage(), exception);
-               }
-            });
+                   @Override
+                   public void onFailure(Exception exception) {
+                       Toast.makeText(getApplicationContext(), exception.getMessage(),
+                               Toast.LENGTH_LONG).show();
+                   }
+               });
 
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-}
+           } catch (URISyntaxException e) {
+               throw new RuntimeException(e);
+           }
+       }
+   }
 </code></pre>
 {{/view}}

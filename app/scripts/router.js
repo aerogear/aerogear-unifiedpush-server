@@ -47,7 +47,7 @@ App.Router.map( function() {
             this.route( "snippets", { path: "snippets/:mobileApplication_id/:type/:mobileVariant_id"} );
         });
 
-          // The Route for showing the detail of an instance
+        // The Route for showing the detail of an instance
         this.resource( "instance", { path: "instances/:mobileApplication_id/:type/:mobileVariant_id/:mobileVariantInstance_id" }, function() {} );
     });
 });
