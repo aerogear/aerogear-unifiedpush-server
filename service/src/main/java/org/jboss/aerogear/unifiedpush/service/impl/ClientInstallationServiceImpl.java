@@ -36,8 +36,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
-    public Installation addInstallation(Installation installation) {
-        return dao.create(installation);
+    public void addInstallation(Installation installation) {
+        dao.create(installation);
     }
 
     @Override

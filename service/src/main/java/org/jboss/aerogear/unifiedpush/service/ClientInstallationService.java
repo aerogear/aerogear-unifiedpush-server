@@ -30,7 +30,7 @@ public interface ClientInstallationService {
     /**
      * Store a new Installation object on the database.
      */
-    Installation addInstallation(Installation installation);
+    void addInstallation(Installation installation);
 
     /**
      * Performs an update/merge on the given entity.

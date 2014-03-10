@@ -30,7 +30,7 @@ public interface PushApplicationService {
     /**
      * Store a new PushApplicationEntity object on the database.
      */
-    PushApplication addPushApplication(PushApplication pushApp);
+    void addPushApplication(PushApplication pushApp);
 
     /**
      * Performs an update/merge on the given entity.

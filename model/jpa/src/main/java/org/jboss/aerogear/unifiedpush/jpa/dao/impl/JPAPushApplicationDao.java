@@ -27,12 +27,10 @@ import java.util.List;
 public class JPAPushApplicationDao extends JPABaseDao implements PushApplicationDao {
 
     @Override
-    public PushApplication create(PushApplication pushApplication) {
+    public void create(PushApplication pushApplication) {
         PushApplicationEntity entity = JPATransformHelper.toEntity(pushApplication);
 
         persist(entity);
-
-        return pushApplication;
     }
 
     @Override

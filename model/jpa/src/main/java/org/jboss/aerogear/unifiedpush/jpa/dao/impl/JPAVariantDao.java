@@ -29,13 +29,10 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
 
     @Override
-    public Variant create(Variant variant) {
+    public void create(Variant variant) {
         AbstractVariantEntity entity = JPATransformHelper.toEntity(variant);
 
         persist(entity);
-
-        // well....
-        return variant;
     }
 
     @Override

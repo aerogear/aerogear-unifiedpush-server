@@ -34,11 +34,9 @@ import java.util.Set;
 public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
     @Override
-    public Installation create(Installation installation) {
+    public void create(Installation installation) {
         InstallationEntity entity = JPATransformHelper.toEntity(installation);
         persist(entity);
-
-        return installation;
     }
 
     @Override

@@ -34,8 +34,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     private PushApplicationDao pushApplicationDao;
 
     @Override
-    public PushApplication addPushApplication(PushApplication pushApp) {
-        return pushApplicationDao.create(pushApp);
+    public void addPushApplication(PushApplication pushApp) {
+        pushApplicationDao.create(pushApp);
     }
 
     public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {

@@ -27,7 +27,7 @@ public interface GenericVariantService {
     /**
      * Store a new Variant object on the database.
      */
-    Variant addVariant(Variant variant);
+    void addVariant(Variant variant);
 
     /**
      * Performs an update/merge on the given entity.

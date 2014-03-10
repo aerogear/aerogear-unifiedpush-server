@@ -9,7 +9,7 @@ public interface GenericBaseDao<O, K> {
 
     O find(K id);
 
-    O create(O o);
+    void create(O o);
 
     void update(O o);
 
