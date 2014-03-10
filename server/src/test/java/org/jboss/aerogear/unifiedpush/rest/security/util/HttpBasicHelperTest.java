@@ -16,15 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.security.util;
 
+import net.iharder.Base64;
 import org.junit.Test;
-import org.picketlink.common.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 public class HttpBasicHelperTest {
 
@@ -35,11 +35,12 @@ public class HttpBasicHelperTest {
         when(request.getHeader("Authorization")).thenReturn("Basic " + encodedUserPassword);
 
         final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        assertNotNull(credentials);
-        assertEquals("user", credentials[0]);
-        assertEquals("password", credentials[1]);
-        assertNotEquals(" user", credentials[0]);
-        assertNotEquals(" password ", credentials[1]);
+
+        assertThat(credentials).isNotNull();
+        assertThat(credentials[0]).isEqualTo("user");
+        assertThat(credentials[1]).isEqualTo("password");
+        assertThat(credentials[0]).isNotEqualTo(" user");
+        assertThat(credentials[1]).isNotEqualTo(" password");
     }
 
     @Test
@@ -48,9 +49,9 @@ public class HttpBasicHelperTest {
         when(request.getHeader("Authorization")).thenReturn("");
 
         final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        assertNotNull(credentials);
-        assertEquals("", credentials[0]);
-        assertEquals("", credentials[1]);
+        assertThat(credentials).isNotNull();
+        assertThat(credentials[0]).isEqualTo("");
+        assertThat(credentials[1]).isEqualTo("");
     }
 
     @Test
@@ -59,8 +60,8 @@ public class HttpBasicHelperTest {
         when(request.getHeader("Authorization")).thenReturn(null);
 
         final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        assertNotNull(credentials);
-        assertEquals("", credentials[0]);
-        assertEquals("", credentials[1]);
+        assertThat(credentials).isNotNull();
+        assertThat(credentials[0]).isEqualTo("");
+        assertThat(credentials[1]).isEqualTo("");
     }
 }

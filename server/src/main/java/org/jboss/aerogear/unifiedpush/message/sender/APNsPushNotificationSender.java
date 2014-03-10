@@ -21,10 +21,9 @@ import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
-import org.jboss.aerogear.unifiedpush.message.cache.APNsCache;
-import org.jboss.aerogear.unifiedpush.model.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;

@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
-import org.jboss.aerogear.unifiedpush.model.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import com.google.android.gcm.server.Constants;
@@ -35,7 +35,7 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 @ApplicationScoped
 public class GCMPushNotificationSender {
@@ -112,7 +112,7 @@ public class GCMPushNotificationSender {
      * 
      * <p>Afterwards all 'invalid' registration IDs for the given <code>variantID</code> are being deleted from our database.
      * 
-     * @param variantID id of the actual {@code AndroidVariant}.
+     * @param variantID id of the actual {@code AndroidVariantEntity}.
      * @param multicastResult the results from the HTTP request to the Google Cloud.
      * @param registrationIDs list of all tokens that we submitted to GCM.
      */

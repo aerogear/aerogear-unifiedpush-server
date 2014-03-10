@@ -31,11 +31,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.sender.SenderService;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.SenderService;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 @Stateless
 @Path("/sender")
@@ -72,7 +72,7 @@ public class PushNotificationSenderEndpoint {
     }
 
     /**
-     * returns application if the masterSecret is valid for the request PushApplication
+     * returns application if the masterSecret is valid for the request PushApplicationEntity
      */
     private PushApplication loadPushApplicationWhenAuthorized(HttpServletRequest request) {
         // extract the pushApplicationID and its secret from the HTTP Basic header:

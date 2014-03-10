@@ -16,15 +16,14 @@ package org.jboss.aerogear.unifiedpush.message.sender;
  * limitations under the License.
  */
 
+import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.helper.ChromePackagedAppTokenCache;
-import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

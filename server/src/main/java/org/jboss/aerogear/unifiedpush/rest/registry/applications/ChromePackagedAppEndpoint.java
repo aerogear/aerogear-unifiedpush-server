@@ -17,8 +17,8 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
  */
 
 import org.jboss.aerogear.security.authz.Secure;
-import org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.model.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -58,7 +58,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
 
         if (pushApp == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplication").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
         }
 
         // poor validation
@@ -72,7 +72,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
         chromePackagedAppVariant.setDeveloper(loginName.get());
 
         // store the Chrome Packaged App variant:
-        chromePackagedAppVariant = (ChromePackagedAppVariant)variantService.addVariant(chromePackagedAppVariant);
+        variantService.addVariant(chromePackagedAppVariant);
         pushAppService.addChromePackagedAppVariant(pushApp, chromePackagedAppVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(chromePackagedAppVariant.getVariantID())).build()).entity(chromePackagedAppVariant).build();

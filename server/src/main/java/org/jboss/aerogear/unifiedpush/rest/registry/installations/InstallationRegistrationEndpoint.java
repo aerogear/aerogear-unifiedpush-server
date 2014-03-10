@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.model.InstallationImpl;
 import org.jboss.aerogear.unifiedpush.rest.security.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -70,7 +70,7 @@ public class InstallationRegistrationEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerInstallation(
-            InstallationImpl entity,
+            Installation entity,
             @Context HttpServletRequest request) {
 
         // find the matching variation:
@@ -89,7 +89,7 @@ public class InstallationRegistrationEndpoint {
         }
 
         // look up all installations (with same token) for the given variant:
-        InstallationImpl installation =
+        Installation installation =
                 clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
@@ -99,7 +99,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             logger.fine("Performing client registration for: " + entity.getDeviceToken());
             // store the installation:
-            entity = clientInstallationService.addInstallation(entity);
+                clientInstallationService.addInstallation(entity);
             // add installation to the matching variant
             genericVariantService.addInstallation(variant, entity);
         } else {
@@ -107,7 +107,7 @@ public class InstallationRegistrationEndpoint {
             if (installation.isEnabled()) {
                 logger.info("Updating received metadata for Installation");
                 // update the entity:
-                entity = clientInstallationService.updateInstallation(installation, entity);
+                clientInstallationService.updateInstallation(installation, entity);
             }
         }
 
@@ -131,7 +131,7 @@ public class InstallationRegistrationEndpoint {
         }
 
         // look up all installations (with same token) for the given variant:
-        InstallationImpl installation =
+        Installation installation =
                 clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), token);
 
         if (installation == null) {
@@ -167,7 +167,7 @@ public class InstallationRegistrationEndpoint {
 
     /**
      * returns application if the masterSecret is valid for the request
-     * PushApplication
+     * PushApplicationEntity
      */
     private Variant loadVariantWhenAuthorized(
             HttpServletRequest request) {

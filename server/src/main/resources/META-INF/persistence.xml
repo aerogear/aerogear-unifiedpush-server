@@ -18,31 +18,6 @@
 
 -->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="unifiedpush-default" transaction-type="JTA">
-    <description>UnifiedPush Persistence Unit</description>
-    <jta-data-source>java:jboss/datasources/UnifiedPushDS</jta-data-source>
-
-    <class>org.jboss.aerogear.unifiedpush.jpa.PersistentObject</class>
-
-    <class>org.jboss.aerogear.unifiedpush.model.AbstractVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.AndroidVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.InstallationImpl</class>
-    <class>org.jboss.aerogear.unifiedpush.model.iOSVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.PushApplication</class>
-    <class>org.jboss.aerogear.unifiedpush.model.SimplePushVariant</class>
-    <class>org.jboss.aerogear.unifiedpush.model.ChromePackagedAppVariant</class>
-
-
-    <exclude-unlisted-classes>true</exclude-unlisted-classes>
-
-    <properties>
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
-      <property name="hibernate.show_sql" value="false"/>
-      <property name="hibernate.format_sql" value="true"/>
-      <property name="hibernate.transaction.flush_before_completion" value="true"/>
-    </properties>
-  </persistence-unit>
-
 
     <persistence-unit name="picketlink-default"
                       transaction-type="JTA">

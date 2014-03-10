@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.sender.message;
 
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.junit.Test;
 
 import java.util.Arrays;
