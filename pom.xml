@@ -164,19 +164,6 @@
             <version>1.0.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-security</artifactId>
-            <version>${aerogear.security.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-security-picketlink</artifactId>
-            <version>${aerogear.security.picketlink.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- Test stuff -->
         <dependency>
             <groupId>junit</groupId>
