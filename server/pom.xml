@@ -33,8 +33,8 @@
             <artifactId>jboss-transaction-api_1.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Import the CDI API, we use provided scope as the API is included
-            in JBoss AS 7 -->
+        <!-- Import the CDI API, we use provided scope as the API is included in 
+            JBoss AS 7 -->
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -46,15 +46,15 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Import the EJB API, we use provided scope as the API is included
-            in JBoss -->
+        <!-- Import the EJB API, we use provided scope as the API is included in 
+            JBoss -->
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Import the Common Annotations API (JSR-250), we use provided scope
+        <!-- Import the Common Annotations API (JSR-250), we use provided scope 
             as the API is included in JBoss AS 7 -->
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
@@ -62,7 +62,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Import the JAX-RS API, we use provided scope as the API is included
+        <!-- Import the JAX-RS API, we use provided scope as the API is included 
             in JBoss AS 7 -->
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -70,14 +70,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Import the JPA API, we use provided scope as the API is included
-            in JBoss -->
+        <!-- Import the JPA API, we use provided scope as the API is included in 
+            JBoss -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Import the Servlet API, we use provided scope as the API is included
+        <!-- Import the Servlet API, we use provided scope as the API is included 
             in JBoss -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -88,14 +88,14 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
-            <version>2.3.2.Final</version>
+            <version>${version.org.jboss.resteasy}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.notnoop.apns</groupId>
             <artifactId>apns</artifactId>
-            <version>0.2.3</version>
+            <version>${version.com.notnoop.apns}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>com.google.android.gcm</groupId>
             <artifactId>gcm-server</artifactId>
-            <version>1.0.2</version>
+            <version>${version.com.google.android.gcm.gcm-server}</version>
         </dependency>
 
         <dependency>
@@ -140,7 +140,7 @@
         <dependency>
             <groupId>net.iharder</groupId>
             <artifactId>base64</artifactId>
-            <version>2.3.8</version>
+            <version>${version.net.iharder.base64}</version>
         </dependency>
 
         <!-- Test stuff -->
@@ -152,44 +152,44 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>1.5.0</version>
+            <version>${version.org.assertj.assertj-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.0</version>
+            <version>${version.org.mockito}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.0.1.Final</version>
+            <version>${version.org.hibernate}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
+            <version>${version.org.hibernate.validator}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.172</version>
+            <version>${version.com.h2database}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
+            <version>${version.org.slf4j}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.5</version>
+            <version>${version.org.slf4j}</version>
             <scope>test</scope>
         </dependency>
 
@@ -230,7 +230,7 @@
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.4.Final</version>
+                <version>${version.org.jboss.as.plugins.jboss-as-maven-plugin}</version>
             </plugin>
 
             <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
@@ -248,8 +248,7 @@
     </build>
 
     <properties>
-        <aerogear.security.version>1.3.1</aerogear.security.version>
-        <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
+        <!-- Version properties are inherited from parent -->
     </properties>
 
 </project>
