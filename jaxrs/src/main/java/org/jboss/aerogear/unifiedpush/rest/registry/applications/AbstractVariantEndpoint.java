@@ -48,9 +48,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected GenericVariantService variantService;
 
-    @Inject
-    protected Logger logger;
-
     @Context
     protected SecurityContext sec;
 
