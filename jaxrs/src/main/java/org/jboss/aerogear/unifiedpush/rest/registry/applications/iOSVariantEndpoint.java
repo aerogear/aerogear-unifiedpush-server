@@ -20,8 +20,6 @@ import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
-import org.jboss.aerogear.security.authz.Secure;
-import org.jboss.aerogear.security.util.PKCS12Util;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
@@ -55,7 +53,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -76,7 +74,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant.setProduction(form.getProduction());
 
         // store the "developer:
-        iOSVariant.setDeveloper(loginName.get());
+        iOSVariant.setDeveloper(sec.getUserPrincipal().getName());
 
         // some model validation on the entity:
         try {
@@ -103,7 +101,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getIOSVariants()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName()).getIOSVariants()).build();
     }
 
     @PATCH
@@ -115,7 +113,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, sec.getUserPrincipal().getName());
 
         if (iOSVariant != null) {
 
@@ -139,7 +137,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, loginName.get());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, sec.getUserPrincipal().getName());
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?
@@ -175,15 +173,14 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     /**
      * Helper to validate if we got a certificate/passphrase pair AND (if present)
      * if that pair is also valid, and does not contain any bogus content.
-     * 
-     * 
-     *  @return true if valid, otherwise false
+     *
+     * @return true if valid, otherwise false
      */
     private boolean validateCertificateAndPassphrase(iOSApplicationUploadForm form) {
 
         // got certificate/passphrase, with content that makes sense ?
         try {
-            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
+//            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
 
             // ok we are good:
             return true;

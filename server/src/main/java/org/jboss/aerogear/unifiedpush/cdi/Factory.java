@@ -21,20 +21,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
-import org.picketlink.annotations.PicketLink;
-
 /**
  * CDI Utility class, which contains various producer / factory methods.
  */
 public final class Factory {
-
-    @Produces
-    @PicketLink
-    @PersistenceContext(unitName = "picketlink-default")
-    private EntityManager picketLinkEntityManager;
-
     @Produces
     @PersistenceContext(unitName = "unifiedpush-default", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
-
 }
