@@ -78,6 +78,9 @@ App.MobileVariant = Ember.Object.extend( Ember.Validations, {
     isDevelopment: function() {
         return this.get( "production" ) === false;
     }.property( "production" ),
+    isCordovaCompatible: function() {
+        return ( this.get( "vType" ) === "android" || this.get( "vType" ) === "iOS" );
+    }.property( "vType" ),
     typeFormatted: function() {
         return this.get( "vType" ); //get rid of this method?
         // if( this.get( "googleKey" ) ) {
