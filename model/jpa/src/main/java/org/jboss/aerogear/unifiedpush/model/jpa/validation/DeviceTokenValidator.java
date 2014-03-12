@@ -24,7 +24,8 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Validator that will validate if the device token matches to {@code VariantType} specific pattern.
+ * @see VariantType
  */
 public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenCheck, InstallationEntity> {
     private static final Pattern IOS_DEVICE_TOKEN = Pattern.compile("(?i)[a-z0-9]{64}");
