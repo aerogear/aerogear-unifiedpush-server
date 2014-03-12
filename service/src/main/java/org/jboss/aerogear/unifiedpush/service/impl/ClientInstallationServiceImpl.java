@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
@@ -36,7 +37,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
-    public void addInstallation(Installation installation) {
+    public void addInstallation(VariantType type, Installation installation) {
+        installation.setVariantType(type);
         dao.create(installation);
     }
 

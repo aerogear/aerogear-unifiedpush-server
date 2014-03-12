@@ -34,6 +34,7 @@ public class Installation extends BaseModel {
     private Set<String> categories;
     private String platform;
     private String simplePushEndpoint;
+    private VariantType variantType;
 
     /**
      * Flag if the actual client installation is enabled (default) or not.
@@ -170,4 +171,11 @@ public class Installation extends BaseModel {
         return simplePushEndpoint;
     }
 
+    public VariantType getVariantType() {
+        return variantType;
+    }
+
+    public void setVariantType(VariantType variantType) {
+        this.variantType = variantType;
+    }
 }
