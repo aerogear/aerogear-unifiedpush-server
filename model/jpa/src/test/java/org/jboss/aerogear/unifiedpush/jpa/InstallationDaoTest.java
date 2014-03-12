@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
@@ -30,6 +31,9 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class InstallationDaoTest {
 
@@ -163,7 +168,11 @@ public class InstallationDaoTest {
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().commit();
+        try {
+            entityManager.getTransaction().commit();
+        } catch (RollbackException e) {
+            //ignore
+        }
 
         entityManager.close();
     }
@@ -353,6 +362,59 @@ public class InstallationDaoTest {
         List<String> tokens = installationDao.findAllPushEndpointURLsForVariantIDByCriteria(simplePushVariantID, null, null, null);
         assertThat(tokens).hasSize(3);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+    }
+
+
+    @Test
+    public void shouldValidateDeviceId() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("invalid");
+
+        installation.setVariantType(VariantType.IOS);
+
+        // when
+        installationDao.create(installation);
+        try {
+            entityManager.flush();
+            fail("ConstraintViolationException should have been thrown");
+        } catch (ConstraintViolationException violationException) {
+            // then
+            final Set<ConstraintViolation<?>> constraintViolations = violationException.getConstraintViolations();
+            assertThat(constraintViolations).isNotEmpty();
+            assertThat(constraintViolations.size()).isEqualTo(1);
+
+            assertThat(constraintViolations.iterator().next().getMessage()).isEqualTo(
+                    "Device token is not valid for this device type");
+        }
+    }
+
+    @Test
+    public void shouldSaveWhenValidateDeviceIdIOS() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");
+
+        installation.setVariantType(VariantType.IOS);
+
+        // when
+        installationDao.create(installation);
+        entityManager.flush();
+    }
+
+    @Test
+    public void shouldSaveWhenValidateDeviceIdAndroid() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUy"
+                + "WlixrIta35NXW-5Z85OdXcbb_3s3p0qaa_a7NpFlaX9GpidK_BdQNMsx2gX8BrE4Uw7s22nPCcEn1U1_mo-"
+                + "T6hcF5unYt965PDwRTRss8");
+
+        installation.setVariantType(VariantType.ANDROID);
+
+        // when
+        installationDao.create(installation);
+        entityManager.flush();
     }
 
     @Test

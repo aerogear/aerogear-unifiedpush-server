@@ -201,6 +201,7 @@ public final class JPATransformHelper {
         installationEntity.setCategories(installation.getCategories());
         installationEntity.setDeviceType(installation.getDeviceType());
         installationEntity.setOperatingSystem(installation.getOperatingSystem());
+        installationEntity.setVariantType(installation.getVariantType());
 
         return installationEntity;
     }

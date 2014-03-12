@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public interface ClientInstallationService {
     /**
      * Store a new Installation object on the database.
      */
-    void addInstallation(Installation installation);
+    void addInstallation(VariantType type, Installation installation);
 
     /**
      * Performs an update/merge on the given entity.
