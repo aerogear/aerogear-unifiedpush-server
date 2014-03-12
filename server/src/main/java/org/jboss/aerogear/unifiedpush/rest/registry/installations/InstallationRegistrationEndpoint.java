@@ -99,7 +99,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             logger.fine("Performing client registration for: " + entity.getDeviceToken());
             // store the installation:
-                clientInstallationService.addInstallation(entity);
+            clientInstallationService.addInstallation(variant.getType(), entity);
             // add installation to the matching variant
             genericVariantService.addInstallation(variant, entity);
         } else {

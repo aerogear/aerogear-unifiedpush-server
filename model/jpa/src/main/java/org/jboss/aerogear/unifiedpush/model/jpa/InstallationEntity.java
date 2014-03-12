@@ -16,12 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
+import org.jboss.aerogear.unifiedpush.model.jpa.validation.DeviceTokenCheck;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@DeviceTokenCheck
 public class InstallationEntity extends PersistentObject {
     private static final long serialVersionUID = 7177135979544758234L;
 
@@ -45,6 +48,9 @@ public class InstallationEntity extends PersistentObject {
     private String platform;
     @Column
     private String simplePushEndpoint;
+
+    @Column
+    private VariantType variantType;
 
     public boolean isEnabled() {
         return this.enabled;
@@ -116,5 +122,13 @@ public class InstallationEntity extends PersistentObject {
 
     public String getSimplePushEndpoint() {
         return simplePushEndpoint;
+    }
+
+    public VariantType getVariantType() {
+        return variantType;
+    }
+
+    public void setVariantType(VariantType variantType) {
+        this.variantType = variantType;
     }
 }
