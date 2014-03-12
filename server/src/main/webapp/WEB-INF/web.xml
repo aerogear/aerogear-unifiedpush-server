@@ -51,7 +51,7 @@
 
     <login-config>
         <auth-method>KEYCLOAK</auth-method>
-        <realm-name>commerce</realm-name>
+        <realm-name>AeroGear-UnifiedPush</realm-name>
     </login-config>
 
     <security-role>
