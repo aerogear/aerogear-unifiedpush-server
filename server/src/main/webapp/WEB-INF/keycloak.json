@@ -1,10 +1,11 @@
 {
   "realm": "AeroGear-UnifiedPush",
-  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAbi/V+QXMdpmvUTRSiZc39DaiiWaU8qkzezNfwNQQOxWSLJ86qJPueqASJ5I9oKr/gM6Zj1jaFRjWjcUesRJ4djj+vHbt62GUBTAWblJjvE+8Mi9u8ufDSykpt/GyWvqxTatud421ukdBF+b6O1klJEW8twDBKgcjW81GnPJnIQIDAQAB",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHiGjr3EU8zIUmvLwajuktwM/1d8Q3eY+qGyt0nFQBkTMonp221II3JDtUZ3AKldxQXKJqSY7WNm1yzuOXzQtaDl0HP6dCD6L/inB64xIdk7DHoSF6TR0C8xZrK6dkIopVcM2KA+rDIqJJjrkKls7v8J4XoJHWAF9mHcrxtu33AwIDAQAB",
   "auth-server-url": "http://localhost:8080/auth",
   "ssl-not-required": true,
   "resource": "ag-push",
   "credentials": {
-    "password": "password"
-  }
+    "secret": "579279c4-228e-4993-9c94-534f2d21effd"
+  },
+  "use-resource-role-mappings": false
 }
