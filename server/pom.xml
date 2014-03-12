@@ -176,10 +176,6 @@
             <id>JBOSS_NEXUS</id>
             <url>http://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
-        <repository>
-            <id>gcm-server-repository</id>
-            <url>https://raw.github.com/slorber/gcm-server-repository/master/releases/</url>
-        </repository>
     </repositories>
 
     <build>

@@ -88,7 +88,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.android.gcm</groupId>
+            <groupId>com.ganyo</groupId>
             <artifactId>gcm-server</artifactId>
             <version>1.0.2</version>
         </dependency>
