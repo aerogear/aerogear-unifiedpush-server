@@ -1,0 +1,27 @@
+<div>
+<div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > <a href="#" {{ action "back" this}} >Variant</a> > Snippets</div>
+<section>
+<a href="#" {{ action "toggleNative" this}}>{{vType}}</a> {{#if isCordovaCompatible}}| <a href="#" {{ action "toggleCordova" this}}>Cordova</a>{{/if}}
+</section>
+
+<section {{bind-attr class="showNative:codeContainer:hidden"}}>
+
+{{#if isAndroid}}
+ {{ partial "variant/android" }}
+{{/if}}
+{{#if isiOS}}
+ {{ partial "variant/ios" }}
+{{/if}}
+{{#if isSimplePush}}
+ {{ partial "variant/sps" }}
+{{/if}}
+{{#if isChromePackagedApp}}
+ {{ partial "variant/chrome" }}
+{{/if}}
+
+</section>
+
+<section {{bind-attr class="showCordova:codeContainer:hidden"}} >
+{{partial "variant/cordova" }}
+</section>
+</div>

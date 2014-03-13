@@ -1,0 +1,14 @@
+{{#view App.SnippetsView}}
+<pre><code>
+var pushConfig = {
+    {{#if isAndroid}}senderID: "{{projectNumber}}",{{/if}}
+    pushServerURL: "{{upsUrl}}",
+    variantID: "{{variantID}}",
+    variantSecret: "{{secret}}"
+}
+
+//badge and sound are iOS specific, and ignored on Android
+push.register(successHandler, errorHandler, {"badge": "true", "sound": "true",
+    "ecb": "onNotification", pushConfig: pushConfig});
+</code></pre>
+{{/view}}

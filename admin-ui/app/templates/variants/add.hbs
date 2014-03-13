@@ -1,0 +1,33 @@
+<!--Template to create a new push application-->
+<div class="rcue-dialog">
+  <header>
+    <h1>
+      {{#if variantID}}
+        {{headEditVariantTitle name "Rename"}}
+        Edit a Variant
+      {{else}}
+        {{headEditVariantTitle "Variant" "Add"}}
+        Add Variant
+      {{/if}}
+    </h1>
+  </header>
+  <div class="rcue-dialog-inner">
+      <form method="POST" {{action "add" controller target="controllers.variantsIndex" on="submit" }} >
+      <fieldset>
+        <p>
+          <label>Name</label>
+          {{input type="text" name="name" valueBinding="name" placeholder="e.g. Android Free" classNames="topcoat-text-input" classNameBindings="validationErrors.name:error"}}
+        </p>
+        <p>
+          <label>Description</label>
+          {{textarea name="description" valueBinding="description" placeholder="e.g. Free Android App" classNames="topcoat-textarea"}}
+        </p>
+        {{ partial "variants/addVariantsNetwork" }}
+        <div class="rcue-dialog-inner-partial">
+          <input type="reset" class="topcoat-button" value="Cancel" {{ action "cancel" controller target="controllers.variantsIndex"}}>
+          <input type="submit" class="topcoat-button" value="Create" {{bindAttr disabled="controllers.application.isProcessing"}}>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>

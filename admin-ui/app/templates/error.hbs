@@ -1,0 +1,13 @@
+<div class="errors">
+    Current Errors:
+    <ul>
+        {{#each item in errors }}
+            <li>
+                {{#each item in item}}
+                    {{item}}
+                {{/each}}
+            </li>
+        {{/each}}
+    </ul>
+</div>
+

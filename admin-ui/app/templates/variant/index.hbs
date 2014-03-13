@@ -1,0 +1,41 @@
+{{headVariantTitle name}}
+    <aside  {{bind-attr class="showReset:topcoat-overlay:hidden"}}>
+        <h1>Renew Variant Secret</h1>
+        <p>This means that you can no longer use this Variant Secret to register new installations to this variant. A new Variant Secret will be created for you. You may want to do this for security reasons.</p>
+        <p>Are you sure you want to renew the Variant Secret?</p>
+        <div class="topcoat-overlay-buttons">
+            <button role="button" class="topcoat-button--cta" {{action 'reset' this}} {{bindAttr disabled="controllers.application.isProcessing"}}>Renew Variant Secret</button>
+            <button role="button" class="topcoat-button" {{action 'toggleResetOverlay'}}>Cancel</button>
+        </div>
+    </aside>
+{{#if isLoaded}}
+    <div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > Variant</div>
+    <section>
+        <h2>{{ name }}</h2>
+        <span>{{ description }}</span>
+        <br>
+        {{#if isAndroid }}
+        <span>{{ googleProjectNumber }}</span>
+        {{/if}}
+    </section>
+    <section>
+            <h3>Registering installations</h3>
+            <span>
+                Use this <i>Variant ID</i> and <i>Secret</i> combination to register an installation to this variant.
+            </span>
+            <div>
+                Variant ID: {{input type="text" disabled="true" class="rcue-code" valueBinding="variantID"}}
+                <br>
+                Secret: {{input type="text" class="rcue-code secret" valueBinding="secret" disabled="true"}} <a href="#" {{ action "toggleResetOverlay" this}}>Renew...</a>
+            </div>
+            <div style=" text-align: right; ">
+                     {{#linkTo "variant.snippets" this}}Registration Code Snippets...{{/linkTo}}
+             </div>
+    </section>
+    <section>
+        {{ partial "variant/variantDetail" }}
+    </section>
+{{else}}
+    loading....
+{{/if}}
+

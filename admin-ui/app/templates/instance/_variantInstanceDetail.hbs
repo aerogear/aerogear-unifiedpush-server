@@ -1,0 +1,25 @@
+<!-- The Mobile Applications List Partial-->
+<div id="mobile-application-variant-table">
+    <table class="rcue-table">
+        <thead>
+            <tr>
+                <th>Alias</th>
+                <th>Categories</th>
+                <th>Device Type</th>
+                <th>Platform</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ alias }}</td>
+                <td>{{ categories }}</td>
+                <td>{{ deviceType }}</td>
+                <td>{{ operatingSystem }}</td>
+                <td>{{ status }}</td>
+                <td class="action"><a href="#" value="toggle" {{action toggleStatus this}}>Toggle</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

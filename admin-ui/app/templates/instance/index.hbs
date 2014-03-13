@@ -1,0 +1,20 @@
+{{#if isLoaded}}
+{{headInstallationTitle deviceToken}}
+    <div>{{#linkTo "mobileApps"}}Applications{{/linkTo}} > {{#linkTo "variants" this}}Variants{{/linkTo}} > {{#linkTo "variant" this}}Variant{{/linkTo}} > Installation</div>
+    <section>
+        <h3>Installation</h3>
+        <span>
+            An Installation
+        </span>
+        <div class="rcue-code token network-details">
+            Device Token: {{ deviceToken }}
+            <br>
+            {{#if isSimplePush}}
+            SimplePush Endpoint: {{ simplePushEndpoint }}
+            {{/if}}
+        </div>
+    </div>
+    {{ partial "instance/variantInstanceDetail" }}
+{{else}}
+    loading....
+{{/if}}

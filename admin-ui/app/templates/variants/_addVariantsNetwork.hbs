@@ -1,0 +1,69 @@
+<h3>Choose A Network:</h3>
+<section>
+    <label>
+        <input type="radio" checked name="platform" value="android">
+        Google Cloud Messaging
+    </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-android/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Google API Key</label>
+        {{input type="text" name="googleKey" valueBinding="googleKey" classNames="topcoat-text-input" classNameBindings="validationErrors.googleKey:error"}}
+        <br>
+        <label>
+        Project Number
+        </label>
+        {{input type="text" name="projectNumber" valueBinding="projectNumber" classNames="topcoat-text-input" }}
+    </div>
+</section>
+<section>
+    <label>
+        <input type="radio" name="platform" value="chrome">
+        Google Cloud Messaging For Chrome
+    </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Client ID</label>
+        {{input type="text" name="clientId" valueBinding="clientId" classNames="topcoat-text-input" classNameBindings="validationErrors.clientId:error"}}
+        <br>
+        <label>Client Secret</label>
+        {{input type="text" name="clientSecret" valueBinding="clientSecret" classNames="topcoat-text-input" classNameBindings="validationErrors.clientSecret:error"}}
+        <br>
+        <label>Refresh Token</label>
+        {{input type="text" name="refreshToken" valueBinding="refreshToken" classNames="topcoat-text-input" classNameBindings="validationErrors.refreshToken:error"}}
+    </div>
+</section>
+<section>
+    <label>
+        <input type="radio" name="platform" value="iOS">
+        Apple Push Network
+    </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-ios/" target="_blank">AeroGear Help</a></div>
+    <div class="network">
+        <label>Passphrase</label>
+        {{input type="password" name="passphrase" valueBinding="passphrase" classNames="topcoat-text-input" classNameBindings="validationErrors.passphrase:error"}}
+        <br>
+        <label>Certificate</label>
+        {{input type="file" name="certificate" valueBinding="certificate"}}
+        <br>
+        <label>
+            <input type="radio" name="production" value="true" checked="true">
+            Production
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="production" value="false">
+            Development
+        </label>
+    </div>
+</section>
+<section>
+    <label>
+        <input type="radio" name="platform" value="simplePush">
+        SimplePush
+    </label>
+    <div class="network-help"><a href="http://aerogear.org/docs/guides/aerogear-push-js/" target="_blank">AeroGear Help</a></div>
+    <!--<div class="network">
+        <label>Web</label>
+        //Maybe a description or somehting here
+    </div>-->
+</section>

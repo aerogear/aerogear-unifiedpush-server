@@ -1,0 +1,29 @@
+<!-- The Mobile Applications List Partial-->
+<div id="mobile-application-variant-table">
+    <h3>Installations</h3>
+    <table class="rcue-table">
+        <thead>
+            <tr>
+                <th>Token</th>
+                <th>Device</th>
+                <th>Platform</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each installations }}
+                <tr>
+                    <td class="token"><div class="token table">{{#linkTo "instance" this}}{{ deviceToken }}{{/linkTo}}</div></td>
+                    <td>{{ deviceType }}</td>
+                    <td>{{ operatingSystem }}</td>
+                    <td>{{ status }}</td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="4">{{#if isLoaded}}No installations have registered themselves yet{{/if}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
