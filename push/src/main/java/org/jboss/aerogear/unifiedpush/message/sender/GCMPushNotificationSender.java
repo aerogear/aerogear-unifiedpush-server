@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
@@ -37,7 +36,6 @@ import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
-@ApplicationScoped
 public class GCMPushNotificationSender {
 
     private final GCMCache cache = new GCMCache();

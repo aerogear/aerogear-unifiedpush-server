@@ -27,11 +27,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.Response.Status;
 
-@ApplicationScoped
 public class SimplePushNotificationSender implements Serializable {
     private static final long serialVersionUID = 5747687132270998712L;
 
