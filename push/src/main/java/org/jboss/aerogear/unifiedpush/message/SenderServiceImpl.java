@@ -43,18 +43,18 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 @Asynchronous
 public class SenderServiceImpl implements SenderService {
 
-    private final GCMPushNotificationSender gcmSender = new GCMPushNotificationSender();
+    private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
     private final SimplePushNotificationSender simplePushSender = new SimplePushNotificationSender();
     private final GCMForChromePushNotificationSender gcmForChromePushNotificationSender = new GCMForChromePushNotificationSender();
 
+    @Inject
+    private GCMPushNotificationSender gcmSender;
     @Inject
     private APNsPushNotificationSender apnsSender;
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-
-    private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
 
     @Override
     @Asynchronous
