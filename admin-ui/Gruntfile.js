@@ -380,6 +380,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('copy_web', ['copy:webapp']);
     grunt.registerTask('jboss_web', ['copy:jbossweb']);
-    grunt.registerTask('release', ['initLocalConfig','default','prompt:release','tag','commitBranch']);
+    //Disabled until it fits the new structure
+    //grunt.registerTask('release', ['initLocalConfig','default','prompt:release','tag','commitBranch']);
 
 };
