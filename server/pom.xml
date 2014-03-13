@@ -40,11 +40,6 @@
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Import the EJB API, we use provided scope as the API is included
             in JBoss -->
@@ -86,31 +81,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <version>2.3.2.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.notnoop.apns</groupId>
-            <artifactId>apns</artifactId>
-            <version>0.2.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.jackson</groupId>
-                    <artifactId>jackson-mapper-asl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.android.gcm</groupId>
-            <artifactId>gcm-server</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-security</artifactId>
             <version>${aerogear.security.version}</version>
@@ -135,13 +105,19 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-
-
         <dependency>
-            <groupId>net.iharder</groupId>
-            <artifactId>base64</artifactId>
-            <version>2.3.8</version>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-push</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-jaxrs</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!-- Test stuff -->
         <dependency>
@@ -199,10 +175,6 @@
         <repository>
             <id>JBOSS_NEXUS</id>
             <url>http://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>gcm-server-repository</id>
-            <url>https://raw.github.com/slorber/gcm-server-repository/master/releases/</url>
         </repository>
     </repositories>
 

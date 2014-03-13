@@ -50,8 +50,10 @@
 
 	<modules>
         <module>model</module>
-        <module>server</module>
+        <module>push</module>
         <module>service</module>
+        <module>jaxrs</module>
+        <module>server</module>
 	</modules>
 
     <dependencyManagement>
