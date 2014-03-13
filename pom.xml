@@ -296,7 +296,7 @@
         -->
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-        <keycloak.version>1.0-alpha-2</keycloak.version>
+        <keycloak.version>1.0-alpha-4</keycloak.version>
 
     </properties>
 
