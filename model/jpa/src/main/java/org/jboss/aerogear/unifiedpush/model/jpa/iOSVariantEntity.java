@@ -17,17 +17,10 @@
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Column;
-import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-@DiscriminatorValue("ios")
 public class iOSVariantEntity extends AbstractVariantEntity {
     private static final long serialVersionUID = -889367404039436329L;
 
@@ -39,16 +32,12 @@ public class iOSVariantEntity extends AbstractVariantEntity {
     	return VariantType.IOS;
     }
 
-    @Column
     private boolean production;
 
-    @Column
     @NotNull
     @Size(max = 255)
     private String passphrase;
 
-    @Lob
-    @Column(name = "CERT")
     @NotNull
     private byte[] certificate;
 

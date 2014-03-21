@@ -16,65 +16,36 @@
  */
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
 public class PushApplicationEntity extends PersistentObject {
     private static final long serialVersionUID = 6507691362454032282L;
 
-    @Column
     @NotNull
     @Size(min = 1, max = 255)
     private String name;
 
-    @Column
     @Size(min = 1, max = 255)
     private String description;
 
-    @Column
     private String pushApplicationID = UUID.randomUUID().toString();
-    @Column
     private String masterSecret = UUID.randomUUID().toString();
 
-    @Column
     @Size(min = 1, max = 255)
     private String developer;
 
-    // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn
     private Set<iOSVariantEntity> iOSVariants = new HashSet<iOSVariantEntity>();
 
-    // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn
     private Set<AndroidVariantEntity> androidVariants = new HashSet<AndroidVariantEntity>();
 
-    // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn
     private Set<SimplePushVariantEntity> simplePushVariants = new HashSet<SimplePushVariantEntity>();
 
-    // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn
     private Set<ChromePackagedAppVariantEntity> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariantEntity>();
 
     public String getName() {

@@ -17,16 +17,10 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import java.io.Serializable;
-import java.util.UUID;
 
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
-@MappedSuperclass
 public abstract class PersistentObject implements Serializable {
     private static final long serialVersionUID = -2604260447891156143L;
 
-    @Id
     private String id;
 
     public String getId() {

@@ -18,15 +18,9 @@ package org.jboss.aerogear.unifiedpush.model.jpa;
 
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@DiscriminatorValue("chromePackagedApp")
 public class ChromePackagedAppVariantEntity extends AbstractVariantEntity {
     private static final long serialVersionUID = -5473752252296190311L;
 
@@ -38,15 +32,12 @@ public class ChromePackagedAppVariantEntity extends AbstractVariantEntity {
     	return VariantType.CHROME_PACKAGED_APP;
     }
 
-    @Column
     @NotNull
     private String clientId;
 
-    @Column
     @NotNull
     private String clientSecret;
 
-    @Column
     @NotNull
     private String refreshToken;
 

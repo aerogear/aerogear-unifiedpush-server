@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
+http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <description>My First JPA XML Application</description>
+    <package>org.jboss.aerogear.unifiedpush.model.jpa</package>
+
+    <mapped-superclass class="org.jboss.aerogear.unifiedpush.jpa.PersistentObject">
+        <attributes>
+            <id name="id"/>
+        </attributes>
+    </mapped-superclass>
+    <entity class="AbstractVariantEntity" access="FIELD">
+        <inheritance strategy="JOINED"/>
+        <discriminator-column name="TYPE" discriminator-type="STRING"/>
+        <attributes>
+            <one-to-many name="installations">
+                <join-column name="variantID" referenced-column-name="variantID"/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="AndroidVariantEntity" access="FIELD">
+        <discriminator-value>android</discriminator-value>
+    </entity>
+    <entity class="InstallationEntity" access="FIELD">
+        <attributes>
+            <element-collection name="categories" fetch="EAGER"/>
+        </attributes>
+    </entity>
+    <entity class="iOSVariantEntity" access="FIELD">
+        <discriminator-value>ios</discriminator-value>
+        <attributes>
+            <basic name="certificate">
+                <lob/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="PushApplicationEntity" access="FIELD">
+        <attributes>
+            <one-to-many name="iOSVariants" fetch="EAGER">
+                <join-column/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="androidVariants" fetch="EAGER">
+                <join-column/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="simplePushVariants" fetch="EAGER">
+                <join-column/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="chromePackagedAppVariants" fetch="EAGER">
+                <join-column/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="SimplePushVariantEntity" access="FIELD">
+        <discriminator-value>simplePush</discriminator-value>
+    </entity>
+    <entity class="ChromePackagedAppVariantEntity" access="FIELD">
+        <discriminator-value>chromePackagedApp</discriminator-value>
+    </entity>
+</entity-mappings>

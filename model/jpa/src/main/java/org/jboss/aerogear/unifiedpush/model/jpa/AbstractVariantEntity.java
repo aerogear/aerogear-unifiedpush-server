@@ -16,55 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
+
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
-
 /**
  * Abstract Base Class for the different supported variant types.
  */
-@Entity
-@DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class AbstractVariantEntity extends PersistentObject {
     private static final long serialVersionUID = -5028062942838899201L;
 
-    @Column
     @Size(min = 1, max = 255)
     private String name;
 
-    @Column
     @Size(min = 0, max = 255)
     private String description;
 
-    @Column
     private String variantID = UUID.randomUUID().toString();
 
-    @Column
     private String secret = UUID.randomUUID().toString();
 
-    @Column
     private String developer;
 
-    // TODO: let's do LAZY
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "variantID", referencedColumnName = "variantID")
     private Set<InstallationEntity> installations = new HashSet<InstallationEntity>();
 
     public abstract VariantType getType();

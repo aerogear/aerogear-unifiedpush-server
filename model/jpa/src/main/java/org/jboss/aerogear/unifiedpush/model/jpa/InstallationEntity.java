@@ -20,36 +20,22 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.jpa.PersistentObject;
 import org.jboss.aerogear.unifiedpush.model.jpa.validation.DeviceTokenCheck;
 
-import javax.persistence.*;
 import java.util.Set;
 
-@Entity
 @DeviceTokenCheck
 public class InstallationEntity extends PersistentObject {
     private static final long serialVersionUID = 7177135979544758234L;
 
-    @Column
     private boolean enabled = true;
-    @Column
     private String deviceToken;
-    @Column
     private String deviceType;
-    @Column
     private String operatingSystem;
-    @Column
     private String osVersion;
-    @Column
     private String alias;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "category")
     private Set<String> categories;
-    @Column
     private String platform;
-    @Column
     private String simplePushEndpoint;
-
-    @Column
     private VariantType variantType;
 
     public boolean isEnabled() {

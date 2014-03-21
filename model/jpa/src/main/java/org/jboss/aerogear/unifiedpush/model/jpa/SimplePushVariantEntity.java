@@ -16,17 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
 
 /**
  * The SimplePush variant class encapsulates SimplePush specific behavior.
  */
-@Entity
-@DiscriminatorValue("simplePush")
 public class SimplePushVariantEntity extends AbstractVariantEntity {
     private static final long serialVersionUID = 9046963507735955449L;
 

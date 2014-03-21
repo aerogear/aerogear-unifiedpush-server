@@ -16,17 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.model.jpa;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Column;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-
-@Entity
-@DiscriminatorValue("android")
 public class AndroidVariantEntity extends AbstractVariantEntity  {
     private static final long serialVersionUID = -4473752252296190311L;
 
@@ -38,12 +32,10 @@ public class AndroidVariantEntity extends AbstractVariantEntity  {
     	return VariantType.ANDROID;
     }
 
-    @Column
     @NotNull
     @Size(min = 1, max = 255)
     private String googleKey;
 
-    @Column
     @Size(min = 1, max = 255)
     private String projectNumber;
 
