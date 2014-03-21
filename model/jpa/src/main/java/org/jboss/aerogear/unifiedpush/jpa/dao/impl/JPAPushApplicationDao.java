@@ -49,7 +49,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public List<PushApplication> findAllForDeveloper(String loginName) {
 
-        List<PushApplicationEntity> entities = createQuery("select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.developer = :developer")
+        List<PushApplicationEntity> entities = createQuery("select pa from PushApplicationEntity pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
 
         return JPATransformHelper.fromPushApplicationEntityCollection(entities);
@@ -59,7 +59,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
 
         PushApplicationEntity entity = getSingleResultForQuery(createQuery(
-                "select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
+                "select pa from PushApplicationEntity pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
                 .setParameter("pushApplicationID", pushApplicationID)
                 .setParameter("developer", loginName));
 
@@ -69,7 +69,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
 
-        PushApplicationEntity entity = getSingleResultForQuery(createQuery("select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
+        PushApplicationEntity entity = getSingleResultForQuery(createQuery("select pa from PushApplicationEntity pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));
 
         return JPATransformHelper.fromEntity(entity);
