@@ -68,7 +68,6 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                         Ember.run( this, function() {
                             switch( error.status ) {
                             case 401:
-                                that.transitionToRoute( "login" );
                                 break;
                             default:
                                 that.send( "error", that, "Error Saving" );
@@ -105,7 +104,6 @@ App.MobileAppsIndexController = Ember.ArrayController.extend({
                     Ember.run( this, function() {
                         switch( error.status ) {
                         case 401:
-                            App.Router.router.transitionToRoute( "login" );
                             break;
                         default:
                             that.send( "error", that, "Error Saving" );

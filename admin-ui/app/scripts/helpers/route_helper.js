@@ -16,19 +16,6 @@
     Extend the Ember.Route Method
 */
 App.Route = Ember.Route.extend({
-    beforeModel: function( transition ) {
-        var that = this,
-            loginController = this.controllerFor( "login" );
-
-        loginController.set( "isLogged", true );
-        return App.AeroGear.pipelines.pipes.ping.read().then( null, function() {
-            Ember.run( function() {
-                loginController.set( "isLogged", false );
-                loginController.set( "previousTransition", transition );
-                that.transitionTo( "login" );
-            });
-        });
-    },
     activate: function(){
         this.controllerFor( "application" ).set("isProcessing",false);
         this.send( "clearErrors" );

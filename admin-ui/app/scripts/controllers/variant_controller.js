@@ -47,7 +47,6 @@ App.VariantIndexController = Ember.ObjectController.extend({
                     Ember.run( this, function() {
                         switch( error.status ) {
                         case 401:
-                            App.Router.router.transitionToRoute( "login" );
                             break;
                         default:
                             that.send( "error", that, "Error Resetting" );
