@@ -88,8 +88,6 @@ App.MobileApplication.reopenClass({
                 switch( error.status ) {
                 //Possible this may never happen now that we have a beforeModel on the Router
                 case 401:
-                    //Possibly should be done somewhere else?
-                    App.Router.router.transitionTo( "login" );
                     break;
                 default:
                     //console.log( "need to do something here" );
