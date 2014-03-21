@@ -21,17 +21,7 @@
   <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <class>org.jboss.aerogear.unifiedpush.jpa.PersistentObject</class>
-
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.AbstractVariantEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.AndroidVariantEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.InstallationEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.iOSVariantEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.PushApplicationEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.SimplePushVariantEntity</class>
-    <class>org.jboss.aerogear.unifiedpush.model.jpa.ChromePackagedAppVariantEntity</class>
-
-    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <mapping-file>META-INF/orm.xml</mapping-file>
 
     <properties>
       <property name="hibernate.connection.driver_class" value="org.h2.Driver" />

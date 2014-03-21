@@ -14,27 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.model.jpa;
+package org.jboss.aerogear.unifiedpush.api.validation;
 
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.*;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = DeviceTokenValidator.class)
+@Documented
+public @interface DeviceTokenCheck {
 
-/**
- * The SimplePush variant class encapsulates SimplePush specific behavior.
- */
-@Entity
-@DiscriminatorValue("simplePush")
-public class SimplePushVariantEntity extends AbstractVariantEntity {
-    private static final long serialVersionUID = 9046963507735955449L;
+    String message() default "{org.jboss.aerogear.unifiedpush.model.constraints.devicetoken}";
 
-    public SimplePushVariantEntity() {
-        super();
-    }
-    
-    public VariantType getType() {
-    	return VariantType.SIMPLE_PUSH;
-    }
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

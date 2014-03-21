@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.model.jpa.validation;
+package org.jboss.aerogear.unifiedpush.api.validation;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.model.jpa.InstallationEntity;
+import org.jboss.aerogear.unifiedpush.api.Installation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * Validator that will validate if the device token matches to {@code VariantType} specific pattern.
  * @see VariantType
  */
-public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenCheck, InstallationEntity> {
+public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenCheck, Installation> {
     /**
      * Pattern for iOS is pretty well defined as the library we use for sending assumes HEX.
      * @see <a href="https://github.com/notnoop/java-apns/blob/20c10ebd22e15a55c0c1c12695c535d37435dcfd/src/main/java/com/notnoop/apns/internal/Utilities.java#L114">notnoop apns</a>
@@ -44,7 +44,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
     }
 
     @Override
-    public boolean isValid(InstallationEntity installation, ConstraintValidatorContext context) {
+    public boolean isValid(Installation installation, ConstraintValidatorContext context) {
         final String deviceToken = installation.getDeviceToken();
         if (installation.getVariantType() == null || deviceToken == null) {
             return true;

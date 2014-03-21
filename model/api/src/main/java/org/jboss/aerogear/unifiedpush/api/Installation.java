@@ -16,13 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
+
 import java.util.Set;
 
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
  * or user-agent (SimplePush)
  */
+@DeviceTokenCheck
 public class Installation extends BaseModel {
+    private static final long serialVersionUID = 7177135979544758234L;
 
     private boolean enabled = true;
     private String deviceToken;
@@ -36,12 +40,16 @@ public class Installation extends BaseModel {
     private String simplePushEndpoint;
     private VariantType variantType;
 
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
     /**
      * Flag if the actual client installation is enabled (default) or not.
      * Disabled installations are not receiving push notifications.
-     * 
+     *
      * Used by the admin UI to disable specific clients.
-     * 
+     *
      * @param enabled if <code>true</code> the Installation is marked as enabled,
      * setting it to <code>false</code> disables it.
      */
@@ -49,89 +57,85 @@ public class Installation extends BaseModel {
         this.enabled = enabled;
     }
 
-    public boolean isEnabled(){
-        return enabled;
+    public String getDeviceToken() {
+        return this.deviceToken;
     }
 
     /**
      * Identifies the device/user-agent within its PushNetwork.
-     * 
+     *
      * <ul>
      * <li> APNs: <code>deviceToken</code>
      * <li> GCM: <code>registrationId</code>
      * <li> SimplePush: <code>channelId</code>
      * </ul>
-     * 
+     *
      * @param deviceToken unique string to identify an Installation with its PushNetwork
      */
     public void setDeviceToken(final String deviceToken) {
         this.deviceToken = deviceToken;
     }
 
-    public String getDeviceToken() {
-        return deviceToken;
+    public String getDeviceType() {
+        return this.deviceType;
     }
 
     /**
      * The device type of the device or the user agent.
-     * 
+     *
      * <li> For SimplePush this will be <code>Web</code>
      * <li> For iOS that could be <code>iPod</code>, <code>iPad</code> or <code>iPhone</code>
      * <li> For Android that could be <code>Phone</code> or <code>Tablet</code>
-     * 
+     *
      * @param deviceType the type of the registered device
      */
     public void setDeviceType(final String deviceType) {
         this.deviceType = deviceType;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public String getOperatingSystem() {
+        return this.operatingSystem;
     }
 
     /**
      * The (optional) name of the underlying Operating System.
-     * 
+     *
      * @param operatingSystem the name of the Operating System.
      */
     public void setOperatingSystem(final String operatingSystem) {
         this.operatingSystem = operatingSystem;
     }
 
-    public String getOperatingSystem() {
-        return operatingSystem;
+    public String getOsVersion() {
+        return this.osVersion;
     }
 
     /**
      * The (optional) version of the used Operating System.
-     * 
+     *
      * @param osVersion the version string of the mobile OS.
      */
     public void setOsVersion(final String osVersion) {
         this.osVersion = osVersion;
     }
 
-    public String getOsVersion() {
-        return osVersion;
+    public String getAlias() {
+        return this.alias;
     }
 
     /**
-     * Application specific alias to identify users with the system. 
+     * Application specific alias to identify users with the system.
      * E.g. email address or username
-     * 
+     *
      * @param alias string to map the Installation to an actual user.
      */
     public void setAlias(final String alias) {
         this.alias = alias;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
     /**
      * Used to "tag" the clients. E.g. apply sport, news etc
-     * 
+     *
      * @param categories set of all categories the client is in
      */
     public void setCategories(final Set<String> categories) {
@@ -159,9 +163,9 @@ public class Installation extends BaseModel {
     /**
      * The <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol#PushServer_-.3E_UserAgent_2">Mozilla SimplePush Protocol Specification</a> returns a (unique) <code>pushEndpoint</code> URL.
      * The Unified will contact the SimplePush Server at this URL to update the <code>version</code> (aka payload) of the channel identified by <code>channelID</code> (aka deviceToken).
-     * 
+     *
      * <p> This is <b>ONLY</b> relevant for Installations of the <code>SimplePushVariant</code>
-     * @param simplePushEndpoint
+     * @param simplePushEndpoint the endpoint
      */
     public void setSimplePushEndpoint(final String simplePushEndpoint) {
         this.simplePushEndpoint = simplePushEndpoint;

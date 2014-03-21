@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class BaseModel {
+public abstract class BaseModel implements Serializable {
 
     private String id = UUID.randomUUID().toString();
 

@@ -18,8 +18,6 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.helper.JPATransformHelper;
-import org.jboss.aerogear.unifiedpush.model.jpa.PushApplicationEntity;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -28,61 +26,57 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public void create(PushApplication pushApplication) {
-        PushApplicationEntity entity = JPATransformHelper.toEntity(pushApplication);
-
-        persist(entity);
+        persist(pushApplication);
     }
 
     @Override
     public void update(PushApplication pushApplication) {
-        PushApplicationEntity entity = JPATransformHelper.toEntity(pushApplication);
-
-        merge(entity);
+        merge(pushApplication);
     }
 
     @Override
     public void delete(PushApplication pushApplication) {
-        PushApplicationEntity entity = entityManager.find(PushApplicationEntity.class, pushApplication.getId());
+        PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         remove(entity);
     }
 
     @Override
     public List<PushApplication> findAllForDeveloper(String loginName) {
 
-        List<PushApplicationEntity> entities = createQuery("select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.developer = :developer")
+        List<PushApplication> entities = createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
 
-        return JPATransformHelper.fromPushApplicationEntityCollection(entities);
+        return entities;
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
 
-        PushApplicationEntity entity = getSingleResultForQuery(createQuery(
-                "select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
+        PushApplication entity = getSingleResultForQuery(createQuery(
+                "select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
                 .setParameter("pushApplicationID", pushApplicationID)
                 .setParameter("developer", loginName));
 
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
 
-        PushApplicationEntity entity = getSingleResultForQuery(createQuery("select pa from " + PushApplicationEntity.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
+        PushApplication entity = getSingleResultForQuery(createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));
 
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     @Override
     public PushApplication find(String id) {
-        PushApplicationEntity entity = entityManager.find(PushApplicationEntity.class, id);
-        return  JPATransformHelper.fromEntity(entity);
+        PushApplication entity = entityManager.find(PushApplication.class, id);
+        return  entity;
     }
 
-    private PushApplicationEntity getSingleResultForQuery(Query query) {
-        List<PushApplicationEntity> result = query.getResultList();
+    private PushApplication getSingleResultForQuery(Query query) {
+        List<PushApplication> result = query.getResultList();
 
         if (!result.isEmpty()) {
             return result.get(0);
