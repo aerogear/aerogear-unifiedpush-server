@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * The Android variant class encapsulates GCM specific behavior.
  */
-public class AndroidVariant extends AbstractVariant {
+public class AndroidVariant extends Variant {
+    private static final long serialVersionUID = -4473752252296190311L;
 
+    @NotNull
+    @Size(min = 1, max = 255)
     private String googleKey;
+
+    @Size(min = 1, max = 255)
     private String projectNumber;
 
     /**
@@ -29,7 +37,7 @@ public class AndroidVariant extends AbstractVariant {
      * the Admin UI as well, since the Android applications require it (called Sender ID there). That way all informations are stored on the
      * same object.
      */
-    public String getProjectNumber(){
+    public String getProjectNumber() {
         return projectNumber;
     }
 
@@ -41,7 +49,7 @@ public class AndroidVariant extends AbstractVariant {
      * The Google API Key from the Google API project, which has been enabled for Android-based GCM.
      */
     public String getGoogleKey() {
-        return googleKey;
+        return this.googleKey;
     }
 
     public void setGoogleKey(final String googleKey) {

@@ -16,11 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.AbstractVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.helper.JPATransformHelper;
-import org.jboss.aerogear.unifiedpush.model.jpa.AbstractVariantEntity;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -30,21 +27,17 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public void create(Variant variant) {
-        AbstractVariantEntity entity = JPATransformHelper.toEntity(variant);
-
-        persist(entity);
+        persist(variant);
     }
 
     @Override
     public void update(Variant variant) {
-        AbstractVariantEntity entity = JPATransformHelper.toEntity(variant);
-
-        merge(entity);
+        merge(variant);
     }
 
     @Override
     public void delete(Variant variant) {
-        AbstractVariantEntity entity = entityManager.find(AbstractVariantEntity.class, variant.getId());
+        Variant entity = entityManager.find(Variant.class, variant.getId());
         remove(entity);
     }
 
@@ -52,31 +45,31 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     @Override
     public Variant findByVariantID(String variantID) {
 
-        AbstractVariantEntity entity = getSingleResultForQuery(createQuery("select t from " + AbstractVariantEntity.class.getSimpleName() + " t where t.variantID = :variantID")
+        Variant entity = getSingleResultForQuery(createQuery("select t from " + Variant.class.getSimpleName() + " t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));
 
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     @Override
     public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
 
-        AbstractVariantEntity entity = getSingleResultForQuery(createQuery("select t from " + AbstractVariantEntity.class.getSimpleName() + " t where t.variantID = :variantID and t.developer = :developer")
+        Variant entity = getSingleResultForQuery(createQuery("select t from " + Variant.class.getSimpleName() + " t where t.variantID = :variantID and t.developer = :developer")
                 .setParameter("variantID", variantID)
                 .setParameter("developer", loginName));
 
 
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     @Override
     public Variant find(String id) {
-        AbstractVariantEntity entity = entityManager.find(AbstractVariantEntity.class, id);
-        return JPATransformHelper.fromEntity(entity);
+        Variant entity = entityManager.find(Variant.class, id);
+        return entity;
     }
 
-    private AbstractVariantEntity getSingleResultForQuery(Query query) {
-        List<AbstractVariantEntity> result = query.getResultList();
+    private Variant getSingleResultForQuery(Query query) {
+        List<Variant> result = query.getResultList();
 
         if (!result.isEmpty()) {
             return result.get(0);

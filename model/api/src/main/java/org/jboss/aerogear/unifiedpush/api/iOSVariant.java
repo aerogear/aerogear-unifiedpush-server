@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
-public class iOSVariant extends AbstractVariant {
+public class iOSVariant extends Variant {
+    private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;
+
+    @NotNull
+    @Size(max = 255)
     private String passphrase;
+
+    @NotNull
     private byte[] certificate;
 
     /**
@@ -46,7 +55,7 @@ public class iOSVariant extends AbstractVariant {
      * of Apple's APNs Push Servers.
      */
     public String getPassphrase() {
-        return passphrase;
+        return this.passphrase;
     }
 
     public void setPassphrase(final String passphrase) {

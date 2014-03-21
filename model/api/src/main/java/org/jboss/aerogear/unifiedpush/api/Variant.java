@@ -16,67 +16,93 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
- * Logical construct which matches a mobile app in the appstore. 
+ * Logical construct which matches a mobile app in the appstore.
  */
-public interface Variant {
+public abstract class Variant extends BaseModel {
+    private static final long serialVersionUID = -5028062942838899201L;
 
-    /**
-     * Key identifying the model object in the underlying database (primary key)
-     *
-     * @param id value of the primary key
-     */
-    void setId(final String id);
+    @Size(min = 1, max = 255)
+    private String name;
 
-    String getId();
+    @Size(min = 0, max = 255)
+    private String description;
+
+    private String variantID = UUID.randomUUID().toString();
+
+    private String secret = UUID.randomUUID().toString();
+
+    private String developer;
+
+    private Set<Installation> installations = new HashSet<Installation>();
 
     /**
      * The type (Android, iOS or SimplePush) of the underlying variant.
      */
-    VariantType getType();
+    public abstract VariantType getType();
+
+    public String getName() {
+        return this.name;
+    }
 
     /**
-     * The name of the variant (e.g. the name of the matching App in the Appstore) 
+     * The name of the variant (e.g. the name of the matching App in the Appstore)
      */
-    void setName(final String name);
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-    String getName();
+    public String getDescription() {
+        return this.description;
+    }
 
     /**
      * Some description of the app.
      */
-    void setDescription(final String description);
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-    String getDescription();
+    public Set<Installation> getInstallations() {
+        return this.installations;
+    }
+
+    /**
+     * The collection of {@link Installation}s for this Variant.
+     */
+    public void setInstallations(final Set<Installation> installations) {
+        this.installations = installations;
+    }
+
+    public String getVariantID() {
+        return variantID;
+    }
 
     /**
      * Identifier used to register an {@link Installation} with this Variant
      */
-    void setVariantID(String variantID);
+    public void setVariantID(String variantID) {
+        this.variantID = variantID;
+    }
 
-    String getVariantID();
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
-    /**
-     * The Variant-specific "secret", used from an {@link Installation} to register themselves against this Variant.
-     */
-    void setSecret(String secret);
+    public String getSecret() {
+        return secret;
+    }
 
-    String getSecret();
+    public String getDeveloper() {
+        return developer;
+    }
 
-    /**
-     * The collection of {@link Installation}s for this Variant. 
-     */
-    void setInstallations(final Set<Installation> installations);
-
-    Set<Installation> getInstallations();
-
-    /**
-     * The name of the developer, that is owning the variant. 
-     */
-    String getDeveloper();
-
-    void setDeveloper(String developer);
-
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
 }

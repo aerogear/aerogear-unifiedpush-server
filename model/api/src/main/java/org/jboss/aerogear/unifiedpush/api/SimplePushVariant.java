@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,11 @@ package org.jboss.aerogear.unifiedpush.api;
 /**
  * The SimplePush variant class encapsulates SimplePush specific behavior.
  */
-public class SimplePushVariant extends AbstractVariant {
+public class SimplePushVariant extends Variant {
+    private static final long serialVersionUID = 9046963507735955449L;
 
     @Override
     public VariantType getType() {
-        return VariantType.SIMPLE_PUSH;
+    	return VariantType.SIMPLE_PUSH;
     }
 }

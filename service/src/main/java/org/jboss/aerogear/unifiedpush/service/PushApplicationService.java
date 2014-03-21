@@ -28,7 +28,7 @@ import java.util.List;
 public interface PushApplicationService {
 
     /**
-     * Store a new PushApplicationEntity object on the database.
+     * Store a new PushApplication object on the database.
      */
     void addPushApplication(PushApplication pushApp);
 
@@ -43,37 +43,37 @@ public interface PushApplicationService {
     List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
 
     /**
-     * Returns the PushApplicationEntity entity, matching the given ID.
+     * Returns the PushApplication entity, matching the given ID.
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
     /**
-     * Finder that returns an actual PushApplicationEntity, identified by its ID and its owner/developer.
+     * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
      */
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
 
     /**
-     * Removes the given PushApplicationEntity entity.
+     * Removes the given PushApplication entity.
      */
     void removePushApplication(PushApplication pushApp);
 
     /**
-     * Registers the given iOSVariantEntity object with the given PushApplicationEntity.
+     * Registers the given iOSVariant object with the given PushApplication.
      */
     void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
 
     /**
-     * Registers the given AndroidVariantEntity object with the given PushApplicationEntity.
+     * Registers the given AndroidVariant object with the given PushApplication.
      */
     void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
 
     /**
-     * Registers the given SimplePushVariantEntity object with the given PushApplicationEntity.
+     * Registers the given SimplePushVariant object with the given PushApplication.
      */
     void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
 
     /**
-     * Registers the given ChromePackagedAppVariantEntity object with the given PushApplicationEntity.
+     * Registers the given ChromePackagedAppVariant object with the given PushApplication.
      */
     void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
 }

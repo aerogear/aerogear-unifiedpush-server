@@ -16,39 +16,28 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.helper.JPATransformHelper;
-import org.jboss.aerogear.unifiedpush.model.jpa.AbstractVariantEntity;
-import org.jboss.aerogear.unifiedpush.model.jpa.InstallationEntity;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
     @Override
     public void create(Installation installation) {
-        InstallationEntity entity = JPATransformHelper.toEntity(installation);
-        persist(entity);
+        persist(installation);
     }
 
     @Override
     public void update(Installation installation) {
-        InstallationEntity entity = JPATransformHelper.toEntity(installation);
-
-        merge(entity);
+        merge(installation);
     }
 
     @Override
     public void delete(Installation installation) {
-        InstallationEntity entity = entityManager.find(InstallationEntity.class, installation.getId());
+        Installation entity = entityManager.find(Installation.class, installation.getId());
         remove(entity);
     }
 
@@ -56,16 +45,14 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        InstallationEntity entity = getSingleResultForQuery(createQuery("select installation from " + AbstractVariantEntity.class.getSimpleName() +
+        Installation entity = getSingleResultForQuery(createQuery("select installation from " + Variant.class.getSimpleName() +
                 " abstractVariant join abstractVariant.installations installation" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
 
-
-
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     @Override
@@ -76,7 +63,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
             return Collections.EMPTY_LIST;
         }
 
-        List<InstallationEntity> entities = createQuery("select installation from " + AbstractVariantEntity.class.getSimpleName() +
+        List<Installation> entities = createQuery("select installation from " + Variant.class.getSimpleName() +
                 " abstractVariant join abstractVariant.installations installation" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
@@ -84,7 +71,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
                 .setParameter("deviceTokens", deviceTokens)
                 .getResultList();
 
-        return JPATransformHelper.fromInstallationEntityCollection(entities);
+        return entities;
     }
 
     @Override
@@ -92,7 +79,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         // the required part: Join + all tokens for variantID;
 
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
-        jpqlString.append(AbstractVariantEntity.class.getSimpleName())
+        jpqlString.append(Variant.class.getSimpleName())
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
@@ -103,7 +90,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         // the required part: Join + simplePushEndpoint URLs for given SimplePush variantID;
 
         final StringBuilder jpqlString = new StringBuilder("select installation.simplePushEndpoint from ");
-        jpqlString.append(AbstractVariantEntity.class.getSimpleName())
+        jpqlString.append(Variant.class.getSimpleName())
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
@@ -111,9 +98,9 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
     @Override
     public Installation find(String id) {
-        InstallationEntity entity = entityManager.find(InstallationEntity.class, id);
+        Installation entity = entityManager.find(Installation.class, id);
 
-        return JPATransformHelper.fromEntity(entity);
+        return entity;
     }
 
     /**
@@ -190,8 +177,8 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         return (list != null && !list.isEmpty());
     }
 
-    private InstallationEntity getSingleResultForQuery(Query query) {
-        List<InstallationEntity> result = query.getResultList();
+    private Installation getSingleResultForQuery(Query query) {
+        List<Installation> result = query.getResultList();
 
         if (!result.isEmpty()) {
             return result.get(0);

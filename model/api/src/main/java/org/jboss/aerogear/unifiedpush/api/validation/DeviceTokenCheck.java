@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.jpa;
+package org.jboss.aerogear.unifiedpush.api.validation;
 
-import java.io.Serializable;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.*;
 
-public abstract class PersistentObject implements Serializable {
-    private static final long serialVersionUID = -2604260447891156143L;
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = DeviceTokenValidator.class)
+@Documented
+public @interface DeviceTokenCheck {
 
-    private String id;
+    String message() default "{org.jboss.aerogear.unifiedpush.model.constraints.devicetoken}";
 
-    public String getId() {
-        return this.id;
-    }
+    Class<?>[] groups() default {};
 
-    public void setId(final String id) {
-        if (id != null) {
-            this.id = id;
-        }
-    }
+    Class<? extends Payload>[] payload() default {};
 }

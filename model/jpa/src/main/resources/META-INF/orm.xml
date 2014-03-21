@@ -23,14 +23,14 @@
 http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                  version="2.0">
     <description>My First JPA XML Application</description>
-    <package>org.jboss.aerogear.unifiedpush.model.jpa</package>
+    <package>org.jboss.aerogear.unifiedpush.api</package>
 
-    <mapped-superclass class="org.jboss.aerogear.unifiedpush.jpa.PersistentObject">
+    <mapped-superclass class="BaseModel">
         <attributes>
             <id name="id"/>
         </attributes>
     </mapped-superclass>
-    <entity class="AbstractVariantEntity" access="FIELD">
+    <entity class="Variant" access="FIELD">
         <inheritance strategy="JOINED"/>
         <discriminator-column name="TYPE" discriminator-type="STRING"/>
         <attributes>
@@ -42,15 +42,15 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </one-to-many>
         </attributes>
     </entity>
-    <entity class="AndroidVariantEntity" access="FIELD">
+    <entity class="AndroidVariant" access="FIELD">
         <discriminator-value>android</discriminator-value>
     </entity>
-    <entity class="InstallationEntity" access="FIELD">
+    <entity class="Installation" access="FIELD">
         <attributes>
             <element-collection name="categories" fetch="EAGER"/>
         </attributes>
     </entity>
-    <entity class="iOSVariantEntity" access="FIELD">
+    <entity class="iOSVariant" access="FIELD">
         <discriminator-value>ios</discriminator-value>
         <attributes>
             <basic name="certificate">
@@ -58,7 +58,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </basic>
         </attributes>
     </entity>
-    <entity class="PushApplicationEntity" access="FIELD">
+    <entity class="PushApplication" access="FIELD">
         <attributes>
             <one-to-many name="iOSVariants" fetch="EAGER">
                 <join-column/>
@@ -86,10 +86,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </one-to-many>
         </attributes>
     </entity>
-    <entity class="SimplePushVariantEntity" access="FIELD">
+    <entity class="SimplePushVariant" access="FIELD">
         <discriminator-value>simplePush</discriminator-value>
     </entity>
-    <entity class="ChromePackagedAppVariantEntity" access="FIELD">
+    <entity class="ChromePackagedAppVariant" access="FIELD">
         <discriminator-value>chromePackagedApp</discriminator-value>
     </entity>
 </entity-mappings>

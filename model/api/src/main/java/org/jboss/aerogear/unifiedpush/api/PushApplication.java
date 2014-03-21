@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -24,19 +26,31 @@ import java.util.UUID;
  * Logical construct of an overall mobile and push-enabled Application
  */
 public class PushApplication extends BaseModel {
+    private static final long serialVersionUID = 6507691362454032282L;
 
+    @NotNull
+    @Size(min = 1, max = 255)
     private String name;
+
+    @Size(min = 1, max = 255)
     private String description;
+
     private String pushApplicationID = UUID.randomUUID().toString();
     private String masterSecret = UUID.randomUUID().toString();
+
+    @Size(min = 1, max = 255)
     private String developer;
+
     private Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
+
     private Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
+
     private Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
+
     private Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
 
     /**
-     * The name of the application. 
+     * The name of the application.
      */
     public void setName(final String name) {
         this.name = name;
@@ -81,7 +95,7 @@ public class PushApplication extends BaseModel {
 
 
     /**
-     * The collection of iOS Variants. 
+     * The collection of iOS Variants.
      */
     public void setIOSVariants(final Set<iOSVariant> iOSVariants) {
         this.iOSVariants = iOSVariants;
@@ -92,7 +106,7 @@ public class PushApplication extends BaseModel {
     }
 
     /**
-     * The collection of Android Variants. 
+     * The collection of Android Variants.
      */
     public void setAndroidVariants(final Set<AndroidVariant> androidVariants) {
         this.androidVariants = androidVariants;
@@ -103,9 +117,9 @@ public class PushApplication extends BaseModel {
     }
 
     /**
-     * The collection of SimplePush Variants. 
+     * The collection of SimplePush Variants.
      */
-    public void setSimplePushVariants(final Set<SimplePushVariant> simplePushVariants){
+    public void setSimplePushVariants(final Set<SimplePushVariant> simplePushVariants) {
         this.simplePushVariants = simplePushVariants;
     }
 
