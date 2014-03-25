@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core-hibernate</artifactId>
-            <version>4.6.0</version>
+            <version>${version.org.apache.openejb.openejb-core-hibernate}</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
@@ -62,31 +62,27 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.0.1.Final</version>
+            <version>${version.org.hibernate}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
+            <version>${version.org.hibernate.validator}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>1.5.0</version>
+            <version>${version.org.assertj.assertj-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.172</version>
+            <version>${version.com.h2database}</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
     </dependencies>
 
 </project>
