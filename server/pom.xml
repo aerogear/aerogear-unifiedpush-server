@@ -80,17 +80,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Keycloak dependencies -->
         <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-security</artifactId>
-            <version>${aerogear.security.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-security-picketlink</artifactId>
-            <version>${aerogear.security.picketlink.version}</version>
-            <scope>compile</scope>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-as7-adapter</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
 
         <dependency>
@@ -220,8 +214,7 @@
     </build>
 
     <properties>
-        <aerogear.security.version>1.3.1</aerogear.security.version>
-        <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
+        <keycloak.version>1.0-alpha-4</keycloak.version>
     </properties>
 
 </project>
