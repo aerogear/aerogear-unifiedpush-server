@@ -49,7 +49,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        Installation entity = getSingleResultForQuery(createQuery("select installation from " + Variant.class.getSimpleName() +
+        Installation entity = getSingleResultForQuery(createQuery("select installation from Variant " +
                 " abstractVariant join abstractVariant.installations installation" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
@@ -67,7 +67,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
             return Collections.EMPTY_LIST;
         }
 
-        List<Installation> entities = createQuery("select installation from " + Variant.class.getSimpleName() +
+        List<Installation> entities = createQuery("select installation from Variant " +
                 " abstractVariant join abstractVariant.installations installation" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
@@ -82,8 +82,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from ");
-        jpqlString.append(Variant.class.getSimpleName())
+        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from Variant")
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
@@ -93,8 +92,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     public List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         // the required part: Join + simplePushEndpoint URLs for given SimplePush variantID;
 
-        final StringBuilder jpqlString = new StringBuilder("select installation.simplePushEndpoint from ");
-        jpqlString.append(Variant.class.getSimpleName())
+        final StringBuilder jpqlString = new StringBuilder("select installation.simplePushEndpoint from Variant")
                 .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
