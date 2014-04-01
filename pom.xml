@@ -42,7 +42,7 @@
         <system>jira</system>
         <url>https://issues.jboss.org/browse/AGPUSH</url>
     </issueManagement>
-	
+
     <ciManagement>
         <system>travis-ci</system>
         <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>

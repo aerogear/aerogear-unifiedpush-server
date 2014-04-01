@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class HttpBasicHelperTest {
 
     @Test

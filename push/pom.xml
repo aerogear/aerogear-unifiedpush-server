@@ -26,7 +26,6 @@
     <artifactId>unifiedpush-push</artifactId>
     <name>UnifiedPush Push Notification Networks</name>
 
-
     <dependencies>
         <dependency>
             <groupId>javax.enterprise</groupId>
