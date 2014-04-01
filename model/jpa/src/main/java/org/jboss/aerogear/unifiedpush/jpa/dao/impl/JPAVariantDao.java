@@ -45,7 +45,7 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     @Override
     public Variant findByVariantID(String variantID) {
 
-        Variant entity = getSingleResultForQuery(createQuery("select t from " + Variant.class.getSimpleName() + " t where t.variantID = :variantID")
+        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));
 
         return entity;
@@ -54,7 +54,7 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     @Override
     public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
 
-        Variant entity = getSingleResultForQuery(createQuery("select t from " + Variant.class.getSimpleName() + " t where t.variantID = :variantID and t.developer = :developer")
+        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID and t.developer = :developer")
                 .setParameter("variantID", variantID)
                 .setParameter("developer", loginName));
 

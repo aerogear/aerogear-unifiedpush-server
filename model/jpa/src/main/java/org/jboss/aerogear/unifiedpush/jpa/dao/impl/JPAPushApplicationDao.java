@@ -43,7 +43,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public List<PushApplication> findAllForDeveloper(String loginName) {
 
-        List<PushApplication> entities = createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.developer = :developer")
+        List<PushApplication> entities = createQuery("select pa from PushApplication pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
 
         return entities;
@@ -53,7 +53,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
 
         PushApplication entity = getSingleResultForQuery(createQuery(
-                "select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
+                "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
                 .setParameter("pushApplicationID", pushApplicationID)
                 .setParameter("developer", loginName));
 
@@ -63,7 +63,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
 
-        PushApplication entity = getSingleResultForQuery(createQuery("select pa from " + PushApplication.class.getSimpleName() + " pa where pa.pushApplicationID = :pushApplicationID")
+        PushApplication entity = getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));
 
         return entity;
