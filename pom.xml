@@ -109,10 +109,8 @@
         <apns.version>0.2.3</apns.version>
         <gcm-server.version>1.0.2</gcm-server.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <mysql.version>5.1.18</mysql.version>
-        <postgresql.version>9.2-1004-jdbc41</postgresql.version>
-
 
     </properties>
 
 </project>
+
