@@ -60,7 +60,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
+            logger.trace(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
 
             // generate the new 'secret' and apply it:
             String newSecret = UUID.randomUUID().toString();
@@ -81,7 +81,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Requested: %s", variant));
+            logger.trace(String.format("Requested: %s", variant));
 
             return Response.ok(variant).build();
         }
@@ -97,7 +97,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
+            logger.trace(String.format("Deleting: %s", variant.getClass().getSimpleName()));
 
             variantService.removeVariant(variant);
             return Response.noContent().build();

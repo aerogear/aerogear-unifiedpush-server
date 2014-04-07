@@ -48,6 +48,12 @@
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>3.1.0.GA</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Import the EJB API, we use provided scope as the API is included
             in JBoss -->

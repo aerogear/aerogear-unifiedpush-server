@@ -189,7 +189,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             // ok we are good:
             return true;
         } catch (Exception e) {
-            logger.severe("Could not validate the given certificate and passphrase pair");
+            logger.fatal("Could not validate the given certificate and passphrase pair");
             return false;
         }
     }

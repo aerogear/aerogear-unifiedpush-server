@@ -22,8 +22,10 @@ import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
@@ -32,8 +34,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class APNsPushNotificationSender {
 
@@ -77,7 +77,7 @@ public class APNsPushNotificationSender {
 
         if (service != null) {
             try {
-                logger.fine(String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
+                logger.trace(String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
                 // send:
                 service.start();
 
@@ -93,14 +93,14 @@ public class APNsPushNotificationSender {
                 // trigger asynchronous deletion:
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
             } catch (RuntimeException e) {
-                logger.log(Level.SEVERE, "Error sending messages to APN server", e);
+                logger.log(Level.FATAL, "Error sending messages to APN server", e);
             } finally {
 
                 // tear down and release resources:
                 service.stop();
             }
         } else {
-            logger.severe("No certificate was found. Could not send messages to APNs");
+            logger.fatal("No certificate was found. Could not send messages to APNs");
         }
     }
 
@@ -150,7 +150,7 @@ public class APNsPushNotificationSender {
                 // release the stream
                 stream.close();
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Error reading certificate", e);
+                logger.log(Level.FATAL, "Error reading certificate", e);
             }
 
             // pick the destination:

@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,7 +40,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import java.util.logging.Logger;
 
 @Stateless
 @Path("/registry/device")
@@ -97,7 +97,7 @@ public class InstallationRegistrationEndpoint {
 
         // new device/client ? 
         if (installation == null) {
-            logger.fine("Performing client registration for: " + entity.getDeviceToken());
+            logger.trace("Performing client registration for: " + entity.getDeviceToken());
             // store the installation:
             clientInstallationService.addInstallation(variant.getType(), entity);
             // add installation to the matching variant

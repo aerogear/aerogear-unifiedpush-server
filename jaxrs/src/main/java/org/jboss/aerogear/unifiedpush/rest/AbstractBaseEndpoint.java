@@ -17,11 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
+import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -29,6 +25,10 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
