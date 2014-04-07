@@ -16,6 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
+
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -24,10 +28,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ws.rs.core.Response.Status;
 
 public class SimplePushNotificationSender implements Serializable {
     private static final long serialVersionUID = 5747687132270998712L;
@@ -51,16 +51,16 @@ public class SimplePushNotificationSender implements Serializable {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                logger.trace(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
-                    logger.severe("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
+                    logger.fatal("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
+                logger.log(Level.FATAL, "Error during PUT execution to SimplePush Network", e);
             } finally {
                 // tear down
                 if (conn != null) {

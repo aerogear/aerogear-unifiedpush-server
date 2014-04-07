@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -38,6 +38,8 @@ import org.jboss.aerogear.unifiedpush.message.sender.GCMPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.logging.Logger;
+
 
 @Stateless
 @Asynchronous
@@ -154,22 +156,22 @@ public class SenderServiceImpl implements SenderService {
     }
 
     private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.fine(String.format("Sending: %s to APNs", pushMessage));
+        logger.trace(String.format("Sending: %s to APNs", pushMessage));
         apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
     }
 
     private void sendToGCM(AndroidVariant androidVariant, List<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.fine(String.format("Sending: %s to GCM", pushMessage));
+        logger.trace(String.format("Sending: %s to GCM", pushMessage));
         gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
     }
 
     private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
-        logger.fine(String.format("Sending: %s to SimplePush network/server", payload));
+        logger.trace(String.format("Sending: %s to SimplePush network/server", payload));
         simplePushSender.sendMessage(pushEndpointURLs, payload);
     }
 
     private void sendToGCMForChrome( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage pushMessage ) {
-        logger.fine(String.format("Sending: %s to GCM For Chrome", pushMessage));
+        logger.trace(String.format("Sending: %s to GCM For Chrome", pushMessage));
         gcmForChromePushNotificationSender.sendMessage(chromePackagedAppVariant, channelIDs, pushMessage);
 
     }

@@ -17,8 +17,10 @@ package org.jboss.aerogear.unifiedpush.message.sender;
  */
 
 import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.message.helper.ChromePackagedAppTokenCache;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.helper.ChromePackagedAppTokenCache;
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -36,8 +38,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GCMForChromePushNotificationSender implements Serializable {
 
@@ -70,10 +70,10 @@ public class GCMForChromePushNotificationSender implements Serializable {
                 logger.info("GCM for Chrome Status: " + chromePackagedAppStatusCode);
 
                 if (chromePackagedAppStatusCode >= 400) {
-                    logger.severe("ERROR ??????     STATUS CODE, from GCM for Chrome was NOT 2XX, but....: " + chromePackagedAppStatusCode);
+                    logger.fatal("ERROR ??????     STATUS CODE, from GCM for Chrome was NOT 2XX, but....: " + chromePackagedAppStatusCode);
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);
+                logger.log(Level.FATAL, "Error during Post execution to GCM for Chrome Network", e);
             } finally {
                 // tear down
                 if (conn != null ) {
@@ -181,9 +181,9 @@ public class GCMForChromePushNotificationSender implements Serializable {
                 accessTokenMap.put(chromePackagedAppVariant.getClientId(),accessTokenObject);
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network For access token refresh", e);
+            logger.log(Level.FATAL, "Error during Post execution to GCM for Chrome Network For access token refresh", e);
         } catch (ParseException e) {
-            logger.log(Level.SEVERE, "Error during Parse of Response ", e);
+            logger.log(Level.FATAL, "Error during Parse of Response ", e);
         } finally {
             // tear down
             if (accessTokenConn != null ) {

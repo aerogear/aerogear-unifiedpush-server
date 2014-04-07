@@ -16,8 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import java.util.Map;
-import java.util.logging.Logger;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.SenderService;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,12 +34,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.message.SenderService;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
 
 @Stateless
 @Path("/sender")
