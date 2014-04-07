@@ -21,11 +21,11 @@
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-model-parent</artifactId>
         <version>0.11.0-SNAPSHOT</version>
-		<!--relativePath>../../pom.xml</relativePath-->
+        <!--relativePath>../../pom.xml</relativePath-->
     </parent>
 
     <artifactId>unifiedpush-model-api</artifactId>
-	<name>UnifiedPush Server Model API</name>
+    <name>UnifiedPush Server Model API</name>
 
 
     <dependencies>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>1.5.0</version>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

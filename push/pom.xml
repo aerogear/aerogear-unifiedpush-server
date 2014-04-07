@@ -72,13 +72,13 @@
         <dependency>
             <groupId>net.iharder</groupId>
             <artifactId>base64</artifactId>
-            <version>2.3.8</version>
+            <version>${iharder.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.notnoop.apns</groupId>
             <artifactId>apns</artifactId>
-            <version>0.2.3</version>
+            <version>${apns.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.ganyo</groupId>
             <artifactId>gcm-server</artifactId>
-            <version>1.0.2</version>
+            <version>${gcm-server.version}</version>
         </dependency>
 
         <dependency>
@@ -100,13 +100,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>1.5.0</version>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
