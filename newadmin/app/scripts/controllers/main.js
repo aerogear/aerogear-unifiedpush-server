@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('newadminApp')
-  .controller('MainCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MainCtrl', function ($scope,pushApplication) {
+        $scope.$on('loginDone', function(e,arg){
+            //let's show all the applications
+            $scope.applications =  pushApplication.query();
+            console.log($scope.applications);
+        });
+
   });

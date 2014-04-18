@@ -1,9 +1,37 @@
-<div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<aside class="lo-sidebar col-md-2 fixed clearfix ng-isolate-scope"
+       data-lo-current="storage" data-lo-apps="applications" data-lo-app="curApp">
+
+    <nav class="navbar navbar-vertical" role="navigation">
+        <div class="bs-sidebar">
+            <ul>
+                <li ng-class="{active: loCurrent == 'dashboard'}" class="dashboard"><a
+                        href="#/applications/admin/dashboard"><i class="fa fa-tachometer fa-3x"></i>Stats</a></li>
+                <li ng-class="{active: loCurrent == 'push'}" class="push"><a href="#"><i
+                        class="fa fa-mobile fa-4x"></i>Applications</a></li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+    <div class="row">
+        <div class="lo-content-area col-md-12">
+            <ol class="breadcrumb">
+                <li class="active">Applications</li>
+            </ol>
+            <div>
+                <a href="#/applications/admin/create-storage" class="btn btn-primary btn-lg" type="button">Add
+                    Variant...</a>
+            </div>
+            <h2>Applications<span class="ng-binding"> (6) </span></h2>
+            <table class="table table-bordered">
+                <tr ng-repeat="application in applications">
+                    <td>{{ application.name }}</td>
+                </tr>
+            </table>
+
+
+
+        </div>
+    </div>
 </div>
