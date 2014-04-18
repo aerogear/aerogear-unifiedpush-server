@@ -16,6 +16,9 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
   require('time-grunt')(grunt);
 
+    // load custom tasks
+    grunt.loadTasks('tasks');
+
   // configurable paths
   var yeomanConfig = {
     app: 'app',
@@ -29,14 +32,9 @@ module.exports = function (grunt) {
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
-      coffee: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-        tasks: ['coffee:dist']
-      },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.coffee'],
-        tasks: ['coffee:test']
-      },
+      options: {
+            nospawn: true
+        },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['copy:styles', 'autoprefixer']
@@ -50,7 +48,8 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ]
+        ],
+        tasks: [ 'copy:webapp', 'copy:jbossweb' ]
       }
     },
     autoprefixer: {
@@ -127,30 +126,6 @@ module.exports = function (grunt) {
         'Gruntfile.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ]
-    },
-    coffee: {
-      options: {
-        sourceMap: true,
-        sourceRoot: ''
-      },
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/scripts',
-          src: '{,*/}*.coffee',
-          dest: '.tmp/scripts',
-          ext: '.js'
-        }]
-      },
-      test: {
-        files: [{
-          expand: true,
-          cwd: 'test/spec',
-          src: '{,*/}*.coffee',
-          dest: '.tmp/spec',
-          ext: '.js'
-        }]
-      }
     },
     // not used since Uglify task does concat,
     // but still available if needed
@@ -265,19 +240,40 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
-      }
+      },
+       webapp: {
+              files: [{
+                  expand: true,
+                  cwd: '<%= yeoman.app %>',
+                  dest: '<%= local.webapp %>',
+                  src: [ "**", "!**/*.txt" ]
+              }]
+          },
+          jbossweb: {
+              files: [{
+                  expand: true,
+                  cwd: '<%= yeoman.app %>',
+                  dest: '<%= local.jbossweb %>',
+                  src: [ "**", "!**/*.txt" ]
+              }]
+          },
+          server_dist: {
+              files: [{
+                  expand: true,
+                  cwd: '<%= local.home %>/dist',
+                  dest: '<%= local.ups_repo %>/src/main/webapp',
+                  src: [ "**", "!**/*.txt" ]
+              }]
+          }
     },
     concurrent: {
       server: [
-        'coffee:dist',
         'copy:styles'
       ],
       test: [
-        'coffee',
         'copy:styles'
       ],
       dist: [
-        'coffee',
         'copy:styles',
         'imagemin',
         'svgmin',
@@ -322,6 +318,7 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
+      'initLocalConfig',
       'clean:server',
       'concurrent:server',
       'autoprefixer',
@@ -359,4 +356,7 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('copy_web', ['copy:webapp']);
+  grunt.registerTask('jboss_web', ['copy:jbossweb']);
 };
