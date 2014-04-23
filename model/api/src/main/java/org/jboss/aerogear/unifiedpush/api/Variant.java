@@ -24,7 +24,8 @@ import java.util.UUID;
 /**
  * Logical construct which matches a mobile app in the appstore.
  */
-public abstract class Variant extends BaseModel {
+public abstract class Variant extends
+{
     private static final long serialVersionUID = -5028062942838899201L;
 
     @Size(min = 1, max = 255)
