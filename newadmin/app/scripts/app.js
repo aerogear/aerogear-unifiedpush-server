@@ -2,7 +2,8 @@
 
 var newadminMod = angular.module('newadminApp', [
         'newadminApp.services',
-        'ngResource'
+        'ngResource',
+        'ngRoute'
     ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -18,13 +19,13 @@ var newadminMod = angular.module('newadminApp', [
 
 //temp code to be removed once we have integrated KeyCloak
 newadminMod.run(function(authz,logout, $rootScope){
-   logout.logout({},{},function(){
-       authz.login({},{loginName:"admin",password:"123"},
-           function(){
-               $rootScope.$broadcast('loginDone', 'loginDone');
-           }
-       );
-   });
+    logout.logout().$promise
+        .finally(function() {
+            authz.login({}, {loginName:"admin",password:"123"}).$promise
+                .then(function() {
+                    $rootScope.$broadcast('loginDone');
+                });
+        });
 });
 
 
