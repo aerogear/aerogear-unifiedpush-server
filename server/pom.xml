@@ -214,7 +214,7 @@
     </build>
 
     <properties>
-        <keycloak.version>1.0-alpha-4</keycloak.version>
+        <keycloak.version>1.0-beta-1-SNAPSHOT</keycloak.version>
     </properties>
 
 </project>
