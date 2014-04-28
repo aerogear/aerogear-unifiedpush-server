@@ -22,16 +22,11 @@ function MainController($scope, $modal, pushApplication) {
         $scope.applications = pushApplication.query();
     });
 
-    $scope.items = ['item1', 'item2', 'item3'];
     $scope.open = function () {
         var modalInstance = $modal.open({
             templateUrl: 'views/dialogs/create-app.html',
-            controller: 'modalController',
-            resolve: {
-                'items': function() { return $scope.items; }
-            }
+            controller: 'modalController'
         });
-        console.log('modal opened');
         modalInstance.result.then(function (response) {
             $scope.selected = response;
             console.log(response);
@@ -41,12 +36,7 @@ function MainController($scope, $modal, pushApplication) {
     };
 };
 
-var modalController = function ($scope, $modalInstance, items) {
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
-
+function modalController($scope, $modalInstance) {
     $scope.ok = function () {
         $modalInstance.close($scope.selected.item);
     };
