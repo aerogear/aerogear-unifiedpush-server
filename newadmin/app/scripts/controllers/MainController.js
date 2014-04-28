@@ -32,8 +32,9 @@ function MainController($scope, $modal, pushApplication) {
             controller: 'modalController'
         });
         modalInstance.result.then(function (application) {
-            pushApplication.create(application);
-            $scope.applications.push(application);
+            pushApplication.create(application, function(newApp) {
+                $scope.applications.push(newApp);
+            });
         });
     };
 };
