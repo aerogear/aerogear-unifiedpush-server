@@ -4,7 +4,8 @@ var newadminMod = angular.module('newadminApp', [
         'newadminApp.services',
         'ngResource',
         'ngRoute',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'ups.directives'
     ])
   .config(function ($routeProvider) {
     $routeProvider
