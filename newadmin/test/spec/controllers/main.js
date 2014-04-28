@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Controller: MainCtrl', function () {
+describe('Controller: MainController', function () {
 
   // load the controller's module
   beforeEach(module('newadminApp'));

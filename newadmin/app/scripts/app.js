@@ -3,13 +3,14 @@
 var newadminMod = angular.module('newadminApp', [
         'newadminApp.services',
         'ngResource',
-        'ngRoute'
+        'ngRoute',
+        'ui.bootstrap'
     ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainController'
       })
       .when('/detail/:applicationId', {
         templateUrl : 'views/detail.html',
