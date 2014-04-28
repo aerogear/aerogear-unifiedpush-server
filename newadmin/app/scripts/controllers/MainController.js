@@ -17,6 +17,10 @@
 'use strict';
 
 function MainController($scope, $modal, pushApplication) {
+
+    // will fail when user is not logged in
+    $scope.applications = pushApplication.query();
+
     $scope.$on('loginDone', function () {
         //let's show all the applications
         $scope.applications = pushApplication.query();
