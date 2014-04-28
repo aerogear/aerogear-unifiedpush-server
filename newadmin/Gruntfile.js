@@ -49,7 +49,7 @@ module.exports = function (grunt) {
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
-        tasks: [ 'copy:webapp', 'copy:jbossweb' ]
+        tasks: [ 'newer:copy:webapp', 'newer:copy:jbossweb' ]
       }
     },
     autoprefixer: {
@@ -311,6 +311,8 @@ module.exports = function (grunt) {
       }
     }
   });
+
+  grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
