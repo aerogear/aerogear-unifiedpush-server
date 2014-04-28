@@ -27,18 +27,16 @@ function MainController($scope, $modal, pushApplication) {
             templateUrl: 'views/dialogs/create-app.html',
             controller: 'modalController'
         });
-        modalInstance.result.then(function (response) {
-            $scope.selected = response;
-            console.log(response);
-        }, function () {
-            console.log('Modal dismissed at: ' + new Date());
+        modalInstance.result.then(function (application) {
+            pushApplication.create(application);
+            $scope.applications.push(application);
         });
     };
 };
 
 function modalController($scope, $modalInstance) {
-    $scope.ok = function () {
-        $modalInstance.close($scope.selected.item);
+    $scope.ok = function (application) {
+        $modalInstance.close(application);
     };
 
     $scope.cancel = function () {
