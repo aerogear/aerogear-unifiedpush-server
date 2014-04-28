@@ -1,0 +1,26 @@
+<aside class="lo-sidebar col-md-2 fixed clearfix ng-isolate-scope"
+       data-lo-current="storage" data-lo-apps="applications" data-lo-app="curApp">
+
+    <nav class="navbar navbar-vertical" role="navigation">
+        <div class="bs-sidebar">
+            <ul>
+                <li ng-class="{active: loCurrent == 'dashboard'}" class="dashboard"><a
+                        href="#/applications/admin/dashboard"><i class="fa fa-tachometer fa-3x"></i>Stats</a></li>
+                <li ng-class="{active: loCurrent == 'push'}" class="push"><a href="#"><i
+                        class="fa fa-mobile fa-4x"></i>Applications</a></li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+    <div class="row">
+        <div class="lo-content-area col-md-12">
+            <ol class="breadcrumb">
+                <li class="active">Applications</li>
+                <li class="active">Application name</li>
+                <li class="active">Variant name</li>
+            </ol>
+        </div>
+    </div>
+</div>
