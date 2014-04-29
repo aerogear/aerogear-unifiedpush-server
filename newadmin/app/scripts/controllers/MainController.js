@@ -26,22 +26,20 @@ function MainController($scope, $modal, pushApplication) {
         $scope.applications = pushApplication.query();
     });
 
-    function show(application) {
-        var modalInstance = $modal.open({
-            templateUrl: 'views/dialogs/create-app.html',
+    function show(application, template) {
+        return $modal.open({
+            templateUrl: 'views/dialogs/' + template,
             controller: 'modalController',
             resolve: {
                 application: function () {
                     return application;
                 }
             }
-
         });
-        return modalInstance;
     }
 
     $scope.open = function (application) {
-        var modalInstance = show(application);
+        var modalInstance = show(application, 'create-app.html');
         modalInstance.result.then(function (application) {
             pushApplication.create(application, function(newApp) {
                 $scope.applications.push(newApp);
@@ -50,11 +48,19 @@ function MainController($scope, $modal, pushApplication) {
     };
 
     $scope.edit = function(application) {
-        var modalInstance = show(application);
+        var modalInstance = show(application, 'create-app.html');
         modalInstance.result.then(function (application) {
-            pushApplication.update(application);
+            pushApplication.update({appId:application.pushApplicationID}, application);
         });
-    }
+    };
+
+    $scope.remove = function(application) {
+        var modalInstance = show(application, 'remove-app.html');
+        modalInstance.result.then(function () {
+            pushApplication.remove({appId:application.pushApplicationID});
+            $scope.applications.splice($scope.applications.indexOf(application), 1);
+        });
+    };
 };
 
 function modalController($scope, $modalInstance, application) {
