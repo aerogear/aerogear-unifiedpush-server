@@ -37,11 +37,20 @@ The H2 database is included in the JBoss AS and is pretty easy to install. First
 ./standalone.sh
 ```
 
-and afterwards issue the following command:
+and afterwards issue one of the follwing command line interface script depending on if your are using JBoss AS 7.x or WildFly:
+
+For JBoss AS 7.x:
 
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/h2-database-config.cli
 ```
+
+For WildFly:
+
+```
+/Path/to/WildFly/bin/jboss-cli.sh --file=./databases/h2-database-config-wildfly.cli
+```
+
 
 The above script will add the _UnifiedPushDS datasource_, inside of the application server (```${jboss.server.data.dir}/unifiedpush```).
 
@@ -82,10 +91,19 @@ Next, start your server:
 ```
 ./standalone.sh
 ```
-Finally, run the follwing command line interface script:
+
+Finally, run one of the follwing command line interface script depending on if your are using JBoss AS 7.x or WildFly:
+
+For JBoss AS 7.x:
 
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/mysql-database-config.cli
+```
+
+For WildFly:
+
+```
+/Path/to/WildFly/bin/jboss-cli.sh --file=./databases/mysql-database-config-wildfly.cli
 ```
 
 The above script will add the mysql driver and a datasource.
@@ -130,10 +148,19 @@ Next, start your server:
 ```
 ./standalone.sh
 ```
-Finally, run the follwing command line interface script:
+
+Finally, run one of the follwing command line interface script depending on if your are using JBoss AS 7.x or WildFly:
+
+For JBoss AS 7.x:
 
 ```
 /Path/to/JBossAS/bin/jboss-cli.sh --file=./databases/postgresql-database-config.cli
+```
+
+For WildFly:
+
+```
+/Path/to/WildFly/bin/jboss-cli.sh --file=./databases/postgresql-database-config-wildfly.cli
 ```
 
 The above script will add the postgresql driver and a datasource.
