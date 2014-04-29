@@ -46,3 +46,147 @@
     font-size: 20px;
 }
 
+/* Fixes */
+
+a:hover {
+    color: #00A9EC;
+}
+
+.btn-primary {
+    border-color: #00618A;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+    background: none;
+    border-color: #00618A;
+    background-color: #00A9EC;
+}
+
+
+/* Tip panel */
+
+.ups-tip-panel {
+    border: 1px solid #fddbb1;
+    background-color: #fff5dd;
+    padding: 12px;
+}
+
+.ups-tip-panel h2 {
+    width: 100%;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #f67200;
+    margin-bottom: 6px;
+    display: inline-block;
+    border-bottom: 1px solid #fddbb1;
+    padding-bottom: 4px;
+}
+
+.ups-tip-panel a.dropdown-toggle {
+    color: inherit;
+}
+
+a.ups-tip-panel-link {
+    margin-right: 12px;
+    font-weight: normal;
+    color: inherit;
+    text-decoration: underline;
+}
+
+.ups-tip-panel .dropdown {
+    color: inherit;
+}
+
+.ups-tip-panel-body {
+    padding-left: 100px;
+    width: 100%;
+    float: right;
+}
+
+.ups-tip-panel-illustration {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ups-tip-panel table tr td:first-child {
+    padding-right: 12px;
+    text-align: right;
+}
+
+.ups-tip-panel table tr td:last-child {
+    font-weight: bold;
+}
+
+
+.ups-code-block {
+    font-family: monospace;
+    overflow: scroll;
+    white-space: pre;
+    width: 100%;
+    background-color: #555;
+    font-size: 12px;
+    line-height: 15px;
+    border-left: 2px solid #111;
+    color: #eee;
+}
+
+
+.ups-panel-details table tr td:first-child {
+    padding-right: 12px;
+    text-align: right;
+}
+
+.ups-panel-details table tr td:last-child {
+    font-weight: bold;
+}
+
+.ups-panel-details h3 {
+    border-bottom: 1px solid #f2f2f2;
+    padding-bottom: 6px;
+}
+
+
+.ups-panel-variants .panel-heading {
+    background-repeat: no-repeat;
+    background-position: 24px center;
+    padding-left: 64px;
+}
+
+.ups-panel-variants .panel-heading .pull-right {
+    margin-top: 12px;
+    margin-right: 34px;
+}
+
+.ups-panel-variants .panel-heading strong {
+    font-size: 14px;
+}
+
+.ups-panel-variants .panel-heading h2 {
+    margin-top: 10px;
+}
+
+.ups-panel-variants > ul > li {
+    padding: 8px 24px;
+}
+
+.ups-panel-variants .dropdown-toggle {
+    margin-left: 12px;
+}
+
+.ups-panel-variants > ul > li > a:first-child {
+    width: 150px;
+    max-width: 200px;
+    padding-right: 12px;
+    display: inline-block;
+}
+
+
+.ups-toggle-box {
+    padding: 24px;
+}
