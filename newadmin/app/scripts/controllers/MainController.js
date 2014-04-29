@@ -17,6 +17,7 @@
 'use strict';
 
 function MainController($scope, $modal, pushApplication) {
+    $scope.alerts = [];
 
     // will fail when user is not logged in
     $scope.applications = pushApplication.query();
@@ -38,11 +39,22 @@ function MainController($scope, $modal, pushApplication) {
         });
     }
 
+    function createAlert(msg, type) {
+        $scope.alerts.push({type: type || 'success', msg: msg});
+        setTimeout(function () {
+            $scope.alerts.splice(0, 1);
+            $scope.$apply();
+        }, 4000)
+    }
+
     $scope.open = function (application) {
         var modalInstance = show(application, 'create-app.html');
         modalInstance.result.then(function (application) {
             pushApplication.create(application, function(newApp) {
                 $scope.applications.push(newApp);
+                createAlert("Successfully created application \"" + newApp.name + "\"");
+            }, function() {
+                createAlert("Something went wrong...", "danger");
             });
         });
     };
@@ -50,15 +62,19 @@ function MainController($scope, $modal, pushApplication) {
     $scope.edit = function(application) {
         var modalInstance = show(application, 'create-app.html');
         modalInstance.result.then(function (application) {
-            pushApplication.update({appId:application.pushApplicationID}, application);
+            pushApplication.update({appId:application.pushApplicationID}, application, function() {
+                createAlert("Successfully edited application \"" + application.name + "\"");
+            });
         });
     };
 
     $scope.remove = function(application) {
         var modalInstance = show(application, 'remove-app.html');
         modalInstance.result.then(function () {
-            pushApplication.remove({appId:application.pushApplicationID});
-            $scope.applications.splice($scope.applications.indexOf(application), 1);
+            pushApplication.remove({appId:application.pushApplicationID}, function() {
+                createAlert("Successfully removed application \"" + application.name + "\"");
+                $scope.applications.splice($scope.applications.indexOf(application), 1);
+            });
         });
     };
 };

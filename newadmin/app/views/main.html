@@ -11,6 +11,8 @@
             </div>
             <h2>Applications<span class="ng-binding"> ({{ applications.length }}) </span></h2>
 
+            <alert ng-repeat="alert in alerts" type="alert.type">{{alert.msg}}</alert>
+
             <div class="panel panel-default" ng-repeat="application in applications">
                 <div class="panel-heading">
                     <a href="#/detail/{{application.id}}"><h3 class="panel-title">{{ application.name }}</h3></a>
