@@ -95,7 +95,7 @@ public class GCMPushNotificationSender {
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
 
         } catch (IllegalArgumentException e) {
-            logger.warning("Error connection to your GCM project. Double check your Google API Key");
+            logger.log(Level.WARNING, "Error connection to your GCM project. Double check your Google API Key");
         } catch (Exception e) {
             // general GCM exceptions:
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
