@@ -15,7 +15,7 @@
 
             <div class="panel panel-default" ng-repeat="application in applications">
                 <div class="panel-heading">
-                    <a href="#/detail/{{application.id}}"><h3 class="panel-title">{{ application.name }}</h3></a>
+                    <a href="#/detail/{{application.pushApplicationID}}"><h3 class="panel-title">{{ application.name }}</h3></a>
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
                             <span class="caret"></span>
@@ -30,7 +30,7 @@
                     <p>{{ application.description }}</p>
                     <p ng-hide="application.description.length">No description</p>
                     <strong>
-                        {{ application.androidVariants.length + application.simplePushVariants.length + application.iosvariants.length }}
+                        {{ application.androidVariants.length + application.simplePushVariants.length + application.iosvariants.length + application.chromePackagedAppVariants.length}}
                     </strong> variants
                 </div>
             </div>
