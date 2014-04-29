@@ -10,3 +10,39 @@
     display:inline;
     float:right;
 }
+
+.alert:before {
+    font-size: 20px;
+    position: absolute;
+    left: 7px;
+    top: 7px;
+
+    font-family: 'PatternFlyIcons-webfont';
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.alert-success:before {
+    color: #57a81c;
+    content: "\e602";
+}
+
+.alert-danger:before {
+    color: #fff;
+    content: "\e608";
+    z-index: 2;
+}
+
+.alert-danger div:before {
+    color: #c90813;
+    content: "\e609";
+    z-index: 1;
+    position: absolute;
+    left: 7px;
+    top: 12px;
+    font-family: 'PatternFlyIcons-webfont';
+    line-height: 1;
+    font-size: 20px;
+}
+
