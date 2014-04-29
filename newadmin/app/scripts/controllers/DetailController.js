@@ -16,5 +16,10 @@
  */
 'use strict';
 
-function DetailController($scope, $routeParams) {
+function DetailController($scope, $routeParams, $window, $modal, pushApplication) {
+    pushApplication.get({appId: $routeParams.applicationId}, function(application) {
+        $scope.application = application;
+        var href = $window.location.href;
+        $scope.currentLocation = href.substring(0, href.indexOf('#'));
+    });
 }
