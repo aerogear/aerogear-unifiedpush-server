@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -93,12 +94,11 @@ public class GCMPushNotificationSender {
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
 
-        } catch (IOException e) {
-            // network related exceptions:
-            logger.warning("Error sending messages to GCM server");
-            e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            logger.severe("Error connection to your GCM project. Double check your Google API Key");
+            logger.warning("Error connection to your GCM project. Double check your Google API Key");
+        } catch (Exception e) {
+            // general GCM exceptions:
+            logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
         }
     }
 
