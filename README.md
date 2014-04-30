@@ -65,16 +65,17 @@ mysql> GRANT SELECT,INSERT,UPDATE,ALTER,DELETE,CREATE,DROP ON unifiedpush.* TO '
 
 ##### Add a datasource for the UnifiedPush database
 
-The module for MySQL can be found in ```databases/src/main/resources/modules/com/mysql```. Copy this module to JBoss AS modules directory:
+The module for MySQL can be found in ```databases/src/main/resources/modules/com/mysql```. Copy this module to JBoss AS/EAP modules directory.
+Path to modules is ${JBOSS_HOME}/modules for JBoss AS and ${JBOSS_HOME}/modules/system/layers/base for JBoss EAP:
 
 ```
-cp -r databases/src/main/resources/modules/com /Path/to/JBossAS/modules/
+cp -r databases/src/main/resources/modules/com /Path/to/ApplicationServer/modules/
 ```
 
 We also need the mysql driver copied to this module:
 
 ```
-mvn dependency:copy -Dartifact=mysql:mysql-connector-java:5.1.18 -DoutputDirectory=/Path/to/JBossAS/modules/com/mysql/jdbc/main/
+mvn dependency:copy -Dartifact=mysql:mysql-connector-java:5.1.18 -DoutputDirectory=/Path/to/ApplicationServer/modules/com/mysql/jdbc/main/
 ```
 
 Next, start your server:
@@ -113,16 +114,17 @@ psql> GRANT ALL PRIVILEGES ON DATABASE unifiedpush to unifiedpush;
 
 ##### Add a datasource for the UnifiedPush database
 
-The module for PostgreSQL can be found in ```databases/src/main/resources/modules/org/postgresql```. Copy this module to JBoss AS modules directory:
+The module for PostgreSQL can be found in ```databases/src/main/resources/modules/org/postgresql```. Copy this module to JBoss AS/EAP modules directory:
+Path to modules is ${JBOSS_HOME}/modules for JBoss AS and ${JBOSS_HOME}/modules/system/layers/base for JBoss EAP:
 
 ```
-cp -r databases/src/main/resources/modules/org /Path/to/JBossAS/modules/
+cp -r databases/src/main/resources/modules/org /Path/to/ApplicationServer/modules/
 ```
 
 We also need the PostgreSQL driver copied to this module:
 
 ```
-mvn dependency:copy -Dartifact=org.postgresql:postgresql:9.2-1004-jdbc41 -DoutputDirectory=/Path/to/JBossAS/modules/org/postgresql/main/
+mvn dependency:copy -Dartifact=org.postgresql:postgresql:9.2-1004-jdbc41 -DoutputDirectory=/Path/to/ApplicationServer/modules/org/postgresql/main/
 ```
 
 Next, start your server:
