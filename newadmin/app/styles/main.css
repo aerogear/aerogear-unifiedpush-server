@@ -179,7 +179,7 @@ a.ups-tip-panel-link {
     margin-left: 12px;
 }
 
-.ups-panel-variants > ul > li > a:first-child {
+.ups-panel-variants ul > li > a:first-child {
     width: 150px;
     max-width: 200px;
     padding-right: 12px;
