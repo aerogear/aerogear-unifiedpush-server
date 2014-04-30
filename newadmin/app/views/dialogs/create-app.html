@@ -3,7 +3,7 @@
         <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
             <span class="pficon pficon-close"></span>
         </button>
-        <h4 class="modal-title">Create Application</h4>
+        <h4 class="modal-title">{{ application.id ? 'Edit' : 'Create' }} Application</h4>
     </div>
     <div class="modal-body">
         <form name="form" class="form-horizontal">
@@ -25,6 +25,8 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">Create</button>
+        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">
+          {{ application.id ? 'Save' : 'Create' }}
+        </button>
     </div>
 </div>
