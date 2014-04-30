@@ -17,6 +17,11 @@
 'use strict';
 
 function MainController($scope, $modal, pushApplication) {
+
+    /*
+     * INITIALIZATION
+     */
+
     $scope.alerts = [];
 
     // will fail when user is not logged in
@@ -27,25 +32,10 @@ function MainController($scope, $modal, pushApplication) {
         $scope.applications = pushApplication.query();
     });
 
-    function show(application, template) {
-        return $modal.open({
-            templateUrl: 'views/dialogs/' + template,
-            controller: 'modalController',
-            resolve: {
-                application: function () {
-                    return application;
-                }
-            }
-        });
-    }
 
-    function createAlert(msg, type) {
-        $scope.alerts.push({type: type || 'success', msg: msg});
-        setTimeout(function () {
-            $scope.alerts.splice(0, 1);
-            $scope.$apply();
-        }, 4000)
-    }
+    /*
+     * PUBLIC METHODS
+     */
 
     $scope.open = function (application) {
         var modalInstance = show(application, 'create-app.html');
@@ -77,15 +67,40 @@ function MainController($scope, $modal, pushApplication) {
             });
         });
     };
-};
 
-function modalController($scope, $modalInstance, application) {
-    $scope.application = application;
-    $scope.ok = function (application) {
-        $modalInstance.close(application);
-    };
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-};
+    /*
+     * PRIVATE METHODS
+     */
+
+    function modalController($scope, $modalInstance, application) {
+        $scope.application = application;
+        $scope.ok = function (application) {
+            $modalInstance.close(application);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }
+
+    function show(application, template) {
+        return $modal.open({
+            templateUrl: 'views/dialogs/' + template,
+            controller: modalController,
+            resolve: {
+                application: function () {
+                    return application;
+                }
+            }
+        });
+    }
+
+    function createAlert(msg, type) {
+        $scope.alerts.push({type: type || 'success', msg: msg});
+        setTimeout(function () {
+            $scope.alerts.splice(0, 1);
+            $scope.$apply();
+        }, 4000)
+    }
+}
