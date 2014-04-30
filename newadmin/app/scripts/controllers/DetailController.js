@@ -17,6 +17,14 @@
 'use strict';
 
 function DetailController($scope, $routeParams, $window, $modal, pushApplication) {
+    $scope.expand = function(variant) {
+        variant.expand = !variant.expand;
+    };
+
+    $scope.isCollapsed = function(variant) {
+        return !variant.expand;
+    };
+
     pushApplication.get({appId: $routeParams.applicationId}, function(application) {
         $scope.application = application;
         var href = $window.location.href;
