@@ -16,7 +16,7 @@
  */
 'use strict';
 
-function DetailController($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants) {
+function DetailController($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications) {
 
     /*
      * INITIALIZATION
@@ -45,11 +45,11 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             });
 
             variants.create(params, variant, function(newVariant) {
-                console.log('success');
                 var osVariants = $scope.application[variantType + 'Variants'];
                 osVariants.push(newVariant);
+                Notifications.success('Successfully created variant');
             }, function() {
-                console.log('fail');
+                Notifications.danger('Something went wrong...');
             });
         });
     };
@@ -70,9 +70,9 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             };
 
             variants.update(params, variantUpdate, function(variant) {
-               console.log('success');
+                Notifications.success('Successfully modified variant');
             }, function() {
-                console.log('fail');
+                Notifications.danger('Something went wrong...');
             });
 
         });
@@ -89,6 +89,9 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             variants.remove(params, function() {
                 var osVariants = $scope.application[variantType + 'Variants'];
                 osVariants.splice(osVariants.indexOf(variant), 1);
+                Notifications.success('Successfully removed variant');
+            }, function() {
+                Notifications.danger('Something went wrong...');
             });
         });
     };
