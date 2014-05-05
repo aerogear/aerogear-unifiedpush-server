@@ -42,7 +42,7 @@ function MainController($rootScope, $scope, $modal, pushApplication, Notificatio
                 $scope.applications.push(newApp);
                 Notifications.success("Successfully created application \"" + newApp.name + "\"");
             }, function() {
-                Notifications.danger("Something went wrong...", "danger");
+                Notifications.error("Something went wrong...", "danger");
             });
         });
     };

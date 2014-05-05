@@ -58,7 +58,7 @@
           <div class="row">
             <div class="radio">
               <label>
-                <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variantType" value="simplepush"  ng-required="true">
+                <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variantType" value="simplePush"  ng-required="true">
                 <b>Other</b><br />
                 <span>using SimplePush</span>
               </label>
@@ -68,7 +68,7 @@
       </div>
 
       <div ng-show="variantType">
-        <hr ng-hide="variantType == 'simplepush'"/>
+        <hr ng-hide="variantType == 'simplePush'"/>
 
         <div ng-show="variantType == 'android'">
           <div class="form-group">
@@ -148,21 +148,21 @@
                 <label class="col-sm-2 control-label" for="chromeClientId">Client ID</label>
 
                 <div class="col-sm-5">
-                  <input type="text" id="chromeClientId" class="form-control" ng-model="variant.chrome.chromeClientId" ng-required="variantType == 'chrome'">
+                  <input type="text" id="chromeClientId" class="form-control" ng-model="variant.clientId" ng-required="variantType == 'chrome'">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="chromeClientSecret">Client Secret</label>
 
                 <div class="col-sm-5">
-                  <input type="text" id="chromeClientSecret" class="form-control" ng-model="variant.chrome.chromeClientSecret" ng-required="variantType == 'chrome'">
+                  <input type="text" id="chromeClientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variantType == 'chrome'">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="chromeRefreshToken">Refresh Token</label>
 
                 <div class="col-sm-5">
-                  <input type="text" id="chromeRefreshToken" class="form-control" ng-model="variant.chrome.chromeRefreshToken" ng-required="variantType == 'chrome'">
+                  <input type="text" id="chromeRefreshToken" class="form-control" ng-model="variant.refreshToken" ng-required="variantType == 'chrome'">
                 </div>
               </div>
             </div>
