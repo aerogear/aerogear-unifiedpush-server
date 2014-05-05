@@ -16,7 +16,7 @@
  */
 'use strict';
 
-function MainController($rootScope, $scope, $modal, pushApplication) {
+function MainController($rootScope, $scope, $modal, pushApplication, Notifications) {
 
     /*
      * INITIALIZATION
@@ -40,9 +40,9 @@ function MainController($rootScope, $scope, $modal, pushApplication) {
         modalInstance.result.then(function (application) {
             pushApplication.create(application, function(newApp) {
                 $scope.applications.push(newApp);
-                createAlert("Successfully created application \"" + newApp.name + "\"");
+                Notifications.success("Successfully created application \"" + newApp.name + "\"");
             }, function() {
-                createAlert("Something went wrong...", "danger");
+                Notifications.danger("Something went wrong...", "danger");
             });
         });
     };
@@ -51,7 +51,7 @@ function MainController($rootScope, $scope, $modal, pushApplication) {
         var modalInstance = show(application, 'create-app.html');
         modalInstance.result.then(function (application) {
             pushApplication.update({appId:application.pushApplicationID}, application, function() {
-                createAlert("Successfully edited application \"" + application.name + "\"");
+                Notifications.success("Successfully edited application \"" + application.name + "\"");
             });
         });
     };
@@ -60,8 +60,8 @@ function MainController($rootScope, $scope, $modal, pushApplication) {
         var modalInstance = show(application, 'remove-app.html');
         modalInstance.result.then(function () {
             pushApplication.remove({appId:application.pushApplicationID}, function() {
-                createAlert("Successfully removed application \"" + application.name + "\"");
                 $scope.applications.splice($scope.applications.indexOf(application), 1);
+                Notifications.success("Successfully removed application \"" + application.name + "\"");
             });
         });
     };
@@ -92,13 +92,5 @@ function MainController($rootScope, $scope, $modal, pushApplication) {
                 }
             }
         });
-    }
-
-    function createAlert(msg, type) {
-        $scope.alerts.push({type: type || 'success', msg: msg});
-        setTimeout(function () {
-            $scope.alerts.splice(0, 1);
-            $scope.$apply();
-        }, 4000)
     }
 }

@@ -8,6 +8,10 @@
                 <li class="active">{{ application.name }}</li>
             </ol>
 
+            <div>
+              <ups-alerts />
+            </div>
+
             <div class="lo-page-info">
                 <p>{{ application.description }}</p>
                 <p ng-hide="application.description.length">No description</p>
@@ -15,8 +19,12 @@
                     <button href="#/applications/admin/create-storage" class="btn btn-default btn-lg" type="button">Send Notification...</button>
                     <button href="#/applications/admin/create-storage" class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant</button>
                 </div>
+
                 <div style="clear: both;"></div>
             </div>
+
+
+
 
 
             <div class="ups-tip-panel">

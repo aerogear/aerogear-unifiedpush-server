@@ -8,7 +8,9 @@
             </ol>
             <h2>Applications</h2>
 
-            <alert ng-repeat="alert in alerts" type="alert.type">{{alert.msg}}</alert>
+            <div>
+              <ups-alerts />
+            </div>
 
             <div class="lo-page-info">
                 <p>You have <strong>{{ applications.length }}</strong> applications.</p>
