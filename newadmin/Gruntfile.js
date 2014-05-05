@@ -323,6 +323,8 @@ module.exports = function (grunt) {
       'initLocalConfig',
       'clean:server',
       'concurrent:server',
+      'copy:webapp',
+      'copy:jbossweb',
       'autoprefixer',
       'connect:livereload',
       'open',
