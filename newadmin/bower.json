@@ -14,7 +14,7 @@
     "angular-cookies": "1.2.16",
     "angular-sanitize": "1.2.16",
     "patternfly": "0.2.3",
-    "angular-patternfly": "lfryc/angular-patternfly#aerogear-ups"
+    "angular-patternfly": "patternfly/angular-patternfly"
   },
   "devDependencies": {
     "angular-mocks": "1.2.16",
