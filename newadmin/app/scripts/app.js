@@ -5,7 +5,8 @@ var newadminMod = angular.module('newadminApp', [
         'ngResource',
         'ngRoute',
         'ui.bootstrap',
-        'ups.directives'
+        'ups.directives',
+        'patternfly.notification'
     ])
   .config(function ($routeProvider) {
     $routeProvider
