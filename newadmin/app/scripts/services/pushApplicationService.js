@@ -24,7 +24,7 @@ backendMod.factory('pushApplication', function($resource) {
 });
 
 backendMod.factory('variants', function($resource) {
-    return $resource('/ag-push/rest/applications/:appId/:variantType', {
+    return $resource('/ag-push/rest/applications/:appId/:variantType/:variantId', {
         appId : '@appId',
         variantType: '@variantType'
     }, {

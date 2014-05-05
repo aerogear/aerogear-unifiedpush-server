@@ -16,16 +16,17 @@
  */
 'use strict';
 
-function DetailController($scope, $routeParams, $window, $modal, pushApplication, variants) {
+function DetailController($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants) {
 
     /*
      * INITIALIZATION
      */
-
-    pushApplication.get({appId: $routeParams.applicationId}, function(application) {
-        $scope.application = application;
-        var href = $window.location.href;
-        $scope.currentLocation = href.substring(0, href.indexOf('#'));
+    onLoginDone($rootScope, $scope, function() {
+        pushApplication.get({appId: $routeParams.applicationId}, function(application) {
+            $scope.application = application;
+            var href = $window.location.href;
+            $scope.currentLocation = href.substring(0, href.indexOf('#'));
+        });
     });
 
 
@@ -33,53 +34,77 @@ function DetailController($scope, $routeParams, $window, $modal, pushApplication
      * PUBLIC METHODS
      */
 
-    $scope.expand = function(variant) {
-        variant.expand = !variant.expand;
-    };
-
-    $scope.isCollapsed = function(variant) {
-        return !variant.expand;
-    };
-
     $scope.addVariant = function (variant) {
-        var modalInstance = show(variant, 'create-variant.html');
-        modalInstance.result.then(function (variant) {
-            pushApplication.create(variant, function(newVariant) {
-                $scope.applications.push(newVariant);
-                createAlert("Successfully created variant \"" + newVariant.name + "\"");
+        var modalInstance = show(variant, null, 'create-variant.html');
+        modalInstance.result.then(function (result) {
+            var variant = result.variant;
+            var variantType = result.variantType;
+            var params = $.extend({}, {
+                appId: $scope.application.pushApplicationID,
+                variantType: variantType
+            });
+
+            variants.create(params, variant, function(newVariant) {
+                console.log('success');
+                var osVariants = $scope.application[variantType + 'Variants'];
+                osVariants.push(newVariant);
             }, function() {
-                createAlert("Something went wrong...", "danger");
+                console.log('fail');
             });
         });
     };
 
-//    $scope.editVariant = function(application) {
-//        var modalInstance = show(application, 'create-app.html');
-//        modalInstance.result.then(function (application) {
-//            pushApplication.update({appId:application.pushApplicationID}, application, function() {
-//                createAlert("Successfully edited application \"" + application.name + "\"");
-//            });
-//        });
-//    };
-//
-//    $scope.removeVariant = function(application) {
-//        var modalInstance = show(application, 'remove-app.html');
-//        modalInstance.result.then(function () {
-//            pushApplication.remove({appId:application.pushApplicationID}, function() {
-//                createAlert("Successfully removed application \"" + application.name + "\"");
-//                $scope.applications.splice($scope.applications.indexOf(application), 1);
-//            });
-//        });
-//    };
+    $scope.editVariant = function(variant, variantType) {
+        var modalInstance = show(variant, variantType, 'create-variant.html');
+        modalInstance.result.then(function (result) {
+            var params = $.extend({}, {
+                appId: $scope.application.pushApplicationID,
+                variantType: variantType,
+                variantId: result.variant.variantID
+            });
+            var variantUpdate = {
+                name: variant.name,
+                description: variant.description,
+                projectNumber: variant.projectNumber,
+                googleKey: variant.googleKey
+            };
+
+            variants.update(params, variantUpdate, function(variant) {
+               console.log('success');
+            }, function() {
+                console.log('fail');
+            });
+
+        });
+    };
+
+    $scope.removeVariant = function(variant, variantType) {
+        var modalInstance = show(variant, variantType, 'remove-variant.html');
+        modalInstance.result.then(function (result) {
+            var params = $.extend({}, {
+                appId: $scope.application.pushApplicationID,
+                variantType: variantType,
+                variantId: result.variant.variantID
+            });
+            variants.remove(params, function() {
+                var osVariants = $scope.application[variantType + 'Variants'];
+                osVariants.splice(osVariants.indexOf(variant), 1);
+            });
+        });
+    };
 
     /*
      * PRIVATE FUNCTIONS
      */
 
-    function modalController($scope, $modalInstance, variant) {
+    function modalController($scope, $modalInstance, variant, variantType) {
         $scope.variant = variant;
-        $scope.ok = function (variant) {
-            $modalInstance.close(variant);
+        $scope.variantType = variantType;
+        $scope.ok = function (variant, variantType) {
+            $modalInstance.close({
+                variant: variant,
+                variantType: variantType
+            });
         };
 
         $scope.cancel = function () {
@@ -87,24 +112,27 @@ function DetailController($scope, $routeParams, $window, $modal, pushApplication
         };
     }
 
-    function show(variant, template) {
+    function show(variant, variantType, template) {
         return $modal.open({
             templateUrl: 'views/dialogs/' + template,
             controller: modalController,
             resolve: {
                 variant: function () {
                     return variant;
+                },
+                variantType: function () {
+                    return variantType;
                 }
             }
         });
     }
 
-    function createAlert(msg, type) {
-        $scope.alerts.push({type: type || 'success', msg: msg});
-        setTimeout(function () {
-            $scope.alerts.splice(0, 1);
-            $scope.$apply();
-        }, 4000)
-    }
+//    function createAlert(msg, type) {
+//        $scope.alerts.push({type: type || 'success', msg: msg});
+//        setTimeout(function () {
+//            $scope.alerts.splice(0, 1);
+//            $scope.$apply();
+//        }, 4000)
+//    }
 
 }

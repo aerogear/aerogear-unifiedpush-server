@@ -9,9 +9,9 @@
             <span><strong><a ng-click="expand(variant)">1,251</a></strong> installations</span>
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i></a>
             <ul class="dropdown-menu">
-                <li><a href="#" data-toggle="modal" data-target="#EditVariant">Edit</a></li>
+                <li><a ng-click="editVariant(variant, type)">Edit</a></li>
                 <li role="presentation" class="divider"></li>
-                <li><a href="#" data-toggle="modal" data-target="#RemoveVariant">Remove...</a></li>
+                <li><a ng-click="removeVariant(variant, type)">Remove...</a></li>
             </ul>
         </div>
         <div class="ups-toggle-box" collapse="isCollapsed(variant)">

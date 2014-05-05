@@ -16,7 +16,7 @@
  */
 'use strict';
 
-function MainController($scope, $modal, pushApplication) {
+function MainController($rootScope, $scope, $modal, pushApplication) {
 
     /*
      * INITIALIZATION
@@ -24,13 +24,11 @@ function MainController($scope, $modal, pushApplication) {
 
     $scope.alerts = [];
 
-    // will fail when user is not logged in
-    $scope.applications = pushApplication.query();
-
-    $scope.$on('loginDone', function () {
+    onLoginDone($rootScope, $scope, function () {
         //let's show all the applications
         $scope.applications = pushApplication.query();
     });
+
 
 
     /*
