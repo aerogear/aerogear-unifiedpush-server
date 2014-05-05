@@ -16,12 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.ejb.Stateless;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -34,6 +33,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 @Stateless
 @Path("/applications/{pushAppID}/android")
@@ -118,5 +119,18 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+    // DELETE
+    @DELETE
+    @Path("/{androidID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID, @PathParam("androidID") String androidID) {
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        if (androidVariant == null) {
+            return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        }
+        variantService.removeVariant(androidVariant);
+        return Response.noContent().build();
     }
 }
