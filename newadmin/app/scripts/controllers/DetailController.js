@@ -41,15 +41,15 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             var variantType = result.variantType;
             var params = $.extend({}, {
                 appId: $scope.application.pushApplicationID,
-                variantType: variantType
+                variantType: variantEndpoint(variantType)
             });
 
             variants.create(params, variant, function(newVariant) {
-                var osVariants = $scope.application[variantType + 'Variants'];
+                var osVariants = getOsVariants(variantType);
                 osVariants.push(newVariant);
                 Notifications.success('Successfully created variant');
             }, function() {
-                Notifications.danger('Something went wrong...');
+                Notifications.error('Something went wrong...');
             });
         });
     };
@@ -59,20 +59,15 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
         modalInstance.result.then(function (result) {
             var params = $.extend({}, {
                 appId: $scope.application.pushApplicationID,
-                variantType: variantType,
+                variantType: variantEndpoint(variantType),
                 variantId: result.variant.variantID
             });
-            var variantUpdate = {
-                name: variant.name,
-                description: variant.description,
-                projectNumber: variant.projectNumber,
-                googleKey: variant.googleKey
-            };
+            var variantUpdate = variantProperties(variant, variantType);
 
             variants.update(params, variantUpdate, function(variant) {
                 Notifications.success('Successfully modified variant');
             }, function() {
-                Notifications.danger('Something went wrong...');
+                Notifications.error('Something went wrong...');
             });
 
         });
@@ -83,15 +78,15 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
         modalInstance.result.then(function (result) {
             var params = $.extend({}, {
                 appId: $scope.application.pushApplicationID,
-                variantType: variantType,
+                variantType: variantEndpoint(variantType),
                 variantId: result.variant.variantID
             });
             variants.remove(params, function() {
-                var osVariants = $scope.application[variantType + 'Variants'];
+                var osVariants = getOsVariants(variantType);
                 osVariants.splice(osVariants.indexOf(variant), 1);
                 Notifications.success('Successfully removed variant');
             }, function() {
-                Notifications.danger('Something went wrong...');
+                Notifications.error('Something went wrong...');
             });
         });
     };
@@ -130,12 +125,62 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
         });
     }
 
-//    function createAlert(msg, type) {
-//        $scope.alerts.push({type: type || 'success', msg: msg});
-//        setTimeout(function () {
-//            $scope.alerts.splice(0, 1);
-//            $scope.$apply();
-//        }, 4000)
-//    }
+    function getOsVariants(variantType) {
+        return $scope.application[variantKey(variantType)];
+    }
+
+    function variantKey(variantType) {
+        switch (variantType) {
+            case 'android':
+            case 'simplePush':
+                return variantType + 'Variants';
+            case 'ios':
+                return 'iosvariants';
+            case 'chrome':
+                return 'chromePackagedAppVariants';
+            default:
+                Notifications.error('Unknown variant type ' + variantType);
+                return "";
+        }
+    }
+
+    function variantEndpoint(variantType) {
+        switch (variantType) {
+            case 'android':
+            case 'simplePush':
+            case 'chrome':
+                return variantType;
+            case 'ios':
+                return 'iOS';
+            default:
+                Notifications.error('Unknown variant type ' + variantType);
+                return "";
+        }
+    }
+
+    function variantProperties(variant, variantType) {
+        var properties = ['name', 'description'], result = {};
+        switch (variantType) {
+            case 'android':
+                properties = properties.concat(['projectNumber', 'googleKey']);
+                break;
+            case 'simplePush':
+                properties = properties.concat([]);
+                break;
+            case 'chrome':
+                properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
+                break;
+            case 'ios':
+                properties = properties.concat([]);
+                break;
+            default:
+                Notifications.error('Unknown variant type ' + variantType);
+        }
+
+        properties.forEach(function(property) {
+            result[property] = variant[property];
+        });
+        return result;
+    }
 
 }
