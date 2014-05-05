@@ -11,7 +11,7 @@ var newadminMod = angular.module('newadminApp', [
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainController'
+        controller: MainController
       })
       .when('/detail/:applicationId', {
         templateUrl : 'views/detail.html',
@@ -34,8 +34,16 @@ newadminMod.run(function(authz,logout, $rootScope){
             authz.login({}, {loginName:"admin",password:"123"}).$promise
                 .then(function() {
                     $rootScope.$broadcast('loginDone');
+                    $rootScope.loggedIn = true;
                 });
         });
 });
 
 
+function onLoginDone($rootScope, $scope, callback) {
+    if ($rootScope.loggedIn) {
+        callback();
+    } else {
+        $scope.$on('loginDone', callback);
+    }
+}
