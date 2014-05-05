@@ -16,31 +16,26 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Stateless
@@ -171,4 +166,17 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
+    @GET
+    @Path("/{pushAppID}/count")
+    public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
+        Map<VariantType, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
+
+        // TODO nicer would be to have VariantType configured to be serialized with it's 'typeName'
+        Map<String, Long> serialized = new HashMap<String, Long>();
+        for (Map.Entry<VariantType, Long> entry : result.entrySet()) {
+            serialized.put(entry.getKey().getTypeName(), entry.getValue());
+        }
+
+        return Response.ok(serialized).build();
+    }
 }

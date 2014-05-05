@@ -17,7 +17,9 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
@@ -29,9 +31,9 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.atIndex;
 
 public class PushApplicationDaoTest {
 
@@ -254,5 +256,59 @@ public class PushApplicationDaoTest {
 
         // PushApp should be gone:
         assertThat(pushApplicationDao.find(id)).isNull();
+    }
+
+    @Test
+    public void shouldCountInstallations() {
+        PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        final String id = pushApplication1.getId();
+        pushApplicationDao.create(pushApplication1);
+
+        PushApplication pa = pushApplicationDao.find(id);
+
+        AndroidVariant av = new AndroidVariant();
+        av.setName("Android Variant");
+        av.setGoogleKey("KEY...");
+        variantDao.create(av);
+
+        iOSVariant ios = new iOSVariant();
+        ios.setName("spelling is hard");
+        ios.setPassphrase("123");
+        ios.setCertificate("12".getBytes());
+        variantDao.create(ios);
+
+        Installation androidInstallation1 = new Installation();
+        androidInstallation1.setDeviceToken("12345432122323");
+        installationDao.create(androidInstallation1);
+
+        Installation androidInstallation2 = new Installation();
+        androidInstallation2.setDeviceToken("12345432122323");
+        installationDao.create(androidInstallation2);
+
+        Installation iosInstallation1 = new Installation();
+        iosInstallation1.setDeviceToken("12345432122323");
+        installationDao.create(iosInstallation1);
+
+        av.getInstallations().add(androidInstallation1);
+        av.getInstallations().add(androidInstallation2);
+        ios.getInstallations().add(iosInstallation1);
+        variantDao.update(av);
+        variantDao.update(ios);
+
+        pa.getAndroidVariants().add(av);
+        pa.getIOSVariants().add(ios);
+        pushApplicationDao.update(pa);
+
+        // flush to be sure that it's in the database
+        entityManager.flush();
+        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
+        entityManager.clear();
+
+        final Map<VariantType, Long> result = pushApplicationDao.countInstallationsByType(pushApplication1.getPushApplicationID());
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(VariantType.ANDROID)).isEqualTo(2L);
+        assertThat(result.get(VariantType.IOS)).isEqualTo(1L);
     }
 }
