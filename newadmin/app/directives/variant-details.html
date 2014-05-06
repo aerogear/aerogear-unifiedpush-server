@@ -6,7 +6,7 @@
         <span>{{ variant.description }}</span>
         <span ng-hide="variant.description.length">No description</span>
         <div class="pull-right">
-            <span><strong><a ng-click="expand(variant)">1,251</a></strong> installations</span>
+            <span><strong><a ng-click="expand(variant)">{{ counts[variant.variantID] ? counts[variant.variantID] : 0 }}</a></strong> installations</span>
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i></a>
             <ul class="dropdown-menu">
                 <li><a ng-click="editVariant(variant, type)">Edit</a></li>

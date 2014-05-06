@@ -66,33 +66,33 @@
                 <div class="panel-heading" style="background-image: url('img/platform-android.png');">
                     <div class="pull-left"><h2>Android</h2></div>
                     <div class="pull-right">
-                        <span><strong>10,351</strong> installations</span>
+                        <span><strong> {{ counts.android }} </strong> installations</span>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
 
-                <variants variants="application.androidVariants" type="android"></variants>
+                <variants variants="application.androidVariants" counts="counts" type="android"></variants>
             </div>
             <div class="panel lo-panel ups-panel-variants">
                 <div class="panel-heading" style="background-image: url('img/platform-ios.png');">
                     <div class="pull-left"><h2>iOS</h2></div>
                     <div class="pull-right">
-                        <span><strong>2,381</strong> installations</span>
+                        <span><strong> {{ counts.ios }} </strong> installations</span>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <variants variants="application.iosvariants" type="ios"></variants>
+                <variants variants="application.iosvariants" counts="counts" type="ios"></variants>
             </div>
 
             <div class="panel lo-panel ups-panel-variants">
                 <div class="panel-heading" style="background-image: url('img/platform-chrome.png');">
                     <div class="pull-left"><h2>Chrome</h2></div>
                     <div class="pull-right">
-                        <span><strong>582</strong> installations</span>
+                        <span><strong> {{ counts.chromePackagedApp }} </strong> installations</span>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <variants variants="application.chromePackagedAppVariants" type="chrome"></variants>
+                <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
             </div>
 
         </div>

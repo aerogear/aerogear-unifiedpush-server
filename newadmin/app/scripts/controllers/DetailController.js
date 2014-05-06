@@ -27,6 +27,9 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             var href = $window.location.href;
             $scope.currentLocation = href.substring(0, href.indexOf('#'));
         });
+        pushApplication.count({appId: $routeParams.applicationId}, function(counts) {
+            $scope.counts = counts;
+        });
     });
 
 

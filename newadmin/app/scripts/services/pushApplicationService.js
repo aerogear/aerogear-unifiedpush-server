@@ -21,7 +21,8 @@ backendMod.factory('pushApplication', function($resource) {
             method: 'DELETE'
         },
         count : {
-            method : 'GET'
+            method : 'GET',
+            params : {count: 'count'}
         }
     });
 });
