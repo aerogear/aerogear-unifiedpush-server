@@ -74,5 +74,5 @@ public interface PushApplicationService {
      */
     void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
 
-    Map<VariantType, Long> countInstallationsByType(String pushApplicationID);
+    Map<String, Long> countInstallationsByType(String pushApplicationID);
 }

@@ -4,7 +4,7 @@ var backendMod = angular.module('newadminApp.services',[] ).
     value('version', '0.1');
 
 backendMod.factory('pushApplication', function($resource) {
-    return $resource('rest/applications/:appId', {
+    return $resource('rest/applications/:appId/:count', {
         appId : '@appId'
     }, {
         get : {
@@ -19,6 +19,9 @@ backendMod.factory('pushApplication', function($resource) {
         },
         delete : {
             method: 'DELETE'
+        },
+        count : {
+            method : 'GET'
         }
     });
 });
