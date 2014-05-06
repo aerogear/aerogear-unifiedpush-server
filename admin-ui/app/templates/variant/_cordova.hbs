@@ -7,8 +7,19 @@ var pushConfig = {
     variantSecret: "{{secret}}"
 }
 
-//badge and sound are iOS specific, and ignored on Android
-push.register(successHandler, errorHandler, {"badge": "true", "sound": "true",
-    "ecb": "onNotification", pushConfig: pushConfig});
+push.register(onNotification, successHandler, errorHandler, pushConfig);
+
+function successHandler() {
+    console.log('succesfull registered');
+}
+
+function errorHandler(error) {
+    console.error('error registering ' + error);
+}
+
+function onNotification(event) {
+    alert(event.alert);
+}
+
 </code></pre>
 {{/view}}
