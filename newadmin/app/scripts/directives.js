@@ -31,6 +31,7 @@ angular.module('ups.directives', [])
         return {
             scope: {
                 variants: '=',
+                counts: '=',
                 type: '@'
             },
             controller: function($scope) {
