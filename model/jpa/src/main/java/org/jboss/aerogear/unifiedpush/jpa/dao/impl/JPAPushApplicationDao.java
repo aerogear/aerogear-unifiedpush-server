@@ -73,21 +73,25 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     }
 
     @Override
-    public Map<VariantType, Long> countInstallationsByType(String pushApplicationID) {
-        final String jpql = "select v.class, count(*) from PushApplication pa join pa.{type}Variants v join v.installations i "
+    public Map<String, Long> countInstallationsByType(String pushApplicationID) {
+        final String jpql = "select v.variantID, count(*) from PushApplication pa join pa.{type}Variants v join v.installations i "
                 + "where pushApplicationID = :pushApplicationID and i.enabled = true "
-                + "group by v.class";
+                + "group by v.variantID";
 
-        final HashMap<VariantType, Long> results = new HashMap<VariantType, Long>();
+        final HashMap<String, Long> results = new HashMap<String, Long>();
 
         for (VariantType variantType : VariantType.values()) {
             final String typeName = variantType == VariantType.IOS ? "iOS" : variantType.getTypeName();
             final String typeQuery = jpql.replaceAll("\\{type\\}", typeName);
             final Query query = createQuery(typeQuery).setParameter("pushApplicationID", pushApplicationID);
             final List<Object[]> resultList = query.getResultList();
+            long total = 0L;
             for (Object[] objects : resultList) {
-                results.put(variantType, (Long)objects[1]);
+                final Long value = (Long) objects[1];
+                total += value;
+                results.put(String.valueOf(objects[0]), value);
             }
+            results.put(variantType.getTypeName(), total);
         }
 
         return results;

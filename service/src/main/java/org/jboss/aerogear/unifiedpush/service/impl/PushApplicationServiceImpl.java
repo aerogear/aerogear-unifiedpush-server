@@ -77,7 +77,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public Map<VariantType, Long> countInstallationsByType(String pushApplicationID) {
+    public Map<String, Long> countInstallationsByType(String pushApplicationID) {
         return pushApplicationDao.countInstallationsByType(pushApplicationID);
     }
 

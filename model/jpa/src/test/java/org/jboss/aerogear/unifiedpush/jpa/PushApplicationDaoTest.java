@@ -17,10 +17,9 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
@@ -312,10 +311,11 @@ public class PushApplicationDaoTest {
         // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
         entityManager.clear();
 
-        final Map<VariantType, Long> result = pushApplicationDao.countInstallationsByType(pushApplication1.getPushApplicationID());
+        final Map<String, Long> result = pushApplicationDao.countInstallationsByType(pushApplication1.getPushApplicationID());
 
+        System.out.println("result = " + result);
         assertThat(result).isNotEmpty();
-        assertThat(result.get(VariantType.ANDROID)).isEqualTo(2L);
-        assertThat(result.get(VariantType.IOS)).isEqualTo(1L);
+        assertThat(result.get(av.getVariantID())).isEqualTo(2L);
+        assertThat(result.get(ios.getVariantID())).isEqualTo(1L);
     }
 }

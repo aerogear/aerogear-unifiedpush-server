@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
@@ -41,7 +40,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -179,14 +177,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}/count")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
-        Map<VariantType, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
+        Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
 
-        // TODO nicer would be to have VariantType configured to be serialized with it's 'typeName'
-        Map<String, Long> serialized = new HashMap<String, Long>();
-        for (Map.Entry<VariantType, Long> entry : result.entrySet()) {
-            serialized.put(entry.getKey().getTypeName(), entry.getValue());
-        }
-
-        return Response.ok(serialized).build();
+        return Response.ok(result).build();
     }
 }
