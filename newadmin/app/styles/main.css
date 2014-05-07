@@ -88,6 +88,10 @@ a:hover {
     color: inherit;
 }
 
+div.ups-tip-panel-body .dropdown a {
+    margin-left: 0;
+}
+
 a.ups-tip-panel-link {
     margin-right: 12px;
     font-weight: normal;
