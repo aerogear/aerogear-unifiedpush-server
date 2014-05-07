@@ -16,7 +16,7 @@
                 installation to this Unified Push Server, so that it can receive notifications.</p><br>
 
             <tabset>
-                <tab heading="Cordova">
+                <tab heading="Cordova" ng-hide="variantType == 'chrome'">
                     <blockquote class="ups-code-block">
 var pushConfig = {
     pushServerURL: "{{ currentLocation }}",
@@ -38,6 +38,35 @@ function successHandler() {
 function errorHandler(message) {
     console.log('error ' + message);
 }
+                    </blockquote>
+                </tab>
+                <tab heading="Chrome" ng-hide="variantType != 'chrome'">
+                    <blockquote class="ups-code-block">
+chrome.pushMessaging.getChannelId( true, function(channelId) {
+    /*
+        Set our Variant ID and Secret and the location of the UnifiedPush Server
+    */
+    var variantId = "{{ variant.variantID }}",
+        variantSecret = "{{ variant.secret }}",
+        pushServerURL = "{{ currentLocation }}";
+
+    // Once we have the channelID we can then register with the UnifiedPush Server using
+    // the AeroGear.js library
+    var client = AeroGear.UnifiedPushClient(
+            variantId,
+            variantSecret,
+            pushServerURL
+        ),settings = {};
+        // The channelId will be the "device token"
+
+    settings.metadata = {
+        deviceToken: channelId.channelId
+    };
+
+    // Register with the UnifiedPush Server
+    client.registerWithPushServer( settings );
+
+});
                     </blockquote>
                 </tab>
                 <tab heading="Android" ng-hide="variant.type != 'ANDROID'">
