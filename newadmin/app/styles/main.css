@@ -323,3 +323,24 @@ a.ups-tip-panel-link {
     left: 3rem;
     padding-left: 1.5rem;
 }
+
+ul.ups-pagination.pagination>.active>a,
+ul.ups-pagination.pagination>.active>span,
+ul.ups-pagination.pagination>.active>a:hover,
+ul.ups-pagination.pagination>.active>span:hover,
+ul.ups-pagination.pagination>.active>a:focus,
+ul.ups-pagination.pagination>.active>span:focus {
+    background: #00A9EC none;
+    color: #fff;
+    box-shadow: none;
+}
+
+ul.ups-pagination.pagination>.disabled>span,
+ul.ups-pagination.pagination>.disabled>span:hover,
+ul.ups-pagination.pagination>.disabled>span:focus,
+ul.ups-pagination.pagination>.disabled>a,
+ul.ups-pagination.pagination>.disabled>a:hover,
+ul.ups-pagination.pagination>.disabled>a:focus {
+    background: #fff none;
+    color: #333;
+}
