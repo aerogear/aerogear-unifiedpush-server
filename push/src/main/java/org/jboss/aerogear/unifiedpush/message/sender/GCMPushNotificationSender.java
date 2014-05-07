@@ -99,6 +99,8 @@ public class GCMPushNotificationSender {
         } catch (Exception e) {
             // general GCM exceptions:
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
+        } finally {
+            logger.log(Level.INFO, "Message to GCM has been submitted");
         }
     }
 
@@ -140,6 +142,7 @@ public class GCMPushNotificationSender {
         }
 
         // trigger asynchronous deletion:
+        logger.log(Level.FINE, "Deleting '" + inactiveTokens.size() + "' invalid Android installations");
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
     }
 }
