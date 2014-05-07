@@ -22,6 +22,10 @@ var newadminMod = angular.module('newadminApp', [
         templateUrl : 'views/installation.html',
         controller : InstallationController
       })
+      .when('/example/:applicationId/:variantType/:variantId', {
+        templateUrl : 'views/example.html',
+        controller : ExampleController
+      })
       .otherwise({
         redirectTo: '/'
       });

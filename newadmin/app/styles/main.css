@@ -348,3 +348,7 @@ ul.ups-pagination.pagination>.disabled>a:focus {
     background: #fff none;
     color: #333;
 }
+
+.nav-tabs {
+    float: right;
+}
