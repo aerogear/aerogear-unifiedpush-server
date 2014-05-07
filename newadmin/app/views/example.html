@@ -1,0 +1,132 @@
+<ups-navigation current="applications"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+    <div class="row">
+        <div class="lo-content-area col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Applications</a></li>
+                <li><a href="#/detail/{{ applicationId }}">Application name</a></li>
+                <li class="active">Registering Installations</li>
+            </ol>
+
+
+            <h1>Example: <span>Sending push notifications</span></h1>
+
+            <p class="pull-left;">This is an example implementation of how to let your application register itself as an
+                installation to this Unified Push Server, so that it can receive notifications.</p><br>
+
+            <tabset>
+                <tab heading="Cordova">
+                    <blockquote class="ups-code-block">
+var pushConfig = {
+    pushServerURL: "{{ currentLocation }}",
+    {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
+    variantID: "{{ variant.variantID }}",
+    variantSecret: "{{ variant.secret }}"
+};
+
+push.register(onNotification, successHandler, errorHandler, pushConfig);
+
+function onNotification(event) {
+    alert(event.alert);
+}
+
+function successHandler() {
+    console.log('success')
+}
+
+function errorHandler(message) {
+    console.log('error ' + message);
+}
+                    </blockquote>
+                </tab>
+                <tab heading="Android" ng-hide="variant.type != 'ANDROID'">
+ <blockquote class="ups-code-block">
+package com.push.pushapplication;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.jboss.aerogear.android.unifiedpush.PushConfig;
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.Registrations;
+
+import android.app.Application;
+
+public class PushApplication extends Application {
+
+    private final String VARIANT_ID       = "{{ variant.variantID }}";
+    private final String SECRET           = "{{ variant.secret }}";
+    private final String GCM_SENDER_ID    = "{{ variant.projectNumber }}";
+    private final String UNIFIED_PUSH_URL = "{{ currentLocation }}";
+
+    private PushRegistrar registration;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Registrations registrations = new Registrations();
+
+        try {
+            PushConfig config = new PushConfig(new URI(UNIFIED_PUSH_URL), GCM_SENDER_ID);
+            config.setVariantID(VARIANT_ID);
+            config.setSecret(SECRET);
+            config.setAlias(MY_ALIAS);
+
+            registration = registrations.push("unifiedpush", config);
+
+            registration.register(getApplicationContext(), new Callback() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void onSuccess(Void ignore) {
+                     Toast.makeText(MainActivity.this, "Registration Succeeded!",
+                             Toast.LENGTH_LONG).show();
+               }
+
+               @Override
+               public void onFailure(Exception exception) {
+                     Log.e("MainActivity", exception.getMessage(), exception);
+               }
+            });
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+</blockquote>
+                </tab>
+                <tab heading="iOS" ng-hide="variant.type != 'IOS'" >
+                    <blockquote class="ups-code-block">
+- (void)application:(UIApplication *)application
+ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
+   AGDeviceRegistration *registration =
+     [[AGDeviceRegistration alloc] initWithServerURL:
+        [NSURL URLWithString:@"{{ currentLocation }}"]];
+
+   [registration registerWithClientInfo:^(id clientInfo) {
+
+     [clientInfo setDeviceToken:deviceToken];
+     [clientInfo setVariantID:@"{{ variant.variantID }}"];
+     [clientInfo setVariantSecret:@"{{ variant.secret }}"];
+
+     // --optional config--
+     UIDevice *currentDevice = [UIDevice currentDevice];
+     [clientInfo setOperatingSystem:[currentDevice systemName]];
+     [clientInfo setOsVersion:[currentDevice systemVersion]];
+     [clientInfo setDeviceType: [currentDevice model]];
+     } success:^() {
+       NSLog(@"PushEE registration worked");
+     } failure:^(NSError *error) {
+       NSLog(@"PushEE registration Error: %@", error);
+   }];
+ }
+                    </blockquote>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
