@@ -34,6 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
@@ -60,7 +61,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
+            logger.log(Level.FINEST, String.format("Resetting secret: %s", variant.getClass().getSimpleName()));
 
             // generate the new 'secret' and apply it:
             String newSecret = UUID.randomUUID().toString();
@@ -81,7 +82,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Requested: %s", variant));
+            logger.log(Level.FINEST, String.format("Requested: %s", variant));
 
             return Response.ok(variant).build();
         }
@@ -97,7 +98,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantIDForDeveloper(variantId, loginName.get());
 
         if (variant != null) {
-            logger.finest(String.format("Deleting: %s", variant.getClass().getSimpleName()));
+            logger.log(Level.FINEST, String.format("Deleting: %s", variant.getClass().getSimpleName()));
 
             variantService.removeVariant(variant);
             return Response.noContent().build();

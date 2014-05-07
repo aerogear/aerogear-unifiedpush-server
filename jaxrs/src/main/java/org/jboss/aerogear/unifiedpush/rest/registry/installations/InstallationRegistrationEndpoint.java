@@ -39,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Stateless
@@ -97,7 +98,7 @@ public class InstallationRegistrationEndpoint {
 
         // new device/client ? 
         if (installation == null) {
-            logger.fine("Performing client registration for: " + entity.getDeviceToken());
+            logger.log(Level.FINE, "Performing client registration for: " + entity.getDeviceToken());
             // store the installation:
             clientInstallationService.addInstallation(variant.getType(), entity);
             // add installation to the matching variant
@@ -105,7 +106,7 @@ public class InstallationRegistrationEndpoint {
         } else {
             // We only update the metadata, if the device is enabled: 
             if (installation.isEnabled()) {
-                logger.info("Updating received metadata for Installation");
+                logger.log(Level.INFO, "Updating received metadata for Installation");
                 // update the entity:
                 clientInstallationService.updateInstallation(installation, entity);
             }
@@ -137,7 +138,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
-            logger.info("Deleting metadata Installation");
+            logger.log(Level.INFO, "Deleting metadata Installation");
             // remove
             clientInstallationService.removeInstallation(installation);
         }

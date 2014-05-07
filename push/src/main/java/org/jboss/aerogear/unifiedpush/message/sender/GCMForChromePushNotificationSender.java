@@ -67,10 +67,10 @@ public class GCMForChromePushNotificationSender implements Serializable {
                 // POST the payload to the GCM For Chrome server
                 conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + unifiedPushMessage.getAlert() + "'}", accessToken);
                 int chromePackagedAppStatusCode = conn.getResponseCode();
-                logger.info("GCM for Chrome Status: " + chromePackagedAppStatusCode);
+                logger.log(Level.INFO, "GCM for Chrome Status: " + chromePackagedAppStatusCode);
 
                 if (chromePackagedAppStatusCode >= 400) {
-                    logger.severe("ERROR ??????     STATUS CODE, from GCM for Chrome was NOT 2XX, but....: " + chromePackagedAppStatusCode);
+                    logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);

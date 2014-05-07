@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -63,7 +64,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to @Async EJB:
         senderService.send(pushApplication, payload);
-        logger.info("Message submitted to PushNetworks for further processing");
+        logger.log(Level.INFO, "Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();

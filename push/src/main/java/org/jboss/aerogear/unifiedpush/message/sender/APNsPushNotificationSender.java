@@ -77,7 +77,7 @@ public class APNsPushNotificationSender {
 
         if (service != null) {
             try {
-                logger.fine(String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
+                logger.log(Level.FINE, String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
                 // send:
                 service.start();
 
@@ -100,7 +100,7 @@ public class APNsPushNotificationSender {
                 service.stop();
             }
         } else {
-            logger.severe("No certificate was found. Could not send messages to APNs");
+            logger.log(Level.SEVERE, "No certificate was found. Could not send messages to APNs");
         }
     }
 
