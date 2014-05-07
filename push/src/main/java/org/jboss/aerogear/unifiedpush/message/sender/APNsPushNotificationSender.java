@@ -77,7 +77,7 @@ public class APNsPushNotificationSender {
 
         if (service != null) {
             try {
-                logger.fine(String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
+                logger.log(Level.FINE, "Sending transformed APNs payload: " + apnsMessage);
                 // send:
                 service.start();
 
@@ -86,21 +86,22 @@ public class APNsPushNotificationSender {
 
                 // after sending, let's ask for the inactive tokens:
                 final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
-
                 // transform the tokens to be all lower-case:
                 final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
 
                 // trigger asynchronous deletion:
+                logger.log(Level.FINE, "Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
             } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
             } finally {
 
+                logger.log(Level.INFO, "Message to APNs has been submitted");
                 // tear down and release resources:
                 service.stop();
             }
         } else {
-            logger.severe("No certificate was found. Could not send messages to APNs");
+            logger.log(Level.SEVERE, "No certificate was found. Could not send messages to APNs");
         }
     }
 
