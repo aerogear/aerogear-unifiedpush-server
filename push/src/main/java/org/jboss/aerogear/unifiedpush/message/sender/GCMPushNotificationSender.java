@@ -86,7 +86,7 @@ public class GCMPushNotificationSender {
 
         // send it out.....
         try {
-            logger.log(Level.FINE, String.format("Sending transformed GCM payload: '%s' ", gcmMessage));
+            logger.log(Level.FINE, "Sending transformed GCM payload: " + gcmMessage);
 
             Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
             MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);

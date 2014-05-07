@@ -51,7 +51,7 @@ public class SimplePushNotificationSender implements Serializable {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.log(Level.FINE, String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                logger.log(Level.FINEST, "Sending out SimplePush payload: " + payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.log(Level.INFO, "SimplePush Status: " + simplePushStatusCode);
@@ -107,5 +107,4 @@ public class SimplePushNotificationSender implements Serializable {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         return conn;
     }
-
 }

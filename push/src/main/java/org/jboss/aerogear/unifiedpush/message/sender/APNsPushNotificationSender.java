@@ -77,7 +77,7 @@ public class APNsPushNotificationSender {
 
         if (service != null) {
             try {
-                logger.log(Level.FINE, String.format("Sending transformed APNs payload: '%s' ", apnsMessage));
+                logger.log(Level.FINE, "Sending transformed APNs payload: " + apnsMessage);
                 // send:
                 service.start();
 
