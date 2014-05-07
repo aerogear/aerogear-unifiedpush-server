@@ -92,4 +92,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="ChromePackagedAppVariant" access="FIELD">
         <discriminator-value>chromePackagedApp</discriminator-value>
     </entity>
+    <entity class="ProxyServer" access="FIELD">
+        <discriminator-value>proxyServer</discriminator-value>
+    </entity>
 </entity-mappings>
