@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -39,7 +38,6 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 @Stateless
 @Path("/sender")
-@TransactionAttribute
 public class PushNotificationSenderEndpoint {
 
     private final Logger logger = Logger.getLogger(PushNotificationSenderEndpoint.class.getName());

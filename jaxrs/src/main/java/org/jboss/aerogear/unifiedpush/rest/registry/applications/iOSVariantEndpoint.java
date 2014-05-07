@@ -25,7 +25,6 @@ import org.jboss.aerogear.security.util.PKCS12Util;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -42,7 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Stateless
-@TransactionAttribute
 @Path("/applications/{pushAppID}/iOS")
 @Secure( { "developer", "admin" })
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
