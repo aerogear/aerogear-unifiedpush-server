@@ -4,10 +4,76 @@
     <div class="row">
         <div class="lo-content-area col-md-12">
             <ol class="breadcrumb">
-                <li class="active">Applications</li>
-                <li class="active">Application name</li>
+                <li><a href="#">Applications</a></li>
+                <li><a href="#/details/">Application name</a></li>
                 <li class="active">Variant name</li>
             </ol>
+
+            <div>
+                <ups-alerts/>
+            </div>
+
+            <div class="panel lo-panel ups-panel-installations">
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <input type="search" class="form-control" placeholder="Search...">
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+                <table class="ups-installations">
+                    <colgroup>
+                        <col width="45%">
+                        <col width="10%">
+                        <col width="15%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>Device token</th>
+                        <th>Alias</th>
+                        <th>OS</th>
+                        <th>Receiving</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <tr ng-repeat-start="installation in installations">
+                        <td>
+                            <a href="" ng-click="expand(installation)">
+                                <i class="fa" ng-class="{'fa-caret-right': isCollapsed(installation), 'fa-caret-down': !isCollapsed(installation)}"></i>
+                                {{ installation.deviceToken | limitTo : 50 }}...
+                            </a>
+                        </td>
+                        <td>{{ installation.alias }} <div ng-hide="installation.alias.length">No alias</div></td>
+                        <td>{{ installation.os }}</td>
+                        <td>
+                            <label class="topcoat-switch">
+                                <input type="checkbox" class="topcoat-switch__input" ng-checked="installation.enabled">
+                                <div class="topcoat-switch__toggle"></div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr collapse="isCollapsed(installation)" ng-repeat-end>
+                        <td colspan="4">
+                            <table style="" class="ups-installation-detail">
+                                <tr>
+                                    <td>Categories:</td>
+                                    <td>{{ installation.categories }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Device type:</td>
+                                    <td>{{ installation.deviceType }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Token:</td>
+                                    <td>{{ installation.deviceToken }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pull-right"></pagination>
         </div>
     </div>
 </div>

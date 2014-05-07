@@ -16,5 +16,30 @@
  */
 'use strict';
 
-function InstallationController($scope, $routeParams) {
+function InstallationController($rootScope, $scope, $routeParams, installations, Notifications) {
+
+    /*
+     * INITIALIZATION
+     */
+    onLoginDone($rootScope, $scope, function() {
+        installations.get({variantId: $routeParams.variantId}, function(installations) {
+            $scope.installations = installations;
+        });
+    });
+
+    $scope.expand = function(installation) {
+        installation.expand = !installation.expand;
+    };
+
+    $scope.isCollapsed = function(installation) {
+        return !installation.expand;
+    };
+}
+
+function onLoginDone($rootScope, $scope, callback) {
+    if ($rootScope.loggedIn) {
+        callback();
+    } else {
+        $scope.$on('loginDone', callback);
+    }
 }
