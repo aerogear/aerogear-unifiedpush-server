@@ -20,7 +20,8 @@
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <table class="ups-installations">
+                <p ng-hide="installations.length">No Installations yet</p>
+                <table class="ups-installations" ng-show="installations.length">
                     <colgroup>
                         <col width="45%">
                         <col width="10%">
@@ -73,7 +74,7 @@
                     </tbody>
                 </table>
             </div>
-            <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination"></pagination>
+            <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="installations.length"></pagination>
         </div>
     </div>
 </div>
