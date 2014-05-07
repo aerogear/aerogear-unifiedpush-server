@@ -47,7 +47,7 @@
                         <td>{{ installation.os }}</td>
                         <td>
                             <label class="topcoat-switch">
-                                <input type="checkbox" class="topcoat-switch__input" ng-checked="installation.enabled">
+                                <input type="checkbox" class="topcoat-switch__input" ng-checked="installation.enabled" ng-click="update(installation)">
                                 <div class="topcoat-switch__toggle"></div>
                             </label>
                         </td>

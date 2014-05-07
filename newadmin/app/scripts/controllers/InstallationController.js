@@ -34,6 +34,12 @@ function InstallationController($rootScope, $scope, $routeParams, installations,
     $scope.isCollapsed = function(installation) {
         return !installation.expand;
     };
+
+    $scope.update = function(installation) {
+        var params = {variantId: $routeParams.variantId, installationId: installation.id};
+        installation.enabled = !installation.enabled;
+        installations.update(params, installation);
+    }
 }
 
 function onLoginDone($rootScope, $scope, callback) {

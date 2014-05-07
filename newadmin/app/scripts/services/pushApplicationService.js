@@ -49,12 +49,16 @@ backendMod.factory('variants', function($resource) {
 });
 
 backendMod.factory('installations', function($resource) {
-    return $resource('/ag-push/rest/applications/:variantId/installations/', {
-        variantId : '@variantId'
+    return $resource('/ag-push/rest/applications/:variantId/installations/:installationId', {
+        variantId : '@variantId',
+        installationId : '@installationId'
     }, {
         get : {
             method : 'GET',
             isArray: true
+        },
+        update : {
+            method : 'PUT'
         }
     });
 });
