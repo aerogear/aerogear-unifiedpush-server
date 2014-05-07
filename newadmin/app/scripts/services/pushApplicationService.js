@@ -48,6 +48,17 @@ backendMod.factory('variants', function($resource) {
     });
 });
 
+backendMod.factory('installations', function($resource) {
+    return $resource('/ag-push/rest/applications/:variantId/installations/', {
+        variantId : '@variantId'
+    }, {
+        get : {
+            method : 'GET',
+            isArray: true
+        }
+    });
+});
+
 //to be removed after KC integration
 backendMod.factory('authz', function($resource) {
     return $resource('/ag-push/rest/auth/login', {
