@@ -137,7 +137,7 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             case 'android':
             case 'simplePush':
                 return variantType + 'Variants';
-            case 'ios':
+            case 'iOS':
                 return 'iosvariants';
             case 'chrome':
                 return 'chromePackagedAppVariants';
@@ -152,9 +152,8 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             case 'android':
             case 'simplePush':
             case 'chrome':
+            case 'iOS':
                 return variantType;
-            case 'ios':
-                return 'iOS';
             default:
                 Notifications.error('Unknown variant type ' + variantType);
                 return "";
