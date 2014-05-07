@@ -41,11 +41,3 @@ function InstallationController($rootScope, $scope, $routeParams, installations,
         installations.update(params, installation);
     }
 }
-
-function onLoginDone($rootScope, $scope, callback) {
-    if ($rootScope.loggedIn) {
-        callback();
-    } else {
-        $scope.$on('loginDone', callback);
-    }
-}
