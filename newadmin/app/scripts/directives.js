@@ -34,7 +34,7 @@ angular.module('ups.directives', [])
                 counts: '=',
                 type: '@'
             },
-            controller: function($scope) {
+            controller: function($scope, $routeParams) {
                 $scope.expand = function(variant) {
                     variant.expand = !variant.expand;
                 };
@@ -50,6 +50,8 @@ angular.module('ups.directives', [])
                 $scope.removeVariant = function(variant, type) {
                     $scope.$parent.removeVariant(variant, type);
                 };
+
+                $scope.applicationId = $routeParams.applicationId;
             },
             templateUrl: 'directives/variant-details.html'
         };
