@@ -23,7 +23,6 @@ import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
@@ -44,7 +43,6 @@ import javax.ws.rs.core.UriBuilder;
 import java.util.UUID;
 
 @Stateless
-@TransactionAttribute
 @Path("/applications")
 @Secure( { "developer", "admin" })
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {

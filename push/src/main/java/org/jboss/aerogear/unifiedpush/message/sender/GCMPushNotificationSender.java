@@ -86,7 +86,7 @@ public class GCMPushNotificationSender {
 
         // send it out.....
         try {
-            logger.fine(String.format("Sending transformed GCM payload: '%s' ", gcmMessage));
+            logger.log(Level.FINE, "Sending transformed GCM payload: " + gcmMessage);
 
             Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
             MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
@@ -99,6 +99,8 @@ public class GCMPushNotificationSender {
         } catch (Exception e) {
             // general GCM exceptions:
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
+        } finally {
+            logger.log(Level.INFO, "Message to GCM has been submitted");
         }
     }
 
@@ -140,6 +142,7 @@ public class GCMPushNotificationSender {
         }
 
         // trigger asynchronous deletion:
+        logger.log(Level.FINE, "Deleting '" + inactiveTokens.size() + "' invalid Android installations");
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
     }
 }

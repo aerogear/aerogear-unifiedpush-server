@@ -51,13 +51,13 @@ public class SimplePushNotificationSender implements Serializable {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.fine(String.format("Sending transformed SimplePush version: '%s' to %s", payload, clientURL));
+                logger.log(Level.FINEST, "Sending out SimplePush payload: " + payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
-                logger.info("SimplePush Status: " + simplePushStatusCode);
+                logger.log(Level.INFO, "SimplePush Status: " + simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
-                    logger.severe("ERROR ??????     STATUS CODE, from PUSH NETWORK was NOT 200, but....: " + simplePushStatusCode);
+                    logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
@@ -107,5 +107,4 @@ public class SimplePushNotificationSender implements Serializable {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         return conn;
     }
-
 }

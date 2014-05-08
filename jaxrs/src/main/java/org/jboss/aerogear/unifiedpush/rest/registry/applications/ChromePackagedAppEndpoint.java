@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,7 +35,6 @@ import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
 
 @Stateless
-@TransactionAttribute
 @Path("/applications/{pushAppID}/chrome")
 @Secure({ "developer", "admin" })
 public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {

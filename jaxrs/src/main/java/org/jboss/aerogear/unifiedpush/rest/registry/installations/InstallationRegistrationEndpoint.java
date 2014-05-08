@@ -39,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Stateless
@@ -95,9 +96,14 @@ public class InstallationRegistrationEndpoint {
         // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
 
-        // new device/client ? 
+        // The 'mobile application' on the device/client was launched.
+        // If the installation is already in the DB, let's update the metadata,
+        // otherwise we register a new installation:
+        logger.log(Level.FINEST, "Mobile Application on device was launched");
+
+        // new device/client ?
         if (installation == null) {
-            logger.fine("Performing client registration for: " + entity.getDeviceToken());
+            logger.log(Level.FINEST, "Performing new device/client registration");
             // store the installation:
             clientInstallationService.addInstallation(variant.getType(), entity);
             // add installation to the matching variant
@@ -105,7 +111,7 @@ public class InstallationRegistrationEndpoint {
         } else {
             // We only update the metadata, if the device is enabled: 
             if (installation.isEnabled()) {
-                logger.info("Updating received metadata for Installation");
+                logger.log(Level.FINEST, "Updating received metadata for an 'enabled' installation");
                 // update the entity:
                 clientInstallationService.updateInstallation(installation, entity);
             }
@@ -137,7 +143,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
-            logger.info("Deleting metadata Installation");
+            logger.log(Level.INFO, "Deleting metadata Installation");
             // remove
             clientInstallationService.removeInstallation(installation);
         }
