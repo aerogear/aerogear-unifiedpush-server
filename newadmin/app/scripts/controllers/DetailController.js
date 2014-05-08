@@ -94,6 +94,17 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
         });
     };
 
+    $scope.renewMasterSecret = function() {
+        var modalInstance = show(null, null, 'renew-secret.html');
+        modalInstance.result.then(function () {
+            var app = $scope.application;
+            pushApplication.reset({appId: app.pushApplicationID}, function(application) {
+                $scope.application.masterSecret = application.masterSecret;
+                Notifications.success('Successfully renewed master secret for "' + app.name + '"');
+            })
+        });
+    };
+
     /*
      * PRIVATE FUNCTIONS
      */
