@@ -30,9 +30,18 @@ function ExampleController($rootScope, $scope, $routeParams, $window, variants) 
         variants.get(params, function(variant) {
             $scope.variant = variant;
             $scope.variantType = $routeParams.variantType;
+            $scope.active = $routeParams.variantType;
             $scope.applicationId = $routeParams.applicationId;
             var href = $window.location.href;
             $scope.currentLocation = href.substring(0, href.indexOf('#'));
         });
     });
+
+    $scope.isActive = function(tabName) {
+        return tabName == $scope.active;
+    };
+
+    $scope.setActive = function(tabName) {
+        $scope.active = tabName;
+    }
 }
