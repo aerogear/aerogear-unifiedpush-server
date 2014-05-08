@@ -16,31 +16,7 @@
                 installation to this Unified Push Server, so that it can receive notifications.</p><br>
 
             <tabset>
-                <tab heading="Cordova" ng-hide="variantType == 'chrome'">
-                    <blockquote class="ups-code-block">
-var pushConfig = {
-    pushServerURL: "{{ currentLocation }}",
-    {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
-    variantID: "{{ variant.variantID }}",
-    variantSecret: "{{ variant.secret }}"
-};
-
-push.register(onNotification, successHandler, errorHandler, pushConfig);
-
-function onNotification(event) {
-    alert(event.alert);
-}
-
-function successHandler() {
-    console.log('success')
-}
-
-function errorHandler(message) {
-    console.log('error ' + message);
-}
-                    </blockquote>
-                </tab>
-                <tab heading="Simple push" ng-hide="true">
+                <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="isActive('simplePush')">
                     <blockquote class="ups-code-block">
 (function() {
      var endpoint, endpointRequest, SPClient, UPClient;
@@ -113,7 +89,7 @@ function errorHandler(message) {
  })();
                     </blockquote>
                 </tab>
-                <tab heading="Chrome" ng-hide="variantType != 'chrome'">
+                <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="isActive('chrome')">
                     <blockquote class="ups-code-block">
 chrome.pushMessaging.getChannelId( true, function(channelId) {
     /*
@@ -142,7 +118,7 @@ chrome.pushMessaging.getChannelId( true, function(channelId) {
 });
                     </blockquote>
                 </tab>
-                <tab heading="Android" ng-hide="variant.type != 'ANDROID'">
+                <tab heading="Android" ng-hide="variantType != 'android'" active="isActive('android')" ng-click="setActive('android')">
  <blockquote class="ups-code-block">
 package com.push.pushapplication;
 
@@ -200,7 +176,7 @@ public class PushApplication extends Application {
 }
 </blockquote>
                 </tab>
-                <tab heading="iOS" ng-hide="variant.type != 'IOS'" >
+                <tab heading="iOS" ng-hide="variantType != 'iOS'" active="isActive('iOS')" ng-click="setActive('iOS')">
                     <blockquote class="ups-code-block">
 - (void)application:(UIApplication *)application
  didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -226,6 +202,30 @@ public class PushApplication extends Application {
        NSLog(@"PushEE registration Error: %@", error);
    }];
  }
+                    </blockquote>
+                </tab>
+                <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush'" active="isActive('cordova')" ng-click="setActive('cordova')">
+                    <blockquote class="ups-code-block">
+var pushConfig = {
+    pushServerURL: "{{ currentLocation }}",
+    {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
+    variantID: "{{ variant.variantID }}",
+    variantSecret: "{{ variant.secret }}"
+};
+
+push.register(onNotification, successHandler, errorHandler, pushConfig);
+
+function onNotification(event) {
+    alert(event.alert);
+}
+
+function successHandler() {
+    console.log('success')
+}
+
+function errorHandler(message) {
+    console.log('error ' + message);
+}
                     </blockquote>
                 </tab>
             </tabset>
