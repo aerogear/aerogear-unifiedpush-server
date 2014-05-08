@@ -133,7 +133,7 @@ a.ups-tip-panel-link {
     overflow: scroll;
     white-space: pre;
     width: 100%;
-    background-color: #555;
+    background-color: #555 !important;
     font-size: 12px;
     line-height: 15px;
     border-left: 2px solid #111;
