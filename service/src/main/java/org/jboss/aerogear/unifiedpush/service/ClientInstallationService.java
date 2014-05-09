@@ -34,6 +34,15 @@ public interface ClientInstallationService {
     void addInstallation(VariantType type, Installation installation);
 
     /**
+     * Find all installations for the variant specified.
+     *
+     * @param variantId the id of the variant to find the installations for
+     * @param developer the developer
+     * @return all installations found or empty list
+     */
+    List<Installation> findInstallationsByVariant(String variantId, String developer);
+
+    /**
      * Performs an update/merge on the given entity.
      */
     void updateInstallation(Installation installation);

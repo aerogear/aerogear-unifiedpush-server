@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -68,6 +69,7 @@ public abstract class Variant extends BaseModel {
         this.description = description;
     }
 
+    @XmlTransient
     public Set<Installation> getInstallations() {
         return this.installations;
     }

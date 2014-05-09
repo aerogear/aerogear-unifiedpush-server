@@ -45,6 +45,10 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         remove(entity);
     }
 
+    public List<Installation> findInstallationsByVariant(String variantID, String developer) {
+        return entityManager.createQuery("select i from Variant v join v.installations i where v.variantID = :variantID and v.developer = :developer",
+                Installation.class).setParameter("variantID", variantID).setParameter("developer", developer).getResultList();
+    }
 
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {

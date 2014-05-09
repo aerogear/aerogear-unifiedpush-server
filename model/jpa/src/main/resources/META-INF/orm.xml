@@ -34,7 +34,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <inheritance strategy="JOINED"/>
         <discriminator-column name="TYPE" discriminator-type="STRING"/>
         <attributes>
-            <one-to-many name="installations" fetch="EAGER">
+            <one-to-many name="installations" fetch="LAZY">
                 <join-column name="variantID" referenced-column-name="variantID"/>
                 <cascade>
                     <cascade-remove/>
