@@ -22,9 +22,11 @@
         </div>
       </div>
 
-      <hr />
 
-      <div class="form-group">
+
+      <div class="form-group" ng-hide="variant.id">
+        <hr />
+
         <label class="col-sm-2 control-label">Type</label>
 
         <div class="col-sm-5">
@@ -40,7 +42,7 @@
           <div class="row">
             <div class="radio">
               <label>
-                <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="ios"  ng-required="true">
+                <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="iOS"  ng-required="true">
                 <b>iOS</b><br />
                 <span>using Apple Push Network</span>
               </label>
@@ -93,14 +95,14 @@
           </div>
         </div>
 
-        <div ng-show="variantType == 'ios'">
+        <div ng-show="variantType == 'iOS'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
 
             <div class="col-sm-9">
               <i>Apple Push Notification Service</i> certificate:
 
-              <input type="file" />
+              <input type="file" ups-files="variant.certificates" />
 
               <div class="form-horizontal">
                 <div class="form-group">
@@ -111,7 +113,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.ios.type" value="production">
+                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" checked>
                             Production
                           </label>
                         </div>
@@ -119,7 +121,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.ios.type" value="production">
+                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false">
                             Development
                           </label>
                         </div>
@@ -131,7 +133,7 @@
                   <label class="col-sm-2 control-label" for="iosPassphrase">Passphrase</label>
 
                   <div class="col-sm-5">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.ios.passphrase" ng-required="variantType == 'ios'">
+                    <input type="text" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'iOS'">
                   </div>
                 </div>
               </div>

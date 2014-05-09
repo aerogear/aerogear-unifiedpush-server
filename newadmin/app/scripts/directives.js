@@ -55,4 +55,25 @@ angular.module('ups.directives', [])
             },
             templateUrl: 'directives/variant-details.html'
         };
+    })
+
+    .directive('upsFiles', function() {
+        return {
+            scope: {
+                'files': '=upsFiles'
+            },
+            restrict: 'A',
+            replace: false,
+            link: function($scope, $element) {
+                var fileInput = $element;
+                fileInput.bind('change', function(e) {
+                    while($scope.files.length > 0) {
+                        $scope.files.pop();
+                    }
+                    for(var i in e.target.files) {
+                        if(typeof e.target.files[i] == 'object') $scope.files.push(e.target.files[i]);
+                    }
+                });
+            }
+        }
     });
