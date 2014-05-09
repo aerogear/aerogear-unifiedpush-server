@@ -45,7 +45,10 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
     List<String> findAllPushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 
     /**
-     * Counts the total number of registered devices/clients for the give List of variantIDs
+     * Find all installations for the variant specified.
+     * @param variantID the id of the variant to find the installations for
+     * @param developer the developer
+     * @return all installations found or empty list
      */
-    long getNumberOfDevicesForVariantIDs(List<String> variantIDs);
+    List<Installation> findInstallationsByVariant(String variantID, String developer);
 }

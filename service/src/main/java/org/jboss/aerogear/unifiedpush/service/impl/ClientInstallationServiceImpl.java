@@ -53,6 +53,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
+    public List<Installation> findInstallationsByVariant(String variantId, String developer) {
+        return dao.findInstallationsByVariant(variantId, developer);
+    }
+
+    @Override
     public void updateInstallation(
             Installation installation) {
         dao.update(installation);

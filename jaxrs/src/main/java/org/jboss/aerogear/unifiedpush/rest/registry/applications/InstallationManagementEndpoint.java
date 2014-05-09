@@ -16,11 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+
+import org.jboss.aerogear.security.auth.LoggedUser;
+import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -31,16 +32,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import java.util.List;
+
 
 @Stateless
 @Path("/applications/{variantID}/installations/")
 public class InstallationManagementEndpoint {
-
-    @Inject
-    private GenericVariantService genericVariantService;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -52,14 +53,19 @@ public class InstallationManagementEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId) {
 
+
         //Find the variant using the variantID
         Variant variant = genericVariantService.findByVariantIDForDeveloper(variantId, sec.getUserPrincipal().getName());
 
-        if (variant == null) {
+        //Find the installations using the variantID
+        List<Installation> installations = clientInstallationService.findInstallationsByVariant(variantId, loginName.get());
+
+
+        if (installations.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.ok(variant.getInstallations()).build();
+        return Response.ok(installations).build();
     }
 
     @GET
