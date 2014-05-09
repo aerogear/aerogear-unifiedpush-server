@@ -48,6 +48,21 @@ backendMod.factory('variants', function($resource) {
         },
         delete : {
             method: 'DELETE'
+        },
+        patch: {
+            method : 'PATCH'
+        },
+        createWithFormData: {
+            method: 'POST',
+            headers: {'Content-Type': undefined},
+            withCredentials: true,
+            transformRequest: angular.identity
+        },
+        updateWithFormData: {
+            method: 'PUT',
+            headers: {'Content-Type': undefined},
+            withCredentials: true,
+            transformRequest: angular.identity
         }
     });
 });

@@ -40,14 +40,16 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
     $scope.addVariant = function (variant) {
         var modalInstance = show(variant, null, 'create-variant.html');
         modalInstance.result.then(function (result) {
-            var variant = result.variant;
             var variantType = result.variantType;
+            var variantData = variantProperties(result.variant, variantType);
             var params = $.extend({}, {
                 appId: $scope.application.pushApplicationID,
-                variantType: variantEndpoint(variantType)
+                variantType: variantEndpoint(result.variantType)
             });
 
-            variants.create(params, variant, function(newVariant) {
+            var createFunction = (variantData instanceof FormData) ? variants.createWithFormData : variants.create;
+
+            createFunction(params, variantData, function(newVariant) {
                 var osVariants = getOsVariants(variantType);
                 osVariants.push(newVariant);
                 Notifications.success('Successfully created variant');
@@ -60,19 +62,25 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
     $scope.editVariant = function(variant, variantType) {
         var modalInstance = show(variant, variantType, 'create-variant.html');
         modalInstance.result.then(function (result) {
+            var variantDataUpdate = variantProperties(variant, variantType);
             var params = $.extend({}, {
                 appId: $scope.application.pushApplicationID,
                 variantType: variantEndpoint(variantType),
                 variantId: result.variant.variantID
             });
-            var variantUpdate = variantProperties(variant, variantType);
 
-            variants.update(params, variantUpdate, function(variant) {
-                Notifications.success('Successfully modified variant');
-            }, function() {
-                Notifications.error('Something went wrong...');
-            });
+            var successCallback = function(variant) { Notifications.success('Successfully modified variant'); };
+            var failureCallback = function() { Notifications.error('Something went wrong...'); };
 
+            if (variantType !== 'iOS') {
+                variants.update(params, variantDataUpdate, successCallback, failureCallback);
+            } else {
+                if (variantDataUpdate.certificate) {
+                    variants.updateWithFormData(params, variantDataUpdate, successCallback, failureCallback);
+                } else {
+                    variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
+                }
+            }
         });
     };
 
@@ -101,7 +109,7 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             pushApplication.reset({appId: app.pushApplicationID}, function(application) {
                 $scope.application.masterSecret = application.masterSecret;
                 Notifications.success('Successfully renewed master secret for "' + app.name + '"');
-            })
+            });
         });
     };
 
@@ -112,6 +120,12 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
     function modalController($scope, $modalInstance, variant, variantType) {
         $scope.variant = variant;
         $scope.variantType = variantType;
+
+        if (!$scope.variant) {
+            $scope.variant = {};
+        }
+        $scope.variant.certificates = [];
+
         $scope.ok = function (variant, variantType) {
             $modalInstance.close({
                 variant: variant,
@@ -183,9 +197,16 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
             case 'chrome':
                 properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
                 break;
-            case 'ios':
-                properties = properties.concat([]);
-                break;
+            case 'iOS':
+                if (variant.certificates && variant.certificates.length) {
+                    variant.certificate = variant.certificates[0];
+                }
+                properties = properties.concat(['production', 'passphrase', 'certificate']);
+                var formData = new FormData();
+                properties.forEach(function(property) {
+                    formData.append(property, variant[property] || '');
+                });
+                return formData;
             default:
                 Notifications.error('Unknown variant type ' + variantType);
         }
