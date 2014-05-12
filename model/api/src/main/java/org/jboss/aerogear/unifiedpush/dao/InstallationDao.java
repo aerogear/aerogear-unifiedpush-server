@@ -48,7 +48,9 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * Find all installations for the variant specified.
      * @param variantID the id of the variant to find the installations for
      * @param developer the developer
-     * @return all installations found or empty list
+     * @param page the page number
+     * @param pageSize the size of the pages
+     * @return all installations found or empty list + the total count of results
      */
-    List<Installation> findInstallationsByVariant(String variantID, String developer);
+    PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize);
 }

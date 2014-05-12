@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import javax.ejb.Asynchronous;
@@ -53,8 +54,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public List<Installation> findInstallationsByVariant(String variantId, String developer) {
-        return dao.findInstallationsByVariant(variantId, developer);
+    public PageResult<Installation> findInstallationsByVariant(String variantId, String developer, Integer page, Integer pageSize) {
+        return dao.findInstallationsByVariant(variantId, developer, page, pageSize);
     }
 
     @Override
