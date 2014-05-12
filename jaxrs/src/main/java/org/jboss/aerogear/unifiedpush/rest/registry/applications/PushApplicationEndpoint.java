@@ -20,9 +20,7 @@ import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.rest.util.ObjectMapperContextResolver;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -50,11 +48,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     @LoggedUser
     private Instance<String> loginName;
-
-
-    public PushApplicationEndpoint() {
-        ResteasyProviderFactory.getInstance().registerProviderInstance(new ObjectMapperContextResolver());
-    }
 
     // CREATE
     @POST
