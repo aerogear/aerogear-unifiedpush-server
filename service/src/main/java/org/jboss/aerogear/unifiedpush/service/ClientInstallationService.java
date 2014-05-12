@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 import java.util.List;
 import java.util.Set;
@@ -35,12 +36,13 @@ public interface ClientInstallationService {
 
     /**
      * Find all installations for the variant specified.
-     *
-     * @param variantId the id of the variant to find the installations for
+     *  @param variantId the id of the variant to find the installations for
      * @param developer the developer
-     * @return all installations found or empty list
+     * @param page the page number
+     * @param pageSize the size of the pages
+     * @return page result containing the list plus a total number of rows
      */
-    List<Installation> findInstallationsByVariant(String variantId, String developer);
+    PageResult<Installation> findInstallationsByVariant(String variantId, String developer, Integer page, Integer pageSize);
 
     /**
      * Performs an update/merge on the given entity.

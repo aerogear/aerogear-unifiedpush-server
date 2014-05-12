@@ -16,16 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 import javax.persistence.Query;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.criteria.*;
+import java.util.*;
 
 public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
@@ -45,9 +43,25 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         remove(entity);
     }
 
-    public List<Installation> findInstallationsByVariant(String variantID, String developer) {
-        return entityManager.createQuery("select i from Variant v join v.installations i where v.variantID = :variantID and v.developer = :developer",
-                Installation.class).setParameter("variantID", variantID).setParameter("developer", developer).getResultList();
+    public PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
+        Root<Variant> v = query.from(Variant.class);
+        final Join join = v.join("installations");
+        final Predicate[] predicates = {builder.equal(v.get("variantID"), variantID),
+                builder.and(builder.equal(v.get("developer"), developer))};
+        query.where(predicates);
+
+        List<Installation> result = entityManager.createQuery(query.select(join))
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        final Join<Object, Object> join1 = countQuery.from(Variant.class).join("installations");
+        countQuery.where(predicates);
+        final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
+
+        return new PageResult<Installation>(result, count);
     }
 
     @Override
