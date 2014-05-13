@@ -76,7 +76,10 @@ public class InstallationManagementEndpoint {
         final long totalPages = pageResult.getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);
 
-        return Response.ok(pageResult.getResultList()).header("Link", header.toString()).build();
+        return Response.ok(pageResult.getResultList())
+                .header("Link", header.toString())
+                .header("total", pageResult.getCount())
+                .build();
     }
 
     LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
