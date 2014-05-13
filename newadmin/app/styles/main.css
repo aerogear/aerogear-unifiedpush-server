@@ -339,14 +339,24 @@ ul.ups-pagination.pagination>.active>span:focus {
     box-shadow: none;
 }
 
+ul.ups-pagination.pagination a,
+ul.ups-pagination.pagination span,
+ul.ups-pagination.pagination a:hover,
+ul.ups-pagination.pagination span:hover,
+ul.ups-pagination.pagination a:focus,
+ul.ups-pagination.pagination span:focus {
+    background: #fff none;
+    color: #333;
+    box-shadow: none;
+}
+
 ul.ups-pagination.pagination>.disabled>span,
 ul.ups-pagination.pagination>.disabled>span:hover,
 ul.ups-pagination.pagination>.disabled>span:focus,
 ul.ups-pagination.pagination>.disabled>a,
 ul.ups-pagination.pagination>.disabled>a:hover,
 ul.ups-pagination.pagination>.disabled>a:focus {
-    background: #fff none;
-    color: #333;
+    color: #ccc;
 }
 
 .nav-tabs {
