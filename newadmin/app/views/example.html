@@ -204,7 +204,8 @@ public class PushApplication extends Application {
  }
                     </blockquote>
                 </tab>
-                <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush'" active="isActive('cordova')" ng-click="setActive('cordova')">
+                <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
+                     active="isActive('cordova')" ng-click="setActive('cordova')">
                     <blockquote class="ups-code-block js">
 var pushConfig = {
     pushServerURL: "{{ currentLocation }}",
@@ -226,6 +227,29 @@ function successHandler() {
 function errorHandler(message) {
     console.log('error ' + message);
 }
+                    </blockquote>
+                </tab>
+
+                <tab heading="Sending" ng-hide="variantType != 'send'" active="isActive('send')" ng-click="setActive('send')">
+                    <blockquote class="ups-code-block java">
+JavaSender defaultJavaSender = new SenderClient("{{ currentLocation }}");
+UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+        .pushApplicationId("{{ applicationId }}")
+        .masterSecret("{{ application.masterSecret }}")
+        .alert("Hello from Java Sender API!")
+        .build();
+defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
+
+    @Override
+    public void onComplete(int statusCode) {
+        //do cool stuff
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        //bring out the bad news
+    }
+});
                     </blockquote>
                 </tab>
             </tabset>
