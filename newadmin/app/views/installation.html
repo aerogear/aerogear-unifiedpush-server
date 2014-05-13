@@ -12,7 +12,7 @@
             <div class="panel lo-panel ups-panel-installations">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <input type="search" class="form-control" placeholder="Search...">
+                        <input type="search" class="form-control" placeholder="Search..." ng-model="search">
                     </div>
                     <div style="clear: both;"></div>
                 </div>
@@ -33,7 +33,7 @@
                     </tr>
                     </thead>
                     <tbody >
-                    <tr ng-repeat-start="installation in installations">
+                    <tr ng-repeat-start="installation in installations | filter:search">
                         <td>
                             <a href="" ng-click="expand(installation)">
                                 <i class="fa" ng-class="{'fa-caret-right': isCollapsed(installation), 'fa-caret-down': !isCollapsed(installation)}"></i>
