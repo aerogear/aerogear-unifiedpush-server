@@ -9,10 +9,6 @@
                 <li class="active">Variant name</li>
             </ol>
 
-            <div>
-                <ups-alerts/>
-            </div>
-
             <div class="panel lo-panel ups-panel-installations">
                 <div class="panel-heading">
                     <div class="pull-right">
@@ -74,7 +70,7 @@
                     </tbody>
                 </table>
             </div>
-            <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="installations.length"></pagination>
+            <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="installations.length" ng-change="pageChanged()"></pagination>
         </div>
     </div>
 </div>
