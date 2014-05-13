@@ -19,9 +19,6 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -68,20 +65,5 @@ public class InstallationTest {
     public void simplePushEndpoint() {
         deviceInstallation.setSimplePushEndpoint("http://server.com/update/21345321354");
         assertThat(deviceInstallation.getSimplePushEndpoint()).isEqualTo("http://server.com/update/21345321354");
-    }
-
-    @Test
-    public void shouldSerialize() throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(AndroidVariant.class);
-
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        AndroidVariant variant = new AndroidVariant();
-        variant.setName("serialize me");
-        final Installation installation = new Installation();
-        installation.setAlias("ignore me please");
-        variant.getInstallations().add(installation);
-        marshaller.marshal(variant, System.out);
     }
 }
