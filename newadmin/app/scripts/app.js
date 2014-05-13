@@ -26,9 +26,9 @@ var newadminMod = angular.module('newadminApp', [
         templateUrl : 'views/example.html',
         controller : ExampleController
       })
-      .when('/example/:applicationId/:variantType', {
-          templateUrl : 'views/example.html',
-          controller : ExampleController
+      .when('/compose/:applicationId', {
+        templateUrl : 'views/compose.html',
+        controller : ComposeController
       })
       .otherwise({
         redirectTo: '/'
