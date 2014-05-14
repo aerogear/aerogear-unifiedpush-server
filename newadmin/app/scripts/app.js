@@ -12,23 +12,23 @@ var newadminMod = angular.module('newadminApp', [
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: MainController
+        controller: 'MainController'
       })
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
-        controller: DetailController
+        controller: 'DetailController'
       })
       .when('/installations/:variantId', {
         templateUrl: 'views/installation.html',
-        controller: InstallationController
+        controller: 'InstallationController'
       })
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
-        controller: ExampleController
+        controller: 'ExampleController'
       })
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
-        controller: ExampleController
+        controller: 'ExampleController'
       })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
