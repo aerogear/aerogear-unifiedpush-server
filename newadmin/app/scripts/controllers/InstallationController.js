@@ -18,36 +18,36 @@
 
 function InstallationController($rootScope, $scope, $routeParams, installations) {
 
-    /*
-     * INITIALIZATION
-     */
-    onLoginDone($rootScope, $scope, function() {
-        fetchInstallations(1);
-      });
-    $scope.currentPage = 1;
+  /*
+   * INITIALIZATION
+   */
+  onLoginDone($rootScope, $scope, function () {
+    fetchInstallations(1);
+  });
+  $scope.currentPage = 1;
 
-    $scope.expand = function(installation) {
-        installation.expand = !installation.expand;
-      };
+  $scope.expand = function (installation) {
+    installation.expand = !installation.expand;
+  };
 
-    $scope.isCollapsed = function(installation) {
-        return !installation.expand;
-      };
+  $scope.isCollapsed = function (installation) {
+    return !installation.expand;
+  };
 
-    $scope.pageChanged = function() {
-        fetchInstallations($scope.currentPage);
-      };
+  $scope.pageChanged = function () {
+    fetchInstallations($scope.currentPage);
+  };
 
-    $scope.update = function(installation) {
-        var params = {variantId: $routeParams.variantId, installationId: installation.id};
-        installation.enabled = !installation.enabled;
-        installations.update(params, installation);
-      };
+  $scope.update = function (installation) {
+    var params = {variantId: $routeParams.variantId, installationId: installation.id};
+    installation.enabled = !installation.enabled;
+    installations.update(params, installation);
+  };
 
-    function fetchInstallations(pageNo) {
-        installations.get({variantId: $routeParams.variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
-            $scope.installations = data;
-            $scope.totalItems = responseHeaders('total');
-          });
-      }
+  function fetchInstallations(pageNo) {
+    installations.get({variantId: $routeParams.variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+      $scope.installations = data;
+      $scope.totalItems = responseHeaders('total');
+    });
   }
+}

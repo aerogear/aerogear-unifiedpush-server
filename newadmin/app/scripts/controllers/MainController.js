@@ -18,79 +18,78 @@
 
 function MainController($rootScope, $scope, $modal, pushApplication, Notifications) {
 
-    /*
-     * INITIALIZATION
-     */
+  /*
+   * INITIALIZATION
+   */
 
-    $scope.alerts = [];
+  $scope.alerts = [];
 
-    onLoginDone($rootScope, $scope, function () {
-        //let's show all the applications
-        $scope.applications = pushApplication.query();
+  onLoginDone($rootScope, $scope, function () {
+    //let's show all the applications
+    $scope.applications = pushApplication.query();
+  });
+
+
+  /*
+   * PUBLIC METHODS
+   */
+
+  $scope.open = function (application) {
+    var modalInstance = show(application, 'create-app.html');
+    modalInstance.result.then(function (application) {
+      pushApplication.create(application, function (newApp) {
+        $scope.applications.push(newApp);
+        Notifications.success('Successfully created application "' + newApp.name + '"');
+      }, function () {
+        Notifications.error('Something went wrong...', 'danger');
+      });
     });
+  };
+
+  $scope.edit = function (application) {
+    var modalInstance = show(application, 'create-app.html');
+    modalInstance.result.then(function (application) {
+      pushApplication.update({appId: application.pushApplicationID}, application, function () {
+        Notifications.success('Successfully edited application "' + application.name + '"');
+      });
+    });
+  };
+
+  $scope.remove = function (application) {
+    var modalInstance = show(application, 'remove-app.html');
+    modalInstance.result.then(function () {
+      pushApplication.remove({appId: application.pushApplicationID}, function () {
+        $scope.applications.splice($scope.applications.indexOf(application), 1);
+        Notifications.success('Successfully removed application "' + application.name + '"');
+      });
+    });
+  };
 
 
+  /*
+   * PRIVATE METHODS
+   */
 
-    /*
-     * PUBLIC METHODS
-     */
-
-    $scope.open = function (application) {
-        var modalInstance = show(application, 'create-app.html');
-        modalInstance.result.then(function (application) {
-            pushApplication.create(application, function(newApp) {
-                $scope.applications.push(newApp);
-                Notifications.success("Successfully created application \"" + newApp.name + "\"");
-            }, function() {
-                Notifications.error("Something went wrong...", "danger");
-            });
-        });
+  function modalController($scope, $modalInstance, application) {
+    $scope.application = application;
+    $scope.ok = function (application) {
+      $modalInstance.close(application);
     };
 
-    $scope.edit = function(application) {
-        var modalInstance = show(application, 'create-app.html');
-        modalInstance.result.then(function (application) {
-            pushApplication.update({appId:application.pushApplicationID}, application, function() {
-                Notifications.success("Successfully edited application \"" + application.name + "\"");
-            });
-        });
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
     };
+  }
 
-    $scope.remove = function(application) {
-        var modalInstance = show(application, 'remove-app.html');
-        modalInstance.result.then(function () {
-            pushApplication.remove({appId:application.pushApplicationID}, function() {
-                $scope.applications.splice($scope.applications.indexOf(application), 1);
-                Notifications.success("Successfully removed application \"" + application.name + "\"");
-            });
-        });
-    };
-
-
-    /*
-     * PRIVATE METHODS
-     */
-
-    function modalController($scope, $modalInstance, application) {
-        $scope.application = application;
-        $scope.ok = function (application) {
-            $modalInstance.close(application);
-        };
-
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }
-
-    function show(application, template) {
-        return $modal.open({
-            templateUrl: 'views/dialogs/' + template,
-            controller: modalController,
-            resolve: {
-                application: function () {
-                    return application;
-                }
-            }
-        });
-    }
+  function show(application, template) {
+    return $modal.open({
+      templateUrl: 'views/dialogs/' + template,
+      controller: modalController,
+      resolve: {
+        application: function () {
+          return application;
+        }
+      }
+    });
+  }
 }
