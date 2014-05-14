@@ -16,7 +16,8 @@
  */
 'use strict';
 
-function ExampleController($rootScope, $scope, $routeParams, $window, variants, pushApplication) {
+angular.module('newadminApp').controller('ExampleController',
+  function($rootScope, $scope, $routeParams, $window, variants, pushApplication) {
 
   /*
    * INITIALIZATION
@@ -52,4 +53,4 @@ function ExampleController($rootScope, $scope, $routeParams, $window, variants, 
   $scope.setActive = function (tabName) {
     $scope.active = tabName;
   };
-}
+});

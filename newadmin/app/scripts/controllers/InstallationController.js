@@ -16,7 +16,8 @@
  */
 'use strict';
 
-function InstallationController($rootScope, $scope, $routeParams, installations) {
+angular.module('newadminApp').controller('InstallationController',
+  function($rootScope, $scope, $routeParams, installations) {
 
   /*
    * INITIALIZATION
@@ -50,4 +51,4 @@ function InstallationController($rootScope, $scope, $routeParams, installations)
       $scope.totalItems = responseHeaders('total');
     });
   }
-}
+});

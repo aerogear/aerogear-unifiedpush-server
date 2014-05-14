@@ -16,7 +16,8 @@
  */
 'use strict';
 
-function MainController($rootScope, $scope, $modal, pushApplication, Notifications) {
+angular.module('newadminApp').controller('MainController',
+  function($rootScope, $scope, $modal, pushApplication, Notifications) {
 
   /*
    * INITIALIZATION
@@ -92,4 +93,4 @@ function MainController($rootScope, $scope, $modal, pushApplication, Notificatio
       }
     });
   }
-}
+});

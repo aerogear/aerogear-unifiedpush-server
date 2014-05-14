@@ -16,7 +16,8 @@
  */
 'use strict';
 
-function DetailController($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications) {
+angular.module('newadminApp').controller('DetailController',
+  function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications) {
 
   /*
    * INITIALIZATION
@@ -164,56 +165,56 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
 
   function variantKey(variantType) {
     switch (variantType) {
-      case 'android':
-      case 'simplePush':
-        return variantType + 'Variants';
-      case 'iOS':
-        return 'iosvariants';
-      case 'chrome':
-        return 'chromePackagedAppVariants';
-      default:
-        Notifications.error('Unknown variant type ' + variantType);
-        return "";
+    case 'android':
+    case 'simplePush':
+      return variantType + 'Variants';
+    case 'iOS':
+      return 'iosvariants';
+    case 'chrome':
+      return 'chromePackagedAppVariants';
+    default:
+      Notifications.error('Unknown variant type ' + variantType);
+      return '';
     }
   }
 
   function variantEndpoint(variantType) {
     switch (variantType) {
-      case 'android':
-      case 'simplePush':
-      case 'chrome':
-      case 'iOS':
-        return variantType;
-      default:
-        Notifications.error('Unknown variant type ' + variantType);
-        return '';
+    case 'android':
+    case 'simplePush':
+    case 'chrome':
+    case 'iOS':
+      return variantType;
+    default:
+      Notifications.error('Unknown variant type ' + variantType);
+      return '';
     }
   }
 
   function variantProperties(variant, variantType) {
     var properties = ['name', 'description'], result = {};
     switch (variantType) {
-      case 'android':
-        properties = properties.concat(['projectNumber', 'googleKey']);
-        break;
-      case 'simplePush':
-        properties = properties.concat([]);
-        break;
-      case 'chrome':
-        properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
-        break;
-      case 'iOS':
-        if (variant.certificates && variant.certificates.length) {
-          variant.certificate = variant.certificates[0];
-        }
-        properties = properties.concat(['production', 'passphrase', 'certificate']);
-        var formData = new FormData();
-        properties.forEach(function (property) {
-          formData.append(property, variant[property] || '');
-        });
-        return formData;
-      default:
-        Notifications.error('Unknown variant type ' + variantType);
+    case 'android':
+      properties = properties.concat(['projectNumber', 'googleKey']);
+      break;
+    case 'simplePush':
+      properties = properties.concat([]);
+      break;
+    case 'chrome':
+      properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
+      break;
+    case 'iOS':
+      if (variant.certificates && variant.certificates.length) {
+        variant.certificate = variant.certificates[0];
+      }
+      properties = properties.concat(['production', 'passphrase', 'certificate']);
+      var formData = new FormData();
+      properties.forEach(function (property) {
+        formData.append(property, variant[property] || '');
+      });
+      return formData;
+    default:
+      Notifications.error('Unknown variant type ' + variantType);
     }
 
     properties.forEach(function (property) {
@@ -222,4 +223,4 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, pus
     return result;
   }
 
-}
+});
