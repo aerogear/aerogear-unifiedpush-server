@@ -8,7 +8,7 @@ jdk:
 before_install:
   - git clone git://github.com/keycloak/keycloak
   - cd keycloak
-  - mvn install -DskipTests -N --quiet
+  - mvn install -DskipTests
   - cd ..
 
 notifications:
