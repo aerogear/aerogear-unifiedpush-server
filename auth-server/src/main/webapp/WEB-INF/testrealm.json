@@ -14,11 +14,8 @@
     "requiredCredentials": [ "password" ],
     "users" : [
         {
-            "username" : "bburke@redhat.com",
+            "username" : "user",
             "enabled": true,
-            "email" : "bburke@redhat.com",
-            "firstName": "Bill",
-            "lastName": "Burke",
             "credentials" : [
                 { "type" : "password",
                     "value" : "password" }
@@ -27,8 +24,6 @@
         {
             "username" : "admin",
             "enabled": true,
-            "firstName": "Meister",
-            "lastName": "Burke",
             "credentials" : [
                 { "type" : "password",
                     "value" : "admin" }
@@ -52,7 +47,7 @@
     },
     "roleMappings": [
         {
-            "username": "bburke@redhat.com",
+            "username": "user",
             "roles": ["user"]
         },
         {
@@ -81,7 +76,7 @@
     "applicationRoleMappings": {
         "account": [
             {
-                "username": "bburke@redhat.com",
+                "username": "user",
                 "roles": ["manage-account"]
             },
             {
