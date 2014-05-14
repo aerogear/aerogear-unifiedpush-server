@@ -20,6 +20,12 @@ For more details about the current release, please consult the README on our [st
 
 The master branch is currenly being worked on for a tight integration with the [Keycloak project](keycloak.org). To run the master branch it requires some initial setup steps for Keycloak. Eventually there will be a simple and tight integration.
 
+### Some hints
+
+After building the project (and keycloak's master branch), deploy the ``auth-server.war`` file; once that is done, deploy the ``ag-push.war`` file. Login with admin:admin (you will be asked to update the password)... 
+
+
+## However
 Because of this work, we highly recommend using the [stable branch](https://github.com/aerogear/aerogear-unifiedpush-server/tree/0.10.x), as discussed above!
 
 
