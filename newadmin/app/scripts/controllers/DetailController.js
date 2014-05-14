@@ -16,7 +16,7 @@
  */
 'use strict';
 
-function DetailController($rootScope, $scope, $routeParams, $window, $modal, $location, pushApplication, variants, Notifications) {
+function DetailController($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications) {
 
     /*
      * INITIALIZATION
@@ -113,10 +113,6 @@ function DetailController($rootScope, $scope, $routeParams, $window, $modal, $lo
         });
     };
 
-
-    $scope.compose = function() {
-        $location.path( "/compose/" + $scope.application.pushApplicationID );
-    }
 
     /*
      * PRIVATE FUNCTIONS
