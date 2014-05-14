@@ -1,13 +1,13 @@
 'use strict';
 
 var newadminMod = angular.module('newadminApp', [
-        'newadminApp.services',
-        'ngResource',
-        'ngRoute',
-        'ui.bootstrap',
-        'ups.directives',
-        'patternfly.notification'
-    ])
+  'newadminApp.services',
+  'ngResource',
+  'ngRoute',
+  'ui.bootstrap',
+  'ups.directives',
+  'patternfly.notification'
+])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -15,24 +15,24 @@ var newadminMod = angular.module('newadminApp', [
         controller: MainController
       })
       .when('/detail/:applicationId', {
-        templateUrl : 'views/detail.html',
-        controller : DetailController
+        templateUrl: 'views/detail.html',
+        controller: DetailController
       })
       .when('/installations/:variantId', {
-        templateUrl : 'views/installation.html',
-        controller : InstallationController
+        templateUrl: 'views/installation.html',
+        controller: InstallationController
       })
       .when('/example/:applicationId/:variantType/:variantId', {
-        templateUrl : 'views/example.html',
-        controller : ExampleController
+        templateUrl: 'views/example.html',
+        controller: ExampleController
       })
       .when('/example/:applicationId/:variantType', {
-        templateUrl : 'views/example.html',
-        controller : ExampleController
+        templateUrl: 'views/example.html',
+        controller: ExampleController
       })
       .when('/compose/:applicationId', {
-        templateUrl : 'views/compose.html',
-        controller : ComposeController
+        templateUrl: 'views/compose.html',
+        controller: ComposeController
       })
       .otherwise({
         redirectTo: '/'
@@ -41,22 +41,22 @@ var newadminMod = angular.module('newadminApp', [
   });
 
 //temp code to be removed once we have integrated KeyCloak
-newadminMod.run(function(authz,logout, $rootScope){
-    logout.logout().$promise
-        .finally(function() {
-            authz.login({}, {loginName:"admin",password:"123"}).$promise
-                .then(function() {
-                    $rootScope.$broadcast('loginDone');
-                    $rootScope.loggedIn = true;
-                });
+newadminMod.run(function (authz, logout, $rootScope) {
+  logout.logout().$promise
+    .finally(function () {
+      authz.login({}, {loginName: 'admin', password: '123'}).$promise
+        .then(function () {
+          $rootScope.$broadcast('loginDone');
+          $rootScope.loggedIn = true;
         });
+    });
 });
 
 
 function onLoginDone($rootScope, $scope, callback) {
-    if ($rootScope.loggedIn) {
-        callback();
-    } else {
-        $scope.$on('loginDone', callback);
-    }
+  if ($rootScope.loggedIn) {
+    callback();
+  } else {
+    $scope.$on('loginDone', callback);
+  }
 }

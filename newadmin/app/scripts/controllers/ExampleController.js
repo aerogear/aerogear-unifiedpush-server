@@ -18,38 +18,38 @@
 
 function ExampleController($rootScope, $scope, $routeParams, $window, variants, pushApplication) {
 
-    /*
-     * INITIALIZATION
-     */
-    onLoginDone($rootScope, $scope, function() {
-        var params = {
-            appId: $routeParams.applicationId,
-            variantType: $routeParams.variantType,
-            variantId: $routeParams.variantId
-          };
-        $scope.variantType = $routeParams.variantType;
-        $scope.active = $routeParams.variantType;
-        $scope.applicationId = $routeParams.applicationId;
+  /*
+   * INITIALIZATION
+   */
+  onLoginDone($rootScope, $scope, function () {
+    var params = {
+      appId: $routeParams.applicationId,
+      variantType: $routeParams.variantType,
+      variantId: $routeParams.variantId
+    };
+    $scope.variantType = $routeParams.variantType;
+    $scope.active = $routeParams.variantType;
+    $scope.applicationId = $routeParams.applicationId;
 
-        if (typeof $routeParams.variantId !== 'undefined') {
-          variants.get(params, function (variant) {
-                $scope.variant = variant;
-                var href = $window.location.href;
-                $scope.currentLocation = href.substring(0, href.indexOf('#'));
-              });
-        } else {
-          pushApplication.get(params, function (application) {
-                $scope.application = application;
-              });
-        }
-
+    if (typeof $routeParams.variantId !== 'undefined') {
+      variants.get(params, function (variant) {
+        $scope.variant = variant;
+        var href = $window.location.href;
+        $scope.currentLocation = href.substring(0, href.indexOf('#'));
       });
+    } else {
+      pushApplication.get(params, function (application) {
+        $scope.application = application;
+      });
+    }
 
-    $scope.isActive = function(tabName) {
-        return tabName === $scope.active;
-      };
+  });
 
-    $scope.setActive = function(tabName) {
-        $scope.active = tabName;
-      };
-  }
+  $scope.isActive = function (tabName) {
+    return tabName === $scope.active;
+  };
+
+  $scope.setActive = function (tabName) {
+    $scope.active = tabName;
+  };
+}
