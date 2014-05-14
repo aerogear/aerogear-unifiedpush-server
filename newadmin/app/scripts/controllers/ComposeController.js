@@ -21,14 +21,29 @@ function ComposeController($rootScope, $scope, $routeParams, $window, $modal, pu
     /*
      * INITIALIZATION
      */
-    onLoginDone($rootScope, $scope, function() {
+
         pushApplication.get({appId: $routeParams.applicationId}, function(application) {
             $scope.application = application;
             var href = $window.location.href;
             $scope.currentLocation = href.substring(0, href.indexOf('#'));
         });
-    });
 
 
 
+    $scope.sendMessage = function () {
+        var pushData = {"message":{"sound":"default","alert":$scope.testMessage}};
+        $.ajax
+        ({
+            contentType: "application/json",
+            type: "POST",
+            url: 'rest/sender',
+            dataType: 'json',
+            username: $scope.application.pushApplicationID,
+            password: $scope.application.masterSecret,
+            data: JSON.stringify(pushData),
+            complete: function (){
+                //controller.set("testMessage", "");
+            }
+        });
+    }
 }

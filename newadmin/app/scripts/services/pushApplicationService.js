@@ -82,6 +82,16 @@ backendMod.factory('installations', function($resource) {
     });
 });
 
+backendMod.factory('compose', function($resource) {
+    return $resource('rest/sender/:appId', {
+        appId : '@appId'
+    }, {
+       send : {
+            method : 'POST'
+        }
+    });
+});
+
 //to be removed after KC integration
 backendMod.factory('authz', function($resource) {
     return $resource('/ag-push/rest/auth/login', {

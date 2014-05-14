@@ -11,17 +11,20 @@
             <div>
                 <ups-alerts />
             </div>
+            <p>
+            <h1>Send notifications to"{{ application.name }}"</h1>
+            <strong>Variants</strong> All <a href="#"> Change...</a>
+            </p>
+            <p>
+            <strong>Message</strong>  <input type="text" id="testMessage" class="form-control"  ng-model="testMessage">
+            </p>
 
-            <h3>Send notifications to"{{ application.name }}"</h3>
-            <div class="panel lo-panel ">
-                <div class="panel-heading" style="background-image: url('img/platform-android.png');">
-                    <div class="pull-left"><h2>Message</h2></div>
+            <p>
+                <strong>Aliases</strong></p>
+             <p>   <strong>Device Type</strong>   </p>
+             <p>   <strong>Categories</strong> </p>
 
-                    <div style="clear: both;"></div>
-                </div>
-
-
-            </div>
+            <button ng-click="sendMessage()" class="btn btn-default btn-lg"  type="button">Send Notification...</button>
 
 
         </div>
