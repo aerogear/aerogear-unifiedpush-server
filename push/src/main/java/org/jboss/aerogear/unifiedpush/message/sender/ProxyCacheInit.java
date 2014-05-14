@@ -14,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.dao;
+package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.jboss.aerogear.unifiedpush.api.ProxyServer;
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Inject;
 
-public interface ProxyServerDao extends GenericBaseDao<ProxyServer, String> {
+import org.jboss.aerogear.unifiedpush.service.ProxyServerService;
+
+@Singleton
+@Startup
+public class ProxyCacheInit {
+	@Inject
+	ProxyServerService proxyServerService;
 	
 	/**
-     * Finder that returns the (only) ProxyServer entity or null.
+     * Loads proxy settings from db into the {@link ProxyCache} at server start.
      */
-	ProxyServer find();
-	
+	@PostConstruct
+	void init() {
+		ProxyCache.getInstance().setProxyServer(proxyServerService.findProxy());
+	}
 }

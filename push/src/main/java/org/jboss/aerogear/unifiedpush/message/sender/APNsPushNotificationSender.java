@@ -21,13 +21,19 @@ import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
+
+import org.jboss.aerogear.unifiedpush.api.ProxyServer;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.ProxyServerService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 import javax.inject.Inject;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,6 +47,9 @@ public class APNsPushNotificationSender {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+    
+    @Inject
+    private ProxyServerService proxyServerService;
 
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
@@ -159,7 +168,14 @@ public class APNsPushNotificationSender {
             } else {
                 builder.withSandboxDestination();
             }
-
+            
+            // set proxy
+            ProxyServer proxyServer = ProxyCache.getInstance().getProxyServer();
+            if (proxyServer != null) {
+            	Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyServer.getHost(), proxyServer.getPort()));
+    			builder.withProxy(proxy);
+            }
+            
             // create the service
             return builder.build();
         }

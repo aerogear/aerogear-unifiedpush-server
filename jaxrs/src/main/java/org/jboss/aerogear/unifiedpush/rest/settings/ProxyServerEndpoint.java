@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.rest.settings;
 
 import javax.ejb.Stateless;
@@ -16,6 +32,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.ProxyServer;
+import org.jboss.aerogear.unifiedpush.message.sender.ProxyCache;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.ProxyServerService;
 
@@ -32,16 +49,20 @@ public class ProxyServerEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response registerProxy(ProxyServer entity, @Context HttpServletRequest request) {
 
-		ProxyServer proxy = proxyService.findProxy();
+		ProxyServer proxyServer = proxyService.findProxy();
 		
+		// update db
 		// new proxy ?
-		if (proxy == null) {
+		if (proxyServer == null) {
 			proxyService.addProxy(entity);
 		} else {
 			// get id from previous proxy to update it
-			entity.setId(proxy.getId());
+			entity.setId(proxyServer.getId());
 			proxyService.updateProxy(entity);
 		}
+		
+		// update proxy cache
+		ProxyCache.getInstance().setProxyServer(proxyServer);
 
 		return Response.ok().build();
 	}

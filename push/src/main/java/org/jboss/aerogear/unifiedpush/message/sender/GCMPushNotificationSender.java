@@ -20,32 +20,30 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
-import com.google.android.gcm.server.Message.Builder;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 public class GCMPushNotificationSender {
 
-    private final GCMCache cache = new GCMCache();
-
+	private final GCMCache cache = new GCMCache();
+	
     @Inject
     private ClientInstallationService clientInstallationService;
 
     private final Logger logger = Logger.getLogger(GCMPushNotificationSender.class.getName());
-
+    
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
      * the {@link List} of tokens for the given {@link AndroidVariant}.
@@ -87,18 +85,19 @@ public class GCMPushNotificationSender {
         // send it out.....
         try {
             logger.fine(String.format("Sending transformed GCM payload: '%s' ", gcmMessage));
-
-            Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
+            
+            GCMProxySender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
             MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
 
+        } catch (IOException e) {
+            // network related exceptions:
+            logger.warning("Error sending messages to GCM server");
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            logger.log(Level.WARNING, "Error connection to your GCM project. Double check your Google API Key");
-        } catch (Exception e) {
-            // general GCM exceptions:
-            logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
+            logger.severe("Error connection to your GCM project. Double check your Google API Key");
         }
     }
 

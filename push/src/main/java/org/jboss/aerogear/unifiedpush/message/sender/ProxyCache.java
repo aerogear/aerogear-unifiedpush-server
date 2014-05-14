@@ -14,34 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.message.sender;
 
 import org.jboss.aerogear.unifiedpush.api.ProxyServer;
 
-public interface ProxyServerService {
+public final class ProxyCache {
+	// Singleton DP
+	private ProxyCache() {
+	}
 	
-	/**
-     * Store a new ProxyServer object on the database.
-     */
-	void addProxy(ProxyServer proxy);
+	private static ProxyCache instance = null;
 	
-	/**
-     * Performs an update/merge on the given entity.
-     */
-	void updateProxy(ProxyServer proxy);
+	public static ProxyCache getInstance() {
+		if (instance == null) {
+			instance = new ProxyCache();
+		}
+		return instance;
+	}
+
+	// Proxy Cache class
+	private ProxyServer proxyServer;
 	
-	/**
-     * Returns the ProxyServer entity, matching the given ID.
-     */
-	ProxyServer findByProxyID(String proxyID);
-	
-	/**
-     * Returns the Proxy entity (single-row table) or null if empty
-     */
-	ProxyServer findProxy();
-	
-	/**
-     * Removes the given Proxy entity.
-     */
-	void removeProxy(ProxyServer proxy);
+	public ProxyServer getProxyServer() {
+		return proxyServer;
+	}
+
+	public void setProxyServer(ProxyServer proxyServer) {
+		this.proxyServer = proxyServer;
+	}
 }

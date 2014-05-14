@@ -19,20 +19,20 @@ package org.jboss.aerogear.unifiedpush.message.cache;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.android.gcm.server.Sender;
+import org.jboss.aerogear.unifiedpush.message.sender.GCMProxySender;
 
 public class GCMCache implements Serializable {
 
     private static final long serialVersionUID = 8171485458336202582L;
 
-    private final ConcurrentHashMap<String, Sender> cache = new ConcurrentHashMap<String, Sender>();
+    private final ConcurrentHashMap<String, GCMProxySender> cache = new ConcurrentHashMap<String, GCMProxySender>();
 
-    public Sender getSenderForAPIKey(String googleAPIKey) {
-        Sender sender = cache.get(googleAPIKey);
+	public GCMProxySender getSenderForAPIKey(String googleAPIKey) {
+    	GCMProxySender sender = cache.get(googleAPIKey);
 
         if (sender == null) {
             // create and cache:
-            sender = new Sender(googleAPIKey);
+            sender = new GCMProxySender(googleAPIKey);
             cache.put(googleAPIKey, sender);
         }
 
