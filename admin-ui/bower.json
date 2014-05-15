@@ -1,18 +1,27 @@
 {
-  "name": "aerogear-unified-push-server-admin-ui",
+  "name": "newadmin",
   "version": "0.0.0",
   "dependencies": {
-    "jquery": "~1.9.1",
-    "aerogear": "~1.1.2",
-    "ember": "1.2.2",
-    "topcoat": "~0.5.1",
-    "jquery-form": "*",
-    "handlebars": "1.2.1"
+    "angular": "1.2.16",
+    "angular-bootstrap": "0.11.0",
+    "json3": "~3.2.4",
+    "jquery": "2.1.1",
+    "bootstrap": "~3.1.1",
+    "bootstrap-select": "~1.4.3",
+    "es5-shim": "~2.0.8",
+    "angular-resource": "1.2.16",
+    "angular-route": "1.2.16",
+    "angular-cookies": "1.2.16",
+    "angular-sanitize": "1.2.16",
+    "patternfly": "0.2.3",
+    "angular-patternfly": "patternfly/angular-patternfly",
+    "highlightjs": "~8.0.0"
   },
   "devDependencies": {
-    "jquery-mockjax": "~1.5.2"
+    "angular-mocks": "1.2.16",
+    "angular-scenario": "1.2.16"
   },
   "resolutions": {
-    "jquery": "~1.9.1"
+    "jquery": "2.1.1"
   }
 }

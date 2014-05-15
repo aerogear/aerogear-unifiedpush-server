@@ -1,32 +1,42 @@
-/* JBoss, Home of Professional Open Source
-* Copyright Red Hat, Inc., and individual contributors
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+'use strict';
 
+var newadminMod = angular.module('newadminApp', [
+  'newadminApp.services',
+  'ngResource',
+  'ngRoute',
+  'ui.bootstrap',
+  'ups.directives',
+  'patternfly.notification'
+])
+  .config(function ($routeProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: 'views/main.html',
+        controller: 'MainController'
+      })
+      .when('/detail/:applicationId', {
+        templateUrl: 'views/detail.html',
+        controller: 'DetailController'
+      })
+      .when('/installations/:variantId', {
+        templateUrl: 'views/installation.html',
+        controller: 'InstallationController'
+      })
+      .when('/example/:applicationId/:variantType/:variantId', {
+        templateUrl: 'views/example.html',
+        controller: 'ExampleController'
+      })
+      .when('/example/:applicationId/:variantType', {
+        templateUrl: 'views/example.html',
+        controller: 'ExampleController'
+      })
+      .when('/compose/:applicationId', {
+        templateUrl: 'views/compose.html',
+        controller: ComposeController
+      })
+      .otherwise({
+        redirectTo: '/'
+      });
 
-window.App = Ember.Application.create({
-    LOG_TRANSITIONS: false //remove in production,  for testing and debuging
-});
+  });
 
-App.baseURL = ( function() {
-    var paths = window.location.pathname.split( "/" ),
-        pathName = "",
-        i = 0;
-
-    for( i; i < paths.length; i++ ) {
-        if( paths[ i ].length && paths[ i ].indexOf( ".html" ) < 1 ) {
-            pathName += "/";
-            pathName += paths[ i ];
-        }
-    }
-    return window.location.protocol + "//" + window.location.host + pathName + "/";
-})();
