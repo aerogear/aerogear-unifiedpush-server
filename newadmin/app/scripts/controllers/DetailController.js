@@ -22,7 +22,6 @@ angular.module('newadminApp').controller('DetailController',
   /*
    * INITIALIZATION
    */
-  onLoginDone($rootScope, $scope, function () {
     pushApplication.get({appId: $routeParams.applicationId}, function (application) {
       $scope.application = application;
       var href = $window.location.href;
@@ -31,7 +30,7 @@ angular.module('newadminApp').controller('DetailController',
     pushApplication.count({appId: $routeParams.applicationId}, function (counts) {
       $scope.counts = counts;
     });
-  });
+
 
 
   /*

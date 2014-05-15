@@ -25,10 +25,9 @@ angular.module('newadminApp').controller('MainController',
 
   $scope.alerts = [];
 
-  onLoginDone($rootScope, $scope, function () {
-    //let's show all the applications
+  //let's show all the applications
     $scope.applications = pushApplication.query();
-  });
+
 
 
   /*

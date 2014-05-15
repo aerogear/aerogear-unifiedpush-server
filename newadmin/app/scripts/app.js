@@ -40,23 +40,3 @@ var newadminMod = angular.module('newadminApp', [
 
   });
 
-//temp code to be removed once we have integrated KeyCloak
-newadminMod.run(function (authz, logout, $rootScope) {
-  logout.logout().$promise
-    .finally(function () {
-      authz.login({}, {loginName: 'admin', password: '123'}).$promise
-        .then(function () {
-          $rootScope.$broadcast('loginDone');
-          $rootScope.loggedIn = true;
-        });
-    });
-});
-
-
-function onLoginDone($rootScope, $scope, callback) {
-  if ($rootScope.loggedIn) {
-    callback();
-  } else {
-    $scope.$on('loginDone', callback);
-  }
-}

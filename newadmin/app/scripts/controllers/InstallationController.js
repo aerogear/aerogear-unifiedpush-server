@@ -22,9 +22,9 @@ angular.module('newadminApp').controller('InstallationController',
   /*
    * INITIALIZATION
    */
-  onLoginDone($rootScope, $scope, function () {
+
     fetchInstallations(1);
-  });
+
   $scope.currentPage = 1;
 
   $scope.expand = function (installation) {

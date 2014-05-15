@@ -22,7 +22,6 @@ angular.module('newadminApp').controller('ExampleController',
   /*
    * INITIALIZATION
    */
-  onLoginDone($rootScope, $scope, function () {
     var params = {
       appId: $routeParams.applicationId,
       variantType: $routeParams.variantType,
@@ -44,7 +43,7 @@ angular.module('newadminApp').controller('ExampleController',
       });
     }
 
-  });
+
 
   $scope.isActive = function (tabName) {
     return tabName === $scope.active;
