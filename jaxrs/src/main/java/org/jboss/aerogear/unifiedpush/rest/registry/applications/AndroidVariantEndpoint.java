@@ -38,7 +38,6 @@ import javax.ws.rs.core.UriInfo;
 
 @Stateless
 @Path("/applications/{pushAppID}/android")
-@Secure( { "developer", "admin" })
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
     // new Android
@@ -51,7 +50,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -69,7 +68,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        androidVariant.setDeveloper(loginName.get());
+        androidVariant.setDeveloper(sec.getUserPrincipal().getName());
 
         // store the Android variant:
         variantService.addVariant(androidVariant);
@@ -83,7 +82,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get()).getAndroidVariants()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName()).getAndroidVariants()).build();
     }
 
     // UPDATE
@@ -96,7 +95,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, loginName.get());
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, sec.getUserPrincipal().getName());
         if (androidVariant != null) {
 
             // some validation

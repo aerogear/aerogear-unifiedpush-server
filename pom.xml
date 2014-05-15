@@ -42,7 +42,7 @@
         <system>jira</system>
         <url>https://issues.jboss.org/browse/AGPUSH</url>
     </issueManagement>
-	
+
     <ciManagement>
         <system>travis-ci</system>
         <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
@@ -54,6 +54,7 @@
         <module>service</module>
         <module>jaxrs</module>
         <module>server</module>
+        <module>auth-server</module>
 	</modules>
 
     <dependencyManagement>
@@ -97,7 +98,7 @@
 
         <junit.version>4.11</junit.version>
         <iharder.version>2.3.8</iharder.version>
-        <resteasy.version>2.3.2.Final</resteasy.version>
+        <resteasy.version>2.3.7.Final</resteasy.version>
         <aerogear.security.version>1.3.1</aerogear.security.version>
         <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
         <openejb.version>4.6.0</openejb.version>
@@ -109,7 +110,7 @@
         <apns.version>0.2.3</apns.version>
         <gcm-server.version>1.0.2</gcm-server.version>
         <slf4j.version>1.7.5</slf4j.version>
-
+		<keycloak.version>1.0-beta-1-SNAPSHOT</keycloak.version>
     </properties>
 
 </project>

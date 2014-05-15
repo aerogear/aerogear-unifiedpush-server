@@ -3,6 +3,14 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk6
+
+
+before_install:
+  - git clone git://github.com/matzew/keycloak
+  - cd keycloak
+  - mvn install -DskipTests 
+  - cd ..
+
 notifications:
   irc: "irc.freenode.org#aerogear"
 

@@ -78,7 +78,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     Ember.run(this, function(){
                         switch ( error.status ) {
                         case 401:
-                            App.Router.router.transitionToRoute( "login" );
                             break;
                         default:
                             that.send( "error", that, "Error Removing" );
@@ -127,7 +126,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                         Ember.run( this, function() {
                             switch( error.status ) {
                             case 401:
-                                that.transitionToRoute( "login" );
                                 break;
                             default:
                                 that.send( "error", that, "Error Saving" );
@@ -236,7 +234,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                         ajaxOptions.error = function( error ) {
                                 switch ( error.status ) {
                                 case 401:
-                                    that.transitionToRoute( "login" );
                                     break;
                                 default:
                                     that.send( "error", that, "Error Saving" );
@@ -285,7 +282,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                 Ember.run( this, function() {
                     switch( error.status ) {
                     case 401:
-                        that.transitionToRoute( "login" );
                         break;
                     default:
                         that.send( "error", that, "Error Saving" );
@@ -318,7 +314,6 @@ App.VariantsIndexController = Ember.ObjectController.extend({
                     Ember.run( this, function() {
                         switch ( error.status ) {
                         case 401:
-                            App.Router.router.transitionToRoute( "login" );
                             break;
                         default:
                             that.send( "error", that, "Error Resetting" );

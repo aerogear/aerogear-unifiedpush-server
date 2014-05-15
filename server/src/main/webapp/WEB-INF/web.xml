@@ -26,4 +26,43 @@
             <http-only>true</http-only>
         </cookie-config>
     </session-config>
+
+    <module-name>ag-push</module-name>
+
+    <listener>
+        <listener-class>org.jboss.aerogear.unifiedpush.keycloak.BootstrapListener</listener-class>
+    </listener>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>AgPush</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HttpBasic</web-resource-name>
+            <description>Matches a few special URLs.</description>
+            <url-pattern>/rest/registry/device</url-pattern>
+            <url-pattern>/rest/sender</url-pattern>
+        </web-resource-collection>
+        <!-- No auth-constraint does the exclude! -->
+    </security-constraint>	
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>demo</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+
 </web-app>
