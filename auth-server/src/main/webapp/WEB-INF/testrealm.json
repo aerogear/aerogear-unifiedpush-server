@@ -1,0 +1,95 @@
+{
+    "realm": "aerogear",
+    "enabled": true,
+    "accessTokenLifespan": 3000,
+    "accessCodeLifespan": 10,
+    "accessCodeLifespanUserAction": 6000,
+    "sslNotRequired": true,
+    "registrationAllowed": false,
+    "social": false,
+    "adminTheme": "aerogear",
+    "accountTheme": "aerogear",
+    "loginTheme": "aerogear",
+    "updateProfileOnInitialSocialLogin": false,
+    "requiredCredentials": [ "password" ],
+    "users" : [
+        {
+            "username" : "user",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "password" }
+            ]
+        },
+        {
+            "username" : "admin",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "123" }
+            ],
+            "requiredActions": [
+                "UPDATE_PASSWORD"
+            ]
+        }
+    ],
+    "roles" : {
+        "realm" : [
+            {
+                "name": "user",
+                "description": "User privileges"
+            },
+            {
+                "name": "admin",
+                "description": "Administrator privileges"
+            }
+        ]
+    },
+    "roleMappings": [
+        {
+            "username": "user",
+            "roles": ["user"]
+        },
+        {
+            "username": "admin",
+            "roles": ["user", "admin"]
+        }
+    ],
+    "scopeMappings": [
+        {
+            "client": "unified-push-server",
+            "roles": ["user", "admin"]
+        }
+    ],
+    "applications": [
+        {
+            "name": "unified-push-server",
+            "enabled": true,
+            "publicClient": true,
+            "adminUrl": "/ag-push",
+            "baseUrl": "/ag-push",
+            "redirectUris": [
+                "/ag-push/*"
+            ]
+        }
+    ],
+    "applicationRoleMappings": {
+        "account": [
+            {
+                "username": "user",
+                "roles": ["manage-account"]
+            },
+            {
+                "username": "admin",
+                "roles": ["manage-account"]
+            }
+        ],
+        "realm-management": [
+            {
+                "username": "admin",
+                "roles": ["realm-admin"]
+            }
+        ]
+    }
+
+}
