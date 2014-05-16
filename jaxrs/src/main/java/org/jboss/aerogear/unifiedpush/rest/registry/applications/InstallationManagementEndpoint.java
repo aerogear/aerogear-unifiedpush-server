@@ -25,6 +25,7 @@ import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
@@ -43,13 +44,11 @@ public class InstallationManagementEndpoint {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    @Context
-    protected SecurityContext sec;
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId, @QueryParam("page") Integer page,
-                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri) {
+                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri,
+                                      @Context HttpServletRequest request) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -61,7 +60,7 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the installations using the variantID
-        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, sec.getUserPrincipal().getName(), page, pageSize);
+        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, request.getUserPrincipal().getName(), page, pageSize);
 
         if (pageResult.getResultList().isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
