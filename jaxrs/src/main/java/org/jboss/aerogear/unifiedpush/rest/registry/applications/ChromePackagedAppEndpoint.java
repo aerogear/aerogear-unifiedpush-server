@@ -16,7 +16,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
  * limitations under the License.
  */
 
-import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 

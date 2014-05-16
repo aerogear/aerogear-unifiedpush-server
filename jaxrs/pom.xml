@@ -82,13 +82,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-security</artifactId>
-            <version>${aerogear.security.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core-hibernate</artifactId>
             <version>${openejb.version}</version>
