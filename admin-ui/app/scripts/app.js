@@ -1,6 +1,6 @@
 'use strict';
 
-var newadminMod = angular.module('newadminApp', [
+angular.module('newadminApp', [
   'newadminApp.services',
   'ngResource',
   'ngRoute',
@@ -32,7 +32,7 @@ var newadminMod = angular.module('newadminApp', [
       })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
-        controller: ComposeController
+        controller: 'ComposeController'
       })
       .otherwise({
         redirectTo: '/'

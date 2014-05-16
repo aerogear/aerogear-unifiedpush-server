@@ -26,6 +26,7 @@
     "grunt-google-cdn": "~0.2.0",
     "grunt-ngmin": "~0.0.2",
     "time-grunt": "~0.1.0",
+    "matchdep": "~0.1.1",
     "karma-ng-scenario": "~0.1.0",
     "karma": "~0.12.1",
     "karma-ng-html2js-preprocessor": "~0.1.0",

@@ -19,12 +19,6 @@
 angular.module('newadminApp').controller('InstallationController',
   function($rootScope, $scope, $routeParams, installations) {
 
-  /*
-   * INITIALIZATION
-   */
-
-    fetchInstallations(1);
-
   $scope.currentPage = 1;
 
   $scope.expand = function (installation) {
@@ -51,4 +45,6 @@ angular.module('newadminApp').controller('InstallationController',
       $scope.totalItems = responseHeaders('total');
     });
   }
+
+  fetchInstallations(1);
 });

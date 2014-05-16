@@ -26,7 +26,7 @@ angular.module('newadminApp').controller('MainController',
   $scope.alerts = [];
 
   //let's show all the applications
-    $scope.applications = pushApplication.query();
+  $scope.applications = pushApplication.query();
 
 
 
