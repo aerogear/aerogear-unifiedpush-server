@@ -32,7 +32,7 @@ backendMod.factory('pushApplication', function ($resource) {
 });
 
 backendMod.factory('variants', function ($resource) {
-  return $resource('/ag-push/rest/applications/:appId/:variantType/:variantId', {
+  return $resource('rest/applications/:appId/:variantType/:variantId', {
     appId: '@appId',
     variantType: '@variantType'
   }, {
@@ -68,7 +68,7 @@ backendMod.factory('variants', function ($resource) {
 });
 
 backendMod.factory('installations', function ($resource) {
-  return $resource('/ag-push/rest/applications/:variantId/installations/:installationId', {
+  return $resource('rest/applications/:variantId/installations/:installationId', {
     variantId: '@variantId',
     installationId: '@installationId'
   }, {
@@ -82,36 +82,8 @@ backendMod.factory('installations', function ($resource) {
   });
 });
 
-backendMod.factory('compose', function ($resource) {
-  return $resource('rest/sender/:appId', {
-    appId: '@appId'
-  }, {
-    send: {
-      method: 'POST'
-    }
-  });
-});
 
-//to be removed after KC integration
-backendMod.factory('authz', function ($resource) {
-  return $resource('/ag-push/rest/auth/login', {
 
-  }, {
-    login: {
-      method: 'POST'
-    }
-  });
-});
-
-backendMod.factory('logout', function ($resource) {
-  return $resource('/ag-push/rest/auth/logout', {
-
-  }, {
-    logout: {
-      method: 'POST'
-    }
-  });
-});
 
 
 
