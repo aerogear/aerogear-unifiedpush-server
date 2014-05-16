@@ -1,0 +1,184 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <h4 class="modal-title">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
+  </div>
+  <div class="modal-body">
+    <form name="form" class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="createAppName">Name</label>
+
+        <div class="col-sm-5">
+          <input type="text" id="createAppName" class="form-control" ng-model="variant.name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="createAppDescription">Description</label>
+
+        <div class="col-sm-5">
+          <input type="text" id="createAppDescription" class="form-control" ng-model="variant.description">
+        </div>
+      </div>
+
+
+
+      <div class="form-group" ng-hide="variant.id">
+        <hr />
+
+        <label class="col-sm-2 control-label">Type</label>
+
+        <div class="col-sm-5">
+          <div class="row">
+            <div class="radio">
+              <label>
+                <input type="radio" name="createVariantType" id="variantTypeAndroid" ng-model="variantType" value="android" ng-required="true">
+                <b>Android</b><br />
+                <span>using Google Cloud Messaging</span>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="radio">
+              <label>
+                <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="iOS"  ng-required="true">
+                <b>iOS</b><br />
+                <span>using Apple Push Network</span>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="radio">
+              <label>
+                <input type="radio" name="createVariantType" id="variantTypeChrome" ng-model="variantType" value="chrome"  ng-required="true">
+                <b>Chrome</b><br />
+                <span>using Google Cloud Messaging for Chrome</span>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="radio">
+              <label>
+                <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variantType" value="simplePush"  ng-required="true">
+                <b>Other</b><br />
+                <span>using SimplePush</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="variantType">
+        <hr ng-hide="variantType == 'simplePush'"/>
+
+        <div ng-show="variantType == 'android'">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Google Cloud Messaging</label>
+
+            <div class="col-sm-9">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="gcmApiKey">Google API Key</label>
+
+                <div class="col-sm-5">
+                  <input type="text" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variantType == 'android'">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="gcmProjectNumber">Project Number</label>
+
+                <div class="col-sm-5">
+                  <input type="text" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber" ng-required="variantType == 'android'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-show="variantType == 'iOS'">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Push Network</label>
+
+            <div class="col-sm-9">
+              <i>Apple Push Notification Service</i> certificate:
+
+              <input type="file" ups-files="variant.certificates" />
+
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <div class="row">
+                    <label class="col-sm-2 control-label">Type</label>
+
+                    <div class="col-sm-5">
+                      <div class="row">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" checked>
+                            Production
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false">
+                            Development
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="iosPassphrase">Passphrase</label>
+
+                  <div class="col-sm-5">
+                    <input type="text" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'iOS'">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-show="variantType == 'chrome'">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Google Cloud Messaging for Chrome</label>
+
+            <div class="col-sm-9">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="chromeClientId">Client ID</label>
+
+                <div class="col-sm-5">
+                  <input type="text" id="chromeClientId" class="form-control" ng-model="variant.clientId" ng-required="variantType == 'chrome'">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="chromeClientSecret">Client Secret</label>
+
+                <div class="col-sm-5">
+                  <input type="text" id="chromeClientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variantType == 'chrome'">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="chromeRefreshToken">Refresh Token</label>
+
+                <div class="col-sm-5">
+                  <input type="text" id="chromeRefreshToken" class="form-control" ng-model="variant.refreshToken" ng-required="variantType == 'chrome'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="ok(variant, variantType)" ng-disabled="form.$invalid">
+      {{ variant.id ? 'Save' : 'Add' }}
+    </button>
+  </div>
+</div>

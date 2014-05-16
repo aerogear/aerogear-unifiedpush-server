@@ -1,0 +1,25 @@
+{
+  "name": "angular-patternfly",
+  "version": "0.0.0",
+  "authors": [
+    "vrockai@redhat.com"
+  ],
+  "description": "Angular extension of the Patternfly project.",
+  "keywords": [ "angular", "patternfly"],
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "lib"
+  ],
+  "main": ["dist/angular-patternfly.js", "dist/angular-patternfly.min.js"],
+  "dependencies": {
+    "angular":"~1.2.0",
+    "angular-animate":"~1.2.0",
+    "angular-sanitize":"~1.2.0",
+    "angular-touch":"~1.2.0",
+    "angular-route":"~1.2.0"
+  },
+  "devDependencies": {
+  },
+  "private": true
+}
