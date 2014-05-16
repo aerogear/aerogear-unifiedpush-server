@@ -4,9 +4,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
 
-@Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
     private ObjectMapper objectMapper;
 
