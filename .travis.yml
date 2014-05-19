@@ -6,7 +6,7 @@ jdk:
 
 
 before_install:
-  - git clone git://github.com/matzew/keycloak
+  - git clone git://github.com/keycloak/keycloak
   - cd keycloak
   - mvn install -DskipTests 
   - cd ..
