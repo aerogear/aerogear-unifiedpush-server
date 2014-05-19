@@ -77,6 +77,5 @@ public class AerogearThemeProvider implements ThemeProvider {
 
     @Override
     public void close() {
-        //TODO: must do something
     }
 }
