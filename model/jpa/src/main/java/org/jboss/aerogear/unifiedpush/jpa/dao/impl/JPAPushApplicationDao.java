@@ -70,6 +70,12 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     }
 
     @Override
+    public long getNumberOfPushApplicationsForDeveloper(String name) {
+        return (Long) createQuery("select count(pa) from PushApplication pa where pa.developer = :developer")
+                .setParameter("developer", name).getSingleResult();
+    }
+
+    @Override
     public PushApplication find(String id) {
         PushApplication entity = entityManager.find(PushApplication.class, id);
         return  entity;

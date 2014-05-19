@@ -34,6 +34,7 @@ import javax.persistence.Persistence;
 import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -131,6 +132,7 @@ public class InstallationDaoTest {
         // register them:
         av.getInstallations().add(android1);
         av.getInstallations().add(android2);
+        av.getInstallations().add(android3);
         variantDao.update(av);
 
         // ============== SimplePush client installations =========
@@ -176,6 +178,15 @@ public class InstallationDaoTest {
 
         entityManager.close();
     }
+
+    @Test
+    public void countDevicesForVariants() {
+        List<String> variantIDs = new ArrayList<String>();
+        variantIDs.add(androidVariantID);
+        variantIDs.add(simplePushVariantID);
+        assertThat(installationDao.getNumberOfDevicesForVariantIDs(variantIDs)).isEqualTo(6);
+    }
+
 
     @Test
     public void findDeviceTokensForOneInstallationOfOneVariant() {
