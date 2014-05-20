@@ -42,7 +42,7 @@ import org.jboss.aerogear.unifiedpush.service.sender.message.UnifiedPushMessage;
 public class GCMPushNotificationSender {
 
     private final GCMCache cache = new GCMCache();
-    private static final int GCM_PAGE = 1;
+    private static final int GCM_PAGE = 1000;
 
     @Inject
     private ClientInstallationService clientInstallationService;
