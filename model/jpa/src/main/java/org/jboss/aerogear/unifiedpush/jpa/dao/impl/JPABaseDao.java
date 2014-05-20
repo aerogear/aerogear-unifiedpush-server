@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 public abstract class JPABaseDao {

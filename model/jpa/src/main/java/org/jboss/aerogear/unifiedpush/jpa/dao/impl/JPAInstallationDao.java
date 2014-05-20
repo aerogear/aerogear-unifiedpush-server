@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 

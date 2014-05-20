@@ -31,7 +31,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.atIndex;
 
 public class PushApplicationDaoTest {
 
