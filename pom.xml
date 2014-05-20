@@ -372,9 +372,9 @@
             <properties>
                 <unifiedpush-parent.build>${user.dir}/target</unifiedpush-parent.build>
                 <jacoco.prep>${unifiedpush-parent.build}/jacoco/prep</jacoco.prep>
-                <jacoco.prep.classes>${jacoco-prep}/classes</jacoco.prep.classes>
-                <jacoco.prep.sources>${jacoco-prep}/sources</jacoco.prep.sources>
-                <jacoco.report.file>${jacoco-prep}/jacoco.exec</jacoco.report.file>
+                <jacoco.prep.classes>${jacoco.prep}/classes</jacoco.prep.classes>
+                <jacoco.prep.sources>${jacoco.prep}/sources</jacoco.prep.sources>
+                <jacoco.report.file>${jacoco.prep}/jacoco.exec</jacoco.report.file>
                 <jacoco.report.output>${unifiedpush-parent.build}/jacoco/report</jacoco.report.output>
             </properties>
             <build>
