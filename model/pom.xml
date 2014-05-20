@@ -25,7 +25,7 @@
 
     <artifactId>unifiedpush-model-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Model Layer</name>
+    <name>UnifiedPush Model Layer</name>
 
     <modules>
         <module>api</module>

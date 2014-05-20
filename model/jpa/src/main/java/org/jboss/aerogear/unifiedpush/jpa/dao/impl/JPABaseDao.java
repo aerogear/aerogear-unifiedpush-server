@@ -22,7 +22,6 @@ import javax.persistence.Query;
 
 public abstract class JPABaseDao {
 
-    //@PersistenceContext
     @Inject
     protected EntityManager entityManager;
 

@@ -25,7 +25,7 @@
 
     <artifactId>unifiedpush-auth-server</artifactId>
     <packaging>war</packaging>
-    <name>UPS Auth Server</name>
+    <name>UnifiedPush Auth Server</name>
 
     <dependencies>
 
