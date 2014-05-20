@@ -37,4 +37,8 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
+    /**
+     * Returns total number of PushApplications for given user
+     */
+    long getNumberOfPushApplicationsForDeveloper(String principalName);
 }

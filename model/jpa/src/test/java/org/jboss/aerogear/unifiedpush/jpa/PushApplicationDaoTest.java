@@ -65,6 +65,9 @@ public class PushApplicationDaoTest {
 
     @Test
     public void findAllForDeveloper() {
+
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(0);
+
         final PushApplication pushApplication1 = new PushApplication();
         pushApplication1.setName("Push App 1");
         pushApplication1.setDeveloper("Admin");
@@ -84,6 +87,10 @@ public class PushApplicationDaoTest {
         assertThat(pushApplicationDao.findAllForDeveloper("Dave The Drummer")).hasSize(1);
         assertThat(pushApplicationDao.findAllForDeveloper("Dave The Drummer")).extracting("name").containsOnly("Push App 3");
         assertThat(pushApplicationDao.findAllForDeveloper("Admin The Drummer")).isEmpty();
+
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Dave The Drummer")).isEqualTo(1);
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(2);
+
 
     }
 

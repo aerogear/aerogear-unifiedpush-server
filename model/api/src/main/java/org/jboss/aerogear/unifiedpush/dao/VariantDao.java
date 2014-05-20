@@ -18,6 +18,8 @@ package org.jboss.aerogear.unifiedpush.dao;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
+import java.util.List;
+
 public interface VariantDao extends GenericBaseDao<Variant, String> {
 
     /**
@@ -30,4 +32,8 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
      */
     Variant findByVariantIDForDeveloper(String variantID, String loginName);
 
+    /**
+     * Loads list of all variantIDs for given user
+     */
+    List<String> findVariantIDsForDeveloper(String principalName);
 }
