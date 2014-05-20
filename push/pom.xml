@@ -32,16 +32,19 @@
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -62,22 +65,22 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-service</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>net.iharder</groupId>
             <artifactId>base64</artifactId>
-            <version>${iharder.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.notnoop.apns</groupId>
             <artifactId>apns</artifactId>
-            <version>${apns.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -89,23 +92,22 @@
         <dependency>
             <groupId>com.ganyo</groupId>
             <artifactId>gcm-server</artifactId>
-            <version>${gcm-server.version}</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
