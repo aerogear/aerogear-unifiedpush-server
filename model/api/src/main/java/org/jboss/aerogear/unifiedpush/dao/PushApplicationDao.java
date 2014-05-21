@@ -40,4 +40,7 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 
+    //TODO: Not sure if this method is still necessary
+    long getNumberOfPushApplicationsForDeveloper(String name);
+
 }
