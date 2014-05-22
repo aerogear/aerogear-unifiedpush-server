@@ -54,6 +54,8 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
     PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize);
 
-    //TODO: Not sure if this method is still necessary
+    /**
+     * Counts the total number of registered devices/clients for the give List of variantIDs
+     */
     long getNumberOfDevicesForVariantIDs(List<String> variantIDs);
 }
