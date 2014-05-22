@@ -475,6 +475,6 @@ public class InstallationDaoTest {
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getCount()).isEqualTo(2);
+        assertThat(pageResult.getCount()).isEqualTo(3);
     }
 }
