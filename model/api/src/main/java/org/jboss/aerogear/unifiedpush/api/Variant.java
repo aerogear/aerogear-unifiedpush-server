@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashSet;
@@ -69,7 +71,7 @@ public abstract class Variant extends BaseModel {
         this.description = description;
     }
 
-    @XmlTransient
+    @JsonIgnore
     public Set<Installation> getInstallations() {
         return this.installations;
     }
