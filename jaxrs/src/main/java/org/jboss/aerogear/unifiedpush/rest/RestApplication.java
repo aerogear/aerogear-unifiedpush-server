@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest;
 
-import org.jboss.aerogear.unifiedpush.rest.util.ObjectMapperContextResolver;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -28,8 +25,4 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("/rest")
 public class RestApplication extends Application {
-
-    public RestApplication() {
-        ResteasyProviderFactory.getInstance().registerProviderInstance(new ObjectMapperContextResolver());
-    }
 }
