@@ -8,7 +8,7 @@
     
     <context-param>
         <param-name>keycloak.import.realm.resources</param-name>
-        <param-value>/WEB-INF/testrealm.json</param-value>
+        <param-value>/WEB-INF/ups-realm.json</param-value>
     </context-param>
 
     <servlet>
