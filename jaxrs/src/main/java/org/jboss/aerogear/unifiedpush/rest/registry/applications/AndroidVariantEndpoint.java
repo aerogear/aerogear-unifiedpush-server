@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,6 +32,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 @Stateless
 @Path("/applications/{pushAppID}/android")
@@ -46,10 +46,11 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     public Response registerAndroidVariant(
             AndroidVariant androidVariant,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo) {
+            @Context UriInfo uriInfo,
+            @Context HttpServletRequest request) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -67,7 +68,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        androidVariant.setDeveloper(sec.getUserPrincipal().getName());
+        androidVariant.setDeveloper(request.getUserPrincipal().getName());
 
         // store the Android variant:
         variantService.addVariant(androidVariant);
@@ -80,8 +81,8 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName()).getAndroidVariants()).build();
+    public Response listAllAndroidVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getAndroidVariants()).build();
     }
 
     // UPDATE
@@ -90,11 +91,12 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariation(
+            @Context HttpServletRequest request,
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, sec.getUserPrincipal().getName());
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, request.getUserPrincipal().getName());
         if (androidVariant != null) {
 
             // some validation

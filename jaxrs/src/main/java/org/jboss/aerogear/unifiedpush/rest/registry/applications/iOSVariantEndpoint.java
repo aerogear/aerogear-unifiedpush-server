@@ -23,6 +23,7 @@ import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -50,9 +51,10 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     public Response registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo) {
+            @Context UriInfo uriInfo,
+            @Context HttpServletRequest request) {
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName());
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -73,7 +75,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant.setProduction(form.getProduction());
 
         // store the "developer:
-        iOSVariant.setDeveloper(sec.getUserPrincipal().getName());
+        iOSVariant.setDeveloper(request.getUserPrincipal().getName());
 
         // some model validation on the entity:
         try {
@@ -98,9 +100,10 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+    public Response listAlliOSVariantsForPushApp(@Context HttpServletRequest request,
+                                                 @PathParam("pushAppID") String pushApplicationID) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, sec.getUserPrincipal().getName()).getIOSVariants()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getIOSVariants()).build();
     }
 
     @PATCH
@@ -108,11 +111,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateiOSVariant(
+            @Context HttpServletRequest request,
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, sec.getUserPrincipal().getName());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, request.getUserPrincipal().getName());
 
         if (iOSVariant != null) {
 
@@ -134,9 +138,10 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     public Response updateiOSVariant(
             @MultipartForm iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
-            @PathParam("iOSID") String iOSID) {
+            @PathParam("iOSID") String iOSID,
+            @Context HttpServletRequest request) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, sec.getUserPrincipal().getName());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, request.getUserPrincipal().getName());
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?

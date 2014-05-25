@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.dao;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PushApplicationDao extends GenericBaseDao<PushApplication, String> {
 
@@ -37,8 +38,11 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
+    Map<String, Long> countInstallationsByType(String pushApplicationID);
+
     /**
      * Returns total number of PushApplications for given user
      */
-    long getNumberOfPushApplicationsForDeveloper(String principalName);
+    long getNumberOfPushApplicationsForDeveloper(String name);
+
 }

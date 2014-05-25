@@ -1,0 +1,107 @@
+<ups-navigation current="applications"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+    <div class="row">
+        <div class="lo-content-area col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Applications</a></li>
+                <li class="active">{{ application.name }}</li>
+            </ol>
+
+            <div>
+              <ups-alerts />
+            </div>
+
+            <div class="lo-page-info">
+                <p>{{ application.description }}</p>
+                <p ng-hide="application.description.length">No description</p>
+                <div class="pull-right">
+                    <a href="#/compose/{{ application.pushApplicationID }}" class="btn btn-default btn-lg" type="button">Send Notification...</a>
+                    <a href="" class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant</a>
+                </div>
+
+                <div style="clear: both;"></div>
+            </div>
+
+            <div class="ups-tip-panel">
+                <div class="ups-tip-panel-illustration"
+                     style="background-image: url('img/tip-sending_notifications.png');"></div>
+                <div class="ups-tip-panel-body">
+                    <h2>Sending push notifications
+                        <div class="pull-right dropdown">
+                            <a href="#/example/{{application.pushApplicationID}}/send" class="ups-tip-panel-link">
+                                Example implementation
+                            </a>
+
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="" ng-click="renewMasterSecret()">Renew Master Secret...</a></li>
+                            </ul>
+                        </div>
+                    </h2>
+                    <table>
+                        <tr>
+                            <td>Server URL:</td>
+                            <td>{{ currentLocation }}</td>
+                        </tr>
+                        <tr>
+                            <td>Application ID:</td>
+                            <td>{{ application.pushApplicationID }}</td>
+                        </tr>
+                        <tr>
+                            <td>Master Secret:</td>
+                            <td>{{ application.masterSecret }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+            <h3>Variants</h3>
+            <div class="panel lo-panel ups-panel-variants">
+                <div class="panel-heading" style="background-image: url('img/platform-android.png');">
+                    <div class="pull-left"><h2>Android</h2></div>
+                    <div class="pull-right">
+                        <span><strong> {{ counts.android }} </strong> installations</span>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+
+                <variants variants="application.androidVariants" counts="counts" type="android"></variants>
+            </div>
+            <div class="panel lo-panel ups-panel-variants">
+                <div class="panel-heading" style="background-image: url('img/platform-ios.png');">
+                    <div class="pull-left"><h2>iOS</h2></div>
+                    <div class="pull-right">
+                        <span><strong> {{ counts.ios }} </strong> installations</span>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+                <variants variants="application.iosvariants" counts="counts" type="iOS"></variants>
+            </div>
+
+            <div class="panel lo-panel ups-panel-variants">
+                <div class="panel-heading" style="background-image: url('img/platform-chrome.png');">
+                    <div class="pull-left"><h2>Chrome</h2></div>
+                    <div class="pull-right">
+                        <span><strong> {{ counts.chromePackagedApp }} </strong> installations</span>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+                <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
+            </div>
+
+            <div class="panel lo-panel ups-panel-variants">
+                <div class="panel-heading" style="padding-left: 25px">
+                    <div class="pull-left"><h2>Simple push</h2></div>
+                    <div class="pull-right">
+                        <span><strong> {{ counts.simplePush }} </strong> installations</span>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+                <variants variants="application.simplePushVariants" counts="counts" type="simplePush"></variants>
+            </div>
+
+        </div>
+    </div>
+</div>

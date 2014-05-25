@@ -1,0 +1,264 @@
+<ups-navigation current="applications"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+    <div class="row">
+        <div class="lo-content-area col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Applications</a></li>
+                <li><a href="#/detail/{{ applicationId }}">Application name</a></li>
+                <li class="active">Registering Installations</li>
+            </ol>
+
+
+            <h1>Example: <span>Sending push notifications</span></h1>
+
+            <p class="pull-left;">This is an example implementation of how to let your application register itself as an
+                installation to this Unified Push Server, so that it can receive notifications.</p><br>
+
+            <tabset>
+                <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="isActive('simplePush')">
+                    <blockquote class="ups-code-block js">
+(function() {
+     var endpoint, endpointRequest, SPClient, UPClient;
+
+     // config params for UnifiedPush server
+     var variantId = "{{ variant.variantID }}";
+     var variantSecret = "{{ variant.secret }}";
+     var unifiedPushUrl = "{{ currentLocation }}";
+     var simplePushUrl = "";
+
+      // create the 'UnifiedPush' client object:
+     UPClient = AeroGear.UnifiedPushClient(variantId, variantSecret, unifiedPushUrl);
+
+     // onConnect callback function called when SimplePush
+     // successfully establishes connection to the server
+     function spConnect() {
+
+         // use 'PushManager' to request a new PushServer URL endpoint for 'Mail' notifications:
+         endpointRequest = navigator.push.register();
+          // the DOMRequest returns 'successfully':
+         endpointRequest.onsuccess = function( event ) {
+             // extract the endpoint object from the event:
+             endpoint = event.target.result;
+
+             // if it is the first registration, need to register
+             // the 'pushEndpoint' with the UnifiedPush server.
+             if ( endpoint.pushEndpoint ) {
+                 // assemble the metadata for registration with the UnifiedPush server
+                 var metadata = {
+                     deviceToken: mailEndpoint.channelID,
+                     simplePushEndpoint: mailEndpoint.pushEndpoint
+                 };
+
+                 var settings = {
+                     success: function() {
+                        //success handler
+                     },
+                     error: function() {
+                        //error handler
+                     }
+                 };
+
+                 settings.metadata = metadata;
+
+                 // register with the server
+                 UPClient.registerWithPushServer(settings);
+             } else {
+                 console.log("'Endpoint' was already registered!");
+             }
+         };
+         // set the notification handler:
+         navigator.setMessageHandler( "push", function( message ) {
+             if ( message.channelID === mailEndpoint.channelID ) {
+                 // let's react on the endpoint
+             }
+         });
+     }
+
+     // onClose callback function:
+     function spClose() {
+         $("#reconnect").show();
+         appendTextArea("\nConnection Lost!\n");
+     }
+
+     SPClient = AeroGear.SimplePushClient({
+         simplePushServerURL: simplePushUrl,
+         onConnect: spConnect,
+         onClose: spClose
+    });
+ })();
+                    </blockquote>
+                </tab>
+                <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="isActive('chrome')">
+                    <blockquote class="ups-code-block js">
+chrome.pushMessaging.getChannelId( true, function(channelId) {
+    /*
+        Set our Variant ID and Secret and the location of the UnifiedPush Server
+    */
+    var variantId = "{{ variant.variantID }}",
+        variantSecret = "{{ variant.secret }}",
+        pushServerURL = "{{ currentLocation }}";
+
+    // Once we have the channelID we can then register with the UnifiedPush Server using
+    // the AeroGear.js library
+    var client = AeroGear.UnifiedPushClient(
+            variantId,
+            variantSecret,
+            pushServerURL
+        ),settings = {};
+        // The channelId will be the "device token"
+
+    settings.metadata = {
+        deviceToken: channelId.channelId
+    };
+
+    // Register with the UnifiedPush Server
+    client.registerWithPushServer( settings );
+
+});
+                    </blockquote>
+                </tab>
+                <tab heading="Android" ng-hide="variantType != 'android'" active="isActive('android')" ng-click="setActive('android')">
+ <blockquote class="ups-code-block java">
+package com.push.pushapplication;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.jboss.aerogear.android.unifiedpush.PushConfig;
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.Registrations;
+
+import android.app.Application;
+
+public class PushApplication extends Application {
+
+    private final String VARIANT_ID       = "{{ variant.variantID }}";
+    private final String SECRET           = "{{ variant.secret }}";
+    private final String GCM_SENDER_ID    = "{{ variant.projectNumber }}";
+    private final String UNIFIED_PUSH_URL = "{{ currentLocation }}";
+
+    private PushRegistrar registration;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Registrations registrations = new Registrations();
+
+        try {
+            PushConfig config = new PushConfig(new URI(UNIFIED_PUSH_URL), GCM_SENDER_ID);
+            config.setVariantID(VARIANT_ID);
+            config.setSecret(SECRET);
+            config.setAlias(MY_ALIAS);
+
+            registration = registrations.push("unifiedpush", config);
+
+            registration.register(getApplicationContext(), new Callback() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void onSuccess(Void ignore) {
+                     Toast.makeText(MainActivity.this, "Registration Succeeded!",
+                             Toast.LENGTH_LONG).show();
+               }
+
+               @Override
+               public void onFailure(Exception exception) {
+                     Log.e("MainActivity", exception.getMessage(), exception);
+               }
+            });
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+</blockquote>
+                </tab>
+                <tab heading="iOS" ng-hide="variantType != 'iOS'" active="isActive('iOS')" ng-click="setActive('iOS')">
+                    <blockquote class="ups-code-block objectivec">
+- (void)application:(UIApplication *)application
+ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
+   AGDeviceRegistration *registration =
+     [[AGDeviceRegistration alloc] initWithServerURL:
+        [NSURL URLWithString:@"{{ currentLocation }}"]];
+
+   [registration registerWithClientInfo:^(id clientInfo) {
+
+     [clientInfo setDeviceToken:deviceToken];
+     [clientInfo setVariantID:@"{{ variant.variantID }}"];
+     [clientInfo setVariantSecret:@"{{ variant.secret }}"];
+
+     // --optional config--
+     UIDevice *currentDevice = [UIDevice currentDevice];
+     [clientInfo setOperatingSystem:[currentDevice systemName]];
+     [clientInfo setOsVersion:[currentDevice systemVersion]];
+     [clientInfo setDeviceType: [currentDevice model]];
+     } success:^() {
+       NSLog(@"PushEE registration worked");
+     } failure:^(NSError *error) {
+       NSLog(@"PushEE registration Error: %@", error);
+   }];
+ }
+                    </blockquote>
+                </tab>
+                <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
+                     active="isActive('cordova')" ng-click="setActive('cordova')">
+                    <blockquote class="ups-code-block js">
+var pushConfig = {
+    pushServerURL: "{{ currentLocation }}",
+    {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
+    variantID: "{{ variant.variantID }}",
+    variantSecret: "{{ variant.secret }}"
+};
+
+push.register(onNotification, successHandler, errorHandler, pushConfig);
+
+function onNotification(event) {
+    alert(event.alert);
+}
+
+function successHandler() {
+    console.log('success')
+}
+
+function errorHandler(message) {
+    console.log('error ' + message);
+}
+                    </blockquote>
+                </tab>
+
+                <tab heading="Sending" ng-hide="variantType != 'send'" active="isActive('send')" ng-click="setActive('send')">
+                    <blockquote class="ups-code-block java">
+JavaSender defaultJavaSender = new SenderClient("{{ currentLocation }}");
+UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+        .pushApplicationId("{{ applicationId }}")
+        .masterSecret("{{ application.masterSecret }}")
+        .alert("Hello from Java Sender API!")
+        .build();
+defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
+
+    @Override
+    public void onComplete(int statusCode) {
+        //do cool stuff
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        //bring out the bad news
+    }
+});
+                    </blockquote>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    $(document).ready(function() {
+        $('blockquote').each(function(index, element) { hljs.highlightBlock(element) });
+    });
+</script>

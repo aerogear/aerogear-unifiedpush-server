@@ -16,50 +16,82 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.resteasy.spi.Link;
+import org.jboss.resteasy.spi.LinkHeader;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+
 
 @Stateless
 @Path("/applications/{variantID}/installations/")
 public class InstallationManagementEndpoint {
-
-    @Inject
-    private GenericVariantService genericVariantService;
+    private static final int MAX_PAGE_SIZE = 50;
+    private static final int DEFAULT_PAGE_SIZE = 25;
 
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    @Context
-    protected SecurityContext sec;
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findInstallations(@PathParam("variantID") String variantId) {
+    public Response findInstallations(@PathParam("variantID") String variantId, @QueryParam("page") Integer page,
+                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri,
+                                      @Context HttpServletRequest request) {
+        if (pageSize != null) {
+            pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
+        } else {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
 
-        //Find the variant using the variantID
-        Variant variant = genericVariantService.findByVariantIDForDeveloper(variantId, sec.getUserPrincipal().getName());
+        if (page == null) {
+            page = 0;
+        }
 
-        if (variant == null) {
+        //Find the installations using the variantID
+        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, request.getUserPrincipal().getName(), page, pageSize);
+
+        if (pageResult.getResultList().isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.ok(variant.getInstallations()).build();
+        final long totalPages = pageResult.getCount() / pageSize;
+        LinkHeader header = getLinkHeader(page, totalPages, uri);
+
+        return Response.ok(pageResult.getResultList())
+                .header("Link", header.toString())
+                .header("total", pageResult.getCount())
+                .build();
+    }
+
+    LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
+        LinkHeader header = new LinkHeader();
+
+        if (page != 0) {
+            header.addLink(buildLink("prev", page - 1, uri));
+            header.addLink(buildLink("first", 0, uri));
+        }
+
+        if (page < totalPages) {
+            header.addLink(buildLink("next", page + 1, uri));
+            header.addLink(buildLink("last", totalPages, uri));
+        }
+        return header;
+    }
+
+    private Link buildLink(String rel, long pageNo, UriInfo uri) {
+        Link link = new Link();
+        link.setHref(uri.getAbsolutePathBuilder().queryParam("page", pageNo).build().toASCIIString());
+        link.setRelationship(rel);
+        return link;
     }
 
     @GET

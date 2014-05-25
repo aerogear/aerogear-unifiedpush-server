@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,6 +85,7 @@ public class InstallationDaoTest {
         AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("Key");
         av.setName("Android");
+        av.setDeveloper("me");
         // stash the ID:
         this.androidVariantID = av.getVariantID();
         variantDao.create(av);
@@ -460,5 +462,19 @@ public class InstallationDaoTest {
         installation = installationDao.find(id);
 
         assertThat(installation.getAlias()).isEqualTo(alias);
+    }
+
+    @Test
+    public void shouldSelectInstallationsByVariant() {
+        //given
+        String developer = "me";
+
+        //when
+        final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, developer, 0, 1);
+
+        //then
+        assertThat(pageResult).isNotNull();
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+        assertThat(pageResult.getCount()).isEqualTo(3);
     }
 }

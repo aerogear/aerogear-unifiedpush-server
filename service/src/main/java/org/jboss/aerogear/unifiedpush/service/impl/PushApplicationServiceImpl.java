@@ -16,17 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 public class PushApplicationServiceImpl implements PushApplicationService {
 
@@ -78,6 +74,11 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         pushApp.getChromePackagedAppVariants().add(chromePackagedAppVariant);
 
         pushApplicationDao.update(pushApp);
+    }
+
+    @Override
+    public Map<String, Long> countInstallationsByType(String pushApplicationID) {
+        return pushApplicationDao.countInstallationsByType(pushApplicationID);
     }
 
     @Override

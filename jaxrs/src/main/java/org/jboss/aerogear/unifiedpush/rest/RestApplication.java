@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest;
 
-import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
 /**
  * The JAX-RS {@link Application} representing the base

@@ -16,13 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface PushApplicationService {
@@ -76,4 +73,6 @@ public interface PushApplicationService {
      * Registers the given ChromePackagedAppVariant object with the given PushApplication.
      */
     void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
+
+    Map<String, Long> countInstallationsByType(String pushApplicationID);
 }
