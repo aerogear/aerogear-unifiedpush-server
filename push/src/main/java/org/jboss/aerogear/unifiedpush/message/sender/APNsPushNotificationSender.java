@@ -82,6 +82,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
                 service.push(tokens, apnsMessage, expireDate);
+                logger.log(Level.INFO, "Message to APNs has been submitted");
+                callback.onSuccess();
 
                 // after sending, let's ask for the inactive tokens:
                 final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
@@ -95,9 +97,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
                 callback.onError();
             } finally {
-                logger.log(Level.INFO, "Message to APNs has been submitted");
-                callback.onSuccess();
-
                 // tear down and release resources:
                 service.stop();
             }

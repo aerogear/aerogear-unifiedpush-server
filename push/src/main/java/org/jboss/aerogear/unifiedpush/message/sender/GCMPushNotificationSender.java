@@ -90,6 +90,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
             Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
             MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+            logger.log(Level.INFO, "Message to GCM has been submitted");
+            callback.onSuccess();
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
@@ -101,9 +103,6 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             // general GCM exceptions:
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
             callback.onError();
-        } finally {
-            logger.log(Level.INFO, "Message to GCM has been submitted");
-            callback.onSuccess();
         }
     }
 
