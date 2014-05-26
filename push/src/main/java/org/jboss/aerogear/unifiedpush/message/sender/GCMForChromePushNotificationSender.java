@@ -69,19 +69,18 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
                 // POST the payload to the GCM For Chrome server
                 conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + pushMessage.getAlert() + "'}", accessToken);
                 int chromePackagedAppStatusCode = conn.getResponseCode();
-                logger.log(Level.INFO, "GCM for Chrome Status: " + chromePackagedAppStatusCode);
 
-                if (chromePackagedAppStatusCode >= 400) {
+                // did we get a 'good' status code?
+                if (chromePackagedAppStatusCode < 400) {
+                    callback.onSuccess();
+                } else {
                     logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
                     callback.onError();
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);
                 callback.onError();
-
             } finally {
-                callback.onSuccess();
-
                 // tear down
                 if (conn != null ) {
                     conn.disconnect();

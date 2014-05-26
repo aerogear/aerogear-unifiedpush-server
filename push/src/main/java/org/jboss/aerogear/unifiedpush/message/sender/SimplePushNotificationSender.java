@@ -61,7 +61,9 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.log(Level.INFO, "SimplePush Status: " + simplePushStatusCode);
 
-                if (Status.OK.getStatusCode() != simplePushStatusCode) {
+                if (Status.OK.getStatusCode() == simplePushStatusCode) {
+                    callback.onSuccess();
+                } else {
                     logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
                     callback.onError();
                 }
@@ -69,7 +71,6 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
                 callback.onError();
             } finally {
-                callback.onSuccess();
                 // tear down
                 if (conn != null) {
                     conn.disconnect();
