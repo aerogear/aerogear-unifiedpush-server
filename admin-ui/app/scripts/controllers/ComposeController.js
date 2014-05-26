@@ -16,11 +16,13 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window, $modal, pushApplication) {
+angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, Notifications) {
 
     /*
      * INITIALIZATION
      */
+  $scope.variantSelection = [];
+  $scope.criteria = [];
 
   pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
     $scope.application = application;
@@ -30,18 +32,99 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
   $scope.sendMessage = function () {
     var pushData = {'message': {'sound': 'default', 'alert': $scope.testMessage}};
+
+    //let's check if we filter variants
+    pushData.variants = $scope.variantSelection;
+
+    //let's check if we filer on aliases
+    if($scope.criteria.alias) {
+      pushData.alias = $scope.criteria.alias.split(',');
+    }
+
+    //let's check if we filter on deviceType
+    if($scope.criteria.deviceType) {
+      pushData.deviceType = $scope.deviceType.alias.split(',');
+    }
+
+    //let's check if we filter on categories
+    if($scope.criteria.categories) {
+      pushData.categories = $scope.categories.alias.split(',');
+    }
+
     $.ajax
       ({
       contentType: 'application/json',
       type: 'POST',
       url: 'rest/sender',
-      dataType: 'json',
       username: $scope.application.pushApplicationID,
       password: $scope.application.masterSecret,
       data: JSON.stringify( pushData ),
+      success: function(){
+            Notifications.success('Successfully sent Notification');
+          },
+      error: function(){
+            Notifications.error('Something went wrong...', 'danger');
+          },
       complete: function () {
-           //controller.set("testMessage", "");
-      }
+            $scope.testMessage = '';
+            $scope.$apply();
+          }
     });
   };
+
+  $scope.changeVariant = function ( application ) {
+    show( application, 'filter-variants.html' );
+  };
+
+  $scope.changeCriteria = function ( application ) {
+    show( application, 'add-criteria.html' );
+  };
+
+  function modalController( $scope, $modalInstance, application, variantSelection, criteria ) {
+
+    $scope.variantSelection = variantSelection;
+    $scope.criteria = criteria;
+    $scope.application = application;
+    $scope.ok = function ( application ) {
+      $modalInstance.close( application );
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss( 'cancel' );
+    };
+
+    $scope.toggleSelection = function toggleSelection( variant ) {
+      var idx = $scope.variantSelection.indexOf( variant.variantID );
+
+      // is currently selected
+      if ( idx > -1 ) {
+        $scope.variantSelection.splice( idx, 1 );
+      }
+      // is newly selected
+      else {
+        $scope.variantSelection.push( variant.variantID );
+      }
+
+    };
+  }
+
+
+  function show( application, template ) {
+    return $modal.open( {
+      templateUrl: 'views/dialogs/' + template,
+      controller: modalController,
+      resolve: {
+        application: function () {
+          return application;
+        },
+        variantSelection: function () {
+          return $scope.variantSelection;
+        },
+        criteria: function () {
+          return $scope.criteria;
+        }
+      }
+    } );
+  }
+
 });
