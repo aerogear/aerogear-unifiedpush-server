@@ -17,6 +17,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
  */
 
 import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.helper.ChromePackagedAppTokenCache;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.json.simple.JSONObject;
@@ -28,18 +29,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GCMForChromePushNotificationSender implements Serializable {
+public class GCMForChromePushNotificationSender implements PushNotificationSender {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final String MESSAGE_URL = "https://www.googleapis.com/gcm_for_chrome/v1/messages";
@@ -50,31 +50,38 @@ public class GCMForChromePushNotificationSender implements Serializable {
     // We need a place to hold the current access token/expire time for each GCM for Chrome application. Not good practice to always get a new access token
     private Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
 
-    public void sendMessage( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage unifiedPushMessage) {
+    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
         // no need to send empty list
-        if(channelIDs.isEmpty()) {
+        if(tokens.isEmpty()) {
             return;
         }
+
+        final ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) variant;
 
         String accessToken = fetchAccessToken(chromePackagedAppVariant);
 
         // iterate over all the given channelIDs
-        for (String channelID : channelIDs) {
+        for (String channelID : tokens) {
 
             HttpURLConnection conn = null;
             try {
                 final String clientURL = MESSAGE_URL;
                 // POST the payload to the GCM For Chrome server
-                conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + unifiedPushMessage.getAlert() + "'}", accessToken);
+                conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + pushMessage.getAlert() + "'}", accessToken);
                 int chromePackagedAppStatusCode = conn.getResponseCode();
                 logger.log(Level.INFO, "GCM for Chrome Status: " + chromePackagedAppStatusCode);
 
                 if (chromePackagedAppStatusCode >= 400) {
                     logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
+                    callback.onError();
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);
+                callback.onError();
+
             } finally {
+                callback.onSuccess();
+
                 // tear down
                 if (conn != null ) {
                     conn.disconnect();

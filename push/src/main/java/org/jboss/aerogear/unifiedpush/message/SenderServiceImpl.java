@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMForChromePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMPushNotificationSender;
+import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -119,58 +119,69 @@ public class SenderServiceImpl implements SenderService {
 
             // TODO: DISPATCH TO A QUEUE .....
             for (iOSVariant iOSVariant : iOSVariants) {
-                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), categories,
-                        aliases, deviceTypes);
-                this.sendToAPNs(iOSVariant, tokenPerVariant, message);
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), categories, aliases, deviceTypes);
+                apnsSender.sendPushMessage(iOSVariant, tokenPerVariant, message, new NotificationSenderCallback() {
+                    @Override
+                    public void onSuccess() {
+                        logger.log(Level.FINE, "Sent APNs message to '" + tokenPerVariant.size() + "' devices");
+                    }
+
+                    @Override
+                    public void onError() {
+                        logger.log(Level.WARNING, "Error on APNs delivery");
+                    }
+                });
+
             }
 
             // TODO: DISPATCH TO A QUEUE .....
             for (AndroidVariant androidVariant : androidVariants) {
-                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories,
-                        aliases, deviceTypes);
-                this.sendToGCM(androidVariant, androidTokenPerVariant, message);
+                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories, aliases, deviceTypes);
+                gcmSender.sendPushMessage(androidVariant, androidTokenPerVariant, message, new NotificationSenderCallback() {
+                    @Override
+                    public void onSuccess() {
+                        logger.log(Level.FINE, "Sent GCM-Android message to '" + androidTokenPerVariant.size() + "' devices");
+                    }
+
+                    @Override
+                    public void onError() {
+                        logger.log(Level.WARNING, "Error on GCM-Android delivery");
+                    }
+                });
             }
 
             // TODO: DISPATCH TO A QUEUE .....
             for(ChromePackagedAppVariant chromePackagedAppVariant : chromePackagedAppVariants) {
-                final List<String> chromePackagedAppTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(chromePackagedAppVariant.getVariantID(), categories,
-                        aliases, deviceTypes);
-                this.sendToGCMForChrome(chromePackagedAppVariant, chromePackagedAppTokenPerVariant, message);
+                final List<String> chromePackagedAppTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(chromePackagedAppVariant.getVariantID(), categories, aliases, deviceTypes);
+                logger.log(Level.FINE, "Sending Chrome/GCM message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
+                gcmForChromePushNotificationSender.sendPushMessage(chromePackagedAppVariant, chromePackagedAppTokenPerVariant, message, new NotificationSenderCallback() {
+                    @Override
+                    public void onSuccess() {
+                        logger.log(Level.FINE, "Sent GCM-Chrome message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
+                    }
+
+                    @Override
+                    public void onError() {
+                        logger.log(Level.WARNING, "Error on GCM-Chrome  delivery");
+                    }
+                });
             }
         }
 
-        // TODO: DISPATCH TO A QUEUE .....
-        final String simplePushVersionPayload = message.getSimplePush();
-
-        // if no SimplePush object is present: skip it.
-        if (simplePushVersionPayload == null) {
-            return;
-        }
 
         for (SimplePushVariant simplePushVariant : simplePushVariants) {
-            final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant
-                    .getVariantID(), categories, aliases, deviceTypes);
-            this.sentToSimplePush(pushEndpointURLsPerCategory, simplePushVersionPayload);
+            final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant .getVariantID(), categories, aliases, deviceTypes);
+            simplePushSender.sendPushMessage(simplePushVariant, pushEndpointURLsPerCategory, message, new NotificationSenderCallback() {
+                @Override
+                public void onSuccess() {
+                    logger.log(Level.FINE, "Sent SimplePush message to '" + pushEndpointURLsPerCategory.size() + "' devices");
+                }
+
+                @Override
+                public void onError() {
+                    logger.log(Level.WARNING, "Error on SimplePush delivery");
+                }
+            });
         }
-    }
-
-    private void sendToAPNs(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.log(Level.FINE, "Sending APNs message to '" + tokens.size() + "' devices");
-        apnsSender.sendPushMessage(iOSVariant, tokens, pushMessage);
-    }
-
-    private void sendToGCM(AndroidVariant androidVariant, List<String> tokens, UnifiedPushMessage pushMessage) {
-        logger.log(Level.FINE, "Sending GCM message to '" + tokens.size() + "' devices");
-        gcmSender.sendPushMessage(androidVariant, tokens, pushMessage);
-    }
-
-    private void sentToSimplePush(List<String> pushEndpointURLs, String payload) {
-        logger.log(Level.FINE, "Sending SimplePush message to '" + pushEndpointURLs.size() + "' devices");
-        simplePushSender.sendMessage(pushEndpointURLs, payload);
-    }
-
-    private void sendToGCMForChrome( ChromePackagedAppVariant chromePackagedAppVariant, List<String> channelIDs, UnifiedPushMessage pushMessage ) {
-        logger.log(Level.FINE, "Sending Chrome/GCM message to '" + channelIDs.size() + "' devices");
-        gcmForChromePushNotificationSender.sendMessage(chromePackagedAppVariant, channelIDs, pushMessage);
     }
 }

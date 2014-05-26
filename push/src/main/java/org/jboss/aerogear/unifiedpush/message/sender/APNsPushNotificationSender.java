@@ -21,6 +21,7 @@ import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -35,7 +36,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class APNsPushNotificationSender {
+public class APNsPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
 
@@ -45,16 +46,14 @@ public class APNsPushNotificationSender {
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
-     * 
-     * @param iOSVariant the logical construct, needed to lookup the certificate and the passphrase.
-     * @param tokens collection of tokens, representing actual iOS devices
-     * @param pushMessage the payload to be submitted
      */
-    public void sendPushMessage(iOSVariant iOSVariant, Collection<String> tokens, UnifiedPushMessage pushMessage) {
+    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
         }
+
+        final iOSVariant iOSVariant = (iOSVariant) variant;
 
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
@@ -94,14 +93,17 @@ public class APNsPushNotificationSender {
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
             } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
+                callback.onError();
             } finally {
-
                 logger.log(Level.INFO, "Message to APNs has been submitted");
+                callback.onSuccess();
+
                 // tear down and release resources:
                 service.stop();
             }
         } else {
             logger.log(Level.SEVERE, "No certificate was found. Could not send messages to APNs");
+            callback.onError();
         }
     }
 

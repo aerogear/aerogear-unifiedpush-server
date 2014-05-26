@@ -16,21 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response.Status;
 
-public class SimplePushNotificationSender implements Serializable {
-    private static final long serialVersionUID = 5747687132270998712L;
+public class SimplePushNotificationSender implements PushNotificationSender {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -39,14 +39,19 @@ public class SimplePushNotificationSender implements Serializable {
     /**
      * Sends SimplePush notifications to all connected clients, that are represented by
      * the {@link Collection} of channelIDs, for the given SimplePush network.
-     *
-     * @param pushEndpointURLs List of URL used for the different clients/endpoints on a SimplePush network/server.
-     *
-     * @param payload the payload, or version string, to be submitted
      */
-    public void sendMessage(List<String> pushEndpointURLs, String payload) {
+    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
+
+        String payload = pushMessage.getSimplePush();
+
+        // Convenience from the SimplePush spec;
+        // supported by Moz and our SimplePush Server
+        if (payload == null) {
+            payload = System.currentTimeMillis()+"";
+        }
+
         // iterate over all the given channels, if there are channels:
-        for (String clientURL : pushEndpointURLs) {
+        for (String clientURL : tokens) {
 
             HttpURLConnection conn = null;
             try {
@@ -58,10 +63,13 @@ public class SimplePushNotificationSender implements Serializable {
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
                     logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
+                    callback.onError();
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
+                callback.onError();
             } finally {
+                callback.onSuccess();
                 // tear down
                 if (conn != null) {
                     conn.disconnect();

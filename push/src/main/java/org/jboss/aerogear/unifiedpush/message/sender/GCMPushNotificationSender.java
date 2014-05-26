@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
@@ -36,7 +38,7 @@ import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message.Builder;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
-public class GCMPushNotificationSender {
+public class GCMPushNotificationSender implements PushNotificationSender {
 
     private final GCMCache cache = new GCMCache();
 
@@ -48,17 +50,16 @@ public class GCMPushNotificationSender {
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
      * the {@link List} of tokens for the given {@link AndroidVariant}.
-     * 
-     * @param androidVariant The android variant entity
-     * @param registrationIDs List of tokens, representing actual Android devices
-     * @param pushMessage the payload to be submitted
      */
-    public void sendPushMessage(AndroidVariant androidVariant, List<String> registrationIDs, UnifiedPushMessage pushMessage) {
+    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
 
         // no need to send empty list
-        if (registrationIDs.isEmpty()) {
+        if (tokens.isEmpty()) {
             return;
         }
+
+        List<String>  registrationIDs = (List<String>) tokens;
+        final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
@@ -95,11 +96,14 @@ public class GCMPushNotificationSender {
 
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "Error connection to your GCM project. Double check your Google API Key");
+            callback.onError();
         } catch (Exception e) {
             // general GCM exceptions:
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
+            callback.onError();
         } finally {
             logger.log(Level.INFO, "Message to GCM has been submitted");
+            callback.onSuccess();
         }
     }
 
