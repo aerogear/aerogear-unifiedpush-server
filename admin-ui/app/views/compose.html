@@ -17,7 +17,7 @@
             <div class="criteria">
                 <button ng-click="changeVariant(application)" class="btn btn-default btn-lg"  type="button">Change </button>
                 <strong>Variants</strong>
-                <p>{{ variantSelection.length > 0? 'Filtered' : 'All' }}</p>
+                <p><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></p>
                 <br/>
             </div>
             <br/>
