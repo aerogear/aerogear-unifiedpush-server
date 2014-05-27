@@ -8,7 +8,7 @@
         <div class="pull-right dropdown">
             <span>
                 <strong>
-                    <a href="#/installations/{{variant.variantID}}">
+                    <a href="#/{{applicationId}}/installations/{{variant.variantID}}" ng-click="currentVariant(variant)">
                         {{ counts[variant.variantID] ? counts[variant.variantID] : 0 }}
                     </a>
                 </strong> installations</span>
