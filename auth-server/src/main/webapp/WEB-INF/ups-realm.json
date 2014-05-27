@@ -14,14 +14,6 @@
     "requiredCredentials": [ "password" ],
     "users" : [
         {
-            "username" : "user",
-            "enabled": true,
-            "credentials" : [
-                { "type" : "password",
-                    "value" : "password" }
-            ]
-        },
-        {
             "username" : "admin",
             "enabled": true,
             "credentials" : [
@@ -36,10 +28,6 @@
     "roles" : {
         "realm" : [
             {
-                "name": "user",
-                "description": "User privileges"
-            },
-            {
                 "name": "admin",
                 "description": "Administrator privileges"
             }
@@ -47,18 +35,14 @@
     },
     "roleMappings": [
         {
-            "username": "user",
-            "roles": ["user"]
-        },
-        {
             "username": "admin",
-            "roles": ["user", "admin"]
+            "roles": ["admin"]
         }
     ],
     "scopeMappings": [
         {
             "client": "unified-push-server",
-            "roles": ["user", "admin"]
+            "roles": ["admin"]
         }
     ],
     "applications": [
@@ -75,10 +59,6 @@
     ],
     "applicationRoleMappings": {
         "account": [
-            {
-                "username": "user",
-                "roles": ["manage-account"]
-            },
             {
                 "username": "admin",
                 "roles": ["manage-account"]
