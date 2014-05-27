@@ -35,7 +35,9 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
     //let's check if we filter variants
     if($scope.variantSelection.length > 0) {
-      pushData.variants = $scope.variantSelection;
+      for(var variant in $scope.variantSelection) {
+        pushData.variants.push(variant.variantID);
+      }
     }
     //let's check if we filer on aliases
     if($scope.criteria.alias) {
@@ -95,7 +97,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
     };
 
     $scope.toggleSelection = function toggleSelection( variant ) {
-      var idx = $scope.variantSelection.indexOf( variant.variantID );
+      var idx = $scope.variantSelection.indexOf( variant );
 
       // is currently selected
       if ( idx > -1 ) {
@@ -103,7 +105,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
       }
       // is newly selected
       else {
-        $scope.variantSelection.push( variant.variantID );
+        $scope.variantSelection.push( variant );
       }
 
     };

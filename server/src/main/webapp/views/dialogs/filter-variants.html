@@ -10,7 +10,7 @@
         <ul class="list-group ">
         <li class="list-group-item" ng-repeat="androidvariant in application.androidVariants">
             <label>
-                <input type="checkbox"  ng-checked="variantSelection.indexOf(androidvariant.variantID) > -1" ng-click="toggleSelection(androidvariant)">
+                <input type="checkbox"  ng-checked="variantSelection.indexOf(androidvariant) > -1" ng-click="toggleSelection(androidvariant)">
                 {{androidvariant.name}}
             </label>
         </li>
@@ -19,7 +19,7 @@
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="iosvariant in application.iosvariants">
                 <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(iosvariant.variantID) > -1" ng-click="toggleSelection(iosvariant)">
+                    <input type="checkbox" ng-checked="variantSelection.indexOf(iosvariant) > -1" ng-click="toggleSelection(iosvariant)">
                     {{iosvariant.name}}
                 </label>
             </li>
@@ -28,7 +28,7 @@
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="simplepushvariant in application.simplePushVariants">
                 <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant.variantID) > -1" ng-click="toggleSelection(simplepushvariant)">
+                    <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant) > -1" ng-click="toggleSelection(simplepushvariant)">
                     {{simplepushvariant.name}}
                 </label>
             </li>
@@ -37,7 +37,7 @@
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="chromevariant in application.chromePackagedAppVariants">
                 <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(chromevariant.variantID) > -1" ng-click="toggleSelection(chromevariant)">
+                    <input type="checkbox" ng-checked="variantSelection.indexOf(chromevariant) > -1" ng-click="toggleSelection(chromevariant)">
                     {{chromevariant.name}}
                 </label>
             </li>
