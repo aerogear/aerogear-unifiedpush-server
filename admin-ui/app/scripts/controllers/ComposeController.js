@@ -34,8 +34,9 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
     var pushData = {'message': {'sound': 'default', 'alert': $scope.testMessage}};
 
     //let's check if we filter variants
-    pushData.variants = $scope.variantSelection;
-
+    if($scope.variantSelection.length > 0) {
+      pushData.variants = $scope.variantSelection;
+    }
     //let's check if we filer on aliases
     if($scope.criteria.alias) {
       pushData.alias = $scope.criteria.alias.split(',');
