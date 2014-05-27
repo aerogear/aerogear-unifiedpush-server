@@ -12,27 +12,51 @@ angular.module('newadminApp', [
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainController'
+        controller: 'MainController',
+        crumb: {
+          level: 0,
+          label: 'Applications'
+        }
       })
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
-        controller: 'DetailController'
+        controller: 'DetailController',
+        crumb: {
+          level: 1,
+          label: '$ application.name ? application.name : "Current Application"'
+        }
       })
-      .when('/installations/:variantId', {
+      .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
-        controller: 'InstallationController'
+        controller: 'InstallationController',
+        crumb: {
+          level: 2,
+          label: '$ variant.name ? variant.name : "Registering Installations"'
+        }
       })
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController'
+        controller: 'ExampleController',
+        crumb: {
+          level: 2,
+          label: 'Example'
+        }
       })
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController'
+        controller: 'ExampleController',
+        crumb: {
+          level: 2,
+          label: 'Example'
+        }
       })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
-        controller: 'ComposeController'
+        controller: 'ComposeController',
+        crumb: {
+          level: 2,
+          label: 'Compose'
+        }
       })
       .otherwise({
         redirectTo: '/'
