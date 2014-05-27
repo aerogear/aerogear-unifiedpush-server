@@ -37,7 +37,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
     if($scope.variantSelection.length > 0) {
       pushData.variants = [];
       for(var variant in $scope.variantSelection) {
-        pushData.variants.push(variant.variantID);
+        pushData.variants.push($scope.variantSelection[variant].variantID);
       }
     }
     //let's check if we filer on aliases
