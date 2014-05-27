@@ -17,20 +17,20 @@
 'use strict';
 
 angular.module('newadminApp').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications) {
+  function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications, breadcrumbs) {
 
   /*
    * INITIALIZATION
    */
   pushApplication.get({appId: $routeParams.applicationId}, function (application) {
-    $scope.application = application;
+    $rootScope.application = application;
+    breadcrumbs.generateBreadcrumbs();
     var href = $window.location.href;
     $scope.currentLocation = href.substring(0, href.indexOf('#'));
   });
   pushApplication.count({appId: $routeParams.applicationId}, function (counts) {
     $scope.counts = counts;
   });
-
 
 
   /*
@@ -105,7 +105,7 @@ angular.module('newadminApp').controller('DetailController',
       });
     });
   };
-
+    
   $scope.renewMasterSecret = function () {
     var modalInstance = show(null, null, 'renew-secret.html');
     modalInstance.result.then(function () {
