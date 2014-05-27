@@ -35,6 +35,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
     //let's check if we filter variants
     if($scope.variantSelection.length > 0) {
+      pushData.variants = [];
       for(var variant in $scope.variantSelection) {
         pushData.variants.push(variant.variantID);
       }
