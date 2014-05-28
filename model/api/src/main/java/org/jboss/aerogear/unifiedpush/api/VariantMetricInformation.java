@@ -26,8 +26,8 @@ public class VariantMetricInformation extends BaseModel {
 
     @NotNull
     private String variantID;
+    private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
-    private long receivers = 0;
 
     public VariantMetricInformation() {
     }

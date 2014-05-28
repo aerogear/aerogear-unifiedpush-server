@@ -136,13 +136,13 @@ public class SenderServiceImpl implements SenderService {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent APNs message to '" + tokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on APNs delivery");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
 
@@ -155,13 +155,13 @@ public class SenderServiceImpl implements SenderService {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent GCM-Android message to '" + androidTokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.TRUE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on GCM-Android delivery");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.FALSE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
             }
@@ -174,13 +174,13 @@ public class SenderServiceImpl implements SenderService {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent GCM-Chrome message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.TRUE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on GCM-Chrome  delivery");
-                        updateStatusOfPushMessageInformaton(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.FALSE) ;
+                        updateStatusOfPushMessageInformation(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
             }
@@ -193,13 +193,13 @@ public class SenderServiceImpl implements SenderService {
                 @Override
                 public void onSuccess() {
                     logger.log(Level.FINE, "Sent SimplePush message to '" + pushEndpointURLsPerCategory.size() + "' devices");
-                    updateStatusOfPushMessageInformaton(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.TRUE) ;
+                    updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.TRUE) ;
                 }
 
                 @Override
                 public void onError() {
                     logger.log(Level.WARNING, "Error on SimplePush delivery");
-                    updateStatusOfPushMessageInformaton(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
+                    updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
                 }
             });
         }
@@ -208,7 +208,7 @@ public class SenderServiceImpl implements SenderService {
     /**
      * Helper to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
      */
-    private void updateStatusOfPushMessageInformaton(PushMessageInformation pushMessageInformation, String variantID, int receives, Boolean deliveryStatus) {
+    private void updateStatusOfPushMessageInformation(PushMessageInformation pushMessageInformation, String variantID, int receives, Boolean deliveryStatus) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setVariantID(variantID);
         variantMetricInformation.setReceivers(receives);
