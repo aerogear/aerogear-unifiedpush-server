@@ -20,12 +20,17 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
 
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
+
+    private final Logger logger = Logger.getLogger(JPAPushMessageInformationDao.class.getName());
 
     @Override
     public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
@@ -103,6 +108,20 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
             return ASC;
         } else {
             return DESC;
+        }
+    }
+
+    @Override
+    public void deletePushInformationOlderThan(Date oldest) {
+
+        // TODO: use criteria API...
+        List<PushMessageInformation> oldMessages = createQuery("select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
+                .setParameter("oldest", oldest).getResultList();
+
+        logger.log(Level.INFO, "Deleting ['" + oldMessages.size() + "'] outdated PushMessageInformation objects");
+
+        for (PushMessageInformation oldMessage : oldMessages) {
+            remove(oldMessage);
         }
     }
 }

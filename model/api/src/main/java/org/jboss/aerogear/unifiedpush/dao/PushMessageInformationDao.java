@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.dao;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
@@ -47,4 +48,8 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      */
     List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs);
 
+    /**
+     * Delete all Push Message Information entries that are older than the given date
+     */
+    void deletePushInformationOlderThan(Date oldest);
 }
