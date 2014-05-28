@@ -4,23 +4,35 @@
     <div class="row">
         <div class="lo-content-area col-md-12">
             <div ups-breadcrumb/>
+            <h2>Send notifications to"{{ application.name }}"</h2>
             <div>
                 <ups-alerts />
             </div>
-            <p>
-            <h1>Send notifications to"{{ application.name }}"</h1>
-            <strong>Variants</strong> All <a href="#"> Change...</a>
-            </p>
-            <p>
-            <strong>Message</strong>  <input type="text" id="testMessage" class="form-control"  ng-model="testMessage">
-            </p>
 
-            <p>
-                <strong>Aliases</strong></p>
-             <p>   <strong>Device Type</strong>   </p>
-             <p>   <strong>Categories</strong> </p>
+            <div>
+            <strong>Message</strong>
+            <p><input type="text" id="testMessage" class="compose"  ng-model="testMessage"></p>
+            </div>
+            <br/>
+            <div class="criteria">
+                <button ng-click="changeVariant(application)" class="btn btn-default btn-lg"  type="button">Change </button>
+                <strong>Variants</strong>
+                <p><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></p>
+                <br/>
+            </div>
+            <br/>
+            <div class="criteria">
+            <button ng-click="changeCriteria(application)" class="btn btn-default btn-lg"  type="button">Change </button>
+            <strong>Criteria </strong>
 
-            <button ng-click="sendMessage()" class="btn btn-default btn-lg"  type="button">Send Notification...</button>
+             <p><strong>Aliases :</strong> &nbsp; &nbsp; {{criteria.alias.length > 0 ? criteria.alias : 'All'}} </p>
+             <p>   <strong>Device Type :</strong> &nbsp; &nbsp;{{criteria.deviceType.length > 0 ? criteria.deviceType : 'All'}}</p>
+             <p>   <strong>Categories :</strong> &nbsp; &nbsp; {{criteria.categories.length > 0 ? criteria.categories : 'All'}} </p>
+                <br/>
+            <p></p>
+            </div>
+            <br>
+            <button ng-click="sendMessage()" class="btn btn-primary btn-lg"  type="button">Send Notification...</button>
 
 
         </div>
