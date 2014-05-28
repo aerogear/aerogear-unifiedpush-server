@@ -91,8 +91,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
 
                 // trigger asynchronous deletion:
-                logger.log(Level.FINE, "Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
-                clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+                if (! transformedTokens.isEmpty()) {
+                    logger.log(Level.INFO, "Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
+                    clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+                }
             } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
                 callback.onError();
@@ -142,7 +144,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
 
-            final ApnsServiceBuilder builder = APNS.newService();
+            final ApnsServiceBuilder builder = APNS.newService().withNoErrorDetection();
 
             // add the certificate:
             ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());

@@ -23,6 +23,9 @@ import java.util.Set;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
+    /**
+     * Loads a specific installation for the given Variant, specified by the device token.
+     */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**

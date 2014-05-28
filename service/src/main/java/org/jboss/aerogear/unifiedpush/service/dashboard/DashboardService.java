@@ -18,11 +18,15 @@ package org.jboss.aerogear.unifiedpush.service.dashboard;
 
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * Class for loading various data for the Dashboard of the Admin UI
+ */
 public class DashboardService {
 
     @Inject
@@ -31,8 +35,13 @@ public class DashboardService {
     private VariantDao variantDao;
     @Inject
     private InstallationDao installationDao;
+    @Inject
+    private PushMessageInformationDao pushMessageInformationDao;
 
 
+    /**
+     * Receives the dashboard data for the given user
+     */
     public DashboardData loadDashboardData(String principalName) {
 
         long totalApps = totalApplicationNumber(principalName);
@@ -49,7 +58,8 @@ public class DashboardService {
     }
 
     private long totalMessages(String principalName) {
-        return 0;   // TODO
+        List<String> pushAppIDs = pushApplicationDao.findAllPushApplicationIDsForDeveloper(principalName);
+        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(pushAppIDs);
     }
 
     private long totalDeviceNumber(String principalName) {
@@ -62,5 +72,4 @@ public class DashboardService {
     private long totalApplicationNumber(String principalName) {
         return  pushApplicationDao.getNumberOfPushApplicationsForDeveloper(principalName);
     }
-
 }

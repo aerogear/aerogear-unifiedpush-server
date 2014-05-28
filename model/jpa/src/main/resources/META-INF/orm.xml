@@ -92,4 +92,22 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="ChromePackagedAppVariant" access="FIELD">
         <discriminator-value>chromePackagedApp</discriminator-value>
     </entity>
+
+
+    <entity class="PushMessageInformation" access="FIELD">
+        <attributes>
+            <basic name="submitDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <one-to-many name="variantInformations" fetch="EAGER">
+                <join-column />
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="VariantMetricInformation" access="FIELD" />
+
 </entity-mappings>

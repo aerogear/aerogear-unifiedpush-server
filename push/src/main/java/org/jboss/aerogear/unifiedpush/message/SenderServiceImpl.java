@@ -29,8 +29,10 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.GCMForChromePushNotificationSender;
@@ -39,6 +41,7 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Stateless
 @Asynchronous
@@ -56,11 +59,20 @@ public class SenderServiceImpl implements SenderService {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
+    @Inject
+    private PushMessageMetricsService metricsService;
 
     @Override
     @Asynchronous
     public void send(PushApplication pushApplication, UnifiedPushMessage message) {
-        logger.log(Level.INFO, "Processing send request with '" + message + "' payload");
+        logger.log(Level.INFO, "Processing send request with '" + message.toString() + "' payload");
+
+        final PushMessageInformation pushMessageInformation =
+                metricsService.storeNewRequestFrom(
+                        pushApplication.getPushApplicationID(),
+                        message.toString(),
+                        message.getIpAddress()
+                );
 
         // collections for all the different variants:
         final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
@@ -118,70 +130,92 @@ public class SenderServiceImpl implements SenderService {
         if (message.getData() != null) {
 
             // TODO: DISPATCH TO A QUEUE .....
-            for (iOSVariant iOSVariant : iOSVariants) {
+            for (final iOSVariant iOSVariant : iOSVariants) {
                 final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), categories, aliases, deviceTypes);
                 apnsSender.sendPushMessage(iOSVariant, tokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent APNs message to '" + tokenPerVariant.size() + "' devices");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on APNs delivery");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
 
             }
 
             // TODO: DISPATCH TO A QUEUE .....
-            for (AndroidVariant androidVariant : androidVariants) {
+            for (final AndroidVariant androidVariant : androidVariants) {
                 final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories, aliases, deviceTypes);
                 gcmSender.sendPushMessage(androidVariant, androidTokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent GCM-Android message to '" + androidTokenPerVariant.size() + "' devices");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on GCM-Android delivery");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
             }
 
             // TODO: DISPATCH TO A QUEUE .....
-            for(ChromePackagedAppVariant chromePackagedAppVariant : chromePackagedAppVariants) {
+            for(final ChromePackagedAppVariant chromePackagedAppVariant : chromePackagedAppVariants) {
                 final List<String> chromePackagedAppTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(chromePackagedAppVariant.getVariantID(), categories, aliases, deviceTypes);
                 logger.log(Level.FINE, "Sending Chrome/GCM message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
                 gcmForChromePushNotificationSender.sendPushMessage(chromePackagedAppVariant, chromePackagedAppTokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
                     public void onSuccess() {
                         logger.log(Level.FINE, "Sent GCM-Chrome message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.TRUE) ;
                     }
 
                     @Override
                     public void onError() {
                         logger.log(Level.WARNING, "Error on GCM-Chrome  delivery");
+                        updateStatusOfPushMessageInformaton(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.FALSE) ;
                     }
                 });
             }
         }
 
 
-        for (SimplePushVariant simplePushVariant : simplePushVariants) {
+        for (final SimplePushVariant simplePushVariant : simplePushVariants) {
             final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant .getVariantID(), categories, aliases, deviceTypes);
             simplePushSender.sendPushMessage(simplePushVariant, pushEndpointURLsPerCategory, message, new NotificationSenderCallback() {
                 @Override
                 public void onSuccess() {
                     logger.log(Level.FINE, "Sent SimplePush message to '" + pushEndpointURLsPerCategory.size() + "' devices");
+                    updateStatusOfPushMessageInformaton(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.TRUE) ;
                 }
 
                 @Override
                 public void onError() {
                     logger.log(Level.WARNING, "Error on SimplePush delivery");
+                    updateStatusOfPushMessageInformaton(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
                 }
             });
         }
+    }
+
+    /**
+     * Helper to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
+     */
+    private void updateStatusOfPushMessageInformaton(PushMessageInformation pushMessageInformation, String variantID, int receives, Boolean deliveryStatus) {
+        final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
+        variantMetricInformation.setVariantID(variantID);
+        variantMetricInformation.setReceivers(receives);
+        variantMetricInformation.setDeliveryStatus(deliveryStatus);
+        pushMessageInformation.getVariantInformations().add(variantMetricInformation);
+
+        // store it!
+        metricsService.updatePushMessageInformation(pushMessageInformation);
     }
 }

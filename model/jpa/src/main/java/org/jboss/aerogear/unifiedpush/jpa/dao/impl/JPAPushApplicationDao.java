@@ -52,6 +52,16 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
         return entities;
     }
 
+
+    @Override
+    public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
+
+        List<String> ids = createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer")
+                .setParameter("developer", loginName).getResultList();
+
+        return ids;
+    }
+
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
 
