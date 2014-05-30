@@ -120,7 +120,7 @@ backendMod.factory('breadcrumbs', function ($rootScope, $route) {
       var label = function(route) {
         var label = route.crumb.label.indexOf('$') !== -1 ? $rootScope.$eval(route.crumb.label.substring(1)) : route.crumb.label;
         self.breadcrumbs.push({ label: label, path: route.path });
-      }
+      };
       
       this.breadcrumbs = [];
       if ($route.current && $route.current.crumb) {
