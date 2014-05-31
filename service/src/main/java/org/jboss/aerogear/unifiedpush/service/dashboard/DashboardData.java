@@ -25,6 +25,9 @@ public class DashboardData {
     private long devices;
     private long messages;
 
+    /**
+     * Number of push applications of the current user.
+     */
     public long getApplications() {
         return applications;
     }
@@ -33,6 +36,9 @@ public class DashboardData {
         this.applications = applications;
     }
 
+    /**
+     * Number of registered devices for the push applications of the current user.
+     */
     public long getDevices() {
         return devices;
     }
@@ -41,6 +47,9 @@ public class DashboardData {
         this.devices = devices;
     }
 
+    /**
+     * Number of sent messages from push applications of the current user.
+     */
     public long getMessages() {
         return messages;
     }

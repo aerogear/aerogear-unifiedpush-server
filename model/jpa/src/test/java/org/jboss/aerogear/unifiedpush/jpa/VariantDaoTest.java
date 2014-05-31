@@ -99,8 +99,6 @@ public class VariantDaoTest {
 
         variantDao.create(av);
 
-
-
         assertThat(variantDao.findByVariantID(uuid)).isNotNull();
         assertThat(variantDao.findByVariantID(null)).isNull();
     }

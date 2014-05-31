@@ -35,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.SenderService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 @Stateless
@@ -61,6 +62,9 @@ public class PushNotificationSenderEndpoint {
 
         // transform map to service object:
         final UnifiedPushMessage payload = new UnifiedPushMessage(message);
+
+        // submit http request metadata:
+        payload.setIpAddress(HttpRequestUtil.extractIPAddress(request));
 
         // submitted to @Async EJB:
         senderService.send(pushApplication, payload);

@@ -97,6 +97,31 @@ public class PushApplicationDaoTest {
     }
 
     @Test
+    public void findAllIDsForDeveloper() {
+
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(0);
+
+        final PushApplication pushApplication1 = new PushApplication();
+        pushApplication1.setName("Push App 1");
+        pushApplication1.setDeveloper("Admin");
+        pushApplicationDao.create(pushApplication1);
+
+        final PushApplication pushApplication2 = new PushApplication();
+        pushApplication2.setName("Push App 2");
+        pushApplication2.setDeveloper("Admin");
+        pushApplicationDao.create(pushApplication2);
+
+        final PushApplication pushApplication3 = new PushApplication();
+        pushApplication3.setName("Push App 3");
+        pushApplication3.setDeveloper("Dave The Drummer");
+        pushApplicationDao.create(pushApplication3);
+
+        assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin")).hasSize(2);
+        assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Dave The Drummer")).hasSize(1);
+        assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin The Drummer")).isEmpty();
+    }
+
+    @Test
     public void findByPushApplicationIDForDeveloper() {
 
         final PushApplication pushApplication1 = new PushApplication ();

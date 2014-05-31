@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public class UnifiedPushMessage {
 
+    private String ipAddress;
+
     private final SendCriteria criteria;
 
     private final String simplePush;
@@ -193,9 +195,21 @@ public class UnifiedPushMessage {
         return data;
     }
 
+    /**
+     * The IP address from the agent that did issue the push message request.
+     */
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
     @Override
     public String toString() {
-        return "UnifiedPushMessage [criteria=" + criteria + ", simplePush=" + simplePush + ", alert=" + alert + ", sound=" + sound + ", badge=" + badge + ", data="
-                + data + ", time-to-live=" + timeToLive + ", content-available=" + contentAvailable +"]";
+        return "[alert=" + alert + ", data=" + data+ ", criteria="
+                + criteria + ", sound=" + sound + ", badge=" + badge + ", time-to-live="
+                + timeToLive + ", simplePush=" + simplePush + ", content-available=" + contentAvailable +"]";
     }
 }
