@@ -252,7 +252,7 @@ public class PushMessageInformationDaoTest {
 
         pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
 		
-		flushAndClear();
+        flushAndClear();
 		
         messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
         assertThat(messageInformations).hasSize(0);
