@@ -244,15 +244,18 @@ public class PushMessageInformationDaoTest {
     @Test
     public void deleteOldPushMessageInformations() throws InterruptedException {
 
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
+        assertThat(messageInformations).hasSize(1);
+
         // let's wait a bit...
         Thread.sleep(1000);
 
-
-
-
         pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
-
-
+		
+		flushAndClear();
+		
+        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
+        assertThat(messageInformations).hasSize(0);
     }
 
 }
