@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsDelegateAdapter;
+import com.notnoop.apns.ApnsNotification;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
 import com.notnoop.apns.EnhancedApnsNotification;
@@ -47,7 +49,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
      */
-    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
+    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
@@ -72,7 +74,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         final String apnsMessage  =  builder.build(); // build the JSON payload, for APNs
 
-        ApnsService service = buildApnsService(iOSVariant);
+        ApnsService service = buildApnsService(iOSVariant, callback);
 
         if (service != null) {
             try {
@@ -83,7 +85,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
                 service.push(tokens, apnsMessage, expireDate);
                 logger.log(Level.INFO, "Message to APNs has been submitted");
-                callback.onSuccess();
 
                 // after sending, let's ask for the inactive tokens:
                 final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
@@ -97,7 +98,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 }
             } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
-                callback.onError();
             } finally {
                 // tear down and release resources:
                 service.stop();
@@ -139,12 +139,25 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Returns the ApnsService, based on the required profile (production VS sandbox/test).
      * Null is returned if there is no "configuration" for the request stage 
      */
-    private ApnsService buildApnsService(iOSVariant iOSVariant) {
+    private ApnsService buildApnsService(iOSVariant iOSVariant, final NotificationSenderCallback notificationSenderCallback) {
 
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
 
             final ApnsServiceBuilder builder = APNS.newService().withNoErrorDetection();
+
+            // using the APNS Delegate callback to trigger our own notifications for success/failure status:
+            builder.withDelegate(new ApnsDelegateAdapter() {
+                @Override
+                public void messageSent(ApnsNotification message, boolean resent) {
+                    notificationSenderCallback.onSuccess();
+                }
+
+                @Override
+                public void messageSendFailed(ApnsNotification message, Throwable e) {
+                    notificationSenderCallback.onError();
+                }
+            });
 
             // add the certificate:
             ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
