@@ -35,8 +35,8 @@ module.exports = function (grunt) {
     less: {
       development: {
         files: {
-          '<%= yeoman.tmp %>/styles/console.css': '<%= yeoman.app %>/styles/console.less',
-          '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less'
+          '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less',
+          '<%= yeoman.tmp %>/styles/ups-console.css': '<%= yeoman.app %>/styles/ups-console.less'
         }
       }
     },

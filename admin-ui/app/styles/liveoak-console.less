@@ -577,6 +577,12 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
   }
 }
 
+/* Panel Push */
+
+.app-push .panel .panel-heading {
+  padding-bottom: 15px;
+}
+
 /* The info area (3rd column) */
 .lo-info-pane {
   font-size: @fsize;
@@ -1450,9 +1456,9 @@ legend {
   height: 0;
   z-index: 1060;
 
-  .alert {
-    width: 500px;
+  .row {
     margin: 0 auto;
+    width: 500px;
   }
 }
 
@@ -1823,6 +1829,24 @@ tr.deleted {
   }
 }
 
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+
+  #lo-content-row {
+    overflow: scroll;
+  }
+
+  #lo-content-row > aside {
+    overflow: hidden;
+  }
+
+  #lo-content-row > div {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+
+
 
 @media only screen and (min-width: 992px) {
 
@@ -2107,4 +2131,11 @@ tr.deleted {
   .storage-collections .lo-page-info .pull-left {
     margin-bottom: 10px;
   }
+
+  .feedback-aligner .row {
+    width: 100%;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
 }
