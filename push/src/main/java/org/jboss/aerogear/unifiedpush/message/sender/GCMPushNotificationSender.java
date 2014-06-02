@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 public class GCMPushNotificationSender implements PushNotificationSender {
 
     private final GCMCache cache = new GCMCache();
+    private static final int GCM_PAGE = 1000;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -89,12 +91,25 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             logger.log(Level.FINE, "Sending transformed GCM payload: " + gcmMessage);
 
             Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
-            MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+
+
+            // GCM does only allow a 1000 device IDs
+            while (! registrationIDs.isEmpty()) {
+
+                int toIndex = GCM_PAGE;
+
+                if (registrationIDs.size() < GCM_PAGE) {
+                    toIndex = registrationIDs.size();
+                }
+                List<String> sublist = registrationIDs.subList(0, toIndex);
+
+                // send out a message to a few devices...
+                processGCM(androidVariant, sublist, gcmMessage, sender);
+                registrationIDs.removeAll(sublist);
+            }
+
             logger.log(Level.INFO, "Message to GCM has been submitted");
             callback.onSuccess();
-
-            // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
-            cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
 
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "Error connection to your GCM project. Double check your Google API Key");
@@ -104,6 +119,19 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
             callback.onError();
         }
+    }
+
+    /**
+     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.     *
+     */
+    private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
+
+        logger.log(Level.INFO, "Sending payload for [" + registrationIDs.size() + "] devices to GCM");
+
+        MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+
+        // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
+        cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
     }
 
     /**
