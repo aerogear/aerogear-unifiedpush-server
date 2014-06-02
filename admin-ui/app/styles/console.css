@@ -1,0 +1,670 @@
+/* Main navigation colors */
+/* Side navigation colors */
+/* Basic color palette */
+/* Border colors */
+/*
+***********************************
+          Basic elements
+***********************************
+*/
+html body {
+  line-height: 1.909em;
+  font-family: "Exo 2", sans-serif;
+  color: #484848;
+}
+/* 100% height hack TODO - think of something better */
+html,
+body,
+#lo-content-row,
+.lo-sidebar,
+.lo-main-pane,
+.lo-main-pane > .row,
+.lo-content-area,
+.lo-info-area,
+.lo-info-pane {
+  height: 100%;
+}
+/* Basic elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Exo 2", sans-serif;
+}
+h1 span,
+h2 span,
+h3 span,
+h4 span,
+h5 span,
+h6 span {
+  color: #848484;
+}
+a,
+p {
+  font-size: 14px;
+}
+a {
+  color: #00A9EC;
+}
+a:hover,
+a:focus {
+  color: #459656;
+}
+a:focus {
+  outline: 0 none;
+}
+p {
+  color: #848484;
+  margin: 0;
+  line-height: 1.5em;
+}
+/* Apply to make color slightly lighter */
+.lo-emph {
+  color: #848484;
+}
+/*
+***********************************
+    LiveOak specific elements
+***********************************
+*/
+/* Information from the top of the main content pane */
+.lo-page-info {
+  margin-bottom: 2em;
+}
+.lo-page-info p {
+  color: #666666;
+  display: inline-block;
+}
+.lo-page-info button {
+  margin-top: -0.5em;
+}
+/* Top Menu */
+.navbar-pf {
+  background-color: #00A9EC;
+  border: none;
+}
+.navbar-pf .navbar-header {
+  border: none;
+}
+.navbar-pf .navbar-utility {
+  padding-right: 15px;
+}
+.navbar-pf .navbar-utility a.lo-user {
+  border: none;
+  color: #ffffff !important;
+  font-size: 14px;
+  line-height: 22px;
+}
+.navbar-pf .navbar-utility a.lo-user:hover {
+  background-color: #459656;
+}
+.navbar-pf .navbar-primary {
+  background-color: #ebebeb;
+  background-image: none;
+  min-height: 40px;
+  margin-bottom: 0;
+  border: solid #cacaca;
+  border-width: 1px 0;
+}
+.navbar-pf .navbar-primary > li.dropdown.context {
+  background: #dedcdc;
+}
+.navbar-pf .navbar-primary > li.dropdown.context a,
+.navbar-pf .navbar-primary > li.dropdown.context a:hover {
+  border: none;
+  background: none;
+  color: #7a7878;
+  text-align: center;
+}
+.navbar-pf .navbar-brand {
+  margin: 0;
+  padding: 0 20px;
+}
+.navbar-pf .navbar-brand h1 {
+  font-size: 18px;
+  margin: 0;
+  line-height: 36px;
+  color: #ffffff;
+}
+.navbar-pf .navbar-brand h1:hover {
+  text-decoration: underline;
+}
+/* Side menu (1st column) */
+.lo-sidebar {
+  background: #343434;
+  padding: 0;
+}
+.lo-sidebar .dropdown {
+  margin-top: 10px;
+}
+.lo-sidebar .dropdown .dropdown-toggle {
+  display: block;
+  font-size: 13px;
+  line-height: 1em;
+  font-weight: bold;
+  padding: 10px 10px 12px 20px;
+  color: #aaaaaa;
+  background-color: #404040;
+  border-color: #525252;
+  border-style: solid;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  text-align: center;
+}
+.lo-sidebar .dropdown .dropdown-toggle:hover,
+.lo-sidebar .dropdown .dropdown-toggle:focus,
+.lo-sidebar .dropdown .dropdown-toggle:active {
+  background-color: #464646;
+  text-decoration: none;
+}
+.lo-sidebar .dropdown .dropdown-toggle .caret {
+  float: right;
+  margin-top: 3px;
+}
+.lo-sidebar .dropdown .dropdown-menu {
+  margin-top: 1px;
+  width: 100%;
+  text-align: center;
+}
+.lo-sidebar .navbar-vertical {
+  border: none;
+}
+.lo-sidebar .navbar-vertical li {
+  text-align: center;
+  margin-top: 36px;
+}
+.lo-sidebar .navbar-vertical li:first-child {
+  margin-top: 32px;
+}
+.lo-sidebar .navbar-vertical li a {
+  font-size: 14px;
+  color: #aaaaaa;
+  font-weight: bold;
+}
+.lo-sidebar .navbar-vertical li a:hover,
+.lo-sidebar .navbar-vertical li a:focus {
+  color: #ffffff;
+  text-decoration: none;
+}
+.lo-sidebar .navbar-vertical li a .fa {
+  display: block;
+}
+.lo-sidebar .navbar-vertical li.active {
+  background: url(../css/img/sidebar-active.svg) no-repeat right 14px;
+}
+.lo-sidebar .navbar-vertical li.active a {
+  color: #ffffff;
+  background-color: transparent;
+  border: none;
+}
+.lo-sidebar .navbar-vertical li.active a:after {
+  display: none;
+}
+/* The main area (2rd column) */
+.lo-main-pane {
+  padding: 0;
+  background: #f5f5f5;
+}
+.lo-main-pane > .row > div,
+.lo-main-pane .lo-content-area {
+  padding: 0 3em;
+}
+.lo-main-pane .lo-content-area {
+  border-right: 1px solid #cacaca;
+}
+.lo-main-pane .lo-content-area > h2 {
+  margin-bottom: 1em;
+}
+/* Panel */
+.lo-panel.panel-default {
+  border: none;
+}
+.lo-panel.panel-default .panel-heading {
+  background: #fff;
+  border-bottom: 1px solid #f5f5f5;
+}
+.lo-panel.panel-default .panel-heading .panel-title {
+  display: inline-block;
+  color: #484848;
+  font-size: 2.1em;
+  font-weight: 500;
+}
+.lo-panel .panel-body {
+  padding: 36px 30px 32px;
+}
+/* Panel entity */
+[class*="lo-panel-"] .dropdown .dropdown-toggle > i {
+  font-size: 1.5em;
+}
+[class*="lo-panel-"] .dropdown .dropdown-toggle > b {
+  display: none;
+}
+[class*="lo-panel-"] .dropdown .dropdown-menu {
+  left: auto;
+  right: 0;
+  min-width: inherit;
+}
+[class*="lo-panel-"].panel-default .panel-heading {
+  border-bottom: none;
+}
+[class*="lo-panel-"].panel-default .panel-heading .panel-title {
+  color: #63b474;
+}
+[class*="lo-panel-"] .panel-heading,
+[class*="lo-panel-"] .panel-body {
+  padding: 1em;
+}
+[class*="lo-panel-"] .panel-body {
+  padding-top: 0;
+}
+[class*="lo-panel-"] .panel-body .lo-app-opts {
+  margin-bottom: 0;
+}
+[class*="lo-panel-"] .panel-body .lo-app-opts li {
+  display: inline-block;
+  margin-right: 2em;
+  font-size: 1.2em;
+}
+[class*="lo-panel-"] .panel-body .lo-app-opts li a {
+  color: #666666;
+}
+[class*="lo-panel-"] .panel-body .lo-app-opts li a i {
+  font-size: 1.25em;
+  margin-right: 0.25em;
+}
+[class*="lo-panel-"] .panel-body .lo-app-opts li a:hover {
+  color: #484848;
+  text-decoration: none;
+}
+/* Panel App */
+/* Panel Storage */
+.lo-panel-storage .dropdown .dropdown-toggle > i {
+  color: #666666;
+}
+/* Panel Dashboard */
+.lo-panel.lo-dashboard .panel-body .lo-measure-box {
+  width: 33.333333%;
+  font-size: 0.6em;
+  margin-top: 30px;
+  display: table;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box > i {
+  padding-right: 25px;
+  display: table-cell;
+  font-size: 10.54545454545455em;
+  text-align: right;
+  vertical-align: middle;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box > div {
+  text-align: left;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box > div em {
+  font-size: 11.63636363636364em;
+  font-weight: 300;
+  line-height: 0.6em;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box > div .measure {
+  font-size: 2.5em;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box > div .text {
+  font-size: 13px;
+  color: #848484;
+  padding-left: 3px;
+  display: block;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.api {
+  color: #69a8cd;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.users {
+  color: #e9b356;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.push {
+  color: #e39090;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.storage {
+  color: #6ab1ad;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.highlight {
+  width: 100%;
+  margin-top: 0;
+  font-size: 1em;
+  float: none;
+}
+.lo-panel.lo-dashboard .panel-body .lo-measure-box.highlight .text {
+  font-size: 16px;
+  padding-left: 5px;
+}
+/* The info area (3rd column) */
+.lo-info-pane {
+  font-size: 12px;
+  background: #ffffff;
+}
+.lo-info-pane a {
+  font-size: 12px;
+}
+.lo-info-pane h3 {
+  margin-top: 30px;
+  margin-bottom: 22px;
+}
+.lo-info-pane h4 {
+  color: #63b474;
+  font-weight: 600;
+}
+.lo-info-pane section {
+  margin-bottom: 2.5em;
+}
+.lo-info-pane section > div {
+  /*margin-bottom: 1em;*/
+
+  margin-top: 8px;
+  font-size: 12px;
+}
+.lo-info-pane section > div:first-child {
+  margin-top: 0;
+}
+.lo-info-pane section > div .lo-label {
+  color: #848484;
+  font-weight: normal;
+  padding: 0;
+  display: block;
+  text-align: left;
+}
+.lo-info-pane section > div .lo-field {
+  display: inline-block;
+  margin-top: 2px;
+}
+.lo-info-pane section > div .field + button {
+  padding-left: 5px;
+}
+.lo-info-pane section > div .circle {
+  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  background-color: #63b474;
+  display: inline-block;
+}
+.lo-info-pane section > div > a {
+  display: inline-block;
+  margin-top: 6px;
+}
+.lo-info-pane section > div ul {
+  margin-top: 2px;
+  margin-bottom: 0;
+}
+.lo-info-pane section.lo-tutorials i {
+  float: left;
+}
+.lo-info-pane section.lo-tutorials p,
+.lo-info-pane section.lo-tutorials a {
+  display: block;
+  font-size: 14px;
+  padding-left: 3.5em;
+}
+/* Tutorials section (Under the Dashboard Panel) */
+.lo-section i {
+  float: left;
+  margin-right: 15px;
+  color: #848484;
+}
+/* Bevel-less button with an icon */
+button.lo-icon-button {
+  padding: 0;
+  background-image: 0;
+  border: none;
+  background-color: transparent;
+  line-height: 1em;
+}
+button.lo-icon-button span {
+  text-indent: -999999px;
+  display: inline-block;
+}
+button.lo-icon-button i {
+  color: #63b474;
+}
+button.lo-icon-button:hover i {
+  color: #459656;
+}
+button.lo-icon-button:active i {
+  color: #484848;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+/* LO form specific */
+.lo-form-horizontal fieldset {
+  margin-bottom: 2em;
+}
+.lo-form-horizontal .control-label {
+  text-align: right;
+  padding-right: 0;
+  color: #848484;
+}
+.lo-form-horizontal .control-label > span {
+  margin-left: .5em;
+  color: red;
+}
+.lo-form-horizontal .form-group > div {
+  padding-left: .5em;
+}
+.lo-form-horizontal .lo-db-instances {
+  text-align: center;
+}
+.lo-form-horizontal .lo-db-instances [class*="lo-db-"] {
+  text-indent: -9999em;
+  background: #ffffff;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #d7d7d7;
+  display: inline-block;
+  width: 170px;
+  height: 100px;
+  border-radius: 10px;
+  margin: 1em;
+  cursor: pointer;
+}
+.lo-form-horizontal .lo-db-instances [class*="lo-db-"]:hover {
+  border: 1px solid #63b474;
+}
+.lo-form-horizontal .lo-db-instances [class*="lo-db-"].active {
+  border: 3px solid #63b474;
+}
+.lo-form-horizontal .lo-db-instances .lo-db-mongo {
+  background-image: url("img/db/mongo.png");
+}
+.lo-form-horizontal .lo-db-instances .lo-db-mongo.active {
+  background-image: url("img/db/mongo_a.png");
+}
+.lo-form-horizontal .lo-db-instances .lo-db-mysql {
+  background-image: url("img/db/mysql.png");
+}
+.lo-form-horizontal .lo-db-instances .lo-db-mysql.active {
+  background-image: url("img/db/mysql_a.png");
+}
+.lo-form-horizontal .lo-db-instances .lo-db-plsql {
+  background-image: url("img/db/plsql.png");
+}
+.lo-form-horizontal .lo-db-instances .lo-db-plsql.active {
+  background-image: url("img/db/plsql_a.png");
+}
+/* Collapsible forms */
+legend {
+  border-width: 1px 0 0 0;
+  border-color: #cacaca;
+  border-style: solid;
+  padding-top: .5em;
+}
+legend span {
+  font-weight: 600;
+  color: #848484;
+  cursor: pointer;
+}
+legend:before {
+  content: "";
+  color: #848484;
+  display: inline-block;
+  font-family: "FontAwesome";
+  font-weight: normal;
+  margin-right: .5em;
+}
+legend.collapsed:before {
+  content: "";
+}
+/*
+***********************************
+   Restyling basic PFly elements
+***********************************
+*/
+/* Button group in dashboard panel header */
+.lo-dashboard .btn-group .btn {
+  font-size: 12px;
+  padding: 6px 15px 6px;
+  line-height: 12px;
+  box-shadow: none;
+}
+.lo-dashboard .btn-group .btn-primary {
+  background-color: #63b474;
+  border-color: #619e6e;
+  color: #ffffff;
+}
+.lo-dashboard .btn-group .btn-default {
+  background-color: #ffffff;
+  background-image: none;
+  border-color: #ddd;
+  color: #777;
+  font-weight: normal;
+}
+.lo-dashboard .btn-group .btn-default:hover,
+.lo-dashboard .btn-group .btn-default:focus,
+.lo-dashboard .btn-group .btn-default:active,
+.lo-dashboard .btn-group .btn-default.active,
+.lo-dashboard .btn-group .open .dropdown-toggle.btn-default {
+  background-color: #f3f3f3;
+  border-color: #ccc;
+  color: #555;
+}
+.lo-dashboard .btn-group .btn-default:active,
+.lo-dashboard .btn-group .btn-default.active {
+  font-weight: bold;
+  background-image: none;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15) inset;
+  border-color: #ccc;
+}
+.lo-dashboard .btn-group .btn-default:active {
+  font-weight: normal;
+}
+/* Buttons */
+.btn {
+  margin-left: .5em;
+}
+.btn-primary {
+  background-color: #63b474;
+  border-color: #459656;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+  background-color: #459656;
+  border-color: #459656;
+  background-image: linear-gradient(to bottom, #5eaf6f 0%, #68b979 100%);
+}
+/* Breadcrumb */
+.breadcrumb {
+  margin: 9px 0 8px 0;
+  font-size: 12px;
+}
+.breadcrumb a {
+  font-size: 12px;
+}
+/* Dropdown */
+.dropdown-menu {
+  margin-top: 0;
+  padding: 5px 0 4px;
+}
+.dropdown-menu li > a {
+  font-size: 12px;
+}
+.dropdown-menu li + li {
+  margin-top: 1px;
+}
+.dropdown-menu li.separator {
+  border-top: 1px solid #E5E5E5;
+  margin-top: 4px;
+  padding-top: 4px;
+}
+.dropdown-menu li > a:hover {
+  background-color: #e0f0e3;
+  border-color: #c1e1c7;
+}
+.dropdown-menu > li.active > a,
+.dropdown-menu > li.active > a:hover {
+  background-color: #63b474 !important;
+  color: #FFFFFF;
+  border-color: #459656 !important;
+  /* Fix in patternfly */
+
+}
+/* Forms */
+.form-control:focus,
+.form-control:hover {
+  border-color: #63b474;
+}
+.form-control:focus {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 73, 0.6);
+}
+/* Grid */
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+/* Fix for user icon in main nav */
+.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+  position: static;
+}
+.navbar-pf .navbar-utility > .open > a:focus,
+.navbar-pf .navbar-utility > .open > a {
+  background: #459656;
+}
+/* Notifications/Alerts */
+.feedback-aligner {
+  position: fixed;
+  top: 1.5em;
+  text-align: center;
+  width: 100%;
+  height: 0;
+}
+.feedback-aligner .row {
+  margin-bottom: 15px;
+}
+.feedback-aligner .alert {
+  background-position: 1.27273em center;
+  background-repeat: no-repeat;
+  border-radius: 2px;
+  border-width: 1px;
+  color: #4D5258;
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 1.4em;
+  margin: 0;
+  padding: 0.909091em 3.63636em;
+  position: relative;
+  text-align: left;
+  z-index: 100;
+}
+.feedback-aligner .alert.alert-success {
+  background-color: #E4F1E1;
+  border-color: #4B9E39;
+}
+.feedback-aligner .alert.alert-danger {
+  background-color: #F8E7E7;
+  border-color: #B91415;
+}
+.feedback-aligner .alert.alert-warning {
+  background-color: #FEF1E9;
+  border-color: #F17528;
+}
+.feedback-aligner .alert.alert-info {
+  background-color: #E4F3FA;
+  border-color: #5994B2;
+}

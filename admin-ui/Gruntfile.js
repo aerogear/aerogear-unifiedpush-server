@@ -21,8 +21,7 @@ module.exports = function (grunt) {
   // configurable paths
   var yeomanConfig = {
     app: 'app',
-    dist: 'dist',
-    tmp: '.tmp'
+    dist: 'dist'
   };
 
   try {
@@ -32,21 +31,9 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
-    less: {
-      development: {
-        files: {
-          '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less',
-          '<%= yeoman.tmp %>/styles/ups-console.css': '<%= yeoman.app %>/styles/ups-console.less'
-        }
-      }
-    },
     watch: {
       options: {
         nospawn: true
-      },
-      less: {
-        files: '<%= yeoman.app %>/styles/*.less',
-        tasks: ['less', 'newer:copy:webapp', 'newer:copy:jbossweb']
       },
       livereload: {
         options: {
@@ -54,8 +41,8 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
-          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/styles/{,*/}*.css',
-          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/scripts/{,*/}*.js',
+          '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
+          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
         tasks: [ 'newer:copy:webapp', 'newer:copy:jbossweb' ]
@@ -111,6 +98,11 @@ module.exports = function (grunt) {
         }
       }
     },
+    open: {
+      server: {
+        url: 'http://localhost:<%= connect.options.port %>'
+      }
+    },
     clean: {
       dist: {
         files: [
@@ -146,7 +138,7 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
           ]
         }
@@ -242,26 +234,14 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: '<%= yeoman.tmp %>',
-            dest: '<%= local.webapp %>',
-            src: [ '**' ]
-          },
-          {
-            expand: true,
             cwd: '<%= yeoman.app %>',
             dest: '<%= local.webapp %>',
-            src: [ '**', '!**/*.txt', '!**/*.less' ]
+            src: [ '**', '!**/*.txt' ]
           }
         ]
       },
       jbossweb: {
         files: [
-          {
-            expand: true,
-            cwd: '<%= yeoman.tmp %>',
-            dest: '<%= local.jbossweb %>',
-            src: [ '**', '!**/*.txt', '!**/*.less' ]
-          },
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
@@ -336,11 +316,11 @@ module.exports = function (grunt) {
       'initLocalConfig',
       'clean:server',
       'concurrent:server',
-      'less',
       'copy:webapp',
       'copy:jbossweb',
       'autoprefixer',
       'connect:livereload',
+      'open',
       'watch'
     ]);
   });

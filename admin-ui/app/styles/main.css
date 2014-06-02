@@ -1,83 +1,3 @@
-@import "liveoak-console.less";
-
-
-/*
-***********************************
-     Rewrite LiveOak Variables
-***********************************
-*/
-@exo:               "Exo 2", sans-serif;
-@fsize:             12px;
-@fsizebig:          13px;
-
-@inc:               30;
-/* Main navigation colors */
-@c_navlight:        #ebebeb;
-@c_nav:             #DEDCDC;
-@c_navdark:         #DEDCDC - 100;
-
-/* Side navigation colors */
-@c_snavslight:      #464646;
-@c_snavlight:       #404040;
-@c_snav:            #343434;
-@c_snavdark:        @c_snav - @inc;
-@c_snavboder:       #525252;
-@c_snavfont:        #aaaaaa;
-
-@c_mainpane:        #f5f5f5;
-
-/* Basic color palette */
-@c_white:           #fff;
-
-@c_graylight:       #848484;
-@c_gray:            #484848;
-
-/* these colors are originally green in liveoak console,
-   for a sake of compatibility, I leave out original names */
-@c_green:           #00A9EC;
-@c_greenxlight: 		lighten(@c_green, 50%);
-@c_greenlight:			lighten(@c_green, 35%);
-@c_greenmedium:     darken(@c_green, 10%);
-@c_greendark:       @c_green - @inc;
-
-@c_red:             #cb0000;
-
-/* Border colors */
-@c_border:          #cacaca;
-/*
-***********************************
-  End of LiveOak Variables Section
-***********************************
-*/
-
-
-/* Panel - defined in LiveOak */
-.panel {
-  & .dropdown,
-  & .pull-right > a {
-    visibility: visible;
-    display: inline;
-  }
-
-  &:hover .dropdown,
-  &:hover .pull-right > a {
-    visibility: visible;
-    display: inline;
-  }
-}
-
-.lo-sidebar {
-  .navbar-vertical {
-    li {
-      &.active {
-        background: url(../img/sidebar-active.svg) no-repeat right 22px;
-      }
-    }
-  }
-}
-
-
-
 .lo-main-pane {
     overflow: visible;
 }
@@ -325,8 +245,8 @@ a.ups-tip-panel-link {
     margin: 0;
     padding: 0;
     border: 0;
-//    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.1)";
-//    filter: alpha(opacity=0.1);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.1)";
+    filter: alpha(opacity=0.1);
     opacity: 0.001;
 }
 .topcoat-switch__toggle,
