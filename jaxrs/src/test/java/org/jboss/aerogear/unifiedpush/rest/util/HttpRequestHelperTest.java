@@ -74,4 +74,26 @@ public class HttpRequestHelperTest {
         assertThat(remoteAddress).isNotNull();
         assertThat(remoteAddress).isEqualTo("127.0.0.1");
     }
+
+    @Test
+    public void  extractAeroGearSenderHeader() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("aerogear-sender")).thenReturn("Java Sender");
+
+        final String client = HttpRequestUtil.extractAeroGearSenderInformation(request);
+
+        assertThat(client).isNotNull();
+        assertThat(client).isEqualTo("Java Sender");
+    }
+    @Test
+    public void  extractAeroGearSenderHeaderViaUserAgent() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("aerogear-sender")).thenReturn(null);
+        Mockito.when(request.getHeader("user-agent")).thenReturn("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2)");
+
+        final String client = HttpRequestUtil.extractAeroGearSenderInformation(request);
+
+        assertThat(client).isNotNull();
+        assertThat(client).isEqualTo("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2)");
+    }
 }

@@ -46,6 +46,19 @@ public final class HttpRequestUtil {
         return request.getRemoteAddr();
     }
 
+    /**
+     * Reads the "aerogear-sender" header to check if an AeroGear Sender client was used. If the header value is NULL
+     * the value of the standard "user-agent" header is returned
+     */
+    public static String extractAeroGearSenderInformation(final HttpServletRequest request) {
+        String client = request.getHeader("aerogear-sender");
+        if (hasValue(client)) {
+            return client;
+        }
+        // if there was no usage of our custom header, we simply return the user-agent value
+        return request.getHeader("user-agent");
+    }
+
     private static boolean hasValue(String value) {
         return value != null && !value.isEmpty() && !"unknown".equalsIgnoreCase(value);
     }
