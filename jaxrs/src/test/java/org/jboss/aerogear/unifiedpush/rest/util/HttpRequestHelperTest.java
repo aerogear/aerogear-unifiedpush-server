@@ -85,6 +85,7 @@ public class HttpRequestHelperTest {
         assertThat(client).isNotNull();
         assertThat(client).isEqualTo("Java Sender");
     }
+
     @Test
     public void  extractAeroGearSenderHeaderViaUserAgent() {
         final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -95,5 +96,23 @@ public class HttpRequestHelperTest {
 
         assertThat(client).isNotNull();
         assertThat(client).isEqualTo("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2)");
+    }
+
+    @Test
+    public void extactNullSortingParamValue() {
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue(null)).isTrue();
+    }
+
+    @Test
+    public void extactDescSortingParamValue() {
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue("deSc")).isFalse();
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue("desc")).isFalse();
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue("DESC")).isFalse();
+    }
+
+    @Test
+    public void extactAscSortingParamValue() {
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue("foo")).isTrue();
+        assertThat(HttpRequestUtil.extractSortingQueryParamValue("AsC")).isTrue();
     }
 }

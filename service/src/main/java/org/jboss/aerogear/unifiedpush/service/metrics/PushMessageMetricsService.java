@@ -70,15 +70,15 @@ public class PushMessageMetricsService {
     /**
      * Returns a list of metadata objects for the given Push Application
      */
-    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationID) {
-        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID);
+    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting) {
+        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting);
     }
 
     /**
      * Returns a list of metadata objects for the given Variant
      */
-    public List<PushMessageInformation> findAllForVariant(String variantID) {
-        return pushMessageInformationDao.findAllForVariant(variantID);
+    public List<PushMessageInformation> findAllForVariant(String variantID, boolean sorting) {
+        return pushMessageInformationDao.findAllForVariant(variantID, sorting);
     }
 
     /**
