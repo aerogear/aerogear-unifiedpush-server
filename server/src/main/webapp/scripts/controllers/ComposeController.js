@@ -62,6 +62,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
       url: 'rest/sender',
       username: $scope.application.pushApplicationID,
       password: $scope.application.masterSecret,
+      headers: { 'aerogear-sender': 'AeroGear UnifiedPush Console' },
       data: JSON.stringify( pushData ),
       success: function(){
             Notifications.success('Successfully sent Notification');
