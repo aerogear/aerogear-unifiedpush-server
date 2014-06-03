@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       development: {
         files: {
           '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less',
-          '<%= yeoman.tmp %>/styles/main.css': '<%= yeoman.app %>/styles/main.less'
+          '<%= yeoman.tmp %>/styles/console.css': '<%= yeoman.app %>/styles/console.less'
         }
       }
     },
