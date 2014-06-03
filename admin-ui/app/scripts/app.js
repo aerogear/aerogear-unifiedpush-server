@@ -59,6 +59,9 @@ angular.module('newadminApp', [
           label: 'Compose'
         }
       })
+      .when('/dashboard', {
+        templateUrl: 'views/dashboard.html'
+      })
       .otherwise({
         redirectTo: '/'
       });
