@@ -28,6 +28,7 @@ import java.util.Map;
 public class UnifiedPushMessage {
 
     private String ipAddress;
+    private String clientIdentifier;
 
     private final SendCriteria criteria;
 
@@ -205,6 +206,13 @@ public class UnifiedPushMessage {
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
+
+    /**
+     * The Client Identifier showing who triggered the Push Notification
+     */
+    public String getClientIdentifier() { return clientIdentifier; }
+
+    public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
 
     @Override
     public String toString() {

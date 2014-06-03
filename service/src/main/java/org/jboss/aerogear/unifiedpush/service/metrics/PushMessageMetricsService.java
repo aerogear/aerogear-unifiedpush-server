@@ -37,15 +37,17 @@ public class PushMessageMetricsService {
      * @param pushAppId the ip of the push application which is owing the push message job
      * @param json the raw JSON data
      * @param ipAddress remote address of the job submitter
+     * @param clientIdentifier the String representating who triggered the push message
      *
      * @return the metadata object for the started push message request job
      */
-    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress) {
+    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
         final PushMessageInformation information = new PushMessageInformation();
 
         information.setRawJsonMessage(json);
         information.setIpAddress(ipAddress);
         information.setPushApplicationId(pushAppId);
+        information.setClientIdentifier(clientIdentifier);
 
         pushMessageInformationDao.create(information);
 

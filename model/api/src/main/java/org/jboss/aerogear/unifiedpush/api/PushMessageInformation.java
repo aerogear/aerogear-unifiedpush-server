@@ -31,6 +31,7 @@ public class PushMessageInformation extends BaseModel {
 
     private String rawJsonMessage;
     private String ipAddress;
+    private String clientIdentifier;
 
     private Date submitDate = new Date();
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
@@ -90,4 +91,10 @@ public class PushMessageInformation extends BaseModel {
         this.pushApplicationId = pushApplicationId;
     }
 
+    /**
+     * The Client Identifier showing who triggered the Push Notification
+     */
+    public String getClientIdentifier() { return clientIdentifier; }
+
+    public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
 }
