@@ -100,6 +100,20 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
+    public void addClientIdentifierToPushMessageInformation() {
+        pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+        pushMessageInformation.setClientIdentifier("Java Sender Client");
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        flushAndClear();
+
+        pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+
+        assertThat(pushMessageInformation.getClientIdentifier()).isEqualTo("Java Sender Client");
+        assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
+    }
+
+    @Test
     public void addVariantInfoToPushMessageInformation() {
         pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
 

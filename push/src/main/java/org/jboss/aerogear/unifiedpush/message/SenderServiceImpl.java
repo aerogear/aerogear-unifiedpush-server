@@ -71,7 +71,8 @@ public class SenderServiceImpl implements SenderService {
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
                         message.toString(),
-                        message.getIpAddress()
+                        message.getIpAddress(),
+                        message.getClientIdentifier()
                 );
 
         // collections for all the different variants:

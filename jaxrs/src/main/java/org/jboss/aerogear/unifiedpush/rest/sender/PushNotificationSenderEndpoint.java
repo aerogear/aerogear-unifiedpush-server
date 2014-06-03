@@ -66,9 +66,12 @@ public class PushNotificationSenderEndpoint {
         // submit http request metadata:
         payload.setIpAddress(HttpRequestUtil.extractIPAddress(request));
 
+        // add the client identifier
+        payload.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+
         // submitted to @Async EJB:
         senderService.send(pushApplication, payload);
-        logger.log(Level.FINE, "Message sent by: '" + HttpRequestUtil.extractAeroGearSenderInformation(request) + "'");
+        logger.log(Level.FINE, "Message sent by: '" + payload.getClientIdentifier() + "'");
         logger.log(Level.INFO, "Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)

@@ -34,6 +34,7 @@ public class PushMessageInformationTest {
         pushMessageInformation.setPushApplicationId("123");
         pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
+        pushMessageInformation.setClientIdentifier("Java Sender Client");
 
         // two involved variants:
         VariantMetricInformation variantInfo1 = new VariantMetricInformation();
@@ -66,5 +67,6 @@ public class PushMessageInformationTest {
         assertThat(pushMessageInformation.getId()).isNotNull();
         assertThat(pushMessageInformation.getIpAddress()).isEqualTo("127.0.0.1");
         assertThat(pushMessageInformation.getPushApplicationId()).isEqualTo("123");
+        assertThat(pushMessageInformation.getClientIdentifier()).isEqualTo("Java Sender Client");
     }
 }
