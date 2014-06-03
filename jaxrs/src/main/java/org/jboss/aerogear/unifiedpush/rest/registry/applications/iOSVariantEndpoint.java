@@ -22,6 +22,8 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import org.jboss.aerogear.security.util.PKCS12Util;
+
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -184,7 +186,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
         // got certificate/passphrase, with content that makes sense ?
         try {
-//            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
+            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
 
             // ok we are good:
             return true;
