@@ -116,7 +116,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
-            return EnhancedApnsNotification.MAXIMUM_DATE;
+            return new Date(System.currentTimeMillis() + EnhancedApnsNotification.MAXIMUM_EXPIRY * 1000L);
         } else {
             // apply the given TTL to the current time
             return new Date(System.currentTimeMillis() + ttl);
