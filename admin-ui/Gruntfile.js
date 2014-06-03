@@ -17,7 +17,8 @@ module.exports = function (grunt) {
   // configurable paths
   var yeomanConfig = {
     app: 'app',
-    dist: 'dist'
+    dist: 'dist',
+    tmp: '.tmp'
   };
 
   try {
@@ -27,9 +28,21 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    less: {
+      development: {
+        files: {
+          '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less',
+          '<%= yeoman.tmp %>/styles/main.css': '<%= yeoman.app %>/styles/main.less'
+        }
+      }
+    },
     watch: {
       options: {
         nospawn: true
+      },
+      less: {
+        files: '<%= yeoman.app %>/styles/*.less',
+        tasks: ['less', 'newer:copy:webapp', 'newer:copy:jbossweb']
       },
       livereload: {
         options: {
@@ -37,8 +50,8 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
-          '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/styles/{,*/}*.css',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
         tasks: [ 'newer:copy:webapp', 'newer:copy:jbossweb' ]
@@ -188,14 +201,26 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
+            cwd: '<%= yeoman.tmp %>',
+            dest: '<%= local.webapp %>',
+            src: [ '**' ]
+          },
+          {
+            expand: true,
             cwd: '<%= yeoman.app %>',
             dest: '<%= local.webapp %>',
-            src: [ '**', '!**/*.txt' ]
+            src: [ '**', '!**/*.txt', '!**/*.less' ]
           }
         ]
       },
       jbossweb: {
         files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.tmp %>',
+            dest: '<%= local.jbossweb %>',
+            src: [ '**', '!**/*.txt', '!**/*.less' ]
+          },
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
@@ -270,6 +295,7 @@ module.exports = function (grunt) {
       'initLocalConfig',
       'clean:server',
       'concurrent:server',
+      'less',
       'copy:webapp',
       'copy:jbossweb',
       'autoprefixer',
@@ -287,6 +313,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'useminPrepare',
     'concurrent:dist',
+    'less',
     'concat',
     'uglify',
     'copy:dist',

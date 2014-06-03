@@ -1,3 +1,41 @@
+@import "console.less";
+
+/* Panel - defined in console.less */
+.panel {
+
+  .dropdown,
+  .pull-right > a {
+    visibility: visible;
+    display: inline;
+  }
+
+  &:hover .dropdown,
+  &:hover .pull-right > a {
+    visibility: visible;
+    display: inline;
+  }
+}
+
+.lo-sidebar {
+  .navbar-vertical {
+    li {
+      &.active {
+        background: url(../img/sidebar-active.svg) no-repeat right 22px;
+      }
+    }
+  }
+}
+
+/* DropDown menu */
+.dropdown-toggle {
+  .clickable;
+}
+.dropdown-menu a[role='menuitem'] {
+  .clickable;
+}
+
+
+
 .lo-main-pane {
     overflow: visible;
 }
@@ -245,8 +283,8 @@ a.ups-tip-panel-link {
     margin: 0;
     padding: 0;
     border: 0;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.1)";
-    filter: alpha(opacity=0.1);
+//    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.1)";
+//    filter: alpha(opacity=0.1);
     opacity: 0.001;
 }
 .topcoat-switch__toggle,
