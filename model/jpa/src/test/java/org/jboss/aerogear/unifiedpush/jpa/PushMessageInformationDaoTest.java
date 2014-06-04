@@ -26,6 +26,7 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +72,11 @@ public class PushMessageInformationDaoTest {
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().commit();
+        try {
+            entityManager.getTransaction().commit();
+        } catch (RollbackException e) {
+            //ignore
+        }
 
         entityManager.close();
     }
@@ -272,5 +277,30 @@ public class PushMessageInformationDaoTest {
         assertThat(messageInformations).hasSize(2);
 
         assertThat(messageInformations.get(0).getSubmitDate()).isAfter(messageInformations.get(1).getSubmitDate());
+    }
+
+    public void testLongRawJsonPayload() {
+        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
+        largePushMessageInformation.setPushApplicationId("231231231");
+        largePushMessageInformation.setRawJsonMessage(longString(4500));
+        pushMessageInformationDao.create(largePushMessageInformation);
+    }
+
+    @Test(expected = Exception.class)
+    public void testTooLongRawJsonPayload() {
+        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
+        largePushMessageInformation.setPushApplicationId("231231231");
+        largePushMessageInformation.setRawJsonMessage(longString(4501));
+        pushMessageInformationDao.create(largePushMessageInformation);
+
+        flushAndClear();
+    }
+
+    private String longString(int capacity) {
+        final StringBuilder sb = new StringBuilder(capacity);
+        for (int i = 0; i < capacity; i++) {
+            sb.append("x");
+        }
+        return sb.toString();
     }
 }

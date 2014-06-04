@@ -99,6 +99,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <basic name="submitDate">
                 <temporal>TIMESTAMP</temporal>
             </basic>
+            <basic name="rawJsonMessage">
+                <column length="4500" />
+            </basic>
             <one-to-many name="variantInformations" fetch="EAGER">
                 <join-column />
                 <cascade>
