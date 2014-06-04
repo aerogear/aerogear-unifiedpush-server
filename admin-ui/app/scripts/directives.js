@@ -90,4 +90,17 @@ angular.module('ups.directives', [])
         });
       }
     };
+  })
+
+  .directive('upsPluralize', function () {
+    return {
+      scope: {
+        'noun': '@',
+        'count': '='
+      },
+      restrict: 'E',
+      template:
+        '<span ng-show="count > 0"><strong>{{count}}</strong> {{ noun }}<span ng-show="count > 1">s</span></span>' +
+        '<span ng-show="count == 0">no {{ noun }}s</span>'
+    };
   });
