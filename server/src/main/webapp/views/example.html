@@ -201,7 +201,7 @@ public class PushApplication extends Application {
                 </tab>
                 <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
                      active="isActive('cordova')" ng-click="setActive('cordova')">
-                    <blockquote class="ups-code-block js">
+                    <code id="cordova-code" class="ups-code-block js">
 var pushConfig = {
     pushServerURL: "{{ currentLocation }}",
     {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
@@ -222,7 +222,7 @@ function successHandler() {
 function errorHandler(message) {
     console.log('error ' + message);
 }
-                    </blockquote>
+                    </code>
                 </tab>
 
                 <tab heading="Sending" ng-hide="variantType != 'send'" active="isActive('send')" ng-click="setActive('send')">

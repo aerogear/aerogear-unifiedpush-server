@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('newadminApp').controller('ExampleController',
-  function($rootScope, $scope, $routeParams, $window, variants, pushApplication) {
+  function($rootScope, $scope, $routeParams, $window, $timeout, variants, pushApplication) {
 
   /*
    * INITIALIZATION
@@ -43,6 +43,10 @@ angular.module('newadminApp').controller('ExampleController',
     });
   }
 
+  $timeout(function(){
+    hljs.highlightBlock(angular.element('#cordova-code')[0]);
+  }, 1000);
+    
   $scope.isActive = function (tabName) {
     return tabName === $scope.active;
   };
