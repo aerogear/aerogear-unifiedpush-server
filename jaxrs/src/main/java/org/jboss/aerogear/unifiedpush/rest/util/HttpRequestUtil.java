@@ -28,6 +28,18 @@ public final class HttpRequestUtil {
     }
 
     /**
+     * Returns FALSE when sorting query value matches 'desc', otherwise it returns TRUE.
+     */
+    public static Boolean extractSortingQueryParamValue(String sorting) {
+
+        if (sorting != null && sorting.equalsIgnoreCase("desc")) {
+            return Boolean.FALSE;
+        } else {
+            return Boolean.TRUE;
+        }
+    }
+
+    /**
      * Extracts the IP address from the given {@link javax.servlet.http.HttpServletRequest}.
      */
     public static String extractIPAddress(final HttpServletRequest request) {

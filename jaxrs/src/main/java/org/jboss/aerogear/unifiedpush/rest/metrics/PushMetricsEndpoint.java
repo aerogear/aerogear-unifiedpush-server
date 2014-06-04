@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.ejb.Stateless;
@@ -26,6 +27,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,13 +45,14 @@ public class PushMetricsEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response pushMessageInformationPerApplication(
             @Context HttpServletRequest request,
-            @PathParam("id") String id) {
+            @PathParam("id") String id,
+            @QueryParam("sort") String sorting) {
 
         if (id == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        List<PushMessageInformation> messageInformations = metricsService.findAllForPushApplication(id);
+        List<PushMessageInformation> messageInformations = metricsService.findAllForPushApplication(id, HttpRequestUtil.extractSortingQueryParamValue(sorting));
 
         return Response.ok(messageInformations).build();
     }
@@ -59,13 +62,14 @@ public class PushMetricsEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response pushMessageInformationPerVariant(
             @Context HttpServletRequest request,
-            @PathParam("id") String id) {
+            @PathParam("id") String id,
+            @QueryParam("sort") String sorting) {
 
         if (id == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        List<PushMessageInformation> messageInformations = metricsService.findAllForVariant(id);
+        List<PushMessageInformation> messageInformations = metricsService.findAllForVariant(id, HttpRequestUtil.extractSortingQueryParamValue(sorting));
 
         return Response.ok(messageInformations).build();
     }

@@ -20,22 +20,30 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
 
-    @Override
-    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId) {
+    private final Logger logger = Logger.getLogger(JPAPushMessageInformationDao.class.getName());
 
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId")
+    private static final String ASC = "ASC";
+    private static final String DESC = "DESC";
+
+    @Override
+    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
+
+        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("pushApplicationId", pushApplicationId).getResultList();
 
         return messageInformations;
     }
 
     @Override
-    public List<PushMessageInformation> findAllForVariant(String variantID) {
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID")
+    public List<PushMessageInformation> findAllForVariant(String variantID, boolean ascending) {
+        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("variantID", variantID).getResultList();
 
         return messageInformations;
@@ -66,5 +74,31 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     public void delete(PushMessageInformation pushMessageInformation) {
         PushMessageInformation entity = find(pushMessageInformation.getId())  ;
         remove(entity);
+    }
+
+    @Override
+    public void deletePushInformationOlderThan(Date oldest) {
+
+        // TODO: use criteria API...
+        List<PushMessageInformation> oldMessages = createQuery("select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
+                .setParameter("oldest", oldest).getResultList();
+
+        logger.log(Level.INFO, "Deleting ['" + oldMessages.size() + "'] outdated PushMessageInformation objects");
+
+        for (PushMessageInformation oldMessage : oldMessages) {
+            remove(oldMessage);
+        }
+    }
+
+    /**
+     * Helper that returns 'ASC' when true and 'DESC' when false.
+     */
+    private String ascendingOrDescending(boolean asc) {
+
+        if (asc) {
+            return ASC;
+        } else {
+            return DESC;
+        }
     }
 }
