@@ -16,6 +16,7 @@ module.exports = function (grunt) {
 
   // configurable paths
   var yeomanConfig = {
+    lib: 'app/bower_components',
     app: 'app',
     dist: 'dist',
     tmp: '.tmp'
@@ -173,6 +174,19 @@ module.exports = function (grunt) {
     },
     // Put files not handled in other tasks here
     copy: {
+      // we need to put patternfly fonts to the correct destination
+      // ( https://github.com/patternfly/patternfly/issues/20 )
+      fonts: {
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.lib %>/font-awesome/fonts/',
+            dest: '<%= yeoman.tmp %>/bower_components/patternfly/components/font-awesome/fonts/',
+            src: [ '**' ]
+          }
+        ]
+      },
       dist: {
         files: [
           {
@@ -296,6 +310,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'less',
+      'copy:fonts',
       'copy:webapp',
       'copy:jbossweb',
       'autoprefixer',
