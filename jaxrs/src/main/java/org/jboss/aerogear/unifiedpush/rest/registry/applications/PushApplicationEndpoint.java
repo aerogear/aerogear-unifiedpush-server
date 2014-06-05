@@ -107,7 +107,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
             // some validation
             try {
-                validateModelClass(pushApp);
+                validateModelClass(updatedPushApp);
             } catch (ConstraintViolationException cve) {
 
                 // Build and return the 400 (Bad Request) response
