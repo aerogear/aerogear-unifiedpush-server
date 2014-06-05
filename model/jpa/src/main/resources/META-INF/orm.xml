@@ -47,6 +47,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     </entity>
     <entity class="Installation" access="FIELD">
         <attributes>
+            <basic name="deviceToken">
+                <!-- "The max size for a registration_id is bounded by the max size for a cookie, which is 4K (4096 bytes)." -->
+                <column length="4096" />
+            </basic>
             <element-collection name="categories" fetch="EAGER"/>
         </attributes>
     </entity>

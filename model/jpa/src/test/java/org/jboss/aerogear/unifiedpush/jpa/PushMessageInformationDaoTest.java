@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.jpa;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -284,7 +285,7 @@ public class PushMessageInformationDaoTest {
     public void testLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(longString(4500));
+        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4500));
         pushMessageInformationDao.create(largePushMessageInformation);
     }
 
@@ -292,16 +293,9 @@ public class PushMessageInformationDaoTest {
     public void testTooLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(longString(4501));
+        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4501));
         pushMessageInformationDao.create(largePushMessageInformation);
         flushAndClear();
     }
 
-    private String longString(int capacity) {
-        final StringBuilder sb = new StringBuilder(capacity);
-        for (int i = 0; i < capacity; i++) {
-            sb.append("x");
-        }
-        return sb.toString();
-    }
 }
