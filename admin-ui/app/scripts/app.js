@@ -88,6 +88,23 @@ angular.module('newadminApp', [
 =======
 >>>>>>> support for multiple roots on breadcrumbs
       })
+      .when('/activity/:applicationId', {
+        templateUrl: 'views/notification.html',
+        controller: 'DashboardController',
+        crumb: {
+          id: 'activity',
+          parent: 'dash',
+          label: '$ application.name ? application.name : "Current Application"'
+        }
+      })
+      .when('/activity/:applicationId/:variantId', {
+        templateUrl: 'views/notification.html',
+        controller: 'DashboardController',
+        crumb: {
+          parent: 'activity',
+          label: '$ variant.name ? variant.name : "Current variant"'
+        }
+      })
       .otherwise({
         redirectTo: '/'
       });
