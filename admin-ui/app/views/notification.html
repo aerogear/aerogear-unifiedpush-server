@@ -11,7 +11,7 @@
           <div class="pull-right">
             <span><input type="search" class="form-control" placeholder="Search..."></span>
           </div>
-          <div style="clear: both;"></div>
+          <div class="clearfix"></div>
         </div>
         <div class="ups-padding-box">
           <table class="expand">
@@ -27,74 +27,76 @@
                 </td>
               </tr>
             </th>
-            <tr style="border-top: 1px #eee solid">
-              <td style="padding: 8px 0;"><a href=""><i class="fa fa-minus-square"></i> { "messag...</a>
+            <tr style="border-top: 1px #eee solid" ng-repeat-start="metric in pushMetrics">
+              <td style="padding: 8px 0;">
+                <a href ng-click="expand(metric)">
+                  <i class="fa"
+                     ng-class="{'fa-plus-square': isCollapsed(metric), 'fa-minus-square': !isCollapsed(metric)}"></i>
+                  {{ metric.rawJsonMessage | limitTo : 50 }}...
+                </a>
               </td>
-              <td><strong>1,251</strong> installations</td>
-              <td><strong><i class="fa fa-warning"></i> Failed</strong>
+              <td>
+                <strong>{{ metric.totalReceivers ? metric.totalReceivers : 'All'  }}</strong> installations
               </td>
-              <td>3 May, 10:43:21, 2014</td>
+              <td>
+                <strong>
+                  {{metric.deliveryStatus}}
+                  <i class="fa fa-warning" ng-show="metric.deliveryFailed == true"></i>
+                  {{ metric.deliveryFailed == true ? 'Failed' : 'Succeeded' }}
+                </strong>
+              </td>
+              <td>
+                {{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}
+              </td>
             </tr>
-            <tr>
+            <tr collapse="isCollapsed(metric)" ng-repeat-end>
               <td colspan="4" style="padding: 8px;">
-                <div class="ups-toggle-box">
-                  <div class="ups-panel-details">
-                    <table>
-                      <tr>
-                        <td>Request IP:</td>
-                        <td><strong>127.0.0.1</strong>
-                        </td>
-                        <td><a href="">Full Request</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Message:</td>
-                        <td colspan="2"><strong>{ "message" : "hello"}<strong></td>
-                      </tr>
-                      <tr>
-                        <td>Device Type:</td>
-                        <td colspan="2"><strong>Android Tablet, iPad</strong>
-                        </td>
-                      </tr>
-                    </table>
-                    <hr>
-                    <table>
-                      <tr>
-                        <td>Error:</td>
-                        <td><strong>Problem reaching push network<strong></td>
-                        <td><a href="">Edit Push Network...</a></td>
-                      </tr>
-                    </table>
-                    <hr>
-                    <table>
-                      <tr>
-                        <td>Variants:</td>
-                        <td>
-                          <table class="expand">
-                            <tr>
-                              <td><a href="">Full</a></td>
-                              </td>
-                              <td>Succeeded</td>
-                              <td><strong>342</strong> installations</td>
-                            </tr>
-                            <tr>
-                              <td><a href="">Demo</a>
-                              </td>
-                              </td>
-                              <td>Succeeded</td>
-                              <td><strong>342</strong> installations</td>
-                            </tr>
-                            <tr>
-                              <td><a href="">Lite</a>
-                              </td>
-                              <td><i class="fa fa-warning"></i> Failed</td>
-                              <td><strong>342</strong> installations</td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
+                <div class="ups-toggle-box ups-panel-details">
+                  <table>
+                    <tr>
+                      <td>Request IP:</td>
+                      <td><strong>{{ metric.ipAddress }}</strong>
+                      </td>
+                      <td><a href ng-click="showFullRequest(metric.rawJsonMessage)">Full Request</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Message:</td>
+                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
+                    </tr>
+                    <tr>
+                      <td>Device Type:</td>
+                      <td colspan="2"><strong>{{ parse(metric).sendCriteria.deviceTypes }}</strong>
+                      </td>
+                    </tr>
+                  </table>
+                  <hr ng-show="metric.deliveryFailed">
+                  <table ng-show="metric.deliveryFailed">
+                    <tr>
+                      <td>Error:</td>
+                      <td><strong>Problem reaching push network</strong></td>
+                      <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
+                    </tr>
+                  </table>
+                  <hr ng-show="metric.variantInformations.length > 1">
+                  <table ng-show="metric.variantInformations.length > 1">
+                    <tr>
+                      <td>Variants:</td>
+                      <td>
+                        <table class="expand">
+                          <tr ng-repeat="variant in metric.variantInformations">
+                            <td>
+                              <a href="#/detail/{{applicationId}}">Full</a>
+                            </td>
+                            <td>{{ variant.deliveryStatus == true ? 'Failed' : 'Succeeded' }}</td>
+                            <td>
+                              <strong>{{ variant.receivers }}</strong> installations
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </td>
             </tr>
@@ -103,3 +105,4 @@
       </div>
     </div>
   </div>
+</div>

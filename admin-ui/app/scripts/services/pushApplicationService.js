@@ -90,6 +90,28 @@ backendMod.factory('dashboard', function ($resource) {
   });
 });
 
+backendMod.factory('metrics', function ($resource) {
+  return $resource('rest/metrics/messages/:verb/:id', {
+    id: '@id'
+  }, {
+    application: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'application'
+      }
+    },
+    variant: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'variant'
+      }
+    }
+  });
+});
+
+
 backendMod.factory('breadcrumbs', function ($rootScope, $route) {
   var BreadcrumbService = {
     breadcrumbs: [],
