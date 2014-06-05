@@ -16,32 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.message.sender.*;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.GCMForChromePushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.GCMPushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
-import org.jboss.aerogear.unifiedpush.message.sender.SimplePushNotificationSender;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Stateless
 @Asynchronous
@@ -70,7 +60,7 @@ public class SenderServiceImpl implements SenderService {
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
-                        message.toString(),
+                        toJsonString(message),
                         message.getIpAddress(),
                         message.getClientIdentifier()
                 );
@@ -203,6 +193,15 @@ public class SenderServiceImpl implements SenderService {
                     updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
                 }
             });
+        }
+    }
+
+    private String toJsonString(UnifiedPushMessage message) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            return null;
         }
     }
 
