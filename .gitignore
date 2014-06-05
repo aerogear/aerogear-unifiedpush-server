@@ -5,7 +5,7 @@
 *.war
 *.ear
 
-#Build targets
+# Build targets #
 target/
 /target
 */target
@@ -16,3 +16,18 @@ target/
 .classpath
 .project
 .settings/
+
+admin-ui/local-config.json
+server/src/main/webapp/404.html
+server/src/main/webapp/bower_components/angular-animate/
+server/src/main/webapp/bower_components/angular-mocks/
+server/src/main/webapp/bower_components/angular-scenario/
+server/src/main/webapp/bower_components/angular-touch/
+server/src/main/webapp/bower_components/bootstrap-select/
+server/src/main/webapp/bower_components/datatables/
+server/src/main/webapp/bower_components/es5-shim/
+server/src/main/webapp/bower_components/font-awesome/
+server/src/main/webapp/bower_components/html5shiv/
+server/src/main/webapp/bower_components/json3/
+server/src/main/webapp/bower_components/respond/
+server/src/main/webapp/favicon.ico
