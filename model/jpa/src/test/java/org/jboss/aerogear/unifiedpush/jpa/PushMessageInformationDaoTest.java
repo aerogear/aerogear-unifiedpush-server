@@ -26,6 +26,7 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 
 import java.util.Arrays;
@@ -279,6 +280,7 @@ public class PushMessageInformationDaoTest {
         assertThat(messageInformations.get(0).getSubmitDate()).isAfter(messageInformations.get(1).getSubmitDate());
     }
 
+    @Test
     public void testLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
@@ -286,13 +288,12 @@ public class PushMessageInformationDaoTest {
         pushMessageInformationDao.create(largePushMessageInformation);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = PersistenceException.class)
     public void testTooLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
         largePushMessageInformation.setRawJsonMessage(longString(4501));
         pushMessageInformationDao.create(largePushMessageInformation);
-
         flushAndClear();
     }
 
