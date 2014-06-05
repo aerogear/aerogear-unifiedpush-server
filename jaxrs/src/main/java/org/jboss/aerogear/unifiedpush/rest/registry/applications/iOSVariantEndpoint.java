@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.util.PKCS12Util;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
@@ -184,7 +185,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
         // got certificate/passphrase, with content that makes sense ?
         try {
-//            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
+            PKCS12Util.validate(form.getCertificate(), form.getPassphrase());
 
             // ok we are good:
             return true;
