@@ -148,7 +148,7 @@ public class PushMessageInformationDaoTest {
     @Test
     public void findByPushApplicationID() {
 
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).isNotEmpty();
         assertThat(messageInformations).hasSize(1);
     }
@@ -226,8 +226,51 @@ public class PushMessageInformationDaoTest {
 
         flushAndClear();
 
-        assertThat(pushMessageInformationDao.findAllForVariant("231543432432")).hasSize(2);
-        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333")).hasSize(1);
+        assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE)).hasSize(2);
+        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE)).hasSize(1);
     }
 
+    @Test
+    public void ascendingDateOrdering() throws InterruptedException {
+        // let's wait a bit...
+        Thread.sleep(1000);
+
+        PushMessageInformation pmi = new PushMessageInformation();
+        pmi.setPushApplicationId("231231231");
+        pushMessageInformationDao.create(pmi);
+        VariantMetricInformation variantTwo = new VariantMetricInformation();
+        variantTwo.setDeliveryStatus(Boolean.TRUE);
+        variantTwo.setReceivers(2000);
+        variantTwo.setVariantID("231543432432");
+        pmi.getVariantInformations().add(variantTwo);
+        pushMessageInformationDao.update(pmi);
+
+
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        assertThat(messageInformations).hasSize(2);
+
+        assertThat(messageInformations.get(0).getSubmitDate()).isBefore(messageInformations.get(1).getSubmitDate());
+    }
+
+    @Test
+    public void descendingDateOrdering() throws InterruptedException {
+        // let's wait a bit...
+        Thread.sleep(1000);
+
+        PushMessageInformation pmi = new PushMessageInformation();
+        pmi.setPushApplicationId("231231231");
+        pushMessageInformationDao.create(pmi);
+        VariantMetricInformation variantTwo = new VariantMetricInformation();
+        variantTwo.setDeliveryStatus(Boolean.TRUE);
+        variantTwo.setReceivers(2000);
+        variantTwo.setVariantID("231543432432");
+        pmi.getVariantInformations().add(variantTwo);
+        pushMessageInformationDao.update(pmi);
+
+
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.FALSE);
+        assertThat(messageInformations).hasSize(2);
+
+        assertThat(messageInformations.get(0).getSubmitDate()).isAfter(messageInformations.get(1).getSubmitDate());
+    }
 }
