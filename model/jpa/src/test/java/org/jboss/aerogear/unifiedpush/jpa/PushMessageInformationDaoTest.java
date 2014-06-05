@@ -384,6 +384,23 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
+    public void deleteOldPushMessageInformations() throws InterruptedException {
+
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        assertThat(messageInformations).hasSize(1);
+
+        // let's wait a bit...
+        Thread.sleep(1000);
+
+        pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
+        
+        flushAndClear();
+        
+        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        assertThat(messageInformations).hasSize(0);
+    }
+
+    @Test
     public void testLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
@@ -406,21 +423,5 @@ public class PushMessageInformationDaoTest {
             sb.append("x");
         }
         return sb.toString();
-    }
-
-    public void deleteOldPushMessageInformations() throws InterruptedException {
-
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
-        assertThat(messageInformations).hasSize(1);
-
-        // let's wait a bit...
-        Thread.sleep(1000);
-
-        pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
-		
-        flushAndClear();
-		
-        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
-        assertThat(messageInformations).hasSize(0);
     }
 }
