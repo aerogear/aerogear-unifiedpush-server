@@ -118,8 +118,13 @@
 
             <dependency>
                 <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
                 <artifactId>javase</artifactId>
-                <version>${javase.version}</version>
+                <version>${zxing.version}</version>
             </dependency>
 
             <dependency>
@@ -351,7 +356,7 @@
         <keycloak.version>1.0-beta-1</keycloak.version>
         <org.bouncycastle.version>1.46</org.bouncycastle.version>
         <freemarker.version>2.3.19</freemarker.version>
-        <javase.version>2.2</javase.version>
+        <zxing.version>2.2</zxing.version>
 
     </properties>
 
