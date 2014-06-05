@@ -60,7 +60,8 @@ angular.module('newadminApp', [
         }
       })
       .when('/dashboard', {
-        templateUrl: 'views/dashboard.html'
+        templateUrl: 'views/dashboard.html',
+        controller: 'DashboardController'
       })
       .otherwise({
         redirectTo: '/'
