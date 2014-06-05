@@ -1,0 +1,4 @@
+This project includes fonts under SIL OPEN FONT LICENSE Version 1.1:
+
+admin-ui/app/styles/fonts/exo2/*
+Copyright (C) 2013, Natanael Gama
