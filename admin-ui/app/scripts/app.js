@@ -67,6 +67,7 @@ angular.module('newadminApp', [
           id: 'dash',
           label: 'Dashboard'
         }
+<<<<<<< HEAD
       })
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
@@ -84,6 +85,8 @@ angular.module('newadminApp', [
           parent: 'activity',
           label: '$ variant.name ? variant.name : "Current variant"'
         }
+=======
+>>>>>>> support for multiple roots on breadcrumbs
       })
       .otherwise({
         redirectTo: '/'
