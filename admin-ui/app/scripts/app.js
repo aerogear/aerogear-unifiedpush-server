@@ -90,7 +90,7 @@ angular.module('newadminApp', [
       })
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
-        controller: 'DashboardController',
+        controller: 'ActivityController',
         crumb: {
           id: 'activity',
           parent: 'dash',
@@ -99,7 +99,7 @@ angular.module('newadminApp', [
       })
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
-        controller: 'DashboardController',
+        controller: 'ActivityController',
         crumb: {
           parent: 'activity',
           label: '$ variant.name ? variant.name : "Current variant"'
