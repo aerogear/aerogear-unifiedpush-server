@@ -7,11 +7,16 @@
         <span ng-hide="variant.description.length">No description</span>
         <div class="pull-right dropdown">
             <span>
-                <strong>
-                    <a href="#/{{applicationId}}/installations/{{variant.variantID}}" ng-click="currentVariant(variant)">
-                        {{ counts[variant.variantID] ? counts[variant.variantID] : 0 }}
-                    </a>
-                </strong> installations</span>
+                <span ng-show="!counts[variant.variantID]">no installations</span>
+                <span ng-show="counts[variant.variantID]">
+                    <strong>
+                        <a href="#/{{applicationId}}/installations/{{variant.variantID}}" ng-click="currentVariant(variant)">
+                            {{ counts[variant.variantID] }}
+                        </a>
+                    </strong> installation<ng-pluralize count="counts[variant.variantID]" when="{ '1': '', '2': 's'}"></ng-pluralize>
+                </span>
+            </span>
+
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i></a>
             <ul class="dropdown-menu">
                 <li><a role="menuitem" ng-click="editVariant(variant, type)">Edit</a></li>
