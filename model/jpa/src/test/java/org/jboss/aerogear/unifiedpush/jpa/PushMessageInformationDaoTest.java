@@ -410,7 +410,7 @@ public class PushMessageInformationDaoTest {
 
     public void deleteOldPushMessageInformations() throws InterruptedException {
 
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(1);
 
         // let's wait a bit...
@@ -420,7 +420,7 @@ public class PushMessageInformationDaoTest {
 		
         flushAndClear();
 		
-        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231");
+        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(0);
     }
 }
