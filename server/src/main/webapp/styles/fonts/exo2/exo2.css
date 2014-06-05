@@ -1,0 +1,68 @@
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  src: url('exo2-regular-webfont.eot');
+  src: url('exo2-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-regular-webfont.woff') format('woff'),
+       url('exo2-regular-webfont.ttf') format('truetype'),
+       url('exo2-regular-webfont.svg#exo_2regular') format('svg');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: italic;
+  font-weight: 400;
+  font-family: 'exo_2italic';
+  src: url('exo2-italic-webfont.eot');
+  src: url('exo2-italic-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-italic-webfont.woff') format('woff'),
+       url('exo2-italic-webfont.ttf') format('truetype'),
+       url('exo2-italic-webfont.svg#exo_2italic') format('svg');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 300;
+  font-family: 'exo_2light';
+  src: url('exo2-light-webfont.eot');
+  src: url('exo2-light-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-light-webfont.woff') format('woff'),
+       url('exo2-light-webfont.ttf') format('truetype'),
+       url('exo2-light-webfont.svg#exo_2light') format('svg');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: italic;
+  font-weight: 300;
+  src: url('exo2-lightitalic-webfont.eot');
+  src: url('exo2-lightitalic-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-lightitalic-webfont.woff') format('woff'),
+       url('exo2-lightitalic-webfont.ttf') format('truetype'),
+       url('exo2-lightitalic-webfont.svg#exo_2light_italic') format('svg');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 600;
+  font-family: 'exo_2semi_bold';
+  src: url('exo2-semibold-webfont.eot');
+  src: url('exo2-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-semibold-webfont.woff') format('woff'),
+       url('exo2-semibold-webfont.ttf') format('truetype'),
+       url('exo2-semibold-webfont.svg#exo_2semi_bold') format('svg');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: italic;
+  font-weight: 600;
+  src: url('exo2-semibolditalic-webfont.eot');
+  src: url('exo2-semibolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+       url('exo2-semibolditalic-webfont.woff') format('woff'),
+       url('exo2-semibolditalic-webfont.ttf') format('truetype'),
+       url('exo2-semibolditalic-webfont.svg#exo_2semi_bold_italic') format('svg');
+}
