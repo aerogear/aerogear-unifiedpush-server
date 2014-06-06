@@ -63,10 +63,10 @@ public class DashboardService {
      * for the given user
      */
     public List<Variant> getVariantsWithWarninings(String principalName) {
+        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
+        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(variantIDs);
 
-        List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-
-        return variantDao.findAllVariantsByIDs(variantIDs);
+        return variantDao.findAllVariantsByIDs(warningIDs);
     }
 
     private long totalMessages(String principalName) {
