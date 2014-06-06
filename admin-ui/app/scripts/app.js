@@ -11,14 +11,14 @@ angular.module('upsConsole', [
 ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
+      /*.when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainController',
         crumb: {
           id: 'apps',
           label: 'Applications'
         }
-      })
+      })*/
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
@@ -92,9 +92,9 @@ angular.module('upsConsole', [
           label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
-      .otherwise({
+      /*.otherwise({
         redirectTo: '/'
-      });
+      });*/
 
   });
 
