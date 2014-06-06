@@ -14,15 +14,15 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
+    <!-- build:css({.tmp,app}) styles/patternfly_fix/main.css -->
     <link rel="stylesheet" href="styles/reset.css">
-
-    <link rel="stylesheet" href="styles/fonts/exo2/exo2.css" type="text/css">
-
     <link rel="stylesheet" href="bower_components/patternfly/dist/css/patternfly.css">
     <link rel="stylesheet" href="bower_components/highlightjs/styles/ir_black.css">
     <link rel="stylesheet" href="styles/console.css">
-
     <!-- endbuild -->
+
+    <link rel="stylesheet" href="styles/fonts/exo2/exo2.css" type="text/css">
+
 </head>
 <body class="app-dashboard" ng-app="newadminApp">
 
@@ -69,21 +69,16 @@
 
 <!-- ngView:  -->
 <div data-ng-view="" id="lo-content-row" class="row lo-main-pane ng-scope">
-
 </div>
 
+<!-- build:js scripts/modules.js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
-
-<!-- build:js scripts/plugins.js -->
-<script src="bower_components/patternfly/dist/js/patternfly.js"></script>
-<!-- endbuild -->
-
-<!-- build:js scripts/modules.js -->
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/patternfly/dist/js/patternfly.js"></script>
 <script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/highlightjs/highlight.pack.js"></script>

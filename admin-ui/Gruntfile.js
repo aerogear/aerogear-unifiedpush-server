@@ -19,7 +19,8 @@ module.exports = function (grunt) {
     lib: 'app/bower_components',
     app: 'app',
     dist: 'dist',
-    tmp: '.tmp'
+    tmp: '.tmp',
+    webappDist: '../server/src/main/webapp'
   };
 
   try {
@@ -84,6 +85,33 @@ module.exports = function (grunt) {
           }
         ]
       },
+      webappDist: {
+        options: {
+          'force': true
+        },
+        files: [
+          {
+            src: [
+              '<%= yeoman.webappDist %>/*',
+              '!<%= yeoman.webappDist %>/WEB-INF'
+            ]
+          }
+        ]
+      },
+      jbosswebDist: {
+        options: {
+          'force': true
+        },
+        files: [
+          {
+            src: [
+              '<%= local.jbossweb %>/*',
+              '!<%= local.jbossweb %>/WEB-INF',
+              '!<%= local.jbossweb %>/META-INF'
+            ]
+          }
+        ]
+      },
       server: '.tmp'
     },
     jshint: {
@@ -106,8 +134,7 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/styles/fonts/*'
+            '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
           ]
         }
       }
@@ -198,16 +225,32 @@ module.exports = function (grunt) {
               '*.{ico,txt}',
               '.htaccess',
               'img/{,*/}*.{webp,gif,png,svg}',
-              'font/*'
+              'styles/fonts/**',
+              'directives/**',
+              'views/**'
             ]
           },
           {
             expand: true,
-            cwd: '.tmp/images',
-            dest: '<%= yeoman.dist %>/images',
+            cwd: '<%= yeoman.tmp %>',
+            dest: '<%= yeoman.dist %>',
             src: [
-              'generated/*'
+              '**'
             ]
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.lib %>/font-awesome/fonts/',
+            dest: '<%= yeoman.dist %>/components/font-awesome/fonts/',
+            src: [ '**' ]
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.lib %>/patternfly/dist/fonts',
+            dest: '<%= yeoman.dist %>/styles/fonts/',
+            src: [ '**' ]
           }
         ]
       },
@@ -243,21 +286,43 @@ module.exports = function (grunt) {
           }
         ]
       },
-      serverDist: {
+      webappDist: {
         files: [
           {
             expand: true,
-            cwd: '<%= local.home %>/dist',
-            dest: '<%= local.ups_repo %>/src/main/webapp',
+            cwd: '<%= yeoman.dist %>',
+            dest: '<%= yeoman.webappDist %>',
+            src: [ '**', '!**/*.txt' ]
+          }
+        ]
+      },
+      jbosswebDist: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.dist %>',
+            dest: '<%= local.jbossweb %>',
             src: [ '**', '!**/*.txt' ]
           }
         ]
       },
       styles: {
-        expand: true,
-        cwd: '<%= yeoman.app %>/styles',
-        dest: '<%= yeoman.dist %>/styles',
-        src: '{,*/}*.css'
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/styles',
+            dest: '<%= yeoman.dist %>/styles',
+            src: '{,*/}*.css'
+          },
+          {
+            expand: true,
+            cwd: '<%= yeoman.tmp %>',
+            dest: '<%= yeoman.dist %>',
+            src: [
+              '**'
+            ]
+          }
+        ]
       }
     },
     concurrent: {
@@ -326,11 +391,15 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'useminPrepare',
-    'concurrent:dist',
     'less',
+    'useminPrepare',
+//    'concurrent:dist',
+//    'copy:styles',
+//    'imagemin',
+    'htmlmin',
     'concat',
-    'uglify',
+    'ngmin:dist',
+//    'uglify',
     'copy:dist',
     'rev',
     'usemin'
@@ -340,6 +409,12 @@ module.exports = function (grunt) {
     'jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('jbosswebDist', [
+    'initLocalConfig',
+    'clean:jbosswebDist',
+    'copy:jbosswebDist'
   ]);
 
   grunt.registerTask('copy_web', ['copy:webapp']);
