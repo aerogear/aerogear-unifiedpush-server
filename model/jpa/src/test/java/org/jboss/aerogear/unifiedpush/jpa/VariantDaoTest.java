@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
@@ -28,6 +29,9 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,6 +91,34 @@ public class VariantDaoTest {
 
         assertThat(variantDao.findVariantIDsForDeveloper("admin")).isNotNull();
         assertThat(variantDao.findVariantIDsForDeveloper("admin")).containsOnly(uuid);
+    }
+
+    @Test
+    public void findVariantsByIDs() {
+
+        final List<String> variantIDs = new ArrayList<String>(4);
+
+        final AndroidVariant av1 = new AndroidVariant();
+        av1.setName("Something Android");
+        av1.setGoogleKey("KEY");
+        av1.setDeveloper("admin");
+        variantIDs.add(av1.getVariantID());
+        variantDao.create(av1);
+        final AndroidVariant av2 = new AndroidVariant();
+        av2.setName("Something more Android");
+        av2.setGoogleKey("KEY");
+        av2.setDeveloper("admin");
+        variantIDs.add(av2.getVariantID());
+        variantDao.create(av2);
+
+        // add some invalid IDs:
+        variantIDs.add("foo");
+        variantIDs.add("bar");
+
+        final List<Variant> variants = variantDao.findAllVariantsByIDs(variantIDs);
+
+        assertThat(variants).hasSize(2);
+        assertThat(variants).extracting("name").contains("Something Android", "Something more Android");
     }
 
     @Test

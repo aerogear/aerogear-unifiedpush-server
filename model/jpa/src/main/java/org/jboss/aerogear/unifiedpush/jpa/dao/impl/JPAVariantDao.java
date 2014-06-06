@@ -69,6 +69,12 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     }
 
     @Override
+    public List<Variant> findAllVariantsByIDs(List<String> variantIDs) {
+        return createQuery("select t from Variant t where t.variantID IN :variantIDs")
+                .setParameter("variantIDs", variantIDs).getResultList();
+    }
+
+    @Override
     public Variant find(String id) {
         Variant entity = entityManager.find(Variant.class, id);
         return entity;
