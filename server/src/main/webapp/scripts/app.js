@@ -6,7 +6,8 @@ angular.module('newadminApp', [
   'ngRoute',
   'ui.bootstrap',
   'ups.directives',
-  'patternfly.notification'
+  'patternfly.notification',
+  'hljs'
 ])
   .config(function ($routeProvider) {
     $routeProvider
