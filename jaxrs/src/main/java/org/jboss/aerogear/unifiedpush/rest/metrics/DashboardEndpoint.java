@@ -52,7 +52,7 @@ public class DashboardEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
-        final List<Variant> variantsWithWarnings = service.getVariantsWithWarninings(principalName);
+        final List<Variant> variantsWithWarnings = service.getVariantsWithWarnings(principalName);
 
         return Response.ok(variantsWithWarnings).build();
     }

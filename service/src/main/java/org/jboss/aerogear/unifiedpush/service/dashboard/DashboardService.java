@@ -62,7 +62,7 @@ public class DashboardService {
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
      */
-    public List<Variant> getVariantsWithWarninings(String principalName) {
+    public List<Variant> getVariantsWithWarnings(String principalName) {
         final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
         final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(variantIDs);
 
