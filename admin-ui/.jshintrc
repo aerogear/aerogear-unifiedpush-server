@@ -20,6 +20,7 @@
   "smarttabs": true,
   "globals": {
     "angular": false,
-    "$": false
+    "$": false,
+    "hljs": false
   }
 }
