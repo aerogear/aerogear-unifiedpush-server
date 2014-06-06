@@ -71,6 +71,30 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
         remove(entity);
     }
 
+    @Override
+    public List<String> findVariantIDsWithWarnings(List<String> allVariantIDs) {
+        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
+                " where vmi.variantID IN :variantIDs" +
+                " and vmi.deliveryStatus = false")
+                .setParameter("variantIDs", allVariantIDs)
+                .getResultList();
+
+        return variantIDsWithWarnings;
+    }
+
+    @Override
+    public List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs) {
+        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
+                " where vmi.variantID IN :variantIDs" +
+                " ORDER BY vmi.receivers " + DESC)
+                .setParameter("variantIDs", allVariantIDs)
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+
+        return variantIDsWithWarnings;
+    }
+
     /**
      * Helper that returns 'ASC' when true and 'DESC' when false.
      */

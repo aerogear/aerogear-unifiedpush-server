@@ -30,6 +30,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -235,6 +236,98 @@ public class PushMessageInformationDaoTest {
 
         assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE)).hasSize(2);
         assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE)).hasSize(1);
+    }
+
+    @Test
+    public void findMostBusyVariants() {
+        pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+
+        VariantMetricInformation variantOne = new VariantMetricInformation();
+        variantOne.setDeliveryStatus(Boolean.FALSE);
+        variantOne.setReceivers(200);
+        variantOne.setVariantID("231543432432");
+        pushMessageInformation.getVariantInformations().add(variantOne);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantThree = new VariantMetricInformation();
+        variantThree.setDeliveryStatus(Boolean.FALSE);
+        variantThree.setReceivers(300);
+        variantThree.setVariantID("23154343243333");
+        pushMessageInformation.getVariantInformations().add(variantThree);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantFour = new VariantMetricInformation();
+        variantFour.setDeliveryStatus(Boolean.FALSE);
+        variantFour.setReceivers(1000);
+        variantFour.setVariantID("231543432434");
+        pushMessageInformation.getVariantInformations().add(variantFour);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        PushMessageInformation pmi = new PushMessageInformation();
+        pmi.setPushApplicationId("231231231");
+        pushMessageInformationDao.create(pmi);
+        VariantMetricInformation variantTwo = new VariantMetricInformation();
+        variantTwo.setDeliveryStatus(Boolean.TRUE);
+        variantTwo.setReceivers(2000);
+        variantTwo.setVariantID("231543432432");
+        pmi.getVariantInformations().add(variantTwo);
+        pushMessageInformationDao.update(pmi);
+
+
+
+        flushAndClear();
+
+        final List<String> ids = new ArrayList<String>();
+        ids.add("231543432432");
+        ids.add("23154343243333");
+        ids.add("231543432434");
+        ids.add("231543432432");
+
+
+        List<String> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(ids);
+        assertThat(busyVariants).hasSize(3);
+        assertThat(busyVariants)
+                .contains("231543432432", "23154343243333", "231543432434");
+    }
+
+    @Test
+    public void findVariantIDsWithWarnings() {
+
+        pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+
+        VariantMetricInformation variantOne = new VariantMetricInformation();
+        variantOne.setDeliveryStatus(Boolean.FALSE);
+        variantOne.setReceivers(200);
+        variantOne.setVariantID("231543432432");
+        pushMessageInformation.getVariantInformations().add(variantOne);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantThree = new VariantMetricInformation();
+        variantThree.setDeliveryStatus(Boolean.FALSE);
+        variantThree.setReceivers(200);
+        variantThree.setVariantID("23154343243333");
+        pushMessageInformation.getVariantInformations().add(variantThree);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantFour = new VariantMetricInformation();
+        variantFour.setDeliveryStatus(Boolean.TRUE);
+        variantFour.setReceivers(200);
+        variantFour.setVariantID("231543432434");
+        pushMessageInformation.getVariantInformations().add(variantFour);
+        pushMessageInformationDao.update(pushMessageInformation);
+        flushAndClear();
+
+
+        final List<String> allVariantIDs = new ArrayList<String>();
+        allVariantIDs.add("231543432432");
+        allVariantIDs.add("23154343243333");
+        allVariantIDs.add("231543432434");
+
+
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings(allVariantIDs);
+
+        assertThat(variantIDsWithWarnings).hasSize(2);
+        assertThat(variantIDsWithWarnings).contains("231543432432", "23154343243333");
     }
 
     @Test

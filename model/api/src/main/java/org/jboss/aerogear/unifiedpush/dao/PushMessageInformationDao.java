@@ -37,4 +37,14 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      */
     List<PushMessageInformation> findAllForVariant(String id, boolean ascending);
 
+    /**
+     * Filters those variantIDs where the variant shows errors/issues for previous message sends
+     */
+    List<String> findVariantIDsWithWarnings(List<String> allVariantIDs);
+
+    /**
+     * Filters the top three VariantIDs that did receive the most messages
+     */
+    List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs);
+
 }

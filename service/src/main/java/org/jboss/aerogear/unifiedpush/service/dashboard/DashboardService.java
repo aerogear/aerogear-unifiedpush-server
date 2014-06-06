@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.dashboard;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
@@ -57,6 +58,27 @@ public class DashboardService {
         return data;
     }
 
+    /**
+     * Loads all the Variant objects where we did notice some failures on sending
+     * for the given user
+     */
+    public List<Variant> getVariantsWithWarnings(String principalName) {
+        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
+        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(variantIDs);
+
+        return variantDao.findAllVariantsByIDs(warningIDs);
+    }
+
+    /**
+     * Loads all the Variant objects with the most received messages
+     */
+    public List<Variant> getTopThreeBusyVariants(String principalName) {
+        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
+        final List<String> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(variantIDs);
+
+        return variantDao.findAllVariantsByIDs(topVariantIDs);
+    }
+
     private long totalMessages(String principalName) {
         List<String> pushAppIDs = pushApplicationDao.findAllPushApplicationIDsForDeveloper(principalName);
         return pushMessageInformationDao.getNumberOfPushMessagesForApplications(pushAppIDs);
@@ -64,9 +86,13 @@ public class DashboardService {
 
     private long totalDeviceNumber(String principalName) {
 
-        List<String> variantIDs = variantDao.findVariantIDsForDeveloper(principalName);
+        List<String> variantIDs = getVariantIDsForDeveloper(principalName);
 
         return installationDao.getNumberOfDevicesForVariantIDs(variantIDs);
+    }
+
+    private List<String> getVariantIDsForDeveloper(String principalName) {
+        return variantDao.findVariantIDsForDeveloper(principalName);
     }
 
     private long totalApplicationNumber(String principalName) {

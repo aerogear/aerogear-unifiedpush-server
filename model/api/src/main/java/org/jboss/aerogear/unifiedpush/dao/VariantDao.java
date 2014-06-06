@@ -33,7 +33,12 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
     Variant findByVariantIDForDeveloper(String variantID, String loginName);
 
     /**
-     * Loads list of all variantIDs for given user
+     * Loads list of all variantIDs for given user.
      */
     List<String> findVariantIDsForDeveloper(String principalName);
+
+    /**
+     * Loads list of all variants, where IDs are given.
+     */
+    List<Variant> findAllVariantsByIDs(List<String> variantIDs);
 }

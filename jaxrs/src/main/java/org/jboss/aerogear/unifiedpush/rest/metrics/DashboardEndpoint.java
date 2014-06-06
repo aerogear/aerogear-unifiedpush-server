@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
 
@@ -28,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Stateless
 @Path("/metrics/dashboard")
@@ -40,10 +42,28 @@ public class DashboardEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response totalApplications(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
-
-        DashboardData dataForUser =  service.loadDashboardData(principalName);
+        final DashboardData dataForUser =  service.loadDashboardData(principalName);
 
         return Response.ok(dataForUser).build();
     }
 
+    @GET
+    @Path("/warnings")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
+        final String principalName = request.getUserPrincipal().getName();
+        final List<Variant> variantsWithWarnings = service.getVariantsWithWarnings(principalName);
+
+        return Response.ok(variantsWithWarnings).build();
+    }
+
+    @GET
+    @Path("/active")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTopThreeVariants(@Context HttpServletRequest request) {
+        final String principalName = request.getUserPrincipal().getName();
+        final List<Variant> variantsWithWarnings = service.getTopThreeBusyVariants(principalName);
+
+        return Response.ok(variantsWithWarnings).build();
+    }
 }
