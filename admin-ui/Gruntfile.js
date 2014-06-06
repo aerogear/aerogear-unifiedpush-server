@@ -396,8 +396,15 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('jbosswebDist', [
+  grunt.registerTask('dist', [
     'initLocalConfig',
+    'default',
+    'clean:webappDist',
+    'copy:webappDist'
+  ]);
+
+  grunt.registerTask('jbosswebDist', [
+    'dist',
     'clean:jbosswebDist',
     'copy:jbosswebDist'
   ]);
