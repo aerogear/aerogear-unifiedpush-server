@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.dao;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
@@ -46,6 +45,6 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Filters the top three VariantIDs that did receive the most messages
      */
-    List<String> findTopThreeBusyVariantIDs(Set<String> allVariantIDs);
+    List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs);
 
 }

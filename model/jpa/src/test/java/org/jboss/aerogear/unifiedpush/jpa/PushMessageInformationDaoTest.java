@@ -32,9 +32,7 @@ import javax.persistence.RollbackException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -279,7 +277,7 @@ public class PushMessageInformationDaoTest {
 
         flushAndClear();
 
-        final Set<String> ids = new HashSet<String>();
+        final List<String> ids = new ArrayList<String>();
         ids.add("231543432432");
         ids.add("23154343243333");
         ids.add("231543432434");
