@@ -18,9 +18,11 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
 import java.util.List;
+import java.util.Set;
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
 
@@ -77,6 +79,19 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
                 " where vmi.variantID IN :variantIDs" +
                 " and vmi.deliveryStatus = false")
                 .setParameter("variantIDs", allVariantIDs)
+                .getResultList();
+
+        return variantIDsWithWarnings;
+    }
+
+    @Override
+    public List<VariantMetricInformation> findTopThreeBusyVariants(Set<String> allVariantIDs) {
+        List<VariantMetricInformation> variantIDsWithWarnings = createQuery("select vmi from VariantMetricInformation vmi" +
+                " where vmi.variantID IN :variantIDs" +
+                " ORDER BY vmi.receivers " + DESC)
+                .setParameter("variantIDs", allVariantIDs)
+                .setFirstResult(0)
+                .setMaxResults(3)
                 .getResultList();
 
         return variantIDsWithWarnings;

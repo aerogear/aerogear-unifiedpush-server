@@ -32,7 +32,9 @@ import javax.persistence.RollbackException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -236,6 +238,62 @@ public class PushMessageInformationDaoTest {
 
         assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE)).hasSize(2);
         assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE)).hasSize(1);
+    }
+
+    @Test
+    public void findMostBusyVariants() {
+        pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+
+        VariantMetricInformation variantOne = new VariantMetricInformation();
+        variantOne.setDeliveryStatus(Boolean.FALSE);
+        variantOne.setReceivers(200);
+        variantOne.setVariantID("231543432432");
+        pushMessageInformation.getVariantInformations().add(variantOne);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantThree = new VariantMetricInformation();
+        variantThree.setDeliveryStatus(Boolean.FALSE);
+        variantThree.setReceivers(300);
+        variantThree.setVariantID("23154343243333");
+        pushMessageInformation.getVariantInformations().add(variantThree);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        VariantMetricInformation variantFour = new VariantMetricInformation();
+        variantFour.setDeliveryStatus(Boolean.FALSE);
+        variantFour.setReceivers(1000);
+        variantFour.setVariantID("231543432434");
+        pushMessageInformation.getVariantInformations().add(variantFour);
+        pushMessageInformationDao.update(pushMessageInformation);
+
+        PushMessageInformation pmi = new PushMessageInformation();
+        pmi.setPushApplicationId("231231231");
+        pushMessageInformationDao.create(pmi);
+        VariantMetricInformation variantTwo = new VariantMetricInformation();
+        variantTwo.setDeliveryStatus(Boolean.TRUE);
+        variantTwo.setReceivers(2000);
+        variantTwo.setVariantID("231543432432");
+        pmi.getVariantInformations().add(variantTwo);
+        pushMessageInformationDao.update(pmi);
+
+
+
+        flushAndClear();
+
+        final Set<String> ids = new HashSet<String>();
+        ids.add("231543432432");
+        ids.add("23154343243333");
+        ids.add("231543432434");
+        ids.add("231543432432");
+
+
+        List<VariantMetricInformation> busyVariants = pushMessageInformationDao.findTopThreeBusyVariants(ids);
+        assertThat(busyVariants).hasSize(3);
+        assertThat(busyVariants).extracting("variantID", "receivers")
+                .contains(
+                        tuple("231543432432", 2000L),
+                        tuple("23154343243333", 300L),
+                        tuple("231543432434", 1000L)
+                );
     }
 
     @Test
