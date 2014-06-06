@@ -15,7 +15,6 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 For more details about the current release, please consult the README on our [stable branch](https://github.com/aerogear/aerogear-unifiedpush-server/tree/0.10.x).
 
-
 ## Note on our Master branch
 
 The master branch is currenly being worked on for a tight integration with the [Keycloak project](keycloak.org). To run the master branch it requires some initial setup steps for Keycloak. Eventually there will be a simple and tight integration.
@@ -27,6 +26,13 @@ After building the project (and keycloak's master branch), deploy the ``auth-ser
 
 ## However
 Because of this work, we highly recommend using the [stable branch](https://github.com/aerogear/aerogear-unifiedpush-server/tree/0.10.x), as discussed above!
+
+
+## Developing and releasing UI
+
+The sources for administration console UI are placed under `admin-ui`.
+
+For instructions how to develop and release Admin UI, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
 
 
 ### Any questions ? 
