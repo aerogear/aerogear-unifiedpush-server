@@ -24,7 +24,7 @@ angular.module('upsConsole', [
           id: 'apps',
           label: 'Applications'
         }
-      })*/
+      })
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
@@ -131,9 +131,9 @@ angular.module('upsConsole', [
           label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
-      /*.otherwise({
+      .otherwise({
         redirectTo: '/dashboard'
-      });*/
+      });
 
   });
 
