@@ -638,10 +638,15 @@ a.ups-tip-panel-link {
   font-weight: bold;
 }
 .ups-code-block {
-  font-family: monospace;
   overflow: scroll;
-  white-space: pre;
   width: 100%;
+}
+.ups-code-block pre {
+  padding: 0;
+}
+.ups-code-block pre code {
+  font-family: monospace;
+  white-space: pre;
   background-color: #555 !important;
   font-size: 12px;
   line-height: 15px;

@@ -12,7 +12,7 @@
 
             <tabset>
                 <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="isActive('simplePush')">
-                    <blockquote class="ups-code-block js">
+                    <div class="ups-code-block js" hljs compile="true">
 (function() {
      var endpoint, endpointRequest, SPClient, UPClient;
 
@@ -82,10 +82,10 @@
          onClose: spClose
     });
  })();
-                    </blockquote>
+                    </div>
                 </tab>
                 <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="isActive('chrome')">
-                    <blockquote class="ups-code-block js">
+                    <div class="ups-code-block js" hljs compile="true">
 chrome.pushMessaging.getChannelId( true, function(channelId) {
     /*
         Set our Variant ID and Secret and the location of the UnifiedPush Server
@@ -111,10 +111,10 @@ chrome.pushMessaging.getChannelId( true, function(channelId) {
     client.registerWithPushServer( settings );
 
 });
-                    </blockquote>
+                    </div>
                 </tab>
                 <tab heading="Android" ng-hide="variantType != 'android'" active="isActive('android')" ng-click="setActive('android')">
- <blockquote class="ups-code-block java">
+ <div class="ups-code-block java" hljs compile="true">
 package com.push.pushapplication;
 
 import java.net.URI;
@@ -169,10 +169,11 @@ public class PushApplication extends Application {
         }
     }
 }
-</blockquote>
+</div>
                 </tab>
                 <tab heading="iOS" ng-hide="variantType != 'iOS'" active="isActive('iOS')" ng-click="setActive('iOS')">
-                    <blockquote class="ups-code-block objectivec">
+                    <div class="ups-code-block" hljs compile="true" language="objectivec" include="'objectivec'"></div>
+                    <script type="text/ng-template" id="objectivec">
 - (void)application:(UIApplication *)application
  didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
@@ -197,14 +198,15 @@ public class PushApplication extends Application {
        NSLog(@"PushEE registration Error: %@", error);
    }];
  }
-                    </blockquote>
+                  </script>
+
                 </tab>
                 <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
                      active="isActive('cordova')" ng-click="setActive('cordova')">
-                    <code id="cordova-code" class="ups-code-block js">
+                    <div class="ups-code-block js" hljs compile="true">
 var pushConfig = {
     pushServerURL: "{{ currentLocation }}",
-    {{ variantType == 'android' ? ('senderID: "' + variant.projectNumber +'",') : '' }}
+    {{ projectNumber() }}
     variantID: "{{ variant.variantID }}",
     variantSecret: "{{ variant.secret }}"
 };
@@ -222,11 +224,11 @@ function successHandler() {
 function errorHandler(message) {
     console.log('error ' + message);
 }
-                    </code>
+                    </div>
                 </tab>
 
                 <tab heading="Sending" ng-hide="variantType != 'send'" active="isActive('send')" ng-click="setActive('send')">
-                    <blockquote class="ups-code-block java">
+                    <div class="ups-code-block java" hljs compile="true">
 JavaSender defaultJavaSender = new SenderClient("{{ currentLocation }}");
 UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
         .pushApplicationId("{{ applicationId }}")
@@ -245,15 +247,9 @@ defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
         //bring out the bad news
     }
 });
-                    </blockquote>
+                    </div>
                 </tab>
             </tabset>
         </div>
     </div>
 </div>
-
-<script type="application/javascript">
-    $(document).ready(function() {
-        $('blockquote').each(function(index, element) { hljs.highlightBlock(element) });
-    });
-</script>
