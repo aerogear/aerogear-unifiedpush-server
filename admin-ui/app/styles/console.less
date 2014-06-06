@@ -37,6 +37,8 @@
 /* Border colors */
 @c_border: #cacaca;
 
+@images: "../img/";
+
 /*
 ***********************************
           Basic elements
@@ -290,7 +292,7 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
       }
 
       &.active {
-        background: url(../img/sidebar-active.svg) no-repeat right 22px;
+        background: url("@{images}sidebar-active.svg") no-repeat right 22px;
 
         a {
           opacity: 1;
@@ -792,6 +794,7 @@ a.ups-tip-panel-link {
   text-align: center;
   background-repeat: no-repeat;
   background-position: center;
+  background-image: url('@{images}tip-sending_notifications.png');
 }
 
 .ups-tip-panel table tr td:first-child {
@@ -835,38 +838,59 @@ a.ups-tip-panel-link {
 }
 
 
-.ups-panel-variants .panel-heading {
-  background-repeat: no-repeat;
-  background-position: 24px center;
-  padding-left: 64px;
-}
+.ups-panel-variants {
 
-.ups-panel-variants .panel-heading .pull-right {
-  margin-top: 12px;
-  margin-right: 34px;
-}
+  .panel-heading {
+    background-repeat: no-repeat;
+    background-position: 24px center;
+    padding-left: 64px;
 
-.ups-panel-variants .panel-heading strong {
-  font-size: 14px;
-}
+    .pull-right {
+      margin-top: 12px;
+      margin-right: 34px;
+    }
 
-.ups-panel-variants .panel-heading h2 {
-  margin-top: 10px;
-}
+    strong {
+      font-size: 14px;
+    }
 
-.ups-panel-variants > ul > li {
-  padding: 8px 24px;
-}
+    h2 {
+      margin-top: 10px;
+    }
+  }
 
-.ups-panel-variants .dropdown-toggle {
-  margin-left: 12px;
-}
+  &.android {
+    .panel-heading {
+      background-image: url('@{images}platform-android.png');
+    }
+  }
 
-.ups-panel-variants ul > li > a:first-child {
-  width: 150px;
-  max-width: 200px;
-  padding-right: 12px;
-  display: inline-block;
+  &.ios {
+    .panel-heading {
+      background-image: url('@{images}platform-ios.png');
+    }
+  }
+
+  &.chrome {
+    .panel-heading {
+      background-image: url('@{images}platform-chrome.png');
+    }
+  }
+
+  & > ul > li {
+    padding: 8px 24px;
+  }
+
+  .dropdown-toggle {
+    margin-left: 12px;
+  }
+
+  ul > li > a:first-child {
+    width: 150px;
+    max-width: 200px;
+    padding-right: 12px;
+    display: inline-block;
+  }
 }
 
 .ups-panel-installations {
@@ -1174,7 +1198,7 @@ ul.ups-pagination.pagination>.disabled>a:focus {
       padding-top: 8px;
 
       &.active {
-        background-image: url(../css/img/sidebar-active-horizontal.svg);
+        background-image: url("@{images}sidebar-active-horizontal.svg");
         background-position: center bottom;
       }
     }
