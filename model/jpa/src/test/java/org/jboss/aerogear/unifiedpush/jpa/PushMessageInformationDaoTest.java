@@ -286,14 +286,10 @@ public class PushMessageInformationDaoTest {
         ids.add("231543432432");
 
 
-        List<VariantMetricInformation> busyVariants = pushMessageInformationDao.findTopThreeBusyVariants(ids);
+        List<String> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(ids);
         assertThat(busyVariants).hasSize(3);
-        assertThat(busyVariants).extracting("variantID", "receivers")
-                .contains(
-                        tuple("231543432432", 2000L),
-                        tuple("23154343243333", 300L),
-                        tuple("231543432434", 1000L)
-                );
+        assertThat(busyVariants)
+                .contains("231543432432", "23154343243333", "231543432434");
     }
 
     @Test

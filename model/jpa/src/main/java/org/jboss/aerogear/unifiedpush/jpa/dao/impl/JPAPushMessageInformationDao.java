@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
 import java.util.List;
@@ -85,8 +84,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     }
 
     @Override
-    public List<VariantMetricInformation> findTopThreeBusyVariants(Set<String> allVariantIDs) {
-        List<VariantMetricInformation> variantIDsWithWarnings = createQuery("select vmi from VariantMetricInformation vmi" +
+    public List<String> findTopThreeBusyVariantIDs(Set<String> allVariantIDs) {
+        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.variantID IN :variantIDs" +
                 " ORDER BY vmi.receivers " + DESC)
                 .setParameter("variantIDs", allVariantIDs)
