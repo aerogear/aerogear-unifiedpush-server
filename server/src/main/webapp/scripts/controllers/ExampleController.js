@@ -54,4 +54,8 @@ angular.module('newadminApp').controller('ExampleController',
   $scope.setActive = function (tabName) {
     $scope.active = tabName;
   };
+
+  $scope.projectNumber = function() {
+    return $scope.variantType === 'android' ? ('senderID: "' + $scope.variant.projectNumber +'",') : '';
+  };
 });
