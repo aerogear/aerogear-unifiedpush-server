@@ -18,8 +18,10 @@ package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +29,9 @@ import java.util.List;
  * on the Admin UI.
  */
 public class PushMessageMetricsService {
+
+    // that's what we currently use as the maxium of persistence for the message information objects
+    private final static int DAYS_OF_MAX_OLDEST_INFO_MSG = 30;
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
@@ -74,5 +79,14 @@ public class PushMessageMetricsService {
      */
     public List<PushMessageInformation> findAllForVariant(String variantID, boolean sorting) {
         return pushMessageInformationDao.findAllForVariant(variantID, sorting);
+    }
+
+    /**
+     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
+     *  <i>older</i> than 30 days!
+     */
+    public void deleteOutdatePushInformationData() {
+        final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
+        pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
 }
