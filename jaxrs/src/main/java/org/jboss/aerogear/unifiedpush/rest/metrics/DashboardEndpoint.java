@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
 
@@ -28,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Stateless
 @Path("/metrics/dashboard")
@@ -41,9 +43,19 @@ public class DashboardEndpoint {
     public Response totalApplications(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
 
-        DashboardData dataForUser =  service.loadDashboardData(principalName);
+        final DashboardData dataForUser =  service.loadDashboardData(principalName);
 
         return Response.ok(dataForUser).build();
     }
 
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
+        final String principalName = request.getUserPrincipal().getName();
+
+        final List<Variant> variantsWithWarnings = service.getVariantsWithWarninings(principalName);
+
+        return Response.ok(variantsWithWarnings).build();
+    }
 }
