@@ -803,19 +803,22 @@ a.ups-tip-panel-link {
   font-weight: bold;
 }
 
-
 .ups-code-block {
-  font-family: monospace;
   overflow: scroll;
-  white-space: pre;
   width: 100%;
-  background-color: #555 !important;
-  font-size: 12px;
-  line-height: 15px;
-  border-left: 2px solid #111;
-  color: #eee;
+  pre {
+    padding: 0;
+    code {
+      font-family: monospace;
+      white-space: pre;
+      background-color: #555 !important;
+      font-size: 12px;
+      line-height: 15px;
+      border-left: 2px solid #111;
+      color: #eee;
+    }
+  }
 }
-
 
 .ups-panel-details table tr td:first-child {
   padding-right: 12px;
