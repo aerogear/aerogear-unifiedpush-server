@@ -42,19 +42,25 @@ public class DashboardEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response totalApplications(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
-
         final DashboardData dataForUser =  service.loadDashboardData(principalName);
 
         return Response.ok(dataForUser).build();
     }
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
-
         final List<Variant> variantsWithWarnings = service.getVariantsWithWarninings(principalName);
+
+        return Response.ok(variantsWithWarnings).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTopThreeVariants(@Context HttpServletRequest request) {
+        final String principalName = request.getUserPrincipal().getName();
+        final List<Variant> variantsWithWarnings = service.getTopThreeBusyVariants(principalName);
 
         return Response.ok(variantsWithWarnings).build();
     }
