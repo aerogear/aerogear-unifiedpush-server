@@ -31,11 +31,12 @@ module.exports = function (grunt) {
   grunt.initConfig({
     yeoman: yeomanConfig,
     less: {
-      development: {
-        files: {
-          '<%= yeoman.tmp %>/styles/reset.css': '<%= yeoman.app %>/styles/reset.less',
-          '<%= yeoman.tmp %>/styles/console.css': '<%= yeoman.app %>/styles/console.less'
-        }
+      main: {
+        options: {
+          paths: ['<%= yeoman.lib %>/patternfly/less', '<%= yeoman.lib %>']
+        },
+        src: '<%= yeoman.app %>/styles/main.less',
+        dest: '<%= yeoman.tmp %>/styles/main.css'
       }
     },
     watch: {
@@ -140,13 +141,17 @@ module.exports = function (grunt) {
       }
     },
     useminPrepare: {
-      html: '<%= yeoman.app %>/index.html',
+      html: [
+        '<%= yeoman.app %>/index.html',
+        '<%= yeoman.app %>/directives/{,*/}*.html',
+        '<%= yeoman.app %>/views/{,*/}*.html'
+      ],
       options: {
         dest: '<%= yeoman.dist %>'
       }
     },
     usemin: {
-      html: ['<%= yeoman.dist %>/{,*/}*.html'],
+      html: ['<%= yeoman.dist %>/**/*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
         dirs: ['<%= yeoman.dist %>']
@@ -209,8 +214,22 @@ module.exports = function (grunt) {
             expand: true,
             dot: true,
             cwd: '<%= yeoman.lib %>/font-awesome/fonts/',
-            dest: '<%= yeoman.tmp %>/bower_components/patternfly/components/font-awesome/fonts/',
+            dest: '<%= yeoman.tmp %>/fonts/',
             src: [ '**' ]
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.lib %>/patternfly/dist/fonts/',
+            dest: '<%= yeoman.tmp %>/fonts/',
+            src: [ '**' ]
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.app %>/styles/fonts/exo2/',
+            dest: '<%= yeoman.tmp %>/fonts/',
+            src: [ '**', '!*.less', '!*.txt' ]
           }
         ]
       },
@@ -225,7 +244,6 @@ module.exports = function (grunt) {
               '*.{ico,txt}',
               '.htaccess',
               'img/{,*/}*.{webp,gif,png,svg}',
-              'styles/fonts/**',
               'directives/**',
               'views/**'
             ]
@@ -237,20 +255,6 @@ module.exports = function (grunt) {
             src: [
               '**'
             ]
-          },
-          {
-            expand: true,
-            dot: true,
-            cwd: '<%= yeoman.lib %>/font-awesome/fonts/',
-            dest: '<%= yeoman.dist %>/components/font-awesome/fonts/',
-            src: [ '**' ]
-          },
-          {
-            expand: true,
-            dot: true,
-            cwd: '<%= yeoman.lib %>/patternfly/dist/fonts',
-            dest: '<%= yeoman.dist %>/styles/fonts/',
-            src: [ '**' ]
           }
         ]
       },
@@ -363,7 +367,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-newer');
+  grunt.loadNpmTasks('assemble-less');
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
@@ -392,13 +396,14 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'less',
+    'copy:fonts',
     'useminPrepare',
 //    'concurrent:dist',
 //    'copy:styles',
-//    'imagemin',
+    'imagemin',
     'htmlmin',
     'concat',
-    'ngmin:dist',
+//    'ngmin:dist',
 //    'uglify',
     'copy:dist',
     'rev',
