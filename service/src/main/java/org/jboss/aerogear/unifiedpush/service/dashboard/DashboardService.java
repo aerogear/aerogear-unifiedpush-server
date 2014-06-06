@@ -69,6 +69,16 @@ public class DashboardService {
         return variantDao.findAllVariantsByIDs(warningIDs);
     }
 
+    /**
+     * Loads all the Variant objects with the most received messages
+     */
+    public List<Variant> getTopThreeBusyVariants(String principalName) {
+        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
+        final List<String> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(variantIDs);
+
+        return variantDao.findAllVariantsByIDs(topVariantIDs);
+    }
+
     private long totalMessages(String principalName) {
         List<String> pushAppIDs = pushApplicationDao.findAllPushApplicationIDsForDeveloper(principalName);
         return pushMessageInformationDao.getNumberOfPushMessagesForApplications(pushAppIDs);
