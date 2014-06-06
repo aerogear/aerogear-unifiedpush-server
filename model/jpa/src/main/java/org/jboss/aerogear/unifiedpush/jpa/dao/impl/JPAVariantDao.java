@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.persistence.Query;
+import java.util.Collections;
 import java.util.List;
 
 public class JPAVariantDao extends JPABaseDao implements VariantDao {
@@ -70,6 +71,11 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public List<Variant> findAllVariantsByIDs(List<String> variantIDs) {
+
+        if (variantIDs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return createQuery("select t from Variant t where t.variantID IN :variantIDs")
                 .setParameter("variantIDs", variantIDs).getResultList();
     }

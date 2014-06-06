@@ -48,6 +48,7 @@ public class DashboardEndpoint {
     }
 
     @GET
+    @Path("/warnings")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
@@ -57,6 +58,7 @@ public class DashboardEndpoint {
     }
 
     @GET
+    @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTopThreeVariants(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
