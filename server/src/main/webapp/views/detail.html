@@ -20,8 +20,7 @@
             </div>
 
             <div class="ups-tip-panel">
-                <div class="ups-tip-panel-illustration"
-                     style="background-image: url('img/tip-sending_notifications.png');"></div>
+                <div class="ups-tip-panel-illustration"></div>
                 <div class="ups-tip-panel-body">
                     <h2>Sending push notifications
                         <div class="pull-right dropdown">
@@ -52,8 +51,8 @@
             </div>
 
             <h3>Variants</h3>
-            <div class="panel lo-panel ups-panel-variants">
-                <div class="panel-heading" style="background-image: url('img/platform-android.png');">
+            <div class="panel lo-panel ups-panel-variants android">
+                <div class="panel-heading">
                     <div class="pull-left"><h2>Android</h2></div>
                     <div class="pull-right">
                         <ups-pluralize noun="installation" count="counts.android" ></ups-pluralize>
@@ -63,8 +62,8 @@
 
                 <variants variants="application.androidVariants" counts="counts" type="android"></variants>
             </div>
-            <div class="panel lo-panel ups-panel-variants">
-                <div class="panel-heading" style="background-image: url('img/platform-ios.png');">
+            <div class="panel lo-panel ups-panel-variants ios">
+                <div class="panel-heading">
                     <div class="pull-left"><h2>iOS</h2></div>
                     <div class="pull-right">
                         <ups-pluralize noun="installation" count="counts.ios" ></ups-pluralize>
@@ -74,8 +73,8 @@
                 <variants variants="application.iosvariants" counts="counts" type="iOS"></variants>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants">
-                <div class="panel-heading" style="background-image: url('img/platform-chrome.png');">
+            <div class="panel lo-panel ups-panel-variants chrome">
+                <div class="panel-heading">
                     <div class="pull-left"><h2>Chrome</h2></div>
                     <div class="pull-right">
                         <ups-pluralize noun="installation" count="counts.chromePackagedApp" ></ups-pluralize>
@@ -85,7 +84,7 @@
                 <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants">
+            <div class="panel lo-panel ups-panel-variants simplePush">
                 <div class="panel-heading" style="padding-left: 25px">
                     <div class="pull-left"><h2>Simple push</h2></div>
                     <div class="pull-right">
