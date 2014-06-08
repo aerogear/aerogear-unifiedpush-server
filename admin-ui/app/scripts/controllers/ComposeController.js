@@ -65,7 +65,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
       headers: { 'aerogear-sender': 'AeroGear UnifiedPush Console' },
       data: JSON.stringify( pushData ),
       success: function(){
-            Notifications.success('Successfully sent Notification');
+            Notifications.success('Successfully sent notification');
           },
       error: function(){
             Notifications.error('Something went wrong...', 'danger');
