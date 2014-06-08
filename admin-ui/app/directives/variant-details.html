@@ -7,7 +7,7 @@
         <span ng-hide="variant.description.length">No description</span>
         <div class="pull-right dropdown">
             <span>
-                <span ng-show="!counts[variant.variantID]">no installations</span>
+                <span ng-show="!counts[variant.variantID]">No installations</span>
                 <span ng-show="counts[variant.variantID]">
                     <strong>
                         <a href="#/{{applicationId}}/installations/{{variant.variantID}}" ng-click="currentVariant(variant)">
@@ -26,6 +26,22 @@
             </ul>
         </div>
         <div class="ups-toggle-box" collapse="isCollapsed(variant)">
+            <div class="ups-panel-details">
+                <h3>Push Network Details</h3>
+                <table ng-show="variant.projectNumber.length">
+                    <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>
+                    <tr><td>Google API Key:</td><td>{{ variant.googleKey }}</td></tr>
+                </table>
+                <table ng-show="variant.passphrase.length">
+                    <tr><td>Production Key:</td><td>{{ variant.production }}</td></tr>
+                </table>
+                <table ng-show="variant.clientId.length">
+                    <tr><td>Client Id:</td><td>{{ variant.clientId }}</td></tr>
+                    <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
+                    <tr><td>Refresh Token:</td><td>{{ variant.refreshToken }}</td></tr>
+                </table>
+            </div>
+            <br><br>
             <div class="ups-tip-panel">
                 <div class="ups-tip-panel-illustration" style="background-image: url('img/tip-registering_installations.png');"></div>
                 <div class="ups-tip-panel-body">
@@ -39,28 +55,12 @@
                         </div>
                     </h2>
                     <table>
-                        <tr><td class="ups-snippet">Server URL:</td><td>{{ currentLocation }}</td></tr>
-                        <tr><td class="ups-snippet">Variant ID:</td><td>{{ variant.variantID }}</td></tr>
-                        <tr><td class="ups-snippet">Secret: </td><td>{{ variant.secret }}</td></tr>
+                        <tr><td>Server URL:</td><td class="ups-snippet">{{ currentLocation }}</td></tr>
+                        <tr><td>Variant ID:</td><td class="ups-snippet">{{ variant.variantID }}</td></tr>
+                        <tr><td>Secret: </td><td class="ups-snippet">{{ variant.secret }}</td></tr>
                     </table>
                 </div>
                 <div style="clear: both;"></div>
-            </div>
-
-            <div class="ups-panel-details">
-                <h3>Push Network Details</h3>
-                <table ng-show="variant.projectNumber.length">
-                    <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>
-                    <tr><td>Google API Key:</td><td>{{ variant.googleKey }}</td></tr>
-                </table>
-                <table ng-show="variant.passphrase.length">
-                    <tr><td>Production key:</td><td>{{ variant.production }}</td></tr>
-                </table>
-                <table ng-show="variant.clientId.length">
-                    <tr><td>Client Id:</td><td>{{ variant.clientId }}</td></tr>
-                    <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
-                    <tr><td>Refresh Token:</td><td>{{ variant.refreshToken }}</td></tr>
-                </table>
             </div>
         </div>
     </li>

@@ -39,7 +39,7 @@ angular.module('newadminApp').controller('MainController',
     modalInstance.result.then(function (application) {
       pushApplication.create(application, function (newApp) {
         $scope.applications.push(newApp);
-        Notifications.success('Successfully created application "' + newApp.name + '"');
+        Notifications.success('Successfully created application "' + newApp.name + '".');
       }, function () {
         Notifications.error('Something went wrong...', 'danger');
       });
@@ -50,7 +50,7 @@ angular.module('newadminApp').controller('MainController',
     var modalInstance = show(application, 'create-app.html');
     modalInstance.result.then(function (application) {
       pushApplication.update({appId: application.pushApplicationID}, application, function () {
-        Notifications.success('Successfully edited application "' + application.name + '"');
+        Notifications.success('Successfully edited application "' + application.name + '".');
       });
     });
   };
@@ -60,7 +60,7 @@ angular.module('newadminApp').controller('MainController',
     modalInstance.result.then(function () {
       pushApplication.remove({appId: application.pushApplicationID}, function () {
         $scope.applications.splice($scope.applications.indexOf(application), 1);
-        Notifications.success('Successfully removed application "' + application.name + '"');
+        Notifications.success('Successfully removed application "' + application.name + '".');
       });
     });
   };

@@ -57,7 +57,7 @@ angular.module('newadminApp', [
         controller: 'ComposeController',
         crumb: {
           parent: 'app-detail',
-          label: 'Compose'
+          label: 'Send Push'
         }
       })
       .when('/dashboard', {
