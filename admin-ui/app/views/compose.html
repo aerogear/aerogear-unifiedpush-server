@@ -15,14 +15,14 @@
             </div>
             <br/>
             <div class="criteria">
-                <button ng-click="changeVariant(application)" class="btn btn-default btn-lg"  type="button">Change </button>
+                <button ng-click="changeVariant(application)" class="btn btn-default btn-lg"  type="button">Change...</button>
                 <strong>Variants</strong>
                 <p><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></p>
                 <br/>
             </div>
             <br/>
             <div class="criteria">
-            <button ng-click="changeCriteria(application)" class="btn btn-default btn-lg"  type="button">Change </button>
+            <button ng-click="changeCriteria(application)" class="btn btn-default btn-lg"  type="button">Change...</button>
             <strong>Criteria </strong>
 
              <p><strong>Aliases :</strong> &nbsp; &nbsp; {{criteria.alias.length > 0 ? criteria.alias : 'All'}} </p>
@@ -32,7 +32,7 @@
             <p></p>
             </div>
             <br>
-            <button ng-click="sendMessage()" class="btn btn-primary btn-lg"  type="button">Send Notification...</button>
+            <button ng-click="sendMessage()" class="btn btn-primary btn-lg"  type="button">Send Push</button>
 
 
         </div>
