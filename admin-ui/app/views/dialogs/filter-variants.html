@@ -3,10 +3,12 @@
         <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
             <span class="pficon pficon-close"></span>
         </button>
-        <h4 class="modal-title">Select Variants for {{application.name}}</h4>
+        <h4 class="modal-title">&ldquo;{{application.name}}&rdquo; variants</h4>
     </div>
     <div class="modal-body">
-        <p>Android variants : </p>
+      <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant) > -1" ng-click="toggleSelection(simplepushvariant)">All
+      <div style="overflow: scroll-y;"height: 50px;>
+        <p>Android</p>
         <ul class="list-group ">
         <li class="list-group-item" ng-repeat="androidvariant in application.androidVariants">
             <label>
@@ -15,7 +17,7 @@
             </label>
         </li>
         </ul>
-        <p>iOS variants : </p>
+        <p>iOS</p>
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="iosvariant in application.iosvariants">
                 <label>
@@ -24,7 +26,7 @@
                 </label>
             </li>
         </ul>
-        <p>SimplePush variants : </p>
+        <p>Simple Push</p>
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="simplepushvariant in application.simplePushVariants">
                 <label>
@@ -33,7 +35,7 @@
                 </label>
             </li>
         </ul>
-        <p>Chrome Packaged App variants : </p>
+        <p>Chrome</p>
         <ul class="list-group ">
             <li class="list-group-item" ng-repeat="chromevariant in application.chromePackagedAppVariants">
                 <label>
@@ -42,10 +44,10 @@
                 </label>
             </li>
         </ul>
+      </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">
-          Change
-        </button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">Change</button>
     </div>
 </div>
