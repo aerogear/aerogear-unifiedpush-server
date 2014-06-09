@@ -1,7 +1,7 @@
 <ul class="list-group ">
     <li class="list-group-item" ng-repeat="variant in variants">
         <a class="clickable" ng-click="expand(variant)">
-            <i class="fa" ng-class="{'fa-plus-square': isCollapsed(variant), 'fa-minus-square': !isCollapsed(variant)}"></i> {{ variant.name }}
+            <i class="fa" ng-class="{'fa-plus-square-o': isCollapsed(variant), 'fa-minus-square-o': !isCollapsed(variant)}"></i> {{ variant.name }}
         </a>
         <span>{{ variant.description }}</span>
         <span ng-hide="variant.description.length">No description</span>
@@ -19,7 +19,7 @@
 
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i></a>
             <ul class="dropdown-menu">
-                <li><a role="menuitem" ng-click="editVariant(variant, type)">Edit</a></li>
+                <li><a role="menuitem" ng-click="editVariant(variant, type)">Edit...</a></li>
                 <li role="presentation" class="divider"></li>
                 <li><a role="menuitem" ng-click="removeVariant(variant, type)">Remove...</a></li>
                 <li><a role="menuitem" href="#/activity/{{applicationId}}/{{variant.variantID}}">Metrics</a></li>
