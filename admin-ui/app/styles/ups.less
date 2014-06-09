@@ -1,0 +1,232 @@
+ul.ups-pagination.pagination>.active>a,
+ul.ups-pagination.pagination>.active>span,
+ul.ups-pagination.pagination>.active>a:hover,
+ul.ups-pagination.pagination>.active>span:hover,
+ul.ups-pagination.pagination>.active>a:focus,
+ul.ups-pagination.pagination>.active>span:focus {
+  background: #00A9EC none;
+  color: #fff;
+  box-shadow: none;
+}
+
+ul.ups-pagination.pagination a,
+ul.ups-pagination.pagination span,
+ul.ups-pagination.pagination a:hover,
+ul.ups-pagination.pagination span:hover,
+ul.ups-pagination.pagination a:focus,
+ul.ups-pagination.pagination span:focus {
+  background: #fff none;
+  color: #333;
+  box-shadow: none;
+}
+
+ul.ups-pagination.pagination>.disabled>span,
+ul.ups-pagination.pagination>.disabled>span:hover,
+ul.ups-pagination.pagination>.disabled>span:focus,
+ul.ups-pagination.pagination>.disabled>a,
+ul.ups-pagination.pagination>.disabled>a:hover,
+ul.ups-pagination.pagination>.disabled>a:focus {
+  color: #ccc;
+}
+
+.nav-tabs {
+  float: right;
+}
+
+
+
+/* Tip panel */
+
+.ups-tip-panel {
+  border: 1px solid #fddbb1;
+  background-color: #fff5dd;
+  padding: 12px;
+}
+
+.ups-tip-panel h2 {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #f67200;
+  margin-bottom: 6px;
+  display: inline-block;
+  border-bottom: 1px solid #fddbb1;
+  padding-bottom: 4px;
+}
+
+.ups-tip-panel a.dropdown-toggle {
+  color: inherit;
+}
+
+div.ups-tip-panel-body .dropdown a {
+  margin-left: 0;
+}
+
+a.ups-tip-panel-link {
+  margin-right: 12px;
+  font-weight: normal;
+  color: inherit;
+  text-decoration: underline;
+}
+
+.ups-tip-panel .dropdown {
+  color: inherit;
+}
+
+.ups-tip-panel-body {
+  padding-left: 100px;
+  width: 100%;
+  float: right;
+}
+
+.ups-tip-panel-illustration {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@{images}tip-sending_notifications.png');
+}
+
+.ups-tip-panel table tr td:first-child {
+  padding-right: 12px;
+  text-align: right;
+}
+
+.ups-tip-panel table tr td:last-child {
+  font-weight: bold;
+}
+
+.ups-code-block {
+  overflow: scroll;
+  width: 100%;
+  pre {
+    padding: 0;
+    code {
+      font-family: monospace;
+      white-space: pre;
+      background-color: #555 !important;
+      font-size: 12px;
+      line-height: 15px;
+      border-left: 2px solid #111;
+      color: #eee;
+    }
+  }
+}
+
+.ups-panel-details table tr td:first-child {
+  padding-right: 12px;
+  text-align: right;
+}
+
+.ups-panel-details table tr td:last-child {
+  font-weight: bold;
+}
+
+.ups-panel-details h3 {
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 6px;
+}
+
+
+.ups-panel-variants {
+
+  .panel-heading {
+    background-repeat: no-repeat;
+    background-position: 24px center;
+    padding-left: 64px;
+
+    .pull-right {
+      margin-top: 12px;
+      margin-right: 34px;
+    }
+
+    strong {
+      font-size: 14px;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+  }
+
+  &.android {
+    .panel-heading {
+      background-image: url('@{images}platform-android.png');
+    }
+  }
+
+  &.ios {
+    .panel-heading {
+      background-image: url('@{images}platform-ios.png');
+    }
+  }
+
+  &.chrome {
+    .panel-heading {
+      background-image: url('@{images}platform-chrome.png');
+    }
+  }
+
+  & > ul > li {
+    padding: 8px 24px;
+  }
+
+  .dropdown-toggle {
+    margin-left: 12px;
+  }
+
+  ul > li > a:first-child {
+    width: 150px;
+    max-width: 200px;
+    padding-right: 12px;
+    display: inline-block;
+  }
+}
+
+.ups-panel-installations {
+  padding: 24px;
+}
+
+.ups-panel-installations input[type="search"] {
+  border-radius: 14px;
+}
+
+.ups-toggle-box {
+  padding: 24px;
+}
+
+.ups-installations {
+  width: 100%;
+}
+
+.ups-installations tr.collapse.in {
+  display: table-row;
+}
+
+.ups-installation-detail {
+  width: 100%;
+  margin-left: 30px;
+}
+
+.ups-installation-detail td {
+  padding-left: 5px;
+}
+
+.ups-installation-detail td:first-child {
+  text-align: right;
+  color: #bbb;
+}
+
+.ups-snippet {
+  font-family: monospace;
+}
+
+.ups-spinner {
+  margin: auto;
+  position: absolute;
+  left: 50%;
+  top: 125px;
+}

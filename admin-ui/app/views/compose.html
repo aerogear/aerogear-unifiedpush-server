@@ -4,37 +4,63 @@
     <div class="row">
         <div class="lo-content-area col-md-12">
             <div ups-breadcrumb/>
-            <h2>Send notifications to"{{ application.name }}"</h2>
+            <h2>Send push to &ldquo;<strong>{{ application.name }}</strong>&rdquo; installations</h2>
             <div>
                 <ups-alerts />
             </div>
-
-            <div>
-            <strong>Message</strong>
-            <p><input type="text" id="testMessage" class="compose"  ng-model="testMessage"></p>
-            </div>
-            <br/>
-            <div class="criteria">
-                <button ng-click="changeVariant(application)" class="btn btn-default btn-lg"  type="button">Change </button>
-                <strong>Variants</strong>
-                <p><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></p>
-                <br/>
-            </div>
-            <br/>
-            <div class="criteria">
-            <button ng-click="changeCriteria(application)" class="btn btn-default btn-lg"  type="button">Change </button>
-            <strong>Criteria </strong>
-
-             <p><strong>Aliases :</strong> &nbsp; &nbsp; {{criteria.alias.length > 0 ? criteria.alias : 'All'}} </p>
-             <p>   <strong>Device Type :</strong> &nbsp; &nbsp;{{criteria.deviceType.length > 0 ? criteria.deviceType : 'All'}}</p>
-             <p>   <strong>Categories :</strong> &nbsp; &nbsp; {{criteria.categories.length > 0 ? criteria.categories : 'All'}} </p>
-                <br/>
-            <p></p>
-            </div>
             <br>
-            <button ng-click="sendMessage()" class="btn btn-primary btn-lg"  type="button">Send Notification...</button>
-
-
+            
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup">Variants</label>
+                    <div class="col-sm-10">
+                        <input disabled class="form-control" type="text" value="{{variantSelection.length > 0 ? variantSelection.name : 'All'}}">
+                    </div>
+                </div>            
+            </form>
+            <div class="pull-right"><button class="btn btn-default btn-sml" ng-click="changeVariant(application)">Change...</button><br><br></div>
+            
+            <hr>
+            
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup">Message</label>
+                    <div class="col-sm-10"><textarea rows="4" class="form-control" id="testMessage" ng-model="testMessage"></textarea></div>
+                </div>
+            </form>
+                
+            <hr>
+               
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup">Aliases</label>
+                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.alias.length > 0 ? criteria.alias : 'All'}}"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup">Device Types</label>
+                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.deviceType.length > 0 ? criteria.deviceType : 'All'}}"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup">Categories</label>
+                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.categories.length > 0 ? criteria.categories : 'All'}}"></div>
+                </div>            
+            </form>    
+            <div class="pull-right"><button class="btn btn-default btn-sml" ng-click="changeCriteria(application)" >Change...</button><br><br></div>
+              
+            <hr>
+            
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textInput-markup"></label>
+                    <div class="col-sm-10">
+                        <div class="alert alert-info">
+                            <span class="pficon pficon-info"></span>
+                            This message will be sent to a total of <strong>500</strong> installations.
+                        </div>
+                    </div>
+                </div>
+           </form>
+           <div class="pull-right"><button ng-click="sendMessage()" class="btn btn-primary btn-lg" type="button">Send Push Notification</button></div>
         </div>
     </div>
 </div>
