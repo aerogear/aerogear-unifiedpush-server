@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.keycloak.KeycloakSecurityContext;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -58,9 +61,12 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerPushApplication(@Context HttpServletRequest request, PushApplication pushApp) {
+    public Response registerPushApplication(@Context SecurityContext securityContext, PushApplication pushApp) {
 
-        // some validation
+        KeycloakPrincipal p = (KeycloakPrincipal)securityContext.getUserPrincipal();
+        KeycloakSecurityContext ctx = p.getKeycloakSecurityContext();
+
+         // some validation
         try {
             validateModelClass(pushApp);
         } catch (ConstraintViolationException cve) {
@@ -72,7 +78,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         // store the "developer:
-        pushApp.setDeveloper(request.getUserPrincipal().getName());
+        pushApp.setDeveloper(ctx.getToken().getPreferredUsername());
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
@@ -82,11 +88,11 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllPushApplications(@Context HttpServletRequest request) {
-        LOGGER.info("===================================================");
-        LOGGER.info(request.getUserPrincipal().getName());
-        LOGGER.info("===================================================");
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(request.getUserPrincipal().getName())).build();
+    public Response listAllPushApplications(@Context SecurityContext securityContext) {
+        KeycloakPrincipal p = (KeycloakPrincipal)securityContext.getUserPrincipal();
+        KeycloakSecurityContext ctx = p.getKeycloakSecurityContext();
+
+        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(ctx.getToken().getPreferredUsername())).build();
     }
 
     @GET
