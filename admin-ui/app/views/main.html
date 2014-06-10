@@ -23,7 +23,7 @@
                     <a href="#/detail/{{application.pushApplicationID}}">{{ application.name }}</a>
                     <div class="dropdown">
                         <a class="dropdown-toggle">
-                            <i class="fa fa-cog"></i><b class="caret"></b>
+                            <i class="fa fa-cog"></i> <i class="fa fa-caret-down"></i></b>
                         </a>
                         <ul class="dropdown-menu pull-right">
                             <li><a role="menuitem" tabindex="-1" ng-click="edit(application)">Edit...</a></li>
@@ -33,8 +33,7 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <p>{{ application.description }}</p>
-                    <p ng-hide="application.description.length">No description</p>
+                    <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em></p>
                     <p>
                         <ups-pluralize noun="variant" count="application.androidVariants.length + application.simplePushVariants.length +
                             application.iosvariants.length + application.chromePackagedAppVariants.length"></ups-pluralize>
