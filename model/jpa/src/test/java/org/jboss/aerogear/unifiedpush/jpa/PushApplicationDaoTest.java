@@ -16,10 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
@@ -30,6 +27,7 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -342,5 +340,53 @@ public class PushApplicationDaoTest {
         assertThat(result).isNotEmpty();
         assertThat(result.get(av.getVariantID())).isEqualTo(2L);
         assertThat(result.get(ios.getVariantID())).isEqualTo(1L);
+    }
+
+    @Test
+    public void shouldFindPushApplicationNameAndIDbasedOnVariantID() {
+        //given
+        PushApplication pushApplication1 = new PushApplication();
+        final String appName = "Push App 1";
+        pushApplication1.setName(appName);
+        final String id = pushApplication1.getId();
+        pushApplicationDao.create(pushApplication1);
+
+        PushApplication pa = pushApplicationDao.find(id);
+
+        AndroidVariant av = new AndroidVariant();
+        av.setName("Android Variant");
+        av.setGoogleKey("KEY...");
+        variantDao.create(av);
+
+        AndroidVariant ignored = new AndroidVariant();
+        ignored.setName("ignored");
+        ignored.setGoogleKey("123");
+        variantDao.create(ignored);
+
+        iOSVariant iOSVariant = new iOSVariant();
+        iOSVariant.setName("ignored");
+        iOSVariant.setCertificate(new byte[1]);
+        iOSVariant.setPassphrase("123");
+        variantDao.create(iOSVariant);
+
+        pa.getAndroidVariants().add(av);
+        pa.getAndroidVariants().add(ignored);
+        pa.getIOSVariants().add(iOSVariant);
+        pushApplicationDao.update(pa);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        //when
+        final Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(Arrays.asList(av.getVariantID()));
+
+        //then
+        assertThat(applications).isNotEmpty();
+        assertThat(applications.size()).isEqualTo(1);
+
+        final PushApplication application = applications.values().iterator().next();
+        assertThat(application.getName()).isEqualTo(appName);
+        assertThat(application.getAndroidVariants()).isEmpty();
+        assertThat(application.getIOSVariants()).isEmpty();
     }
 }
