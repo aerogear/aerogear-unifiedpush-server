@@ -306,4 +306,31 @@ public class VariantDaoTest {
         entityManager.clear();
 
     }
+
+
+    @Test
+    public void shouldDetectThatVariantIdNotExists() {
+        //given
+        String nonExistentVariantId = "321-variantId";
+
+        //when
+        final boolean exists = variantDao.existsVariantIDForDeveloper(nonExistentVariantId, "admin");
+
+        assertThat(exists).isEqualTo(false);
+    }
+
+    @Test
+    public void shouldDetectThatVariantIdExists() {
+        //given
+        AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("admin");
+        final String variantID  = av.getVariantID();
+        variantDao.create(av);
+
+        //when
+        final boolean exists = variantDao.existsVariantIDForDeveloper(variantID, "admin");
+
+        assertThat(exists).isEqualTo(true);
+    }
 }

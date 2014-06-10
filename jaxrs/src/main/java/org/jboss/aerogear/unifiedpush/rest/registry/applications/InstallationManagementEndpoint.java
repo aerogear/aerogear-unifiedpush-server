@@ -20,8 +20,10 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +39,9 @@ import javax.ws.rs.core.UriInfo;
 public class InstallationManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 50;
     private static final int DEFAULT_PAGE_SIZE = 25;
+
+    @Inject
+    private GenericVariantService genericVariantService;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -56,12 +61,15 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
-        //Find the installations using the variantID
-        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, request.getUserPrincipal().getName(), page, pageSize);
+        final String developer = request.getUserPrincipal().getName();
 
-        if (pageResult.getResultList().isEmpty()) {
+        //Find the variant using the variantID
+        if (!genericVariantService.existsVariantIDForDeveloper(variantId, developer)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
+
+        //Find the installations using the variantID
+        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, developer, page, pageSize);
 
         final long totalPages = pageResult.getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);

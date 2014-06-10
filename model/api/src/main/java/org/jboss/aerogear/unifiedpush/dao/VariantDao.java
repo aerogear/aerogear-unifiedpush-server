@@ -38,6 +38,14 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
     List<String> findVariantIDsForDeveloper(String principalName);
 
     /**
+     * Checks if variant exists for this developer
+     * @param variantID the variant to find
+     * @param loginName the name of the owner/developer to use
+     * @return true if the variant exists for the specified developer.
+     */
+    boolean existsVariantIDForDeveloper(String variantID, String loginName);
+
+    /**
      * Loads list of all variants, where IDs are given.
      */
     List<Variant> findAllVariantsByIDs(List<String> variantIDs);

@@ -45,6 +45,11 @@ public interface GenericVariantService {
     Variant findByVariantIDForDeveloper(String variantID, String loginName);
 
     /**
+     * See that variant exists for developer
+     */
+    boolean existsVariantIDForDeveloper(String variantID, String loginName);
+
+    /**
      * Adds a installation (device/client) to the given variant
      *
      * @param variant the container/owner the installation belongs to
