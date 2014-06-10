@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
@@ -295,6 +296,8 @@ public class PushMessageInformationDaoTest {
 
         pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
 
+        final String loginName = "admin";
+
         VariantMetricInformation variantOne = new VariantMetricInformation();
         variantOne.setDeliveryStatus(Boolean.FALSE);
         variantOne.setReceivers(200);
@@ -315,16 +318,27 @@ public class PushMessageInformationDaoTest {
         variantFour.setVariantID("231543432434");
         pushMessageInformation.getVariantInformations().add(variantFour);
         pushMessageInformationDao.update(pushMessageInformation);
+
+        final AndroidVariant androidVariant = new AndroidVariant();
+        androidVariant.setGoogleKey("123");
+        androidVariant.setVariantID("231543432432");
+        androidVariant.setDeveloper(loginName);
+        entityManager.persist(androidVariant);
+
+        final AndroidVariant androidVariant1 = new AndroidVariant();
+        androidVariant1.setGoogleKey("123");
+        androidVariant1.setVariantID("23154343243333");
+        androidVariant1.setDeveloper(loginName);
+        entityManager.persist(androidVariant1);
+
+        final AndroidVariant androidVariant2 = new AndroidVariant();
+        androidVariant2.setGoogleKey("123");
+        androidVariant2.setVariantID("231543432434");
+        androidVariant2.setDeveloper("other");
+        entityManager.persist(androidVariant2);
         flushAndClear();
 
-
-        final List<String> allVariantIDs = new ArrayList<String>();
-        allVariantIDs.add("231543432432");
-        allVariantIDs.add("23154343243333");
-        allVariantIDs.add("231543432434");
-
-
-        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings(allVariantIDs);
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings(loginName);
 
         assertThat(variantIDsWithWarnings).hasSize(2);
         assertThat(variantIDsWithWarnings).contains("231543432432", "23154343243333");

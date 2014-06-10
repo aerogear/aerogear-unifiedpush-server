@@ -72,11 +72,11 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     }
 
     @Override
-    public List<String> findVariantIDsWithWarnings(List<String> allVariantIDs) {
-        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.variantID IN :variantIDs" +
+    public List<String> findVariantIDsWithWarnings(String loginName) {
+        List<String> variantIDsWithWarnings = createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+                " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
                 " and vmi.deliveryStatus = false")
-                .setParameter("variantIDs", allVariantIDs)
+                .setParameter("developer", loginName)
                 .getResultList();
 
         return variantIDsWithWarnings;

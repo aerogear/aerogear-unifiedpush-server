@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.dashboard;
 
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
@@ -23,7 +24,9 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for loading various data for the Dashboard of the Admin UI
@@ -62,11 +65,16 @@ public class DashboardService {
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
      */
-    public List<Variant> getVariantsWithWarnings(String principalName) {
-        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(variantIDs);
+    public List<Warning> getVariantsWithWarnings(String principalName) {
+        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName);
+        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(warningIDs);
 
-        return variantDao.findAllVariantsByIDs(warningIDs);
+        List<Warning> warnings = new ArrayList<Warning>(warningIDs.size());
+        for (Map.Entry<Variant, PushApplication> entry : applications.entrySet()) {
+            warnings.add(new Warning(entry.getValue().getPushApplicationID(), entry.getValue().getName(), entry.getKey()));
+        }
+
+        return warnings;
     }
 
     /**

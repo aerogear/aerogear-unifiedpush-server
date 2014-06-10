@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
+import org.jboss.aerogear.unifiedpush.service.dashboard.Warning;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ public class DashboardEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
         final String principalName = request.getUserPrincipal().getName();
-        final List<Variant> variantsWithWarnings = service.getVariantsWithWarnings(principalName);
+        final List<Warning> variantsWithWarnings = service.getVariantsWithWarnings(principalName);
 
         return Response.ok(variantsWithWarnings).build();
     }
