@@ -49,17 +49,9 @@
             <div class="clearfix"></div>
           </div>
           <ul class="list-group ">
-            <li class="list-group-item"><i class="fa fa-warning"></i> Happy Wombats &raquo; Demo
-              <div class="pull-right"><a href="">Activity &raquo;</a>
-              </div>
-            </li>
-            <li class="list-group-item"><i class="fa fa-warning"></i> Happy Wombats &raquo; Full
-              <div class="pull-right"><a href="">Activity &raquo;</a>
-              </div>
-            </li>
-            <li class="list-group-item"><i class="fa fa-warning"></i> Happy Wombats &raquo; Lite
-              <div class="pull-right"><a href="">Activity &raquo;</a>
-              </div>
+            <li class="list-group-item" ng-repeat="warning in warnings">
+              <i class="fa fa-warning"></i> {{ warning.applicationName }} &raquo; {{ warning.variant.name }}
+              <a class="pull-right" href="#/activity/{{warning.applicationID}}/{{warning.variant.variantID}}">Activity &raquo;</a>
             </li>
           </ul>
         </div>

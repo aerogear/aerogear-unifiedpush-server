@@ -83,9 +83,16 @@ backendMod.factory('installations', function ($resource) {
 });
 
 backendMod.factory('dashboard', function ($resource) {
-  return $resource('rest/metrics/dashboard', {}, {
-    get: {
+  return $resource('rest/metrics/dashboard/:verb', {}, {
+    totals: {
       method: 'GET'
+    },
+    warnings: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'warnings'
+      }
     }
   });
 });

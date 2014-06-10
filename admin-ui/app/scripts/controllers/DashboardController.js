@@ -18,8 +18,12 @@
 
 angular.module('newadminApp').controller('DashboardController',
   function ($scope, dashboard) {
-    dashboard.get({}, function (data) {
+    dashboard.totals({}, function (data) {
       $scope.dashboardData = data;
+    });
+
+    dashboard.warnings({}, function (data) {
+      $scope.warnings = data;
     });
   });
 
