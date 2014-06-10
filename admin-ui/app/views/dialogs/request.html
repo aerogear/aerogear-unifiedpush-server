@@ -1,13 +1,11 @@
 <div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
-            <span class="pficon pficon-close"></span>
-        </button>
-        <h4 class="modal-title">Full Request</h4>
-    </div>
-    <div class="modal-body">
-      <blockquote class="ups-code-block json">
-{{ request }}
-      </blockquote>
-    </div>
+  <div class="modal-header">
+    <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <h4 class="modal-title">Full Request</h4>
+  </div>
+  <div class="modal-body">
+    <div class="ups-code-block" hljs source="request"></div>
+  </div>
 </div>
