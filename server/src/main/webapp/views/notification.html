@@ -6,7 +6,13 @@
 
       <div ups-breadcrumb/>
 
-      <div class="panel lo-panel ups-panel" style="margin-top: 20px">
+      <div class="panel lo-panel ups-panel">
+        <div class="panel-heading">
+          <div class="pull-right">
+            <span><input type="search" class="form-control" placeholder="Search..."></span>
+          </div>
+          <div class="clearfix"></div>
+        </div>
         <div class="ups-padding-box">
           <table class="expand">
             <th>
@@ -58,6 +64,11 @@
                       <td>Message:</td>
                       <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
                     </tr>
+                    <tr>
+                      <td>Device Type:</td>
+                      <td colspan="2"><strong>{{ parse(metric).sendCriteria.deviceTypes }}</strong>
+                      </td>
+                    </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
                   <table ng-show="metric.deliveryFailed">
@@ -77,7 +88,7 @@
                             <td>
                               <a href="#/detail/{{applicationId}}">{{ variant.name ? variant.name : variant.variantID }}</a>
                             </td>
-                            <td>{{ variant.deliveryStatus == false ? 'Failed' : 'Succeeded' }}</td>
+                            <td>{{ variant.deliveryStatus == true ? 'Failed' : 'Succeeded' }}</td>
                             <td>
                               <strong>{{ variant.receivers }}</strong> installations
                             </td>
