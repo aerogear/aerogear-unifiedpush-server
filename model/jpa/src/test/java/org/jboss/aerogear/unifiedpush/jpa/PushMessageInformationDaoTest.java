@@ -28,6 +28,7 @@ import org.junit.Test;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -291,9 +292,9 @@ public class PushMessageInformationDaoTest {
 
         flushAndClear();
 
-        List<String> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(loginName);
+        Map<String, Long> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(loginName);
         assertThat(busyVariants).hasSize(3);
-        assertThat(busyVariants)
+        assertThat(busyVariants.keySet())
                 .contains("231543432432", "23154343243333", "231543432434");
     }
 

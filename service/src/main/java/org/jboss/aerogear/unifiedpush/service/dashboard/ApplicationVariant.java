@@ -22,6 +22,7 @@ public class ApplicationVariant {
     private Variant variant;
     private String applicationName;
     private String applicationID;
+    private Long receivers;
 
     public ApplicationVariant(String applicationID, String applicationName, Variant variant) {
         this.applicationID = applicationID;
@@ -52,6 +53,15 @@ public class ApplicationVariant {
     public void setApplicationID(String applicationID) {
         this.applicationID = applicationID;
     }
+
+    public Long getReceivers() {
+        return receivers;
+    }
+
+    public void setReceivers(Long receivers) {
+        this.receivers = receivers;
+    }
+
 
     @Override
     public String toString() {
