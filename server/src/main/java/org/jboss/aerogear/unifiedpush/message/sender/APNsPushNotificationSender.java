@@ -63,14 +63,14 @@ public class APNsPushNotificationSender {
                 .badge(pushMessage.getBadge()) // little badge icon update;
                 .sound(pushMessage.getSound()); // sound to be played by app
 
-                // apply the 'content-available:1' value:
-                if (pushMessage.isContentAvailable()) {
-                    // content-available:1 is (with iOS7) not only used
-                    // Newsstand, however 'notnoop' names it this way (legacy)...
-                    builder = builder.forNewsstand();
-                }
+        // apply the 'content-available:1' value:
+        if (pushMessage.isContentAvailable()) {
+            // content-available:1 is (with iOS7) not only used
+            // Newsstand, however 'notnoop' names it this way (legacy)...
+            builder = builder.forNewsstand();
+        }
 
-                builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
+        builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
 
         final String apnsMessage  =  builder.build(); // build the JSON payload, for APNs
 
@@ -83,6 +83,9 @@ public class APNsPushNotificationSender {
                 service.start();
 
                 Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
+                
+                logger.log(Level.FINE, "Sending payload for [" + tokens.size() + "] devices to APNS");
+                
                 service.push(tokens, apnsMessage, expireDate);
 
                 // after sending, let's ask for the inactive tokens:
