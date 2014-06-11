@@ -122,7 +122,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/main.html',
         controller: 'MainController',
         crumb: {
-          level: 0,
+          id: 'apps',
           label: 'Applications'
         }
       })
@@ -130,7 +130,8 @@ angular.module('newadminApp', [
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
         crumb: {
-          level: 1,
+          id: 'app-detail',
+          parent: 'apps',
           label: '$ application.name ? application.name : "Current Application"'
         }
       })
@@ -138,7 +139,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: '$ variant.name ? variant.name : "Registering Installations"'
         }
       })
@@ -146,7 +147,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Example'
         }
       })
@@ -154,7 +155,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Example'
         }
       })
@@ -162,8 +163,33 @@ angular.module('newadminApp', [
         templateUrl: 'views/compose.html',
         controller: 'ComposeController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Compose'
+        }
+      })
+      .when('/dashboard', {
+        templateUrl: 'views/dashboard.html',
+        controller: 'DashboardController',
+        crumb: {
+          id: 'dash',
+          label: 'Dashboard'
+        }
+      })
+      .when('/activity/:applicationId', {
+        templateUrl: 'views/notification.html',
+        controller: 'ActivityController',
+        crumb: {
+          id: 'activity',
+          parent: 'dash',
+          label: '$ application.name ? application.name : "Current Application"'
+        }
+      })
+      .when('/activity/:applicationId/:variantId', {
+        templateUrl: 'views/notification.html',
+        controller: 'ActivityController',
+        crumb: {
+          parent: 'activity',
+          label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
       .otherwise({
@@ -777,6 +803,143 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
 });
 
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
+angular.module('newadminApp').controller('DashboardController',
+  function ($scope, dashboard) {
+    dashboard.totals({}, function (data) {
+      $scope.dashboardData = data;
+    });
+
+    dashboard.warnings({}, function (data) {
+      $scope.warnings = data;
+    });
+
+    dashboard.topThree({}, function (data) {
+      $scope.topThree = data;
+    });
+  });
+
+angular.module('newadminApp').controller('ActivityController',
+  function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs) {
+
+    $scope.applicationId = $routeParams.applicationId;
+
+    function findVariant(variants, closure, variantId) {
+      angular.forEach(variants, function (variant) {
+        if (variant.variantID === variantId) {
+          closure(variant);
+        }
+      });
+    }
+
+    function forAllVariants(application, variantId, closure) {
+      findVariant(application.iosvariants, closure, variantId);
+      findVariant(application.androidVariants, closure, variantId);
+      findVariant(application.simplePushVariants, closure, variantId);
+      findVariant(application.chromePackagedAppVariants, closure, variantId);
+    }
+
+    pushApplication.get({appId: $routeParams.applicationId}, function (application) {
+      $rootScope.application = application;
+
+      if (typeof $routeParams.variantId !== 'undefined') {
+        forAllVariants(application, $routeParams.variantId, function (variant) {
+          $rootScope.variant = variant;
+        });
+      }
+      breadcrumbs.generateBreadcrumbs();
+    });
+
+    if (typeof $routeParams.variantId !== 'undefined') {
+      metrics.variant({id: $routeParams.variantId}, function (data) {
+        $scope.pushMetrics = data;
+        angular.forEach(data, function (metric) {
+          metric.totalReceivers = metric.variantInformations[0].receivers;
+          metric.deliveryFailed = metric.variantInformations[0].deliveryStatus;
+        });
+      });
+    } else {
+      metrics.application({id: $routeParams.applicationId}, function(data) {
+        $scope.pushMetrics = data;
+
+        function totalReceivers(data) {
+          angular.forEach(data, function (metric) {
+            angular.forEach(metric.variantInformations, function (variant) {
+              if (!variant.deliveryStatus) {
+                metric.deliveryFailed = true;
+              }
+              if (!metric.totalReceivers) {
+                metric.totalReceivers = 0;
+              }
+              metric.totalReceivers += variant.receivers;
+            });
+          });
+        }
+
+        totalReceivers(data);
+      });
+    }
+
+    $scope.variantMetricInformation = function(metrics) {
+      angular.forEach(metrics, function(variantInfo) {
+        forAllVariants($rootScope.application, variantInfo.variantID, function (variant) {
+          variantInfo.name = variant.name;
+        });
+      });
+
+      return metrics;
+    };
+
+    $scope.expand = function (metric) {
+      metric.expand = !metric.expand;
+    };
+
+    $scope.isCollapsed = function (metric) {
+      return !metric.expand;
+    };
+
+    $scope.parse = function (metric) {
+      return JSON.parse(metric.rawJsonMessage);
+    };
+
+    $scope.showFullRequest = function (rawJsonMessage) {
+      $modal.open({
+        templateUrl: 'views/dialogs/request.html',
+        controller: function ($scope, $modalInstance, request) {
+          $scope.request = request;
+
+          $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+          };
+        },
+        resolve: {
+          request: function () {
+            //nasty way to get formatted json
+            return JSON.stringify(JSON.parse(rawJsonMessage), null, 4);
+          }
+        }
+      });
+    };
+
+  });
+
 'use strict';
 
 var backendMod = angular.module('newadminApp.services', []).
@@ -861,15 +1024,67 @@ backendMod.factory('installations', function ($resource) {
   });
 });
 
+backendMod.factory('dashboard', function ($resource) {
+  return $resource('rest/metrics/dashboard/:verb', {}, {
+    totals: {
+      method: 'GET'
+    },
+    warnings: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'warnings'
+      }
+    },
+    topThree: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'active'
+      }
+    }
+  });
+});
+
+backendMod.factory('metrics', function ($resource) {
+  return $resource('rest/metrics/messages/:verb/:id', {
+    id: '@id'
+  }, {
+    application: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'application'
+      }
+    },
+    variant: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'variant'
+      }
+    }
+  });
+});
+
+
 backendMod.factory('breadcrumbs', function ($rootScope, $route) {
   var BreadcrumbService = {
     breadcrumbs: [],
+    routes: {},
     get: function() {
       return this.breadcrumbs;
     },
+    init: function() {
+      var self = this;
+      angular.forEach($route.routes, function(route) {
+        if (route.crumb) {
+          self.routes[route.crumb.id] = route;
+        }
+      });
+    },
     generateBreadcrumbs: function() {
-      var routes = $route.routes,
-        self = this;
+      var parent, self = this;
 
       var getRoute = function(route) {
         if ($route.current) {
@@ -886,29 +1101,22 @@ backendMod.factory('breadcrumbs', function ($rootScope, $route) {
         }
       };
 
-      var getRouteByLevel = function(level) {
-        var result = null;
-        angular.forEach(routes, function(route) {
-          if (route.crumb && route.crumb.level === level) {
-            result = route;
-          }
-        });
-        return result;
+      var label = function(route) {
+        return route.crumb.label.indexOf('$') !== -1 ? $rootScope.$eval(route.crumb.label.substring(1)) : route.crumb.label;
       };
 
-      var label = function(route) {
-        var label = route.crumb.label.indexOf('$') !== -1 ? $rootScope.$eval(route.crumb.label.substring(1)) : route.crumb.label;
-        self.breadcrumbs.push({ label: label, path: route.path });
-      };
-      
       this.breadcrumbs = [];
       if ($route.current && $route.current.crumb) {
-        label($route.current);
-        for (var i = $route.current.crumb.level - 1; i >= 0 ; i--) {
-          var route = getRouteByLevel(i);
+        self.breadcrumbs.push({ label: label($route.current), path: $route.current.path });
+        parent = $route.current.crumb.parent;
+
+        while (parent) {
+          var route = self.routes[parent];
           route.path = getRoute(route.originalPath);
-          label(route);
+          self.breadcrumbs.push({ label: label(route), path: route.path });
+          parent = route.crumb.parent;
         }
+
         self.breadcrumbs.reverse();
       }
     }
@@ -920,6 +1128,7 @@ backendMod.factory('breadcrumbs', function ($rootScope, $route) {
     BreadcrumbService.generateBreadcrumbs();
   });
 
+  BreadcrumbService.init();
   BreadcrumbService.generateBreadcrumbs();
 
   return BreadcrumbService;

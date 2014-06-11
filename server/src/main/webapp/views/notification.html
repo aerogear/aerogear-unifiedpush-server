@@ -1,0 +1,108 @@
+<ups-navigation current="stats"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+  <div class="row">
+    <div class="lo-content-area col-md-12">
+
+      <div ups-breadcrumb/>
+
+      <div class="panel lo-panel ups-panel">
+        <div class="panel-heading">
+          <div class="pull-right">
+            <span><input type="search" class="form-control" placeholder="Search..."></span>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="ups-padding-box">
+          <table class="expand">
+            <th>
+              <tr>
+                <td style="padding: 6px 0;"><strong>Notification</strong>
+                </td>
+                <td><strong>Receivers</strong>
+                </td>
+                <td><strong>Status</strong>
+                </td>
+                <td><strong>Timestamp</strong>
+                </td>
+              </tr>
+            </th>
+            <tr style="border-top: 1px #eee solid" ng-repeat-start="metric in pushMetrics">
+              <td style="padding: 8px 0;">
+                <a href ng-click="expand(metric)">
+                  <i class="fa"
+                     ng-class="{'fa-plus-square': isCollapsed(metric), 'fa-minus-square': !isCollapsed(metric)}"></i>
+                  {{ metric.rawJsonMessage | limitTo : 50 }}...
+                </a>
+              </td>
+              <td>
+                <strong>{{ metric.totalReceivers ? metric.totalReceivers : 'All'  }}</strong> installations
+              </td>
+              <td>
+                <strong>
+                  {{metric.deliveryStatus}}
+                  <i class="fa fa-warning" ng-show="metric.deliveryFailed == true"></i>
+                  {{ metric.deliveryFailed == true ? 'Failed' : 'Succeeded' }}
+                </strong>
+              </td>
+              <td>
+                {{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}
+              </td>
+            </tr>
+            <tr collapse="isCollapsed(metric)" ng-repeat-end>
+              <td colspan="4" style="padding: 8px;">
+                <div class="ups-toggle-box ups-panel-details">
+                  <table>
+                    <tr>
+                      <td>Request IP:</td>
+                      <td><strong>{{ metric.ipAddress }}</strong>
+                      </td>
+                      <td><a href ng-click="showFullRequest(metric.rawJsonMessage)">Full Request</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Message:</td>
+                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
+                    </tr>
+                    <tr>
+                      <td>Device Type:</td>
+                      <td colspan="2"><strong>{{ parse(metric).sendCriteria.deviceTypes }}</strong>
+                      </td>
+                    </tr>
+                  </table>
+                  <hr ng-show="metric.deliveryFailed">
+                  <table ng-show="metric.deliveryFailed">
+                    <tr>
+                      <td>Error:</td>
+                      <td><strong>Problem reaching push network</strong></td>
+                      <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
+                    </tr>
+                  </table>
+                  <hr ng-show="metric.variantInformations.length > 1">
+                  <table ng-show="metric.variantInformations.length > 1">
+                    <tr>
+                      <td>Variants:</td>
+                      <td>
+                        <table class="expand">
+                          <tr ng-repeat="variant in variantMetricInformation(metric.variantInformations)">
+                            <td>
+                              <a href="#/detail/{{applicationId}}">{{ variant.name ? variant.name : variant.variantID }}</a>
+                            </td>
+                            <td>{{ variant.deliveryStatus == true ? 'Failed' : 'Succeeded' }}</td>
+                            <td>
+                              <strong>{{ variant.receivers }}</strong> installations
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

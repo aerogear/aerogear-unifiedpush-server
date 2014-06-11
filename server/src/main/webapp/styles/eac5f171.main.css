@@ -10874,7 +10874,7 @@ a.ups-tip-panel-link {
 .ups-installations {
   width: 100%;
 }
-.ups-installations tr.collapse.in {
+tr.collapse.in {
   display: table-row;
 }
 .ups-installation-detail {
@@ -10887,6 +10887,43 @@ a.ups-tip-panel-link {
 .ups-installation-detail td:first-child {
   text-align: right;
   color: #bbb;
+}
+.dash {
+  padding-left: 0;
+}
+.dashboard,
+.dashboard i {
+  font-size: 38px;
+}
+.active-apps {
+  color: #f0888b;
+}
+.notifications {
+  color: #51b5af;
+}
+.installations {
+  color: #f1b512;
+}
+/* Details panel */
+.ups-panel-details table tr td {
+  padding-right: 12px;
+}
+.ups-panel-details table tr td:first-child {
+  min-width: 64px;
+}
+.ups-panel-details table tr td:first-child {
+  text-align: right;
+}
+.ups-panel-details h3 {
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 6px;
+}
+.expand {
+  width: 100%;
+}
+.ups-toggle-box,
+.ups-padding-box {
+  padding: 24px;
 }
 .topcoat-switch {
   z-index: 2;

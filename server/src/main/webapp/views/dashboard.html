@@ -1,0 +1,89 @@
+<ups-navigation current="stats"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane">
+  <div class="lo-content-area col-md-12">
+
+    <h2>Welcome Sebastien,</h2>
+
+    <div class="dash col-md-12">
+      <div class="panel ups-panel pull-left ups-padding-box expand">
+        <div class="pull-left ups-padding-box">
+          <div class="pull-left dashboard active-apps">
+            <i class="fa fa-square"></i>&nbsp; {{ dashboardData.applications }}&nbsp;
+          </div>
+          <div class="pull-left">applications
+            <br>active
+          </div>
+        </div>
+        <div class="pull-left ups-padding-box">
+          <div class="pull-left dashboard notifications">
+            <i class="fa fa-envelope"></i>&nbsp; {{ dashboardData.messages }}&nbsp;
+          </div>
+          <div class="pull-left">
+            notifications
+            <br>delivered
+          </div>
+        </div>
+        <div class="pull-left ups-padding-box">
+          <div class="pull-left dashboard installations">
+            <i class="fa fa-mobile-phone"></i>&nbsp; {{ dashboardData.devices }}&nbsp;
+          </div>
+          <div class="pull-left">installations
+            <br>registered
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="row">
+      <div class="dash col-md-6">
+        <div class="panel lo-panel ups-panel-variants">
+          <div class="panel-heading">
+            <div class="pull-left">
+              <h2>Warnings</h2>
+            </div>
+            <div class="pull-right">
+              <span></span>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <ul class="list-group ">
+            <li class="list-group-item" ng-repeat="warning in warnings">
+              <i class="fa fa-warning"></i> {{ warning.applicationName }} &raquo; {{ warning.variant.name }}
+              <a class="pull-right" href="#/activity/{{warning.applicationID}}/{{warning.variant.variantID}}">
+                Activity &raquo;
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="dash col-md-6">
+
+        <div class="panel lo-panel ups-panel-variants">
+          <div class="panel-heading">
+            <div class="pull-left">
+              <h2>Most Active</h2>
+            </div>
+            <div class="pull-right">
+              <span>Notifications delivered</span>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <ul class="list-group ">
+            <li class="list-group-item" ng-repeat="top in topThree">
+              <a href="#/activity/{{top.applicationID}}/{{top.variant.variantID}}">
+                {{ top.applicationName }} &raquo; {{ top.variant.name }}
+              </a>
+              <div class="pull-right">{{ top.receivers }}</div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
