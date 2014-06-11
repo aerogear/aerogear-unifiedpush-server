@@ -93,6 +93,13 @@ backendMod.factory('dashboard', function ($resource) {
       params: {
         verb: 'warnings'
       }
+    },
+    topThree: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'active'
+      }
     }
   });
 });

@@ -65,26 +65,31 @@ public class DashboardService {
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
      */
-    public List<Warning> getVariantsWithWarnings(String principalName) {
+    public List<ApplicationVariant> getVariantsWithWarnings(String principalName) {
         final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName);
         Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(warningIDs);
 
-        List<Warning> warnings = new ArrayList<Warning>(warningIDs.size());
-        for (Map.Entry<Variant, PushApplication> entry : applications.entrySet()) {
-            warnings.add(new Warning(entry.getValue().getPushApplicationID(), entry.getValue().getName(), entry.getKey()));
-        }
-
-        return warnings;
+        return wrapApplicationVariant(applications);
     }
 
     /**
      * Loads all the Variant objects with the most received messages
      */
-    public List<Variant> getTopThreeBusyVariants(String principalName) {
-        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-        final List<String> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(variantIDs);
+    public List<ApplicationVariant> getTopThreeBusyVariants(String principalName) {
+        final List<String> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(principalName);
+        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(topVariantIDs);
 
-        return variantDao.findAllVariantsByIDs(topVariantIDs);
+        return wrapApplicationVariant(applications);
+    }
+
+    private List<ApplicationVariant> wrapApplicationVariant(Map<Variant, PushApplication> applications) {
+        final List<ApplicationVariant> applicationVariants = new ArrayList<ApplicationVariant>(applications.size());
+        for (Map.Entry<Variant, PushApplication> entry : applications.entrySet()) {
+            final ApplicationVariant applicationVariant = new ApplicationVariant(entry.getValue().getPushApplicationID(),
+                    entry.getValue().getName(), entry.getKey());
+            applicationVariants.add(applicationVariant);
+        }
+        return applicationVariants;
     }
 
     private long totalMessages(String principalName) {

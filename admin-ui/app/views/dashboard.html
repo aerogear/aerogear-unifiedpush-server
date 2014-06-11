@@ -51,7 +51,9 @@
           <ul class="list-group ">
             <li class="list-group-item" ng-repeat="warning in warnings">
               <i class="fa fa-warning"></i> {{ warning.applicationName }} &raquo; {{ warning.variant.name }}
-              <a class="pull-right" href="#/activity/{{warning.applicationID}}/{{warning.variant.variantID}}">Activity &raquo;</a>
+              <a class="pull-right" href="#/activity/{{warning.applicationID}}/{{warning.variant.variantID}}">
+                Activity &raquo;
+              </a>
             </li>
           </ul>
         </div>
@@ -70,19 +72,12 @@
             <div class="clearfix"></div>
           </div>
           <ul class="list-group ">
-            <li class="list-group-item"><a href="">Happy Wombats &raquo; Demo</a>
-
+            <li class="list-group-item" ng-repeat="top in topThree">
+              <a href="#/activity/{{top.applicationID}}/{{top.variant.variantID}}">
+                {{ top.applicationName }} &raquo; {{ top.variant.name }}
+              </a>
               <div class="pull-right">3,423</div>
             </li>
-            <li class="list-group-item"><a href="">Happy Wombats &raquo; Full</a>
-
-              <div class="pull-right">3,422</div>
-            </li>
-            <li class="list-group-item"><a href="">Happy Wombats &raquo; Lite</a>
-
-              <div class="pull-right">3,421</div>
-            </li>
-
           </ul>
         </div>
 

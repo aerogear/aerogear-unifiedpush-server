@@ -25,13 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
-
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -243,6 +237,8 @@ public class PushMessageInformationDaoTest {
     public void findMostBusyVariants() {
         pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
 
+        final String loginName = "admin";
+
         VariantMetricInformation variantOne = new VariantMetricInformation();
         variantOne.setDeliveryStatus(Boolean.FALSE);
         variantOne.setReceivers(200);
@@ -275,17 +271,27 @@ public class PushMessageInformationDaoTest {
         pushMessageInformationDao.update(pmi);
 
 
+        final AndroidVariant androidVariant = new AndroidVariant();
+        androidVariant.setGoogleKey("123");
+        androidVariant.setVariantID("231543432432");
+        androidVariant.setDeveloper(loginName);
+        entityManager.persist(androidVariant);
+
+        final AndroidVariant androidVariant1 = new AndroidVariant();
+        androidVariant1.setGoogleKey("123");
+        androidVariant1.setVariantID("23154343243333");
+        androidVariant1.setDeveloper(loginName);
+        entityManager.persist(androidVariant1);
+
+        final AndroidVariant androidVariant2 = new AndroidVariant();
+        androidVariant2.setGoogleKey("123");
+        androidVariant2.setVariantID("231543432434");
+        androidVariant2.setDeveloper(loginName);
+        entityManager.persist(androidVariant2);
 
         flushAndClear();
 
-        final List<String> ids = new ArrayList<String>();
-        ids.add("231543432432");
-        ids.add("23154343243333");
-        ids.add("231543432434");
-        ids.add("231543432432");
-
-
-        List<String> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(ids);
+        List<String> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(loginName);
         assertThat(busyVariants).hasSize(3);
         assertThat(busyVariants)
                 .contains("231543432432", "23154343243333", "231543432434");

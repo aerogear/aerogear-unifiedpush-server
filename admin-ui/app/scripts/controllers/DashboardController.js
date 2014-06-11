@@ -25,6 +25,10 @@ angular.module('newadminApp').controller('DashboardController',
     dashboard.warnings({}, function (data) {
       $scope.warnings = data;
     });
+
+    dashboard.topThree({}, function (data) {
+      $scope.topThree = data;
+    });
   });
 
 angular.module('newadminApp').controller('ActivityController',

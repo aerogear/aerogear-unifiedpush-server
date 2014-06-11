@@ -18,12 +18,12 @@ package org.jboss.aerogear.unifiedpush.service.dashboard;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
-public class Warning {
+public class ApplicationVariant {
     private Variant variant;
     private String applicationName;
     private String applicationID;
 
-    public Warning(String applicationID, String applicationName, Variant variant) {
+    public ApplicationVariant(String applicationID, String applicationName, Variant variant) {
         this.applicationID = applicationID;
         this.applicationName = applicationName;
         this.variant = variant;
@@ -55,7 +55,7 @@ public class Warning {
 
     @Override
     public String toString() {
-        return "Warning{" +
+        return "ApplicationVariant{" +
                 "variant=" + variant +
                 ", applicationName='" + applicationName + '\'' +
                 ", applicationId='" + applicationID + '\'' +
