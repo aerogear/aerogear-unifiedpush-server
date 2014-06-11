@@ -56,7 +56,7 @@ angular.module('newadminApp', [
         controller: 'ComposeController',
         crumb: {
           level: 2,
-          label: 'Compose'
+          label: 'Send Push'
         }
       })
       .otherwise({

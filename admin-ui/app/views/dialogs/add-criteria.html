@@ -3,38 +3,37 @@
         <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
             <span class="pficon pficon-close"></span>
         </button>
-        <h4 class="modal-title">Filters for {{application.name}}</h4>
+        <h4 class="modal-title">Filters</h4>
     </div>
     <div class="modal-body">
-    <p>You can provide mutliple values at a time by separating them by commas</p>
+    <p style="opacity: 0.5">You can provide multiple values at a time by separating them by commas.</p>
     <br>
         <form name="form" class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-3 control-label">Alias</label>
+                <label class="col-sm-3 control-label">Aliases</label>
 
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" ng-model="criteria.alias" required>
+                    <input type="text" placeholder="All" class="form-control" ng-model="criteria.alias" required>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Device Type</label>
+                <label class="col-sm-3 control-label">Device Types</label>
 
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" ng-model="criteria.deviceType">
+                    <input type="text" placeholder="All" class="form-control" ng-model="criteria.deviceType">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" >Category</label>
+                <label class="col-sm-3 control-label" >Categories</label>
 
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" ng-model="criteria.categories">
+                    <input type="text" placeholder="All" class="form-control" ng-model="criteria.categories">
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="ok(application)" >
-            Change
-        </button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">Change</button>
     </div>
 </div>
