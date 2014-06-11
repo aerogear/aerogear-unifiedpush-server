@@ -123,7 +123,7 @@ public class GCMPushNotificationSender {
      */
     private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
-        logger.log(Level.INFO, "Sending payload for [" + registrationIDs.size() + "] devices to GCM");
+        logger.log(Level.FINE, "Sending payload for [" + registrationIDs.size() + "] devices to GCM");
 
         MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
 
