@@ -36,7 +36,7 @@ module.exports = function (grunt) {
           paths: ['<%= yeoman.lib %>/patternfly/less', '<%= yeoman.lib %>']
         },
         src: '<%= yeoman.app %>/styles/main.less',
-        dest: '<%= yeoman.tmp %>/styles/main.css'
+        dest: '<%= yeoman.tmp %>/styles/compiled-less.css'
       }
     },
     watch: {
@@ -253,7 +253,8 @@ module.exports = function (grunt) {
             cwd: '<%= yeoman.tmp %>',
             dest: '<%= yeoman.dist %>',
             src: [
-              '**'
+              '**',
+              '!styles/compiled-less.css'
             ]
           }
         ]
