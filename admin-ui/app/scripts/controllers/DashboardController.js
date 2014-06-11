@@ -32,9 +32,35 @@ angular.module('newadminApp').controller('DashboardController',
   });
 
 angular.module('newadminApp').controller('ActivityController',
-  function ($scope, $routeParams, $modal, metrics) {
+  function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs) {
 
     $scope.applicationId = $routeParams.applicationId;
+
+    function findVariant(variants, closure, variantId) {
+      angular.forEach(variants, function (variant) {
+        if (variant.variantID === variantId) {
+          closure(variant);
+        }
+      });
+    }
+
+    function forAllVariants(application, variantId, closure) {
+      findVariant(application.iosvariants, closure, variantId);
+      findVariant(application.androidVariants, closure, variantId);
+      findVariant(application.simplePushVariants, closure, variantId);
+      findVariant(application.chromePackagedAppVariants, closure, variantId);
+    }
+
+    pushApplication.get({appId: $routeParams.applicationId}, function (application) {
+      $rootScope.application = application;
+
+      if (typeof $routeParams.variantId !== 'undefined') {
+        forAllVariants(application, $routeParams.variantId, function (variant) {
+          $rootScope.variant = variant;
+        });
+      }
+      breadcrumbs.generateBreadcrumbs();
+    });
 
     if (typeof $routeParams.variantId !== 'undefined') {
       metrics.variant({id: $routeParams.variantId}, function (data) {
@@ -65,6 +91,16 @@ angular.module('newadminApp').controller('ActivityController',
         totalReceivers(data);
       });
     }
+
+    $scope.variantMetricInformation = function(metrics) {
+      angular.forEach(metrics, function(variantInfo) {
+        forAllVariants($rootScope.application, variantInfo.variantID, function (variant) {
+          variantInfo.name = variant.name;
+        });
+      });
+
+      return metrics;
+    };
 
     $scope.expand = function (metric) {
       metric.expand = !metric.expand;

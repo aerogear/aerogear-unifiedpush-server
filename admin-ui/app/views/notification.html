@@ -84,9 +84,9 @@
                       <td>Variants:</td>
                       <td>
                         <table class="expand">
-                          <tr ng-repeat="variant in metric.variantInformations">
+                          <tr ng-repeat="variant in variantMetricInformation(metric.variantInformations)">
                             <td>
-                              <a href="#/detail/{{applicationId}}">Full</a>
+                              <a href="#/detail/{{applicationId}}">{{ variant.name ? variant.name : variant.variantID }}</a>
                             </td>
                             <td>{{ variant.deliveryStatus == true ? 'Failed' : 'Succeeded' }}</td>
                             <td>
