@@ -40,7 +40,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public List<PushMessageInformation> findAllForVariant(String variantID, boolean ascending) {
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
+        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("variantID", variantID).getResultList();
 
         return messageInformations;
