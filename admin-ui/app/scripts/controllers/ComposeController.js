@@ -47,12 +47,12 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
     //let's check if we filter on deviceType
     if($scope.criteria.deviceType) {
-      pushData.deviceType = $scope.deviceType.alias.split(',');
+      pushData.deviceType = $scope.criteria.deviceType.split(',');
     }
 
     //let's check if we filter on categories
     if($scope.criteria.categories) {
-      pushData.categories = $scope.categories.alias.split(',');
+      pushData.categories = $scope.criteria.categories.split(',');
     }
 
     $.ajax
