@@ -67,6 +67,17 @@ backendMod.factory('variants', function ($resource) {
   });
 });
 
+backendMod.factory('messageSender', function ($resource) {
+  return $resource('rest/sender', {}, {
+    send: {
+      method: 'POST',
+      headers: {
+        'aerogear-sender': 'AeroGear UnifiedPush Console'
+      }
+    }
+  });
+});
+
 backendMod.factory('installations', function ($resource) {
   return $resource('rest/applications/:variantId/installations/:installationId', {
     variantId: '@variantId',
