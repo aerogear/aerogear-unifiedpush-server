@@ -67,7 +67,7 @@ angular.module('newadminApp').controller('ActivityController',
         $scope.pushMetrics = data;
         angular.forEach(data, function (metric) {
           metric.totalReceivers = metric.variantInformations[0].receivers;
-          metric.deliveryFailed = metric.variantInformations[0].deliveryStatus;
+          metric.deliveryFailed = !metric.variantInformations[0].deliveryStatus;
         });
       });
     } else {
