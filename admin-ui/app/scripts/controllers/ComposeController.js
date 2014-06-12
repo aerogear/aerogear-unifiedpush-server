@@ -16,7 +16,8 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, Notifications) {
+angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window,
+                                                                       $modal, $http, pushApplication, Notifications, messageSender) {
 
     /*
      * INITIALIZATION
@@ -55,25 +56,15 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
       pushData.categories = $scope.criteria.categories.split(',');
     }
 
-    $.ajax
-      ({
-      contentType: 'application/json',
-      type: 'POST',
-      url: 'rest/sender',
-      username: $scope.application.pushApplicationID,
-      password: $scope.application.masterSecret,
-      headers: { 'aerogear-sender': 'AeroGear UnifiedPush Console' },
-      data: JSON.stringify( pushData ),
-      success: function(){
-            Notifications.success('Successfully sent Notification');
-          },
-      error: function(){
-            Notifications.error('Something went wrong...', 'danger');
-          },
-      complete: function () {
-            $scope.testMessage = '';
-            $scope.$apply();
-          }
+
+    $http.defaults.headers.common.Authorization = 'Basic ' + btoa($scope.application.pushApplicationID +
+      ':' + $scope.application.masterSecret);
+
+    messageSender.send({}, pushData, function() {
+      Notifications.success('Successfully sent Notification');
+      $scope.testMessage = '';
+    }, function() {
+      Notifications.error('Something went wrong...', 'danger');
     });
   };
 
