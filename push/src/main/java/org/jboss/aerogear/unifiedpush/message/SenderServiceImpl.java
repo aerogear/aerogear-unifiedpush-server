@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.message.sender.*;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -60,7 +58,7 @@ public class SenderServiceImpl implements SenderService {
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
-                        toJsonString(message),
+                        message.toJsonString(),
                         message.getIpAddress(),
                         message.getClientIdentifier()
                 );
@@ -193,15 +191,6 @@ public class SenderServiceImpl implements SenderService {
                     updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
                 }
             });
-        }
-    }
-
-    private String toJsonString(UnifiedPushMessage message) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            return null;
         }
     }
 

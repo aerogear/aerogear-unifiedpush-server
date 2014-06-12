@@ -214,6 +214,20 @@ public class UnifiedPushMessage {
 
     public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
 
+    public String toJsonString() {
+        return "{" +
+                "\"ipAddress\":\"" + ipAddress + "\"," +
+                "\"clientIdentifier\":\"" + clientIdentifier + "\"," +
+                "\"simplePush\":\"" + simplePush + "\"," +
+                "\"alert\":\"" + alert + "\"," +
+                "\"sound\":\"" + sound + "\"," +
+                "\"contentAvailable\":\"" + contentAvailable + "\"," +
+                "\"badge\":\"" + badge + "\"," +
+                "\"timeToLive\":\"" + timeToLive + "\"," +
+                "\"data\":" + data +
+                "}";
+    }
+
     @Override
     public String toString() {
         return "[alert=" + alert + ", data=" + data+ ", criteria="

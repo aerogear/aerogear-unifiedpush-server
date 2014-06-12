@@ -58,11 +58,6 @@
                       <td>Message:</td>
                       <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
                     </tr>
-                    <tr>
-                      <td>Device Type:</td>
-                      <td colspan="2"><strong>{{ parse(metric).sendCriteria.deviceTypes }}</strong>
-                      </td>
-                    </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
                   <table ng-show="metric.deliveryFailed">
