@@ -16,15 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
 
 public class UnifiedPushMessageTest {
 
@@ -451,4 +450,37 @@ public class UnifiedPushMessageTest {
         final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
     }
 
+    @Test
+    public void testMessageToJson() throws IOException {
+        //given
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "Howdy");
+        messageObject.put("sound", "default");
+        messageObject.put("badge", 2);
+        messageObject.put("someKey", "someValue");
+
+        container.put("message", messageObject);
+        container.put("simplePush", "version=123");
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+
+        //when
+        String json = unifiedPushMessage.toJsonString();
+
+        //then
+        assertEquals("{" +
+                "\"ipAddress\":\"null\"," +
+                "\"clientIdentifier\":\"null\"," +
+                "\"simplePush\":\"null\"," +
+                "\"alert\":\"Howdy\"," +
+                "\"sound\":\"default\"," +
+                "\"contentAvailable\":false," +
+                "\"badge\":2," +
+                "\"timeToLive\":-1," +
+                "\"data\":{" +
+                "\"someKey\":\"someValue\"" +
+                "}" +
+                "}", json);
+    }
 }

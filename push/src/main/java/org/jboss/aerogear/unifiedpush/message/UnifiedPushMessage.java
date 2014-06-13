@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -213,6 +214,36 @@ public class UnifiedPushMessage {
     public String getClientIdentifier() { return clientIdentifier; }
 
     public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
+
+    public String toJsonString() {
+        return "{" +
+                "\"ipAddress\":\"" + ipAddress + "\"," +
+                "\"clientIdentifier\":\"" + clientIdentifier + "\"," +
+                "\"simplePush\":\"" + simplePush + "\"," +
+                "\"alert\":\"" + alert + "\"," +
+                "\"sound\":\"" + sound + "\"," +
+                "\"contentAvailable\":" + contentAvailable + "," +
+                "\"badge\":" + badge + "," +
+                "\"timeToLive\":" + timeToLive + "," +
+                "\"data\":" + toJson(data) +
+                "}";
+    }
+
+    private String toJson(Map<String, Object> map) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        if (map != null) {
+            for (Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
+                Map.Entry<String, Object> entry = iterator.next();
+                sb.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
+                if (iterator.hasNext()) {
+                    sb.append(",");
+                }
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 
     @Override
     public String toString() {

@@ -15,7 +15,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/main.html',
         controller: 'MainController',
         crumb: {
-          level: 0,
+          id: 'apps',
           label: 'Applications'
         }
       })
@@ -23,7 +23,8 @@ angular.module('newadminApp', [
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
         crumb: {
-          level: 1,
+          id: 'app-detail',
+          parent: 'apps',
           label: '$ application.name ? application.name : "Current Application"'
         }
       })
@@ -31,7 +32,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: '$ variant.name ? variant.name : "Registering Installations"'
         }
       })
@@ -39,7 +40,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Example'
         }
       })
@@ -47,7 +48,7 @@ angular.module('newadminApp', [
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Example'
         }
       })
@@ -55,8 +56,33 @@ angular.module('newadminApp', [
         templateUrl: 'views/compose.html',
         controller: 'ComposeController',
         crumb: {
-          level: 2,
+          parent: 'app-detail',
           label: 'Send Push'
+        }
+      })
+      .when('/dashboard', {
+        templateUrl: 'views/dashboard.html',
+        controller: 'DashboardController',
+        crumb: {
+          id: 'dash',
+          label: 'Dashboard'
+        }
+      })
+      .when('/activity/:applicationId', {
+        templateUrl: 'views/notification.html',
+        controller: 'ActivityController',
+        crumb: {
+          id: 'activity',
+          parent: 'dash',
+          label: '$ application.name ? application.name : "Current Application"'
+        }
+      })
+      .when('/activity/:applicationId/:variantId', {
+        templateUrl: 'views/notification.html',
+        controller: 'ActivityController',
+        crumb: {
+          parent: 'activity',
+          label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
       .otherwise({

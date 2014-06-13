@@ -82,15 +82,67 @@ backendMod.factory('installations', function ($resource) {
   });
 });
 
+backendMod.factory('dashboard', function ($resource) {
+  return $resource('rest/metrics/dashboard/:verb', {}, {
+    totals: {
+      method: 'GET'
+    },
+    warnings: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'warnings'
+      }
+    },
+    topThree: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'active'
+      }
+    }
+  });
+});
+
+backendMod.factory('metrics', function ($resource) {
+  return $resource('rest/metrics/messages/:verb/:id', {
+    id: '@id'
+  }, {
+    application: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'application'
+      }
+    },
+    variant: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'variant'
+      }
+    }
+  });
+});
+
+
 backendMod.factory('breadcrumbs', function ($rootScope, $route) {
   var BreadcrumbService = {
     breadcrumbs: [],
+    routes: {},
     get: function() {
       return this.breadcrumbs;
     },
+    init: function() {
+      var self = this;
+      angular.forEach($route.routes, function(route) {
+        if (route.crumb) {
+          self.routes[route.crumb.id] = route;
+        }
+      });
+    },
     generateBreadcrumbs: function() {
-      var routes = $route.routes,
-        self = this;
+      var parent, self = this;
 
       var getRoute = function(route) {
         if ($route.current) {
@@ -107,29 +159,22 @@ backendMod.factory('breadcrumbs', function ($rootScope, $route) {
         }
       };
 
-      var getRouteByLevel = function(level) {
-        var result = null;
-        angular.forEach(routes, function(route) {
-          if (route.crumb && route.crumb.level === level) {
-            result = route;
-          }
-        });
-        return result;
+      var label = function(route) {
+        return route.crumb.label.indexOf('$') !== -1 ? $rootScope.$eval(route.crumb.label.substring(1)) : route.crumb.label;
       };
 
-      var label = function(route) {
-        var label = route.crumb.label.indexOf('$') !== -1 ? $rootScope.$eval(route.crumb.label.substring(1)) : route.crumb.label;
-        self.breadcrumbs.push({ label: label, path: route.path });
-      };
-      
       this.breadcrumbs = [];
       if ($route.current && $route.current.crumb) {
-        label($route.current);
-        for (var i = $route.current.crumb.level - 1; i >= 0 ; i--) {
-          var route = getRouteByLevel(i);
+        self.breadcrumbs.push({ label: label($route.current), path: $route.current.path });
+        parent = $route.current.crumb.parent;
+
+        while (parent) {
+          var route = self.routes[parent];
           route.path = getRoute(route.originalPath);
-          label(route);
+          self.breadcrumbs.push({ label: label(route), path: route.path });
+          parent = route.crumb.parent;
         }
+
         self.breadcrumbs.reverse();
       }
     }
@@ -141,6 +186,7 @@ backendMod.factory('breadcrumbs', function ($rootScope, $route) {
     BreadcrumbService.generateBreadcrumbs();
   });
 
+  BreadcrumbService.init();
   BreadcrumbService.generateBreadcrumbs();
 
   return BreadcrumbService;

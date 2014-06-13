@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.dashboard;
 
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
@@ -23,7 +24,7 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class for loading various data for the Dashboard of the Admin UI
@@ -62,21 +63,44 @@ public class DashboardService {
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
      */
-    public List<Variant> getVariantsWithWarnings(String principalName) {
-        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(variantIDs);
+    public List<ApplicationVariant> getVariantsWithWarnings(String principalName) {
+        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName);
+        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(warningIDs);
 
-        return variantDao.findAllVariantsByIDs(warningIDs);
+        return wrapApplicationVariant(applications);
     }
 
     /**
      * Loads all the Variant objects with the most received messages
      */
-    public List<Variant> getTopThreeBusyVariants(String principalName) {
-        final List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-        final List<String> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(variantIDs);
+    public List<ApplicationVariant> getTopThreeBusyVariants(String principalName) {
+        final Map<String, Long> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(principalName);
+        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(new ArrayList<String>(topVariantIDs.keySet()));
+        final List<ApplicationVariant> applicationVariants = wrapApplicationVariant(applications);
 
-        return variantDao.findAllVariantsByIDs(topVariantIDs);
+        for (ApplicationVariant applicationVariant : applicationVariants) {
+            final String id = applicationVariant.getVariant().getVariantID();
+            applicationVariant.setReceivers(topVariantIDs.get(id));
+        }
+
+        Collections.sort(applicationVariants, new Comparator<ApplicationVariant>() {
+            @Override
+            public int compare(ApplicationVariant o1, ApplicationVariant o2) {
+                return o2.getReceivers().compareTo(o1.getReceivers());
+            }
+        });
+
+        return applicationVariants;
+    }
+
+    private List<ApplicationVariant> wrapApplicationVariant(Map<Variant, PushApplication> applications) {
+        final List<ApplicationVariant> applicationVariants = new ArrayList<ApplicationVariant>(applications.size());
+        for (Map.Entry<Variant, PushApplication> entry : applications.entrySet()) {
+            final ApplicationVariant applicationVariant = new ApplicationVariant(entry.getValue().getPushApplicationID(),
+                    entry.getValue().getName(), entry.getKey());
+            applicationVariants.add(applicationVariant);
+        }
+        return applicationVariants;
     }
 
     private long totalMessages(String principalName) {

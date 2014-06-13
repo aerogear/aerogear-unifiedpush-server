@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.dao;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
@@ -40,11 +41,11 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends
      */
-    List<String> findVariantIDsWithWarnings(List<String> allVariantIDs);
+    List<String> findVariantIDsWithWarnings(String loginName);
 
     /**
      * Filters the top three VariantIDs that did receive the most messages
      */
-    List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs);
+    Map<String, Long> findTopThreeBusyVariantIDs(String loginName);
 
 }

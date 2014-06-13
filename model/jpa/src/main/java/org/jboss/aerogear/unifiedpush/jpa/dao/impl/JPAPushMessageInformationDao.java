@@ -20,7 +20,9 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
 
@@ -38,7 +40,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public List<PushMessageInformation> findAllForVariant(String variantID, boolean ascending) {
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
+        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("variantID", variantID).getResultList();
 
         return messageInformations;
@@ -67,32 +69,36 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public void delete(PushMessageInformation pushMessageInformation) {
-        PushMessageInformation entity = find(pushMessageInformation.getId())  ;
+        PushMessageInformation entity = find(pushMessageInformation.getId());
         remove(entity);
     }
 
     @Override
-    public List<String> findVariantIDsWithWarnings(List<String> allVariantIDs) {
-        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.variantID IN :variantIDs" +
+    public List<String> findVariantIDsWithWarnings(String loginName) {
+        List<String> variantIDsWithWarnings = createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+                " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
                 " and vmi.deliveryStatus = false")
-                .setParameter("variantIDs", allVariantIDs)
+                .setParameter("developer", loginName)
                 .getResultList();
 
         return variantIDsWithWarnings;
     }
 
     @Override
-    public List<String> findTopThreeBusyVariantIDs(List<String> allVariantIDs) {
-        List<String> variantIDsWithWarnings = createQuery("select vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.variantID IN :variantIDs" +
+    public Map<String, Long> findTopThreeBusyVariantIDs(String loginName) {
+        List<Object[]> topThree = createQuery("select distinct vmi.variantID, vmi.receivers from VariantMetricInformation vmi" +
+                " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
                 " ORDER BY vmi.receivers " + DESC)
-                .setParameter("variantIDs", allVariantIDs)
-                .setFirstResult(0)
+                .setParameter("developer", loginName)
                 .setMaxResults(3)
                 .getResultList();
 
-        return variantIDsWithWarnings;
+        Map<String, Long> result = new HashMap<String, Long>();
+        for (Object[] objects : topThree) {
+            result.put((String) objects[0], (Long) objects[1]);
+        }
+
+        return result;
     }
 
     /**

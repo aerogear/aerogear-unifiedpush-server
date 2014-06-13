@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 
@@ -91,8 +92,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
         final HashMap<String, Long> results = new HashMap<String, Long>();
 
         for (VariantType variantType : VariantType.values()) {
-            final String typeName = variantType == VariantType.IOS ? "iOS" : variantType.getTypeName();
-            final String typeQuery = jpql.replaceAll("\\{type\\}", typeName);
+            final String typeQuery = parseVariantType(jpql, variantType);
             final Query query = createQuery(typeQuery).setParameter("pushApplicationID", pushApplicationID);
             final List<Object[]> resultList = query.getResultList();
             long total = 0L;
@@ -107,10 +107,37 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
         return results;
     }
 
+    private String parseVariantType(String jpql, VariantType variantType) {
+        final String typeName = variantType == VariantType.IOS ? "iOS" : variantType.getTypeName();
+        return jpql.replaceAll("\\{type\\}", typeName);
+    }
+
     @Override
     public long getNumberOfPushApplicationsForDeveloper(String name) {
         return (Long) createQuery("select count(pa) from PushApplication pa where pa.developer = :developer")
                 .setParameter("developer", name).getSingleResult();
+    }
+
+    @Override
+    public Map<Variant, PushApplication> findByVariantIds(List<String> variantIDs) {
+        final String jpql = "select v, pa.name, pa.pushApplicationID from PushApplication pa " +
+                "left join pa.{type}Variants v where v.variantID in (:variantIDs)";
+
+        final HashMap<Variant, PushApplication> results = new HashMap<Variant, PushApplication>();
+
+        for (VariantType variantType : VariantType.values()) {
+            final String typeQuery = parseVariantType(jpql, variantType);
+            final List<Object[]> resultList = createQuery(typeQuery).setParameter("variantIDs", variantIDs).getResultList();
+
+            for (Object[] objects : resultList) {
+                PushApplication app = new PushApplication();
+                app.setName((String) objects[1]);
+                app.setPushApplicationID((String) objects[2]);
+                results.put((Variant) objects[0], app);
+            }
+
+        }
+        return results;
     }
 
     @Override
