@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="textInput-markup">Variants</label>
                     <div class="col-sm-10">
-                        <input disabled class="form-control" type="text" value="{{variantSelection.length > 0 ? variantSelection.name : 'All'}}">
+                        <div class="ups-fake-input"><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></div>
                     </div>
                 </div>            
             </form>
@@ -48,18 +48,6 @@
             <div class="pull-right"><button class="btn btn-default btn-sml" ng-click="changeCriteria(application)" >Change...</button><br><br></div>
               
             <hr>
-            
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup"></label>
-                    <div class="col-sm-10">
-                        <div class="alert alert-info">
-                            <span class="pficon pficon-info"></span>
-                            This message will be sent to a total of <strong>500</strong> installations.
-                        </div>
-                    </div>
-                </div>
-           </form>
            <div class="pull-right"><button ng-click="sendMessage()" class="btn btn-primary btn-lg" type="button">Send Push Notification</button></div>
         </div>
     </div>
