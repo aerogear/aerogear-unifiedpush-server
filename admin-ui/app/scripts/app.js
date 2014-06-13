@@ -28,7 +28,8 @@ angular.element(document).ready(function ($http) {
     module.factory('Auth', function() {
       return auth;
     });
-    window.location = "#/main"
+    window.location = "#/main";
+    angular.bootstrap(document, ['newadminApp']);
   }).error(function () {
     window.location.reload();
   });
