@@ -67,8 +67,8 @@
                       <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
                     </tr>
                   </table>
-                  <hr ng-show="metric.variantInformations.length > 1">
-                  <table ng-show="metric.variantInformations.length > 1">
+                  <hr ng-show="!detailsPage() && metric.variantInformations.length">
+                  <table ng-if="!detailsPage() && metric.variantInformations.length">
                     <tr>
                       <td>Variants:</td>
                       <td>
