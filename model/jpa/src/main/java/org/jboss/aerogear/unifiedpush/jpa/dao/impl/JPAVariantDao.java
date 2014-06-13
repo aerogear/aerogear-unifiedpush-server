@@ -64,6 +64,18 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     }
 
     @Override
+    public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
+
+        Long numberOfVariants = (Long) createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer")
+                .setParameter("variantID", variantID)
+                .setParameter("developer", loginName).getSingleResult();
+
+
+        return numberOfVariants == 1L;
+    }
+
+
+    @Override
     public List<String> findVariantIDsForDeveloper(String loginName) {
         return createQuery("select t.variantID from Variant t where t.developer = :developer")
                 .setParameter("developer", loginName).getResultList();

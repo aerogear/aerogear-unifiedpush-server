@@ -16,12 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+
+import javax.inject.Inject;
 
 public class GenericVariantServiceImpl implements GenericVariantService {
 
@@ -41,6 +41,11 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Override
     public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
         return variantDao.findByVariantIDForDeveloper(variantID, loginName);
+    }
+
+    @Override
+    public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
+        return variantDao.existsVariantIDForDeveloper(variantID, loginName);
     }
 
     @Override
