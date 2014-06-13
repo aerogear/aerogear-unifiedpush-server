@@ -51,6 +51,10 @@ angular.module('newadminApp').controller('ActivityController',
       findVariant(application.chromePackagedAppVariants, closure, variantId);
     }
 
+    function onDetailsPage() {
+      return typeof $routeParams.variantId !== 'undefined';
+    }
+
     pushApplication.get({appId: $routeParams.applicationId}, function (application) {
       $rootScope.application = application;
 
@@ -62,7 +66,7 @@ angular.module('newadminApp').controller('ActivityController',
       breadcrumbs.generateBreadcrumbs();
     });
 
-    if (typeof $routeParams.variantId !== 'undefined') {
+    if (onDetailsPage()) {
       metrics.variant({id: $routeParams.variantId}, function (data) {
         $scope.pushMetrics = data;
         angular.forEach(data, function (metric) {
@@ -100,6 +104,10 @@ angular.module('newadminApp').controller('ActivityController',
       });
 
       return metrics;
+    };
+
+    $scope.detailsPage = function() {
+      return onDetailsPage();
     };
 
     $scope.expand = function (metric) {
