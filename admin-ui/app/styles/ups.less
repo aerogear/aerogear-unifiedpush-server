@@ -45,6 +45,22 @@ ul.ups-pagination.pagination>.disabled>a:focus {
   float: right;
 }
 
+.compose {
+  width: 35%;
+  height: 50px;
+}
+
+.criteria {
+  background-color: white;
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+
+}
+
+.criteria button {
+  float: right;
+}
 
 
 /* Tip panel */
@@ -206,7 +222,7 @@ a.ups-tip-panel-link {
   border-radius: 14px;
 }
 
-.ups-toggle-box {
+.ups-toggle-box, .ups-padding-box {
   padding: 24px;
 }
 
@@ -214,7 +230,7 @@ a.ups-tip-panel-link {
   width: 100%;
 }
 
-.ups-installations tr.collapse.in {
+tr.collapse.in {
   display: table-row;
 }
 
@@ -364,4 +380,44 @@ a.ups-tip-panel-link {
   background-color: #f8f8f8;
   height: 26px;
   padding: 2px 6px;
+}
+
+/** dashboard **/
+.dashboard, .dashboard i {
+  font-size: 38px;
+}
+
+.active-apps {
+  color: #f0888b;
+}
+
+.notifications {
+  color: #51b5af;
+}
+
+.installations {
+  color: #f1b512;
+}
+
+/* Details panel */
+
+.ups-panel-details table tr td {
+  padding-right: 12px;
+}
+
+.ups-panel-details table tr td:first-child {
+  min-width: 64px;
+}
+
+.ups-panel-details table tr td:first-child {
+  text-align: right;
+}
+
+.ups-panel-details h3 {
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 6px;
+}
+
+.expand {
+  width: 100%;
 }
