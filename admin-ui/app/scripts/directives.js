@@ -42,7 +42,7 @@ angular.module('ups.directives', [])
         counts: '=',
         type: '@'
       },
-      controller: function ($rootScope, $scope, $routeParams) {
+      controller: function ($rootScope, $scope, $routeParams, $window) {
         $scope.expand = function (variant) {
           variant.expand = !variant.expand;
         };
@@ -60,6 +60,8 @@ angular.module('ups.directives', [])
         };
 
         $scope.applicationId = $routeParams.applicationId;
+        var href = $window.location.href;
+        $scope.currentLocation = href.substring(0, href.indexOf('#'));
 
         $scope.currentVariant = function (variant) {
           $rootScope.variant = variant;
