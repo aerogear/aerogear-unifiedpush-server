@@ -42,7 +42,7 @@ angular.module('ups.directives', [])
         counts: '=',
         type: '@'
       },
-      controller: function ($rootScope, $scope, $routeParams) {
+      controller: function ($rootScope, $scope, $routeParams, $window) {
         $scope.expand = function (variant) {
           variant.expand = !variant.expand;
         };
@@ -60,6 +60,8 @@ angular.module('ups.directives', [])
         };
 
         $scope.applicationId = $routeParams.applicationId;
+        var href = $window.location.href;
+        $scope.currentLocation = href.substring(0, href.indexOf('#'));
 
         $scope.currentVariant = function (variant) {
           $rootScope.variant = variant;
@@ -685,7 +687,8 @@ angular.module('newadminApp').controller('ExampleController',
  */
 'use strict';
 
-angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, Notifications) {
+angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window,
+                                                                       $modal, $http, pushApplication, Notifications, messageSender) {
 
     /*
      * INITIALIZATION
@@ -716,33 +719,23 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
     //let's check if we filter on deviceType
     if($scope.criteria.deviceType) {
-      pushData.deviceType = $scope.deviceType.alias.split(',');
+      pushData.deviceType = $scope.criteria.deviceType.split(',');
     }
 
     //let's check if we filter on categories
     if($scope.criteria.categories) {
-      pushData.categories = $scope.categories.alias.split(',');
+      pushData.categories = $scope.criteria.categories.split(',');
     }
 
-    $.ajax
-      ({
-      contentType: 'application/json',
-      type: 'POST',
-      url: 'rest/sender',
-      username: $scope.application.pushApplicationID,
-      password: $scope.application.masterSecret,
-      headers: { 'aerogear-sender': 'AeroGear UnifiedPush Console' },
-      data: JSON.stringify( pushData ),
-      success: function(){
-            Notifications.success('Successfully sent notification');
-          },
-      error: function(){
-            Notifications.error('Something went wrong...', 'danger');
-          },
-      complete: function () {
-            $scope.testMessage = '';
-            $scope.$apply();
-          }
+
+    $http.defaults.headers.common.Authorization = 'Basic ' + btoa($scope.application.pushApplicationID +
+      ':' + $scope.application.masterSecret);
+
+    messageSender.send({}, pushData, function() {
+      Notifications.success('Successfully sent Notification');
+      $scope.testMessage = '';
+    }, function() {
+      Notifications.error('Something went wrong...', 'danger');
     });
   };
 
@@ -1005,6 +998,17 @@ backendMod.factory('variants', function ($resource) {
       headers: {'Content-Type': undefined},
       withCredentials: true,
       transformRequest: angular.identity
+    }
+  });
+});
+
+backendMod.factory('messageSender', function ($resource) {
+  return $resource('rest/sender', {}, {
+    send: {
+      method: 'POST',
+      headers: {
+        'aerogear-sender': 'AeroGear UnifiedPush Console'
+      }
     }
   });
 });
