@@ -7,7 +7,7 @@
     "json3": "~3.2.4",
     "jquery": "2.1.1",
     "bootstrap": "~3.1.1",
-    "bootstrap-select": "~1.4.3",
+    "bootstrap-select": "~1.5.2",
     "es5-shim": "~2.0.8",
     "angular-resource": "1.2.16",
     "angular-route": "1.2.16",
@@ -23,6 +23,8 @@
     "angular-scenario": "1.2.16"
   },
   "resolutions": {
-    "jquery": "2.1.1"
+    "jquery": "2.1.1",
+    "bootstrap-select": "1.5.2",
+    "angular": "1.2.16"
   }
 }
