@@ -7,43 +7,51 @@
     </div>
     <div class="modal-body">
       <input type="checkbox" ng-checked="variantSelection.length == 0">All
-      <div style="overflow: scroll-y;"height: 50px;>
-        <p>Android</p>
-        <ul class="list-group ">
-        <li class="list-group-item" ng-repeat="androidvariant in application.androidVariants">
-            <label>
-                <input type="checkbox"  ng-checked="variantSelection.indexOf(androidvariant) > -1" ng-click="toggleSelection(androidvariant)">
-                {{androidvariant.name}}
-            </label>
-        </li>
-        </ul>
-        <p>iOS</p>
-        <ul class="list-group ">
-            <li class="list-group-item" ng-repeat="iosvariant in application.iosvariants">
-                <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(iosvariant) > -1" ng-click="toggleSelection(iosvariant)">
-                    {{iosvariant.name}}
-                </label>
-            </li>
-        </ul>
-        <p>Simple Push</p>
-        <ul class="list-group ">
-            <li class="list-group-item" ng-repeat="simplepushvariant in application.simplePushVariants">
-                <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant) > -1" ng-click="toggleSelection(simplepushvariant)">
-                    {{simplepushvariant.name}}
-                </label>
-            </li>
-        </ul>
-        <p>Chrome</p>
-        <ul class="list-group ">
-            <li class="list-group-item" ng-repeat="chromevariant in application.chromePackagedAppVariants">
-                <label>
-                    <input type="checkbox" ng-checked="variantSelection.indexOf(chromevariant) > -1" ng-click="toggleSelection(chromevariant)">
-                    {{chromevariant.name}}
-                </label>
-            </li>
-        </ul>
+      <div>
+        <div ng-show="application.androidVariants">
+          <p>Android</p>
+          <ul class="list-group ">
+          <li class="list-group-item" ng-repeat="androidvariant in application.androidVariants">
+              <label>
+                  <input type="checkbox"  ng-checked="variantSelection.indexOf(androidvariant) > -1" ng-click="toggleSelection(androidvariant)">
+                  {{androidvariant.name}}
+              </label>
+          </li>
+          </ul>
+        </div>
+        <div ng-show="application.iosvariants">
+          <p>iOS</p>
+          <ul class="list-group ">
+              <li class="list-group-item" ng-repeat="iosvariant in application.iosvariants">
+                  <label>
+                      <input type="checkbox" ng-checked="variantSelection.indexOf(iosvariant) > -1" ng-click="toggleSelection(iosvariant)">
+                      {{iosvariant.name}}
+                  </label>
+              </li>
+          </ul>
+        </div>
+        <div ng-show="application.simplePushVariants">
+          <p>Simple Push</p>
+          <ul class="list-group ">
+              <li class="list-group-item" ng-repeat="simplepushvariant in application.simplePushVariants">
+                  <label>
+                      <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant) > -1" ng-click="toggleSelection(simplepushvariant)">
+                      {{simplepushvariant.name}}
+                  </label>
+              </li>
+          </ul>
+        </div>
+        <div ng-show="application.chromePackagedAppVariants">
+          <p>Chrome</p>
+          <ul class="list-group ">
+              <li class="list-group-item" ng-repeat="chromevariant in application.chromePackagedAppVariants">
+                  <label>
+                      <input type="checkbox" ng-checked="variantSelection.indexOf(chromevariant) > -1" ng-click="toggleSelection(chromevariant)">
+                      {{chromevariant.name}}
+                  </label>
+              </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
