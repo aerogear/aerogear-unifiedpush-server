@@ -14,27 +14,6 @@ angular.module('ups.directives', [])
     };
   })
 
-  .directive('upsAlerts', function () {
-    return {
-      scope: {
-      },
-      controller: function ($rootScope, $scope) {
-        $scope.alerts = $rootScope.notifications.data;
-      },
-      restrict: 'E',
-      replace: false,
-      templateUrl: 'directives/ups-alerts.html'
-    };
-  })
-  .directive('upsBreadcrumb', function () {
-    return {
-      templateUrl: 'directives/ups-breadcrumb.html',
-      controller: function ($scope, $compile, breadcrumbs) {
-        $scope.breadcrumbs = breadcrumbs;
-      }
-    };
-  })
-
   .directive('variants', function () {
     return {
       scope: {
