@@ -1,6 +1,6 @@
 'use strict';
 
-var backendMod = angular.module('newadminApp.services', []).
+var backendMod = angular.module('upsConsole.services', []).
   value('version', '0.1');
 
 backendMod.factory('pushApplication', function ($resource) {

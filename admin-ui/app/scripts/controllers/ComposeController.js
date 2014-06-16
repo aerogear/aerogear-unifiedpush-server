@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $location,
+angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $location,
                                                                        $modal, $http, pushApplication, Notifications, messageSender) {
 
     /*

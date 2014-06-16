@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('newadminApp', [
-  'newadminApp.services',
+angular.module('upsConsole', [
+  'upsConsole.services',
   'ngResource',
   'ngRoute',
   'ui.bootstrap',

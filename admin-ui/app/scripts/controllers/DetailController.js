@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('DetailController',
+angular.module('upsConsole').controller('DetailController',
   function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs) {
 
   /*

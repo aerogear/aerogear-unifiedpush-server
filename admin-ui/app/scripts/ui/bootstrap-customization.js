@@ -8,7 +8,7 @@
   });
 
   // focus first input in a modal once modal is shown
-  angular.module('newadminApp')
+  angular.module('upsConsole')
     .config(function($provide) {
       $provide.decorator('$modal', function($delegate) {
         return {

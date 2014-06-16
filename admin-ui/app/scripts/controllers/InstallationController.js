@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('InstallationController',
+angular.module('upsConsole').controller('InstallationController',
   function($rootScope, $scope, $routeParams, installations) {
 
   $scope.currentPage = 1;
