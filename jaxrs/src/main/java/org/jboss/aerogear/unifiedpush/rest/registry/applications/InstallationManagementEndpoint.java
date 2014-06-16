@@ -23,15 +23,26 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
 
 @Stateless
@@ -61,7 +72,7 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
-        final String developer = request.getUserPrincipal().getName();
+        final String developer = extractUsername(request);
 
         //Find the variant using the variantID
         if (!genericVariantService.existsVariantIDForDeveloper(variantId, developer)) {
