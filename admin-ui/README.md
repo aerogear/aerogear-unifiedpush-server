@@ -9,7 +9,7 @@ Pre-reqs:
 
 Once the pre-reqs have been taken care of, run:
 
-    npm install -g bower-cli
+    npm install -g grunt-bower-cli
     
     npm install
 
