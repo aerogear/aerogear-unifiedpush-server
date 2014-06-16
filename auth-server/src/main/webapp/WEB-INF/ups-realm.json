@@ -41,7 +41,7 @@
     ],
     "scopeMappings": [
         {
-            "client": "unified-push-server",
+            "client": "unified-push-server-js",
             "roles": ["admin"]
         }
     ],
@@ -49,8 +49,12 @@
         {
             "name": "unified-push-server",
             "enabled": true,
+            "bearerOnly": true
+        },
+        {
+            "name": "unified-push-server-js",
+            "enabled": true,
             "publicClient": true,
-            "adminUrl": "/ag-push",
             "baseUrl": "/ag-push",
             "redirectUris": [
                 "/ag-push/*"
