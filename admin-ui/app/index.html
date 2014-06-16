@@ -30,7 +30,10 @@
 <![endif]-->
 <div class="feedback-aligner" data-ng-show="notifications.data.length > 0">
   <div class="row" ng-repeat="notification in notifications.data">
-    <div class="alert alert-{{notification.type}}" ng-click="notifications.remove($index)">
+    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+        <span class="pficon pficon-close"></span>
+      </button>
       <span class="pficon pficon-ok" ng-show="notification.type == 'success'"></span>
       <span class="pficon pficon-info" ng-show="notification.type == 'info'"></span>
                 <span class="pficon-layered" ng-show="notification.type == 'danger'">
