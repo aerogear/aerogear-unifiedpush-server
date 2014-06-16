@@ -26,7 +26,8 @@ angular.module('newadminApp').controller('DetailController',
     $rootScope.application = application;
     breadcrumbs.generateBreadcrumbs();
     var href = $window.location.href;
-    $scope.currentLocation = href.substring(0, href.indexOf('#'));
+    href = href.split('\\?', 1).join('');
+    $scope.currentLocation = href.split('#', 1).join('');
   });
   pushApplication.count({appId: $routeParams.applicationId}, function (counts) {
     $scope.counts = counts;

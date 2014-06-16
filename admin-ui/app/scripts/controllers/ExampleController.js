@@ -35,7 +35,8 @@ angular.module('newadminApp').controller('ExampleController',
     variants.get(params, function (variant) {
       $scope.variant = variant;
       var href = $window.location.href;
-      $scope.currentLocation = href.substring(0, href.indexOf('#'));
+      href = href.split('\\?', 1).join('');
+      $scope.currentLocation = href.split('#', 1).join('');
     });
   } else {
     pushApplication.get(params, function (application) {
