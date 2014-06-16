@@ -16,8 +16,8 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $window, $modal, pushApplication, variants, Notifications, breadcrumbs) {
+angular.module('upsConsole').controller('DetailController',
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs) {
 
   /*
    * INITIALIZATION
@@ -25,7 +25,7 @@ angular.module('newadminApp').controller('DetailController',
   pushApplication.get({appId: $routeParams.applicationId}, function (application) {
     $rootScope.application = application;
     breadcrumbs.generateBreadcrumbs();
-    var href = $window.location.href;
+    var href = $location.absUrl();
     $scope.currentLocation = href.substring(0, href.indexOf('#'));
   });
   pushApplication.count({appId: $routeParams.applicationId}, function (counts) {

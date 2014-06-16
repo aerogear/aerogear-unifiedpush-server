@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('DashboardController',
+angular.module('upsConsole').controller('DashboardController',
   function ($scope, dashboard) {
     dashboard.totals({}, function (data) {
       $scope.dashboardData = data;
@@ -31,7 +31,7 @@ angular.module('newadminApp').controller('DashboardController',
     });
   });
 
-angular.module('newadminApp').controller('ActivityController',
+angular.module('upsConsole').controller('ActivityController',
   function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs) {
 
     $scope.applicationId = $routeParams.applicationId;

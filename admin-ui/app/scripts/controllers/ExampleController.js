@@ -16,8 +16,8 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('ExampleController',
-  function($rootScope, $scope, $routeParams, $window, $timeout, variants, pushApplication) {
+angular.module('upsConsole').controller('ExampleController',
+  function($rootScope, $scope, $routeParams, $location, $timeout, variants, pushApplication) {
 
   /*
    * INITIALIZATION
@@ -34,7 +34,7 @@ angular.module('newadminApp').controller('ExampleController',
   if (typeof $routeParams.variantId !== 'undefined') {
     variants.get(params, function (variant) {
       $scope.variant = variant;
-      var href = $window.location.href;
+      var href = $location.absUrl();
       $scope.currentLocation = href.substring(0, href.indexOf('#'));
     });
   } else {
