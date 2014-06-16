@@ -12,7 +12,7 @@
                 <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em></p>
                 <div class="pull-right">
                     <a href="#/compose/{{ application.pushApplicationID }}" class="btn btn-default btn-lg" type="button">Send Push...</a>
-                    <a href="" class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant...</a>
+                    <button class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant...</button>
                 </div>
 
                 <div style="clear: both;"></div>
@@ -51,7 +51,10 @@
             </div>
 
             <h3>Variants</h3>
-            <div class="panel lo-panel ups-panel-variants android">
+            <div class="lo-panel ups-panel-variants" ng-if="application.androidVariants.length == 0 && application.iosvariants.length == 0 && application.chromePackagedAppVariants.length == 0 && application.simplePushVariants.length == 0">
+              <button class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant...</button>
+            </div>
+            <div class="panel lo-panel ups-panel-variants android" ng-if="application.androidVariants.length != 0">
                 <div class="panel-heading">
                     <div class="pull-left"><h2>Android</h2></div>
                     <div class="pull-right">
@@ -62,7 +65,7 @@
 
                 <variants variants="application.androidVariants" counts="counts" type="android"></variants>
             </div>
-            <div class="panel lo-panel ups-panel-variants ios">
+            <div class="panel lo-panel ups-panel-variants ios" ng-if="application.iosvariants.length != 0">
                 <div class="panel-heading">
                     <div class="pull-left"><h2>iOS</h2></div>
                     <div class="pull-right">
@@ -73,7 +76,7 @@
                 <variants variants="application.iosvariants" counts="counts" type="iOS"></variants>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants chrome">
+            <div class="panel lo-panel ups-panel-variants chrome" ng-if="application.chromePackagedAppVariants.length != 0">
                 <div class="panel-heading">
                     <div class="pull-left"><h2>Chrome</h2></div>
                     <div class="pull-right">
@@ -84,7 +87,7 @@
                 <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants simplePush">
+            <div class="panel lo-panel ups-panel-variants simplePush" ng-if="application.simplePushVariants.length != 0">
                 <div class="panel-heading" style="padding-left: 25px">
                     <div class="pull-left"><h2>SimplePush</h2></div>
                     <div class="pull-right">

@@ -28,8 +28,25 @@
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
-<div class="feedback-aligner ng-hide" data-ng-show="notifications.data.length &gt; 0">
-    <!-- ngRepeat: notification in notifications.data -->
+<div class="feedback-aligner" data-ng-show="notifications.data.length > 0">
+  <div class="row" ng-repeat="notification in notifications.data">
+    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+        <span class="pficon pficon-close"></span>
+      </button>
+      <span class="pficon pficon-ok" ng-show="notification.type == 'success'"></span>
+      <span class="pficon pficon-info" ng-show="notification.type == 'info'"></span>
+                <span class="pficon-layered" ng-show="notification.type == 'danger'">
+                    <span class="pficon pficon-error-octagon"></span>
+                    <span class="pficon pficon-error-exclamation"></span>
+                </span>
+                <span class="pficon-layered" ng-show="notification.type == 'warning'">
+                    <span class="pficon pficon-warning-triangle"></span>
+                    <span class="pficon pficon-warning-exclamation"></span>
+                </span>
+      <strong>{{notification.header}}</strong> {{notification.message}}
+    </div>
+  </div>
 </div>
 
 <div class="row">
