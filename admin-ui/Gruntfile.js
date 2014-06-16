@@ -392,6 +392,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
+    'initLocalConfig',
     'jshint',
     'test',
     'build'
