@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.logging.Level;
+import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +44,8 @@ import org.jboss.aerogear.unifiedpush.rest.util.PKCS12Util;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
+
 @Stateless
 @Path("/applications/{pushAppID}/iOS")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
@@ -58,7 +60,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo,
             @Context HttpServletRequest request) {
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -79,7 +81,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant.setProduction(form.getProduction());
 
         // store the "developer:
-        iOSVariant.setDeveloper(request.getUserPrincipal().getName());
+        iOSVariant.setDeveloper(extractUsername(request));
 
         // some model validation on the entity:
         try {
@@ -121,7 +123,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, request.getUserPrincipal().getName());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, extractUsername(request));
 
         if (iOSVariant != null) {
 
@@ -146,7 +148,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             @Context HttpServletRequest request) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, request.getUserPrincipal().getName());
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID, extractUsername(request));
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?

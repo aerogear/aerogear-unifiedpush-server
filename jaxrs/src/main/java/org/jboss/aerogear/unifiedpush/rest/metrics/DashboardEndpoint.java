@@ -19,6 +19,8 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +33,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
+
 @Stateless
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
@@ -41,7 +45,7 @@ public class DashboardEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response totalApplications(@Context HttpServletRequest request) {
-        final String principalName = request.getUserPrincipal().getName();
+        final String principalName = extractUsername(request);
         final DashboardData dataForUser =  service.loadDashboardData(principalName);
 
         return Response.ok(dataForUser).build();
@@ -51,7 +55,7 @@ public class DashboardEndpoint {
     @Path("/warnings")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
-        final String principalName = request.getUserPrincipal().getName();
+        final String principalName = extractUsername(request);
         final List<ApplicationVariant> variantsWithWarnings = service.getVariantsWithWarnings(principalName);
 
         return Response.ok(variantsWithWarnings).build();
@@ -61,7 +65,7 @@ public class DashboardEndpoint {
     @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTopThreeVariants(@Context HttpServletRequest request) {
-        final String principalName = request.getUserPrincipal().getName();
+        final String principalName = extractUsername(request);
         final List<ApplicationVariant> variantsWithWarnings = service.getTopThreeBusyVariants(principalName);
 
         return Response.ok(variantsWithWarnings).build();
