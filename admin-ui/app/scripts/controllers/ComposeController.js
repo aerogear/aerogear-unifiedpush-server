@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $window,
+angular.module('newadminApp').controller('ComposeController', function($rootScope, $scope, $routeParams, $location,
                                                                        $modal, $http, pushApplication, Notifications, messageSender) {
 
     /*
@@ -27,7 +27,7 @@ angular.module('newadminApp').controller('ComposeController', function($rootScop
 
   pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
     $scope.application = application;
-    var href = $window.location.href;
+    var href = $location.absUrl();
     $scope.currentLocation = href.substring( 0, href.indexOf( '#' ) );
   } );
 
