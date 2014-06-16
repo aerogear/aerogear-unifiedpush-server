@@ -1,6 +1,5 @@
 'use strict';
-var module = angular.module('newadminApp', [
-angular.module('upsConsole', [
+var module = angular.module('upsConsole', [
   'upsConsole.services',
   'ngResource',
   'ngRoute',
@@ -8,6 +7,7 @@ angular.module('upsConsole', [
   'ups.directives',
   'patternfly.notification',
   'hljs'
+])
 var auth = {};
 var logout = function(){
   console.log('*** LOGOUT');
