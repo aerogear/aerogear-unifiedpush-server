@@ -14,6 +14,15 @@ angular.module('ups.directives', [])
     };
   })
 
+  .directive('upsBreadcrumb', function () {
+    return {
+      templateUrl: 'directives/ups-breadcrumb.html',
+      controller: function($scope, $compile, breadcrumbs) {
+        $scope.breadcrumbs = breadcrumbs;
+      }
+    };
+  })
+
   .directive('variants', function () {
     return {
       scope: {
