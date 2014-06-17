@@ -52,6 +52,13 @@ angular.module('upsConsole', [
           label: 'Example'
         }
       })
+      .when('/compose', {
+        templateUrl: 'views/compose-app.html',
+        controller: 'PreComposeController',
+        crumb: {
+          label: 'Send Push'
+        }
+      })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
         controller: 'ComposeController',

@@ -1,51 +1,14 @@
 <ups-navigation current="applications"></ups-navigation>
 
 <div class="col-md-10 lo-main-pane ng-scope">
-    <div class="row">
-        <div class="lo-content-area col-md-12">
-            <div ups-breadcrumb/>
-            <h2>Send push to &ldquo;<strong>{{ application.name }}</strong>&rdquo; installations</h2>
-            <br>
-            
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup">Variants</label>
-                    <div class="col-sm-10">
-                        <div class="ups-fake-input"><span ng-hide="variantSelection.length">All</span><span ng-repeat="variant in variantSelection">{{variant.name}}<span ng-show=" ! $last ">,&nbsp;</span></span></div>
-                    </div>
-                </div>            
-            </form>
-            <div class="pull-right"><button class="btn btn-default btn-sml" ng-click="changeVariant(application)">Change...</button><br><br></div>
-            
-            <hr>
-            
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup">Message</label>
-                    <div class="col-sm-10"><textarea rows="4" class="form-control" id="testMessage" ng-model="testMessage"></textarea></div>
-                </div>
-            </form>
-                
-            <hr>
-               
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup">Aliases</label>
-                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.alias.length > 0 ? criteria.alias : 'All'}}"></div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup">Device Types</label>
-                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.deviceType.length > 0 ? criteria.deviceType : 'All'}}"></div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textInput-markup">Categories</label>
-                    <div class="col-sm-10"><input disabled class="form-control" type="text" value="{{criteria.categories.length > 0 ? criteria.categories : 'All'}}"></div>
-                </div>            
-            </form>    
-            <div class="pull-right"><button class="btn btn-default btn-sml" ng-click="changeCriteria(application)" >Change...</button><br><br></div>
-              
-            <hr>
-           <div class="pull-right"><button ng-click="sendMessage()" class="btn btn-primary btn-lg" type="button">Send Push Notification</button></div>
-        </div>
+  <div class="row">
+    <div class="lo-content-area col-md-12">
+      <div ups-breadcrumb/>
+      <h2>Send push to &ldquo;<strong>{{ application.name }}</strong>&rdquo; installations</h2>
+      <br>
+
+      <div ng-include="'views/include/compose.html'"></div>
+
     </div>
+  </div>
 </div>

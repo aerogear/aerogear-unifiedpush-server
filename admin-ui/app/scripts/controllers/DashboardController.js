@@ -17,7 +17,8 @@
 'use strict';
 
 angular.module('upsConsole').controller('DashboardController',
-  function ($scope, dashboard) {
+  function ($rootScope, $scope, dashboard) {
+    $rootScope.application = null;
     dashboard.totals({}, function (data) {
       $scope.dashboardData = data;
     });
