@@ -36,7 +36,7 @@ angular.module('upsConsole', [
           label: 'Add Variant'
         }
       })
-      .when('/variant/:applicationId/:variantType/:variantId', {
+      .when('/variant/:applicationId/:variantId', {
         templateUrl: 'views/create-variant.html',
         controller: 'VariantController',
         crumb: {

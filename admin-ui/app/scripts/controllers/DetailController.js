@@ -39,7 +39,7 @@ angular.module('upsConsole').controller('DetailController',
   $scope.editVariant = function (variant) {
     $rootScope.variant = variant;
     breadcrumbs.generateBreadcrumbs();
-    $location.path('/variant/' + $rootScope.application.pushApplicationID + '/' + variantService.variantType(variant.type) +
+    $location.path('/variant/' + $rootScope.application.pushApplicationID +
       '/' + variant.variantID);
   };
 
@@ -118,9 +118,6 @@ angular.module('upsConsole').controller('DetailController',
 angular.module('upsConsole').controller('VariantController', function ($rootScope, $scope, $routeParams, $location,
                                                                        pushApplication, variants, Notifications,
                                                                        breadcrumbs, variantService) {
-
-  $scope.variantType = $routeParams.variantType;
-
   if (typeof $rootScope.variant === 'undefined') {
     if (typeof $routeParams.variantId !== 'undefined') {
       var params = {
@@ -131,10 +128,14 @@ angular.module('upsConsole').controller('VariantController', function ($rootScop
       variants.get(params, function (variant) {
         $rootScope.variant = variant;
         breadcrumbs.generateBreadcrumbs();
+        $scope.variantType = variantService.variantType(variant.type);
       });
     } else {
       $rootScope.variant = {};
+      $scope.variantType = '';
     }
+  } else {
+    $scope.variantType = variantService.variantType($rootScope.variant.type);
   }
 
   $scope.saveVariant = function (variant, variantType) {
@@ -151,7 +152,7 @@ angular.module('upsConsole').controller('VariantController', function ($rootScop
         variantService.getOsVariants($rootScope.application, variantType).push(newVariant);
       }
       $location.path('/detail/' + $routeParams.applicationId);
-      $rootScope.variant = null;
+      $rootScope.variant = {};
     };
     var failureCallback = function () {
       Notifications.error('Something went wrong...');
@@ -168,6 +169,11 @@ angular.module('upsConsole').controller('VariantController', function ($rootScop
         variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
       }
     }
+  };
+
+  $scope.cancel = function() {
+    $location.path('/detail/' + $routeParams.applicationId);
+    $rootScope.variant = {};
   };
 
   function variantProperties(variant, variantType) {
