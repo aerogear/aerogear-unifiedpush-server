@@ -125,6 +125,6 @@ angular.module('upsConsole').controller('PreComposeController', function($rootSc
 
   $scope.setApplication = function(application) {
     $rootScope.application = application;
-    $scope.applicationChosen = true;
+    $scope.applicationChosen = !!application;
   };
 });
