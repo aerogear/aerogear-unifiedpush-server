@@ -29,7 +29,7 @@ angular.element(document).ready(function ($http) {
       return auth;
     });
     window.location = "#/main";
-    angular.bootstrap(document, ['newadminApp']);
+    angular.bootstrap(document, ['upsConsole']);
   }).error(function () {
     window.location.reload();
   });
