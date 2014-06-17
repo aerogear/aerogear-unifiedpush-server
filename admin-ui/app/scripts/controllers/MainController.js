@@ -27,7 +27,7 @@ angular.module('upsConsole').controller('MainController',
 
   //let's show all the applications
   $scope.applications = pushApplication.query();
-
+  $rootScope.application = null;
 
 
   /*

@@ -16,20 +16,13 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $location,
-                                                                       $modal, $http, pushApplication, Notifications, messageSender) {
+angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, Notifications, messageSender) {
 
     /*
      * INITIALIZATION
      */
   $scope.variantSelection = [];
   $scope.criteria = [];
-
-  pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
-    $scope.application = application;
-    var href = $location.absUrl();
-    $scope.currentLocation = href.substring( 0, href.indexOf( '#' ) );
-  } );
 
   $scope.sendMessage = function () {
     var pushData = {'message': {'sound': 'default', 'alert': $scope.testMessage}};
@@ -56,9 +49,8 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
       pushData.categories = $scope.criteria.categories.split(',');
     }
 
-
-    $http.defaults.headers.common.Authorization = 'Basic ' + btoa($scope.application.pushApplicationID +
-      ':' + $scope.application.masterSecret);
+    $http.defaults.headers.common.Authorization = 'Basic ' + btoa($rootScope.application.pushApplicationID +
+      ':' + $rootScope.application.masterSecret);
 
     messageSender.send({}, pushData, function() {
       Notifications.success('Successfully sent Notification');
@@ -77,7 +69,6 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   };
 
   function modalController( $scope, $modalInstance, application, variantSelection, criteria ) {
-
     $scope.variantSelection = variantSelection;
     $scope.criteria = criteria;
     $scope.application = application;
@@ -100,10 +91,8 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
       else {
         $scope.variantSelection.push( variant );
       }
-
     };
   }
-
 
   function show( application, template ) {
     return $modal.open( {
@@ -123,4 +112,19 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
     } );
   }
 
+});
+
+angular.module('upsConsole').controller('PreComposeController', function($rootScope, $scope, $location, pushApplication) {
+  if ($rootScope.application) {
+    $location.path('/compose/' + $rootScope.application.pushApplicationID);
+  }
+
+  pushApplication.query({}, function(applicaitons) {
+    $scope.applications = applicaitons;
+  });
+
+  $scope.setApplication = function(application) {
+    $rootScope.application = application;
+    $location.path('/compose/' + application.pushApplicationID);
+  };
 });
