@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, variantService) {
 
   /*
    * INITIALIZATION
@@ -36,68 +36,23 @@ angular.module('upsConsole').controller('DetailController',
   /*
    * PUBLIC METHODS
    */
-
-  $scope.addVariant = function (variant) {
-    var modalInstance = show(variant, null, 'create-variant.html');
-    modalInstance.result.then(function (result) {
-      var variantType = result.variantType;
-      var variantData = variantProperties(result.variant, variantType);
-      var params = $.extend({}, {
-        appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(result.variantType)
-      });
-
-      var createFunction = (variantData instanceof FormData) ? variants.createWithFormData : variants.create;
-
-      createFunction(params, variantData, function (newVariant) {
-        var osVariants = getOsVariants(variantType);
-        osVariants.push(newVariant);
-        Notifications.success('Successfully created variant');
-      }, function () {
-        Notifications.error('Something went wrong...');
-      });
-    });
-  };
-
-  $scope.editVariant = function (variant, variantType) {
-    var modalInstance = show(variant, variantType, 'create-variant.html');
-    modalInstance.result.then(function (result) {
-      var variantDataUpdate = variantProperties(variant, variantType);
-      var params = $.extend({}, {
-        appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(variantType),
-        variantId: result.variant.variantID
-      });
-
-      var successCallback = function () {
-        Notifications.success('Successfully modified variant');
-      };
-      var failureCallback = function () {
-        Notifications.error('Something went wrong...');
-      };
-
-      if (variantType !== 'iOS') {
-        variants.update(params, variantDataUpdate, successCallback, failureCallback);
-      } else {
-        if (variantDataUpdate.certificate) {
-          variants.updateWithFormData(params, variantDataUpdate, successCallback, failureCallback);
-        } else {
-          variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
-        }
-      }
-    });
+  $scope.editVariant = function (variant) {
+    $rootScope.variant = variant;
+    breadcrumbs.generateBreadcrumbs();
+    $location.path('/variant/' + $rootScope.application.pushApplicationID + '/' + variantService.variantType(variant.type) +
+      '/' + variant.variantID);
   };
 
   $scope.removeVariant = function (variant, variantType) {
     var modalInstance = show(variant, variantType, 'remove-variant.html');
     modalInstance.result.then(function (result) {
       var params = $.extend({}, {
-        appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(variantType),
+        appId: $rootScope.application.pushApplicationID,
+        variantType: variantService.variantEndpoint(variantType),
         variantId: result.variant.variantID
       });
       variants.remove(params, function () {
-        var osVariants = getOsVariants(variantType);
+        var osVariants = variantService.getOsVariants($rootScope.application, variantType);
         osVariants.splice(osVariants.indexOf(variant), 1);
         Notifications.success('Successfully removed variant');
       }, function () {
@@ -105,7 +60,7 @@ angular.module('upsConsole').controller('DetailController',
       });
     });
   };
-    
+
   $scope.renewMasterSecret = function () {
     var modalInstance = show(null, null, 'renew-secret.html');
     modalInstance.result.then(function () {
@@ -157,38 +112,63 @@ angular.module('upsConsole').controller('DetailController',
       }
     });
   }
+});
 
-  function getOsVariants(variantType) {
-    return $scope.application[variantKey(variantType)];
-  }
 
-  function variantKey(variantType) {
-    switch (variantType) {
-    case 'android':
-    case 'simplePush':
-      return variantType + 'Variants';
-    case 'iOS':
-      return 'iosvariants';
-    case 'chrome':
-      return 'chromePackagedAppVariants';
-    default:
-      Notifications.error('Unknown variant type ' + variantType);
-      return '';
+angular.module('upsConsole').controller('VariantController', function ($rootScope, $scope, $routeParams, $location,
+                                                                       pushApplication, variants, Notifications,
+                                                                       breadcrumbs, variantService) {
+
+  $scope.variantType = $routeParams.variantType;
+
+  if (typeof $rootScope.variant === 'undefined') {
+    if (typeof $routeParams.variantId !== 'undefined') {
+      var params = {
+        appId: $routeParams.applicationId,
+        variantType: $routeParams.variantType,
+        variantId: $routeParams.variantId
+      };
+      variants.get(params, function (variant) {
+        $rootScope.variant = variant;
+        breadcrumbs.generateBreadcrumbs();
+      });
+    } else {
+      $rootScope.variant = {};
     }
   }
 
-  function variantEndpoint(variantType) {
-    switch (variantType) {
-    case 'android':
-    case 'simplePush':
-    case 'chrome':
-    case 'iOS':
-      return variantType;
-    default:
-      Notifications.error('Unknown variant type ' + variantType);
-      return '';
+  $scope.saveVariant = function (variant, variantType) {
+    var variantData = variantProperties(variant, variantType);
+    var params = {
+      appId: $routeParams.applicationId,
+      variantType: variantService.variantEndpoint(variantType),
+      variantId: variant.variantID
+    };
+
+    var successCallback = function (newVariant) {
+      Notifications.success('Successfully ' + (variant.id ? 'modified' : 'created')  + ' variant');
+      if (!variant.id) {
+        variantService.getOsVariants($rootScope.application, variantType).push(newVariant);
+      }
+      $location.path('/detail/' + $routeParams.applicationId);
+      $rootScope.variant = null;
+    };
+    var failureCallback = function () {
+      Notifications.error('Something went wrong...');
+    };
+
+    var save =  variant.id ? variants.update : ((variantData instanceof FormData) ? variants.createWithFormData : variants.create);
+
+    if (variantType !== 'iOS') {
+      save(params, variantData, successCallback, failureCallback);
+    } else {
+      if (variantData.certificate) {
+        variants.updateWithFormData(params, variantData, successCallback, failureCallback);
+      } else {
+        variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
+      }
     }
-  }
+  };
 
   function variantProperties(variant, variantType) {
     var properties = ['name', 'description'], result = {};
@@ -222,4 +202,55 @@ angular.module('upsConsole').controller('DetailController',
     return result;
   }
 
+});
+
+angular.module('upsConsole').factory('variantService', function(Notifications) {
+  function variantKey(variantType) {
+    switch (variantType) {
+    case 'android':
+    case 'simplePush':
+      return variantType + 'Variants';
+    case 'iOS':
+      return 'iosvariants';
+    case 'chrome':
+      return 'chromePackagedAppVariants';
+    default:
+      Notifications.error('Unknown variant type ' + variantType);
+      return '';
+    }
+  }
+
+  return {
+    variantEndpoint: function(variantType) {
+      switch (variantType) {
+      case 'android':
+      case 'simplePush':
+      case 'chrome':
+      case 'iOS':
+        return variantType;
+      default:
+        Notifications.error('Unknown variant type ' + variantType);
+        return '';
+      }
+    },
+
+    getOsVariants: function(application, variantType) {
+      if (application) {
+        return application[variantKey(variantType)];
+      }
+    },
+
+    variantType: function(type) {
+      switch (type) {
+      case 'ANDROID':
+        return 'android';
+      case 'IOS':
+        return 'iOS';
+      case 'CHROME_PACKAGED_APP':
+        return 'chrome';
+      case 'SIMPLE_PUSH':
+        return 'simplePush';
+      }
+    }
+  };
 });

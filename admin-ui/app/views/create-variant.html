@@ -1,11 +1,13 @@
-<div class="modal-content">
-  <div class="modal-header">
-    <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
-      <span class="pficon pficon-close"></span>
-    </button>
-    <h4 class="modal-title">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
-  </div>
-  <div class="modal-body">
+<ups-navigation current="applications"></ups-navigation>
+
+<div class="col-md-10 lo-main-pane ng-scope">
+  <div class="row">
+    <div class="lo-content-area col-md-12">
+      <div ups-breadcrumb/>
+
+      <div class="lo-page-info">
+        <h2>{{ variant.id ? 'Edit' : 'Add' }} Variant</h2>
+      </div>
     <form name="form" class="form-horizontal">
       <div class="form-group">
         <label class="col-sm-3 control-label" for="createAppName">Name</label>
@@ -177,8 +179,9 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="ok(variant, variantType)" ng-disabled="form.$invalid">
+    <button type="button" class="btn btn-primary" ng-click="saveVariant(variant, variantType)" ng-disabled="form.$invalid">
       {{ variant.id ? 'Save' : 'Add' }}
     </button>
   </div>
+</div>
 </div>
