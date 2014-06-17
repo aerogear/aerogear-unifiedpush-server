@@ -163,6 +163,9 @@ module.config(function ($routeProvider) {
           label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
+      .otherwise({
+        redirectTo: '/main'
+      });
 
         redirectTo: '/dashboard'
   }) ;
