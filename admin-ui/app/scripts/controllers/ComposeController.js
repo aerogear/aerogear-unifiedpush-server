@@ -115,7 +115,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
 });
 
 angular.module('upsConsole').controller('PreComposeController', function($rootScope, $scope, $location, pushApplication) {
-  if ($rootScope.application) {
+  if ($rootScope.application && !$scope.applicationChosen) {
     $location.path('/compose/' + $rootScope.application.pushApplicationID);
   }
 
@@ -125,6 +125,6 @@ angular.module('upsConsole').controller('PreComposeController', function($rootSc
 
   $scope.setApplication = function(application) {
     $rootScope.application = application;
-    $location.path('/compose/' + application.pushApplicationID);
+    $scope.applicationChosen = true;
   };
 });

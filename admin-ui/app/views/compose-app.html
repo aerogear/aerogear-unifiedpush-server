@@ -12,15 +12,17 @@
           <label class="col-sm-2 control-label" for="select">Application</label>
 
           <div class="col-sm-10">
-            <select class="form-control" id="select" ng-model="application" ng-options="app.name for app in applications">
+            <select class="form-control" id="select" ng-model="application"
+                    ng-options="app.name for app in applications" ng-change="setApplication(application)">
               <option value="">-- choose application --</option>
             </select>
           </div>
         </div>
-        <div class="pull-right">
-          <button ng-click="setApplication(application)" class="btn btn-primary btn-lg" type="button">Next</button>
-        </div>
       </form>
+
+      <div ng-if="applicationChosen">
+        <div ng-include="'views/include/compose.html'"></div>
+      </div>
     </div>
   </div>
 </div>
