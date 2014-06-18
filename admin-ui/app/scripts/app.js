@@ -11,9 +11,9 @@ angular.module('upsConsole', [
 ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainController',
+      .when('/applications', {
+        templateUrl: 'views/applications.html',
+        controller: 'ApplicationController',
         crumb: {
           id: 'apps',
           label: 'Applications'
@@ -93,7 +93,7 @@ angular.module('upsConsole', [
         }
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/applications'
       });
 
   });
