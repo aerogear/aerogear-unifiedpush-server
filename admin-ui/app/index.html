@@ -22,7 +22,7 @@
     <!-- endbuild -->
 
 </head>
-<body class="app-dashboard" ng-app="upsConsole">
+<body class="app-dashboard" ng-app="upsConsole" ng-controller="RootController">
 
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -83,7 +83,11 @@
 </div>
 
 <!-- ngView:  -->
-<div data-ng-view="" id="lo-content-row" class="row lo-main-pane ups-main-pane ng-scope">
+<div class="row lo-main-pane lo-content-row ups-main-pane ng-scope" >
+  <ups-navigation current="applications"></ups-navigation>
+
+  <ng-view ng-show="!isViewLoading"></ng-view>
+  <div ng-include="'views/loading.html'" ng-show="isViewLoading"></div>
 </div>
 
 <!-- build:js scripts/modules.js -->
@@ -104,6 +108,7 @@
 <script src="scripts/directives.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/ui/bootstrap-customization.js"></script>
+<script src="scripts/controllers/RootController.js"></script>
 <script src="scripts/controllers/MainController.js"></script>
 <script src="scripts/controllers/DetailController.js"></script>
 <script src="scripts/controllers/InstallationController.js"></script>
