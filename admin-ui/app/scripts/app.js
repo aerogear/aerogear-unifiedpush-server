@@ -28,6 +28,22 @@ angular.module('upsConsole', [
           label: '$ application.name ? application.name : "Current Application"'
         }
       })
+      .when('/variant/:applicationId', {
+        templateUrl: 'views/create-variant.html',
+        controller: 'VariantController',
+        crumb: {
+          parent: 'app-detail',
+          label: 'Add Variant'
+        }
+      })
+      .when('/variant/:applicationId/:variantId', {
+        templateUrl: 'views/create-variant.html',
+        controller: 'VariantController',
+        crumb: {
+          parent: 'app-detail',
+          label: '$ variant.name ? "Edit " + variant.name : "Edit Variant"'
+        }
+      })
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
