@@ -120,10 +120,15 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public Map<Variant, PushApplication> findByVariantIds(List<String> variantIDs) {
+
         final String jpql = "select v, pa.name, pa.pushApplicationID from PushApplication pa " +
                 "left join pa.{type}Variants v where v.variantID in (:variantIDs)";
 
         final HashMap<Variant, PushApplication> results = new HashMap<Variant, PushApplication>();
+
+        if(variantIDs == null || variantIDs.isEmpty()) {
+            return results;
+        }
 
         for (VariantType variantType : VariantType.values()) {
             final String typeQuery = parseVariantType(jpql, variantType);
