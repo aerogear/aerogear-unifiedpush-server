@@ -23,11 +23,14 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
 
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
+
+    private static final Logger LOGGER = Logger.getLogger(JPAPushMessageInformationDao.class.getSimpleName());
 
     @Override
     public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
@@ -48,6 +51,10 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public long getNumberOfPushMessagesForApplications(List<String> pushApplicationIds) {
+        if(pushApplicationIds == null || pushApplicationIds.isEmpty()) {
+            return 0;
+        }
+
         return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId IN :pushApplicationIds")
                 .setParameter("pushApplicationIds", pushApplicationIds).getSingleResult();
     }
