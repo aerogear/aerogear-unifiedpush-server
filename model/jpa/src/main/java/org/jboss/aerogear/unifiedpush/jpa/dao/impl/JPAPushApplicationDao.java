@@ -86,7 +86,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public Map<String, Long> countInstallationsByType(String pushApplicationID) {
         final String jpql = "select v.variantID, count(*) from PushApplication pa join pa.{type}Variants v join v.installations i "
-                + "where pushApplicationID = :pushApplicationID and i.enabled = true "
+                + "where pushApplicationID = :pushApplicationID "
                 + "group by v.variantID";
 
         final HashMap<String, Long> results = new HashMap<String, Long>();
