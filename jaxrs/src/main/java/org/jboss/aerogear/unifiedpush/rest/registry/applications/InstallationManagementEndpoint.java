@@ -33,6 +33,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
+
 
 @Stateless
 @Path("/applications/{variantID}/installations/")
@@ -61,7 +63,7 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
-        final String developer = request.getUserPrincipal().getName();
+        final String developer = extractUsername(request);
 
         //Find the variant using the variantID
         if (!genericVariantService.existsVariantIDForDeveloper(variantId, developer)) {
