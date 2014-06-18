@@ -117,12 +117,9 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
     @Override
-    public long getNumberOfDevicesForVariantIDs(List<String> variantIDs) {
-        if (variantIDs.isEmpty())
-            return 0;
-
-        return (Long) createQuery("select count(installation) from Variant abstractVariant join abstractVariant.installations installation where abstractVariant.variantID IN :variantIDs ")
-                .setParameter("variantIDs", variantIDs).getSingleResult();
+    public long getNumberOfDevicesForVariantIDs(String loginName) {
+        return (Long) createQuery("select count(installation) from Variant abstractVariant join abstractVariant.installations installation where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ")
+                .setParameter("developer", loginName).getSingleResult();
     }
 
     @Override
