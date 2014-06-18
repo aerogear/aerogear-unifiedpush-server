@@ -47,9 +47,10 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     }
 
     @Override
-    public long getNumberOfPushMessagesForApplications(List<String> pushApplicationIds) {
-        return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId IN :pushApplicationIds")
-                .setParameter("pushApplicationIds", pushApplicationIds).getSingleResult();
+    public long getNumberOfPushMessagesForApplications(String loginName) {
+        return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
+                "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)")
+                .setParameter("developer", loginName).getSingleResult();
     }
 
     @Override

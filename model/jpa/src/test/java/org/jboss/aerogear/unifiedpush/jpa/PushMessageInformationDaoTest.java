@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
@@ -26,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -160,33 +160,44 @@ public class PushMessageInformationDaoTest {
     @Test
     public void countMessagesPerApplicationID() {
 
-        final String onePushApplicationID = "231231231";
-        final String secondPushApplicationID = "231231232";
+        final String loginName = "admin";
 
-        long number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(Arrays.asList(onePushApplicationID, secondPushApplicationID));
+        final PushApplication pushApp = new PushApplication();
+        pushApp.setName("app");
+        pushApp.setPushApplicationID("231231231");
+        pushApp.setDeveloper(loginName);
+        entityManager.persist(pushApp);
+
+        final PushApplication pushApp1 = new PushApplication();
+        pushApp1.setName("app1");
+        pushApp1.setPushApplicationID("231231232");
+        pushApp1.setDeveloper(loginName);
+        entityManager.persist(pushApp1);
+
+        long number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
         assertThat(number).isEqualTo(1);
 
         for (int i = 0; i < 100; i++) {
 
             PushMessageInformation pmi = new PushMessageInformation();
-            pmi.setPushApplicationId(onePushApplicationID);
+            pmi.setPushApplicationId(pushApp.getPushApplicationID());
 
             pushMessageInformationDao.create(pmi);
         }
 
-        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(Arrays.asList(onePushApplicationID, secondPushApplicationID));
+        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
         assertThat(number).isEqualTo(101);
 
         // a few more for different PushApplication...
         for (int i = 0; i < 100; i++) {
 
             PushMessageInformation pmi = new PushMessageInformation();
-            pmi.setPushApplicationId(secondPushApplicationID);
+            pmi.setPushApplicationId(pushApp1.getPushApplicationID());
 
             pushMessageInformationDao.create(pmi);
         }
 
-        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(Arrays.asList(onePushApplicationID, secondPushApplicationID));
+        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
         assertThat(number).isEqualTo(201);
     }
 

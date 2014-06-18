@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -33,8 +32,6 @@ public class DashboardService {
 
     @Inject
     private PushApplicationDao pushApplicationDao;
-    @Inject
-    private VariantDao variantDao;
     @Inject
     private InstallationDao installationDao;
     @Inject
@@ -65,6 +62,9 @@ public class DashboardService {
      */
     public List<ApplicationVariant> getVariantsWithWarnings(String principalName) {
         final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName);
+        if (warningIDs.isEmpty()) {
+            return Collections.emptyList();
+        }
         Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(warningIDs);
 
         return wrapApplicationVariant(applications);
@@ -75,6 +75,9 @@ public class DashboardService {
      */
     public List<ApplicationVariant> getTopThreeBusyVariants(String principalName) {
         final Map<String, Long> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(principalName);
+        if (topVariantIDs.isEmpty()) {
+            return Collections.emptyList();
+        }
         Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(new ArrayList<String>(topVariantIDs.keySet()));
         final List<ApplicationVariant> applicationVariants = wrapApplicationVariant(applications);
 
@@ -104,19 +107,11 @@ public class DashboardService {
     }
 
     private long totalMessages(String principalName) {
-        List<String> pushAppIDs = pushApplicationDao.findAllPushApplicationIDsForDeveloper(principalName);
-        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(pushAppIDs);
+        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(principalName);
     }
 
     private long totalDeviceNumber(String principalName) {
-
-        List<String> variantIDs = getVariantIDsForDeveloper(principalName);
-
-        return installationDao.getNumberOfDevicesForVariantIDs(variantIDs);
-    }
-
-    private List<String> getVariantIDsForDeveloper(String principalName) {
-        return variantDao.findVariantIDsForDeveloper(principalName);
+        return installationDao.getNumberOfDevicesForVariantIDs(principalName);
     }
 
     private long totalApplicationNumber(String principalName) {

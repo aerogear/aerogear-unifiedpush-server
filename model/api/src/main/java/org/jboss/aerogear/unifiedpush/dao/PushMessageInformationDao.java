@@ -26,7 +26,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Does a count for all the push message that have been submitted for the given PushApplication.
      */
-    long getNumberOfPushMessagesForApplications(List<String> pushApplicationIds);
+    long getNumberOfPushMessagesForApplications(String loginName);
 
     /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
