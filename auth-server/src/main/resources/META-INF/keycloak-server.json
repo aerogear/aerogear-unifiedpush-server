@@ -1,10 +1,14 @@
 {
     "admin": {
-        "realm": "keycloak-admin"
+        "realm": "master"
     },
 
     "model": {
         "provider": "jpa"
+    },
+
+    "modelCache": {
+        "provider": "${keycloak.model.cache.provider:none}"
     },
 
     "timer": {
@@ -13,7 +17,23 @@
 
     "theme": {
         "default": "keycloak",
-        "dir": "${jboss.server.config.dir}/themes"
+        "staticMaxAge": 2592000,
+        "cacheTemplates": true,
+        "folder": {
+          "dir": "${jboss.server.config.dir}/themes"
+        }
+    },
+
+    "login-forms": {
+        "provider": "freemarker"
+    },
+
+    "account": {
+        "provider": "freemarker"
+    },
+
+    "email": {
+        "provider": "freemarker"
     },
 
     "scheduled": {
