@@ -93,7 +93,7 @@ angular.module('upsConsole', [
         }
       })
       .otherwise({
-        redirectTo: '/applications'
+        redirectTo: '/dashboard'
       });
 
   });
