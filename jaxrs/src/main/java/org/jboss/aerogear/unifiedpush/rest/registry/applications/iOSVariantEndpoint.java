@@ -199,6 +199,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
     }
 
+    /**
+     * Utility method that removes certificate and passphrase information from given collection of iOS variants.
+     *
+     * All passphrases and certificates will become empty strings, so that the variant objects in collection can pass Bean
+     * Validation criteria.
+     */
     static void stripPassphraseAndCertificate(Collection<iOSVariant> iosVariants) {
         if (iosVariants != null) {
             for (iOSVariant iosVariant : iosVariants) {
