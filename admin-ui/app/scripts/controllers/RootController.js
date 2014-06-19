@@ -22,8 +22,9 @@ angular.module('upsConsole')
     $rootScope.$on('$routeChangeStart', function() {
       $rootScope.isViewLoading = true;
     });
-    $rootScope.$on('$routeChangeSuccess', function() {
+    $rootScope.$on('$routeChangeSuccess', function(event, routeData) {
       $rootScope.isViewLoading = false;
+      $rootScope.section = routeData.$$route.section;
     });
   }
 );

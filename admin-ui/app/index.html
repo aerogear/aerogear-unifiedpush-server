@@ -84,7 +84,7 @@
 
 <!-- ngView:  -->
 <div class="row lo-main-pane lo-content-row ups-main-pane ng-scope" >
-  <ups-navigation current="applications"></ups-navigation>
+  <ups-navigation current="{{section}}"></ups-navigation>
 
   <ng-view ng-show="!isViewLoading"></ng-view>
   <div ng-include="'views/loading.html'" ng-show="isViewLoading"></div>

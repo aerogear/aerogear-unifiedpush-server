@@ -14,6 +14,7 @@ angular.module('upsConsole', [
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainController',
+        section: 'applications',
         crumb: {
           id: 'apps',
           label: 'Applications'
@@ -22,6 +23,7 @@ angular.module('upsConsole', [
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
+        section: 'applications',
         crumb: {
           id: 'app-detail',
           parent: 'apps',
@@ -31,6 +33,7 @@ angular.module('upsConsole', [
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: '$ variant.name ? variant.name : "Registering Installations"'
@@ -39,6 +42,7 @@ angular.module('upsConsole', [
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: 'Example'
@@ -47,6 +51,7 @@ angular.module('upsConsole', [
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: 'Example'
@@ -55,6 +60,7 @@ angular.module('upsConsole', [
       .when('/compose', {
         templateUrl: 'views/compose-app.html',
         controller: 'PreComposeController',
+        section: 'compose',
         crumb: {
           label: 'Send Push'
         }
@@ -62,6 +68,7 @@ angular.module('upsConsole', [
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
         controller: 'ComposeController',
+        section: 'compose',
         crumb: {
           parent: 'app-detail',
           label: 'Send Push'
@@ -70,6 +77,7 @@ angular.module('upsConsole', [
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardController',
+        section: 'dashboard',
         crumb: {
           id: 'dash',
           label: 'Dashboard'
@@ -78,6 +86,7 @@ angular.module('upsConsole', [
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        section: 'dashboard',
         crumb: {
           id: 'activity',
           parent: 'dash',
@@ -87,6 +96,7 @@ angular.module('upsConsole', [
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        section: 'dashboard',
         crumb: {
           parent: 'activity',
           label: '$ variant.name ? variant.name : "Current variant"'
