@@ -1,13 +1,14 @@
 <div class="col-md-10 lo-main-pane">
   <div class="lo-content-area col-md-12">
 
-    <h2>Welcome Sebastien,</h2>
 
     <div class="dash col-md-12">
+
+    <h2>Welcome Jay Balunas,</h2>
       <div class="panel ups-panel pull-left ups-padding-box expand">
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard active-apps">
-            <i class="fa fa-square"></i>&nbsp; {{ dashboardData.applications }}&nbsp;
+            <i class="fa fa-list-alt"></i>&nbsp; {{ dashboardData.applications }}&nbsp;
           </div>
           <div class="pull-left">applications
             <br>active
@@ -15,7 +16,7 @@
         </div>
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard notifications">
-            <i class="fa fa-envelope"></i>&nbsp; {{ dashboardData.messages }}&nbsp;
+            <i class="fa fa-send"></i>&nbsp; {{ dashboardData.messages }}&nbsp;
           </div>
           <div class="pull-left">
             notifications
@@ -24,7 +25,7 @@
         </div>
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard installations">
-            <i class="fa fa-mobile-phone"></i>&nbsp; {{ dashboardData.devices }}&nbsp;
+            <i class="fa fa-tablet"></i>&nbsp; {{ dashboardData.devices }}&nbsp;
           </div>
           <div class="pull-left">installations
             <br>registered
@@ -53,6 +54,9 @@
                 Activity &raquo;
               </a>
             </li>
+            <li class="list-group-item" ng-hide="warnings.length">
+              <i class="fa fa-check-circle"></i>&nbsp; No problems detected currently.
+            </li>
           </ul>
         </div>
 
@@ -65,7 +69,7 @@
               <h2>Most Active</h2>
             </div>
             <div class="pull-right">
-              <span>Notifications delivered</span>
+              <span ng-show="topThree.length">Notifications delivered</span>
             </div>
             <div class="clearfix"></div>
           </div>
@@ -75,6 +79,9 @@
                 {{ top.applicationName }} &raquo; {{ top.variant.name }}
               </a>
               <div class="pull-right">{{ top.receivers }}</div>
+            </li>
+            <li class="list-group-item" ng-hide="topThree.length">
+              No notifications have yet been sent.
             </li>
           </ul>
         </div>
