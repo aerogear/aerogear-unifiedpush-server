@@ -17,19 +17,12 @@
 'use strict';
 
 angular.module('upsConsole').controller('DashboardController',
-  function ($rootScope, $scope, dashboard) {
+  function ($rootScope, $scope, dashboard, totals, warnings, topThree) {
     $rootScope.application = null;
-    dashboard.totals({}, function (data) {
-      $scope.dashboardData = data;
-    });
 
-    dashboard.warnings({}, function (data) {
-      $scope.warnings = data;
-    });
-
-    dashboard.topThree({}, function (data) {
-      $scope.topThree = data;
-    });
+    $scope.dashboardData = totals;
+    $scope.warnings = warnings;
+    $scope.topThree = topThree;
   });
 
 angular.module('upsConsole').controller('ActivityController',

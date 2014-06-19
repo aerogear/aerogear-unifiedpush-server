@@ -14,6 +14,11 @@ angular.module('upsConsole', [
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainController',
+        resolve: {
+          applications: function(pushApplication) {
+            return pushApplication.query().$promise;
+          }
+        },
         section: 'applications',
         crumb: {
           id: 'apps',
@@ -23,6 +28,14 @@ angular.module('upsConsole', [
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
+        resolve: {
+          application: function($route, pushApplication) {
+            return pushApplication.get({appId: $route.current.params.applicationId}).$promise;
+          },
+          counts: function($route, pushApplication) {
+            return pushApplication.count({appId: $route.current.params.applicationId}).$promise;
+          }
+        },
         section: 'applications',
         crumb: {
           id: 'app-detail',
@@ -60,6 +73,11 @@ angular.module('upsConsole', [
       .when('/compose', {
         templateUrl: 'views/compose-app.html',
         controller: 'PreComposeController',
+        resolve: {
+          applications: function(pushApplication) {
+            return pushApplication.query({}).$promise;
+          }
+        },
         section: 'compose',
         crumb: {
           label: 'Send Push'
@@ -77,6 +95,17 @@ angular.module('upsConsole', [
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardController',
+        resolve: {
+          totals: function(dashboard) {
+            return dashboard.totals({}).$promise;
+          },
+          warnings: function(dashboard) {
+            return dashboard.warnings({}).$promise;
+          },
+          topThree: function(dashboard) {
+            return dashboard.topThree({}).$promise;
+          }
+        },
         section: 'dashboard',
         crumb: {
           id: 'dash',
