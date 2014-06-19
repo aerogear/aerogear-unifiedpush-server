@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('MainController',
+angular.module('upsConsole').controller('ApplicationController',
   function($rootScope, $scope, $modal, pushApplication, Notifications) {
 
   /*
