@@ -86,11 +86,12 @@ angular.module('ups.directives', [])
     return {
       scope: {
         'noun': '@',
-        'count': '='
+        'count': '=',
+        'zero': '@'
       },
       restrict: 'E',
       template:
         '<span ng-show="count > 0"><strong>{{count}}</strong> {{ noun }}<span ng-show="count > 1">s</span></span>' +
-        '<span ng-show="count == 0">No {{ noun }}s</span>'
+        '<span ng-show="count == 0">{{zero ? zero : "No"}} {{ noun }}s</span>'
     };
   });
