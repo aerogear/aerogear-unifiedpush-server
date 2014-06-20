@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('upsConsole')
+angular.module('upsConsole.services')
 
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(function($q, $interpolate, Notifications) {
