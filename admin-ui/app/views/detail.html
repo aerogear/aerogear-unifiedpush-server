@@ -5,11 +5,6 @@
 
             <div class="lo-page-info">
                 <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em></p>
-                <div class="pull-right">
-                    <a href="#/compose/{{ application.pushApplicationID }}" class="btn btn-default btn-lg" type="button">Send Push...</a>
-                    <button class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant...</button>
-                </div>
-
                 <div style="clear: both;"></div>
             </div>
 
@@ -23,7 +18,6 @@
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i> <i class="fa fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li><a role="menuitem" ng-click="renewMasterSecret()">Renew Master Secret...</a></li>
-                                <li><a role="menuitem" href="#/activity/{{application.pushApplicationID}}">Metrics</a></li>
                             </ul>
                         </div>
                     </h2>
@@ -45,10 +39,19 @@
                 <div style="clear: both;"></div>
             </div>
 
-            <h3>Variants</h3>
-            <div class="lo-panel ups-panel-variants" ng-if="application.androidVariants.length == 0 && application.iosvariants.length == 0 && application.chromePackagedAppVariants.length == 0 && application.simplePushVariants.length == 0">
-              <button class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant...</button>
+            <h2>Variants</h2>
+
+            <div class="lo-page-info">
+                <p>
+                    You have <ups-pluralize noun="variant" count="application.androidVariants.length + application.iosvariants.length + application.chromePackagedAppVariants.length + application.simplePushVariants.length"></ups-pluralize>.
+                </p>
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-lg" type="button" ng-click="addVariant()">Add Variant</button>
+                </div>
+
+                <div style="clear: both;"></div>
             </div>
+
             <div class="panel lo-panel ups-panel-variants android" ng-if="application.androidVariants.length != 0">
                 <div class="panel-heading">
                     <div class="pull-left"><h2>Android</h2></div>

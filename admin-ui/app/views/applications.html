@@ -5,7 +5,7 @@
 
             <div class="lo-page-info">
                 <p>
-                    You have <ups-pluralize count="applications.length" zero="no" noun="application"></ups-pluralize>.
+                    You have <ups-pluralize noun="application" count="applications.length"></ups-pluralize>.
                 </p>
 
                 <div class="pull-right">
@@ -14,7 +14,7 @@
             </div>
             <div class="panel panel-default lo-panel lo-panel-storage" ng-repeat="application in applications">
                 <div class="panel-heading">
-                    <a href="#/detail/{{application.pushApplicationID}}">{{ application.name }}</a>
+                    <h3 class="panel-title"><a href="#/detail/{{application.pushApplicationID}}">{{ application.name }}</a></h3>
                     <div class="dropdown">
                         <a class="dropdown-toggle">
                             <i class="fa fa-cog"></i> <i class="fa fa-caret-down"></i></b>
@@ -23,16 +23,17 @@
                             <li><a role="menuitem" tabindex="-1" ng-click="edit(application)">Edit...</a></li>
                             <li class="divider"></li>
                             <li><a role="menuitem" tabindex="-1" ng-click="remove(application)">Remove...</a></li>
-                            <li><a role="menuitem" tabindex="-1" href="#/activity/{{application.pushApplicationID}}">Metrics</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em></p>
-                    <p>
-                        <ups-pluralize noun="variant" count="application.androidVariants.length + application.simplePushVariants.length +
-                            application.iosvariants.length + application.chromePackagedAppVariants.length"></ups-pluralize>
-                    </p>
+                    <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em><br><br></p>
+                    <ul class="lo-app-opts">
+                      <li><i class="fa fa-cubes"></i><a href="#/detail/{{application.pushApplicationID}}"><ups-pluralize noun="variant" count="application.androidVariants.length + application.simplePushVariants.length +
+                            application.iosvariants.length + application.chromePackagedAppVariants.length"></ups-pluralize></a></li>
+                      <li><i class="fa fa-tachometer"></i><a href="#/activity/{{application.pushApplicationID}}">Activity</a></li>
+                      <li><i class="fa fa-send"></i><a href="#/compose/{{ application.pushApplicationID }}">Send Push</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
