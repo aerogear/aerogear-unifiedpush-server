@@ -1,7 +1,7 @@
 'use strict';
 
 /* Directives */
-angular.module('ups.directives', [])
+angular.module('ups.directives', ['upsConsole.services'])
 
   .directive('upsNavigation', function () {
     return {
@@ -30,7 +30,7 @@ angular.module('ups.directives', [])
         counts: '=',
         type: '@'
       },
-      controller: function ($rootScope, $scope, $routeParams, $location) {
+      controller: function ($rootScope, $scope, $routeParams, ContextProvider) {
         $scope.expand = function (variant) {
           variant.expand = !variant.expand;
         };
@@ -48,8 +48,7 @@ angular.module('ups.directives', [])
         };
 
         $scope.applicationId = $routeParams.applicationId;
-        var href = $location.absUrl();
-        $scope.currentLocation = href.substring(0, href.indexOf('#'));
+        $scope.currentLocation = ContextProvider.contextPath();
 
         $scope.currentVariant = function (variant) {
           $rootScope.variant = variant;

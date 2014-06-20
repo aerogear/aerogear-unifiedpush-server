@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider) {
 
   /*
    * INITIALIZATION
@@ -25,8 +25,7 @@ angular.module('upsConsole').controller('DetailController',
   $rootScope.application = application;
   $scope.counts = counts;
   breadcrumbs.generateBreadcrumbs();
-  var href = $location.absUrl();
-  $scope.currentLocation = href.substring(0, href.indexOf('#'));
+  $scope.currentLocation = ContextProvider.contextPath();
 
   /*
    * PUBLIC METHODS
