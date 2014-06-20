@@ -24,7 +24,9 @@ angular.module('upsConsole')
     });
     $rootScope.$on('$routeChangeSuccess', function(event, routeData) {
       $rootScope.isViewLoading = false;
-      $rootScope.section = routeData.$$route.section;
+      if (routeData.$$route && routeData.$$route.section) {
+        $rootScope.section = routeData.$$route.section;
+      }
     });
   }
 );
