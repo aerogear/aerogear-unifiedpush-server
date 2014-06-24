@@ -64,7 +64,6 @@
 }
 
 .dataTables_info {
-	width: 60%;
 	float: left;
 }
 
@@ -153,8 +152,6 @@ table.display thead th {
 	padding: 3px 18px 3px 10px;
 	border-bottom: 1px solid black;
 	font-weight: bold;
-	cursor: pointer;
-	* cursor: hand;
 }
 
 table.display tfoot th {
@@ -180,6 +177,12 @@ table.display td.center {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables sorting
  */
+table.dataTable thead th.sorting_asc,
+table.dataTable thead th.sorting_desc,
+table.dataTable thead th.sorting {
+	cursor: pointer;
+	*cursor: hand;
+}
 
 .sorting_asc {
 	background: url('../images/sort_asc.png') no-repeat center right;
@@ -314,7 +317,6 @@ td.details {
 }
 
 .paging_full_numbers {
-	width: 400px;
 	height: 22px;
 	line-height: 22px;
 }
