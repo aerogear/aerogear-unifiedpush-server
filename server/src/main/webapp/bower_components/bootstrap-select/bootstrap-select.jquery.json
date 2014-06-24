@@ -1,14 +1,14 @@
 {
     "name": "bootstrap-select",
     "title": "Bootstrap Select",
-    "description": "A custom select / multiselect for @twitter bootstrap using button dropdown, designed to behave like regular Bootstrap selects",
+    "description": "A custom select / multiselect for Bootstrap using button dropdown, designed to behave like regular Bootstrap selects",
     "keywords": [
         "form",
         "bootstrap",
         "select",
         "replacement"
     ],
-    "version": "1.4.3",
+    "version": "1.5.2",
     "author": {
         "name": "Silvio Moreto",
         "url": "https://github.com/silviomoreto/"

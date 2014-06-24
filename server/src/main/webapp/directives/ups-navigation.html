@@ -4,13 +4,21 @@
   <nav class="navbar navbar-vertical" role="navigation">
     <div class="bs-sidebar">
       <ul>
-        <li ng-class="{active: current == 'stats'}" class="stats"><a
-            href="#/dashboard"><i class="fa fa-tachometer fa-3x"></i>Dashboard</a></li>
-        <li ng-class="{active: current == 'applications'}" class="push"><a href="#"><i
-            class="fa fa-th fa-3x"></i>Applications</a></li>
-        <li><a href="#"><i class="fa fa-send-o fa-3x"></i>Send Push</a></li>
-<!--    <li><a href="#"><i class="fa fa-users fa-2x"></i>Users</a></li>
-        <li><a href="#"><i class="fa fa-wrench fa-2x"></i>Settings</a></li> -->
+        <li ng-class="{active: current == 'stats'}" class="stats">
+          <a href="#/dashboard">
+            <i class="fa fa-tachometer fa-3x"></i>Dashboard
+          </a>
+        </li>
+        <li ng-class="{active: current == 'applications'}">
+          <a href="#">
+            <i class="fa fa-th fa-3x"></i>Applications
+          </a>
+        </li>
+        <li ng-class="{active: current == 'send'}">
+          <a href="#/compose">
+            <i class="fa fa-send-o fa-3x"></i>Send Push
+          </a>
+        </li>
       </ul>
     </div>
   </nav>
