@@ -1,12 +1,7 @@
-<ups-navigation current="applications"></ups-navigation>
-
 <div class="col-md-10 lo-main-pane ng-scope">
     <div class="row">
         <div class="lo-content-area col-md-12">
             <div ups-breadcrumb/>
-            <div>
-              <ups-alerts />
-            </div>
 
             <div class="lo-page-info">
                 <p ng-show="application.description.length"><em>&ldquo;{{ application.description }}&rdquo;</em></p>
@@ -87,8 +82,8 @@
                 <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants simplePush" ng-if="application.simplePushVariants.length != 0">
-                <div class="panel-heading" style="padding-left: 25px">
+            <div class="panel lo-panel ups-panel-variants simplepush" ng-if="application.simplePushVariants.length != 0">
+                <div class="panel-heading">
                     <div class="pull-left"><h2>SimplePush</h2></div>
                     <div class="pull-right">
                         <ups-pluralize noun="installation" count="counts.simplePush" ></ups-pluralize>

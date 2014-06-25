@@ -36,6 +36,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
+
 @Stateless
 @Path("/applications/{pushAppID}/simplePush")
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
@@ -51,7 +53,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @Context HttpServletRequest request) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName());
+        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -69,7 +71,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the "developer:
-        simplePushVariant.setDeveloper(request.getUserPrincipal().getName());
+        simplePushVariant.setDeveloper(extractUsername(request));
 
         // store the SimplePush variant:
         variantService.addVariant(simplePushVariant);
@@ -85,7 +87,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID,
                                                           @Context HttpServletRequest request) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getSimplePushVariants()).build();
+        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getSimplePushVariants()).build();
     }
 
     // UPDATE
@@ -99,7 +101,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, request.getUserPrincipal().getName());
+        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, extractUsername(request));
         if (spVariant != null) {
 
             // some validation

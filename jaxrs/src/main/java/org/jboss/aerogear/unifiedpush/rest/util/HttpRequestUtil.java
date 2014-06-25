@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -73,5 +76,12 @@ public final class HttpRequestUtil {
 
     private static boolean hasValue(String value) {
         return value != null && !value.isEmpty() && !"unknown".equalsIgnoreCase(value);
+    }
+
+    public static String extractUsername(HttpServletRequest httpServletRequest) {
+        KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
+        KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
+        return kcSecurityContext.getToken().getPreferredUsername();
+
     }
 }

@@ -28,7 +28,7 @@
     <!-- endbuild -->
 
 </head>
-<body class="app-dashboard" ng-app="upsConsole" ng-controller="RootController">
+<body class="app-dashboard"  ng-controller="RootController">
 
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -73,12 +73,12 @@
                 <ul class="nav navbar-nav navbar-utility">
                     <li class="dropdown">
                         <a href="#" class="lo-user dropdown-toggle ng-binding" data-toggle="dropdown">
-                            <span class="pficon pficon-user"></span>
-                            Jay Balunas <b class="caret"></b>
+                          <span class="pficon pficon-user"></span>
+                            {{username}} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" ng-click="auth.logout()">Log Out</a>
+                                <a href="#" ng-click="logout()">Log Out</a>
                             </li>
                         </ul>
                     </li>
@@ -120,6 +120,8 @@
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
+<script src="/auth/js/keycloak.js"></script>
+
 <script src="scripts/ui/bootstrap-customization.js"></script>
 <script src="scripts/controllers/RootController.js"></script>
 <script src="scripts/controllers/ApplicationController.js"></script>

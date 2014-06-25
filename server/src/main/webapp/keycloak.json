@@ -1,0 +1,7 @@
+{
+  "realm" : "aerogear",
+  "auth-server-url" : "http://localhost:8080/auth",
+  "ssl-not-required" : true,
+  "resource" : "unified-push-server-js",
+  "public-client" : true
+}
