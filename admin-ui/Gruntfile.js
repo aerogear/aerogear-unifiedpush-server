@@ -348,6 +348,13 @@ module.exports = function (grunt) {
           }
         ]
       }
+    },
+    bower: {
+      install: {
+        options: {
+          targetDir: 'app/bower-components/'
+        }
+      }
     }
   });
 
@@ -401,6 +408,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dist', [
     'initLocalConfig',
+    'bower:install',
     'default',
     'clean:webappDist',
     'copy:webappDist'
