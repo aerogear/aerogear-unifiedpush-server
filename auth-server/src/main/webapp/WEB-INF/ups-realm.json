@@ -48,8 +48,8 @@
     "applications": [
         {
             "name": "unified-push-server",
-            "enabled": true,
-            "bearerOnly": true
+            "enabled": true
+            
         },
         {
             "name": "unified-push-server-js",
