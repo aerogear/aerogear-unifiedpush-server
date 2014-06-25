@@ -19,8 +19,6 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
