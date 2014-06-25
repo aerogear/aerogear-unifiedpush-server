@@ -19,16 +19,18 @@
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
-    <!--
-        <security-constraint>
-            <web-resource-collection>
-                <url-pattern>/*</url-pattern>
-            </web-resource-collection>
-            <user-data-constraint>
-                <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-            </user-data-constraint>
-        </security-constraint>
-        -->
+	<security-constraint>
+	        <web-resource-collection>
+	            <web-resource-name>HttpBasic</web-resource-name>
+	            <description>Matches a few special URLs.</description>
+	            <url-pattern>/rest/registry/device</url-pattern>
+	            <url-pattern>/rest/sender</url-pattern>
+	        </web-resource-collection>
+	        <!-- No auth-constraint does the exclude! -->
+	        <auth-constraint>
+	            <role-name>admin</role-name>
+	        </auth-constraint>
+	    </security-constraint>	
 
     <login-config>
         <auth-method>KEYCLOAK</auth-method>

@@ -133,7 +133,14 @@ module.config(function ($routeProvider) {
 module.factory('authInterceptor', function($q, Auth) {
   return {
     request: function (config) {
-      var deferred = $q.defer();
+        var deferred = $q.defer();
+
+
+if (config.url == "rest/sender") {
+	return config;
+
+}
+		
       if (Auth.authz.token) {
         Auth.authz.updateToken(5).success(function() {
           config.headers = config.headers || {};
