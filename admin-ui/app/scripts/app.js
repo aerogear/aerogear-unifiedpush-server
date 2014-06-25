@@ -8,6 +8,10 @@ var module = angular.module('upsConsole', [
   'patternfly.notification',
   'hljs'
 ])
+
+/**
+ * Snippet extracted from Keycloak examples
+ */
 var auth = {};
 var logout = function(){
   console.log('*** LOGOUT');
