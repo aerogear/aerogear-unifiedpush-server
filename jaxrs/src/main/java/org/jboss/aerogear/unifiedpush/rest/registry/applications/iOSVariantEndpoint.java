@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import java.util.Set;
-import java.util.logging.Level;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
+import org.jboss.aerogear.unifiedpush.rest.util.PKCS12Util;
+import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
@@ -37,13 +39,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.rest.util.PKCS12Util;
-import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import java.util.Collection;
+import java.util.logging.Level;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
@@ -109,7 +106,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@Context HttpServletRequest request,
                                                  @PathParam("pushAppID") String pushApplicationID) {
-        Set<iOSVariant> iosVariants = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getIOSVariants();
+        Collection<iOSVariant> iosVariants = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getIOSVariants();
         stripPassphraseAndCertificate(iosVariants);
         return Response.ok(iosVariants).build();
     }
