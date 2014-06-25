@@ -27,9 +27,6 @@
 	            <url-pattern>/rest/sender</url-pattern>
 	        </web-resource-collection>
 	        <!-- No auth-constraint does the exclude! -->
-	        <auth-constraint>
-	            <role-name>admin</role-name>
-	        </auth-constraint>
 	    </security-constraint>	
 
     <login-config>
