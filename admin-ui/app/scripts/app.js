@@ -13,13 +13,6 @@ var module = angular.module('upsConsole', [
  * Snippet extracted from Keycloak examples
  */
 var auth = {};
-var logout = function(){
-  console.log('*** LOGOUT');
-  auth.loggedIn = false;
-  auth.authz = null;
-  window.location = auth.logoutUrl;
-};
-
 
 angular.element(document).ready(function ($http) {
   var keycloakAuth = new Keycloak('keycloak.json');
@@ -28,7 +21,7 @@ angular.element(document).ready(function ($http) {
   keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
     auth.loggedIn = true;
     auth.authz = keycloakAuth;
-    auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/demo/tokens/logout?redirect_uri=http://localhost:8080/angular-product/index.html";
+    auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/aerogear/tokens/logout?redirect_uri=http://localhost:8080/ag-push/#/";
     module.factory('Auth', function() {
       return auth;
     });
