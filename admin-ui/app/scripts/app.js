@@ -164,10 +164,8 @@ module.config(function ($routeProvider) {
         }
       })
       .otherwise({
-        redirectTo: '/main'
-      });
-
         redirectTo: '/dashboard'
+      });
   }) ;
 
 module.factory('authInterceptor', function($q, Auth) {
