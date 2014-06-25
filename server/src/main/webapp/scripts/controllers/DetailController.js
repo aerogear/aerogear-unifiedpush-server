@@ -17,21 +17,15 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider) {
 
   /*
    * INITIALIZATION
    */
-  pushApplication.get({appId: $routeParams.applicationId}, function (application) {
-    $rootScope.application = application;
-    breadcrumbs.generateBreadcrumbs();
-    var href = $location.absUrl();
-    $scope.currentLocation = href.substring(0, href.indexOf('#'));
-  });
-  pushApplication.count({appId: $routeParams.applicationId}, function (counts) {
-    $scope.counts = counts;
-  });
-
+  $rootScope.application = application;
+  $scope.counts = counts;
+  breadcrumbs.generateBreadcrumbs();
+  $scope.currentLocation = ContextProvider.contextPath();
 
   /*
    * PUBLIC METHODS
