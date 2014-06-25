@@ -31,8 +31,8 @@
                     <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>
                     <tr><td>Google API Key:</td><td>{{ variant.googleKey }}</td></tr>
                 </table>
-                <table ng-show="variant.passphrase.length">
-                    <tr><td>Production Key:</td><td>{{ variant.production }}</td></tr>
+                <table ng-show="variant.production != undefined">
+                    <tr><td>Type:</td><td>{{ variant.production ? 'Production' : 'Development' }}</td></tr>
                 </table>
                 <table ng-show="variant.clientId.length">
                     <tr><td>Client Id:</td><td>{{ variant.clientId }}</td></tr>

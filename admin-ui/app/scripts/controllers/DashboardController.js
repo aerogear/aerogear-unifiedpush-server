@@ -17,19 +17,12 @@
 'use strict';
 
 angular.module('upsConsole').controller('DashboardController',
-  function ($rootScope, $scope, dashboard) {
+  function ($rootScope, $scope, dashboard, totals, warnings, topThree) {
     $rootScope.application = null;
-    dashboard.totals({}, function (data) {
-      $scope.dashboardData = data;
-    });
 
-    dashboard.warnings({}, function (data) {
-      $scope.warnings = data;
-    });
-
-    dashboard.topThree({}, function (data) {
-      $scope.topThree = data;
-    });
+    $scope.dashboardData = totals;
+    $scope.warnings = warnings;
+    $scope.topThree = topThree;
   });
 
 angular.module('upsConsole').controller('ActivityController',
@@ -52,6 +45,10 @@ angular.module('upsConsole').controller('ActivityController',
       findVariant(application.chromePackagedAppVariants, closure, variantId);
     }
 
+    function onDetailsPage() {
+      return typeof $routeParams.variantId !== 'undefined';
+    }
+
     pushApplication.get({appId: $routeParams.applicationId}, function (application) {
       $rootScope.application = application;
 
@@ -63,7 +60,7 @@ angular.module('upsConsole').controller('ActivityController',
       breadcrumbs.generateBreadcrumbs();
     });
 
-    if (typeof $routeParams.variantId !== 'undefined') {
+    if (onDetailsPage()) {
       metrics.variant({id: $routeParams.variantId}, function (data) {
         $scope.pushMetrics = data;
         angular.forEach(data, function (metric) {
@@ -101,6 +98,10 @@ angular.module('upsConsole').controller('ActivityController',
       });
 
       return metrics;
+    };
+
+    $scope.detailsPage = function() {
+      return onDetailsPage();
     };
 
     $scope.expand = function (metric) {

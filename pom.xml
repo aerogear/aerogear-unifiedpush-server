@@ -81,6 +81,23 @@
                 <version>${hibernate.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-xc</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+
+
             <!-- Has to be added in aerogear-bom-->
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
@@ -253,6 +270,11 @@
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-invalidation-cache-model</artifactId>
+                <version>${keycloak.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-services</artifactId>
                 <version>${keycloak.version}</version>
             </dependency>
@@ -354,10 +376,11 @@
         <junit.version>4.11</junit.version>
         <resteasy.version>2.3.7.Final</resteasy.version>
         <hibernate.version>4.0.1.Final</hibernate.version>
-        <keycloak.version>1.0-beta-1</keycloak.version>
+        <keycloak.version>1.0-beta-3</keycloak.version>
         <org.bouncycastle.version>1.46</org.bouncycastle.version>
         <freemarker.version>2.3.19</freemarker.version>
         <zxing.version>2.2</zxing.version>
+        <codehaus.jackson.version>1.9.9</codehaus.jackson.version>
 
         <!-- Code coverage -->
         <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>

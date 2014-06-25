@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('ExampleController',
-  function($rootScope, $scope, $routeParams, $location, $timeout, variants, pushApplication) {
+  function($rootScope, $scope, $routeParams, $timeout, variants, pushApplication, ContextProvider) {
 
   /*
    * INITIALIZATION
@@ -34,8 +34,7 @@ angular.module('upsConsole').controller('ExampleController',
   if (typeof $routeParams.variantId !== 'undefined') {
     variants.get(params, function (variant) {
       $scope.variant = variant;
-      var href = $location.absUrl();
-      $scope.currentLocation = href.substring(0, href.indexOf('#'));
+      $scope.currentLocation = ContextProvider.contextPath();
     });
   } else {
     pushApplication.get(params, function (application) {

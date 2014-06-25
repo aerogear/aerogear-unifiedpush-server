@@ -16,8 +16,8 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('MainController',
-  function($rootScope, $scope, $modal, pushApplication, Notifications, Auth) {
+angular.module('upsConsole').controller('ApplicationController',
+  function($rootScope, $scope, $modal, pushApplication, Notifications, applications) {
 
   /*
    * INITIALIZATION
@@ -26,7 +26,7 @@ angular.module('upsConsole').controller('MainController',
   $scope.alerts = [];
 
   //let's show all the applications
-  $scope.applications = pushApplication.query();
+  $scope.applications = applications;
   $rootScope.application = null;
 
   //Retrieve the current logged in username

@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,9 +39,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
@@ -93,6 +94,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     public Response findById(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        iOSVariantEndpoint.stripPassphraseAndCertificate(pushApp.getIOSVariants());
 
         if (pushApp != null) {
             return Response.ok(pushApp).build();

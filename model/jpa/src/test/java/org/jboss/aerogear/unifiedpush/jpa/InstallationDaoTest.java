@@ -16,33 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
+import javax.persistence.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -93,6 +80,7 @@ public class InstallationDaoTest {
         variantDao.create(av);
 
         SimplePushVariant sp = new SimplePushVariant();
+        sp.setDeveloper("me");
         sp.setName("SimplePush");
         // stash the ID:
         this.simplePushVariantID = sp.getVariantID();
@@ -185,10 +173,7 @@ public class InstallationDaoTest {
 
     @Test
     public void countDevicesForVariants() {
-        List<String> variantIDs = new ArrayList<String>();
-        variantIDs.add(androidVariantID);
-        variantIDs.add(simplePushVariantID);
-        assertThat(installationDao.getNumberOfDevicesForVariantIDs(variantIDs)).isEqualTo(6);
+        assertThat(installationDao.getNumberOfDevicesForVariantIDs("me")).isEqualTo(6);
     }
 
 

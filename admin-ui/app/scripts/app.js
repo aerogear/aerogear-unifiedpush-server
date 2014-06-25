@@ -43,9 +43,15 @@ module.factory('Auth', function() {
 module.config(function ($routeProvider) {
 
     $routeProvider
-      .when('/main', {
-        templateUrl: 'views/main.html',
-        controller: 'MainController',
+      .when('/applications', {
+        templateUrl: 'views/applications.html',
+        controller: 'ApplicationController',
+        resolve: {
+          applications: function(pushApplication) {
+            return pushApplication.query().$promise;
+          }
+        },
+        section: 'applications',
         crumb: {
           id: 'apps',
           label: 'Applications'
@@ -54,6 +60,15 @@ module.config(function ($routeProvider) {
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
+        resolve: {
+          application: function($route, pushApplication) {
+            return pushApplication.get({appId: $route.current.params.applicationId}).$promise;
+          },
+          counts: function($route, pushApplication) {
+            return pushApplication.count({appId: $route.current.params.applicationId}).$promise;
+          }
+        },
+        section: 'applications',
         crumb: {
           id: 'app-detail',
           parent: 'apps',
@@ -63,6 +78,7 @@ module.config(function ($routeProvider) {
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: '$ variant.name ? variant.name : "Registering Installations"'
@@ -71,6 +87,7 @@ module.config(function ($routeProvider) {
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: 'Example'
@@ -79,6 +96,7 @@ module.config(function ($routeProvider) {
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
         controller: 'ExampleController',
+        section: 'applications',
         crumb: {
           parent: 'app-detail',
           label: 'Example'
@@ -87,6 +105,12 @@ module.config(function ($routeProvider) {
       .when('/compose', {
         templateUrl: 'views/compose-app.html',
         controller: 'PreComposeController',
+        resolve: {
+          applications: function(pushApplication) {
+            return pushApplication.query({}).$promise;
+          }
+        },
+        section: 'compose',
         crumb: {
           label: 'Send Push'
         }
@@ -94,6 +118,7 @@ module.config(function ($routeProvider) {
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
         controller: 'ComposeController',
+        section: 'compose',
         crumb: {
           parent: 'app-detail',
           label: 'Send Push'
@@ -102,6 +127,18 @@ module.config(function ($routeProvider) {
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardController',
+        resolve: {
+          totals: function(dashboard) {
+            return dashboard.totals({}).$promise;
+          },
+          warnings: function(dashboard) {
+            return dashboard.warnings({}).$promise;
+          },
+          topThree: function(dashboard) {
+            return dashboard.topThree({}).$promise;
+          }
+        },
+        section: 'dashboard',
         crumb: {
           id: 'dash',
           label: 'Dashboard'
@@ -110,6 +147,7 @@ module.config(function ($routeProvider) {
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        section: 'dashboard',
         crumb: {
           id: 'activity',
           parent: 'dash',
@@ -119,13 +157,14 @@ module.config(function ($routeProvider) {
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        section: 'dashboard',
         crumb: {
           parent: 'activity',
           label: '$ variant.name ? variant.name : "Current variant"'
         }
       })
       .otherwise({
-        redirectTo: '/main'
+        redirectTo: '/dashboard'
       });
 
 

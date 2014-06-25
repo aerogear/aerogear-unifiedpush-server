@@ -1,5 +1,3 @@
-<ups-navigation current="stats"></ups-navigation>
-
 <div class="col-md-10 lo-main-pane ng-scope">
   <div class="row">
     <div class="lo-content-area col-md-12">
@@ -67,8 +65,8 @@
                       <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
                     </tr>
                   </table>
-                  <hr ng-show="metric.variantInformations.length > 1">
-                  <table ng-show="metric.variantInformations.length > 1">
+                  <hr ng-show="!detailsPage() && metric.variantInformations.length">
+                  <table ng-if="!detailsPage() && metric.variantInformations.length">
                     <tr>
                       <td>Variants:</td>
                       <td>
