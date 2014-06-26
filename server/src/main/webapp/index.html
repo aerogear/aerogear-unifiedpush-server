@@ -14,21 +14,24 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="icon" href="img/favicon.png">
+    <link rel="icon" href="img/afcf7de6.favicon.png">
 
-    <!-- build:css({.tmp,app}) styles/dist.css -->
-    <link rel="stylesheet" href="styles/compiled-less.css">
-    <link rel="stylesheet" href="bower_components/highlightjs/styles/ir_black.css">
-    <!-- endbuild -->
+    <style>
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+      }
+    </style>
+
+    <link rel="stylesheet" href="styles/3d0c59ee.dist.css">
 
 </head>
-<body class="app-dashboard">
+<body class="app-dashboard" ng-controller="RootController">
 
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
-<div class="feedback-aligner" data-ng-show="notifications.data.length > 0">
+<div class="feedback-aligner ng-cloak" data-ng-show="notifications.data.length > 0">
   <div class="row" ng-repeat="notification in notifications.data">
     <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
@@ -53,7 +56,7 @@
     <header>
         <nav class="navbar navbar-default navbar-pf">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+                <button type="button" class="navbar-toggle ng-cloak" data-toggle="collapse" data-target=".navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -63,7 +66,7 @@
                     <h1>AeroGear UnifiedPush Server</h1>
                 </a>
             </div>
-            <div class="collapse navbar-collapse navbar-collapse-1">
+            <div class="collapse navbar-collapse navbar-collapse-1 ng-cloak">
                 <ul class="nav navbar-nav navbar-utility">
                     <li class="dropdown">
                         <a href="#" class="lo-user dropdown-toggle ng-binding" data-toggle="dropdown">
@@ -72,10 +75,18 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" ng-click="auth.logout()">Log Out</a>
+                                <a href="#" ng-click="logout()">Log Out</a>
                             </li>
                         </ul>
                     </li>
+                </ul>
+
+                 <ul class="nav navbar-nav navbar-primary">
+                   <li class="dropdown context col-md-2">
+                     <a href="#/stats">
+                       Navigation
+                     </a>
+                  </li>
                 </ul>
             </div>
         </nav>
@@ -83,37 +94,18 @@
 </div>
 
 <!-- ngView:  -->
-<div data-ng-view="" id="lo-content-row" class="row lo-main-pane ups-main-pane ng-scope">
+<div class="row lo-main-pane lo-content-row ups-main-pane ng-scope">
+  <ups-navigation current="{{section}}"></ups-navigation>
+
+  <ng-view ng-show="!isViewLoading"></ng-view>
+  <div ng-include="'views/loading.html'" ng-show="isViewLoading"></div>
 </div>
 
-<!-- build:js scripts/modules.js -->
-<script src="bower_components/jquery/dist/jquery.js"></script>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/angular-resource/angular-resource.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
-<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-<script src="bower_components/patternfly/dist/js/patternfly.js"></script>
-<script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="bower_components/highlightjs/highlight.pack.js"></script>
-<script src="bower_components/angular-highlightjs/angular-highlightjs.js"></script>
-<!-- endbuild -->
+<script src="scripts/08ae27be.modules.js"></script>
 
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
-<script src="scripts/directives.js"></script>
-<script src="scripts/app.js"></script>
 <script src="/auth/js/keycloak.js"></script>
 
-<script src="scripts/ui/bootstrap-customization.js"></script>
-<script src="scripts/controllers/MainController.js"></script>
-<script src="scripts/controllers/DetailController.js"></script>
-<script src="scripts/controllers/InstallationController.js"></script>
-<script src="scripts/controllers/ExampleController.js"></script>
-<script src="scripts/controllers/ComposeController.js"></script>
-<script src="scripts/controllers/DashboardController.js"></script>
-<script src="scripts/services/pushApplicationService.js"></script>
-<!-- endbuild -->
+<script src="scripts/0b26ed0d.scripts.js"></script>
 
 </body>
 </html>
