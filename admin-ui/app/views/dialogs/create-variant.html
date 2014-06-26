@@ -78,7 +78,7 @@
           <div class="form-group">
             <label class="col-sm-3 control-label" for="gcmApiKey">Push Network</label>
             <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
-              <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="createAppName" class="form-control" ng-model="variant.googleKey" required>
+              <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variantType == 'android'">
             </div>
           </div>    
           <div class="form-group">
