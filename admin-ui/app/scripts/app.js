@@ -1,50 +1,52 @@
 'use strict';
-var module = angular.module('upsConsole', [
-  'upsConsole.services',
-  'ngResource',
-  'ngRoute',
-  'ui.bootstrap',
-  'ups.directives',
-  'patternfly.notification',
-  'hljs'
-])
 
-/**
- * Snippet extracted from Keycloak examples
- */
-var auth = {};
+(function() {
+  var app = angular.module('upsConsole', [
+    'upsConsole.services',
+    'ngResource',
+    'ngRoute',
+    'ui.bootstrap',
+    'ups.directives',
+    'patternfly.notification',
+    'hljs'
+  ]);
 
-angular.element(document).ready(function ($http) {
-  var keycloakAuth = new Keycloak('keycloak.json');
-  auth.loggedIn = false;
+  /**
+   * Snippet extracted from Keycloak examples
+   */
+  var auth = {};
 
-  keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
-    auth.loggedIn = true;
-    auth.authz = keycloakAuth;
-    auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/aerogear/tokens/logout?redirect_uri=http://localhost:8080/ag-push/#/";
-    module.factory('Auth', function() {
-      return auth;
+  angular.element(document).ready(function () {
+    var keycloakAuth = new Keycloak('keycloak.json');
+    auth.loggedIn = false;
+
+    keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
+      auth.loggedIn = true;
+      auth.authz = keycloakAuth;
+      auth.logoutUrl = keycloakAuth.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=http://localhost:8080/ag-push/#/';
+      app.factory('Auth', function () {
+        return auth;
+      });
+      window.location = '#/dashboard';
+      angular.bootstrap(document, ['upsConsole']);
+    }).error(function () {
+      window.location.reload();
     });
-    window.location = "#/main";
-    angular.bootstrap(document, ['upsConsole']);
-  }).error(function () {
-    window.location.reload();
+
   });
 
-});
+  app.factory('Auth', function () {
+    return auth;
+  });
 
-module.factory('Auth', function() {
-  return auth;
-});
-
-module.config(function ($routeProvider) {
+  app.config(function ($routeProvider) {
 
     $routeProvider
       .when('/applications', {
         templateUrl: 'views/applications.html',
         controller: 'ApplicationController',
         resolve: {
-          applications: function(pushApplication) {
+          applications: function (pushApplication) {
             return pushApplication.query().$promise;
           }
         },
@@ -58,10 +60,10 @@ module.config(function ($routeProvider) {
         templateUrl: 'views/detail.html',
         controller: 'DetailController',
         resolve: {
-          application: function($route, pushApplication) {
+          application: function ($route, pushApplication) {
             return pushApplication.get({appId: $route.current.params.applicationId}).$promise;
           },
-          counts: function($route, pushApplication) {
+          counts: function ($route, pushApplication) {
             return pushApplication.count({appId: $route.current.params.applicationId}).$promise;
           }
         },
@@ -103,7 +105,7 @@ module.config(function ($routeProvider) {
         templateUrl: 'views/compose-app.html',
         controller: 'PreComposeController',
         resolve: {
-          applications: function(pushApplication) {
+          applications: function (pushApplication) {
             return pushApplication.query({}).$promise;
           }
         },
@@ -125,13 +127,13 @@ module.config(function ($routeProvider) {
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardController',
         resolve: {
-          totals: function(dashboard) {
+          totals: function (dashboard) {
             return dashboard.totals({}).$promise;
           },
-          warnings: function(dashboard) {
+          warnings: function (dashboard) {
             return dashboard.warnings({}).$promise;
           },
-          topThree: function(dashboard) {
+          topThree: function (dashboard) {
             return dashboard.topThree({}).$promise;
           }
         },
@@ -163,35 +165,36 @@ module.config(function ($routeProvider) {
       .otherwise({
         redirectTo: '/dashboard'
       });
-  }) ;
+  });
 
-module.factory('authInterceptor', function($q, Auth) {
-  return {
-    request: function (config) {
+  app.factory('authInterceptor', function ($q, Auth) {
+    return {
+      request: function (config) {
         var deferred = $q.defer();
 
-      if (config.url == "rest/sender") {
-        return config;
+        if (config.url === 'rest/sender') {
+          return config;
+        }
+
+        if (Auth.authz.token) {
+          Auth.authz.updateToken(5).success(function () {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Bearer ' + Auth.authz.token;
+
+            deferred.resolve(config);
+          }).error(function () {
+            deferred.reject('Failed to refresh token');
+          });
+        }
+        return deferred.promise;
       }
+    };
+  });
 
-      if (Auth.authz.token) {
-        Auth.authz.updateToken(5).success(function() {
-          config.headers = config.headers || {};
-          config.headers.Authorization = 'Bearer ' + Auth.authz.token;
-
-          deferred.resolve(config);
-        }).error(function() {
-          deferred.reject('Failed to refresh token');
-        });
-      }
-      return deferred.promise;
-    }
-  };
-});
-
- module.config(function($httpProvider) {
+  app.config(function ($httpProvider) {
     //$httpProvider.responseInterceptors.push('errorInterceptor');
     $httpProvider.interceptors.push('authInterceptor');
 
   });
 
+})();

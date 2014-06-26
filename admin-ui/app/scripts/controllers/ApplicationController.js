@@ -33,10 +33,9 @@ angular.module('upsConsole').controller('ApplicationController',
   $rootScope.username = Auth.authz.idToken.preferred_username;
 
   $rootScope.logout = function() {
-      console.log('*** LOGOUT');
-      Auth.loggedIn = false;
-      Auth.authz = null;
-      window.location = Auth.logoutUrl;
+    Auth.loggedIn = false;
+    Auth.authz = null;
+    window.location = Auth.logoutUrl;
   };
 
   /*

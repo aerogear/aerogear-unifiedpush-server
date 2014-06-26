@@ -21,6 +21,7 @@
   "globals": {
     "angular": false,
     "$": false,
-    "hljs": false
+    "hljs": false,
+    "Keycloak": false
   }
 }
