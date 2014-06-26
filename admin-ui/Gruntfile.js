@@ -33,10 +33,10 @@ module.exports = function (grunt) {
     less: {
       main: {
         options: {
-          paths: ['<%= yeoman.lib %>/patternfly/less', '<%= yeoman.lib %>']
+          paths: ['<%= yeoman.lib %>']
         },
         src: '<%= yeoman.app %>/styles/main.less',
-        dest: '<%= yeoman.tmp %>/styles/compiled-less.css'
+        dest: '<%= yeoman.tmp %>/styles/main.css'
       }
     },
     watch: {
@@ -358,8 +358,6 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks('assemble-less');
-
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build']);
@@ -400,14 +398,12 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'initLocalConfig',
     'jshint',
     'test',
     'build'
   ]);
 
   grunt.registerTask('dist', [
-    'initLocalConfig',
     'bower:install',
     'default',
     'clean:webappDist',

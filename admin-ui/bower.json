@@ -13,18 +13,17 @@
     "angular-route": "1.2.16",
     "angular-cookies": "1.2.16",
     "angular-sanitize": "1.2.16",
-    "patternfly": "1.0.2",
+    "patternfly": "1.0.3",
     "angular-patternfly": "patternfly/angular-patternfly",
     "highlightjs": "~8.0.0",
-    "angular-highlightjs": "~0.3.0"
+    "angular-highlightjs": "~0.3.0",
+    "font-awesome": "4.1.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.16",
     "angular-scenario": "1.2.16"
   },
   "resolutions": {
-    "jquery": "2.1.1",
-    "bootstrap-select": "1.5.2",
     "angular": "1.2.16"
   }
 }
