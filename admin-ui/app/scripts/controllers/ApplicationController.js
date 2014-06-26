@@ -17,8 +17,8 @@
 'use strict';
 
 angular.module('upsConsole').controller('ApplicationController',
-  function($rootScope, $scope, $modal, pushApplication, Notifications, applications, Auth) {
- 
+  function($rootScope, $scope, $modal, pushApplication, Notifications, applications) {
+
   /*
    * INITIALIZATION
    */
@@ -28,15 +28,6 @@ angular.module('upsConsole').controller('ApplicationController',
   //let's show all the applications
   $scope.applications = applications;
   $rootScope.application = null;
-
-  //Retrieve the current logged in username
-  $rootScope.username = Auth.authz.idToken.preferred_username;
-
-  $rootScope.logout = function() {
-    Auth.loggedIn = false;
-    Auth.authz = null;
-    window.location = Auth.logoutUrl;
-  };
 
   /*
    * PUBLIC METHODS
