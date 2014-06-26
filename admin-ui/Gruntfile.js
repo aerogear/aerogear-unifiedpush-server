@@ -20,7 +20,7 @@ module.exports = function (grunt) {
     app: 'app',
     dist: 'dist',
     tmp: '.tmp',
-    webappDist: '../server/src/main/webapp'
+    webappDist: '../server/target/ag-push'
   };
 
   try {
