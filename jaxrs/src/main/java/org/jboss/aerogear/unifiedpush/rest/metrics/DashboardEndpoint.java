@@ -20,7 +20,7 @@ import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -33,7 +33,7 @@ import java.util.List;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
-@Stateless
+@Singleton
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
 
