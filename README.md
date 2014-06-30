@@ -32,7 +32,9 @@ Because of this work, we highly recommend using the [stable branch](https://gith
 
 The sources for administration console UI are placed under `admin-ui`.
 
-For instructions how to develop and release Admin UI, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
+For a build of the `admin-ui` during release, you can just run a Maven build, the `admin-ui` will be compiled by `frontend-maven-plugin` during `server` module build.
+
+For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
 
 
 ### Any questions ? 

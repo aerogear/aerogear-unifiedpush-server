@@ -20,7 +20,7 @@ module.exports = function (grunt) {
     app: 'app',
     dist: 'dist',
     tmp: '.tmp',
-    webappDist: '../server/src/main/webapp'
+    webappDist: '../server/target/ag-push'
   };
 
   try {
@@ -33,10 +33,10 @@ module.exports = function (grunt) {
     less: {
       main: {
         options: {
-          paths: ['<%= yeoman.lib %>/patternfly/less', '<%= yeoman.lib %>']
+          paths: ['<%= yeoman.lib %>']
         },
         src: '<%= yeoman.app %>/styles/main.less',
-        dest: '<%= yeoman.tmp %>/styles/compiled-less.css'
+        dest: '<%= yeoman.tmp %>/styles/main.css'
       }
     },
     watch: {
@@ -348,10 +348,15 @@ module.exports = function (grunt) {
           }
         ]
       }
+    },
+    bower: {
+      install: {
+        options: {
+          targetDir: 'app/bower-components/'
+        }
+      }
     }
   });
-
-  grunt.loadNpmTasks('assemble-less');
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
@@ -393,14 +398,13 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'initLocalConfig',
     'jshint',
     'test',
     'build'
   ]);
 
   grunt.registerTask('dist', [
-    'initLocalConfig',
+    'bower:install',
     'default',
     'clean:webappDist',
     'copy:webappDist'

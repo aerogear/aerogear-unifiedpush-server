@@ -16,7 +16,7 @@ module.exports = function ( grunt ) {
             var parentDir = path.resolve(process.cwd(), '.');
             var sampleContent = {
                 home: parentDir,
-                webapp: "../server/src/main/webapp",
+                webapp: "../server/target/ag-push",
                 jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war"
             }
             grunt.file.write('./local-config.json',JSON.stringify(sampleContent,null,'\t'));
