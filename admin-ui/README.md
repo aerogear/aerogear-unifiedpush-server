@@ -24,7 +24,7 @@ Now you need to modify `admin-ui/local-config.json` file and fill in `jbossweb` 
 
     {
         "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
-        "webapp": "../server/src/main/webapp",
+        "webapp": "../server/target/ag-push",
         "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war",
     };
     
@@ -43,6 +43,16 @@ To create a distribution in `admin-ui/dist/` directory:
 
     grunt
     
-To create a distribution and copy it to `../server/src/main/webapp`:
+To create a distribution and copy it to `../server/target/ag-push`:
 
     grunt dist
+    
+To create a distribution and copy it jbossweb folder (as configured above):
+
+    grunt jbosswebDist
+    
+    
+In order to create a WAR application, go into `../server/` folder and run Maven build:
+
+    cd ../server/
+    mvn clean install
