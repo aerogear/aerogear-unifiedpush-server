@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('ExampleController',
-  function($rootScope, $scope, $routeParams, $timeout, variants, pushApplication, ContextProvider) {
+  function($rootScope, $scope, $routeParams, variants, pushApplication, ContextProvider) {
 
   /*
    * INITIALIZATION
@@ -42,10 +42,6 @@ angular.module('upsConsole').controller('ExampleController',
     });
   }
 
-  $timeout(function(){
-    hljs.highlightBlock(angular.element('#cordova-code')[0]);
-  }, 1000);
-    
   $scope.isActive = function (tabName) {
     return tabName === $scope.active;
   };
