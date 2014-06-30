@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, Notifications, messageSender) {
+angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
 
     /*
      * INITIALIZATION
@@ -24,6 +24,12 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   $scope.variantSelection = [];
   $scope.criteria = [];
   $scope.pushData = {'message': {'sound': 'default', 'alert': ''}};
+
+  if (!$rootScope.application) {
+    pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
+      $rootScope.application = application;
+    });
+  }
 
   $scope.sendMessage = function () {
     var pushData = $scope.pushData;
@@ -55,7 +61,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
 
     messageSender.send({}, pushData, function() {
       Notifications.success('Successfully sent Notification');
-      $scope.testMessage = '';
+      $scope.pushData.message.alert = '';
     }, function() {
       Notifications.error('Something went wrong...', 'danger');
     });
