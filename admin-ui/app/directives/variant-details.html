@@ -12,7 +12,8 @@
                         <a href="#/{{applicationId}}/installations/{{variant.variantID}}" ng-click="currentVariant(variant)">
                             {{ counts[variant.variantID] }}
                         </a>
-                    </strong> installation<ng-pluralize count="counts[variant.variantID]" when="{ 'other': 's'}"></ng-pluralize>
+                    </strong>
+                    <ng-pluralize count="counts[variant.variantID]" when="{ 'one' : 'installation', 'other': 'installations'}"></ng-pluralize>
                 </span>
             </span>
 
