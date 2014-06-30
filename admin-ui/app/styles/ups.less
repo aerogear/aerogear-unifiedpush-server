@@ -115,7 +115,13 @@ a.ups-tip-panel-link {
   text-align: center;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url('@{images}tip-sending_notifications.png');
+
+  &.ups-sending-notifications {
+    background-image: url('@{images}tip-sending_notifications.png');
+  }
+  &.ups-registering-installations {
+    background-image: url('@{images}tip-registering_installations.png');
+  }
 }
 
 .ups-tip-panel table tr td:first-child {
@@ -275,16 +281,16 @@ tr.collapse.in {
   text-align: left;
 
   &.android {
-    background-image: url('../img/platform-android.png');
+    background-image: url('@{images}platform-android.png');
   }
   &.ios {
-    background-image: url('../img/platform-ios.png');
+    background-image: url('@{images}platform-ios.png');
   }
   &.chrome {
-    background-image: url('../img/platform-chrome.png');
+    background-image: url('@{images}platform-chrome.png');
   }
   &.simplepush {
-    background-image: url('../img/platform-simplepush.png');
+    background-image: url('@{images}platform-simplepush.png');
   }
 }
 
