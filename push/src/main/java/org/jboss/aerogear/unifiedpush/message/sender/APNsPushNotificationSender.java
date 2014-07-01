@@ -30,7 +30,6 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -46,7 +45,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     /**
-     * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
+     * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
      */
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final NotificationSenderCallback callback) {
@@ -137,7 +136,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
     /**
      * Returns the ApnsService, based on the required profile (production VS sandbox/test).
-     * Null is returned if there is no "configuration" for the request stage 
+     * Null is returned if there is no "configuration" for the request stage
      */
     private ApnsService buildApnsService(iOSVariant iOSVariant, final NotificationSenderCallback notificationSenderCallback) {
 
@@ -160,14 +159,17 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             });
 
             // add the certificate:
-            ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
-            builder.withCert(stream, iOSVariant.getPassphrase());
-
             try {
+                ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
+                builder.withCert(stream, iOSVariant.getPassphrase());
+
                 // release the stream
                 stream.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error reading certificate", e);
+
+                // indicating an incomplete service
+                return null;
             }
 
             // pick the destination:
