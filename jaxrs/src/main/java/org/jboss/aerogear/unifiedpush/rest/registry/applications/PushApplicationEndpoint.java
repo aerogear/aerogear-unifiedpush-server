@@ -94,7 +94,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     public Response findById(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
-        iOSVariantEndpoint.stripPassphraseAndCertificate(pushApp.getIOSVariants());
 
         if (pushApp != null) {
             return Response.ok(pushApp).build();
