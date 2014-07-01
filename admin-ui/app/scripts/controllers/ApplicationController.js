@@ -48,7 +48,11 @@ angular.module('upsConsole').controller('ApplicationController',
   $scope.edit = function (application) {
     var modalInstance = show(application, 'create-app.html');
     modalInstance.result.then(function (application) {
-      pushApplication.update({appId: application.pushApplicationID}, application, function () {
+      var updateApplication = {
+        name: application.name,
+        description: application.description
+      };
+      pushApplication.update({appId: application.pushApplicationID}, updateApplication, function () {
         Notifications.success('Successfully edited application "' + application.name + '".');
       });
     });
