@@ -23,11 +23,10 @@
     keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
       auth.loggedIn = true;
       auth.authz = keycloakAuth;
-      auth.logoutUrl = keycloakAuth.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=http://localhost:8080/ag-push/#/';
+      auth.logoutUrl = keycloakAuth.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=' + window.location.href;
       app.factory('Auth', function () {
         return auth;
       });
-      window.location = '#/dashboard';
       angular.bootstrap(document, ['upsConsole']);
     }).error(function () {
       window.location.reload();
