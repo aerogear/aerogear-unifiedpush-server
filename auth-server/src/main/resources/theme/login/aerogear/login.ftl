@@ -1,9 +1,9 @@
 <#import "template.ftl" as layout>
 <@layout.registrationLayout displayInfo=social.displayInfo; section>
     <#if section = "title">
-        ${rb.loginTitle} ${realm.name}
+        ${rb.loginTitle} UnifiedPush Server
     <#elseif section = "header">
-        ${rb.loginTitle} <strong>${(realm.name)!''}</strong>
+        ${rb.loginTitle} <strong>UnifiedPush Server</strong>
     <#elseif section = "form">
         <#if realm.password>
             <form id="kc-form-login" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
