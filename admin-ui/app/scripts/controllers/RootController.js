@@ -17,20 +17,21 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('RootController', function($rootScope, Auth) {
+  .controller('RootController', function ($rootScope, Auth) {
     $rootScope.isViewLoading = false;
     //Retrieve the current logged in username
     $rootScope.username = Auth.authz.idToken.preferred_username;
 
-    $rootScope.logout = function() {
-        Auth.loggedIn = false;
-        Auth.authz = null;
-        window.location = Auth.logoutUrl;
+    $rootScope.logout = function () {
+      Auth.loggedIn = false;
+      Auth.authz = null;
+      window.location = Auth.logoutUrl;
     };
-    $rootScope.$on('$routeChangeStart', function() {
+
+    $rootScope.$on('$routeChangeStart', function () {
       $rootScope.isViewLoading = true;
     });
-    $rootScope.$on('$routeChangeSuccess', function(event, routeData) {
+    $rootScope.$on('$routeChangeSuccess', function (event, routeData) {
       $rootScope.isViewLoading = false;
       if (routeData.$$route && routeData.$$route.section) {
         $rootScope.section = routeData.$$route.section;
