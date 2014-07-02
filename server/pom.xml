@@ -152,7 +152,41 @@
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-security-picketlink</artifactId>
             <version>${aerogear.security.picketlink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.picketlink</groupId>
+                    <artifactId>picketlink-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.picketlink</groupId>
+                    <artifactId>picketlink-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.picketlink</groupId>
+                    <artifactId>picketlink-idm-simple-schema</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-api</artifactId>
+            <scope>compile</scope>
+            <version>${picketlink.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-impl</artifactId>
+            <scope>compile</scope>
+            <version>${picketlink.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-idm-simple-schema</artifactId>
+            <scope>compile</scope>
+            <version>${picketlink.version}</version>
         </dependency>
 
         <!-- Test stuff -->
@@ -269,6 +303,7 @@
 
         <aerogear.security.version>1.3.1</aerogear.security.version>
         <aerogear.security.picketlink.version>1.3.1</aerogear.security.picketlink.version>
+        <picketlink.version>2.6.0.Final</picketlink.version>
 
     </properties>
 
