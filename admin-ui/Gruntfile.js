@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    local: {},
     less: {
       main: {
         options: {
@@ -124,27 +125,18 @@ module.exports = function (grunt) {
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ]
     },
-    // not used since Uglify task does concat,
-    // but still available if needed
-    /*concat: {
-     dist: {}
-     },*/
-    rev: {
+    filerev: {
       dist: {
-        files: {
-          src: [
-            '<%= yeoman.dist %>/scripts/{,*/}*.js',
-            '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-          ]
-        }
+        src: [
+          '<%= yeoman.dist %>/scripts/{,*/}*.js',
+          '<%= yeoman.dist %>/styles/{,*/}*.css',
+          '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        ]
       }
     },
     useminPrepare: {
       html: [
-        '<%= yeoman.app %>/index.html',
-        '<%= yeoman.app %>/directives/{,*/}*.html',
-        '<%= yeoman.app %>/views/{,*/}*.html'
+        '<%= yeoman.app %>/index.html'
       ],
       options: {
         dest: '<%= yeoman.dist %>'
@@ -244,9 +236,7 @@ module.exports = function (grunt) {
               '*.{ico,txt}',
               '.htaccess',
               'keycloak.json',
-              'img/{,*/}*.{webp,gif,png,svg}',
-              'directives/**',
-              'views/**'
+              'img/{,*/}*.{webp,gif,png,svg}'
             ]
           },
           {
@@ -349,6 +339,33 @@ module.exports = function (grunt) {
         ]
       }
     },
+    uglify: {
+      options: {
+        mangle: false,
+        compress: true,
+        report: true
+      }
+    },
+    cssmin: {
+      options: {
+        report: 'min'
+      }
+    },
+    ngtemplates:  {
+      upsConsole: {
+        src: [
+          'directives/**.html',
+          'views/**.html',
+          'views/dialogs/**.html',
+          'views/include/**.html'
+        ],
+        cwd: '<%= yeoman.app %>',
+        dest: '<%= yeoman.tmp %>/ngtemplates/templates.js',
+        options:    {
+          usemin: 'scripts/templates.js'
+        }
+      }
+    },
     bower: {
       install: {
         options: {
@@ -387,13 +404,15 @@ module.exports = function (grunt) {
     'less',
     'copy:fonts',
     'useminPrepare',
+    'ngtemplates',
     'imagemin',
     'htmlmin',
     'concat',
-//    'ngmin:dist',
-//    'uglify',
+    'cssmin',
+    'ngmin:dist',
+    'uglify',
     'copy:dist',
-    'rev',
+    'filerev',
     'usemin'
   ]);
 
@@ -411,6 +430,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('jbosswebDist', [
+    'initLocalConfig',
     'dist',
     'clean:jbosswebDist',
     'copy:jbosswebDist'
