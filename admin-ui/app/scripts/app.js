@@ -175,7 +175,7 @@
           return config;
         }
 
-        if (Auth.authz.token) {
+        if (Auth.authz && Auth.authz.token) {
           Auth.authz.updateToken(5).success(function () {
             config.headers = config.headers || {};
             config.headers.Authorization = 'Bearer ' + Auth.authz.token;
