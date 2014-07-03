@@ -55,7 +55,7 @@
         <module>jaxrs</module>
         <module>server</module>
         <module>auth-server</module>
-	</modules>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
