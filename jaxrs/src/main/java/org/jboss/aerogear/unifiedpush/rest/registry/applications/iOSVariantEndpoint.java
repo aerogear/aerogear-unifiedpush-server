@@ -106,7 +106,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@Context HttpServletRequest request,
                                                  @PathParam("pushAppID") String pushApplicationID) {
-        Collection<iOSVariant> iosVariants = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, request.getUserPrincipal().getName()).getIOSVariants();
+        Collection<iOSVariant> iosVariants = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getIOSVariants();
         return Response.ok(iosVariants).build();
     }
 
