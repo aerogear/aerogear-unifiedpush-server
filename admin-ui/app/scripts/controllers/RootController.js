@@ -22,6 +22,10 @@ angular.module('upsConsole')
     //Retrieve the current logged in username
     $rootScope.username = Auth.authz.idToken.preferred_username;
 
+    $rootScope.accountManagement = function() {
+      window.location = Auth.authz.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
+    };
+
     $rootScope.logout = function () {
       Auth.loggedIn = false;
       Auth.authz = null;
