@@ -371,7 +371,7 @@
         <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
 
         <!-- Override versions of AeroGear BOMs-->
-        <apns.version>1.0.0.Beta1</apns.version>
+        <apns.version>1.0.0.Beta2</apns.version>
         <junit.version>4.11</junit.version>
         <resteasy.version>2.3.7.Final</resteasy.version>
         <hibernate.version>4.0.1.Final</hibernate.version>
