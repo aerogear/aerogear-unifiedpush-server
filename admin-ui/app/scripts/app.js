@@ -182,7 +182,7 @@
 
             deferred.resolve(config);
           }).error(function () {
-            deferred.reject('Failed to refresh token');
+            window.location.reload();
           });
         }
         return deferred.promise;
@@ -191,9 +191,8 @@
   });
 
   app.config(function ($httpProvider) {
-    //$httpProvider.responseInterceptors.push('errorInterceptor');
     $httpProvider.interceptors.push('authInterceptor');
-
   });
+
 
 })();
