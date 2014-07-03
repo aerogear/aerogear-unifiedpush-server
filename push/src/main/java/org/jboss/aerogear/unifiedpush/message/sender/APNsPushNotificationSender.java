@@ -71,7 +71,16 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
 
-        final String apnsMessage  =  builder.build(); // build the JSON payload, for APNs
+        // we are done with adding values here, before building let's check if the msg is too long
+        if (builder.isTooLong()) {
+            // invoke the error callback and return, as it is pointless to send something out
+            callback.onError();
+
+            return;
+        }
+
+        // all good, let's build the JSON payload for APNs
+        final String apnsMessage  =  builder.build();
 
         ApnsService service = buildApnsService(iOSVariant, callback);
 
