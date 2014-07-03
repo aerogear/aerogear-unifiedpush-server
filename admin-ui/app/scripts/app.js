@@ -182,7 +182,6 @@
 
             deferred.resolve(config);
           }).error(function () {
-            //deferred.reject('Failed to refresh token');
             window.location.reload();
           });
         }
@@ -192,36 +191,8 @@
   });
 
   app.config(function ($httpProvider) {
-    //$httpProvider.responseInterceptors.push('errorInterceptor');
     $httpProvider.interceptors.push('authInterceptor');
-
   });
 
-  //Extracted from Keycloak.js props to KC team
-  app.factory('errorInterceptor', function($q) {
-      return function(promise) {
-          return promise.then(function(response) {
-              return response;
-            }, function(response) {
-                if (response.status === 401) {
-                  console.log('session timeout?');
-                  auth.loggedIn = false;
-                  auth.authz = null;
-                  window.location = auth.logoutUrl;
-                } else if (response.status === 403) {
-                  console.error('Forbidden');
-                } else if (response.status === 404) {
-                  console.error('Not found');
-                } else if (response.status) {
-                  if (response.data && response.data.errorMessage) {
-                    console.log(response.data.errorMessage);
-                  } else {
-                    console.error('An unexpected server error has occurred');
-                  }
-                }
-                return $q.reject(response);
-              });
-        };
-    });
 
 })();
