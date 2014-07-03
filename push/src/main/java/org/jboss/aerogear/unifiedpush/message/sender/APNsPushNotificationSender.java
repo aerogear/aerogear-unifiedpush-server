@@ -73,6 +73,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
+            logger.log(Level.WARNING, "Nothing sent to APNs since the payload is too large");
             // invoke the error callback and return, as it is pointless to send something out
             callback.onError();
 
