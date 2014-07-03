@@ -192,7 +192,7 @@
   });
 
   app.config(function ($httpProvider) {
-    $httpProvider.responseInterceptors.push('errorInterceptor');
+    //$httpProvider.responseInterceptors.push('errorInterceptor');
     $httpProvider.interceptors.push('authInterceptor');
 
   });
