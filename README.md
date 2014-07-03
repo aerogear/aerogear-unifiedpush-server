@@ -21,8 +21,14 @@ The master branch is currenly being worked on for a tight integration with the [
 
 ### Some hints
 
-After building the project (and keycloak's master branch), deploy the ``auth-server.war`` file; once that is done, deploy the ``ag-push.war`` file. Login with admin:admin (you will be asked to update the password)... 
+After building the project (and keycloak's master branch), deploy the ``auth-server.war`` file; once that is done, deploy the ``ag-push.war`` file. Login with admin:admin (you will be asked to update the password)...
 
+### Instructions for Keycloak administration console
+
+Note: The instructions below are pretty much based on [Keycloak integration with UPS](https://github.com/keycloak/keycloak/blob/master/project-integrations/aerogear-ups/README.md).
+
+* The aerogear security admin (keycloak) http://localhost:8080/auth/admin/aerogear/console/index.html
+* The aerogear user account page (keycloak) http://localhost:8080/auth/realms/aerogear/account
 
 ## However
 Because of this work, we highly recommend using the [stable branch](https://github.com/aerogear/aerogear-unifiedpush-server/tree/0.10.x), as discussed above!
@@ -37,6 +43,6 @@ For a build of the `admin-ui` during release, you can just run a Maven build, th
 For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
 
 
-### Any questions ? 
+### Any questions ?
 
 Join our [mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev) for any questions and help! We really hope you enjoy our UnifiedPush Server!
