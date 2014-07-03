@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
-        <version>0.11.0</version>
+        <version>1.0.0.Beta1-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-auth-server</artifactId>
