@@ -76,11 +76,11 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
                     callback.onSuccess();
                 } else {
                     logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
-                    callback.onError();
+                    callback.onError("Error delivering GCM/Chrome payload");
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);
-                callback.onError();
+                callback.onError("Error delivering GCM/Chrome payload");
             } finally {
                 // tear down
                 if (conn != null ) {

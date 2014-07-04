@@ -66,11 +66,11 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                     callback.onSuccess();
                 } else {
                     logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
-                    callback.onError();
+                    callback.onError("Error delivering SimplePush payload");
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
-                callback.onError();
+                callback.onError("Error delivering SimplePush payload");
             } finally {
                 // tear down
                 if (conn != null) {

@@ -110,13 +110,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             logger.log(Level.INFO, "Message to GCM has been submitted");
             callback.onSuccess();
 
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.WARNING, "Error connection to your GCM project. Double check your Google API Key");
-            callback.onError();
         } catch (Exception e) {
-            // general GCM exceptions:
-            logger.log(Level.SEVERE, "Error sending messages to GCM server", e);
-            callback.onError();
+            // GCM exceptions:
+            logger.log(Level.SEVERE, "Error sending payload to GCM server", e);
+            callback.onError("Error sending payload to GCM server");
         }
     }
 
