@@ -29,6 +29,7 @@ angular.module('upsConsole').controller('ActivityController',
   function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs) {
 
     $scope.applicationId = $routeParams.applicationId;
+    $scope.currentPage = 1;
 
     function findVariant(variants, closure, variantId) {
       angular.forEach(variants, function (variant) {
@@ -60,16 +61,20 @@ angular.module('upsConsole').controller('ActivityController',
       breadcrumbs.generateBreadcrumbs();
     });
 
-    if (onDetailsPage()) {
-      metrics.variant({id: $routeParams.variantId}, function (data) {
+    function fetchVariantsMetrics(pageNo) {
+      metrics.variant({id: $routeParams.variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+        $scope.totalItems = responseHeaders('total');
         $scope.pushMetrics = data;
         angular.forEach(data, function (metric) {
           metric.totalReceivers = metric.variantInformations[0].receivers;
           metric.deliveryFailed = !metric.variantInformations[0].deliveryStatus;
         });
       });
-    } else {
-      metrics.application({id: $routeParams.applicationId}, function(data) {
+    }
+
+    function fetchApplicationMetrics(pageNo) {
+      metrics.application({id: $routeParams.applicationId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+        $scope.totalItems = responseHeaders('total');
         $scope.pushMetrics = data;
 
         function totalReceivers(data) {
@@ -90,6 +95,19 @@ angular.module('upsConsole').controller('ActivityController',
       });
     }
 
+    function fetch() {
+      if (onDetailsPage()) {
+        fetchVariantsMetrics($scope.currentPage);
+      } else {
+        fetchApplicationMetrics($scope.currentPage);
+      }
+    }
+
+    $scope.pageChanged = function () {
+      fetch();
+    };
+
+    fetch();
     $scope.variantMetricInformation = function(metrics) {
       angular.forEach(metrics, function(variantInfo) {
         forAllVariants($rootScope.application, variantInfo.variantID, function (variant) {

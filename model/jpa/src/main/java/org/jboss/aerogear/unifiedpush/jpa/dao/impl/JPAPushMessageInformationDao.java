@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
 import java.util.HashMap;
@@ -30,20 +31,28 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     private static final String DESC = "DESC";
 
     @Override
-    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
-
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
-                .setParameter("pushApplicationId", pushApplicationId).getResultList();
-
-        return messageInformations;
+    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending, Integer page, Integer pageSize) {
+        final String query = "select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
+        final String countQuery = "select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+        return executePagedQuery(pushApplicationId, "pushApplicationId", page, pageSize, query, countQuery);
     }
 
     @Override
-    public List<PushMessageInformation> findAllForVariant(String variantID, boolean ascending) {
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
-                .setParameter("variantID", variantID).getResultList();
+    //TODO sub optimal fetch join doesn't work well with min max all results will get fetched and min max will be in memory
+    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize) {
+        final String query = "select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
+        final String countQuery = "select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID";
+        return executePagedQuery(variantID, "variantID", page, pageSize, query, countQuery);
+    }
 
-        return messageInformations;
+    private PageResult<PushMessageInformation> executePagedQuery(String param, String paramName, Integer page, Integer pageSize, String query, String countQuery) {
+        List<PushMessageInformation> pushMessageInformationList = createQuery(query)
+                .setParameter(paramName, param)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+        Long count = (Long) createQuery(countQuery).setParameter(paramName, param).getSingleResult();
+
+        return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
     }
 
     @Override
