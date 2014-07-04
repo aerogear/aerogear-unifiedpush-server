@@ -28,6 +28,7 @@ public class VariantMetricInformation extends BaseModel {
     private String variantID;
     private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
+    private String reason;
 
     public VariantMetricInformation() {
     }
@@ -63,5 +64,16 @@ public class VariantMetricInformation extends BaseModel {
 
     public void setDeliveryStatus(Boolean deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    /**
+     * In case of an error (deliveryStatus:false), there is most likely a reason which may give some more insights.
+     */
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

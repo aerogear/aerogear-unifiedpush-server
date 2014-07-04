@@ -76,7 +76,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if (builder.isTooLong()) {
             logger.log(Level.WARNING, "Nothing sent to APNs since the payload is too large");
             // invoke the error callback and return, as it is pointless to send something out
-            callback.onError();
+            callback.onError("message too long for APNs");
 
             return;
         }
@@ -114,7 +114,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             }
         } else {
             logger.log(Level.SEVERE, "No certificate was found. Could not send messages to APNs");
-            callback.onError();
+            callback.onError("No certificate for APNs was found");
         }
     }
 
@@ -165,7 +165,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
-                    notificationSenderCallback.onError();
+                    logger.log(Level.SEVERE, "Error sending payload to APNs server", e);
+                    notificationSenderCallback.onError("Error sending payload to APNs server");
                 }
             });
 
