@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
@@ -151,10 +152,11 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void findByPushApplicationID() {
-
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
-        assertThat(messageInformations).isNotEmpty();
-        assertThat(messageInformations).hasSize(1);
+        int page = 0;
+        int pageSize = 20;
+        PageResult<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE, page, pageSize);
+        assertThat(messageInformations.getResultList()).isNotEmpty();
+        assertThat(messageInformations.getResultList()).hasSize(1);
     }
 
     @Test
@@ -241,8 +243,8 @@ public class PushMessageInformationDaoTest {
 
         flushAndClear();
 
-        assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE)).hasSize(2);
-        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE)).hasSize(1);
+        assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE, 0, 25).getResultList()).hasSize(2);
+        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE, 0, 25).getResultList()).hasSize(1);
     }
 
     @Test
@@ -378,10 +380,12 @@ public class PushMessageInformationDaoTest {
         pushMessageInformationDao.update(pmi);
 
 
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
-        assertThat(messageInformations).hasSize(2);
+        PageResult<PushMessageInformation> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE, 0, 25);
+        final List<PushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(2);
 
-        assertThat(messageInformations.get(0).getSubmitDate()).isBefore(messageInformations.get(1).getSubmitDate());
+        assertThat(list.get(0).getSubmitDate()).isBefore(list.get(1).getSubmitDate());
     }
 
     @Test
@@ -400,10 +404,12 @@ public class PushMessageInformationDaoTest {
         pushMessageInformationDao.update(pmi);
 
 
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.FALSE);
-        assertThat(messageInformations).hasSize(2);
+        PageResult<PushMessageInformation> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.FALSE, 0, 25);
+        final List<PushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(2);
 
-        assertThat(messageInformations.get(0).getSubmitDate()).isAfter(messageInformations.get(1).getSubmitDate());
+        assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
     }
 
     @Test

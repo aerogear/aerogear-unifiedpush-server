@@ -17,10 +17,10 @@
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
@@ -65,14 +65,14 @@ public class PushMessageMetricsService {
     /**
      * Returns a list of metadata objects for the given Push Application
      */
-    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting) {
-        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting);
+    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting, page, pageSize);
     }
 
     /**
      * Returns a list of metadata objects for the given Variant
      */
-    public List<PushMessageInformation> findAllForVariant(String variantID, boolean sorting) {
-        return pushMessageInformationDao.findAllForVariant(variantID, sorting);
+    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean sorting, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
     }
 }

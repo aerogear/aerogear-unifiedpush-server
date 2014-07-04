@@ -17,25 +17,22 @@
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 
 @Stateless
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
+    private static final int MAX_PAGE_SIZE = 100;
+    private static final int DEFAULT_PAGE_SIZE = 25;
 
     @Inject
     private PushMessageMetricsService metricsService;
@@ -44,33 +41,60 @@ public class PushMetricsEndpoint {
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response pushMessageInformationPerApplication(
-            @Context HttpServletRequest request,
             @PathParam("id") String id,
+            @QueryParam("page") Integer page,
+            @QueryParam("per_page") Integer pageSize,
             @QueryParam("sort") String sorting) {
+
+        pageSize = parsePageSize(pageSize);
+
+        if (page == null) {
+            page = 0;
+        }
 
         if (id == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        List<PushMessageInformation> messageInformations = metricsService.findAllForPushApplication(id, HttpRequestUtil.extractSortingQueryParamValue(sorting));
+        PageResult<PushMessageInformation> pageResult =
+                metricsService.findAllForPushApplication(id, extractSortingQueryParamValue(sorting), page, pageSize);
 
-        return Response.ok(messageInformations).build();
+        return Response.ok(pageResult.getResultList())
+                .header("total", pageResult.getCount()).build();
     }
 
     @GET
     @Path("/variant/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response pushMessageInformationPerVariant(
-            @Context HttpServletRequest request,
             @PathParam("id") String id,
+            @QueryParam("page") Integer page,
+            @QueryParam("per_page") Integer pageSize,
             @QueryParam("sort") String sorting) {
+
+        pageSize = parsePageSize(pageSize);
+
+        if (page == null) {
+            page = 0;
+        }
 
         if (id == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        List<PushMessageInformation> messageInformations = metricsService.findAllForVariant(id, HttpRequestUtil.extractSortingQueryParamValue(sorting));
+        PageResult<PushMessageInformation> pageResult =
+                metricsService.findAllForVariant(id, extractSortingQueryParamValue(sorting), page, pageSize);
 
-        return Response.ok(messageInformations).build();
+        return Response.ok(pageResult.getResultList())
+                .header("total", pageResult.getCount()).build();
+    }
+
+    private Integer parsePageSize(Integer pageSize) {
+        if (pageSize != null) {
+            pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
+        } else {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+        return pageSize;
     }
 }
