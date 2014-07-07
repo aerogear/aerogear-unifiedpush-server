@@ -50,7 +50,9 @@ angular.module('upsConsole').controller('ExampleController',
     $scope.active = tabName;
   };
 
-  $scope.projectNumber = function() {
-    return $scope.variantType === 'android' ? ('senderID: "' + $scope.variant.projectNumber +'",') : '';
+  $scope.projectNumber = function(variant) {
+    if(variant) {
+      return $scope.variantType === 'android' ? ('senderID: "' + variant.projectNumber +'",') : '';
+    }
   };
 });
