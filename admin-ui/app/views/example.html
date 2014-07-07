@@ -235,7 +235,7 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                     <div class="ups-code-block js" hljs compile="true">
 var pushConfig = {
     pushServerURL: "{{ currentLocation }}",
-    {{ projectNumber() }}
+    {{ projectNumber(variant) }}
     variantID: "{{ variant.variantID }}",
     variantSecret: "{{ variant.secret }}"
 };
