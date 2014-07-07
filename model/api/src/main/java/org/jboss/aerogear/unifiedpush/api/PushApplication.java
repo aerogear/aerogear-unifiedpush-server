@@ -41,13 +41,7 @@ public class PushApplication extends BaseModel {
     @Size(min = 1, max = 255)
     private String developer;
 
-    private Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
-
-    private Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
-
-    private Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
-
-    private Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
+    private Set<Variant> variants = new HashSet<Variant>();
 
     /**
      * The name of the application.
@@ -94,48 +88,12 @@ public class PushApplication extends BaseModel {
     }
 
 
-    /**
-     * The collection of iOS Variants.
-     */
-    public void setIOSVariants(final Set<iOSVariant> iOSVariants) {
-        this.iOSVariants = iOSVariants;
+    public Set<Variant> getVariants() {
+        return variants;
     }
 
-    public Set<iOSVariant> getIOSVariants() {
-        return iOSVariants;
-    }
-
-    /**
-     * The collection of Android Variants.
-     */
-    public void setAndroidVariants(final Set<AndroidVariant> androidVariants) {
-        this.androidVariants = androidVariants;
-    }
-
-    public Set<AndroidVariant> getAndroidVariants() {
-        return androidVariants;
-    }
-
-    /**
-     * The collection of SimplePush Variants.
-     */
-    public void setSimplePushVariants(final Set<SimplePushVariant> simplePushVariants) {
-        this.simplePushVariants = simplePushVariants;
-    }
-
-    public Set<SimplePushVariant> getSimplePushVariants() {
-        return simplePushVariants;
-    }
-
-    /**
-     * The collection of 'ChromePackagedApp' Variants.
-     */
-    public void setChromePackagedAppVariants(final Set<ChromePackagedAppVariant> chromePackagedAppVariants) {
-        this.chromePackagedAppVariants = chromePackagedAppVariants;
-    }
-
-    public Set<ChromePackagedAppVariant> getChromePackagedAppVariants() {
-        return chromePackagedAppVariants;
+    public void setVariants(Set<Variant> variants) {
+        this.variants = variants;
     }
 
     /**

@@ -30,19 +30,12 @@ angular.module('upsConsole').controller('ActivityController',
 
     $scope.applicationId = $routeParams.applicationId;
 
-    function findVariant(variants, closure, variantId) {
-      angular.forEach(variants, function (variant) {
+    function forAllVariants(application, variantId, closure) {
+      angular.forEach(application.variants, function (variant) {
         if (variant.variantID === variantId) {
           closure(variant);
         }
       });
-    }
-
-    function forAllVariants(application, variantId, closure) {
-      findVariant(application.iosvariants, closure, variantId);
-      findVariant(application.androidVariants, closure, variantId);
-      findVariant(application.simplePushVariants, closure, variantId);
-      findVariant(application.chromePackagedAppVariants, closure, variantId);
     }
 
     function onDetailsPage() {

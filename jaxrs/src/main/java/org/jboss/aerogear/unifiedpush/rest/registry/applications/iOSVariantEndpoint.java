@@ -39,7 +39,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import java.util.Collection;
 import java.util.logging.Level;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
@@ -96,7 +95,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         variantService.addVariant(iOSVariant);
 
         // add iOS variant, and merge:
-        pushAppService.addiOSVariant(pushApp, iOSVariant);
+        pushAppService.addVariant(pushApp, iOSVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariant.getVariantID())).build()).entity(iOSVariant).build();
     }
@@ -106,8 +105,8 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@Context HttpServletRequest request,
                                                  @PathParam("pushAppID") String pushApplicationID) {
-        Collection<iOSVariant> iosVariants = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getIOSVariants();
-        return Response.ok(iosVariants).build();
+        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
     }
 
     @PATCH

@@ -64,25 +64,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     </entity>
     <entity class="PushApplication" access="FIELD">
         <attributes>
-            <one-to-many name="iOSVariants" fetch="EAGER">
-                <join-column/>
-                <cascade>
-                    <cascade-remove/>
-                </cascade>
-            </one-to-many>
-            <one-to-many name="androidVariants" fetch="EAGER">
-                <join-column/>
-                <cascade>
-                    <cascade-remove/>
-                </cascade>
-            </one-to-many>
-            <one-to-many name="simplePushVariants" fetch="EAGER">
-                <join-column/>
-                <cascade>
-                    <cascade-remove/>
-                </cascade>
-            </one-to-many>
-            <one-to-many name="chromePackagedAppVariants" fetch="EAGER">
+            <one-to-many name="variants" fetch="EAGER">
                 <join-column/>
                 <cascade>
                     <cascade-remove/>
