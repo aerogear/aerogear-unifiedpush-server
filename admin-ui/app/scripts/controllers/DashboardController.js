@@ -113,7 +113,11 @@ angular.module('upsConsole').controller('ActivityController',
     };
 
     $scope.parse = function (metric) {
-      return JSON.parse(metric.rawJsonMessage);
+      try {
+        return JSON.parse(metric.rawJsonMessage);
+      } catch (err) {
+        return {};
+      }
     };
 
     $scope.showFullRequest = function (rawJsonMessage) {
