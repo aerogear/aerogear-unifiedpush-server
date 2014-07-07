@@ -76,7 +76,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         // store the SimplePush variant:
         variantService.addVariant(simplePushVariant);
         // add iOS variant, and merge:
-        pushAppService.addSimplePushVariant(pushApp, simplePushVariant);
+        pushAppService.addVariant(pushApp, simplePushVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(simplePushVariant.getVariantID())).build()).entity(simplePushVariant).build();
     }
@@ -87,7 +87,8 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID,
                                                           @Context HttpServletRequest request) {
 
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getSimplePushVariants()).build();
+        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        return Response.ok(getVariantsByType(application, SimplePushVariant.class)).build();
     }
 
     // UPDATE

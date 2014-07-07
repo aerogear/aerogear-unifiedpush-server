@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SenderType(ChromePackagedAppVariant.class)
 public class GCMForChromePushNotificationSender implements PushNotificationSender {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");

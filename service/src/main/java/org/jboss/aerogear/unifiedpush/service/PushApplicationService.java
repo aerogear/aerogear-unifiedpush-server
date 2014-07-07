@@ -55,24 +55,9 @@ public interface PushApplicationService {
     void removePushApplication(PushApplication pushApp);
 
     /**
-     * Registers the given iOSVariant object with the given PushApplication.
+     * Registers the given Variant object with the given PushApplication.
      */
-    void addiOSVariant(PushApplication pushApp, iOSVariant iOSVariant);
-
-    /**
-     * Registers the given AndroidVariant object with the given PushApplication.
-     */
-    void addAndroidVariant(PushApplication pushApp, AndroidVariant androidVariant);
-
-    /**
-     * Registers the given SimplePushVariant object with the given PushApplication.
-     */
-    void addSimplePushVariant(PushApplication pushApp, SimplePushVariant simplePushVariant);
-
-    /**
-     * Registers the given ChromePackagedAppVariant object with the given PushApplication.
-     */
-    void addChromePackagedAppVariant(PushApplication pushApp, ChromePackagedAppVariant chromePackagedAppVariant);
+    void addVariant(PushApplication pushApp, Variant variant);
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 }

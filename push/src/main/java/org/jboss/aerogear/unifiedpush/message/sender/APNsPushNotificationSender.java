@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());

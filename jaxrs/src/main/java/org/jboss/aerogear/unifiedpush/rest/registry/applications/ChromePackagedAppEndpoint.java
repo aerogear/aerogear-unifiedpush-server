@@ -73,7 +73,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
 
         // store the Chrome Packaged App variant:
         variantService.addVariant(chromePackagedAppVariant);
-        pushAppService.addChromePackagedAppVariant(pushApp, chromePackagedAppVariant);
+        pushAppService.addVariant(pushApp, chromePackagedAppVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(chromePackagedAppVariant.getVariantID())).build()).entity(chromePackagedAppVariant).build();
     }
@@ -82,7 +82,8 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllChromePackagedAppVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getChromePackagedAppVariants()).build();
+        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        return Response.ok(getVariantsByType(application, ChromePackagedAppVariant.class)).build();
     }
 
     // UPDATE

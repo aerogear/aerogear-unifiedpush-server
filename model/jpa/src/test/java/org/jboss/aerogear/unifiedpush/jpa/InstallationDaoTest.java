@@ -87,8 +87,8 @@ public class InstallationDaoTest {
         variantDao.create(sp);
 
         // register the variants with the Push Application:
-        pa.getAndroidVariants().add(av);
-        pa.getSimplePushVariants().add(sp);
+        pa.getVariants().add(av);
+        pa.getVariants().add(sp);
         pushApplicationDao.update(pa);
 
         // ============== Android client installations =========
