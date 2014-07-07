@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -33,6 +34,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -101,5 +104,15 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+    protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
+        Set<T> variants = new HashSet<T>();
+        for (Variant variant : application.getVariants()) {
+            if (variant.getClass().equals(type)) {
+                variants.add((T) variant);
+            }
+        }
+        return variants;
     }
 }

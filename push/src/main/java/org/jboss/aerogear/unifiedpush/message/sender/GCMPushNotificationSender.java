@@ -16,6 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import com.google.android.gcm.server.Constants;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Message.Builder;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,21 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-
-import com.google.android.gcm.server.Constants;
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.MulticastResult;
-import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
-import com.google.android.gcm.server.Message.Builder;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-
+@SenderType(AndroidVariant.class)
 public class GCMPushNotificationSender implements PushNotificationSender {
 
     private final GCMCache cache = new GCMCache();
