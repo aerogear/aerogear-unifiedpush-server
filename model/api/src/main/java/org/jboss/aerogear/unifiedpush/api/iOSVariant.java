@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,9 +32,11 @@ public class iOSVariant extends Variant {
 
     @NotNull
     @Size(max = 255)
+    @JsonIgnore
     private String passphrase;
 
     @NotNull
+    @JsonIgnore
     private byte[] certificate;
 
     /**
@@ -54,10 +59,12 @@ public class iOSVariant extends Variant {
      * The APNs passphrase that is needed to establish a connection to any
      * of Apple's APNs Push Servers.
      */
+    @JsonIgnore
     public String getPassphrase() {
         return this.passphrase;
     }
 
+    @JsonProperty
     public void setPassphrase(final String passphrase) {
         this.passphrase = passphrase;
     }
@@ -66,10 +73,12 @@ public class iOSVariant extends Variant {
      * The APNs certificate that is needed to establish a connection to any
      * of Apple's APNs Push Servers.
      */
+    @JsonIgnore
     public byte[] getCertificate() {
         return certificate;
     }
 
+    @JsonProperty
     public void setCertificate(byte[] cert) {
         this.certificate = cert;
     }
