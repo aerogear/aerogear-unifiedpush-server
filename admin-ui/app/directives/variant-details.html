@@ -1,9 +1,14 @@
 <ul class="list-group " style="margin-bottom: 0">
-    <li class="list-group-item" style="border: 0">
+    <li class="list-group-item" style="border: 0; margin-left: 10px">
         <a class="clickable" ng-click="expand(variant)">
             <i class="fa" ng-class="{'fa-plus-square-o': isCollapsed(variant), 'fa-minus-square-o': !isCollapsed(variant)}"></i> {{ variant.name }}
         </a>
         <span>{{ variant.description }}</span>
+        <div class="pull-left" style="margin-left: -20px">
+          <a role="menuitem" ng-click="editVariant(variant)" ng-show="variant.hasError" title="configuration error">
+            <i class="fa fa-warning"></i>
+          </a>
+        </div>
         <div class="pull-right dropdown">
             <span>
                 <span ng-show="!counts[variant.variantID]">No installations</span>
