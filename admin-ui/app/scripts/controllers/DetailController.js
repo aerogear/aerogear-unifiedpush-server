@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider, dashboard) {
 
   /*
    * INITIALIZATION
@@ -26,6 +26,18 @@ angular.module('upsConsole').controller('DetailController',
   $scope.counts = counts;
   breadcrumbs.generateBreadcrumbs();
   $scope.currentLocation = ContextProvider.contextPath();
+
+  dashboard.warnings({}, function(data) {
+    angular.forEach(data, function (warning) {
+      if (warning.applicationID === application.pushApplicationID) {
+        angular.forEach(application.variants, function (variant) {
+          if (variant.variantID === warning.variant.variantID) {
+            variant.hasError = true;
+          }
+        });
+      }
+    });
+  });
 
   /*
    * PUBLIC METHODS
