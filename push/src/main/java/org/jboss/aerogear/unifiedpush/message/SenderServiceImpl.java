@@ -110,9 +110,9 @@ public class SenderServiceImpl implements SenderService {
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(final String reason) {
                         logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
-                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE);
+                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE, reason);
                     }
                 });
 
@@ -121,13 +121,18 @@ public class SenderServiceImpl implements SenderService {
     }
 
     /**
-     * Helper to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
+     * Helpers to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
      */
-    private void updateStatusOfPushMessageInformation(PushMessageInformation pushMessageInformation, String variantID, int receives, Boolean deliveryStatus) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,final String variantID, final int receives, final Boolean deliveryStatus) {
+        this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receives, deliveryStatus, null);
+    }
+
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,final String variantID, final int receives, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setVariantID(variantID);
         variantMetricInformation.setReceivers(receives);
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
+        variantMetricInformation.setReason(reason);
         pushMessageInformation.getVariantInformations().add(variantMetricInformation);
 
         // store it!
