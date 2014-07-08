@@ -65,9 +65,8 @@ public class DashboardService {
         if (warningIDs.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(warningIDs);
 
-        return wrapApplicationVariant(applications);
+        return wrapApplicationVariant(pushApplicationDao.findByVariantIds(warningIDs));
     }
 
     /**
@@ -78,7 +77,7 @@ public class DashboardService {
         if (topVariantIDs.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<Variant, PushApplication> applications = pushApplicationDao.findByVariantIds(new ArrayList<String>(topVariantIDs.keySet()));
+        List<PushApplication> applications = pushApplicationDao.findByVariantIds(new ArrayList<String>(topVariantIDs.keySet()));
         final List<ApplicationVariant> applicationVariants = wrapApplicationVariant(applications);
 
         for (ApplicationVariant applicationVariant : applicationVariants) {
@@ -96,12 +95,13 @@ public class DashboardService {
         return applicationVariants;
     }
 
-    private List<ApplicationVariant> wrapApplicationVariant(Map<Variant, PushApplication> applications) {
+    private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
         final List<ApplicationVariant> applicationVariants = new ArrayList<ApplicationVariant>(applications.size());
-        for (Map.Entry<Variant, PushApplication> entry : applications.entrySet()) {
-            final ApplicationVariant applicationVariant = new ApplicationVariant(entry.getValue().getPushApplicationID(),
-                    entry.getValue().getName(), entry.getKey());
-            applicationVariants.add(applicationVariant);
+        for (PushApplication application : applications) {
+            for (Variant variant : application.getVariants()) {
+                final ApplicationVariant applicationVariant = new ApplicationVariant(application, variant);
+                applicationVariants.add(applicationVariant);
+            }
         }
         return applicationVariants;
     }

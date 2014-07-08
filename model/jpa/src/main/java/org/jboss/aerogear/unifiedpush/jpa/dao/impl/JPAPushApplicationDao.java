@@ -85,31 +85,26 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public Map<String, Long> countInstallationsByType(String pushApplicationID) {
-        final String jpql = "select v.variantID, count(*) from PushApplication pa join pa.{type}Variants v join v.installations i "
+        final String jpql = "select v, count(*) from PushApplication pa join pa.variants v join v.installations i "
                 + "where pushApplicationID = :pushApplicationID "
                 + "group by v.variantID";
 
         final HashMap<String, Long> results = new HashMap<String, Long>();
 
-        for (VariantType variantType : VariantType.values()) {
-            final String typeQuery = parseVariantType(jpql, variantType);
-            final Query query = createQuery(typeQuery).setParameter("pushApplicationID", pushApplicationID);
-            final List<Object[]> resultList = query.getResultList();
-            long total = 0L;
-            for (Object[] objects : resultList) {
-                final Long value = (Long) objects[1];
-                total += value;
-                results.put(String.valueOf(objects[0]), value);
-            }
-            results.put(variantType.getTypeName(), total);
+        for (VariantType type : VariantType.values()) {
+            results.put(type.getTypeName(), 0L);
+        }
+        final Query query = createQuery(jpql)
+                .setParameter("pushApplicationID", pushApplicationID);
+        final List<Object[]> resultList = query.getResultList();
+        for (Object[] objects : resultList) {
+            final Long value = (Long) objects[1];
+            final Variant variant = (Variant) objects[0];
+            results.put(variant.getType().getTypeName(), results.get(variant.getType().getTypeName()) + value);
+            results.put(variant.getVariantID(), value);
         }
 
         return results;
-    }
-
-    private String parseVariantType(String jpql, VariantType variantType) {
-        final String typeName = variantType == VariantType.IOS ? "iOS" : variantType.getTypeName();
-        return jpql.replaceAll("\\{type\\}", typeName);
     }
 
     @Override
@@ -119,25 +114,10 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     }
 
     @Override
-    public Map<Variant, PushApplication> findByVariantIds(List<String> variantIDs) {
-        final String jpql = "select v, pa.name, pa.pushApplicationID from PushApplication pa " +
-                "left join pa.{type}Variants v where v.variantID in (:variantIDs)";
+    public List<PushApplication> findByVariantIds(List<String> variantIDs) {
+        final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
 
-        final HashMap<Variant, PushApplication> results = new HashMap<Variant, PushApplication>();
-
-        for (VariantType variantType : VariantType.values()) {
-            final String typeQuery = parseVariantType(jpql, variantType);
-            final List<Object[]> resultList = createQuery(typeQuery).setParameter("variantIDs", variantIDs).getResultList();
-
-            for (Object[] objects : resultList) {
-                PushApplication app = new PushApplication();
-                app.setName((String) objects[1]);
-                app.setPushApplicationID((String) objects[2]);
-                results.put((Variant) objects[0], app);
-            }
-
-        }
-        return results;
+        return (List<PushApplication>) createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
     }
 
     @Override

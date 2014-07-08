@@ -22,6 +22,34 @@ angular.module('upsConsole').controller('DetailController',
   /*
    * INITIALIZATION
    */
+  function variantKey(variantType) {
+    switch (variantType) {
+    case 'android':
+    case 'simplePush':
+      return variantType + 'Variants';
+    case 'simple_push':
+      return 'simplePushVariants';
+    case 'iOS':
+    case 'ios':
+      return 'iosvariants';
+    case 'chrome':
+    case 'chrome_packaged_app':
+      return 'chromePackagedAppVariants';
+    default:
+      Notifications.error('Unknown variant type ' + variantType);
+      return '';
+    }
+  }
+
+  var length = application.variants.length;
+  for (var i = 0; i < length; i++) {
+    var typeName = variantKey(application.variants[i].type.toLowerCase());
+    if (!application[ typeName]) {
+      application[typeName] = [];
+    }
+    application[typeName].push(application.variants[i]);
+  }
+
   $rootScope.application = application;
   $scope.counts = counts;
   breadcrumbs.generateBreadcrumbs();
@@ -154,21 +182,6 @@ angular.module('upsConsole').controller('DetailController',
 
   function getOsVariants(variantType) {
     return $scope.application[variantKey(variantType)];
-  }
-
-  function variantKey(variantType) {
-    switch (variantType) {
-    case 'android':
-    case 'simplePush':
-      return variantType + 'Variants';
-    case 'iOS':
-      return 'iosvariants';
-    case 'chrome':
-      return 'chromePackagedAppVariants';
-    default:
-      Notifications.error('Unknown variant type ' + variantType);
-      return '';
-    }
   }
 
   function variantEndpoint(variantType) {

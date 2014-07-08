@@ -16,14 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.api.*;
-import org.jboss.aerogear.unifiedpush.message.sender.*;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
+import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
+import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
@@ -36,13 +43,10 @@ import java.util.logging.Logger;
 public class SenderServiceImpl implements SenderService {
 
     private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
-    private final SimplePushNotificationSender simplePushSender = new SimplePushNotificationSender();
-    private final GCMForChromePushNotificationSender gcmForChromePushNotificationSender = new GCMForChromePushNotificationSender();
 
-    @Inject
-    private GCMPushNotificationSender gcmSender;
-    @Inject
-    private APNsPushNotificationSender apnsSender;
+    @Inject @Any
+    private Instance<PushNotificationSender> senders;
+
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
@@ -64,10 +68,7 @@ public class SenderServiceImpl implements SenderService {
                 );
 
         // collections for all the different variants:
-        final Set<iOSVariant> iOSVariants = new HashSet<iOSVariant>();
-        final Set<AndroidVariant> androidVariants = new HashSet<AndroidVariant>();
-        final Set<SimplePushVariant> simplePushVariants = new HashSet<SimplePushVariant>();
-        final Set<ChromePackagedAppVariant> chromePackagedAppVariants = new HashSet<ChromePackagedAppVariant>();
+        final Set<Variant> variants = new HashSet<Variant>();
 
         final SendCriteria criteria = message.getSendCriteria();
         final List<String> variantIDs = criteria.getVariants();
@@ -81,33 +82,13 @@ public class SenderServiceImpl implements SenderService {
 
                 // does the variant exist ? 
                 if (variant != null) {
-
-                    // based on type, we store in the matching collection
-                    switch (variant.getType()) {
-                    case ANDROID:
-                        androidVariants.add((AndroidVariant) variant);
-                        break;
-                    case IOS:
-                        iOSVariants.add((iOSVariant) variant);
-                        break;
-                    case SIMPLE_PUSH:
-                        simplePushVariants.add((SimplePushVariant) variant);
-                        break;
-                    case CHROME_PACKAGED_APP:
-                        chromePackagedAppVariants.add((ChromePackagedAppVariant) variant);
-                    default:
-                        // nope; should never enter here
-                        break;
-                    }
+                    variants.add(variant);
                 }
             }
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplicationEntity:
-            androidVariants.addAll(pushApplication.getAndroidVariants());
-            iOSVariants.addAll(pushApplication.getIOSVariants());
-            simplePushVariants.addAll(pushApplication.getSimplePushVariants());
-            chromePackagedAppVariants.addAll(pushApplication.getChromePackagedAppVariants());
+            variants.addAll(pushApplication.getVariants());
         }
 
         // all possible criteria
@@ -119,78 +100,23 @@ public class SenderServiceImpl implements SenderService {
         if (message.getData() != null) {
 
             // TODO: DISPATCH TO A QUEUE .....
-            for (final iOSVariant iOSVariant : iOSVariants) {
-                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(iOSVariant.getVariantID(), categories, aliases, deviceTypes);
-                apnsSender.sendPushMessage(iOSVariant, tokenPerVariant, message, new NotificationSenderCallback() {
+            for (final Variant variant : variants) {
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
+                senders.select(new SenderTypeLiteral(variant.getClass())).get().sendPushMessage(variant, tokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
                     public void onSuccess() {
-                        logger.log(Level.FINE, "Sent APNs message to '" + tokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE) ;
+                        logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenPerVariant.size()));
+                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE);
                     }
 
                     @Override
                     public void onError() {
-                        logger.log(Level.WARNING, "Error on APNs delivery");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, iOSVariant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE) ;
+                        logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
+                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE);
                     }
                 });
 
             }
-
-            // TODO: DISPATCH TO A QUEUE .....
-            for (final AndroidVariant androidVariant : androidVariants) {
-                final List<String> androidTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), categories, aliases, deviceTypes);
-                gcmSender.sendPushMessage(androidVariant, androidTokenPerVariant, message, new NotificationSenderCallback() {
-                    @Override
-                    public void onSuccess() {
-                        logger.log(Level.FINE, "Sent GCM-Android message to '" + androidTokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.TRUE) ;
-                    }
-
-                    @Override
-                    public void onError() {
-                        logger.log(Level.WARNING, "Error on GCM-Android delivery");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, androidVariant.getVariantID(), androidTokenPerVariant.size(), Boolean.FALSE) ;
-                    }
-                });
-            }
-
-            // TODO: DISPATCH TO A QUEUE .....
-            for(final ChromePackagedAppVariant chromePackagedAppVariant : chromePackagedAppVariants) {
-                final List<String> chromePackagedAppTokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(chromePackagedAppVariant.getVariantID(), categories, aliases, deviceTypes);
-                logger.log(Level.FINE, "Sending Chrome/GCM message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
-                gcmForChromePushNotificationSender.sendPushMessage(chromePackagedAppVariant, chromePackagedAppTokenPerVariant, message, new NotificationSenderCallback() {
-                    @Override
-                    public void onSuccess() {
-                        logger.log(Level.FINE, "Sent GCM-Chrome message to '" + chromePackagedAppTokenPerVariant.size() + "' devices");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.TRUE) ;
-                    }
-
-                    @Override
-                    public void onError() {
-                        logger.log(Level.WARNING, "Error on GCM-Chrome  delivery");
-                        updateStatusOfPushMessageInformation(pushMessageInformation, chromePackagedAppVariant.getVariantID(), chromePackagedAppTokenPerVariant.size(), Boolean.FALSE) ;
-                    }
-                });
-            }
-        }
-
-
-        for (final SimplePushVariant simplePushVariant : simplePushVariants) {
-            final List<String> pushEndpointURLsPerCategory = clientInstallationService.findAllSimplePushEndpointURLsForVariantIDByCriteria(simplePushVariant .getVariantID(), categories, aliases, deviceTypes);
-            simplePushSender.sendPushMessage(simplePushVariant, pushEndpointURLsPerCategory, message, new NotificationSenderCallback() {
-                @Override
-                public void onSuccess() {
-                    logger.log(Level.FINE, "Sent SimplePush message to '" + pushEndpointURLsPerCategory.size() + "' devices");
-                    updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.TRUE) ;
-                }
-
-                @Override
-                public void onError() {
-                    logger.log(Level.WARNING, "Error on SimplePush delivery");
-                    updateStatusOfPushMessageInformation(pushMessageInformation, simplePushVariant.getVariantID(), pushEndpointURLsPerCategory.size(), Boolean.FALSE) ;
-                }
-            });
         }
     }
 

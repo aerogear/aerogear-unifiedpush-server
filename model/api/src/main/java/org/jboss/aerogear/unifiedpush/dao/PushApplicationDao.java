@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.dao;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 
 import java.util.List;
 import java.util.Map;
@@ -54,5 +53,5 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
     /**
      * Return application name and id of all variants matching given ids
      */
-    Map<Variant, PushApplication> findByVariantIds(List<String> variantIDs);
+    List<PushApplication> findByVariantIds(List<String> variantIDs);
 }

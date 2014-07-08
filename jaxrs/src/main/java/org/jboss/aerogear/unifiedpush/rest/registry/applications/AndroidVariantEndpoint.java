@@ -76,7 +76,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         // store the Android variant:
         variantService.addVariant(androidVariant);
         // add iOS variant, and merge:
-        pushAppService.addAndroidVariant(pushApp, androidVariant);
+        pushAppService.addVariant(pushApp, androidVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
     }
@@ -85,7 +85,8 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
-        return Response.ok(pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request)).getAndroidVariants()).build();
+        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        return Response.ok(getVariantsByType(application, AndroidVariant.class)).build();
     }
 
     // UPDATE

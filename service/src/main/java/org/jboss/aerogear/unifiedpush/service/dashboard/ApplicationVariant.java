@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.dashboard;
 
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public class ApplicationVariant {
@@ -24,9 +25,9 @@ public class ApplicationVariant {
     private String applicationID;
     private Long receivers;
 
-    public ApplicationVariant(String applicationID, String applicationName, Variant variant) {
-        this.applicationID = applicationID;
-        this.applicationName = applicationName;
+    public ApplicationVariant(PushApplication application, Variant variant) {
+        this.applicationID = application.getPushApplicationID();
+        this.applicationName = application.getName();
         this.variant = variant;
     }
 

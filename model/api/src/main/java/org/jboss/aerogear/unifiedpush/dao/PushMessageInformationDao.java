@@ -31,12 +31,12 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
      */
-    List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending);
+    PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads all push message metadata objects for the given Variant, but offers a way to order (asc/desc) by date.
      */
-    List<PushMessageInformation> findAllForVariant(String id, boolean ascending);
+    PageResult<PushMessageInformation> findAllForVariant(String id, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends
