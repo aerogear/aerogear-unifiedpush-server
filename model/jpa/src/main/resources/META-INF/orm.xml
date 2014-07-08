@@ -65,6 +65,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="PushApplication" access="FIELD">
         <attributes>
             <one-to-many name="variants" fetch="EAGER">
+                <order-by>type asc</order-by>
                 <join-column/>
                 <cascade>
                     <cascade-remove/>
