@@ -24,16 +24,26 @@ import org.jboss.aerogear.unifiedpush.model.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+import org.picketlink.credential.DefaultLoginCredentials;
+import org.picketlink.internal.CDIEventBridge;
+import org.picketlink.producer.PermissionResolverProducer;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.Serializable;
 import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(ApplicationComposer.class)
 public class PushApplicationServiceTest {
@@ -44,8 +54,14 @@ public class PushApplicationServiceTest {
     @Module
     public Beans getBeans() {
         final Beans beans = new Beans();
+
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(PushApplicationDaoImpl.class);
+
+        // openejb junit is not scanning those PL classes from classpath. need to define them manually.
+        beans.addManagedClass(CDIEventBridge.class);
+        beans.addManagedClass(DefaultLoginCredentials.class);
+        beans.addManagedClass(PermissionResolverProducer.class);
 
         return beans;
     }
