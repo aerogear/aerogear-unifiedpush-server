@@ -23,12 +23,11 @@ angular.module('ups.directives', ['upsConsole.services'])
     };
   })
 
-  .directive('variants', function () {
+  .directive('variant', function () {
     return {
       scope: {
-        variants: '=',
-        counts: '=',
-        type: '@'
+        variant: '=',
+        counts: '='
       },
       controller: function ($rootScope, $scope, $routeParams, ContextProvider) {
         $scope.expand = function (variant) {

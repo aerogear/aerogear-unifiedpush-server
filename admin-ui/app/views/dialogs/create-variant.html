@@ -37,7 +37,7 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="iOS"  ng-required="true">
+              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="ios"  ng-required="true">
               <label for="variantTypeIOS">
                 <div class="ups-platform ios">
                   <strong>iOS</strong><br>
@@ -97,7 +97,7 @@
           </div>
         </div>
 
-        <div ng-show="variantType == 'iOS'">
+        <div ng-show="variantType == 'ios'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
             <div class="col-sm-7">
@@ -130,7 +130,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                   <div class="col-sm-9">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'iOS'">
+                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'ios'">
                   </div>
                 </div>
               </div>

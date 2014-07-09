@@ -22,34 +22,6 @@ angular.module('upsConsole').controller('DetailController',
   /*
    * INITIALIZATION
    */
-  function variantKey(variantType) {
-    switch (variantType) {
-    case 'android':
-    case 'simplePush':
-      return variantType + 'Variants';
-    case 'simple_push':
-      return 'simplePushVariants';
-    case 'iOS':
-    case 'ios':
-      return 'iosvariants';
-    case 'chrome':
-    case 'chrome_packaged_app':
-      return 'chromePackagedAppVariants';
-    default:
-      Notifications.error('Unknown variant type ' + variantType);
-      return '';
-    }
-  }
-
-  var length = application.variants.length;
-  for (var i = 0; i < length; i++) {
-    var typeName = variantKey(application.variants[i].type.toLowerCase());
-    if (!application[ typeName]) {
-      application[typeName] = [];
-    }
-    application[typeName].push(application.variants[i]);
-  }
-
   $rootScope.application = application;
   $scope.counts = counts;
   breadcrumbs.generateBreadcrumbs();
@@ -66,14 +38,19 @@ angular.module('upsConsole').controller('DetailController',
       var variantData = variantProperties(result.variant, variantType);
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(result.variantType)
+        variantType: result.variantType
       });
 
       var createFunction = (variantData instanceof FormData) ? variants.createWithFormData : variants.create;
 
       createFunction(params, variantData, function (newVariant) {
-        var osVariants = getOsVariants(variantType);
-        osVariants.push(newVariant);
+        var length = application.variants.length;
+        for (var i = 0; i < length; i++) {
+          if (newVariant.type === application.variants[i].type) {
+            break;
+          }
+        }
+        $scope.application.variants.splice(i, 0, newVariant);
         Notifications.success('Successfully created variant');
       }, function () {
         Notifications.error('Something went wrong...');
@@ -87,7 +64,7 @@ angular.module('upsConsole').controller('DetailController',
       var variantDataUpdate = variantProperties(variant, variantType);
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(variantType),
+        variantType: variantType,
         variantId: result.variant.variantID
       });
 
@@ -98,7 +75,7 @@ angular.module('upsConsole').controller('DetailController',
         Notifications.error('Something went wrong...');
       };
 
-      if (variantType !== 'iOS') {
+      if (variantType !== 'ios') {
         variants.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
         if (variantDataUpdate.certificate) {
@@ -115,11 +92,11 @@ angular.module('upsConsole').controller('DetailController',
     modalInstance.result.then(function (result) {
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: variantEndpoint(variantType),
+        variantType: variantType,
         variantId: result.variant.variantID
       });
       variants.remove(params, function () {
-        var osVariants = getOsVariants(variantType);
+        var osVariants = $scope.application.variants;
         osVariants.splice(osVariants.indexOf(variant), 1);
         Notifications.success('Successfully removed variant');
       }, function () {
@@ -180,23 +157,6 @@ angular.module('upsConsole').controller('DetailController',
     });
   }
 
-  function getOsVariants(variantType) {
-    return $scope.application[variantKey(variantType)];
-  }
-
-  function variantEndpoint(variantType) {
-    switch (variantType) {
-    case 'android':
-    case 'simplePush':
-    case 'chrome':
-    case 'iOS':
-      return variantType;
-    default:
-      Notifications.error('Unknown variant type ' + variantType);
-      return '';
-    }
-  }
-
   function variantProperties(variant, variantType) {
     var properties = ['name', 'description'], result = {};
     switch (variantType) {
@@ -209,7 +169,7 @@ angular.module('upsConsole').controller('DetailController',
     case 'chrome':
       properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
       break;
-    case 'iOS':
+    case 'ios':
       if (variant.certificates && variant.certificates.length) {
         variant.certificate = variant.certificates[0];
       }

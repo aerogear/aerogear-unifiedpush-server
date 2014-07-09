@@ -18,8 +18,8 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +41,7 @@ public class PushApplication extends BaseModel {
     @Size(min = 1, max = 255)
     private String developer;
 
-    private Set<Variant> variants = new HashSet<Variant>();
+    private List<Variant> variants = new ArrayList<Variant>();
 
     /**
      * The name of the application.
@@ -88,11 +88,11 @@ public class PushApplication extends BaseModel {
     }
 
 
-    public Set<Variant> getVariants() {
+    public List<Variant> getVariants() {
         return variants;
     }
 
-    public void setVariants(Set<Variant> variants) {
+    public void setVariants(List<Variant> variants) {
         this.variants = variants;
     }
 

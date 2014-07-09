@@ -48,6 +48,9 @@ public abstract class Variant extends BaseModel {
      */
     public abstract VariantType getType();
 
+    //ugly way to make it a immutable property
+    public void setType(VariantType type) {}
+
     public String getName() {
         return this.name;
     }

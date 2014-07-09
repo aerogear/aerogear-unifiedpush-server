@@ -30,7 +30,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <id name="id"/>
         </attributes>
     </mapped-superclass>
-    <entity class="Variant" access="FIELD">
+    <entity class="Variant" access="PROPERTY">
         <inheritance strategy="JOINED"/>
         <discriminator-column name="TYPE" discriminator-type="STRING"/>
         <attributes>
@@ -65,6 +65,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="PushApplication" access="FIELD">
         <attributes>
             <one-to-many name="variants" fetch="EAGER">
+                <order-by>type asc</order-by>
                 <join-column/>
                 <cascade>
                     <cascade-remove/>

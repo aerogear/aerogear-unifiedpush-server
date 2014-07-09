@@ -54,10 +54,6 @@ public class PushApplicationTest {
 
         pushApplication.getVariants().add(av);
         assertThat(pushApplication.getVariants()).hasSize(1);
-
-        // add it again - should not matter...
-        pushApplication.getVariants().add(av);
-        assertThat(pushApplication.getVariants()).hasSize(1);
     }
 
     @Test

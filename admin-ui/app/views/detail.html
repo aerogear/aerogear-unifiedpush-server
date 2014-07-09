@@ -52,50 +52,25 @@
                 <div style="clear: both;"></div>
             </div>
 
-            <div class="panel lo-panel ups-panel-variants android" ng-if="application.androidVariants.length != 0">
+            <div ng-class="{'panel lo-panel ups-panel-variants': true, 'new-line': application.variants[$index + 1].type == variant.type}" ng-repeat="variant in application.variants">
+              <div class="ups-panel-variants {{variant.type}}" ng-if="application.variants[$index - 1].type != variant.type">
                 <div class="panel-heading">
-                    <div class="pull-left"><h2>Android</h2></div>
-                    <div class="pull-right">
-                        <ups-pluralize noun="installation" count="counts.android" ></ups-pluralize>
-                    </div>
-                    <div style="clear: both;"></div>
+                  <div class="pull-left">
+                    <h2 style="text-transform: capitalize" ng-if="variant.type != 'ios'">{{variant.type}}</h2>
+                    <h2 ng-if="variant.type == 'ios'">iOS</h2>
+                  </div>
+                  <div class="pull-right">
+                    <ups-pluralize noun="installation" count="counts[variant.type]" ></ups-pluralize>
+                  </div>
+                  <div class="clearfix"></div>
                 </div>
 
-                <variants variants="application.androidVariants" counts="counts" type="android"></variants>
-            </div>
-            <div class="panel lo-panel ups-panel-variants ios" ng-if="application.iosvariants.length != 0">
-                <div class="panel-heading">
-                    <div class="pull-left"><h2>iOS</h2></div>
-                    <div class="pull-right">
-                        <ups-pluralize noun="installation" count="counts.ios" ></ups-pluralize>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-                <variants variants="application.iosvariants" counts="counts" type="iOS"></variants>
-            </div>
+              </div>
 
-            <div class="panel lo-panel ups-panel-variants chrome" ng-if="application.chromePackagedAppVariants.length != 0">
-                <div class="panel-heading">
-                    <div class="pull-left"><h2>Chrome</h2></div>
-                    <div class="pull-right">
-                        <ups-pluralize noun="installation" count="counts.chromePackagedApp" ></ups-pluralize>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-                <variants variants="application.chromePackagedAppVariants" counts="counts" type="chrome"></variants>
+              <variant variant="variant" counts="counts"></variant>
+              <div ng-class="{bottom: application.variants[$index + 1].type != variant.type}"></div>
             </div>
-
-            <div class="panel lo-panel ups-panel-variants simplepush" ng-if="application.simplePushVariants.length != 0">
-                <div class="panel-heading">
-                    <div class="pull-left"><h2>SimplePush</h2></div>
-                    <div class="pull-right">
-                        <ups-pluralize noun="installation" count="counts.simplePush" ></ups-pluralize>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-                <variants variants="application.simplePushVariants" counts="counts" type="simplePush"></variants>
-            </div>
-
         </div>
     </div>
+  <div style="clearfix"></div>
 </div>
