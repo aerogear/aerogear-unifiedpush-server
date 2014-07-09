@@ -8,48 +8,16 @@
     <div class="modal-body">
       <input type="checkbox" ng-checked="variantSelection.length == 0">All
       <div>
-        <div ng-show="application.androidVariants">
-          <p>Android</p>
-          <ul class="list-group ">
-          <li class="list-group-item" ng-repeat="androidvariant in application.androidVariants">
+        <div ng-show="application.variants" ng-repeat="variant in application.variants">
+          <h5 style="text-transform: capitalize" ng-if="variant.type != 'ios' && application.variants[$index + 1].type != variant.type">{{variant.type}}</h5>
+          <h5 ng-if="variant.type == 'ios' && application.variants[$index + 1].type != variant.type">iOS</h5>
+          <ul style="margin-bottom: -1px;">
+          <li class="list-group-item">
               <label>
-                  <input type="checkbox"  ng-checked="variantSelection.indexOf(androidvariant) > -1" ng-click="toggleSelection(androidvariant)">
-                  {{androidvariant.name}}
+                  <input type="checkbox"  ng-checked="variantSelection.indexOf(variant) > -1" ng-click="toggleSelection(variant)">
+                  {{variant.name}}
               </label>
           </li>
-          </ul>
-        </div>
-        <div ng-show="application.iosvariants">
-          <p>iOS</p>
-          <ul class="list-group ">
-              <li class="list-group-item" ng-repeat="iosvariant in application.iosvariants">
-                  <label>
-                      <input type="checkbox" ng-checked="variantSelection.indexOf(iosvariant) > -1" ng-click="toggleSelection(iosvariant)">
-                      {{iosvariant.name}}
-                  </label>
-              </li>
-          </ul>
-        </div>
-        <div ng-show="application.simplePushVariants">
-          <p>Simple Push</p>
-          <ul class="list-group ">
-              <li class="list-group-item" ng-repeat="simplepushvariant in application.simplePushVariants">
-                  <label>
-                      <input type="checkbox" ng-checked="variantSelection.indexOf(simplepushvariant) > -1" ng-click="toggleSelection(simplepushvariant)">
-                      {{simplepushvariant.name}}
-                  </label>
-              </li>
-          </ul>
-        </div>
-        <div ng-show="application.chromePackagedAppVariants">
-          <p>Chrome</p>
-          <ul class="list-group ">
-              <li class="list-group-item" ng-repeat="chromevariant in application.chromePackagedAppVariants">
-                  <label>
-                      <input type="checkbox" ng-checked="variantSelection.indexOf(chromevariant) > -1" ng-click="toggleSelection(chromevariant)">
-                      {{chromevariant.name}}
-                  </label>
-              </li>
           </ul>
         </div>
       </div>
