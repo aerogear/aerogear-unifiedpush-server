@@ -90,7 +90,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-bom</artifactId>
-                <version>0.2.1</version>
+                <version>${aerogear.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,7 +99,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-test-bom</artifactId>
-                <version>0.2.1</version>
+                <version>${aerogear.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-android-bom</artifactId>
-                <version>0.2.1</version>
+                <version>${aerogear.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -147,6 +147,8 @@
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
         <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
+
+        <aerogear.bom.version>0.2.1</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
