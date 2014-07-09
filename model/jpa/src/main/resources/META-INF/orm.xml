@@ -30,7 +30,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <id name="id"/>
         </attributes>
     </mapped-superclass>
-    <entity class="Variant" access="FIELD">
+    <entity class="Variant" access="PROPERTY">
         <inheritance strategy="JOINED"/>
         <discriminator-column name="TYPE" discriminator-type="STRING"/>
         <attributes>

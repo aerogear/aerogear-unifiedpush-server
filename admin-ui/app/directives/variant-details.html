@@ -1,5 +1,5 @@
-<ul class="list-group ">
-    <li class="list-group-item" ng-repeat="variant in variants">
+<ul class="list-group " style="margin-bottom: 0">
+    <li class="list-group-item" style="border: 0">
         <a class="clickable" ng-click="expand(variant)">
             <i class="fa" ng-class="{'fa-plus-square-o': isCollapsed(variant), 'fa-minus-square-o': !isCollapsed(variant)}"></i> {{ variant.name }}
         </a>
@@ -19,10 +19,10 @@
 
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i> <i class="fa fa-caret-down"></i></a>
             <ul class="dropdown-menu">
-                <li><a role="menuitem" ng-click="editVariant(variant, type)">Edit...</a></li>
+                <li><a role="menuitem" ng-click="editVariant(variant, variant.type)">Edit...</a></li>
                 <li><a role="menuitem" href="#/activity/{{applicationId}}/{{variant.variantID}}">Activity</a></li>
                 <li role="presentation" class="divider"></li>
-                <li><a role="menuitem" ng-click="removeVariant(variant, type)">Remove...</a></li>
+                <li><a role="menuitem" ng-click="removeVariant(variant, variant.type)">Remove...</a></li>
             </ul>
         </div>
         <div class="ups-toggle-box" collapse="isCollapsed(variant)">
@@ -40,7 +40,7 @@
                     <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
                     <tr><td>Refresh Token:</td><td>{{ variant.refreshToken }}</td></tr>
                 </table>
-                <p ng-show="variant.type == 'SIMPLE_PUSH'">This server's <em>SimplePush</em> implementation will be used.</p>
+                <p ng-show="variant.type == 'simplePush'">This server's <em>SimplePush</em> implementation will be used.</p>
             </div>
             <br><br>
             <div class="ups-tip-panel">
@@ -48,7 +48,7 @@
                 <div class="ups-tip-panel-body">
                     <h2>Registering installations
                         <div class="pull-right dropdown">
-                            <a href="#/example/{{applicationId}}/{{type}}/{{variant.variantID}}" class="ups-tip-panel-link">Example implementation</a>
+                            <a href="#/example/{{applicationId}}/{{variant.type}}/{{variant.variantID}}" class="ups-tip-panel-link">Example implementation</a>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i>  <i class="fa fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li><a role="menuitem" data-toggle="modal" data-target="#RenewSecret">Renew Secret...</a></li>
@@ -61,7 +61,7 @@
                         <tr><td>Secret: </td><td class="ups-snippet">{{ variant.secret }}</td></tr>
                     </table>
                 </div>
-                <div style="clear: both;"></div>
+                <div style="clearfix"></div>
             </div>
         </div>
     </li>
