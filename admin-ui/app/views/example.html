@@ -168,7 +168,7 @@ public class PushApplication extends Application {
 }
 </div>
                 </tab>
-                <tab heading="iOS - Objective-C" ng-hide="variantType != 'iOS'" active="isActive('iOS')" ng-click="setActive('iOS')">
+                <tab heading="iOS - Objective-C" ng-hide="variantType != 'ios'" active="isActive('ios')" ng-click="setActive('ios')">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'objectivec'"></div>
                     <script type="text/ng-template" id="objectivec">
 - (void)application:(UIApplication *)application
@@ -198,7 +198,7 @@ public class PushApplication extends Application {
                   </script>
 
                 </tab>
-                <tab heading="iOS - Swift" ng-hide="variantType != 'iOS'" ng-click="setActive('iOSSwift')">
+                <tab heading="iOS - Swift" ng-hide="variantType != 'ios'" ng-click="setActive('iOSSwift')">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'swift'"></div>
                     <script type="text/ng-template" id="swift">
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {

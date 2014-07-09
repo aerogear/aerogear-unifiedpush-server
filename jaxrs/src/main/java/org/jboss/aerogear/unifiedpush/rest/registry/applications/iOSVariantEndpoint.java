@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
 @Stateless
-@Path("/applications/{pushAppID}/iOS")
+@Path("/applications/{pushAppID}/ios")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     // new iOS

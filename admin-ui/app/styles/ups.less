@@ -1,10 +1,5 @@
 .ups-main-pane {
-  height: 100%;
-}
-.lo-content-row > aside {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  height: 100%;
+  min-height: calc(~"100% - 36px") !important;
 }
 .ups-sidebar .fa {
   margin-bottom: 4px;
@@ -73,6 +68,7 @@ ul.ups-pagination.pagination>.disabled>a:focus {
   border: 1px solid #fddbb1;
   background-color: #fff5dd;
   padding: 12px;
+  overflow: auto;
 }
 
 .ups-tip-panel h2 {
@@ -208,7 +204,7 @@ a.ups-tip-panel-link {
     }
   }
   
-  &.simplepush {
+  &.simplePush {
     .panel-heading {
       background-image: url('@{images}platform-simplepush.png');
     }
@@ -228,6 +224,15 @@ a.ups-tip-panel-link {
     padding-right: 12px;
     display: inline-block;
   }
+
+  .bottom {
+    border-top: 1px solid #e9e8e8;
+    padding-bottom: 20px;
+  }
+}
+
+.new-line {
+  margin-bottom: 0;
 }
 
 .ups-panel-installations {

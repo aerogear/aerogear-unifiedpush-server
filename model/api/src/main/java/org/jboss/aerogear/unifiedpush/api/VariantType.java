@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonValue;
+
 /**
  * A type-safe identifier for the allowed variant types.
  */
@@ -39,7 +41,7 @@ public enum VariantType {
     /**
      * The type identifier for our Chrome Packaged App variants.
      */
-    CHROME_PACKAGED_APP("chromePackagedApp");
+    CHROME_PACKAGED_APP("chrome");
 
     private final String typeName;
 
@@ -50,6 +52,7 @@ public enum VariantType {
     /**
      * Returns the actual type name of the variant type
      */
+    @JsonValue
     public String getTypeName() {
         return typeName;
     }
