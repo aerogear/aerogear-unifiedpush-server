@@ -9,7 +9,7 @@ Only three steps are needed to get going!
 * Deploy the two _WAR files_ (``auth-server.war`` and ``ag-push.war``) into ``$JBOSS/standalone/deployments``
 * Start the Server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
 
-Now go to ``http://localhost:8080/NAME_OF_THE_WAR_FILE`` and enjoy the UnifiedPush Server.
+Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
 
