@@ -90,7 +90,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-bom</artifactId>
-                <version>0.2.1-SNAPSHOT</version>
+                <version>0.2.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,7 +99,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-test-bom</artifactId>
-                <version>0.2.1-SNAPSHOT</version>
+                <version>0.2.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-android-bom</artifactId>
-                <version>0.2.1-SNAPSHOT</version>
+                <version>0.2.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
