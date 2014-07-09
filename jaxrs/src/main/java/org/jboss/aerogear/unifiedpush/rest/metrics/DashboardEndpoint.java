@@ -64,8 +64,8 @@ public class DashboardEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTopThreeVariants(@Context HttpServletRequest request) {
         final String principalName = extractUsername(request);
-        final List<ApplicationVariant> variantsWithWarnings = service.getTopThreeBusyVariants(principalName);
+        final List<ApplicationVariant> topThreeBusyVariants = service.getTopThreeBusyVariants(principalName);
 
-        return Response.ok(variantsWithWarnings).build();
+        return Response.ok(topThreeBusyVariants).build();
     }
 }
