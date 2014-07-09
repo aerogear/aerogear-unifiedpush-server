@@ -47,10 +47,10 @@ angular.module('upsConsole').controller('DetailController',
         var length = application.variants.length;
         for (var i = 0; i < length; i++) {
           if (newVariant.type === application.variants[i].type) {
-            $scope.application.variants.splice(i, 0, newVariant);
             break;
           }
         }
+        $scope.application.variants.splice(i, 0, newVariant);
         Notifications.success('Successfully created variant');
       }, function () {
         Notifications.error('Something went wrong...');
@@ -75,7 +75,7 @@ angular.module('upsConsole').controller('DetailController',
         Notifications.error('Something went wrong...');
       };
 
-      if (variantType !== 'iOS') {
+      if (variantType !== 'ios') {
         variants.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
         if (variantDataUpdate.certificate) {
@@ -169,7 +169,7 @@ angular.module('upsConsole').controller('DetailController',
     case 'chrome':
       properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
       break;
-    case 'iOS':
+    case 'ios':
       if (variant.certificates && variant.certificates.length) {
         variant.certificate = variant.certificates[0];
       }
