@@ -30,6 +30,7 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +60,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        List<String>  registrationIDs = (List<String>) tokens;
+        final List<String>  registrationIDs = new ArrayList(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
