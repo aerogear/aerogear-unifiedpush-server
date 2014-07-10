@@ -234,10 +234,12 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                      active="isActive('cordova')" ng-click="setActive('cordova')">
                     <div class="ups-code-block js" hljs compile="true">
 var pushConfig = {
-    pushServerURL: "{{ currentLocation }}",
-    {{ projectNumber(variant) }}
-    variantID: "{{ variant.variantID }}",
-    variantSecret: "{{ variant.secret }}"
+   pushServerURL: "{{ currentLocation }}",
+   {{variant.type}}: {
+      {{ projectNumber(variant) }}
+      variantID: "{{ variant.variantID }}",
+      variantSecret: "{{ variant.secret }}"
+   }
 };
 
 push.register(onNotification, successHandler, errorHandler, pushConfig);
