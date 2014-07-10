@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('InstallationController',
-  function($rootScope, $scope, $routeParams, installations) {
+  function($rootScope, $scope, $routeParams, installations, $sce) {
 
   $scope.currentPage = 1;
 
@@ -31,6 +31,18 @@ angular.module('upsConsole').controller('InstallationController',
 
   $scope.pageChanged = function () {
     fetchInstallations($scope.currentPage);
+  };
+
+  $scope.wrapText = function(text) {
+    var width = 80, block = '<br/>';
+
+    if (text.length > width) {
+      var left = text.substring(0, width);
+      var right = text.substring(width + 1);
+      return $sce.trustAsHtml(left + block + $scope.wrapText(right));
+    } else {
+      return text;
+    }
   };
 
   $scope.update = function (installation) {
