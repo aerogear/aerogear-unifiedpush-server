@@ -102,17 +102,20 @@ public class SenderServiceImpl implements SenderService {
             // TODO: DISPATCH TO A QUEUE .....
             for (final Variant variant : variants) {
                 final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
+
+                // extracting the size for our counters
+                final int tokenSize = tokenPerVariant.size();
                 senders.select(new SenderTypeLiteral(variant.getClass())).get().sendPushMessage(variant, tokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
                     public void onSuccess() {
-                        logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenPerVariant.size()));
-                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.TRUE);
+                        logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
                     }
 
                     @Override
                     public void onError(final String reason) {
                         logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
-                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenPerVariant.size(), Boolean.FALSE, reason);
+                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
                     }
                 });
 
