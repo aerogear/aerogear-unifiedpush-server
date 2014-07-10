@@ -74,7 +74,7 @@ angular.module('upsConsole').controller('DetailController',
         Notifications.error('Something went wrong...');
       };
 
-      if (variantType !== 'ios') {
+      if (variant.type !== 'ios') {
         variants.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
         if (variantDataUpdate.certificate) {
