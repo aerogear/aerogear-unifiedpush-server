@@ -174,7 +174,7 @@ angular.module('upsConsole').controller('DetailController',
       });
       return formData;
     default:
-      Notifications.error('Unknown variant type ' + variantType);
+      Notifications.error('Unknown variant type ' + variant.type);
     }
 
     properties.forEach(function (property) {
