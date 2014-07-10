@@ -34,6 +34,7 @@ public class UnifiedPushMessage {
     private final SendCriteria criteria;
 
     private final String simplePush;
+    private final String actionCategory;
     private final String alert;
     private final String sound;
     private final boolean contentAvailable;
@@ -56,6 +57,7 @@ public class UnifiedPushMessage {
      *       "key":"value",
      *       "key2":"other value",
      *       "alert":"HELLO!",
+     *       "action-category":"some value",
      *       "sound":"default",
      *       "badge":2,
      *       "content-available" : true
@@ -80,6 +82,7 @@ public class UnifiedPushMessage {
             // special key words (for APNs)
             this.alert = (String) this.data.remove("alert"); // used in AGDROID as well
             this.sound = (String) this.data.remove("sound");
+            this.actionCategory = (String) this.data.remove("action-category");
 
             Boolean contentValue = (Boolean) this.data.remove("content-available");
             if (contentValue == null) {
@@ -99,6 +102,7 @@ public class UnifiedPushMessage {
             // satisfy the final
             this.alert = null;
             this.sound = null;
+            this.actionCategory = null;
             this.badge = -1;
             this.contentAvailable = false;
         }
@@ -140,6 +144,15 @@ public class UnifiedPushMessage {
      */
     public String getAlert() {
         return alert;
+    }
+
+
+    /**
+     * Returns the value of the 'action-category', which is used on the client (iOS for now),
+     * to invoke a certain "user action" on the device, based on the push message. Implemented for iOS8
+     */
+    public String getActionCategory() {
+        return actionCategory;
     }
 
     /**
@@ -221,6 +234,7 @@ public class UnifiedPushMessage {
                 "\"clientIdentifier\":\"" + clientIdentifier + "\"," +
                 "\"simplePush\":\"" + simplePush + "\"," +
                 "\"alert\":\"" + alert + "\"," +
+                "\"action-category\":\"" + actionCategory + "\"," +
                 "\"sound\":\"" + sound + "\"," +
                 "\"contentAvailable\":" + contentAvailable + "," +
                 "\"badge\":" + badge + "," +
@@ -248,7 +262,7 @@ public class UnifiedPushMessage {
     @Override
     public String toString() {
         return "[alert=" + alert + ", data=" + data+ ", criteria="
-                + criteria + ", sound=" + sound + ", badge=" + badge + ", time-to-live="
+                + criteria + ", sound=" + sound + ", action-category=" + actionCategory + ", badge=" + badge + ", time-to-live="
                 + timeToLive + ", simplePush=" + simplePush + ", content-available=" + contentAvailable +"]";
     }
 }

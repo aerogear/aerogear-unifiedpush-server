@@ -212,6 +212,21 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testActionCategory() {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "Howdy");
+        messageObject.put("action-category", "POSTS");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        assertEquals("POSTS", unifiedPushMessage.getActionCategory());
+    }
+
+    @Test
     public void testMultipleAliasCriteria() {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
@@ -474,6 +489,7 @@ public class UnifiedPushMessageTest {
                 "\"clientIdentifier\":\"null\"," +
                 "\"simplePush\":\"null\"," +
                 "\"alert\":\"Howdy\"," +
+                "\"action-category\":\"null\"," +
                 "\"sound\":\"default\"," +
                 "\"contentAvailable\":false," +
                 "\"badge\":2," +

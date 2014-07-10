@@ -61,13 +61,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 // adding recognized key values
                 .alertBody(pushMessage.getAlert()) // alert dialog, in iOS
                 .badge(pushMessage.getBadge()) // little badge icon update;
-                .sound(pushMessage.getSound()); // sound to be played by app
+                .sound(pushMessage.getSound()) // sound to be played by app
+                .category(pushMessage.getActionCategory()); // iOS8: User Action category
 
                 // apply the 'content-available:1' value:
                 if (pushMessage.isContentAvailable()) {
-                    // content-available:1 is (with iOS7) not only used
-                    // Newsstand, however 'notnoop' names it this way (legacy)...
-                    builder = builder.forNewsstand();
+                    // content-available is for 'silent' notifications and Newsstand
+                    builder = builder.instantDeliveryOrSilentNotification();
                 }
 
                 builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
