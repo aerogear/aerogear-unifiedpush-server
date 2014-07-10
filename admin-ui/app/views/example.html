@@ -203,13 +203,13 @@ public class PushApplication extends Application {
                     <script type="text/ng-template" id="swift">
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
     NSLog("APN Success")
-    let registration = AGDeviceRegistration(serverURL: NSURL(string: "<# URL of the running AeroGear UnifiedPush Server #>"))
+    let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ currentLocation }}"))
 
     registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!) -> () in
         NSLog("UPS Register")
         clientInfo.deviceToken = deviceToken
-        clientInfo.variantID = "<# Variant Id #>"
-        clientInfo.variantSecret = "<# Variant Secret #>"
+        clientInfo.variantID = "{{ variant.variantID }}"
+        clientInfo.variantSecret = "{{ variant.secret }}"
 
         // apply the token, to identify THIS device
         let currentDevice = UIDevice()
