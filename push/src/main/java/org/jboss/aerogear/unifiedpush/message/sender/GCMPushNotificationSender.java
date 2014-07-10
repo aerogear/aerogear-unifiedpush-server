@@ -25,7 +25,6 @@ import com.google.android.gcm.server.Sender;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.cache.GCMCache;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 
 import javax.inject.Inject;
@@ -41,7 +40,6 @@ import java.util.logging.Logger;
 @SenderType(AndroidVariant.class)
 public class GCMPushNotificationSender implements PushNotificationSender {
 
-    private final GCMCache cache = new GCMCache();
     private static final int GCM_PAGE = 1000;
 
     @Inject
@@ -90,8 +88,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         try {
             logger.log(Level.FINE, "Sending transformed GCM payload: " + gcmMessage);
 
-            Sender sender = cache.getSenderForAPIKey(androidVariant.getGoogleKey());
-
+            final Sender sender = new Sender(androidVariant.getGoogleKey());
 
             // GCM does only allow a 1000 device IDs
             while (! registrationIDs.isEmpty()) {
