@@ -102,7 +102,8 @@ public class SenderServiceImpl implements SenderService {
             // TODO: DISPATCH TO A QUEUE .....
             for (final Variant variant : variants) {
                 final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
-                //The Android Sender can manipulate the tokenPerVariant list, let's extract the original size of it before any operations
+
+                // extracting the size for our counters
                 final int tokenSize = tokenPerVariant.size();
                 senders.select(new SenderTypeLiteral(variant.getClass())).get().sendPushMessage(variant, tokenPerVariant, message, new NotificationSenderCallback() {
                     @Override
