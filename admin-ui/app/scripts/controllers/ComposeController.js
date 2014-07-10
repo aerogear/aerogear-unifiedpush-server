@@ -68,11 +68,26 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   };
 
   $scope.changeVariant = function ( application ) {
-    show( application, 'filter-variants.html' );
+    var originalVariantSelection = [];
+    originalVariantSelection = $scope.variantSelection.slice(0);
+    var modalInstance = show( application, 'filter-variants.html' );
+    modalInstance.result.then(function () {},function(){
+      $scope.variantSelection = originalVariantSelection;
+    });
   };
 
   $scope.changeCriteria = function ( application ) {
-    show( application, 'add-criteria.html' );
+    //In case of cancel we need to go back to the previous values
+    var originalCriteria = {
+      alias : angular.copy($scope.criteria.alias),
+      deviceType : angular.copy($scope.criteria.deviceType),
+      categories : angular.copy($scope.criteria.categories)
+    };
+
+    var modalInstance = show( application, 'add-criteria.html' );
+    modalInstance.result.then(function () {},function(){
+      $scope.criteria = originalCriteria;
+    });
   };
 
   function modalController( $scope, $modalInstance, application, variantSelection, criteria ) {
