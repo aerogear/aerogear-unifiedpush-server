@@ -130,7 +130,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                   <div class="col-sm-9">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'ios'">
+                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'ios' && !variant.id">
                   </div>
                 </div>
               </div>
