@@ -26,7 +26,7 @@
         <div class="ups-platform-selection col-sm-7">
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeAndroid" ng-model="variantType" value="android" ng-required="true">    
+              <input type="radio" name="createVariantType" id="variantTypeAndroid" ng-model="variant.type" value="android" ng-required="true">
               <label for="variantTypeAndroid">
                 <div class="ups-platform android">
                   <strong>Android</strong><br>
@@ -37,7 +37,7 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variantType" value="ios"  ng-required="true">
+              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variant.type" value="ios"  ng-required="true">
               <label for="variantTypeIOS">
                 <div class="ups-platform ios">
                   <strong>iOS</strong><br>
@@ -48,7 +48,7 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeChrome" ng-model="variantType" value="chrome"  ng-required="true">
+              <input type="radio" name="createVariantType" id="variantTypeChrome" ng-model="variant.type" value="chrome"  ng-required="true">
               <label for="variantTypeChrome">
                 <div class="ups-platform chrome">
                 <b>Chrome</b><br />
@@ -59,7 +59,7 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variantType" value="simplePush"  ng-required="true">
+              <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variant.type" value="simplePush"  ng-required="true">
               <label for="variantTypeSimplePush">
                 <div class="ups-platform simplepush">
                 <b>SimplePush</b><br />
@@ -72,32 +72,32 @@
         <hr>
       </div>
       
-      <div ng-show="variantType">
+      <div ng-show="variant.type">
 
-        <div ng-show="variantType == 'android'">
+        <div ng-show="variant.type == 'android'">
           <div class="form-group">
             <label class="col-sm-3 control-label" for="gcmApiKey">Push Network</label>
             <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
-              <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variantType == 'android'">
+              <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
             </div>
           </div>    
           <div class="form-group">
             <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
             <div class="col-sm-7">
               Project Number<br>
-              <input type="text" placeholder="e.g. 42" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber" ng-required="variantType == 'android'">
+              <input type="text" placeholder="e.g. 42" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber" ng-required="variant.type == 'android'">
             </div>
           </div>
         </div>
         
-        <div ng-show="variantType == 'simplePush'">
+        <div ng-show="variant.type == 'simplePush'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
             <div class="col-sm-7"><strong>No configuration needed</strong><p>This server's <em>SimplePush</em> implementation will be used.</p></div>
           </div>
         </div>
 
-        <div ng-show="variantType == 'ios'">
+        <div ng-show="variant.type == 'ios'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
             <div class="col-sm-7">
@@ -130,7 +130,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                   <div class="col-sm-9">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variantType == 'ios' && !variant.id">
+                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
                   </div>
                 </div>
               </div>
@@ -138,26 +138,26 @@
           </div>
         </div>
 
-        <div ng-show="variantType == 'chrome'">
+        <div ng-show="variant.type == 'chrome'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
             <div class="col-sm-7">
               <div class="form-group">
                 <label class="col-sm-5 control-label" for="chromeClientId">Client ID</label>
                 <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 291796959215.apps.googleusercontent.com" id="chromeClientId" class="form-control" ng-model="variant.clientId" ng-required="variantType == 'chrome'">
+                  <input type="text" placeholder="e.g. 291796959215.apps.googleusercontent.com" id="chromeClientId" class="form-control" ng-model="variant.clientId" ng-required="variant.type == 'chrome'">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-5 control-label" for="chromeClientSecret">Client Secret</label>
                 <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 0bKUtXN6ykk7Mj1lQxoBZ2mh" id="chromeClientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variantType == 'chrome'">
+                  <input type="text" placeholder="e.g. 0bKUtXN6ykk7Mj1lQxoBZ2mh" id="chromeClientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.type == 'chrome'">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-5 control-label" for="chromeRefreshToken">Refresh Token</label>
                 <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 1%wMfyZvGcCxMSNEX4iTRdE0H1_Yt0wvImBz_iCuXF-UM" id="chromeRefreshToken" class="form-control" ng-model="variant.refreshToken" ng-required="variantType == 'chrome'">
+                  <input type="text" placeholder="e.g. 1%wMfyZvGcCxMSNEX4iTRdE0H1_Yt0wvImBz_iCuXF-UM" id="chromeRefreshToken" class="form-control" ng-model="variant.refreshToken" ng-required="variant.type == 'chrome'">
                 </div>
               </div>
             </div>
@@ -169,7 +169,7 @@
   
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="ok(variant, variantType)" ng-disabled="form.$invalid">
+    <button type="button" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid">
       {{ variant.id ? 'Save' : 'Add' }}
     </button>
   </div>
