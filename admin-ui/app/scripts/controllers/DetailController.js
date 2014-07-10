@@ -32,13 +32,12 @@ angular.module('upsConsole').controller('DetailController',
    */
 
   $scope.addVariant = function (variant) {
-    var modalInstance = show(variant, null, 'create-variant.html');
+    var modalInstance = show(variant, 'create-variant.html');
     modalInstance.result.then(function (result) {
-      var variantType = result.variantType;
-      var variantData = variantProperties(result.variant, variantType);
+      var variantData = variantProperties(result.variant);
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: result.variantType
+        variantType: result.variant.type
       });
 
       var createFunction = (variantData instanceof FormData) ? variants.createWithFormData : variants.create;
@@ -58,13 +57,13 @@ angular.module('upsConsole').controller('DetailController',
     });
   };
 
-  $scope.editVariant = function (variant, variantType) {
-    var modalInstance = show(variant, variantType, 'create-variant.html');
+  $scope.editVariant = function (variant) {
+    var modalInstance = show(variant, 'create-variant.html');
     modalInstance.result.then(function (result) {
-      var variantDataUpdate = variantProperties(variant, variantType);
+      var variantDataUpdate = variantProperties(variant);
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: variantType,
+        variantType: result.variant.type,
         variantId: result.variant.variantID
       });
 
@@ -87,12 +86,12 @@ angular.module('upsConsole').controller('DetailController',
     });
   };
 
-  $scope.removeVariant = function (variant, variantType) {
-    var modalInstance = show(variant, variantType, 'remove-variant.html');
+  $scope.removeVariant = function (variant) {
+    var modalInstance = show(variant, 'remove-variant.html');
     modalInstance.result.then(function (result) {
       var params = $.extend({}, {
         appId: $scope.application.pushApplicationID,
-        variantType: variantType,
+        variantType: result.variant.type,
         variantId: result.variant.variantID
       });
       variants.remove(params, function () {
@@ -106,7 +105,7 @@ angular.module('upsConsole').controller('DetailController',
   };
     
   $scope.renewMasterSecret = function () {
-    var modalInstance = show(null, null, 'renew-secret.html');
+    var modalInstance = show(null, 'renew-secret.html');
     modalInstance.result.then(function () {
       var app = $scope.application;
       pushApplication.reset({appId: app.pushApplicationID}, function (application) {
@@ -121,19 +120,17 @@ angular.module('upsConsole').controller('DetailController',
    * PRIVATE FUNCTIONS
    */
 
-  function modalController($scope, $modalInstance, variant, variantType) {
+  function modalController($scope, $modalInstance, variant) {
     $scope.variant = variant;
-    $scope.variantType = variantType;
 
     if (!$scope.variant) {
       $scope.variant = {};
     }
     $scope.variant.certificates = [];
 
-    $scope.ok = function (variant, variantType) {
+    $scope.ok = function (variant) {
       $modalInstance.close({
-        variant: variant,
-        variantType: variantType
+        variant: variant
       });
     };
 
@@ -142,24 +139,21 @@ angular.module('upsConsole').controller('DetailController',
     };
   }
 
-  function show(variant, variantType, template) {
+  function show(variant, template) {
     return $modal.open({
       templateUrl: 'views/dialogs/' + template,
       controller: modalController,
       resolve: {
         variant: function () {
           return variant;
-        },
-        variantType: function () {
-          return variantType;
         }
       }
     });
   }
 
-  function variantProperties(variant, variantType) {
+  function variantProperties(variant) {
     var properties = ['name', 'description'], result = {};
-    switch (variantType) {
+    switch (variant.type) {
     case 'android':
       properties = properties.concat(['projectNumber', 'googleKey']);
       break;
