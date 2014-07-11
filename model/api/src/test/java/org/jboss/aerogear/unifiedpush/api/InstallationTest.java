@@ -62,8 +62,8 @@ public class InstallationTest {
     }
 
     @Test
-    public void simplePushEndpoint() {
-        deviceInstallation.setSimplePushEndpoint("http://server.com/update/21345321354");
-        assertThat(deviceInstallation.getSimplePushEndpoint()).isEqualTo("http://server.com/update/21345321354");
+    public void simplePushEndpointAsDeviceToken() {
+        deviceInstallation.setDeviceToken("http://server.com/update/21345321354");
+        assertThat(deviceInstallation.getDeviceToken()).isEqualTo("http://server.com/update/21345321354");
     }
 }

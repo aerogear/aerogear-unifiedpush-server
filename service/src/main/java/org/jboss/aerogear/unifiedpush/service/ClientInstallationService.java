@@ -91,8 +91,4 @@ public interface ClientInstallationService {
      */
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 
-    /**
-     * Used for (SimplePush) Sender API. Queries the available SimplePush "pushEndpoint URLs" for a given variant, based on provided criteria
-     */
-    List<String> findAllSimplePushEndpointURLsForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 }
