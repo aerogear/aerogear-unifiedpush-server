@@ -26,9 +26,19 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="bower_components/highlightjs/styles/ir_black.css">
     <!-- endbuild -->
+    <style type="text/css">
+      #idletimeout { background:#CC5100; border:3px solid #FF6500; color:#fff; font-family:arial, sans-serif; text-align:center; font-size:12px; padding:10px; position:relative; top:0px; left:0; right:0; z-index:100000; display:none; }
+      #idletimeout a { color:#fff; font-weight:bold }
+      #idletimeout span { font-weight:bold }
+    </style>
 
 </head>
 <body class="app-dashboard"  ng-controller="RootController">
+
+<div id="idletimeout">
+	You will be logged off in <span><!-- countdown place holder --></span>&nbsp;seconds due to inactivity.
+	<a id="idletimeout-resume" href="#">Click here to continue using this web page</a>.
+</div>
 
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -110,6 +120,8 @@
 
 <!-- build:js scripts/modules.js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/jquery-idle-timeout/src/jquery.idletimer.js" type="text/javascript"></script>
+<script src="bower_components/jquery-idle-timeout/src/jquery.idletimeout.js" type="text/javascript"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
@@ -120,6 +132,8 @@
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/highlightjs/highlight.pack.js"></script>
 <script src="bower_components/angular-highlightjs/angular-highlightjs.js"></script>
+
+
 <!-- endbuild -->
 
 <script src="/auth/js/keycloak.js"></script>
@@ -138,8 +152,35 @@
 <script src="scripts/services/pushApplicationService.js"></script>
 <script src="scripts/services/errorReporting.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
+<script src="scripts/services/idleService.js"></script>
 <script src="scripts/directives.js"></script>
+
 <!-- endbuild -->
+<!-- <script type="text/javascript">
+    $.idleTimeout('#idletimeout', '#idletimeout a', {
+        idleAfter: 5,
+        pollingInterval: 2,
+        serverResponseEquals: '',
+        failedRequests: 1,
+        onTimeout: function(){
+            $(this).slideUp();
+            console.log("Logged out");
+            angular.element('#RootController').scope().logout()
+            //logout();
+        },
+        onIdle: function(){
+            $(this).slideDown(); // show the warning bar
+        },
+        onCountdown: function( counter ){
+            $(this).find("span").html( counter ); // update the counter
+        },
+        onResume: function(){
+            $(this).slideUp(); // hide the warning bar
+        }
+    });
+  </script> -->
+
+
 
 <!-- build:js scripts/templates.js -->
 <!-- endbuild -->
