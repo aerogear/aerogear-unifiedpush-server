@@ -26,11 +26,11 @@ angular.module('upsConsole')
       window.location = Auth.authz.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
     };
 
-    $rootScope.logout = function () {
+    /*$rootScope.logout = function () {
       Auth.loggedIn = false;
       Auth.authz = null;
       window.location = Auth.logoutUrl;
-    };
+    };*/
 
     $rootScope.$on('$routeChangeStart', function () {
       $rootScope.isViewLoading = true;

@@ -1,5 +1,7 @@
 'use strict';
 
+var logout;
+
 (function() {
   var app = angular.module('upsConsole', [
     'upsConsole.services',
@@ -33,6 +35,12 @@
     });
 
   });
+
+  logout = function(){
+      auth.loggedIn = false;
+      auth.authz = null;
+      window.location = auth.logoutUrl;
+  };
 
   app.factory('Auth', function () {
     return auth;

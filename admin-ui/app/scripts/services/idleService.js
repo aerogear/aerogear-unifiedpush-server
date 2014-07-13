@@ -9,6 +9,7 @@ $.idleTimeout('#idletimeout', '#idletimeout a', {
     onTimeout: function(){
         $(this).slideUp();
         console.log('Logged out');
+        logout();
       },
     onIdle: function(){
         $(this).slideDown(); // show the warning bar
