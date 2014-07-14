@@ -32,8 +32,12 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   }
 
   $scope.sendMessage = function () {
-    var pushData = $scope.pushData;
 
+    var pushData = $scope.pushData;
+    pushData.alias = undefined;
+    pushData.deviceType = undefined;
+    pushData.categories = undefined;
+    pushData.variants = undefined;
     //let's check if we filter variants
     if($scope.variantSelection.length > 0) {
       pushData.variants = [];
