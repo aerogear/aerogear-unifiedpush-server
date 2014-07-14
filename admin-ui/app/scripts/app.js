@@ -1,8 +1,7 @@
 'use strict';
 
-var logout;
+var UPS = (function() {
 
-(function() {
   var app = angular.module('upsConsole', [
     'upsConsole.services',
     'ngResource',
@@ -36,7 +35,7 @@ var logout;
 
   });
 
-  logout = function(){
+  var logout = function() {
       auth.loggedIn = false;
       auth.authz = null;
       window.location = auth.logoutUrl;
@@ -201,6 +200,10 @@ var logout;
   app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');
   });
+
+  return {
+    logout: logout
+  };
 
 
 })();
