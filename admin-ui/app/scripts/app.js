@@ -1,5 +1,6 @@
 'use strict';
 
+/*jshint unused: false*/
 var UPS = (function() {
 
   var app = angular.module('upsConsole', [
@@ -36,9 +37,9 @@ var UPS = (function() {
   });
 
   var logout = function() {
-      auth.loggedIn = false;
-      auth.authz = null;
-      window.location = auth.logoutUrl;
+    auth.loggedIn = false;
+    auth.authz = null;
+    window.location = auth.logoutUrl;
   };
 
   app.factory('Auth', function () {

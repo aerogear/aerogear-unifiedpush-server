@@ -22,6 +22,7 @@
     "angular": false,
     "$": false,
     "hljs": false,
-    "Keycloak": false
+    "Keycloak": false,
+    "UPS": true
   }
 }
