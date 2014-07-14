@@ -1,15 +1,13 @@
 'use strict';
 
 $.idleTimeout('#idletimeout', '#idletimeout a', {
-    idleAfter: 5,
-    pollingInterval: 2,
-    //        keepAliveURL: authUrl + '/admin/keepalive', would need to change this path
+    idleAfter: 300,
+    pollingInterval: 60,
     serverResponseEquals: '',
     failedRequests: 1,
     onTimeout: function(){
-        $(this).slideUp();
-        console.log('Logged out');
         UPS.logout();
+        $(this).slideUp();
       },
     onIdle: function(){
         $(this).slideDown(); // show the warning bar
