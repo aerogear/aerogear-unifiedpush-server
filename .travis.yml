@@ -11,4 +11,4 @@ branches:
   only:
     - master
 
-script: "mvn verify"
+script: "mvn verify -X"
