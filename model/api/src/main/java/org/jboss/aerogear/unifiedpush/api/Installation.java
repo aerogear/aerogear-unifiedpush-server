@@ -38,7 +38,6 @@ public class Installation extends BaseModel {
 
     private Set<String> categories;
     private String platform;
-    private String simplePushEndpoint;
     @JsonIgnore
     private Variant variant;
 
@@ -69,7 +68,7 @@ public class Installation extends BaseModel {
      * <ul>
      * <li> APNs: <code>deviceToken</code>
      * <li> GCM: <code>registrationId</code>
-     * <li> SimplePush: <code>pushEndpoint</code>
+     * <li> SimplePush: <code>pushEndoint</code>
      * </ul>
      *
      * @param deviceToken unique string to identify an Installation with its PushNetwork
@@ -160,21 +159,6 @@ public class Installation extends BaseModel {
 
     public String getPlatform() {
         return platform;
-    }
-
-    /**
-     * The <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol#PushServer_-.3E_UserAgent_2">Mozilla SimplePush Protocol Specification</a> returns a (unique) <code>pushEndpoint</code> URL.
-     * The Unified will contact the SimplePush Server at this URL to update the <code>version</code> (aka payload) of the channel identified by <code>channelID</code> (aka deviceToken).
-     *
-     * <p> This is <b>ONLY</b> relevant for Installations of the <code>SimplePushVariant</code>
-     * @param simplePushEndpoint the endpoint
-     */
-    public void setSimplePushEndpoint(final String simplePushEndpoint) {
-        this.simplePushEndpoint = simplePushEndpoint;
-    }
-
-    public String getSimplePushEndpoint() {
-        return simplePushEndpoint;
     }
 
     public Variant getVariant() {
