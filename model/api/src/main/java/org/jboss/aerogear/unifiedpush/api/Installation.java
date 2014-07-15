@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
 import java.util.Set;
@@ -37,7 +38,9 @@ public class Installation extends BaseModel {
 
     private Set<String> categories;
     private String platform;
-    private VariantType variantType;
+    private String simplePushEndpoint;
+    @JsonIgnore
+    private Variant variant;
 
     public boolean isEnabled() {
         return this.enabled;
@@ -159,11 +162,26 @@ public class Installation extends BaseModel {
         return platform;
     }
 
-    public VariantType getVariantType() {
-        return variantType;
+    /**
+     * The <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol#PushServer_-.3E_UserAgent_2">Mozilla SimplePush Protocol Specification</a> returns a (unique) <code>pushEndpoint</code> URL.
+     * The Unified will contact the SimplePush Server at this URL to update the <code>version</code> (aka payload) of the channel identified by <code>channelID</code> (aka deviceToken).
+     *
+     * <p> This is <b>ONLY</b> relevant for Installations of the <code>SimplePushVariant</code>
+     * @param simplePushEndpoint the endpoint
+     */
+    public void setSimplePushEndpoint(final String simplePushEndpoint) {
+        this.simplePushEndpoint = simplePushEndpoint;
     }
 
-    public void setVariantType(VariantType variantType) {
-        this.variantType = variantType;
+    public String getSimplePushEndpoint() {
+        return simplePushEndpoint;
+    }
+
+    public Variant getVariant() {
+        return variant;
+    }
+
+    public void setVariant(Variant variant) {
+        this.variant = variant;
     }
 }

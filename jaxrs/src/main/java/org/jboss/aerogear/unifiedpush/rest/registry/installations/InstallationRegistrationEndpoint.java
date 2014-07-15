@@ -106,7 +106,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             logger.log(Level.FINEST, "Performing new device/client registration");
             // store the installation:
-            clientInstallationService.addInstallation(variant.getType(), entity);
+            clientInstallationService.addInstallation(variant, entity);
             // add installation to the matching variant
             genericVariantService.addInstallation(variant, entity);
         } else {

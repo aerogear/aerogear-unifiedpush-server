@@ -263,10 +263,10 @@ public class PushApplicationDaoTest {
         variantDao.create(av);
 
         Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("12345432122323");
+        androidInstallation1.setDeviceToken("1234543212232312345432122323123454321223231234543212232312345432122323123454321223231234543212232312345432122323");
         installationDao.create(androidInstallation1);
 
-        av.getInstallations().add(androidInstallation1);
+        androidInstallation1.setVariant(av);
         variantDao.update(av);
 
         pa.getVariants().add(av);
@@ -312,20 +312,20 @@ public class PushApplicationDaoTest {
         variantDao.create(ios);
 
         Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("12345432122323");
+        androidInstallation1.setDeviceToken("CSPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf");
         installationDao.create(androidInstallation1);
 
         Installation androidInstallation2 = new Installation();
-        androidInstallation2.setDeviceToken("12345432122323");
+        androidInstallation2.setDeviceToken("ASPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf");
         installationDao.create(androidInstallation2);
 
         Installation iosInstallation1 = new Installation();
-        iosInstallation1.setDeviceToken("12345432122323");
+        iosInstallation1.setDeviceToken("33ee51dad49a77ca7b45924074bcc4f19aea20308f5feda202fbba3baed7073d7");
         installationDao.create(iosInstallation1);
 
-        av.getInstallations().add(androidInstallation1);
-        av.getInstallations().add(androidInstallation2);
-        ios.getInstallations().add(iosInstallation1);
+        androidInstallation1.setVariant(av);
+        androidInstallation2.setVariant(av);
+        iosInstallation1.setVariant(ios);
         variantDao.update(av);
         variantDao.update(ios);
 

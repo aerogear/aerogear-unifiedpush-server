@@ -16,11 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -40,8 +36,6 @@ public abstract class Variant extends BaseModel {
     private String secret = UUID.randomUUID().toString();
 
     private String developer;
-
-    private Set<Installation> installations = new HashSet<Installation>();
 
     /**
      * The type (Android, iOS or SimplePush) of the underlying variant.
@@ -71,18 +65,6 @@ public abstract class Variant extends BaseModel {
      */
     public void setDescription(final String description) {
         this.description = description;
-    }
-
-    @JsonIgnore
-    public Set<Installation> getInstallations() {
-        return this.installations;
-    }
-
-    /**
-     * The collection of {@link Installation}s for this Variant.
-     */
-    public void setInstallations(final Set<Installation> installations) {
-        this.installations = installations;
     }
 
     public String getVariantID() {

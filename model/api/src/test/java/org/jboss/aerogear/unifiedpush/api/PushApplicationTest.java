@@ -56,21 +56,4 @@ public class PushApplicationTest {
         assertThat(pushApplication.getVariants()).hasSize(1);
     }
 
-    @Test
-    public void addVariantWithInstallation() {
-
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("key");
-        av.setName("Android Version");
-
-        pushApplication.getVariants().add(av);
-        assertThat(pushApplication.getVariants()).hasSize(1);
-
-        Installation device = new Installation();
-        device.setDeviceToken("132ewq");
-
-        av.getInstallations().add(device);
-        assertThat(pushApplication.getVariants().iterator().next().getInstallations()).hasSize(1);
-    }
-
 }
