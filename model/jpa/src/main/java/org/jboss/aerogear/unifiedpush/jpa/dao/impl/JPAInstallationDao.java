@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
@@ -46,29 +45,32 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     public PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
-        Root<Variant> v = query.from(Variant.class);
-        final Join join = v.join("installations");
-        final Predicate[] predicates = {builder.equal(v.get("variantID"), variantID),
-                builder.and(builder.equal(v.get("developer"), developer))};
+        Root<Installation> v = query.from(Installation.class);
+        final Join join = v.join("variant");
+        final Predicate[] predicates = getPredicates(variantID, developer, builder, join);
         query.where(predicates);
 
-        List<Installation> result = entityManager.createQuery(query.select(join))
+        List<Installation> result = entityManager.createQuery(query)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
 
-
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-        final Join<Object, Object> join1 = countQuery.from(Variant.class).join("installations");
-        countQuery.where(predicates);
+        final Join<Object, Object> join1 = countQuery.from(Installation.class).join("variant");
+        countQuery.where(getPredicates(variantID, developer, builder, join1));
         final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
 
         return new PageResult<Installation>(result, count);
     }
 
+    private Predicate[] getPredicates(String variantID, String developer, CriteriaBuilder builder, Join join) {
+        return new Predicate[]{builder.equal(join.get("variantID"), variantID),
+                    builder.and(builder.equal(join.get("developer"), developer))};
+    }
+
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        Installation entity = getSingleResultForQuery(createQuery("select installation from Variant " +
-                " abstractVariant join abstractVariant.installations installation" +
+        Installation entity = getSingleResultForQuery(createQuery("select installation from Installation installation " +
+                " join installation.variant abstractVariant" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
@@ -85,8 +87,8 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
             return Collections.EMPTY_LIST;
         }
 
-        List<Installation> entities = createQuery("select installation from Variant " +
-                " abstractVariant join abstractVariant.installations installation" +
+        List<Installation> entities = createQuery("select installation from Installation installation " +
+                " join installation.variant abstractVariant " +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
@@ -100,15 +102,15 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from Variant")
-                .append(" abstractVariant join abstractVariant.installations installation where abstractVariant.variantID = :variantID AND installation.enabled = true");
+        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from Installation installation")
+                .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
     }
 
     @Override
     public long getNumberOfDevicesForVariantIDs(String loginName) {
-        return (Long) createQuery("select count(installation) from Variant abstractVariant join abstractVariant.installations installation where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ")
+        return (Long) createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ")
                 .setParameter("developer", loginName).getSingleResult();
     }
 

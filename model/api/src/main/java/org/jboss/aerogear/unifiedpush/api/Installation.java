@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
 import java.util.Set;
@@ -37,7 +38,8 @@ public class Installation extends BaseModel {
 
     private Set<String> categories;
     private String platform;
-    private VariantType variantType;
+    @JsonIgnore
+    private Variant variant;
 
     public boolean isEnabled() {
         return this.enabled;
@@ -159,11 +161,11 @@ public class Installation extends BaseModel {
         return platform;
     }
 
-    public VariantType getVariantType() {
-        return variantType;
+    public Variant getVariant() {
+        return variant;
     }
 
-    public void setVariantType(VariantType variantType) {
-        this.variantType = variantType;
+    public void setVariant(Variant variant) {
+        this.variant = variant;
     }
 }

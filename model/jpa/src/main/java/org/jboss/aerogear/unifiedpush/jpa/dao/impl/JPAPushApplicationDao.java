@@ -41,6 +41,11 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     @Override
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
+        final List<Variant> variants = entity.getVariants();
+        if (variants != null && !variants.isEmpty()) {
+            entityManager.createQuery("delete from Installation i where i.variant = :variant")
+                    .setParameter("variant", variants).executeUpdate();
+        }
         remove(entity);
     }
 
@@ -85,8 +90,8 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public Map<String, Long> countInstallationsByType(String pushApplicationID) {
-        final String jpql = "select v, count(*) from PushApplication pa join pa.variants v join v.installations i "
-                + "where pushApplicationID = :pushApplicationID "
+        final String jpql = "select v.type, v.variantID, count(*) from Installation i join i.variant v where i.variant.variantID in "
+                + "(select v.variantID from PushApplication pa join pa.variants v where pushApplicationID = :pushApplicationID) "
                 + "group by v.variantID";
 
         final HashMap<String, Long> results = new HashMap<String, Long>();
@@ -98,10 +103,10 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
                 .setParameter("pushApplicationID", pushApplicationID);
         final List<Object[]> resultList = query.getResultList();
         for (Object[] objects : resultList) {
-            final Long value = (Long) objects[1];
-            final Variant variant = (Variant) objects[0];
-            results.put(variant.getType().getTypeName(), results.get(variant.getType().getTypeName()) + value);
-            results.put(variant.getVariantID(), value);
+            final Long value = (Long) objects[2];
+            final VariantType variantType = (VariantType) objects[0];
+            results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
+            results.put((String) objects[1], value);
         }
 
         return results;

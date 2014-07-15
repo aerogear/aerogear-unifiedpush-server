@@ -51,7 +51,7 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Override
     public void addInstallation(Variant variant, Installation installation) {
 
-        variant.getInstallations().add(installation);
+        installation.setVariant(variant);
         variantDao.update(variant);
     }
 

@@ -262,16 +262,18 @@ public class VariantDaoTest {
         assertThat(queriedVariant.getGoogleKey()).isEqualTo("KEY");
 
         Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("12345432122323");
+        androidInstallation1.setDeviceToken("1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678");
         installationDao.create(androidInstallation1);
 
-        queriedVariant.getInstallations().add(androidInstallation1);
+        androidInstallation1.setVariant(queriedVariant);
         variantDao.update(queriedVariant);
 
         Installation storedInstallation =  installationDao.find(androidInstallation1.getId());
         assertThat(storedInstallation.getId()).isEqualTo(androidInstallation1.getId());
 
         variantDao.delete(queriedVariant);
+        entityManager.flush();
+        entityManager.clear();
         assertThat(variantDao.findByVariantID(uuid)).isNull();
 
         // Installation should be gone...

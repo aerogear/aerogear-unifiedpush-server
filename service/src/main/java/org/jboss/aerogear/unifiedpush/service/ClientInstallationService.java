@@ -17,7 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public interface ClientInstallationService {
     /**
      * Store a new Installation object on the database.
      */
-    void addInstallation(VariantType type, Installation installation);
+    void addInstallation(Variant variant, Installation installation);
 
     /**
      * Find all installations for the variant specified.
