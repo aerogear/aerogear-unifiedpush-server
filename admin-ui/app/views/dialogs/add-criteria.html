@@ -13,7 +13,7 @@
                 <label class="col-sm-3 control-label">Aliases</label>
 
                 <div class="col-sm-7">
-                    <input type="text" placeholder="All" class="form-control" ng-model="criteria.alias" required>
+                    <input type="text" placeholder="All" class="form-control" ng-model="criteria.alias">
                 </div>
             </div>
             <div class="form-group">
@@ -34,6 +34,6 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$invalid">Change</button>
+        <button type="button" class="btn btn-primary" ng-click="ok(application)" ng-disabled="form.$pristine">Change</button>
     </div>
 </div>
