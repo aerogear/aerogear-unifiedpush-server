@@ -282,7 +282,7 @@
                         </goals>
                         <phase>compile</phase>
                         <configuration>
-                            <nodeVersion>v0.10.28</nodeVersion>
+                            <nodeVersion>v0.10.29</nodeVersion>
                             <npmVersion>1.4.9</npmVersion>
                         </configuration>
                     </execution>
