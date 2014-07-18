@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.3</version>
+        <version>0.2.4-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -139,7 +139,7 @@
 
         <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.3</aerogear.bom.version>
+        <aerogear.bom.version>0.2.4-SNAPSHOT</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
@@ -187,7 +187,7 @@
 	            </plugins>
 	        </build>
 		</profile>
-		
+
         <profile>
             <id>code-coverage</id>
             <properties>
@@ -303,4 +303,3 @@
     </profiles>
 
 </project>
-
