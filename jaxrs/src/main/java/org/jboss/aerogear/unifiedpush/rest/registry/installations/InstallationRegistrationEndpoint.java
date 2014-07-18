@@ -107,8 +107,6 @@ public class InstallationRegistrationEndpoint {
             logger.log(Level.FINEST, "Performing new device/client registration");
             // store the installation:
             clientInstallationService.addInstallation(variant, entity);
-            // add installation to the matching variant
-            genericVariantService.addInstallation(variant, entity);
         } else {
             // We only update the metadata, if the device is enabled: 
             if (installation.isEnabled()) {
