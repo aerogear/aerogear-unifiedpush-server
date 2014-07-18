@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
 /**
@@ -48,14 +47,6 @@ public interface GenericVariantService {
      * See that variant exists for developer
      */
     boolean existsVariantIDForDeveloper(String variantID, String loginName);
-
-    /**
-     * Adds a installation (device/client) to the given variant
-     *
-     * @param variant the container/owner the installation belongs to
-     * @param installation the device/client to be registered
-     */
-    void addInstallation(Variant variant, Installation installation);
 
     /**
      * Removes the given variant entity.

@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -46,13 +45,6 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Override
     public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
         return variantDao.existsVariantIDForDeveloper(variantID, loginName);
-    }
-
-    @Override
-    public void addInstallation(Variant variant, Installation installation) {
-
-        installation.setVariant(variant);
-        variantDao.update(variant);
     }
 
     @Override
