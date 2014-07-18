@@ -3,12 +3,23 @@
         "realm": "master"
     },
 
+    "audit": {
+        "provider": "jpa",
+        "jpa": {
+            "exclude-events": [ "REFRESH_TOKEN" ]
+        }
+    },
+
     "model": {
         "provider": "jpa"
     },
 
+    "userSessions": {
+        "provider" : "mem"
+    },
+
     "modelCache": {
-        "provider": "${keycloak.model.cache.provider:none}"
+        "provider": "${keycloak.model.cache.provider:}"
     },
 
     "timer": {
@@ -20,11 +31,11 @@
         "staticMaxAge": 2592000,
         "cacheTemplates": true,
         "folder": {
-          "dir": "${jboss.server.config.dir}/themes"
+            "dir": "${jboss.server.config.dir}/themes"
         }
     },
 
-    "login-forms": {
+    "login": {
         "provider": "freemarker"
     },
 
