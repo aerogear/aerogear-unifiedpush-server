@@ -24,7 +24,12 @@
             ],
             "requiredActions": [
                 "UPDATE_PASSWORD"
-            ]
+            ],
+            "realmRoles": [ "admin" ],
+            "applicationRoles": {
+               "realm-management": [ "realm-admin" ],
+                "account": [ "manage-account" ]
+            }
         }
     ],
     "roles" : {
@@ -35,12 +40,6 @@
             }
         ]
     },
-    "roleMappings": [
-        {
-            "username": "admin",
-            "roles": ["admin"]
-        }
-    ],
     "scopeMappings": [
         {
             "client": "unified-push-server-js",
@@ -51,7 +50,7 @@
         {
             "name": "unified-push-server",
             "enabled": true
-            
+
         },
         {
             "name": "unified-push-server-js",
@@ -62,20 +61,5 @@
                 "/ag-push/*"
             ]
         }
-    ],
-    "applicationRoleMappings": {
-        "account": [
-            {
-                "username": "admin",
-                "roles": ["manage-account"]
-            }
-        ],
-        "realm-management": [
-            {
-                "username": "admin",
-                "roles": ["realm-admin"]
-            }
-        ]
-    }
-
+    ]
 }
