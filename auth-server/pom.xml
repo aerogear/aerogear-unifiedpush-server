@@ -75,6 +75,15 @@
 
         <dependency>
             <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-sessions-mem</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-sessions-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
             <artifactId>keycloak-invalidation-cache-model</artifactId>
         </dependency>
 
@@ -180,7 +189,17 @@
 
         <dependency>
             <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-export-import-impl</artifactId>
+            <artifactId>keycloak-export-import-dir</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-export-import-zip</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-export-import-single-file</artifactId>
         </dependency>
 
         <dependency>
@@ -235,7 +254,7 @@
 
         <resources>
             <resource>
-                <!-- no need to include the database modules --> 
+                <!-- no need to include the database modules -->
                 <directory>src/main/resources/</directory>
                 <excludes>
                     <exclude>modules/**/*.*</exclude>
