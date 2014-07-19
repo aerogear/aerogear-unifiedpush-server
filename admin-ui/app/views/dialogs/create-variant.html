@@ -59,6 +59,17 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
+              <input type="radio" name="createVariantType" id="variantTypeWindows" ng-model="variant.type" value="windows"  ng-required="true">
+              <label for="variantTypeWindows">
+                <div class="ups-platform windows">
+                  <strong>Windows</strong><br>
+                  <span>using Windows Network Services</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="radio ups-radio">
               <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variant.type" value="simplePush"  ng-required="true">
               <label for="variantTypeSimplePush">
                 <div class="ups-platform simplepush">
@@ -162,6 +173,29 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div ng-show="variant.type == 'windows'">
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="sid">Push Network</label>
+          <div class="col-sm-7"><em>Package SID</em><br>
+            <input type="text" placeholder="ms-app://s-1-15-2-3183935804-3637592178" id="sid" class="form-control" ng-model="variant.sid" ng-required="variant.type == 'windows'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="clientSecret"></label>
+          <div class="col-sm-7">
+            Client Secret<br>
+            <input type="text" placeholder="e.g. 42" id="clientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.type == 'windows'">
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="variant.type == 'simplePush'">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Push Network</label>
+          <div class="col-sm-7"><strong>No configuration needed</strong><p>This server's <em>SimplePush</em> implementation will be used.</p></div>
         </div>
       </div>
     </div>
