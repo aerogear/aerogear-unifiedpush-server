@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,10 +26,12 @@ public class WindowsVariant extends Variant {
 
     @NotNull
     @Size(max = 255)
+    @JsonIgnore
     private String sid;
 
     @NotNull
     @Size(max = 255)
+    @JsonIgnore
     private String clientSecret;
 
 
@@ -34,10 +39,12 @@ public class WindowsVariant extends Variant {
      * SID (Package security identifier) used to connect to the windows push notification services
      * @return the sid
      */
+    @JsonIgnore
     public String getSid() {
         return sid;
     }
 
+    @JsonProperty
     public void setSid(String sid) {
         this.sid = sid;
     }
@@ -46,10 +53,12 @@ public class WindowsVariant extends Variant {
      * The client secret (password) to connect to the windows push notification services
      * @return the client secret
      */
+    @JsonIgnore
     public String getClientSecret() {
         return clientSecret;
     }
 
+    @JsonProperty
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
