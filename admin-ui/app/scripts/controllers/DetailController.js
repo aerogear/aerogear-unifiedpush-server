@@ -185,6 +185,9 @@ angular.module('upsConsole').controller('DetailController',
         formData.append(property, variant[property] || '');
       });
       return formData;
+    case 'windows':
+      properties = properties.concat(['sid', 'clientSecret']);
+      break;
     default:
       Notifications.error('Unknown variant type ' + variant.type);
     }

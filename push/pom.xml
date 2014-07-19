@@ -95,6 +95,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.fernandospr</groupId>
+            <artifactId>java-wns</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
