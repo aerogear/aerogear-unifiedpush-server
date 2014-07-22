@@ -311,7 +311,54 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>../admin-ui</directory>
+                            <includes>
+                                <include>node/**</include>
+                                <include>node_modules/**</include>
+                                <include>app/bower_components/**</include>
+                                <include>.tmp/**</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+    <profile>
+        <id>dev</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>../admin-ui</directory>
+                                <excludes>
+                                    <exclude>node/**</exclude>
+                                    <exclude>node_modules/**</exclude>
+                                    <exclude>app/bower_components/**</exclude>
+                                    <exclude>.tmp/**</exclude>
+                                </excludes>
+                                <followSymlinks>false</followSymlinks>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+  </profiles>
 
 </project>
