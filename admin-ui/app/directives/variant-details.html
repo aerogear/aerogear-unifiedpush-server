@@ -37,6 +37,10 @@
                     <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>
                     <tr><td>Google API Key:</td><td>{{ variant.googleKey }}</td></tr>
                 </table>
+                <table ng-show="variant.type == 'windows'">
+                  <tr><td>Package SID:</td><td>{{ variant.sid }}</td></tr>
+                  <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
+                </table>
                 <table ng-show="variant.production != undefined">
                     <tr><td>Type:</td><td>{{ variant.production ? 'Production' : 'Development' }}</td></tr>
                 </table>
@@ -66,7 +70,7 @@
                         <tr><td>Secret: </td><td class="ups-snippet">{{ variant.secret }}</td></tr>
                     </table>
                 </div>
-                <div style="clearfix"></div>
+                <div class="clearfix"></div>
             </div>
         </div>
     </li>
