@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Keycloak Account Management</title>
+    <title>AeroGear UnifiedPush Server Account Management</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico">
     <#if properties.styles?has_content>
         <#list properties.styles?split(' ') as style>
@@ -21,14 +21,14 @@
     <header class="navbar navbar-default navbar-pf navbar-main header">
         <nav class="navbar" role="navigation">
             <div class="navbar-header">
-                <div class="container">
-                    <h1 class="navbar-title">Keycloak</h1>
-                </div>
+                <a class="navbar-brand">
+                    <h1>AeroGear UnifiedPush Server</h1>
+                </a>
             </div>
             <div class="navbar-collapse navbar-collapse-1">
                 <div class="container">
                     <ul class="nav navbar-nav navbar-utility">
-                        <#if referrer?has_content && referrer.url?has_content><li><a href="${referrer.url}" id="referrer">Back to ${referrer.name}</a></li></#if>
+                        <#if referrer?has_content && referrer.url?has_content><li><a href="${referrer.url}" id="referrer">Back to Console</a></li></#if>
                         <li><a href="${url.logoutUrl}">Sign Out</a></li>
                     </ul>
                 </div>
