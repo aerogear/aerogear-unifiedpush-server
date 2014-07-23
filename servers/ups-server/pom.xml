@@ -85,37 +85,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Keycloak dependencies -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-adapter-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-jboss-adapter-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-as7-adapter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.iharder</groupId>
-            <artifactId>base64</artifactId>
-        </dependency>
-
         <!-- resteasy -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -171,6 +140,15 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-adapter-core</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-as7-adapter</artifactId>
+        </dependency>
     </dependencies>
 
     <repositories>
