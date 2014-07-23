@@ -68,13 +68,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.keycloak</groupId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-      </dependency>
-        <dependency>
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-audit-api</artifactId>
         </dependency>
@@ -88,28 +81,12 @@
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-audit-jboss-logging</artifactId>
         </dependency>
-            <artifactId>keycloak-export-import-zip</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-export-import-single-file</artifactId>
 
         <dependency>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk16</artifactId>
         </dependency>
 
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-export-import-zip</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-export-import-single-file</artifactId>
     </dependencies>
 
     <build>
