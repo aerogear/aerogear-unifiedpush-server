@@ -47,7 +47,7 @@ angular.module('upsConsole').controller('DetailController',
     var modalInstance = show(variant, 'create-variant.html');
     modalInstance.result.then(function (result) {
       var variantData = variantProperties(result.variant);
-      var params = $.extend({}, {
+      var params = angular.extend({}, {
         appId: $scope.application.pushApplicationID,
         variantType: result.variant.type
       });
@@ -73,7 +73,7 @@ angular.module('upsConsole').controller('DetailController',
     var modalInstance = show(variant, 'create-variant.html');
     modalInstance.result.then(function (result) {
       var variantDataUpdate = variantProperties(variant);
-      var params = $.extend({}, {
+      var params = angular.extend({}, {
         appId: $scope.application.pushApplicationID,
         variantType: result.variant.type,
         variantId: result.variant.variantID
@@ -101,7 +101,7 @@ angular.module('upsConsole').controller('DetailController',
   $scope.removeVariant = function (variant) {
     var modalInstance = show(variant, 'remove-variant.html');
     modalInstance.result.then(function (result) {
-      var params = $.extend({}, {
+      var params = angular.extend({}, {
         appId: $scope.application.pushApplicationID,
         variantType: result.variant.type,
         variantId: result.variant.variantID
