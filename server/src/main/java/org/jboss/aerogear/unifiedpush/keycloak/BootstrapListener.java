@@ -35,10 +35,9 @@ public class BootstrapListener implements ServletContextListener {
         config.setResource("unified-push-server");
         config.setAuthServerUrl("/auth");
         config.setSslNotRequired(true);
-        //config.setBearerOnly(true);
+        config.setPublicClient(true);
         config.setDisableTrustManager(true);
         deploymentContext.updateDeployment(config);
-
     }
 
     @Override
