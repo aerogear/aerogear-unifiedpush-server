@@ -55,4 +55,11 @@ angular.module('upsConsole').controller('ExampleController',
       return $scope.variantType === 'android' ? ('senderID: "' + variant.projectNumber +'",') : '';
     }
   };
+
+  $scope.simplePushUrl = function() {
+    var parser = document.createElement('a');
+    parser.href = ContextProvider.contextPath();
+
+    return parser.protocol + '//' + parser.hostname + ':7777/simplePush';
+  };
 });
