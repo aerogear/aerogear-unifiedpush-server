@@ -10,6 +10,7 @@ var UPS = (function() {
     'ui.bootstrap',
     'ups.directives',
     'patternfly.notification',
+    'patternfly.autofocus',
     'hljs'
   ]);
 
