@@ -1,8 +1,12 @@
+@import url("/ag-push/styles/main.css");
+@import url("../../patternfly/css/account.css");
+
 .navbar-title {
-    background-image: url('../img/logo.png');
-    height: 65px;
-    background-repeat: no-repeat;
-    width: 203px;
-    margin: 3px 10px 5px;
-    text-indent: -99999px;
+    background-image: none;
+    text-indent: 0;
+    width: inherit;
+}
+
+.navbar-pf .navbar-utility a:hover {
+    background-color: #0084b9 !important;
 }
