@@ -1,4 +1,4 @@
-<div class="modal-content ups-modal-content">
+<form name="form" class="modal-content ups-modal-content">
   <div class="modal-header">
     <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
       <span class="pficon pficon-close"></span>
@@ -6,11 +6,11 @@
     <h4 class="modal-title">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
   </div>
   <div class="modal-body">
-    <form name="form" class="form-horizontal">
+    <div class="form-horizontal">
       <div class="form-group">
         <label class="col-sm-3 control-label" for="createAppName">Name</label>
         <div class="col-sm-7">
-          <input type="text" placeholder="e.g. Demo" id="createAppName" class="form-control" ng-model="variant.name" required>
+          <input type="text" placeholder="e.g. Demo" id="createAppName" class="form-control" ng-model="variant.name" required pf-focused="true">
         </div>
       </div>
       <div class="form-group">
@@ -198,13 +198,11 @@
           <div class="col-sm-7"><strong>No configuration needed</strong><p>This server's <em>SimplePush</em> implementation will be used.</p></div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
   
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid">
-      {{ variant.id ? 'Save' : 'Add' }}
-    </button>
+    <input type="button" class="btn btn-default" ng-click="cancel()" value="Cancel" />
+    <input type="submit" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid" value="{{ variant.id ? 'Save' : 'Add' }}" />
   </div>
-</div>
+</form>
