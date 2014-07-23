@@ -74,6 +74,10 @@
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-model-sessions-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
@@ -162,6 +166,12 @@
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-export-import-single-file</artifactId>
+            <artifactId>keycloak-export-import-zip</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-export-import-single-file</artifactId>
       </dependency>
 
       <dependency>
