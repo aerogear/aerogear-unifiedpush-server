@@ -53,8 +53,7 @@
         <module>push</module>
         <module>service</module>
         <module>jaxrs</module>
-        <module>server</module>
-        <module>auth-server</module>
+        <module>servers</module>
     </modules>
 
     <dependencyManagement>
