@@ -65,9 +65,15 @@
                         </div>
                     </h2>
                     <table>
-                        <tr><td>Server URL:</td><td class="ups-snippet">{{ currentLocation }}</td></tr>
-                        <tr><td>Variant ID:</td><td class="ups-snippet">{{ variant.variantID }}</td></tr>
-                        <tr><td>Secret: </td><td class="ups-snippet">{{ variant.secret }}</td></tr>
+                        <tr><td>Server URL:</td><td class="ups-snippet">
+                          <input type="text" class="transparent" readonly value="{{ currentLocation }}">
+                        </td></tr>
+                        <tr><td>Variant ID:</td><td class="ups-snippet">
+                          <input type="text" class="transparent" readonly value="{{ variant.variantID }}">
+                        </td></tr>
+                        <tr><td>Secret: </td><td class="ups-snippet">
+                          <input type="text" class="transparent" readonly value="{{ variant.secret }}">
+                        </td></tr>
                     </table>
                 </div>
                 <div class="clearfix"></div>
