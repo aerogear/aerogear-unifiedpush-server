@@ -46,6 +46,7 @@ angular.module('upsConsole').controller('InstallationController',
   };
 
   $scope.update = function (installation) {
+    delete installation.expand;
     var params = {variantId: $routeParams.variantId, installationId: installation.id};
     installation.enabled = !installation.enabled;
     installations.update(params, installation);
