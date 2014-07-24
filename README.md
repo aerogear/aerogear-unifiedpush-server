@@ -32,6 +32,11 @@ The sources for administration console UI are placed under `admin-ui`.
 
 For a build of the `admin-ui` during release, you can just run a Maven build, the `admin-ui` will be compiled by `frontend-maven-plugin` during `server` module build.
 
+`admin-ui` has several node.js module and JS library dependencies. By default, the "$ mvn clean" command will delete all previously downloaded node.js related directories. 
+If you want to make your build faster and not download same packages over again, please use profile intended for this purpose:
+
+    mvn clean install -Pdev
+
 For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
 
 
