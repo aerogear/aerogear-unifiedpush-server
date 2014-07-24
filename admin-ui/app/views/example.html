@@ -18,8 +18,8 @@
      var variantSecret = "{{ variant.secret }}";
      var unifiedPushUrl = "{{ currentLocation }}";
 
-      // If your SimplePush app is running on Openshift, the URL is {{ simplePushUrl() }}
-      // If your SimplePush app is using Mozilla's network, the URL can be found in the installation
+      // If your SimplePush Server is running on Openshift, the URL is {{ simplePushUrl() }}
+      // If your SimplePush Server is using Mozilla's network, the URL will be wss://push.services.mozilla.com
       // or do you run a custom server?
      var simplePushUrl = "[URL of the SimplePush Server you are using]";
 
