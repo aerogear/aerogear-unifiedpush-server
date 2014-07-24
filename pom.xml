@@ -94,15 +94,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- AeroGear Test Dependencies BOM Imports -->
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-test-bom</artifactId>
-                <version>${aerogear.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- AeroGear Android Dependencies BOM Imports -->
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
@@ -160,8 +151,28 @@
         <ant.contrib.version>20020829</ant.contrib.version>
     </properties>
 
-    <profiles>
-	    <profile>
+    <profiles>       
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <dependencyManagement>
+                <dependencies>
+                    <!-- AeroGear Test Dependencies BOM Imports -->
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-test-bom</artifactId>
+                        <version>${aerogear.bom.version}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>    
+        <profile>
+            <!-- Make sure that you also activate 'test' profile if you activate this one explicitly -->
 	        <id>openshift</id>
 	        <build>
 	            <plugins>
