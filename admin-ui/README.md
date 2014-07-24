@@ -37,7 +37,7 @@ To run:
 Now everytime you save a file, grunt is watching and will copy to configured directories.
 
 
-#### Generate distribution
+### Generate distribution
 
 To create a distribution in `admin-ui/dist/` directory:
 
@@ -61,3 +61,34 @@ By default, the "$ mvn clean" will delete all previously downloaded node.js rela
 not download same packages over again, please use profile intended for this purpose:
 
     mvn clean install -Pdev
+
+
+### Managing NPM packages
+
+The versions of packages listed in `package.json` and their transitive dependencies has to be locked down leveraging [NPM Shrinkwrap tool](http://blog.nodejs.org/2012/02/27/managing-node-js-dependencies-with-shrinkwrap/) (standard part of NPM distribution).
+
+Use of [semantic versioning](https://github.com/npm/node-semver) in NPM makes Node module versions resolution in `package.json` undeterministic. `npm-shrinkwrapp.json` is an equivalent of `package.json` that locks down all the transitive dependencies.
+
+#### Use of shrink-wrapped NPM configuration
+
+For final user, nothing changes:
+
+    npm install
+
+You just need to be aware that `npm-shrinkwrap.json` configuration takes precedence.
+
+#### Upgrading dependencies
+
+The biggest change comes with changing dependency versions, since simple change of `package.json` won't have any effect. In order to upgrade a package, you can use approach like following one:
+
+    $ npm install <package>@<version> --save--dev
+
+Test the build to verify that the new versions work as expected
+
+To lock down version again:
+
+    $ npm shrinkwrap --dev
+    $ git add package.json npm-shrinkwrap.json
+    $ git commit -m "upgrading <package> to <version>"
+
+Alternatively, you can remove `npm-shrinkwrap.json` and generate a new one.
