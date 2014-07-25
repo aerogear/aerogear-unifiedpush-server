@@ -102,27 +102,8 @@
             
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.openejb</groupId>
-                    <artifactId>openejb-core-hibernate</artifactId>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            
-                <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-entitymanager</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-validator</artifactId>
                     <scope>test</scope>
                 </dependency>
             
@@ -138,11 +119,6 @@
                     <scope>test</scope>
                 </dependency>
             
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                    <scope>test</scope>
-                </dependency>
             </dependencies>
         </profile>
     </profiles>
