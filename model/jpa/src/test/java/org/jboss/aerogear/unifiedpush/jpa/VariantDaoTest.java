@@ -31,6 +31,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -263,6 +265,7 @@ public class VariantDaoTest {
 
         Installation androidInstallation1 = new Installation();
         androidInstallation1.setDeviceToken("1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678");
+        androidInstallation1.setCategories(new HashSet<String>(Arrays.asList("X", "Y")));
         installationDao.create(androidInstallation1);
 
         androidInstallation1.setVariant(queriedVariant);
