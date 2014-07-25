@@ -388,17 +388,13 @@
                 </dependency>
             </dependencies>
         </profile>
-    </profiles>
-
-
-    <profiles>
         <profile>
             <id>test</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
 
-            <dependencies>                
+            <dependencies>
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
