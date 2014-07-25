@@ -270,12 +270,13 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>../admin-ui</directory>
+                            <directory>../../admin-ui</directory>
                             <includes>
                                 <include>node/**</include>
                                 <include>node_modules/**</include>
                                 <include>app/bower_components/**</include>
                                 <include>.tmp/**</include>
+                                <include>.bower-tmp/**</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
@@ -353,12 +354,13 @@
                         <configuration>
                             <filesets>
                                 <fileset>
-                                    <directory>../admin-ui</directory>
+                                    <directory>../../admin-ui</directory>
                                     <excludes>
                                         <exclude>node/**</exclude>
                                         <exclude>node_modules/**</exclude>
                                         <exclude>app/bower_components/**</exclude>
                                         <exclude>.tmp/**</exclude>
+                                        <exclude>.bower-tmp/**</exclude>
                                     </excludes>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
