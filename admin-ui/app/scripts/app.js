@@ -85,6 +85,11 @@ var UPS = (function() {
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
         controller: 'InstallationController',
+        resolve: {
+          data: function ($route, installations) {
+            return installations.fetchInstallations($route.current.params.variantId, 1);
+          }
+        },
         section: 'applications',
         crumb: {
           parent: 'app-detail',
