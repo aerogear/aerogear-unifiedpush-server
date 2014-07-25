@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('InstallationController',
-  function($rootScope, $scope, $routeParams, installations, $sce) {
+  function($rootScope, $scope, $routeParams, installations, $sce, data) {
 
   $scope.currentPage = 1;
 
@@ -30,7 +30,10 @@ angular.module('upsConsole').controller('InstallationController',
   };
 
   $scope.pageChanged = function () {
-    fetchInstallations($scope.currentPage);
+    $rootScope.isViewLoading = true;
+    fetchInstallations($scope.currentPage).then(function() {
+      $rootScope.isViewLoading = false;
+    });
   };
 
   $scope.wrapText = function(text) {
@@ -52,12 +55,14 @@ angular.module('upsConsole').controller('InstallationController',
     installations.update(params, installation);
   };
 
-  function fetchInstallations(pageNo) {
-    installations.get({variantId: $routeParams.variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
-      $scope.installations = data;
-      $scope.totalItems = responseHeaders('total');
-    });
+  function updateData(data) {
+    $scope.installations = data.page;
+    $scope.totalItems = data.total;
   }
 
-  fetchInstallations(1);
+  function fetchInstallations(pageNo) {
+    return installations.fetchInstallations($routeParams.variantId, pageNo).then(updateData);
+  }
+
+  updateData(data);
 });

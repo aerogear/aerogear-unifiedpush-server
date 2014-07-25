@@ -83,8 +83,8 @@ backendMod.factory('messageSender', function ($resource) {
   });
 });
 
-backendMod.factory('installations', function ($resource) {
-  return $resource('rest/applications/:variantId/installations/:installationId', {
+backendMod.factory('installations', function ($resource, $q) {
+  var installationsService = $resource('rest/applications/:variantId/installations/:installationId', {
     variantId: '@variantId',
     installationId: '@installationId'
   }, {
@@ -96,6 +96,19 @@ backendMod.factory('installations', function ($resource) {
       method: 'PUT'
     }
   });
+  
+  installationsService.fetchInstallations = function(variantId, pageNo) {
+    var deferred = $q.defer();
+    this.get({variantId: variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+      deferred.resolve({
+        page: data,
+        total: responseHeaders('total')
+      });
+    });
+    return deferred.promise;
+  };
+  
+  return installationsService;
 });
 
 backendMod.factory('dashboard', function ($resource) {
