@@ -39,6 +39,8 @@ If you want to make your build faster and not download same packages over again,
 
 For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md).
 
+These instructions contains also specific instructions how to upgrade NPM package dependencies.
+
 
 ### Any questions ?
 
