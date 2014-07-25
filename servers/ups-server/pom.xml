@@ -279,6 +279,33 @@
           </plugins>
         </build>
       </profile>
+      <profile>
+        <!-- if you want to run tests, make sure you also enable 'test' profile -->
+        <id>dev</id>
+        <build>
+          <plugins>
+            <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>../../admin-ui</directory>
+                    <excludes>
+                      <exclude>node/**</exclude>
+                      <exclude>node_modules/**</exclude>
+                      <exclude>app/bower_components/**</exclude>
+                      <exclude>.tmp/**</exclude>
+                      <exclude>.bower-tmp/**</exclude>
+                    </excludes>
+                    <followSymlinks>false</followSymlinks>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
       <!-- Section borrowed from Keycloak project integrations for UPS -->
       <profile>
         <id>as7</id>
