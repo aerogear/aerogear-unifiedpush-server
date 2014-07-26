@@ -39,7 +39,7 @@ angular.module('upsConsole').controller('ActivityController',
       });
     }
 
-    function onDetailsPage() {
+    $scope.onDetailsPage = function() {
       return typeof $routeParams.variantId !== 'undefined';
     }
 
@@ -89,7 +89,7 @@ angular.module('upsConsole').controller('ActivityController',
     }
 
     function fetch() {
-      if (onDetailsPage()) {
+      if ($scope.onDetailsPage()) {
         fetchVariantsMetrics($scope.currentPage);
       } else {
         fetchApplicationMetrics($scope.currentPage);
