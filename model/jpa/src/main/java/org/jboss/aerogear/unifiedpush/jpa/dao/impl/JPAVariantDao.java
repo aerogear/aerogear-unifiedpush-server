@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
@@ -38,8 +39,11 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public void delete(Variant variant) {
-        entityManager.createQuery("delete from Installation i where i.variant = :variant")
-                .setParameter("variant", variant).executeUpdate();
+        final List<Installation> resultList = entityManager.createQuery("from Installation i where i.variant = :variant", Installation.class)
+                .setParameter("variant", variant).getResultList();
+        for (Installation installation : resultList) {
+            entityManager.remove(installation);
+        }
         Variant entity = entityManager.find(Variant.class, variant.getId());
         remove(entity);
     }
