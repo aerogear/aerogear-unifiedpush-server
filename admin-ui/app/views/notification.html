@@ -64,6 +64,10 @@
                       <td><strong>Problem reaching push network</strong></td>
                       <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
                     </tr>
+                    <tr ng-if="onDetailsPage()">
+                      <td>Reason:</td>
+                      <td colspan="2">{{ metric.reason }}</td>
+                    </tr>
                   </table>
                   <hr ng-show="!detailsPage() && metric.variantInformations.length">
                   <table ng-if="!detailsPage() && metric.variantInformations.length">
