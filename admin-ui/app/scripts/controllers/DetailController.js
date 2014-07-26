@@ -33,6 +33,7 @@ angular.module('upsConsole').controller('DetailController',
         angular.forEach(application.variants, function (variant) {
           if (variant.variantID === warning.variant.variantID) {
             variant.hasError = true;
+            variant.error = warning.reason;
           }
         });
       }

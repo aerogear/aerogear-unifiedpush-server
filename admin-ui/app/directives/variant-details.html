@@ -5,7 +5,7 @@
         </a>
         <span>{{ variant.description }}</span>
         <div class="pull-left" style="margin-left: -20px">
-          <a role="menuitem" ng-click="editVariant(variant, variant.type)" ng-show="variant.hasError" title="configuration error">
+          <a role="menuitem" ng-click="editVariant(variant, variant.type)" ng-show="variant.hasError" title="reason: {{ variant.error }}">
             <i class="fa fa-warning"></i>
           </a>
         </div>
