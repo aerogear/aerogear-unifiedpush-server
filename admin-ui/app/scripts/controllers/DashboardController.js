@@ -41,7 +41,7 @@ angular.module('upsConsole').controller('ActivityController',
 
     $scope.onDetailsPage = function() {
       return typeof $routeParams.variantId !== 'undefined';
-    }
+    };
 
     pushApplication.get({appId: $routeParams.applicationId}, function (application) {
       $rootScope.application = application;
@@ -112,7 +112,7 @@ angular.module('upsConsole').controller('ActivityController',
     };
 
     $scope.detailsPage = function() {
-      return onDetailsPage();
+      return $scope.onDetailsPage();
     };
 
     $scope.expand = function (metric) {
