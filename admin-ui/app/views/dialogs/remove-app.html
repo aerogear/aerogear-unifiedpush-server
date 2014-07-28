@@ -6,10 +6,19 @@
         <h4 class="modal-title">Remove Application</h4>
     </div>
     <div class="modal-body">
-        Do you want to remove application <strong>"{{ application.name }}"</strong>?
+        <form>
+            <p>Do you want to remove application <strong>"{{ application.name }}"</strong>?</p>
+            <p>Please type in the name of the application to confirm.</p>
+            <p>
+                <input class="form-control" ng-model="confirmApplicationName" pf-focused="true" />
+            </p>
+        </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger text-left" ng-click="ok()">Remove</button>
+        <button type="button" class="btn btn-danger text-left" ng-click="ok()"
+                ng-disabled="application.name !== confirmApplicationName">
+            Remove
+        </button>
         <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
     </div>
 </div>
