@@ -117,12 +117,28 @@ angular.module('upsConsole').controller('DetailController',
   };
     
   $scope.renewMasterSecret = function () {
-    var modalInstance = show(null, 'renew-secret.html');
+    var modalInstance = show(null, 'renew-master-secret.html');
     modalInstance.result.then(function () {
       var app = $scope.application;
       pushApplication.reset({appId: app.pushApplicationID}, function (application) {
         $scope.application.masterSecret = application.masterSecret;
         Notifications.success('Successfully renewed master secret for "' + app.name + '"');
+      });
+    });
+  };
+
+  $scope.renewVariantSecret = function (variant) {
+    var modalInstance = show(null, 'renew-variant-secret.html');
+    modalInstance.result.then(function () {
+      var app = $scope.application;
+      var params = {
+        appId: app.pushApplicationID,
+        variantType: variant.type,
+        variantId: variant.variantID
+      };
+      variants.reset(params, function (updatedVariant) {
+        variant.secret = updatedVariant.secret;
+        Notifications.success('Successfully renewed secret for variant "' + updatedVariant.name + '"');
       });
     });
   };

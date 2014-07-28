@@ -32,9 +32,10 @@ backendMod.factory('pushApplication', function ($resource) {
 });
 
 backendMod.factory('variants', function ($resource) {
-  return $resource('rest/applications/:appId/:variantType/:variantId', {
+  return $resource('rest/applications/:appId/:variantType/:variantId/:verb', {
     appId: '@appId',
-    variantType: '@variantType'
+    variantType: '@variantType',
+    variantId: '@variantId'
   }, {
     get: {
       method: 'GET'
@@ -63,6 +64,10 @@ backendMod.factory('variants', function ($resource) {
       headers: {'Content-Type': undefined},
       withCredentials: true,
       transformRequest: angular.identity
+    },
+    reset: {
+      method: 'PUT',
+      params: {verb: 'reset'}
     }
   });
 });
