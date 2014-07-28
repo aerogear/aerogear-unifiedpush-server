@@ -108,6 +108,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 }
             } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "Error sending messages to APN server", e);
+                callback.onError("Error sending messages to APN server");
             } finally {
                 // tear down and release resources:
                 service.stop();
