@@ -142,7 +142,7 @@
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
-        <hibernate.version>4.0.1.Final</hibernate.version>
+        <hibernate.version>4.2.12.Final</hibernate.version>
 
         <!-- Code coverage -->
         <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
