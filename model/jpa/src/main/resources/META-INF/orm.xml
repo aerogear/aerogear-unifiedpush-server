@@ -32,7 +32,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     </mapped-superclass>
     <entity class="Variant" access="PROPERTY">
         <inheritance strategy="JOINED"/>
-        <discriminator-column name="TYPE" discriminator-type="STRING"/>
+        <discriminator-column name="VARIANT_TYPE" discriminator-type="STRING"/>
     </entity>
     <entity class="AndroidVariant" access="FIELD">
         <discriminator-value>android</discriminator-value>
