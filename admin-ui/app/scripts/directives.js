@@ -27,7 +27,8 @@ angular.module('ups.directives', ['upsConsole.services'])
     return {
       scope: {
         variant: '=',
-        counts: '='
+        counts: '=',
+        renewSecret: '&onRenew'
       },
       controller: function ($rootScope, $scope, $routeParams, ContextProvider) {
         $scope.expand = function (variant) {
@@ -52,7 +53,6 @@ angular.module('ups.directives', ['upsConsole.services'])
         $scope.currentVariant = function (variant) {
           $rootScope.variant = variant;
         };
-
       },
       templateUrl: 'directives/variant-details.html'
     };
