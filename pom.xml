@@ -67,12 +67,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
             <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
                 of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
                 Here we use
@@ -142,7 +136,6 @@
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
-        <hibernate.version>4.2.12.Final</hibernate.version>
 
         <!-- Code coverage -->
         <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
