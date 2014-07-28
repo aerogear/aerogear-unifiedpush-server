@@ -142,6 +142,7 @@
         <org.jacoco.agent.version>0.6.3.201306030806</org.jacoco.agent.version>
         <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
         <ant.contrib.version>20020829</ant.contrib.version>
+        <aerogear.crypto.version>0.1.4</aerogear.crypto.version>
     </properties>
 
     <profiles>       
