@@ -94,7 +94,6 @@
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-crypto</artifactId>
-            <version>${aerogear.crypto.version}</version>
         </dependency>
 
     </dependencies>
