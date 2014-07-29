@@ -28,7 +28,6 @@ angular.module('upsConsole').controller('ExampleController',
     variantId: $routeParams.variantId
   };
   $scope.variantType = $routeParams.variantType;
-  $scope.active = $routeParams.variantType;
   $scope.applicationId = $routeParams.applicationId;
 
   if (typeof $routeParams.variantId !== 'undefined') {
@@ -42,12 +41,28 @@ angular.module('upsConsole').controller('ExampleController',
     });
   }
 
-  $scope.isActive = function (tabName) {
-    return tabName === $scope.active;
-  };
+  var activeTab = $routeParams.variantType;
+  var tabs = {};
 
-  $scope.setActive = function (tabName) {
-    $scope.active = tabName;
+  function Tab(tabName) {
+    this.name = tabName;
+  }
+  Object.defineProperty(Tab.prototype, 'active', {
+    get: function() {
+      return activeTab === this.name;
+    },
+    set: function(active) {
+      if (active) {
+        activeTab = this.name;
+      }
+    }
+  });
+
+  $scope.tab = function (tabName) {
+    if (!tabs[tabName]) {
+      tabs[tabName] = new Tab(tabName);
+    }
+    return tabs[tabName];
   };
 
   $scope.projectNumber = function(variant) {
