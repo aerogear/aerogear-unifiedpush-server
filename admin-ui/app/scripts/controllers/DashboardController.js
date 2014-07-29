@@ -39,9 +39,9 @@ angular.module('upsConsole').controller('ActivityController',
       });
     }
 
-    $scope.onDetailsPage = function() {
+    function onDetailsPage() {
       return typeof $routeParams.variantId !== 'undefined';
-    };
+    }
 
     pushApplication.get({appId: $routeParams.applicationId}, function (application) {
       $rootScope.application = application;
@@ -89,7 +89,7 @@ angular.module('upsConsole').controller('ActivityController',
     }
 
     function fetch() {
-      if ($scope.onDetailsPage()) {
+      if (onDetailsPage()) {
         fetchVariantsMetrics($scope.currentPage);
       } else {
         fetchApplicationMetrics($scope.currentPage);
@@ -112,7 +112,7 @@ angular.module('upsConsole').controller('ActivityController',
     };
 
     $scope.detailsPage = function() {
-      return $scope.onDetailsPage();
+      return onDetailsPage();
     };
 
     $scope.expand = function (metric) {
