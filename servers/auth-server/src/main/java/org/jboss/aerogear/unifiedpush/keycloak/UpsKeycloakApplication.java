@@ -47,7 +47,7 @@ public class UpsKeycloakApplication extends KeycloakApplication {
             RealmManager manager = new RealmManager(session);
             RealmModel master = manager.getKeycloakAdminstrationRealm();
             UserModel admin = session.users().getUserByUsername("admin", master);
-            if (admin != null) session.users().removeUser(master, admin.getUsername());
+            if (admin != null) session.users().removeUser(master, admin);
             session.getTransaction().commit();
         } finally {
             session.close();
