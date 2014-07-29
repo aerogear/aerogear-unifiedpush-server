@@ -73,7 +73,7 @@
 
               </div>
 
-              <variant variant="variant" counts="counts"></variant>
+              <variant variant="variant" counts="counts" on-renew="renewVariantSecret(variant)"></variant>
               <div ng-class="{bottom: application.variants[$index + 1].type != variant.type}"></div>
             </div>
         </div>
