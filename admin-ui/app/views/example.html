@@ -3,9 +3,14 @@
         <div class="lo-content-area col-md-12">
             <div ups-breadcrumb/>
 
-            <h1>Example: <span>Sending push notifications</span></h1>
+            <h1>Example:
+                <span ng-hide="variantType != 'send'">Sending push notifications</span>
+                <span ng-show="variantType != 'send'">Register devices for receiving notifications</span>
+            </h1>
 
-            <p>Make your backend server send push notifications through this UnifiedPush Server.</p><br>
+            <p ng-hide="variantType != 'send'">Make your backend server send push notifications through this UnifiedPush Server.</p>
+
+            <p ng-show="variantType != 'send'">Use the code snippet bellow to register your device and allow it to receiving notifications through this UnifiedPush Server.</p>
 
             <tabset class="ups-code-examples">
                 <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="tab('simplePush').active">
