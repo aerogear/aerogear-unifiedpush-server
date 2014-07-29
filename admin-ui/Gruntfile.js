@@ -30,7 +30,12 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
-    local: {},
+    local: {
+      // default values used when local-config.json is not loaded
+      home: './',
+      webapp: '../servers/ups-server/target/ag-push',
+      jbossweb: '../servers/ups-server/target/ag-push'
+    },
     less: {
       main: {
         options: {
