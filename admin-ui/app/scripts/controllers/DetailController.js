@@ -27,7 +27,7 @@ angular.module('upsConsole').controller('DetailController',
   breadcrumbs.generateBreadcrumbs();
   $scope.currentLocation = ContextProvider.contextPath();
 
-    metrics.application({id: $routeParams.applicationId}, function(data) {
+  metrics.application({id: $routeParams.applicationId}, function(data) {
     angular.forEach(data, function (warning) {
       angular.forEach(application.variants, function (variant) {
         if (warning.variantInformations.length &&
