@@ -68,6 +68,33 @@ public class InstallationRegistrationEndpoint {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
+    /**
+     * RESTful API for Device registration.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -3 -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -X POST
+     *   -d '{
+     *     "deviceToken" : "someTokenString",
+     *     "deviceType" : "iPad",
+     *     "operatingSystem" : "iOS",
+     *     "osVersion" : "6.1.2",
+     *     "alias" : "someUsername or email adress...",
+     *     "categories" : ["football", "sport"],
+     *     "simplePushEndpoint" : "http://server.com/someEndpoint"
+     *   }'
+     *   https://SERVER:PORT/context/rest/registry/device
+     * </pre>
+     *
+     * Details about JSON format can be found HERE!
+     *
+     * @HTTP 200 (OK) Successful storage of the device metadata.
+     * @HTTP 400 (Bad Request) The format of the client request was incorrect (e.g. missing required values).
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -119,6 +146,21 @@ public class InstallationRegistrationEndpoint {
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
 
+    /**
+     * RESTful API for Device unregistration.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -3 -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -X DELETE
+     *   https://SERVER:PORT/context/rest/registry/device/{token}
+     * </pre>
+     *
+     * @HTTP 204 (OK) Successful unregistration.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     * @HTTP 404 (Not Found) The requested device metadata does not exist.
+     */
     @DELETE
     @Path("{token}")
     public Response unregisterInstallations(
