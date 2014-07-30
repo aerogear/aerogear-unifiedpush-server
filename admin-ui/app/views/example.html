@@ -3,12 +3,17 @@
         <div class="lo-content-area col-md-12">
             <div ups-breadcrumb/>
 
-            <h1>Example: <span>Sending push notifications</span></h1>
+            <h1>Example:
+                <span ng-hide="variantType != 'send'">Sending push notifications</span>
+                <span ng-show="variantType != 'send'">Register devices for receiving notifications</span>
+            </h1>
 
-            <p>Make your backend server send push notifications through this UnifiedPush Server.</p><br>
+            <p ng-hide="variantType != 'send'">Make your backend server send push notifications through this UnifiedPush Server.</p>
 
-            <tabset>
-                <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="isActive('simplePush')">
+            <p ng-show="variantType != 'send'">Use the code snippet bellow to register your device and allow it to receiving notifications through this UnifiedPush Server.</p>
+
+            <tabset class="ups-code-examples">
+                <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="tab('simplePush').active">
                     <div class="ups-code-block js" hljs compile="true">
 (function() {
      var endpoint, endpointRequest, SPClient, UPClient;
@@ -85,7 +90,7 @@
  })();
                     </div>
                 </tab>
-                <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="isActive('chrome')">
+                <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="tab('chrome').active">
                     <div class="ups-code-block js" hljs compile="true">
 chrome.pushMessaging.getChannelId( true, function(channelId) {
     /*
@@ -114,7 +119,7 @@ chrome.pushMessaging.getChannelId( true, function(channelId) {
 });
                     </div>
                 </tab>
-                <tab heading="Android" ng-hide="variantType != 'android'" active="isActive('android')" ng-click="setActive('android')">
+                <tab heading="Android" ng-hide="variantType != 'android'" active="tab('android').active" ng-click="tab('android').active = true">
  <div class="ups-code-block java" hljs compile="true">
 package com.push.pushapplication;
 
@@ -172,7 +177,7 @@ public class PushApplication extends Application {
 }
 </div>
                 </tab>
-                <tab heading="iOS - Objective-C" ng-hide="variantType != 'ios'" active="isActive('ios')" ng-click="setActive('ios')">
+                <tab heading="iOS - Objective-C" ng-hide="variantType != 'ios'" active="tab('ios').active" ng-click="tab('ios').active = true">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'objectivec'"></div>
                     <script type="text/ng-template" id="objectivec">
 - (void)application:(UIApplication *)application
@@ -202,7 +207,7 @@ public class PushApplication extends Application {
                   </script>
 
                 </tab>
-                <tab heading="iOS - Swift" ng-hide="variantType != 'ios'" ng-click="setActive('iOSSwift')">
+                <tab heading="iOS - Swift" ng-hide="variantType != 'ios'" active="tab('iOSSwift').active" ng-click="tab('iOSSwift').active = true">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'swift'"></div>
                     <script type="text/ng-template" id="swift">
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
@@ -235,7 +240,7 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
 
                 </tab>
                 <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
-                     active="isActive('cordova')" ng-click="setActive('cordova')">
+                     active="tab('cordova').active" ng-click="tab('cordova').active = true">
                     <div class="ups-code-block js" hljs compile="true">
 var pushConfig = {
    pushServerURL: "{{ currentLocation }}",
@@ -262,7 +267,7 @@ function errorHandler(message) {
                     </div>
                 </tab>
 
-                <tab heading="Sending" ng-hide="variantType != 'send'" active="isActive('send')" ng-click="setActive('send')">
+                <tab heading="Sending" ng-hide="variantType != 'send'" active="tab('send').active" ng-click="tab('send').active = true">
                     <div class="ups-code-block java" hljs compile="true">
 JavaSender defaultJavaSender = new SenderClient("{{ currentLocation }}");
 UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
