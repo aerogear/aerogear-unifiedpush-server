@@ -16,8 +16,9 @@ Only three steps are needed to get going!
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
+## Documentation
 
-For more details about the current release, please consult the README on our [stable branch](https://github.com/aerogear/aerogear-unifiedpush-server/tree/0.10.x).
+For more details about the current release, please consult [our documentation](http://aerogear.org/docs/unifiedpush/).
 
 ### Instructions for Keycloak administration console
 
