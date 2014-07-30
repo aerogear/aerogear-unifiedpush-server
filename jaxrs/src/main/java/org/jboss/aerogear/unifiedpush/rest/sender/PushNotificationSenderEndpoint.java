@@ -48,6 +48,44 @@ public class PushNotificationSenderEndpoint {
     @Inject
     private SenderService senderService;
 
+    /**
+     * RESTful API for sending Push Notifications.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>PushApplicationID:masterSecret</code>).
+     * <p/><p/>
+     *
+     * Messages are submitted as flexible JSON maps, like:
+     * <pre>
+     * curl -3 -u "PushApplicationID:MasterSecret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -X POST
+     *   -d '{
+     *     "alias" : ["someUsername"],
+     *     "deviceType" : ["someDevice"],
+     *     "categories" : ["someCategories"],
+     *     "variants" : ["someVariantIDs"],
+     *     "ttl" : 3600,
+     *     "message":
+     *     {
+     *       "key":"value",
+     *       "key2":"other value",
+     *       "alert":"HELLO!",
+     *       "action-category":"some value",
+     *       "sound":"default",
+     *       "badge":2,
+     *       "content-available" : true
+     *     },
+     *     "simple-push":"version=123"
+     *   }'
+     *   https://SERVER:PORT/CONTEXT/rest/sender
+     * </pre>
+     *
+     * Details about the Message Format can be found HERE!
+     *
+     * @HTTP 200 (OK) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     * @HTTP 404 (Not Found) The requested PushApplication resource does not exist.
+     * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response send(final Map<String, Object> message, @Context HttpServletRequest request) {
