@@ -117,6 +117,13 @@
   <div ng-include="'views/loading.html'" ng-show="isViewLoading"></div>
 </div>
 
+<!-- workaround for https://issues.jboss.org/browse/AGPUSH-862 -->
+<script type="text/javascript">
+    if (!window.location.origin) {
+        window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+    }
+</script>
+
 <!-- build:js scripts/modules.js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
