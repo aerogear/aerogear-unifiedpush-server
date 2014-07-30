@@ -30,9 +30,9 @@ angular.module('upsConsole').controller('DetailController',
     metrics.application({id: $routeParams.applicationId}, function(data) {
     angular.forEach(data, function (warning) {
       angular.forEach(application.variants, function (variant) {
-        if (warning.variantInformations.length
-            && variant.variantID === warning.variantInformations[0].variantID
-            && !warning.variantInformations[0].deliveryStatus) {
+        if (warning.variantInformations.length &&
+            variant.variantID === warning.variantInformations[0].variantID &&
+            !warning.variantInformations[0].deliveryStatus) {
           variant.hasError = true;
           variant.error = warning.variantInformations[0].reason;
         }
