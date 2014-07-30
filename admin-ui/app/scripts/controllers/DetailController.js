@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider, dashboard) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
 
   /*
    * INITIALIZATION
@@ -27,15 +27,16 @@ angular.module('upsConsole').controller('DetailController',
   breadcrumbs.generateBreadcrumbs();
   $scope.currentLocation = ContextProvider.contextPath();
 
-  dashboard.warnings({}, function(data) {
+  metrics.application({id: $routeParams.applicationId}, function(data) {
     angular.forEach(data, function (warning) {
-      if (warning.applicationID === application.pushApplicationID) {
-        angular.forEach(application.variants, function (variant) {
-          if (variant.variantID === warning.variant.variantID) {
-            variant.hasError = true;
-          }
-        });
-      }
+      angular.forEach(application.variants, function (variant) {
+        if (warning.variantInformations.length &&
+            variant.variantID === warning.variantInformations[0].variantID &&
+            !warning.variantInformations[0].deliveryStatus) {
+          variant.hasError = true;
+          variant.error = warning.variantInformations[0].reason;
+        }
+      });
     });
   });
 
