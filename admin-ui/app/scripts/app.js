@@ -20,7 +20,7 @@ var UPS = (function() {
   var auth = {};
 
   angular.element(document).ready(function () {
-    var keycloakAuth = new Keycloak('keycloak.json');
+    var keycloakAuth = new Keycloak('config/keycloak.json');
     auth.loggedIn = false;
 
     keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
