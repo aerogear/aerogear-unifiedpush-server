@@ -182,24 +182,30 @@ public class PushApplication extends Application {
                     <script type="text/ng-template" id="objectivec">
 - (void)application:(UIApplication *)application
  didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+   NSLog(@"APNS Success")
 
    AGDeviceRegistration *registration =
      [[AGDeviceRegistration alloc] initWithServerURL:
         [NSURL URLWithString:@"{{ currentLocation }}"]];
 
    [registration registerWithClientInfo:^(id clientInfo) {
-
+     
+     // apply the token, to identify this device
      [clientInfo setDeviceToken:deviceToken];
+
      [clientInfo setVariantID:@"{{ variant.variantID }}"];
      [clientInfo setVariantSecret:@"{{ variant.secret }}"];
 
      // --optional config--
+     // set some 'useful' hardware information params
      UIDevice *currentDevice = [UIDevice currentDevice];
      [clientInfo setOperatingSystem:[currentDevice systemName]];
      [clientInfo setOsVersion:[currentDevice systemVersion]];
      [clientInfo setDeviceType: [currentDevice model]];
+
      } success:^() {
        NSLog(@"UPS registration worked");
+
      } failure:^(NSError *error) {
        NSLog(@"UPS registration Error: %@", error);
    }];
@@ -211,29 +217,30 @@ public class PushApplication extends Application {
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'swift'"></div>
                     <script type="text/ng-template" id="swift">
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
-    NSLog("APN Success")
+    println("APNS Success")
+
     let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ currentLocation }}"))
 
-    registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!) -> () in
-        NSLog("UPS Register")
+    registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!)  in
+        
+        // apply the token, to identify this device
         clientInfo.deviceToken = deviceToken
+
         clientInfo.variantID = "{{ variant.variantID }}"
         clientInfo.variantSecret = "{{ variant.secret }}"
 
-        // apply the token, to identify THIS device
-        let currentDevice = UIDevice()
-
         // --optional config--
         // set some 'useful' hardware information params
+        let currentDevice = UIDevice()        
         clientInfo.operatingSystem = currentDevice.systemName
         clientInfo.osVersion = currentDevice.systemVersion
         clientInfo.deviceType = currentDevice.model
-    }, success: { () -> () in
-        NSLog(@"UPS registration worked");
+
+    }, success: {
+        println("UPS registration worked");
 
     }, failure: { (error:NSError!) -> () in
-        NSLog(@"UPS registration Error: %@", error);
-
+        println("UPS registration Error: \(error.localizedDescription)")
     })
 }
                     </script>
