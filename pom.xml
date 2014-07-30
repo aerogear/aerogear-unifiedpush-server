@@ -58,6 +58,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.jboss.aerogear</groupId>
+                <artifactId>aerogear-crypto</artifactId>
+                <version>${aerogear.crypto.version}</version>
+            </dependency>
+
             <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
             <!-- https://issues.jboss.org/browse/JDF-417 -->
             <dependency>
