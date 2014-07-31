@@ -6,10 +6,6 @@
 
     <module-name>ag-push</module-name>
 
-    <listener>
-        <listener-class>org.jboss.aerogear.unifiedpush.keycloak.BootstrapListener</listener-class>
-    </listener>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Admin</web-resource-name>
@@ -22,7 +18,7 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
-    
+
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>HttpBasic</web-resource-name>
@@ -33,7 +29,7 @@
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
-    </security-constraint>    
+    </security-constraint>
 
     <login-config>
         <auth-method>KEYCLOAK</auth-method>
