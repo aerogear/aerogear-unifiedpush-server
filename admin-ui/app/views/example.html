@@ -44,11 +44,10 @@
 
              // if it is the first registration, need to register
              // the 'pushEndpoint' with the UnifiedPush server.
-             if ( endpoint.pushEndpoint ) {
+             if ( endpoint ) {
                  // assemble the metadata for registration with the UnifiedPush server
                  var metadata = {
-                     deviceToken: mailEndpoint.channelID,
-                     simplePushEndpoint: mailEndpoint.pushEndpoint
+                     deviceToken: endPoint
                  };
 
                  var settings = {
@@ -70,7 +69,7 @@
          };
          // set the notification handler:
          navigator.setMessageHandler( "push", function( message ) {
-             if ( message.channelID === mailEndpoint.channelID ) {
+             if ( message.pushEndpoint === endPoint ) {
                  // let's react on the endpoint
              }
          });
