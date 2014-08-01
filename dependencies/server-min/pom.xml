@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.jboss.aerogear.unifiedpush</groupId>
+        <artifactId>unifiedpush-parent</artifactId>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <name>UnifiedPush Dependencies Server Min</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>unifiedpush-dependencies-server-min</artifactId>
+    <packaging>pom</packaging>
+
+    <dependencies>
+
+        <!-- Import the JTA API, we use provided scope as the API is included
+            in JBoss -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the CDI API, we use provided scope as the API is included
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the EJB API, we use provided scope as the API is included
+            in JBoss -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Common Annotations API (JSR-250), we use provided scope
+            as the API is included in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JAX-RS API, we use provided scope as the API is included
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JPA API, we use provided scope as the API is included
+            in JBoss -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Servlet API, we use provided scope as the API is included
+            in JBoss -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- resteasy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>async-http-servlet-3.0</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- UnifiedPush JARs -->
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-model-jpa</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-service</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-push</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-jaxrs</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Keycloak JARs -->
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-adapter-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-jboss-adapter-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.iharder</groupId>
+            <artifactId>base64</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
