@@ -53,6 +53,7 @@
         <module>push</module>
         <module>service</module>
         <module>jaxrs</module>
+        <module>dependencies</module>
         <module>servers</module>
     </modules>
 
@@ -168,7 +169,7 @@
         <aerogear.crypto.version>0.1.4</aerogear.crypto.version>
     </properties>
 
-    <profiles>       
+    <profiles>
         <profile>
             <id>test</id>
             <activation>
@@ -187,7 +188,7 @@
                     </dependency>
                 </dependencies>
             </dependencyManagement>
-        </profile>    
+        </profile>
         <profile>
             <!-- Make sure that you also activate 'test' profile if you activate this one explicitly -->
 	        <id>openshift</id>
