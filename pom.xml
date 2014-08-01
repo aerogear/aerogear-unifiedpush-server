@@ -53,6 +53,7 @@
         <module>push</module>
         <module>service</module>
         <module>jaxrs</module>
+        <module>admin-ui</module>
         <module>servers</module>
     </modules>
 
