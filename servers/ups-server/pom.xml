@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-dependencies-server-min</artifactId>
+            <artifactId>unifiedpush-server-dependencies</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>

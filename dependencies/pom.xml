@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>server-min</module>
+        <module>server-dependencies</module>
     </modules>
 
     <build>
