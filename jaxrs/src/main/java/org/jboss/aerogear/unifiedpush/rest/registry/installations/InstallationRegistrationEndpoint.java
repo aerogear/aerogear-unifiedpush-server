@@ -162,7 +162,7 @@ public class InstallationRegistrationEndpoint {
      * @HTTP 404 (Not Found) The requested device metadata does not exist.
      */
     @DELETE
-    @Path("{token}")
+    @Path("{token: .*}")
     public Response unregisterInstallations(
             @PathParam("token") String token,
             @Context HttpServletRequest request) {
