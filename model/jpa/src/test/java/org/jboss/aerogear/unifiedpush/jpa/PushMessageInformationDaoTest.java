@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -57,6 +58,13 @@ public class PushMessageInformationDaoTest {
         pushMessageInformation = new PushMessageInformation();
         pushMessageInformation.setPushApplicationId("231231231");
         pushMessageInformationID = pushMessageInformation.getId();
+
+        VariantMetricInformation variantOne = new VariantMetricInformation();
+        variantOne.setDeliveryStatus(Boolean.FALSE);
+        variantOne.setReceivers(200);
+        variantOne.setVariantID("213");
+        pushMessageInformation.getVariantInformations().add(variantOne);
+
         pushMessageInformationDao.create(pushMessageInformation);
 
         flushAndClear();
@@ -429,4 +437,20 @@ public class PushMessageInformationDaoTest {
         flushAndClear();
     }
 
+    @Test
+    public void deleteOldPushMessageInformations() throws InterruptedException {
+
+        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        assertThat(messageInformations).hasSize(1);
+
+        // let's wait a bit...
+        Thread.sleep(1000);
+
+        pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
+
+        flushAndClear();
+
+        messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        assertThat(messageInformations).hasSize(0);
+    }
 }
