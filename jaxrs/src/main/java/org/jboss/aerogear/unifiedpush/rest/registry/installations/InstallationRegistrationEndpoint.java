@@ -82,8 +82,7 @@ public class InstallationRegistrationEndpoint {
      *     "operatingSystem" : "iOS",
      *     "osVersion" : "6.1.2",
      *     "alias" : "someUsername or email adress...",
-     *     "categories" : ["football", "sport"],
-     *     "simplePushEndpoint" : "http://server.com/someEndpoint"
+     *     "categories" : ["football", "sport"]
      *   }'
      *   https://SERVER:PORT/context/rest/registry/device
      * </pre>
