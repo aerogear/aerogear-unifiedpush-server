@@ -55,7 +55,7 @@ angular.module('upsConsole').controller('ActivityController',
     });
 
     function fetchVariantsMetrics(pageNo) {
-      metrics.variant({id: $routeParams.variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+      metrics.variant({id: $routeParams.variantId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
         $scope.totalItems = responseHeaders('total');
         $scope.pushMetrics = data;
         angular.forEach(data, function (metric) {
@@ -66,7 +66,7 @@ angular.module('upsConsole').controller('ActivityController',
     }
 
     function fetchApplicationMetrics(pageNo) {
-      metrics.application({id: $routeParams.applicationId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+      metrics.application({id: $routeParams.applicationId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
         $scope.totalItems = responseHeaders('total');
         $scope.pushMetrics = data;
 
@@ -76,10 +76,6 @@ angular.module('upsConsole').controller('ActivityController',
               if (!variant.deliveryStatus) {
                 metric.deliveryFailed = true;
               }
-              if (!metric.totalReceivers) {
-                metric.totalReceivers = 0;
-              }
-              metric.totalReceivers += variant.receivers;
             });
           });
         }

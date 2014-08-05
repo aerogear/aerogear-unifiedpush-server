@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
@@ -62,10 +63,10 @@ public class DashboardEndpoint {
     @GET
     @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTopThreeVariants(@Context HttpServletRequest request) {
+    public Response getTopThreeLastActivity(@Context HttpServletRequest request) {
         final String principalName = extractUsername(request);
-        final List<ApplicationVariant> topThreeBusyVariants = service.getTopThreeBusyVariants(principalName);
+        final List<Application> topThreeLastActivity = service.getTopThreeLastActivity(principalName);
 
-        return Response.ok(topThreeBusyVariants).build();
+        return Response.ok(topThreeLastActivity).build();
     }
 }

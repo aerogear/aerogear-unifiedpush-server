@@ -66,19 +66,19 @@
         <div class="panel lo-panel ups-panel-variants">
           <div class="panel-heading">
             <div class="pull-left">
-              <h2>Most Active</h2>
+              <h2>Recent Activity</h2>
             </div>
             <div class="pull-right">
-              <span ng-show="topThree.length">Number of devices</span>
+              <span ng-show="topThree.length">Number of receivers</span>
             </div>
             <div class="clearfix"></div>
           </div>
           <ul class="list-group ">
             <li class="list-group-item" ng-repeat="top in topThree">
-              <a href="#/activity/{{top.applicationID}}/{{top.variant.variantID}}">
-                {{ top.applicationName }} &raquo; {{ top.variant.name }}
+              <a href="#/activity/{{top.id}}">
+                {{ top.name }} &nbsp; ({{ top.submittedDate | date : 'd MMM, HH:mm:ss, yyyy' }})
               </a>
-              <div class="pull-right">{{ top.receivers }}</div>
+              <div class="pull-right">{{ top.totalReceivers}}</div>
             </li>
             <li class="list-group-item" ng-hide="topThree.length">
               No notifications have yet been sent.
