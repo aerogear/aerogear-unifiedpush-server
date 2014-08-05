@@ -30,7 +30,8 @@ import java.util.Date;
  */
 public class PushMessageMetricsService {
 
-    // that's what we currently use as the maxium of persistence for the message information objects
+    // that's what we currently use as the maximum days the message information objects are stored
+    // before wiped out automatically by the DeleteOldPushMessageInformationScheduler
     private final static int DAYS_OF_MAX_OLDEST_INFO_MSG = 30;
 
     @Inject
@@ -85,7 +86,7 @@ public class PushMessageMetricsService {
      *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
      *  <i>older</i> than 30 days!
      */
-    public void deleteOutdatePushInformationData() {
+    public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
