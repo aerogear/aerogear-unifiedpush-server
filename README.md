@@ -43,6 +43,16 @@ For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](http
 These instructions contains also specific instructions how to upgrade NPM package dependencies.
 
 
+## Developing and Openshift
+
+For our Openshift Online cartridge we enforce HTTPS. This is done with a specific Maven Profile. To build the `WAR` files for Openshift the following needs to be invoked:
+
+```
+mvn clean install -Popenshift,test
+```
+
+The WAR file can be used to update our [Cartridge](https://github.com/aerogear/openshift-origin-cartridge-aerogear-push).
+
 ### Any questions ?
 
 Join our [mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev) for any questions and help! We really hope you enjoy our UnifiedPush Server!
