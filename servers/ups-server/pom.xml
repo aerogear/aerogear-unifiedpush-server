@@ -152,10 +152,6 @@
           <artifactId>keycloak-adapter-core</artifactId>
         </dependency>
 
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-as7-adapter</artifactId>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -260,6 +256,29 @@
                 </dependency>
             </dependencies>
         </profile>
+    <!-- Section borrowed from Keycloak project integrations for UPS -->
+    <profiles>
+        <profile>
+            <id>as7</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-as7-adapter</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>wildfly</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-wildfly-adapter</artifactId>
+                </dependency>
+            </dependencies>
     </profiles>
+
 
 </project>
