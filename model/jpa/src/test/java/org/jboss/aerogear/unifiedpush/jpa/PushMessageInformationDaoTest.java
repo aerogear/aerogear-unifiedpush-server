@@ -27,12 +27,9 @@ import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sun.util.calendar.CalendarUtils;
-
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;

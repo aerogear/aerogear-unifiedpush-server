@@ -34,6 +34,8 @@ public class PushMessageInformation extends BaseModel {
     private String clientIdentifier;
 
     private Date submitDate = new Date();
+    private long totalReceivers;
+
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
     /**
@@ -97,4 +99,12 @@ public class PushMessageInformation extends BaseModel {
     public String getClientIdentifier() { return clientIdentifier; }
 
     public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
+
+    public long getTotalReceivers() {
+        return totalReceivers;
+    }
+
+    public void setTotalReceivers(long totalReceivers) {
+        this.totalReceivers = totalReceivers;
+    }
 }
