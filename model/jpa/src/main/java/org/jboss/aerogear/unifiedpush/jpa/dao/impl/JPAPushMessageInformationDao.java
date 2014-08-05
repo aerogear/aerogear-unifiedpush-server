@@ -109,20 +109,15 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     }
 
     @Override
-    public Map<String, Long> findTopThreeBusyVariantIDs(String loginName) {
-        List<Object[]> topThree = createQuery("select distinct vmi.variantID, vmi.receivers from VariantMetricInformation vmi" +
-                " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
-                " ORDER BY vmi.receivers " + DESC)
+    public List<PushMessageInformation> findLastThreeActivity(String loginName) {
+        List<PushMessageInformation> topThree = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
+                " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
+                " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
                 .setMaxResults(3)
                 .getResultList();
 
-        Map<String, Long> result = new HashMap<String, Long>();
-        for (Object[] objects : topThree) {
-            result.put((String) objects[0], (Long) objects[1]);
-        }
-
-        return result;
+        return topThree;
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import sun.util.calendar.CalendarUtils;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -268,6 +269,12 @@ public class PushMessageInformationDaoTest {
 
         final String loginName = "admin";
 
+        final PushApplication pushAppInitial = new PushApplication();
+        pushAppInitial.setName("app");
+        pushAppInitial.setPushApplicationID("231231231");
+        pushAppInitial.setDeveloper(loginName);
+        entityManager.persist(pushAppInitial);
+
         VariantMetricInformation variantOne = new VariantMetricInformation();
         variantOne.setDeliveryStatus(Boolean.FALSE);
         variantOne.setReceivers(200);
@@ -289,8 +296,14 @@ public class PushMessageInformationDaoTest {
         pushMessageInformation.getVariantInformations().add(variantFour);
         pushMessageInformationDao.update(pushMessageInformation);
 
+        final PushApplication pushApp = new PushApplication();
+        pushApp.setName("app");
+        pushApp.setPushApplicationID("231231232");
+        pushApp.setDeveloper(loginName);
+        entityManager.persist(pushApp);
+
         PushMessageInformation pmi = new PushMessageInformation();
-        pmi.setPushApplicationId("231231231");
+        pmi.setPushApplicationId("231231232");
         pushMessageInformationDao.create(pmi);
         VariantMetricInformation variantTwo = new VariantMetricInformation();
         variantTwo.setDeliveryStatus(Boolean.TRUE);
@@ -298,6 +311,22 @@ public class PushMessageInformationDaoTest {
         variantTwo.setVariantID("231543432432");
         pmi.getVariantInformations().add(variantTwo);
         pushMessageInformationDao.update(pmi);
+
+        final PushApplication pushApp1 = new PushApplication();
+        pushApp1.setName("app");
+        pushApp1.setPushApplicationID("231231233");
+        pushApp1.setDeveloper(loginName);
+        entityManager.persist(pushApp1);
+
+        PushMessageInformation pmi1 = new PushMessageInformation();
+        pmi1.setPushApplicationId("231231233");
+        pushMessageInformationDao.create(pmi);
+        VariantMetricInformation variantSix= new VariantMetricInformation();
+        variantSix.setDeliveryStatus(Boolean.TRUE);
+        variantSix.setReceivers(2000);
+        variantSix.setVariantID("231543432432");
+        pmi1.getVariantInformations().add(variantSix);
+        pushMessageInformationDao.update( pmi1);
 
 
         final AndroidVariant androidVariant = new AndroidVariant();
@@ -320,10 +349,9 @@ public class PushMessageInformationDaoTest {
 
         flushAndClear();
 
-        Map<String, Long> busyVariants = pushMessageInformationDao.findTopThreeBusyVariantIDs(loginName);
-        assertThat(busyVariants).hasSize(3);
-        assertThat(busyVariants.keySet())
-                .contains("231543432432", "23154343243333", "231543432434");
+        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLastThreeActivity(loginName);
+        assertThat(lastActivity).hasSize(3);
+
     }
 
     @Test

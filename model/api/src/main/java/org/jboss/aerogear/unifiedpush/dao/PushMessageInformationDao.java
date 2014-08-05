@@ -60,7 +60,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Filters the top three VariantIDs that did receive the most messages
      */
-    Map<String, Long> findTopThreeBusyVariantIDs(String loginName);
+    List<PushMessageInformation> findLastThreeActivity(String loginName);
 
     /**
      * Delete all Push Message Information entries that are older than the given date
