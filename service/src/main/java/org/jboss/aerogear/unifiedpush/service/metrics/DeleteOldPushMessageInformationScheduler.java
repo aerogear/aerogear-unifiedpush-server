@@ -34,6 +34,6 @@ public class DeleteOldPushMessageInformationScheduler {
      */
     @Schedule
     public void deleteOutdatedMetrics(){
-        service.deleteOutdatePushInformationData();
+        service.deleteOutdatedPushInformationData();
     }
 }
