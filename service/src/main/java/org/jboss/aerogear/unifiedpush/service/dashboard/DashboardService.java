@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.dashboard;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
@@ -72,27 +73,8 @@ public class DashboardService {
     /**
      * Loads all the Variant objects with the most received messages
      */
-    public List<ApplicationVariant> getTopThreeBusyVariants(String principalName) {
-        final Map<String, Long> topVariantIDs = pushMessageInformationDao.findTopThreeBusyVariantIDs(principalName);
-        if (topVariantIDs.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<PushApplication> applications = pushApplicationDao.findByVariantIds(new ArrayList<String>(topVariantIDs.keySet()));
-        final List<ApplicationVariant> applicationVariants = wrapApplicationVariant(applications);
-
-        for (ApplicationVariant applicationVariant : applicationVariants) {
-            final String id = applicationVariant.getVariant().getVariantID();
-            applicationVariant.setReceivers(topVariantIDs.get(id));
-        }
-
-        Collections.sort(applicationVariants, new Comparator<ApplicationVariant>() {
-            @Override
-            public int compare(ApplicationVariant o1, ApplicationVariant o2) {
-                return o2.getReceivers().compareTo(o1.getReceivers());
-            }
-        });
-
-        return applicationVariants;
+    public List<Application> getTopThreeLastActivity(String principalName) {
+        return wrapApplication(pushMessageInformationDao.findLastThreeActivity(principalName));
     }
 
     private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
@@ -104,6 +86,17 @@ public class DashboardService {
             }
         }
         return applicationVariants;
+    }
+
+    private List<Application> wrapApplication(List<PushMessageInformation> pushMessageInformations) {
+        final List<Application> applications= new ArrayList<Application>(pushMessageInformations.size());
+        for (PushMessageInformation pushMessageInformation : pushMessageInformations) {
+            String applicationName = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId()).getName();
+            final Application application= new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(),pushMessageInformation.getSubmitDate());
+            applications.add(application);
+
+        }
+        return applications;
     }
 
     private long totalMessages(String principalName) {
