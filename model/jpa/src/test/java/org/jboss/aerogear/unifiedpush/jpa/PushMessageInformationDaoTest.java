@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,6 @@ public class PushMessageInformationDaoTest {
     private JPAPushMessageInformationDao pushMessageInformationDao;
     private PushMessageInformation pushMessageInformation;
     private String pushMessageInformationID;
-
 
     @Before
     public void setUp() {
@@ -56,6 +56,13 @@ public class PushMessageInformationDaoTest {
 
         // some raw data:
         pushMessageInformation = new PushMessageInformation();
+
+        // old date:
+        final Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(1980, 02, 01);
+        pushMessageInformation.setSubmitDate(calendar.getTime());
+
         pushMessageInformation.setPushApplicationId("231231231");
         pushMessageInformationID = pushMessageInformation.getId();
 
@@ -373,9 +380,7 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void ascendingDateOrdering() throws InterruptedException {
-        // let's wait a bit...
-        Thread.sleep(1000);
+    public void ascendingDateOrdering() {
 
         PushMessageInformation pmi = new PushMessageInformation();
         pmi.setPushApplicationId("231231231");
@@ -397,9 +402,7 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void descendingDateOrdering() throws InterruptedException {
-        // let's wait a bit...
-        Thread.sleep(1000);
+    public void descendingDateOrdering() {
 
         PushMessageInformation pmi = new PushMessageInformation();
         pmi.setPushApplicationId("231231231");
@@ -438,13 +441,10 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void deleteOldPushMessageInformations() throws InterruptedException {
+    public void deleteOldPushMessageInformations() {
 
         List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(1);
-
-        // let's wait a bit...
-        Thread.sleep(1000);
 
         pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
 
