@@ -54,7 +54,7 @@ public class InstallationRegistrationEndpoint {
     private GenericVariantService genericVariantService;
 
     @OPTIONS
-    @Path("{token}")
+    @Path("{token: .*}")
     public Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
