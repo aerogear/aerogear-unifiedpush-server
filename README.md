@@ -10,8 +10,9 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 Only three steps are needed to get going!
 
 * Setup the database by copying this [datasource XML file](https://github.com/aerogear/aerogear-unifiedpush-server/blob/0.10.x/databases/unifiedpush-h2-ds.xml) into ``$JBOSS/standalone/deployments``
-* Deploy the two _WAR files_ (``auth-server.war`` and ``ag-push.war``) into ``$JBOSS/standalone/deployments``
 * Start the Server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
+* Go to the `servers` folder
+* Run `mvn clean jboss-as:deploy` or `mvn -Pwildfly clean wildfly:deploy`
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
@@ -26,6 +27,11 @@ Note: The instructions below are pretty much based on [Keycloak integration with
 
 * The aerogear security admin (keycloak) http://localhost:8080/auth/admin/aerogear/console/index.html
 * The aerogear user account page (keycloak) http://localhost:8080/auth/realms/aerogear/account
+
+### SSL by default
+
+The Keycloak directives inside UnifiedPush server will enforce SSL to **all** external IP addresses, except for *localhost* and Docker images.
+
 
 ## Developing and releasing UI
 
