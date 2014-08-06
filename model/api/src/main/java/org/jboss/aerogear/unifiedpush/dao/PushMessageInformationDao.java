@@ -57,7 +57,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     List<String> findVariantIDsWithWarnings(String loginName);
 
     /**
-     * Filters the top three VariantIDs that did receive the most messages
+     * Filters the three most recent PushMessageInformation objects
      */
     List<PushMessageInformation> findLastThreeActivity(String loginName);
 
