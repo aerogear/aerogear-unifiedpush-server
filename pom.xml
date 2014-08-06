@@ -138,7 +138,7 @@
         <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
-        <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
+        <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
 
         <aerogear.bom.version>0.2.5</aerogear.bom.version>
 
@@ -153,7 +153,7 @@
         <aerogear.crypto.version>0.1.4</aerogear.crypto.version>
     </properties>
 
-    <profiles>       
+    <profiles>
         <profile>
             <id>test</id>
             <activation>
@@ -172,7 +172,7 @@
                     </dependency>
                 </dependencies>
             </dependencyManagement>
-        </profile>    
+        </profile>
         <profile>
             <!-- Make sure that you also activate 'test' profile if you activate this one explicitly -->
 	        <id>openshift</id>
@@ -188,7 +188,7 @@
 	            </plugins>
 	        </build>
 		</profile>
-		
+
         <profile>
             <id>code-coverage</id>
             <properties>
