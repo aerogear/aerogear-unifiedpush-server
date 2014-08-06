@@ -18,6 +18,10 @@ package org.jboss.aerogear.unifiedpush.service.dashboard;
 
 import java.util.Date;
 
+/**
+ * The purpose of this class is to act as a "value object" for the Dashboard services.
+ * It contains information about a particular PushMessageInformation instance.
+ */
 public class Application {
 
     private String name;

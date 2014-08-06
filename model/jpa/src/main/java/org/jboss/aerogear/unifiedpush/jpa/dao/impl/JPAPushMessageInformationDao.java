@@ -110,7 +110,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public List<PushMessageInformation> findLastThreeActivity(String loginName) {
-        List<PushMessageInformation> topThree = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
+        final List<PushMessageInformation> topThree = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
                 " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
