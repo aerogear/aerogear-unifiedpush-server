@@ -6,7 +6,7 @@ batch
 /subsystem=datasources/jdbc-driver=mysqlup:add(driver-name=mysqlup,driver-module-name=com.mysql.jdbc,driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
 
 ## Add PushEE Mysql Datasource
-data-source add --name=UnifiedPushDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url=jdbc:mysql://localhost:3306/unifiedpush?useUnicode=true&amp;characterEncoding=UTF-8 --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000
+data-source add --name=UnifiedPushDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:mysql://localhost:3306/unifiedpush?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000
 data-source enable --name=UnifiedPushDS
 
 run-batch
