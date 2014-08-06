@@ -54,7 +54,7 @@ public class InstallationRegistrationEndpoint {
     private GenericVariantService genericVariantService;
 
     @OPTIONS
-    @Path("{token}")
+    @Path("{token: .*}")
     public Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
@@ -82,8 +82,7 @@ public class InstallationRegistrationEndpoint {
      *     "operatingSystem" : "iOS",
      *     "osVersion" : "6.1.2",
      *     "alias" : "someUsername or email adress...",
-     *     "categories" : ["football", "sport"],
-     *     "simplePushEndpoint" : "http://server.com/someEndpoint"
+     *     "categories" : ["football", "sport"]
      *   }'
      *   https://SERVER:PORT/context/rest/registry/device
      * </pre>
@@ -162,7 +161,7 @@ public class InstallationRegistrationEndpoint {
      * @HTTP 404 (Not Found) The requested device metadata does not exist.
      */
     @DELETE
-    @Path("{token}")
+    @Path("{token: .*}")
     public Response unregisterInstallations(
             @PathParam("token") String token,
             @Context HttpServletRequest request) {
