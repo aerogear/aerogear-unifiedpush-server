@@ -100,6 +100,11 @@ public class PushMessageInformation extends BaseModel {
 
     public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
 
+    /**
+     * The number of active tokens, regardless from the variants, to which this Push Message was sent to
+     *
+     * @return the total of active tokens that received this Push Message
+     */
     public long getTotalReceivers() {
         return totalReceivers;
     }
