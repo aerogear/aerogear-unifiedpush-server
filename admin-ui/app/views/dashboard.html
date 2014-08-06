@@ -73,7 +73,7 @@
             </div>
             <div class="clearfix"></div>
           </div>
-          <ul class="list-group ">
+          <ul class="list-group " id="recent-activity">
             <li class="list-group-item" ng-repeat="top in topThree">
               <a href="#/activity/{{top.id}}">
                 {{ top.name }} &nbsp; ({{ top.submittedDate | date : 'd MMM, HH:mm:ss, yyyy' }})
