@@ -1,3 +1,5 @@
+local-config.json
+
 *.class
 
 # Package Files #
