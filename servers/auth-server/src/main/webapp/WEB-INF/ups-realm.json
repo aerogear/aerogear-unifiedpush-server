@@ -6,7 +6,7 @@
     "accessCodeLifespanUserAction": 300,
     "ssoSessionIdleTimeout": 600,
     "ssoSessionMaxLifespan": 36000,
-    "sslNotRequired": true,
+    "sslRequired": "external",
     "registrationAllowed": false,
     "social": false,
     "adminTheme": "aerogear",
