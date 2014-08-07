@@ -24,32 +24,25 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>UnifiedPush Servers Parent</name>
-    <description/>
+    <name>UnifiedPush Dependencies Parent</name>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>unifiedpush-servers</artifactId>
+    <artifactId>unifiedpush-dependencies-parent</artifactId>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>server-dependencies</module>
+    </modules>
+
     <build>
         <plugins>
             <plugin>
-              <groupId>org.jboss.as.plugins</groupId>
-              <artifactId>jboss-as-maven-plugin</artifactId>
-              <version>${jboss-as-maven-plugin.version}</version>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.wildfly.plugins</groupId>
-              <artifactId>wildfly-maven-plugin</artifactId>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-    <modules>
-        <module>auth-server</module>
-        <module>ups-server</module>
-    </modules>
+
 </project>
