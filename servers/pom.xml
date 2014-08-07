@@ -24,7 +24,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>Servers required for UPS</name>
+    <name>UnifiedPush Servers Parent</name>
     <description/>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>unifiedpush-servers</artifactId>
@@ -50,6 +50,7 @@
     </build>
     <modules>
         <module>auth-server</module>
-        <module>ups-server</module>
+        <module>ups-as7</module>
+        <module>ups-wildfly</module>
     </modules>
 </project>
