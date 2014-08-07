@@ -36,34 +36,74 @@ public class Application {
         this.submittedDate = submittedDate;
     }
 
+    /**
+     * The name of the Push Application
+     *
+     * @return the name of the Push Application
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of the Push Application
+     *
+     * @param name of the Push Application
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * The id of the Push Application
+     *
+     * @return the id of the Push Application
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Set the id of the Push Application
+     *
+     * @param id of the Push Application
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Number of active tokens that received the Push Message
+     *
+     * @return the number of active tokens that received the Push Message
+     */
     public long getTotalReceivers() {
         return totalReceivers;
     }
 
+    /**
+     * Set the number of active tokens that received the Push Message
+     *
+     * @param totalReceivers, number of active tokens that received the Push Message
+     */
     public void setTotalReceivers(long totalReceivers) {
         this.totalReceivers = totalReceivers;
     }
 
+    /**
+     * The timestamp of when the Push Message was submitted to the Push Networks
+     *
+     * @return the timestamp of when the Push Message was submitted to the Push Networks
+     */
     public Date getSubmittedDate() {
         return submittedDate;
     }
 
+    /**
+     * Set the timestamp of when the Push Message was submitted to the Push Networks
+     *
+     * @param submittedDate, timestamp of when the Push Message was submitted to the Push Networks
+     */
     public void setSubmittedDate(Date submittedDate) {
         this.submittedDate = submittedDate;
     }
