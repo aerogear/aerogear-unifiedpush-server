@@ -47,7 +47,7 @@
              if ( endpoint ) {
                  // assemble the metadata for registration with the UnifiedPush server
                  var metadata = {
-                     deviceToken: endPoint
+                     deviceToken: endpoint
                  };
 
                  var settings = {
@@ -69,7 +69,7 @@
          };
          // set the notification handler:
          navigator.setMessageHandler( "push", function( message ) {
-             if ( message.pushEndpoint === endPoint ) {
+             if ( message.pushEndpoint === endpoint ) {
                  // let's react on the endpoint
              }
          });
@@ -77,8 +77,7 @@
 
      // onClose callback function:
      function spClose() {
-         $("#reconnect").show();
-         appendTextArea("\nConnection Lost!\n");
+         // handle onclose - e.g. allow reconnect
      }
 
      SPClient = AeroGear.SimplePushClient({
