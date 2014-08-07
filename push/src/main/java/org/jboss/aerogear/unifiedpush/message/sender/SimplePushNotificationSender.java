@@ -43,7 +43,17 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      */
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
 
+        // no need to send empty list
+        if (tokens.isEmpty()) {
+            return;
+        }
+
         String payload = pushMessage.getSimplePush();
+        // if there was no payload provided, but we have clients, we send an empty string
+        // the SimplePush Server accepts that and will use the timestamp
+        if (payload == null) {
+            payload = "";
+        }
 
         // iterate over all the given channels, if there are channels:
         for (String clientURL : tokens) {
@@ -60,11 +70,16 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                     callback.onSuccess();
                 } else {
                     logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
-                    callback.onError("Error delivering SimplePush payload");
+                    callback.onError("Error delivering the payload. SimplePush Network status code was: " + simplePushStatusCode );
                 }
             } catch (IOException e) {
+                // any error while performing the PUT
                 logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
                 callback.onError("Error delivering SimplePush payload");
+            } catch (IllegalArgumentException e) {
+                // if, for some reason there is no token/URL on the metadata...
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                callback.onError(e.getMessage());
             } finally {
                 // tear down
                 if (conn != null) {
@@ -79,8 +94,8 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      */
     protected HttpURLConnection put(String url, String body) throws IOException {
 
-        if (url == null || body == null) {
-            throw new IllegalArgumentException("arguments cannot be null");
+        if (url == null) {
+            throw new IllegalArgumentException("SimplePush Update URL cannot be null");
         }
 
         byte[] bytes = body.getBytes(UTF_8);
