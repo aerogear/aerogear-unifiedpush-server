@@ -1,0 +1,7 @@
+{
+    "realm" : "aerogear",
+    "auth-server-url" : "/auth",
+    "ssl-required" : "external",
+    "resource" : "unified-push-server-js",
+    "public-client" : true
+}

@@ -25,9 +25,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>unifiedpush-server</artifactId>
+    <artifactId>unifiedpush-server-wildfly</artifactId>
     <packaging>war</packaging>
-    <name>UnifiedPush Server (WAR)</name>
+    <name>UnifiedPush Server for Wildfly (WAR)</name>
 
     <dependencies>
 
@@ -36,6 +36,11 @@
             <artifactId>unifiedpush-server-dependencies</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
+        </dependency>
+
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-wildfly-adapter</artifactId>
         </dependency>
 
     </dependencies>
@@ -141,28 +146,6 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
-      </profile>
-      <!-- Section borrowed from Keycloak project integrations for UPS -->
-      <profile>
-        <id>as7</id>
-        <activation>
-          <activeByDefault>true</activeByDefault>
-        </activation>
-        <dependencies>
-          <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-as7-adapter</artifactId>
-          </dependency>
-        </dependencies>
-      </profile>
-      <profile>
-        <id>wildfly</id>
-        <dependencies>
-          <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-wildfly-adapter</artifactId>
-          </dependency>
-        </dependencies>
       </profile>
     </profiles>
 
