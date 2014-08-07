@@ -50,6 +50,7 @@
     </build>
     <modules>
         <module>auth-server</module>
-        <module>ups-server</module>
+        <module>ups-as7</module>
+        <module>ups-wildfly</module>
     </modules>
 </project>
