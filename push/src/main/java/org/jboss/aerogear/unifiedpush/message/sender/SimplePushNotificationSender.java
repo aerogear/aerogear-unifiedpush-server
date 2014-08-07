@@ -45,12 +45,6 @@ public class SimplePushNotificationSender implements PushNotificationSender {
 
         String payload = pushMessage.getSimplePush();
 
-        // Convenience from the SimplePush spec;
-        // supported by Moz and our SimplePush Server
-        if (payload == null) {
-            payload = System.currentTimeMillis()+"";
-        }
-
         // iterate over all the given channels, if there are channels:
         for (String clientURL : tokens) {
 
