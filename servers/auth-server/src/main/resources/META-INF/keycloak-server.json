@@ -3,12 +3,34 @@
         "realm": "master"
     },
 
-    "model": {
+    "audit": {
+        "provider": "jpa",
+        "jpa": {
+            "exclude-events": [ "REFRESH_TOKEN" ]
+        }
+    },
+
+    "realm": {
         "provider": "jpa"
     },
 
-    "modelCache": {
-        "provider": "${keycloak.model.cache.provider:none}"
+    "user": {
+        "provider": "jpa"
+    },
+
+    "userSessions": {
+        "provider" : "mem"
+    },
+
+    "realmCache": {
+        "provider": "mem"
+    },
+
+    "userCache": {
+        "provider": "mem",
+        "mem": {
+            "maxSize": 20000
+        }
     },
 
     "timer": {
@@ -20,11 +42,11 @@
         "staticMaxAge": 2592000,
         "cacheTemplates": true,
         "folder": {
-          "dir": "${jboss.server.config.dir}/themes"
+            "dir": "${jboss.server.config.dir}/themes"
         }
     },
 
-    "login-forms": {
+    "login": {
         "provider": "freemarker"
     },
 
@@ -38,5 +60,14 @@
 
     "scheduled": {
         "interval": 900
+    },
+
+    "connectionsJpa": {
+        "default": {
+            "dataSource": "java:jboss/datasources/UnifiedPushDS",
+            "user": "${keycloak.connectionsJpa.user:sa}",
+            "password": "${keycloak.connectionsJpa.password:sa}",
+            "databaseSchema": "update"
+        }
     }
 }

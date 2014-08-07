@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.5</version>
+        <version>0.2.6-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -121,6 +121,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+
+
         </plugins>
     </build>
 
@@ -140,7 +156,7 @@
 
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.5</aerogear.bom.version>
+        <aerogear.bom.version>0.2.6-SNAPSHOT</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
@@ -304,4 +320,3 @@
     </profiles>
 
 </project>
-
