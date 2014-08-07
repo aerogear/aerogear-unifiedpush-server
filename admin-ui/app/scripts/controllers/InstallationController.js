@@ -41,7 +41,7 @@ angular.module('upsConsole').controller('InstallationController',
       var right = text.substring(width + 1);
       return $sce.trustAsHtml(left + block + $scope.wrapText(right));
     } else {
-      return text;
+      return $sce.trustAsHtml(text);
     }
   };
 
