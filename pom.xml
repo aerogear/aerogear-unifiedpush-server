@@ -125,6 +125,7 @@
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${jboss-as-maven-plugin.version}</version>
                 <configuration>
                     <skip>false</skip>
                 </configuration>
@@ -132,6 +133,7 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${wildfly-maven-plugin.version}</version>
                 <configuration>
                     <skip>false</skip>
                 </configuration>
@@ -156,6 +158,7 @@
         <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
+        <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
 
