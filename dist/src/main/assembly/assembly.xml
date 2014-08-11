@@ -44,6 +44,14 @@
             <includes>
                 <include>*.jar</include>
             </includes>
+        </fileSet>
+        <!-- Include the README for the generated archives -->
+        <fileSet>
+            <directory></directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README.md</include>
+            </includes>
         </fileSet>                        
     </fileSets>
 </assembly>
