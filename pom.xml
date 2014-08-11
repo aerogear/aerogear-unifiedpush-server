@@ -209,6 +209,19 @@
 	        </build>
 		</profile>
 
+        <!-- 
+            Builds the distribution. 
+
+            Usage:
+                - mvn clean install -Pdist,test
+        -->
+        <profile>
+            <id>dist</id>
+            <modules>
+                <module>dist</module>
+            </modules>
+        </profile>
+
         <profile>
             <id>code-coverage</id>
             <properties>
