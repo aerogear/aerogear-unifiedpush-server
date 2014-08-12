@@ -29,11 +29,11 @@ angular.module('upsConsole').controller('ExampleController',
   };
   $scope.variantType = $routeParams.variantType;
   $scope.applicationId = $routeParams.applicationId;
+  $scope.currentLocation = ContextProvider.contextPath();
 
   if (typeof $routeParams.variantId !== 'undefined') {
     variants.get(params, function (variant) {
       $scope.variant = variant;
-      $scope.currentLocation = ContextProvider.contextPath();
     });
   } else {
     pushApplication.get(params, function (application) {
