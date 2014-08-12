@@ -44,6 +44,10 @@
                 <p ng-show="variant.type == 'chrome'">Google's Cloud Messaging Network (GCM) will be used.
                 To learn more about Chrome Apps, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-chrome/">Chrome Push guide</a>.
                 </p>
+                <p ng-show="variant.type == 'simplePush'">A Server implementing the <em>SimplePush</em> protocol will be used.
+                More information can be found <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol">here</a>.
+                The <a href="https://github.com/aerogear/aerogear-simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
+                </p>
                 <table ng-show="variant.projectNumber.length">
                     <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>
                     <tr><td>Google API Key:</td><td>{{ variant.googleKey }}</td></tr>
@@ -60,10 +64,6 @@
                     <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
                     <tr><td>Refresh Token:</td><td>{{ variant.refreshToken }}</td></tr>
                 </table>
-                <p ng-show="variant.type == 'simplePush'">A Server implementing the <em>SimplePush</em> protocol will be used.
-                More information can be found <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol">here</a>.
-                The <a href="https://github.com/aerogear/aerogear-simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
-                </p>
             </div>
             <br><br>
             <div class="ups-tip-panel">
