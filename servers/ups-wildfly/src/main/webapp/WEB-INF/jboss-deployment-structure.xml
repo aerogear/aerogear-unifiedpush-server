@@ -2,10 +2,10 @@
     <deployment>
         <dependencies>
             <module name="org.apache.httpcomponents"/>
-            <module name="org.codehaus.jackson.jackson-core-asl"/>
-            <module name="org.codehaus.jackson.jackson-mapper-asl"/>
+            <module name="org.jboss.resteasy.resteasy-jackson-provider"  services="import" />
         </dependencies>
         <exclusions>
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
         </exclusions>
     </deployment>
 </jboss-deployment-structure>
