@@ -1,8 +1,8 @@
-# $WILDFLY_HOME/bin/jboss-cli.sh --file=/path/to/this/file.
+# $JBOSS_HOME/bin/jboss-cli.sh --file=/path/to/this/file.
 connect
 batch
 
-## Add SimplePush Datasource
+## Add UnifiedPush Datasource
 data-source add --name=UnifiedPushDS --driver-name=h2 --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:h2:${jboss.server.data.dir}/unifiedpush;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true
 data-source enable --name=UnifiedPushDS
 
