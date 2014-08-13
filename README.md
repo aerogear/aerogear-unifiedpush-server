@@ -55,7 +55,7 @@ For WildFly, invoke the following commands afer the build has been completed. Th
 
 ```
 cd servers
-mvn jboss-as:deploy -Pwildfly
+mvn wildfly:deploy -Pwildfly
 ```
 
 #### Deployment to JBossAS7
