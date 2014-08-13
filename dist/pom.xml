@@ -21,6 +21,7 @@
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-dependencies-parent</artifactId>
         <version>1.0.0.Final-SNAPSHOT</version>
+        <relativePath>../dependencies/pom.xml</relativePath>
     </parent>
 
     <artifactId>unifiedpush-dist</artifactId>
