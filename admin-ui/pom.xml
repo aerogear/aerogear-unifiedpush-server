@@ -95,11 +95,8 @@
                         <fileset>
                             <directory>./</directory>
                             <includes>
-                                <include>node/**</include>
-                                <include>node_modules/**</include>
-                                <include>app/bower_components/**</include>
+                                <include>dist/**</include>
                                 <include>.tmp/**</include>
-                                <include>.bower-tmp/**</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
@@ -111,8 +108,17 @@
 
     <profiles>
         <profile>
-            <!-- if you want to run tests, make sure you also enable 'test' profile -->
-            <id>dev</id>
+            <!--
+                Clears all cached Node/NPM/Bower artifacts makes completely fresh build 
+
+                usage: mvn clean install -Dfrontend.clean.force
+            -->
+            <id>frontend-forced-clean</id>
+            <activation>
+                <property>
+                    <name>frontend.clean.force</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -122,13 +128,14 @@
                             <filesets>
                                 <fileset>
                                     <directory>./</directory>
-                                    <excludes>
-                                        <exclude>node/**</exclude>
-                                        <exclude>node_modules/**</exclude>
-                                        <exclude>app/bower_components/**</exclude>
-                                        <exclude>.tmp/**</exclude>
-                                        <exclude>.bower-tmp/**</exclude>
-                                    </excludes>
+                                    <includes>
+                                        <include>dist/**</include>
+                                        <include>.tmp/**</include>
+                                        <include>node/**</include>
+                                        <include>node_modules/**</include>
+                                        <include>app/bower_components/**</include>
+                                        <include>.bower-tmp/**</include>
+                                    </includes>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
                             </filesets>
