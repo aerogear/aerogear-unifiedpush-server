@@ -9,10 +9,10 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 Only three steps are needed to get going!
 
-* Setup the database by copying this [datasource XML file](https://github.com/aerogear/aerogear-unifiedpush-server/blob/0.10.x/databases/unifiedpush-h2-ds.xml) into ``$JBOSS/standalone/deployments``
-* Start the Server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
-* Go to the `servers` folder
-* Run `mvn clean jboss-as:deploy` or `mvn -Pwildfly clean wildfly:deploy`
+* Get the [latest WAR files](http://aerogear.org/push/)
+* Setup a database of [your choice](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_database_configuration)
+* Start the {Wildfly|JBossAS7} server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
+* Deploy the two `WAR` files to the [server](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_deploy_the_unifiedpush_server)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
@@ -33,7 +33,41 @@ Note: The instructions below are pretty much based on [Keycloak integration with
 The Keycloak directives inside UnifiedPush server will enforce SSL to **all** external IP addresses, except for *localhost* and Docker images.
 
 
-## Developing and releasing UI
+## Development 
+
+The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find infos in this section.
+
+
+### Deployment 
+
+For deployment to a specific server (Wildfly or JBossAS7), you need to build the WAR files and deploy them to a running and configured server.
+
+First build the entire project:
+```
+mvn clean install
+```
+
+Note, this will build the also the WAR files for both, WildFly and JBossAS7. If you are only intereted in building for a specific platform, you can also use the profiles, discussed below.
+
+#### Deployment to WildFly
+
+For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
+
+```
+cd servers
+mvn wildfly:deploy -Pwildfly
+```
+
+#### Deployment to JBossAS7
+
+For JBossAS7, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured AS7 server.
+
+```
+cd servers
+mvn jboss-as:deploy -Pas7
+```
+
+### AdminUI and its release
 
 The sources for administration console UI are placed under `admin-ui`.
 
@@ -44,7 +78,7 @@ For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](http
 These instructions contains also specific instructions how to upgrade NPM package dependencies.
 
 
-## Developing and Openshift
+## Openshift
 
 For our Openshift Online cartridge we enforce HTTPS. This is done with a specific Maven Profile. To build the `WAR` files for Openshift the following needs to be invoked:
 
