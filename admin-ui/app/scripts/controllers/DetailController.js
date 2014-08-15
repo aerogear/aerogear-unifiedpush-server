@@ -90,7 +90,7 @@ angular.module('upsConsole').controller('DetailController',
       if (variant.type !== 'ios') {
         variants.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
-        if (variantDataUpdate.certificate) {
+        if (variant.certificate) {
           variants.updateWithFormData(params, variantDataUpdate, successCallback, failureCallback);
         } else {
           variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
