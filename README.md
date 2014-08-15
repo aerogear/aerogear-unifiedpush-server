@@ -35,7 +35,7 @@ The Keycloak directives inside UnifiedPush server will enforce SSL to **all** ex
 
 ## Development 
 
-The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find infos in this section.
+The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
 
 
 ### Deployment 
