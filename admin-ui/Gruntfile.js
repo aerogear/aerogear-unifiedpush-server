@@ -43,7 +43,15 @@ module.exports = function (grunt) {
         },
         src: '<%= yeoman.app %>/styles/main.less',
         dest: '<%= yeoman.tmp %>/styles/main.css'
+      },
+      account: {
+        options: {
+          paths: ['<%= yeoman.lib %>']
+        },
+        src: '<%= yeoman.app %>/styles/account.less',
+        dest: '<%= yeoman.tmp %>/styles/account.css'
       }
+
     },
     watch: {
       options: {
