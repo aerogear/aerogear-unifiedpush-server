@@ -107,7 +107,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error sending payload to APNs server", e);
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
                 // tear down and release resources:
