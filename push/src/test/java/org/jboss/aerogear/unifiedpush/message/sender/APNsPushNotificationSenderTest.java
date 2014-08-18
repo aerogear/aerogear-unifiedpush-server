@@ -43,7 +43,7 @@ public class APNsPushNotificationSenderTest {
         
         sender.sendPushMessage(iosVariant, Arrays.asList("token"), mock(UnifiedPushMessage.class), callback);
         
-        verify(callback).onError("Error sending messages to APN server: Invalid hex character: t");
+        verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }
 
     /**
