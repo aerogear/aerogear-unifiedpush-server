@@ -106,9 +106,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     logger.log(Level.INFO, "Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
                     clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
                 }
-            } catch (RuntimeException e) {
-                logger.log(Level.SEVERE, "Error sending messages to APN server", e);
-                callback.onError("Error sending messages to APN server");
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Error sending payload to APNs server", e);
+                callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
                 // tear down and release resources:
                 service.stop();
@@ -167,7 +167,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
                     logger.log(Level.SEVERE, "Error sending payload to APNs server", e);
-                    notificationSenderCallback.onError("Error sending payload to APNs server");
+                    notificationSenderCallback.onError("Error sending payload to APNs server: " + e.getMessage());
                 }
             });
 
