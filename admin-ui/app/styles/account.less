@@ -1,10 +1,509 @@
-@import "reset";
 @import "patternfly/less/patternfly";
-@import "console";
-@import "ups";
 @import "fonts/exo2/exo2";
 
 @font-path:      "../fonts";
 @fa-font-path:   "../fonts";
 @icon-font-path: "../fonts";
 @ups-font-path:  "../fonts/";
+
+
+/* AeroGear theme for account settings */
+
+@c_default: #00a9ec;
+
+html, body {
+  height: 100%;
+}
+
+body > .container {
+  min-height: calc(~"100% - 37px");
+  overflow: hidden;
+  height: auto;
+}
+
+body {
+  color: #484848;
+  background-color: #f5f5f5;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 300;
+}
+
+a {
+  color: @c_default;
+}
+
+a:hover {
+  color: darken(@c_default, 10%);
+}
+
+a:focus {
+  outline: 0 none;
+}
+
+
+/* header */
+
+.container {
+  padding: 0;
+  width: 100%;
+}
+
+.user { /* Workaround to overwrite styles from patternfly.css */
+  
+  .navbar {
+    border: none;
+    min-height: 0;
+    margin: 0;
+  }
+  
+  .navbar-pf {
+    border: none;
+    background-color: @c_default;
+  }
+  
+  .navbar-pf .navbar-header {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #cacaca;
+  }
+  
+  .navbar-pf .navbar-brand {
+    padding: 0;
+    margin-left: 30px;
+    color: #fff;
+  }
+  
+  .navbar-pf .navbar-brand:hover {
+    color: #fff;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 20px;
+    line-height: 36px;
+    height: 36px;
+    overflow: hidden;
+    margin: 0;
+    font-weight: 400;
+  }
+  
+  .navbar-pf .navbar-utility {
+    top: -37px;
+    right: 30px;
+  }
+  
+  .navbar-pf .navbar-utility > li > a {
+    font-size: 13px;
+    line-height: 22px;
+    padding: 7px 10px;
+    border-left: 0;
+  }
+
+}
+
+
+/* sidebar */
+
+.container { /* Workaround to overwrite styles from patternfly.css */
+  
+  .bs-sidebar {
+    background-color: #343434;
+    padding-top: 0;
+    width: 16.6667%;
+  }
+  
+  .bs-sidebar ul {
+    padding-left: 0;
+  }
+  
+  .bs-sidebar ul li {
+    margin: 40px 0 0;
+    text-align: center;
+  }
+  
+  .bs-sidebar ul li:first-child {
+    margin-top: 35px;
+  }
+  
+  .bs-sidebar ul li.active {
+    background: url(img/sidebar-active.svg) no-repeat right 22px;
+  }
+  
+  .bs-sidebar ul li a {
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    padding: 0;
+    opacity: 0.5;
+    font-size: 14px;
+    line-height: 1em;
+  }
+  
+  .bs-sidebar ul li a:hover, 
+  .bs-sidebar ul li a:focus {
+    text-decoration: none;
+    opacity: 1;
+    color: #fff;
+    border-right: 0;
+  }
+  
+  .bs-sidebar ul li.active a {
+    background-color: transparent;
+    opacity: 1;
+    background-image: none;
+  }
+  
+  .bs-sidebar ul li a:before {
+    display: block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-size: 42px;
+    opacity: 1;
+    -webkit-opacity: inherit;
+    margin-bottom: 6px;
+  }
+  
+  .bs-sidebar ul li:nth-child(1) a:before {
+    content: "";
+  }
+  
+  .bs-sidebar ul li:nth-child(2) a:before {
+    content: "";
+  }
+  
+  .bs-sidebar ul li:nth-child(3) a:before {
+    content: "";
+  }
+  
+  .bs-sidebar ul li:nth-child(4) a:before {
+    content: "";
+  }
+  
+} 
+
+
+/* content */
+
+.container { /* Workaround to overwrite styles from patternfly.css */
+  
+  .content-area {
+    background-color: #f5f5f5;
+    border: none;
+    width: 83.3333%;
+    padding: 0 50px;
+  }
+  
+  .content-area > .row > .col-md-10 {
+    width: 50%;
+  }
+  
+  .content-area > .row > .col-md-2 {
+    width: 50%;
+  }
+  
+  .content-area h2 {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 22px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    line-height: 1.2em;
+  }
+  
+  .subtitle {
+    color: #aaa;
+    font-weight: 300;
+    font-size: 12px;
+    margin-top: 36px;
+    text-align: right;
+  }
+  
+  hr {
+    border-color: #ddd;
+  }
+
+}
+
+
+/* form */
+
+.content-area { /* Workaround to overwrite styles from patternfly.css */
+
+  .form-horizontal {
+    border-color: #DDDDDD;
+    border-style: solid;
+    border-width: 1px 0 0;
+    padding-top: 24px;
+  }
+  
+  hr + .form-horizontal {
+    border: none;
+    padding-top: 0;
+  }
+  
+  .form-group .col-sm-2.col-md-2 {
+    position: relative;
+    padding-right: 20px;
+  }
+    
+  .form-group .col-sm-10.col-md-10 {
+    padding-left: 5px;
+  }
+  
+  label {
+    font-weight: 400;
+    font-size: 12px;
+    width: 100%;
+    line-height: 1.2em;
+  }
+  
+  .form-horizontal .control-label, 
+  .form-horizontal .radio, 
+  .form-horizontal .checkbox, 
+  .form-horizontal .radio-inline, 
+  .form-horizontal .checkbox-inline {
+    padding-top: 4px;
+  }
+  
+  .required {
+    color: #CB0000;
+    font-size: 12px;
+  }
+  
+  .control-label + .required {
+    right: 5px;
+  }
+  
+  .form-control:focus, 
+  .form-control:hover {
+    border-color: @c_default;
+  }
+  
+  .form-control:focus {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(0, 169, 236, 0.6);
+    outline: 0 none;
+  }
+  
+  #kc-form-buttons {
+    text-align: right;
+    margin-top: 10px;
+  }
+  
+  #kc-form-buttons .btn-primary {
+    float: right;
+    margin-left: 10px;
+  }
+  
+  .btn-primary {
+    background-color: @c_default;
+    background-image: linear-gradient(to bottom, @c_default 0%, @c_default 100%);
+    border-color: darken(@c_default, 10%);
+  }
+  
+  .btn-primary:hover, 
+  .btn-primary:focus, 
+  .btn-primary:active, 
+  .btn-primary.active, 
+  .open .dropdown-toggle.btn-primary {
+    background-color: darken(@c_default, 5%);
+    background-image: none;
+    border-color: darken(@c_default, 10%);
+  }
+  
+}
+
+
+/* authentication page */
+
+ol {
+  padding-left: 40px;
+}
+
+ol li {
+  font-size: 14px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+ol li img {
+  margin-top: 15px;
+  width: 180px;
+  margin-bottom: 5px;
+}
+
+ol li span {
+  bottom: 80px;
+  left: 200px;
+  position: absolute;
+  font-family: courier, ​monospace;
+  font-size: 13px;
+}
+
+
+/* alert */
+
+.alert {
+  font-size: 12px;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.alert.alert-success {
+  background-color: #FFFFFF;
+  border-color: #5CB75C;
+}
+
+.alert.alert-error {
+  background-color: #FFFFFF;
+  border-color: #C90813;
+}
+
+.alert.alert-warning {
+  background-color: #FFFFFF;
+  border-color: #EB7720;
+}
+
+.alert.alert-info {
+  background-color: #FFFFFF;
+  border-color: #CCCCCC;
+}
+
+
+/* BREAK POINTS */
+
+@media only screen and (min-width: 992px) {
+
+  .bs-sidebar {
+    margin-bottom: -999999px;
+    padding-bottom: 999999px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+
+  .container {
+  
+    .bs-sidebar {
+      width: 100%;
+      z-index: 100;
+    }
+    
+    .bs-sidebar ul {
+      display: table;
+      width: 100%;
+      margin-bottom: 0;
+    }
+    
+    .bs-sidebar ul li {
+      display: table-cell;
+      width: 25%;
+      margin: 0;
+      padding-bottom: 13px;
+      padding-top: 20px;
+    }
+    
+    .content-area {
+      width: 100%;
+      clear: both;
+      float: left;
+    }
+    
+    .content-area > .row > .col-md-10 {
+      float: left;
+    }
+    
+    .content-area > .row > .col-md-2 {
+      float: right;
+    }
+    
+    .content-area .alert {
+      margin-top: 30px;
+    }
+    
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  
+  .form-group .required {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    right: 5px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+
+  .user {
+
+    .navbar-collapse .container {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    
+    .navbar-pf .navbar-utility {
+      float: right;
+      padding-right: 30px;
+      border: none;
+    }
+    
+    .navbar-collapse ul li {
+      display: inline-block;
+    }
+    
+    .navbar-pf .navbar-utility > li + li {
+      border: none;
+    }
+    
+  }
+
+  .container {
+    
+    .form-horizontal .control-label {
+      display: inline-block;
+      width: auto;
+    }
+    
+    .form-horizontal .form-group {
+      margin-left: -5px;
+    }
+    
+    .form-group .col-sm-2.col-md-2 {
+      padding-left: 5px;
+    }
+    
+    .form-group .required {
+      right: 20px;
+    }    
+  } 
+
+}
+
+@media only screen and (max-width: 640px) {
+  
+  .user .navbar-pf .navbar-brand {
+    margin-left: 10px;
+  }
+  
+  .user .navbar-pf .navbar-utility {
+    padding-right: 10px;
+  }
+  
+  .container {
+
+    .bs-sidebar ul li a {
+      font-size: 13px;
+    }
+    
+    .bs-sidebar ul li a:before {
+      font-size: 33px;
+    }
+    
+    .content-area {
+      padding: 0 15px;
+    }
+  }
+  
+}
