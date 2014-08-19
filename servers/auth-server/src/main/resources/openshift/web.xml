@@ -57,6 +57,7 @@
 
     <security-constraint>
         <web-resource-collection>
+            <web-resource-name>Keycloak</web-resource-name>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <user-data-constraint>
