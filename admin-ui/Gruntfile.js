@@ -329,17 +329,6 @@ module.exports = function (grunt) {
         'htmlmin'
       ]
     },
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      }
-    },
-    cdnify: {
-      dist: {
-        html: ['<%= yeoman.dist %>/*.html']
-      }
-    },
     ngmin: {
       dist: {
         files: [
@@ -418,7 +407,6 @@ module.exports = function (grunt) {
     'copy:fonts',
     'useminPrepare',
     'ngtemplates',
-    'imagemin',
     'htmlmin',
     'concat',
     'cssmin',
