@@ -75,6 +75,6 @@ angular.module('upsConsole').controller('ExampleController',
     var parser = document.createElement('a');
     parser.href = ContextProvider.contextPath();
 
-    return parser.protocol + '//' + parser.hostname + ':8443/simplePush';
+    return parser.protocol + '//' + parser.hostname + ':8443/simplepush';
   };
 });
