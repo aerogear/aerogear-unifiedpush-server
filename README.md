@@ -7,7 +7,7 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 ## Getting started
 
-Only three steps are needed to get going!
+The following steps are needed to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_database_configuration)
