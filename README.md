@@ -40,7 +40,7 @@ The above `Getting started` section covers the latest release of the UnifiedPush
 
 ### Deployment 
 
-For deployment to a specific server (Wildfly or JBossAS7), you need to build the WAR files and deploy them to a running and configured server.
+For deployment of the `master branch` to a specific server (Wildfly or JBossAS7), you need to build the WAR files and deploy them to a running and configured server.
 
 First build the entire project:
 ```
