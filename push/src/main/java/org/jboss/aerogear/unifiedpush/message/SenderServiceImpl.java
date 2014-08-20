@@ -16,10 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
@@ -44,7 +41,8 @@ public class SenderServiceImpl implements SenderService {
 
     private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
 
-    @Inject @Any
+    @Inject
+    @Any
     private Instance<PushNotificationSender> senders;
 
     @Inject
@@ -65,7 +63,7 @@ public class SenderServiceImpl implements SenderService {
                         message.toJsonString(),
                         message.getIpAddress(),
                         message.getClientIdentifier()
-                );
+                        );
 
         // collections for all the different variants:
         final Set<Variant> variants = new HashSet<Variant>();
@@ -80,7 +78,7 @@ public class SenderServiceImpl implements SenderService {
             for (String variantID : variantIDs) {
                 Variant variant = genericVariantService.findByVariantID(variantID);
 
-                // does the variant exist ? 
+                // does the variant exist ?
                 if (variant != null) {
                     variants.add(variant);
                 }
@@ -101,24 +99,23 @@ public class SenderServiceImpl implements SenderService {
 
             // TODO: DISPATCH TO A QUEUE .....
             for (final Variant variant : variants) {
-                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases,
+                        deviceTypes);
 
                 // extracting the size for our counters
                 final int tokenSize = tokenPerVariant.size();
-                senders.select(new SenderTypeLiteral(variant.getClass())).get().sendPushMessage(variant, tokenPerVariant, message, new NotificationSenderCallback() {
-                    @Override
-                    public void onSuccess() {
-                        logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
-                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
-                    }
-
-                    @Override
-                    public void onError(final String reason) {
-                        logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
-                        updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
-                    }
-                });
-
+                senders.select(new SenderTypeLiteral(variant.getClass())).get()
+                        .sendPushMessage(variant, tokenPerVariant, message, new SenderServiceCallback(variant, tokenSize, pushMessageInformation));
+            }
+        } else if (message.getSimplePush() != null) {
+            for (Variant variant : variants) {
+                final PushNotificationSender simplePushSender = senders.select(new SenderTypeLiteral(SimplePushVariant.class)).get();
+                final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases,
+                        deviceTypes);
+                if (variant instanceof SimplePushVariant) {
+                    final SenderServiceCallback senderCallback = new SenderServiceCallback(variant, tokenPerVariant.size(), pushMessageInformation);
+                    simplePushSender.sendPushMessage(variant, tokenPerVariant, message, senderCallback);
+                }
             }
         }
     }
@@ -126,11 +123,13 @@ public class SenderServiceImpl implements SenderService {
     /**
      * Helpers to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
      */
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,final String variantID, final int receives, final Boolean deliveryStatus) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receives,
+            final Boolean deliveryStatus) {
         this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receives, deliveryStatus, null);
     }
 
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,final String variantID, final int receives, final Boolean deliveryStatus, final String reason) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receives,
+            final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setVariantID(variantID);
         variantMetricInformation.setReceivers(receives);
@@ -141,5 +140,29 @@ public class SenderServiceImpl implements SenderService {
 
         // store it!
         metricsService.updatePushMessageInformation(pushMessageInformation);
+    }
+
+    private class SenderServiceCallback implements NotificationSenderCallback {
+        private final Variant variant;
+        private final int tokenSize;
+        private final PushMessageInformation pushMessageInformation;
+
+        public SenderServiceCallback(Variant variant, int tokenSize, PushMessageInformation pushMessageInformation) {
+            this.variant = variant;
+            this.tokenSize = tokenSize;
+            this.pushMessageInformation = pushMessageInformation;
+        }
+
+        @Override
+        public void onSuccess() {
+            logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
+        }
+
+        @Override
+        public void onError(final String reason) {
+            logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
+            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
+        }
     }
 }
