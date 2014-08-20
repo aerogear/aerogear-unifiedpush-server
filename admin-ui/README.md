@@ -57,7 +57,7 @@ In order to create a WAR application, go into `../server/` folder and run Maven 
     cd ../server/
     mvn clean install
     
-In sake of quick development turnaround, the `$ mvn clean` will clean just `dist/` and `.tmp/` build directories, but some frontend build related directories will be still cached (`node/`, `node_modules/`, `app/bower_components/`, `.bower-tmp`). In order to clean all build related caches, execute:
+In sake of quick development turnaround, the `$ mvn clean` will clean just `dist/` and `.tmp/` build directories, but some frontend build related directories will be still cached (`node/`, `node_modules/`, `app/bower_components/`, `.build-tmp`). In order to clean all build related caches, execute:
 
     mvn clean install -Dfrontend.clean.force
 
