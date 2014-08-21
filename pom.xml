@@ -106,6 +106,75 @@
                 <scope>import</scope>
             </dependency>
 
+
+            <!-- Keycloak override from 0.2.6 parent/bom -->
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-core</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-adapter-core</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-jboss-adapter-core</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-dependencies-server-min</artifactId>
+                <type>pom</type>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-connections-jpa</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-jpa</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-sessions-mem</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-sessions-jpa</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-audit-api</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-audit-jpa</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-audit-jboss-logging</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-as7-adapter</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-wildfly-adapter</artifactId>
+                <version>${keycloak.ups.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -161,6 +230,9 @@
         <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
+
+        <!-- Keycloak version override from AeroGear BOMs -->
+        <keycloak.ups.version>1.0-rc-1</keycloak.ups.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
