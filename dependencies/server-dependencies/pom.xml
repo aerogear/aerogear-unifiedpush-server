@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-dependencies-parent</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.Final</version>
     </parent>
 
     <artifactId>unifiedpush-server-dependencies</artifactId>
