@@ -91,3 +91,27 @@ To lock down version again:
     $ git commit -m "upgrading <package> to <version>"
 
 Alternatively, you can remove `npm-shrinkwrap.json` and generate a new one.
+
+### Build errors
+
+The `frontend-maven-plugin` build may suffer from inconsistent downloads when you killed the previous build prematurely. This typically leads to such errors:
+
+    [INFO] --- frontend-maven-plugin:0.0.16:grunt (grunt build) @ unifiedpush-admin-ui ---
+    [INFO] Running 'grunt dist --no-color'
+    [INFO] module.js:340
+    [INFO]     throw err;
+    [INFO]           ^
+    [INFO] Error: Cannot find module 'findup-sync'
+
+or
+
+    [INFO] --- frontend-maven-plugin:0.0.16:npm (npm install) @ unifiedpush-admin-ui ---
+    [INFO] Running 'npm install --color=false'
+    [INFO] npm ERR! cb() never called!
+    [INFO] npm ERR! not ok code 0
+
+The build currently can't recover itself from these error.
+
+In order to fix this issue, you should fully clean the `admin-ui/` build resources:
+
+    mvn clean install -Dfrontend.clean.force
