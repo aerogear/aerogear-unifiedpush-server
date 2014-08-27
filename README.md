@@ -90,6 +90,15 @@ mvn clean install -Popenshift,test
 
 The WAR file can be used to update our [Cartridge](https://github.com/aerogear/openshift-origin-cartridge-aerogear-push).
 
+
+## Releasing the UnifiedPush Server
+
+The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the `distribution` bundle, you need to include these profiles:
+
+```
+mvn release:GOAL -Pdist,test
+```
+
 ### Any questions ?
 
 Join our [mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev) for any questions and help! We really hope you enjoy our UnifiedPush Server!
