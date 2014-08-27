@@ -286,6 +286,9 @@
 
             Usage:
                 - mvn clean install -Pdist,test
+
+            Preparing/Performing release, include as well:
+                - mvn release:GOAL -Pdist,test
         -->
         <profile>
             <id>dist</id>
