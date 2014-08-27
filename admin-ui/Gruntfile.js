@@ -162,30 +162,6 @@ module.exports = function (grunt) {
         dirs: ['<%= yeoman.dist %>']
       }
     },
-    imagemin: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd: '<%= yeoman.app %>/img',
-            src: '{,*/}*.{png,jpg,jpeg}',
-            dest: '<%= yeoman.dist %>/img'
-          }
-        ]
-      }
-    },
-    svgmin: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd: '<%= yeoman.app %>/images',
-            src: '{,*/}*.svg',
-            dest: '<%= yeoman.dist %>/images'
-          }
-        ]
-      }
-    },
     htmlmin: {
       dist: {
         options: {
