@@ -25,6 +25,7 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,6 +45,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     @Inject
     private GenericVariantService variantService;
 
+    private AndroidVariant androidVariant;
+
     @Module
     public Beans getBeans() {
         final Beans beans = new Beans();
@@ -55,16 +58,55 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         return beans;
     }
 
+    @Before
+    public void setup() {
+        // setup a variant:
+        androidVariant = new AndroidVariant();
+        androidVariant.setGoogleKey("Key");
+        androidVariant.setName("Android");
+        androidVariant.setDeveloper("me");
+        variantService.addVariant(androidVariant);
+    }
+
+    @Test
+    public void registerDevices() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+
+        // apply some update:
+        Installation otherDevice = new Installation();
+        otherDevice.setDeviceToken(generateFakedDeviceTokenString());
+        otherDevice.setAlias("username");
+
+        clientInstallationService.addInstallation(androidVariant, otherDevice);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
+    }
+
+    @Test
+    public void updateDevice() {
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+
+        // apply some update:
+        Installation sameDeviceDifferentRegistration = new Installation();
+        sameDeviceDifferentRegistration.setDeviceToken(deviceToken);
+        sameDeviceDifferentRegistration.setAlias("username");
+
+        clientInstallationService.addInstallation(androidVariant, sameDeviceDifferentRegistration);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+    }
+
     @Test
     public void importDevicesWithAndWithoutTokenDuplicates() {
-        // setup a variant:
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("Key");
-        av.setName("Android");
-        av.setDeveloper("me");
-        variantService.addVariant(av);
-
-        assertThat(variantService.findByVariantID(av.getVariantID())).isNotNull();
 
         // generate some devices with token:
         final int NUMBER_OF_INSTALLATIONS = 5;
@@ -87,10 +129,10 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         // a few invalid ones....
         assertThat(devices).hasSize(NUMBER_OF_INSTALLATIONS + 2);
 
-        clientInstallationService.addInstallations(av, devices);
+        clientInstallationService.addInstallations(androidVariant, devices);
 
         // but they got ignored:
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
 
         // add just one device:
         device = new Installation();
@@ -98,22 +140,14 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         devices.add(device);
 
         // run the importer again
-        clientInstallationService.addInstallations(av, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
+        clientInstallationService.addInstallations(androidVariant, devices);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
     }
 
 
 
     @Test
     public void importDevicesWithoutDuplicates() {
-        // setup a variant:
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("Key");
-        av.setName("Android");
-        av.setDeveloper("me");
-        variantService.addVariant(av);
-
-        assertThat(variantService.findByVariantID(av.getVariantID())).isNotNull();
 
         // generate some devices:
         final int NUMBER_OF_INSTALLATIONS = 5;
@@ -124,8 +158,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
             devices.add(device);
         }
 
-        clientInstallationService.addInstallations(av, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        clientInstallationService.addInstallations(androidVariant, devices);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
 
         // add just one device:
         Installation device = new Installation();
@@ -133,20 +167,12 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         devices.add(device);
 
         // run the importer again
-        clientInstallationService.addInstallations(av, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
+        clientInstallationService.addInstallations(androidVariant, devices);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
     }
 
     @Test
     public void importDevices() {
-        // setup a variant:
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("Key");
-        av.setName("Android");
-        av.setDeveloper("me");
-        variantService.addVariant(av);
-
-        assertThat(variantService.findByVariantID(av.getVariantID())).isNotNull();
 
         // generate some devices:
         final int NUMBER_OF_INSTALLATIONS = 100000;
@@ -157,9 +183,9 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
             devices.add(device);
         }
 
-        clientInstallationService.addInstallations(av, devices);
+        clientInstallationService.addInstallations(androidVariant, devices);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
     }
 
     private String generateFakedDeviceTokenString() {

@@ -120,35 +120,17 @@ public class InstallationRegistrationEndpoint {
         }
 
         // Poor validation: We require the Token
-        if (entity.getDeviceToken() == null) {
+        if (entity.getDeviceToken() == null || entity.getDeviceToken().isEmpty()) {
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
-
-        // look up all installations (with same token) for the given variant:
-        Installation installation =
-                clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
-
-        // Needed for the Admin UI Only. Help for setting up Routes
-        entity.setPlatform(variant.getType().getTypeName());
 
         // The 'mobile application' on the device/client was launched.
         // If the installation is already in the DB, let's update the metadata,
         // otherwise we register a new installation:
         logger.log(Level.FINEST, "Mobile Application on device was launched");
 
-        // new device/client ?
-        if (installation == null) {
-            logger.log(Level.FINEST, "Performing new device/client registration");
-            // store the installation:
-            clientInstallationService.addInstallation(variant, entity);
-        } else {
-            // We only update the metadata, if the device is enabled: 
-            if (installation.isEnabled()) {
-                logger.log(Level.FINEST, "Updating received metadata for an 'enabled' installation");
-                // update the entity:
-                clientInstallationService.updateInstallation(installation, entity);
-            }
-        }
+        // async:
+        clientInstallationService.addInstallation(variant, entity);
 
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
