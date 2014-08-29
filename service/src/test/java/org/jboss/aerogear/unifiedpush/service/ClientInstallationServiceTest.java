@@ -56,6 +56,55 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    public void importDevicesWithAndWithoutTokenDuplicates() {
+        // setup a variant:
+        AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("Key");
+        av.setName("Android");
+        av.setDeveloper("me");
+        variantService.addVariant(av);
+
+        assertThat(variantService.findByVariantID(av.getVariantID())).isNotNull();
+
+        // generate some devices with token:
+        final int NUMBER_OF_INSTALLATIONS = 5;
+        final List<Installation> devices = new ArrayList<Installation>();
+        for (int i = 0; i < NUMBER_OF_INSTALLATIONS; i++) {
+            Installation device = new Installation();
+            device.setDeviceToken(generateFakedDeviceTokenString());
+            devices.add(device);
+        }
+
+        // add two more with invalid token:
+        Installation device = new Installation();
+        devices.add(device);
+
+        device = new Installation();
+        device.setDeviceToken("");
+        devices.add(device);
+
+
+        // a few invalid ones....
+        assertThat(devices).hasSize(NUMBER_OF_INSTALLATIONS + 2);
+
+        clientInstallationService.addInstallations(av, devices);
+
+        // but they got ignored:
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+
+        // add just one device:
+        device = new Installation();
+        device.setDeviceToken(generateFakedDeviceTokenString());
+        devices.add(device);
+
+        // run the importer again
+        clientInstallationService.addInstallations(av, devices);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(av.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
+    }
+
+
+
+    @Test
     public void importDevicesWithoutDuplicates() {
         // setup a variant:
         AndroidVariant av = new AndroidVariant();
