@@ -35,6 +35,11 @@ public interface ClientInstallationService {
     void addInstallation(Variant variant, Installation installation);
 
     /**
+     * Add new Installations objects, for importing devices on the database.
+     */
+    void addInstallations(Variant variant, List<Installation> installations);
+
+    /**
      * Find all installations for the variant specified.
      *  @param variantId the id of the variant to find the installations for
      * @param developer the developer

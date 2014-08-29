@@ -25,8 +25,11 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -35,12 +38,60 @@ import java.util.Set;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
+    private final Logger logger = Logger.getLogger(ClientInstallationServiceImpl.class.getName());
+
     @Inject
     private InstallationDao dao;
 
+    @Override
     public void addInstallation(Variant variant, Installation installation) {
         installation.setVariant(variant);
         dao.create(installation);
+    }
+
+    @Override
+    @Asynchronous
+    public void addInstallations(Variant variant, List<Installation> installations) {
+
+        // don't bother
+        if (installations == null || installations.isEmpty()) {
+            return;
+        }
+
+        Set<String> existingTokens = new HashSet<String>(findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, null, null));
+
+        // clear out:
+        dao.flushAndClear();
+
+        for (int i = 0; i < installations.size(); i++) {
+
+            Installation current = installations.get(i);
+
+            // let's avoid duplicated tokens/devices per variant
+            if (! existingTokens.contains(current.getDeviceToken())) {
+
+                logger.log(Level.FINEST, "Importing device with token: " + current.getDeviceToken());
+
+                // set reference
+                current.setVariant(variant);
+
+                dao.create(current);
+
+                // and add a reference to the existing tokens set, to ensure the JSON file contains no duplicates:
+                existingTokens.add(current.getDeviceToken());
+
+                // some tunings, ever 10k devices releasing resources
+                if (i % 10000 == 0) {
+                    logger.log(Level.FINEST, "releasing some resources during import");
+                    dao.flushAndClear();
+                }
+            } else {
+                // for now, we ignore them.... no update applied!
+                logger.log(Level.FINEST, "Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
+            }
+        }
+        // clear out:
+        dao.flushAndClear();
     }
 
     @Override
