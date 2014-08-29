@@ -68,7 +68,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             Installation current = installations.get(i);
 
             // let's avoid duplicated tokens/devices per variant
-            if (! existingTokens.contains(current.getDeviceToken())) {
+            // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
+            if (! existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
                 logger.log(Level.FINEST, "Importing device with token: " + current.getDeviceToken());
 
@@ -166,5 +167,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
+    }
+
+    /**
+     * A simple validation util that checks if a token is present
+     */
+    private boolean hasTokenValue(Installation installation) {
+        return (installation.getDeviceToken() != null && (! installation.getDeviceToken().isEmpty()));
     }
 }
