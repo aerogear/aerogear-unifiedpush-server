@@ -16,11 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,6 +42,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +51,9 @@ import java.util.logging.Logger;
 @Path("/registry/device")
 @TransactionAttribute
 public class InstallationRegistrationEndpoint {
+
+    // at some point we should move the mapper to a util class.?
+    public static final ObjectMapper mapper = new ObjectMapper();
 
     private final Logger logger = Logger.getLogger(InstallationRegistrationEndpoint.class.getName());
     @Inject
@@ -189,6 +197,79 @@ public class InstallationRegistrationEndpoint {
         }
 
         return appendAllowOriginHeader(Response.noContent(), request);
+    }
+
+    /**
+     * API for uploading JSON file to allow massive device registration (aka import).
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -3 -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: multipart/form-data"
+     *   -F "file=@/path/to/my-devices-for-import.json"
+     *   -X POST
+     *   https://SERVER:PORT/context/rest/registry/device/importer
+     * </pre>
+     *
+     * The format of the JSON file is an array, containing several objects that follow the same syntax used on the
+     * <code>/rest/registry/device</code> endpoint.
+     * <p/>
+     * Here is an example:
+     *
+     * <pre>
+     * [
+     *   {
+     *     "deviceToken" : "someTokenString",
+     *     "deviceType" : "iPad",
+     *     "operatingSystem" : "iOS",
+     *     "osVersion" : "6.1.2",
+     *     "alias" : "someUsername or email adress...",
+     *     "categories" : ["football", "sport"]
+     *   },
+     *   {
+     *     "deviceToken" : "someOtherTokenString",
+     *     ...
+     *   },
+     *   ...
+     * ]
+     * </pre>
+     *
+     * @HTTP 200 (OK) Successful submission of import job.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     */
+    @POST
+    @Path("/importer")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response importDevice(
+            @MultipartForm
+            ImporterForm form,
+            @Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return appendAllowOriginHeader(
+                    Response.status(Status.UNAUTHORIZED)
+                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                            .entity("Unauthorized Request"),
+                    request);
+        }
+
+        List<Installation> devices = null;
+        try {
+            devices = mapper.readValue(form.getJsonFile(), new TypeReference<List<Installation>>() {});
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error when parsing importer json file");
+        }
+
+        logger.log(Level.INFO, "Devices to import: " + devices.size());
+
+        clientInstallationService.addInstallations(variant, devices);
+
+        // return directly, the above is async and may take a bit :-)
+        return Response.status(Status.OK)
+                .entity("Job submitted for processing").build();
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
