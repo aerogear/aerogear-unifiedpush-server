@@ -97,6 +97,14 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- using latest of OpenEJB -->
+            <dependency>
+                <groupId>org.apache.openejb</groupId>
+                <artifactId>openejb-core-hibernate</artifactId>
+                <version>4.7.0</version>
+                <type>pom</type>
+            </dependency>
+
             <!-- AeroGear Android Dependencies BOM Imports -->
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
