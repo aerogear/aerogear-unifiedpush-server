@@ -44,9 +44,29 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private InstallationDao dao;
 
     @Override
-    public void addInstallation(Variant variant, Installation installation) {
-        installation.setVariant(variant);
-        dao.create(installation);
+    @Asynchronous
+    public void addInstallation(Variant variant, Installation entity) {
+
+        // does it already exist ?
+        Installation installation  = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+
+        // Needed for the Admin UI Only. Help for setting up Routes
+        entity.setPlatform(variant.getType().getTypeName());
+
+        // new device/client ?
+        if (installation == null) {
+            logger.log(Level.FINEST, "Performing new device/client registration");
+            // store the installation:
+            entity.setVariant(variant);
+            dao.create(entity);
+        } else {
+            // We only update the metadata, if the device is enabled:
+            if (installation.isEnabled()) {
+                logger.log(Level.FINEST, "Updating received metadata for an 'enabled' installation");
+                // update the entity:
+                this.updateInstallation(installation, entity);
+            }
+        }
     }
 
     @Override
