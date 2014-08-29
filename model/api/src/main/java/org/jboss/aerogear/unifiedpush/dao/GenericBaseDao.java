@@ -15,4 +15,7 @@ public interface GenericBaseDao<O, K> {
 
     void delete(O o);
 
+    void flushAndClear();
+
+
 }

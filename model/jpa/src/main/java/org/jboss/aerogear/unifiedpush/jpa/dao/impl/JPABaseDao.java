@@ -57,5 +57,12 @@ public abstract class JPABaseDao {
         }
     }
 
-
+    /**
+     * Write pending objects to the database and
+     * clear session-scoped cache
+     */
+    public void flushAndClear() {
+        entityManager.flush();
+        entityManager.clear();
+    }
 }
