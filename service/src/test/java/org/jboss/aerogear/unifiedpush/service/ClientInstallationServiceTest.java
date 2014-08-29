@@ -100,7 +100,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertThat(variantService.findByVariantID(av.getVariantID())).isNotNull();
 
         // generate some devices:
-        final int NUMBER_OF_INSTALLATIONS = 10000;
+        final int NUMBER_OF_INSTALLATIONS = 100000;
         final List<Installation> devices = new ArrayList<Installation>();
         for (int i = 0; i < NUMBER_OF_INSTALLATIONS; i++) {
             Installation device = new Installation();
