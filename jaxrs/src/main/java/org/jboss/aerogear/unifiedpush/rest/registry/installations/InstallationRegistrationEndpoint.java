@@ -235,6 +235,7 @@ public class InstallationRegistrationEndpoint {
      * </pre>
      *
      * @HTTP 200 (OK) Successful submission of import job.
+     * @HTTP 400 (Bad Request) The format of the client request was incorrect.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested Variant resource does not exist.
      */
@@ -256,11 +257,13 @@ public class InstallationRegistrationEndpoint {
                     request);
         }
 
-        List<Installation> devices = null;
+        List<Installation> devices;
         try {
             devices = mapper.readValue(form.getJsonFile(), new TypeReference<List<Installation>>() {});
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error when parsing importer json file");
+            logger.log(Level.SEVERE, "Error when parsing importer json file", e);
+
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
         logger.log(Level.INFO, "Devices to import: " + devices.size());
