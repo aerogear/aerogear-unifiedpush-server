@@ -24,19 +24,14 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 
-import javax.annotation.PreDestroy;
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(ApplicationComposer.class)
-public class PushApplicationServiceTest {
+public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private PushApplicationService pushApplicationService;
@@ -50,11 +45,6 @@ public class PushApplicationServiceTest {
         return beans;
     }
 
-    @Module
-    public Class<?>[] app() throws Exception {
-        return new Class<?>[] { EntityManagerProducer.class};
-    }
-
     @Test
     public void addPushApplication() {
         PushApplication pa = new PushApplication();
@@ -65,10 +55,10 @@ public class PushApplicationServiceTest {
         pushApplicationService.addPushApplication(pa);
 
         PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertNotNull(stored);
-        assertNotNull(stored.getId());
-        assertEquals(pa.getName(), stored.getName());
-        assertEquals(pa.getPushApplicationID(), stored.getPushApplicationID());
+        assertThat(stored).isNotNull();
+        assertThat(stored.getId()).isNotNull();
+        assertThat(pa.getName()).isEqualTo(stored.getName());
+        assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
     }
 
     @Test
@@ -81,12 +71,12 @@ public class PushApplicationServiceTest {
         pushApplicationService.addPushApplication(pa);
 
         PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertNotNull(stored);
+        assertThat(stored).isNotNull();
 
         stored.setName("FOO");
         pushApplicationService.updatePushApplication(stored);
         stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertEquals("FOO", stored.getName());
+        assertThat("FOO").isEqualTo(stored.getName());
     }
 
     @Test
@@ -99,20 +89,20 @@ public class PushApplicationServiceTest {
         pushApplicationService.addPushApplication(pa);
 
         PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertNotNull(stored);
-        assertNotNull(stored.getId());
-        assertEquals(pa.getName(), stored.getName());
-        assertEquals(pa.getPushApplicationID(), stored.getPushApplicationID());
+        assertThat(stored).isNotNull();
+        assertThat(stored.getId()).isNotNull();
+        assertThat(pa.getName()).isEqualTo(stored.getName());
+        assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
 
         stored = pushApplicationService.findByPushApplicationID("123");
-        assertNull(stored);
+        assertThat(stored).isNull();
 
     }
 
     @Test
     public void findAllPushApplicationsForDeveloper() {
 
-        assertTrue(pushApplicationService.findAllPushApplicationsForDeveloper("admin").isEmpty());
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
 
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -122,8 +112,8 @@ public class PushApplicationServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertFalse(pushApplicationService.findAllPushApplicationsForDeveloper("admin").isEmpty());
-        assertEquals(1, pushApplicationService.findAllPushApplicationsForDeveloper("admin").size());
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
     }
 
     @Test
@@ -136,13 +126,13 @@ public class PushApplicationServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertFalse(pushApplicationService.findAllPushApplicationsForDeveloper("admin").isEmpty());
-        assertEquals(1, pushApplicationService.findAllPushApplicationsForDeveloper("admin").size());
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertTrue(pushApplicationService.findAllPushApplicationsForDeveloper("admin").isEmpty());
-        assertNull(pushApplicationService.findByPushApplicationID(uuid));
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
+        assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 
     @Test
@@ -156,38 +146,10 @@ public class PushApplicationServiceTest {
         pushApplicationService.addPushApplication(pa);
 
         PushApplication queried =  pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
-        assertNotNull(queried);
-        assertEquals(uuid, queried.getPushApplicationID());
+        assertThat(queried).isNotNull();
+        assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
-        assertNull(pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin2"));
-        assertNull(pushApplicationService.findByPushApplicationIDForDeveloper("123-3421", "admin"));
-    }
-
-    // test-ware: EM producer:
-
-    @SessionScoped
-    @Stateful
-    public static class EntityManagerProducer implements Serializable {
-
-        {
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-            entityManager = emf.createEntityManager();
-        }
-
-        private static EntityManager entityManager;
-
-        @Produces
-        public EntityManager produceEm() {
-            entityManager.getTransaction().begin();
-            return entityManager;
-        }
-
-        @PreDestroy
-        public void closeEntityManager() {
-            if (entityManager.isOpen()) {
-                entityManager.getTransaction().commit();
-                entityManager.close();
-            }
-        }
+        assertThat(pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin2")).isNull();
+        assertThat(pushApplicationService.findByPushApplicationIDForDeveloper("123-3421", "admin")).isNull();
     }
 }
