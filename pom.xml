@@ -159,21 +159,6 @@
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-audit-api</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-audit-jpa</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-audit-jboss-logging</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-as7-adapter</artifactId>
                 <version>${keycloak.ups.version}</version>
             </dependency>
@@ -240,7 +225,7 @@
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
 
         <!-- Keycloak version override from AeroGear BOMs -->
-        <keycloak.ups.version>1.0-rc-1</keycloak.ups.version>
+        <keycloak.ups.version>1.0-rc-2</keycloak.ups.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
@@ -289,8 +274,8 @@
 	        </build>
 		</profile>
 
-        <!-- 
-            Builds the distribution. 
+        <!--
+            Builds the distribution.
 
             Usage:
                 - mvn clean install -Pdist,test
