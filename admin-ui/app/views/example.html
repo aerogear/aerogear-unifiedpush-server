@@ -294,6 +294,29 @@ defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
 });
                     </div>
                 </tab>
+
+                <tab heading="C#" ng-hide="variantType != 'windows'" active="isActive('windows')" ng-click="setActive('windows')">
+                    <div class="ups-code-block csharp" hljs compile="true">
+using AeroGear.Push;
+
+protected override void OnLaunched(LaunchActivatedEventArgs e)
+{
+  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
+  Registration registration = new Registration();
+  registration.PushReceivedEvent += HandleNotification;
+  registration.Register(pushConfig);
+
+  ...
+}
+
+void HandleNotification(object sender, PushReceivedEvent e)
+{
+  Debug.WriteLine("notification received {0}", e.Args.ToastNotification.Content.GetXml());
+}
+
+                    </div>
+                </tab>
+
             </tabset>
         </div>
     </div>
