@@ -65,21 +65,6 @@
         </dependency>
 
         <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-audit-api</artifactId>
-        </dependency>
-
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-audit-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-audit-jboss-logging</artifactId>
-        </dependency>
-
-        <dependency>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk16</artifactId>
         </dependency>
