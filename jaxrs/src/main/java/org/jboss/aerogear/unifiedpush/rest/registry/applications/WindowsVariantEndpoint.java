@@ -43,7 +43,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerAndroidVariant(
+    public Response registerWindowsVariant(
             WindowsVariant windowsVariant,
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo,
@@ -69,7 +69,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
         // store the "developer:
         windowsVariant.setDeveloper(extractUsername(request));
 
-        // store the Android variant:
+        // store the Windows variant:
         variantService.addVariant(windowsVariant);
         // add iOS variant, and merge:
         pushAppService.addVariant(pushApp, windowsVariant);
@@ -79,7 +79,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllAndroidVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
+    public Response listAllWindowsVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
         return Response.ok(getVariantsByType(application, WindowsVariant.class)).build();
     }
@@ -89,7 +89,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{windowsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAndroidVariation(
+    public Response updateWindowsVariation(
             @Context HttpServletRequest request,
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {
