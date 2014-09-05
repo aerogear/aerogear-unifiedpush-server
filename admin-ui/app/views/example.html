@@ -295,7 +295,7 @@ defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
                     </div>
                 </tab>
 
-                <tab heading="C#" ng-hide="variantType != 'windows'" active="isActive('windows')" ng-click="setActive('windows')">
+                <tab heading="C#" ng-hide="variantType != 'windows'" active="tab('windows')" ng-click="tab('windows')">
                     <div class="ups-code-block csharp" hljs compile="true">
 using AeroGear.Push;
 
