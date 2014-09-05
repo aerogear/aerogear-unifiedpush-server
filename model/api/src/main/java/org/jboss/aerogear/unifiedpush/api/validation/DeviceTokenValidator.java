@@ -38,6 +38,11 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      * consist of digits, alphas, - and _ all have one of these separators
      */
     private static final Pattern ANDROID_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_]{100,}");
+    /**
+     * Pattern for windows is a uri that can be 1024 characters long
+     * @see <a href="http://blogs.windows.com/windows_phone/b/wpdev/archive/2013/10/22/recommended-practices-for-using-microsoft-push-notification-service-mpns.aspx?Redirected=true">Windows developer blog</a>
+     */
+    private static final Pattern WINDOWS_DEVICE_TOKEN = Pattern.compile("https://(.*){0,1024}");
 
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {
@@ -57,6 +62,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return IOS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case WINDOWS:
+                return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
         }
 
         return true;

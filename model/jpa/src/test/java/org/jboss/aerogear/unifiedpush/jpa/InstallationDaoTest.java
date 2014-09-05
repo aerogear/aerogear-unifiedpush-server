@@ -410,6 +410,26 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void shouldSaveWhenValidateDeviceIdWindows() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("https://db3.notify.windows.com/?token=AgYAAACH%2fZixlZK4v%2bkD3LFiz7zHOJm13"
+                + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
+                + "615fPox8bwoxrTU%3d");
+        
+        final WindowsVariant variant = new WindowsVariant();
+        variant.setClientSecret("12");
+        variant.setSid("12");
+        entityManager.persist(variant);
+
+        installation.setVariant(variant);
+
+        // when
+        installationDao.create(installation);
+        entityManager.flush();
+    }
+    
+    @Test
     public void shouldSaveWhenValidateDeviceIdAndroid() {
         // given
         final Installation installation = new Installation();

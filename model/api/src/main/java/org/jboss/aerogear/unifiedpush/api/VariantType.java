@@ -41,7 +41,12 @@ public enum VariantType {
     /**
      * The type identifier for our Chrome Packaged App variants.
      */
-    CHROME_PACKAGED_APP("chrome");
+    CHROME_PACKAGED_APP("chrome"),
+
+    /**
+     * The type identifier for our Windows variants.
+     */
+    WINDOWS("windows");
 
     private final String typeName;
 
