@@ -24,7 +24,6 @@ Now you need to modify `admin-ui/local-config.json` file and fill in `jbossweb` 
 
     {
         "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
-        "webapp": "../server/target/ag-push",
         "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war",
     };
     
@@ -41,10 +40,6 @@ Now everytime you save a file, grunt is watching and will copy to configured dir
 
 To create a distribution in `admin-ui/dist/` directory:
 
-    grunt
-    
-To create a distribution and copy it to `../server/target/ag-push`:
-
     grunt dist
     
 To create a distribution and copy it jbossweb folder (as configured above):
@@ -57,7 +52,7 @@ In order to create a WAR application, go into `../server/` folder and run Maven 
     cd ../server/
     mvn clean install
     
-In sake of quick development turnaround, the `$ mvn clean` will clean just `dist/` and `.tmp/` build directories, but some frontend build related directories will be still cached (`node/`, `node_modules/`, `app/bower_components/`, `.build-tmp`). In order to clean all build related caches, execute:
+For sake of quick development turnaround, the `$ mvn clean` will clean just `dist/` and `.tmp/` build directories, but some frontend build related directories will be still cached (`node/`, `node_modules/`, `app/bower_components/`, `.build-tmp`). In order to clean all build related caches, execute:
 
     mvn clean install -Dfrontend.clean.force
 
