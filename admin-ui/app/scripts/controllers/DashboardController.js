@@ -26,84 +26,60 @@ angular.module('upsConsole').controller('DashboardController',
   });
 
 angular.module('upsConsole').controller('ActivityController',
-  function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs) {
+  function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs, data) {
 
     $scope.applicationId = $routeParams.applicationId;
     $scope.currentPage = 1;
+    $scope.application = data.application;
+    $scope.variant = data.variant;
 
-    function forAllVariants(application, variantId, closure) {
-      angular.forEach(application.variants, function (variant) {
-        if (variant.variantID === variantId) {
-          closure(variant);
-        }
-      });
-    }
+    breadcrumbs.generateBreadcrumbs();
 
     function onDetailsPage() {
       return typeof $routeParams.variantId !== 'undefined';
     }
 
-    pushApplication.get({appId: $routeParams.applicationId}, function (application) {
-      $rootScope.application = application;
-
-      if (typeof $routeParams.variantId !== 'undefined') {
-        forAllVariants(application, $routeParams.variantId, function (variant) {
-          $rootScope.variant = variant;
-        });
-      }
-      breadcrumbs.generateBreadcrumbs();
-    });
-
-    function fetchVariantsMetrics(pageNo) {
-      metrics.variant({id: $routeParams.variantId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
-        $scope.totalItems = responseHeaders('total');
-        $scope.pushMetrics = data;
-        angular.forEach(data, function (metric) {
-          metric.totalReceivers = metric.variantInformations[0].receivers;
-          metric.deliveryFailed = !metric.variantInformations[0].deliveryStatus;
-        });
-      });
+    function applyVariantMetricsData( data ) {
+      $scope.totalItems = data.totalItems;
+      $scope.pushMetrics = data.pushMetrics;
     }
 
-    function fetchApplicationMetrics(pageNo) {
-      metrics.application({id: $routeParams.applicationId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
-        $scope.totalItems = responseHeaders('total');
-        $scope.pushMetrics = data;
-
-        function totalReceivers(data) {
-          angular.forEach(data, function (metric) {
-            angular.forEach(metric.variantInformations, function (variant) {
-              if (!variant.deliveryStatus) {
-                metric.deliveryFailed = true;
-              }
-            });
-          });
-        }
-
-        totalReceivers(data);
-      });
+    function applyApplicationMetricsData( data ) {
+      $scope.totalItems = data.totalItems;
+      $scope.pushMetrics = data.pushMetrics;
     }
 
-    function fetch() {
-      if (onDetailsPage()) {
-        fetchVariantsMetrics($scope.currentPage);
-      } else {
-        fetchApplicationMetrics($scope.currentPage);
-      }
+    if (onDetailsPage()) {
+      applyVariantMetricsData(data);
+    } else {
+      applyApplicationMetricsData(data);
     }
 
     $scope.pageChanged = function () {
-      fetch();
+      $rootScope.isViewLoading = true;
+      if (onDetailsPage()) {
+        metrics.fetchVariantMetrics($routeParams.variantId, $scope.currentPage)
+          .then(applyVariantMetricsData)
+          .then(function() {
+            $rootScope.isViewLoading = false;
+          });
+      } else {
+        metrics.fetchApplicationMetrics($routeParams.applicationId, $scope.currentPage)
+          .then(applyApplicationMetricsData)
+          .then(function() {
+            $rootScope.isViewLoading = false;
+          });
+      }
     };
 
-    fetch();
     $scope.variantMetricInformation = function(metrics) {
       angular.forEach(metrics, function(variantInfo) {
-        forAllVariants($rootScope.application, variantInfo.variantID, function (variant) {
-          variantInfo.name = variant.name;
+        angular.forEach($scope.application.variants, function (variant) {
+          if (variant.variantID === variantInfo.variantID) {
+            variantInfo.name = variant.name;
+          }
         });
       });
-
       return metrics;
     };
 
