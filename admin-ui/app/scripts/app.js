@@ -159,6 +159,19 @@ var UPS = (function() {
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        resolve: {
+          data: function ($route, $q, pushApplication, metrics) {
+            var applicationMetricsPromise = metrics.fetchApplicationMetrics($route.current.params.applicationId, 1);
+            var applicationDetailPromise = pushApplication.get({appId: $route.current.params.applicationId}).$promise
+              .then(function(application) {
+                return { application: application };
+              });
+            return $q.all([applicationMetricsPromise, applicationDetailPromise])
+              .then(function( data ) {
+                return angular.extend( data[0], data[1] );
+              });
+          }
+        },
         section: 'dashboard',
         crumb: {
           id: 'activity',
@@ -169,6 +182,30 @@ var UPS = (function() {
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
         controller: 'ActivityController',
+        resolve: {
+          data: function ($route, $q, metrics, pushApplication) {
+            var variantMetricsPromise = metrics.fetchVariantMetrics($route.current.params.variantId, 1);
+            var applicationDetailPromise = pushApplication.get({appId: $route.current.params.applicationId}).$promise
+              .then(function(application) {
+                // determine variant from its ID
+                function findVariant() {
+                  angular.forEach(application.variants, function (variant) {
+                    if (variant.variantID === $route.current.params.variantId) {
+                      return variant;
+                    }
+                  });
+                }
+                return {
+                  application: application,
+                  variant: findVariant()
+                };
+              });
+            return $q.all([variantMetricsPromise, applicationDetailPromise])
+              .then(function( data ) {
+                return angular.extend( data[0], data[1] );
+              });
+          }
+        },
         section: 'dashboard',
         crumb: {
           parent: 'activity',

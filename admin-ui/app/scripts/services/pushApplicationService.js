@@ -96,7 +96,6 @@ backendMod.factory('installations', function ($resource, $q) {
       method: 'PUT'
     }
   });
-  
   installationsService.fetchInstallations = function(variantId, pageNo) {
     var deferred = $q.defer();
     this.get({variantId: variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
@@ -107,7 +106,6 @@ backendMod.factory('installations', function ($resource, $q) {
     });
     return deferred.promise;
   };
-  
   return installationsService;
 });
 
@@ -133,8 +131,8 @@ backendMod.factory('dashboard', function ($resource) {
   });
 });
 
-backendMod.factory('metrics', function ($resource) {
-  return $resource('rest/metrics/messages/:verb/:id', {
+backendMod.factory('metrics', function ($resource, $q) {
+  var metricsService = $resource('rest/metrics/messages/:verb/:id', {
     id: '@id'
   }, {
     application: {
@@ -152,6 +150,38 @@ backendMod.factory('metrics', function ($resource) {
       }
     }
   });
+  metricsService.fetchVariantMetrics = function(variantId, pageNo) {
+    var deferred = $q.defer();
+    this.variant({id: variantId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
+      angular.forEach(data, function (metric) {
+        metric.totalReceivers = metric.variantInformations[0].receivers;
+        metric.deliveryFailed = !metric.variantInformations[0].deliveryStatus;
+      });
+      deferred.resolve({
+        totalItems: responseHeaders('total'),
+        pushMetrics: data
+      });
+    });
+    return deferred.promise;
+  };
+  metricsService.fetchApplicationMetrics = function(applicationId, pageNo) {
+    var deferred = $q.defer();
+    this.application({id: applicationId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
+      angular.forEach(data, function (metric) {
+        angular.forEach(metric.variantInformations, function (variant) {
+          if (!variant.deliveryStatus) {
+            metric.deliveryFailed = true;
+          }
+        });
+      });
+      deferred.resolve({
+        totalItems: responseHeaders('total'),
+        pushMetrics: data
+      });
+    });
+    return deferred.promise;
+  };
+  return metricsService;
 });
 
 
