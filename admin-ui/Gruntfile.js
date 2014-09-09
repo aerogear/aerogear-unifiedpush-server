@@ -19,8 +19,7 @@ module.exports = function (grunt) {
     lib: 'app/bower_components',
     app: 'app',
     dist: 'dist',
-    tmp: '.tmp',
-    webappDist: '../servers/ups-server/target/ag-push'
+    tmp: '.tmp'
   };
 
   try {
@@ -33,7 +32,6 @@ module.exports = function (grunt) {
     local: {
       // default values used when local-config.json is not loaded
       home: './',
-      webapp: '../servers/ups-server/target/ag-push',
       jbossweb: '../servers/ups-server/target/ag-push'
     },
     less: {
@@ -59,7 +57,7 @@ module.exports = function (grunt) {
       },
       less: {
         files: '<%= yeoman.app %>/styles/*.less',
-        tasks: ['less', 'newer:copy:webapp', 'newer:copy:jbossweb']
+        tasks: ['less', 'newer:copy:jbossweb']
       },
       livereload: {
         options: {
@@ -71,7 +69,7 @@ module.exports = function (grunt) {
           '{<%= yeoman.app %>,<%= yeoman.tmp %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
-        tasks: [ 'newer:copy:webapp', 'newer:copy:jbossweb' ]
+        tasks: [ 'newer:copy:jbossweb' ]
       }
     },
     autoprefixer: {
@@ -96,19 +94,6 @@ module.exports = function (grunt) {
               '.tmp',
               '<%= yeoman.dist %>/*',
               '!<%= yeoman.dist %>/.git*'
-            ]
-          }
-        ]
-      },
-      webappDist: {
-        options: {
-          'force': true
-        },
-        files: [
-          {
-            src: [
-              '<%= yeoman.webappDist %>/*',
-              '!<%= yeoman.webappDist %>/WEB-INF'
             ]
           }
         ]
@@ -239,22 +224,6 @@ module.exports = function (grunt) {
           }
         ]
       },
-      webapp: {
-        files: [
-          {
-            expand: true,
-            cwd: '<%= yeoman.tmp %>',
-            dest: '<%= local.webapp %>',
-            src: [ '**' ]
-          },
-          {
-            expand: true,
-            cwd: '<%= yeoman.app %>',
-            dest: '<%= local.webapp %>',
-            src: [ '**', '!**/*.txt', '!**/*.less' ]
-          }
-        ]
-      },
       jbossweb: {
         files: [
           {
@@ -267,16 +236,6 @@ module.exports = function (grunt) {
             expand: true,
             cwd: '<%= yeoman.app %>',
             dest: '<%= local.jbossweb %>',
-            src: [ '**', '!**/*.txt' ]
-          }
-        ]
-      },
-      webappDist: {
-        files: [
-          {
-            expand: true,
-            cwd: '<%= yeoman.dist %>',
-            dest: '<%= yeoman.webappDist %>',
             src: [ '**', '!**/*.txt' ]
           }
         ]
@@ -364,7 +323,6 @@ module.exports = function (grunt) {
       'concurrent:server',
       'less',
       'copy:fonts',
-      'copy:webapp',
       'copy:jbossweb',
       'autoprefixer',
       'watch'
@@ -401,9 +359,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dist', [
     'bower:install',
-    'default',
-    'clean:webappDist',
-    'copy:webappDist'
+    'default'
   ]);
 
   grunt.registerTask('jbosswebDist', [
@@ -413,6 +369,5 @@ module.exports = function (grunt) {
     'copy:jbosswebDist'
   ]);
 
-  grunt.registerTask('copy_web', ['copy:webapp']);
   grunt.registerTask('jboss_web', ['copy:jbossweb']);
 };

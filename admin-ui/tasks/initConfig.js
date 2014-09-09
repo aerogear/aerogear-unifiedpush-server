@@ -14,7 +14,6 @@ module.exports = function ( grunt ) {
             var parentDir = path.resolve(process.cwd(), '.');
             var sampleContent = {
                 home: parentDir,
-                webapp: "../server/target/ag-push",
                 jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war"
             }
             grunt.file.write('./local-config.json',JSON.stringify(sampleContent,null,'\t'));
@@ -24,8 +23,6 @@ module.exports = function ( grunt ) {
         config.local = grunt.file.readJSON('./local-config.json');
         
         verifyJBosswebDirectory(config.local.jbossweb);
-        
-        grunt.log.ok( 'local config' + config.local.webapp );
     });
     
     function verifyJBosswebDirectory(jbossweb) {
