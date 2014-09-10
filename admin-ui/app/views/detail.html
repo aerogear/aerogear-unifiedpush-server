@@ -61,8 +61,9 @@
               <div class="ups-panel-variants {{variant.type}}" ng-if="application.variants[$index - 1].type != variant.type">
                 <div class="panel-heading">
                   <div class="pull-left">
-                    <h2 style="text-transform: capitalize" ng-if="variant.type != 'ios'">{{variant.type}}</h2>
+                    <h2 style="text-transform: capitalize" ng-if="variant.type != 'ios' && variant.type.indexOf('window') == -1">{{variant.type}}</h2>
                     <h2 ng-if="variant.type == 'ios'">iOS</h2>
+                    <h2 style="text-transform: capitalize" ng-if="variant.type.indexOf('window') != -1">Windows</h2>
                   </div>
                   <div class="pull-right">
                     <ups-pluralize noun="installation" count="counts[variant.type]" ></ups-pluralize>

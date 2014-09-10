@@ -22,7 +22,7 @@ import ar.com.fernandospr.wns.model.WnsNotificationResponse;
 import ar.com.fernandospr.wns.model.WnsToast;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SenderType(WindowsVariant.class)
+@SenderType(WindowsWNSVariant.class)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
@@ -56,7 +56,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final WindowsVariant windowsVariant = (WindowsVariant) variant;
+        final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
         WnsToast toast = createToastMessage(pushMessage);
@@ -82,6 +82,11 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     WnsToast createToastMessage(UnifiedPushMessage pushMessage) {
         final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getAlert());
         final Map<String, Object> data = pushMessage.getData();
+        builder.launch(createLaunchParam(data));
+        return builder.build();
+    }
+
+    static String createLaunchParam(Map<String, Object> data) {
         final String page = (String) data.remove(PAGE_KEY);
         if (page != null) {
             final UriBuilder uriBuilder = UriBuilder.fromPath("");
@@ -89,8 +94,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 uriBuilder.queryParam(entry.getKey(), entry.getValue());
             }
             final String query = uriBuilder.build().getQuery();
-            builder.launch((CORDOVA.equals(page) ? CORDOVA_PAGE : page) + "?" + query);
+            return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + "?" + query;
         }
-        return builder.build();
+        return null;
     }
 }

@@ -44,9 +44,15 @@ public enum VariantType {
     CHROME_PACKAGED_APP("chrome"),
 
     /**
-     * The type identifier for our Windows variants.
+     * The type identifier for our Windows WNS variants.
      */
-    WINDOWS("windows");
+    WINDOWS_WNS("windows_wns"),
+
+    /**
+     * The type identifier for our Windows MPNS variants.
+     */
+    WINDOWS_MPNS("windows_mpns");
+
 
     private final String typeName;
 

@@ -18,7 +18,10 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 
+import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,7 +35,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/applications/{pushAppID}/windows")
+@Stateless
+@Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
     @POST
@@ -99,8 +103,11 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             }
 
             // apply updated data:
-            windowsVariant.setClientSecret(updatedWindowsVariant.getClientSecret());
-            windowsVariant.setSid(updatedWindowsVariant.getSid());
+            if (windowsVariant instanceof WindowsWNSVariant) {
+                WindowsWNSVariant windowsWNSVariant = (WindowsWNSVariant) windowsVariant;
+                windowsWNSVariant.setClientSecret(((WindowsWNSVariant)updatedWindowsVariant).getClientSecret());
+                windowsWNSVariant.setSid(((WindowsWNSVariant)updatedWindowsVariant).getSid());
+            }
             windowsVariant.setName(updatedWindowsVariant.getName());
             windowsVariant.setDescription(updatedWindowsVariant.getDescription());
             variantService.updateVariant(windowsVariant);

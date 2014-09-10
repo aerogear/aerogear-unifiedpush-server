@@ -15,11 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WNSPushNotificationSenderTest {
 
     private static final String QUERY = "?ke2=value2&key=value";
+    private WNSPushNotificationSender sender = new WNSPushNotificationSender();
+
 
     @Test
     public void shouldEncodeUserDataInLaunchParam() {
         //given
-        WNSPushNotificationSender sender = new WNSPushNotificationSender();
         UnifiedPushMessage pushMessage = getUnifiedPushMessage();
 
         //when
@@ -32,7 +33,6 @@ public class WNSPushNotificationSenderTest {
     @Test
     public void shouldEncodeUserDataInCordovaPage() {
         //given
-        WNSPushNotificationSender sender = new WNSPushNotificationSender();
         UnifiedPushMessage pushMessage = getUnifiedPushMessage();
         pushMessage.getData().put("page", "cordova");
 
@@ -41,6 +41,19 @@ public class WNSPushNotificationSenderTest {
 
         //then
         assertThat(toast.launch).isEqualTo(WNSPushNotificationSender.CORDOVA_PAGE + QUERY);
+    }
+
+    @Test
+    public void shouldNoPage() {
+        //given
+        UnifiedPushMessage pushMessage = getUnifiedPushMessage();
+        pushMessage.getData().remove("page");
+
+        //when
+        final WnsToast toast = sender.createToastMessage(pushMessage);
+
+        //then
+        assertThat(toast.launch).isNull();
     }
 
     private UnifiedPushMessage getUnifiedPushMessage() {
