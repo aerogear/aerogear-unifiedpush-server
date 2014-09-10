@@ -452,7 +452,7 @@ public class InstallationDaoTest {
                 + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
                 + "615fPox8bwoxrTU%3d");
         
-        final WindowsVariant variant = new WindowsVariant();
+        final WindowsWNSVariant variant = new WindowsWNSVariant();
         variant.setClientSecret("12");
         variant.setSid("12");
 

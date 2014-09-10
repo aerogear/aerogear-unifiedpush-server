@@ -71,6 +71,7 @@ angular.module('upsConsole').controller('DetailController',
   };
 
   $scope.editVariant = function (variant) {
+    variant.protocolType = variant.type.split('windows_')[1];
     var modalInstance = show(variant, 'create-variant.html');
     modalInstance.result.then(function (result) {
       var variantDataUpdate = variantProperties(variant);
@@ -263,7 +264,16 @@ angular.module('upsConsole').controller('DetailController',
       });
       return formData;
     case 'windows':
+      variant.type = variant.type + '_' + variant.protocolType;
+      properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
+      break;
+    case 'windows_wns':
+      result.protocolType = 'wns';
       properties = properties.concat(['sid', 'clientSecret']);
+      break;
+    case 'windows_mpns':
+      result.protocolType = 'mpns';
+      properties = properties.concat([]);
       break;
     default:
       Notifications.error('Unknown variant type ' + variant.type);

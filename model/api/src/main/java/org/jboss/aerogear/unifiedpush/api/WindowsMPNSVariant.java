@@ -16,16 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-
-import static org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY;
-import static org.codehaus.jackson.annotate.JsonTypeInfo.Id.NAME;
-
-@JsonTypeInfo(use = NAME, include = PROPERTY, property = "protocolType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value=WindowsWNSVariant.class, name="wns"),
-        @JsonSubTypes.Type(value=WindowsMPNSVariant.class, name="mpns")
-})
-public abstract class WindowsVariant extends Variant {
+public class WindowsMPNSVariant extends WindowsVariant {
+    @Override
+    public VariantType getType() {
+        return VariantType.WINDOWS_MPNS;
+    }
 }
