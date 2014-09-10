@@ -225,7 +225,7 @@
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
 
         <!-- Keycloak version override from AeroGear BOMs -->
-        <keycloak.ups.version>1.0-rc-2</keycloak.ups.version>
+        <keycloak.ups.version>1.0-final</keycloak.ups.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
