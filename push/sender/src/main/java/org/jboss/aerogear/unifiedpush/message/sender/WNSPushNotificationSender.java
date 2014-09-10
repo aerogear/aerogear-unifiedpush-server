@@ -89,7 +89,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 uriBuilder.queryParam(entry.getKey(), entry.getValue());
             }
             final String query = uriBuilder.build().getQuery();
-            builder.launch(CORDOVA.equals(page) ? CORDOVA_PAGE : page + "?" + query);
+            builder.launch((CORDOVA.equals(page) ? CORDOVA_PAGE : page) + "?" + query);
         }
         return builder.build();
     }

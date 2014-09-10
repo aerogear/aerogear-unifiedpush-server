@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WNSPushNotificationSenderTest {
 
+    private static final String QUERY = "?ke2=value2&key=value";
+
     @Test
     public void shouldEncodeUserDataInLaunchParam() {
         //given
@@ -24,7 +26,7 @@ public class WNSPushNotificationSenderTest {
         final WnsToast toast = sender.createToastMessage(pushMessage);
 
         //then
-        assertThat(toast.launch).isEqualTo("/Root.xaml?ke2=value2&key=value");
+        assertThat(toast.launch).isEqualTo("/Root.xaml" + QUERY);
     }
 
     @Test
@@ -38,7 +40,7 @@ public class WNSPushNotificationSenderTest {
         final WnsToast toast = sender.createToastMessage(pushMessage);
 
         //then
-        assertThat(toast.launch).startsWith(WNSPushNotificationSender.CORDOVA_PAGE);
+        assertThat(toast.launch).isEqualTo(WNSPushNotificationSender.CORDOVA_PAGE + QUERY);
     }
 
     private UnifiedPushMessage getUnifiedPushMessage() {
