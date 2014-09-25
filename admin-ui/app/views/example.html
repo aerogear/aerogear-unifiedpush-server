@@ -247,28 +247,39 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                 <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
                      active="tab('cordova').active" ng-click="tab('cordova').active = true">
                     <div class="ups-code-block js" hljs compile="true">
-var pushConfig = {
-   pushServerURL: "{{ currentLocation }}",
-   {{variant.type}}: {
-      {{ projectNumber(variant) }}
-      variantID: "{{ variant.variantID }}",
-      variantSecret: "{{ variant.secret }}"
-   }
-};
+var app = {
+    initialize: function() {
+        this.bindEvents();
+    },
+    bindEvents: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    onDeviceReady: function() {
+        app.report('deviceready');
+        var pushConfig = {
+           pushServerURL: "{{ currentLocation }}",
+           {{variant.type}}: {
+              {{ projectNumber(variant) }}
+              variantID: "{{ variant.variantID }}",
+              variantSecret: "{{ variant.secret }}"
+           }
+        };
+        push.register(app.onNotification, successHandler, errorHandler, pushConfig);
 
-push.register(onNotification, successHandler, errorHandler, pushConfig);
+        function successHandler() {
+            console.log('success')
+        }
 
-function onNotification(event) {
-    alert(event.alert);
-}
+        function errorHandler(message) {
+            console.log('error ' + message);
+        }
+    },
+    onNotification: function(event) {
+        alert(event.alert);
+    },
 
-function successHandler() {
-    console.log('success')
-}
+    ...
 
-function errorHandler(message) {
-    console.log('error ' + message);
-}
                     </div>
                 </tab>
 
