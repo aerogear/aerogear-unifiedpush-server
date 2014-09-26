@@ -1,0 +1,47 @@
+[
+  {
+    "op": "add",
+    "path": "/criteria",
+    "value": {}
+  },
+  {
+    "op": "add",
+    "path": "/config",
+    "value": {}
+  },
+  {
+    "op": "add",
+    "path": "/message/data",
+    "value": {}
+  },
+  {
+    "op": "move",
+    "from": "/alias",
+    "path": "/criteria/alias"
+  },
+  {
+    "op": "move",
+    "from": "/deviceType",
+    "path": "/criteria/deviceType"
+  },
+  {
+    "op": "move",
+    "from": "/categories",
+    "path": "/criteria/categories"
+  },
+  {
+    "op": "move",
+    "from": "/variants",
+    "path": "/criteria/variants"
+  },
+  {
+    "op": "move",
+    "from": "/ttl",
+    "path": "/config/ttl"
+  },
+  {
+    "op": "move",
+    "from": "/simple-push",
+    "path": "/message/simple-push"
+  }
+]

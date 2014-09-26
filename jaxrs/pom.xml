@@ -96,6 +96,11 @@
             <artifactId>aerogear-crypto</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>json-patch</artifactId>
+            <version>1.7</version>
+        </dependency>
     </dependencies>
 
     <build>
