@@ -285,7 +285,7 @@ var app = {
 
                 <tab heading="Sending" ng-hide="variantType != 'send'" active="tab('send').active" ng-click="tab('send').active = true">
                     <div class="ups-code-block java" hljs compile="true">
-JavaSender defaultJavaSender = new SenderClient("{{ currentLocation }}");
+JavaSender defaultJavaSender = new SenderClient.Builder("{{ currentLocation }}").build();
 UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
         .pushApplicationId("{{ applicationId }}")
         .masterSecret("{{ application.masterSecret }}")
