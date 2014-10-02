@@ -98,8 +98,8 @@ public class InstallationDaoTest {
         android1.setAlias("foo@bar.org");
         android1.setDeviceToken(DEVICE_TOKEN_1);
         android1.setDeviceType("Android Phone");
-        final Set<String> categoriesOne = new HashSet<String>();
-        categoriesOne.add("soccer");
+        final Set<Category> categoriesOne = new HashSet<Category>();
+        categoriesOne.add(new Category("soccer"));
         android1.setCategories(categoriesOne);
 
         installationDao.create(android1);
@@ -108,8 +108,8 @@ public class InstallationDaoTest {
         android2.setAlias("foo@bar.org");
         android2.setDeviceToken(DEVICE_TOKEN_2);
         android2.setDeviceType("Android Tablet");
-        final Set<String> categoriesTwo = new HashSet<String>();
-        categoriesTwo.add("news");
+        final Set<Category> categoriesTwo = new HashSet<Category>();
+        categoriesTwo.add(new Category("news"));
         android2.setCategories(categoriesTwo);
 
         installationDao.create(android2);
@@ -454,8 +454,10 @@ public class InstallationDaoTest {
         android1.setAlias("foo@bar.org");
         android1.setDeviceToken("123456");
         android1.setDeviceType("Android Phone");
-        final Set<String> categoriesOne = new HashSet<String>();
-        categoriesOne.add("soccer");
+        final Set<Category> categoriesOne = new HashSet<Category>();
+        final Category category = entityManager.createQuery("from Category where name = :name", Category.class)
+                .setParameter("name", "soccer").getSingleResult();
+        categoriesOne.add(category);
         android1.setCategories(categoriesOne);
         final String id = android1.getId();
 

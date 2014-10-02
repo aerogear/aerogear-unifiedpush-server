@@ -103,6 +103,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         // the required part: Join + all tokens for variantID;
 
         final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from Installation installation")
+                .append( " left join installation.categories c ")
                 .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
         return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
@@ -155,24 +156,8 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
         // is a category present ?
         if (isListEmpty(categories)) {
-
-            // See 'HHH-5209':
-            // the MEMBER OF does not work until Hibernate 4.1.8/4.3.0.Beta1
-            // We are actually on 4.0.1.Final
-            // suggested work around: IN ELEMENTS()
-
-            // iteration over the given categories, to append all of them (as an OR...)
-            for (int i = 0; i < categories.size(); i++) {
-
-                if (i == 0) {
-                    jpqlBaseString.append(" and ( :categories" + i + " IN ELEMENTS(installation.categories)");
-                } else {
-                    jpqlBaseString.append(" OR :categories" + i + " IN ELEMENTS(installation.categories)");
-                }
-                parameters.put("categories" + i, categories.get(i));
-
-            }
-            jpqlBaseString.append(')');
+            jpqlBaseString.append(" and ( c.name in (:categories))");
+            parameters.put("categories", categories);
         }
 
         // the entire JPQL string

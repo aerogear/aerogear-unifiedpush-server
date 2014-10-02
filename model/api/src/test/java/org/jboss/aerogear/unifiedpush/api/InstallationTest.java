@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InstallationTest {
 
     private Installation deviceInstallation;
+    private Category sports = new Category("sports");
+    private Category soccer = new Category("soccer");
 
     @Before
     public void setup() {
@@ -34,7 +35,10 @@ public class InstallationTest {
 
         deviceInstallation.setDeviceType("iPhone");
         deviceInstallation.setAlias("matzew");
-        deviceInstallation.setCategories(new HashSet<String>(Arrays.asList("sports", "soccer")));
+        final HashSet<Category> categories = new HashSet<Category>();
+        categories.add(sports);
+        categories.add(soccer);
+        deviceInstallation.setCategories(categories);
         deviceInstallation.setDeviceToken("1456782");
         deviceInstallation.setOperatingSystem("iOS");
         deviceInstallation.setOsVersion("7.0.6");
@@ -45,8 +49,8 @@ public class InstallationTest {
     public void installationValues() {
         assertThat(deviceInstallation.getDeviceType()).isEqualTo("iPhone");
         assertThat(deviceInstallation.getAlias()).isEqualTo("matzew");
-        assertThat(deviceInstallation.getCategories()).contains("sports");
-        assertThat(deviceInstallation.getCategories()).contains("soccer");
+        assertThat(deviceInstallation.getCategories()).contains(sports);
+        assertThat(deviceInstallation.getCategories()).contains(soccer);
         assertThat(deviceInstallation.getDeviceToken()).isEqualTo("1456782");
         assertThat(deviceInstallation.getOperatingSystem()).isEqualTo("iOS");
         assertThat(deviceInstallation.getOsVersion()).isEqualTo("7.0.6");
