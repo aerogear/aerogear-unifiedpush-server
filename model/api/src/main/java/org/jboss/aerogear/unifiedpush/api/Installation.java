@@ -36,7 +36,7 @@ public class Installation extends BaseModel {
     private String osVersion;
     private String alias;
 
-    private Set<String> categories;
+    private Set<Category> categories;
     private String platform;
     @JsonIgnore
     private Variant variant;
@@ -139,11 +139,11 @@ public class Installation extends BaseModel {
      *
      * @param categories set of all categories the client is in
      */
-    public void setCategories(final Set<String> categories) {
+    public void setCategories(final Set<Category> categories) {
         this.categories = categories;
     }
 
-    public Set<String> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 
