@@ -211,6 +211,11 @@ a.ups-tip-panel-link {
     h2 {
       margin-top: 10px;
     }
+
+    .list-group-item {
+      border: 0;
+      margin-left: 10px;
+    }
   }
 
   &.android {
@@ -524,4 +529,54 @@ input.transparent {
 
 .panel-default {
   border-color: transparent;
+}
+
+@media only screen and (max-width: 640px) {
+  .lo-panel-storage {
+    clear: both;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
+  .panel .panel-body .lo-app-opts li {
+    display: block;
+  }
+
+  .ups-sending-notifications {
+    display: none;
+  }
+
+  .ups-tip-panel-illustration.ups-registering-installations {
+    background: none;
+  }
+
+  .ups-panel-variants {
+    margin-left: -15px;
+    margin-right: -15px;
+
+    ul.list-group li {
+      padding: 0;
+    }
+
+    .list-group-item {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  .ups-tip-panel-body {
+    padding-left: 0;
+  }
+
+  .ups-tip-panel table tr td:first-child {
+    float: left;
+  }
+
+  .ups-tip-panel table tr td:last-child {
+    display: inline;
+  }
+
+  .ups-toggle-box {
+    padding: 0;
+  }
 }

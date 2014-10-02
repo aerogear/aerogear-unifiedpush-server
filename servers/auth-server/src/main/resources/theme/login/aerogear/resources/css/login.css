@@ -7,3 +7,13 @@
 
     margin: 100px;
 }
+
+@media only screen and (max-width: 640px) {
+    #kc-logo-wrapper {
+        margin-left: auto;
+    }
+
+    #kc-header-wrapper strong {
+        display: block;        
+    }
+}
