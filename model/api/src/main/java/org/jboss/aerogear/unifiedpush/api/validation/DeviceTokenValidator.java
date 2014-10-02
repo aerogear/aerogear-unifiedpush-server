@@ -52,10 +52,6 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
     @Override
     public boolean isValid(Installation installation, ConstraintValidatorContext context) {
         final String deviceToken = installation.getDeviceToken();
-        if (installation.getVariant() == null || installation.getVariant().getType() == null || deviceToken == null) {
-            return true;
-        }
-
         final VariantType type = installation.getVariant().getType();
 
         switch (type) {
