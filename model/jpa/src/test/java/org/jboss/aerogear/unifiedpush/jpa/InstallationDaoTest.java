@@ -16,20 +16,31 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -484,12 +495,18 @@ public class InstallationDaoTest {
     public void primaryKeyUnmodifiedAfterUpdate() {
         Installation android1 = new Installation();
         android1.setAlias("foo@bar.org");
-        android1.setDeviceToken("123456");
+        android1.setDeviceToken(DEVICE_TOKEN_1);
         android1.setDeviceType("Android Phone");
         final Set<String> categoriesOne = new HashSet<String>();
         categoriesOne.add("soccer");
         android1.setCategories(categoriesOne);
         final String id = android1.getId();
+
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
+        entityManager.persist(variant);
+        android1.setVariant(variant);
 
         installationDao.create(android1);
 
@@ -526,27 +543,5 @@ public class InstallationDaoTest {
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
         assertThat(pageResult.getCount()).isEqualTo(3);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testTooLongDeviceToken() {
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(TestUtils.longString(4097));
-
-        installationDao.create(android1);
-
-        entityManager.flush();
-    }
-
-    @Test
-    public void testLongDeviceToken() {
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(TestUtils.longString(4096));
-
-        installationDao.create(android1);
-
-        entityManager.flush();
     }
 }
