@@ -39,6 +39,12 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      */
     private static final Pattern ANDROID_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_]{100,}");
 
+    /**
+     * The SimplePush token is an URI. While we strongly recommend https, it is in theory possible that users of the
+     * AeroGear SimplePush Server do not protect the "update" endpoint via SSL.
+     */
+    private static final Pattern SIMPLE_PUSH_DEVICE_TOKEN = Pattern.compile("https?://.{0,2000}");
+
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {
     }
@@ -57,6 +63,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return IOS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case SIMPLE_PUSH:
+                return SIMPLE_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
         }
 
         return true;

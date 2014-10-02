@@ -409,6 +409,38 @@ public class InstallationDaoTest {
         entityManager.flush();
     }
 
+    @Test(expected = ConstraintViolationException.class)
+    public void shouldNotSaveWhenSimplePushTokenInvalid() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("htp://invalid");
+
+        final SimplePushVariant variant = new SimplePushVariant();
+        entityManager.persist(variant);
+
+        installation.setVariant(variant);
+
+        // when
+        installationDao.create(installation);
+        entityManager.flush();
+    }
+
+    @Test
+    public void shouldSaveWhenSimplePushTokenValid() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("http://valid/but/you/should/use/https");
+
+        final SimplePushVariant variant = new SimplePushVariant();
+        entityManager.persist(variant);
+
+        installation.setVariant(variant);
+
+        // when
+        installationDao.create(installation);
+        entityManager.flush();
+    }
+
     @Test
     public void shouldSaveWhenValidateDeviceIdAndroid() {
         // given
