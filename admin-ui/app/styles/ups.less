@@ -533,9 +533,7 @@ input.transparent {
 
 @media only screen and (max-width: 640px) {
   .lo-panel-storage {
-    clear: both;
-    margin-left: -15px;
-    margin-right: -15px;
+    margin: 50px -15px 0px -15px;
   }
 
   .panel .panel-body .lo-app-opts li {
@@ -562,6 +560,10 @@ input.transparent {
       margin-left: 5px;
       margin-right: 5px;
     }
+
+    ul>li>a:first-child {
+      display: block;
+    }
   }
 
   .ups-tip-panel-body {
@@ -581,12 +583,17 @@ input.transparent {
   }
 
   /* Force table to not be like tables anymore */
-  table, thead, tbody, th, td, tr {
+  table.ups-installations,
+  table.ups-installations thead,
+  table.ups-installations tbody,
+  table.ups-installations th,
+  table.ups-installations td,
+  table.ups-installations > tr {
     display: block;
   }
 
   /* Hide table headers (but not display: none;, for accessibility) */
-  thead tr {
+  table.ups-installations thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
@@ -664,7 +671,28 @@ input.transparent {
     }
   }
 
+  .ups-panel-installations {
+    padding: 8px;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
   .pull-left.dashboard {
     float: none !important;
+  }
+
+  .dash.col-md-12 {
+    padding: 0;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
+  .dash.col-md-6 {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
+  .dash > h2 {
+    padding-left: 10px;
   }
 }
