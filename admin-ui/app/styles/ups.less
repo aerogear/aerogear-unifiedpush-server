@@ -192,7 +192,7 @@ a.ups-tip-panel-link {
 }
 
 
-.ups-panel-variants {
+.ups-panel-dashboard, .ups-panel-variants {
 
   .panel-heading {
     background-repeat: no-repeat;
@@ -217,6 +217,9 @@ a.ups-tip-panel-link {
       margin-left: 10px;
     }
   }
+}
+
+.ups-panel-variants {
 
   &.android {
     .panel-heading {
@@ -501,6 +504,15 @@ input.transparent {
   font-size: 38px;
 }
 
+.dash h2 + .ups-panel {
+  margin-top: 10px;
+  padding: 12px;
+
+  > .ups-padding-box {
+    width: 33%;
+  }
+}
+
 .active-apps {
   color: #f0888b;
 }
@@ -540,9 +552,14 @@ input.transparent {
   border-color: transparent;
 }
 
-@media only screen and (max-width: 640px) {
-  .lo-panel-storage {
-    margin: 50px -15px 0px -15px;
+@media only screen and (max-width: 767px) {
+
+  .navbar-pf .navbar-brand {
+    padding: 0 0 0 15px;
+
+    h1 {
+      font-size: 18px;
+    }
   }
 
   .panel .panel-body .lo-app-opts li {
@@ -557,10 +574,12 @@ input.transparent {
     background: none;
   }
 
-  .ups-panel-variants {
+  .ups-panel, .ups-panel-dashboard, .ups-panel-variants {
     margin-left: -15px;
     margin-right: -15px;
+  }
 
+  .ups-panel-variants {
     ul.list-group li {
       padding: 0;
     }
@@ -690,18 +709,105 @@ input.transparent {
     float: none !important;
   }
 
-  .dash.col-md-12 {
-    padding: 0;
-    margin-left: -15px;
-    margin-right: -15px;
+  .dash {
+
+    &.col-md-12, &.col-md-6 {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .ups-panel {
+      padding-top: 20px !important;
+
+      div {
+        width: 100%;
+      }
+
+      .pull-left.ups-padding-box {
+        padding: 0;
+        text-align: center;
+      }
+
+      .pull-left.dashboard {
+        float: none !important;
+        line-height: 1.2em;
+
+        i, span {
+          display: block;
+          width: 100%;
+        }
+      }
+
+      .pull-left:last-child {
+        margin-top: 0 !important;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+
+  .ups-main-pane {
+    min-height: calc(~"100% - 28px");
   }
 
-  .dash.col-md-6 {
-    margin-left: -15px;
-    margin-right: -15px;
+  .sidebar-pf .nav-pills > li.active > a:after {
+    display: none;
   }
 
-  .dash > h2 {
+  .dash .count {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 10px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+
+  .sidebar-pf {
+
+    .nav-stacked {
+      margin-left: -10px;
+      margin-right: -10px;
+    }
+
+    &.sidebar-pf-left {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-right: none;
+      border-bottom: 1px solid #d0d0d0;
+      min-height: 0!important;
+    }
+
+    .nav-pills.big-icons > li {
+      width: calc(~"100% / 3 - 2.5px");
+      display: inline-block;
+      margin-top: 10px;
+      margin-bottom: 10px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      a:hover {
+        border: 1px solid #b3d3e7;
+      }
+
+      &.active a {
+        border: 1px solid #0076b7;
+      }
+
+    }
+  }
+}
+
+@media only screen and (min-width: 992px) {
+
+  .lo-content-area > .dash + .row .dash:first-child {
+    padding-right: 10px;
+  }
+
+  .lo-content-area > .dash + .row .dash:last-child {
     padding-left: 10px;
   }
 }
