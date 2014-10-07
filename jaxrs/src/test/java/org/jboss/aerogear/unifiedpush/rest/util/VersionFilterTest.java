@@ -22,53 +22,9 @@ public class VersionFilterTest {
 
     @Test
     public void generateDiff() throws IOException, JsonPatchException {
-        String currentApi = "{\n" +
-                "     \"alias\" : [\"someUsername\"],\n" +
-                "     \"deviceType\" : [\"someDevice\"],\n" +
-                "     \"categories\" : [\"someCategories\"],\n" +
-                "     \"variants\" : [\"someVariantIDs\"],\n" +
-                "     \"ttl\" : 3600,\n" +
-                "     \"message\":\n" +
-                "     {\n" +
-                "       \"key\":\"value\",\n" +
-                "       \"key2\":\"other value\",\n" +
-                "       \"alert\":\"HELLO!\",\n" +
-                "       \"action-category\":\"some value\",\n" +
-                "       \"sound\":\"default\",\n" +
-                "       \"badge\":2,\n" +
-                "       \"content-available\" : true\n" +
-                "     },\n" +
-                "     \"simple-push\":\"version=123\"\n" +
-                "   }";
-
-
-        String newFormat = "{\n" +
-                "  \"message\" : {\n" +
-                "    \"alert\" : \"HELLO!\",\n" +
-                "    \"action-category\" : \"some value\",\n" +
-                "    \"sound\" : \"default\",\n" +
-                "    \"badge\" : 2,\n" +
-                "    \"content-available\" : true,\n" +
-                "    \"data\" : {\n" +
-                "      \"key\" : \"value\",\n" +
-                "      \"key2\" : \"other value\"\n" +
-                "    },\n" +
-                "    \"simple-push\" : \"version=123\"\n" +
-                "  },\n" +
-                "  \"criteria\" : {\n" +
-                "    \"alias\" : [ \"someUsername\" ],\n" +
-                "    \"deviceType\" : [ \"someDevice\" ],\n" +
-                "    \"categories\" : [ \"someCategories\" ],\n" +
-                "    \"variants\" : [ \"someVariantIDs\" ]\n" +
-                "  },\n" +
-                "  \"config\" : {\n" +
-                "    \"ttl\" : 3600\n" +
-                "  }\n" +
-                "}";
-
         ObjectReader reader = JacksonUtils.getReader();
-        JsonNode current = reader.readTree(currentApi);
-        JsonNode newNode = reader.readTree(newFormat);
+        JsonNode current = reader.readTree(getClass().getResourceAsStream("/message-format-100.json"));
+        JsonNode newNode = reader.readTree(getClass().getResourceAsStream("/new-message-format.json"));
 
         final JsonPatch patch = JsonPatch.fromJson(reader.readTree(getClass().getResourceAsStream("/100-latest.json")));
         JsonNode patched = patch.apply(current);
