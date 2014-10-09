@@ -57,8 +57,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private PushApplicationService pushAppService;
 
-    private static final Logger LOGGER = Logger.getLogger(PushApplicationEndpoint.class.getSimpleName());
-
     // CREATE
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -189,6 +187,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}/count")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
+
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
 
         return Response.ok(result).build();
