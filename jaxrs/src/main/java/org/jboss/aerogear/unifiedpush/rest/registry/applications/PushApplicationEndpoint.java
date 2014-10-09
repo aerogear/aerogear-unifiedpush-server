@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,10 +39,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
@@ -53,8 +51,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
-
-    private static final Logger LOGGER = Logger.getLogger(PushApplicationEndpoint.class.getSimpleName());
 
     // CREATE
     @POST
@@ -85,7 +81,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications(@Context HttpServletRequest request) {
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(extractUsername(request))).build();
+
+        return Response.ok(pushAppService.findAllPushApplicationsByUser(extractUsername(request))).build();
     }
 
     @GET
@@ -174,6 +171,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}/count")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
+
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
 
         return Response.ok(result).build();

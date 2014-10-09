@@ -28,6 +28,21 @@
             "realmRoles": [ "admin" ],
             "applicationRoles": {
                "realm-management": [ "realm-admin" ],
+               "account": [ "manage-account" ]
+            }
+        },
+        {
+            "username" : "developer",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "developer" }
+            ],
+            "requiredActions": [
+                "UPDATE_PASSWORD"
+            ],
+            "realmRoles": [ "developer" ],
+            "applicationRoles": {
                 "account": [ "manage-account" ]
             }
         }
@@ -37,13 +52,17 @@
             {
                 "name": "admin",
                 "description": "Administrator privileges"
+            },
+            {
+                "name": "developer",
+                "description": "Developer privileges"
             }
         ]
     },
     "scopeMappings": [
         {
             "client": "unified-push-server-js",
-            "roles": ["admin"]
+            "roles": ["admin", "developer"]
         }
     ],
     "applications": [

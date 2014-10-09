@@ -102,7 +102,9 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Test
     public void findAllPushApplicationsForDeveloper() {
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
+        boolean isAdmin = false;
+
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).isEmpty();
 
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -112,12 +114,15 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).hasSize(1);
     }
 
     @Test
     public void removePushApplication() {
+
+        boolean isAdmin = false;
+
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -126,12 +131,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).isEmpty();
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 

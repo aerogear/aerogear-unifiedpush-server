@@ -54,4 +54,12 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      * Return application name and id of all variants matching given ids
      */
     List<PushApplication> findByVariantIds(List<String> variantIDs);
+
+    //Admin queries
+    /**
+     * Finder that returns an actual PushApplicationEntity, identified by its ID and its owner/developer.
+     */
+    PushApplication findAllByPushApplicationID(String pushApplicationID);
+
+    List<PushApplication> findAll();
 }

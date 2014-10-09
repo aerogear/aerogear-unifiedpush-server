@@ -37,7 +37,7 @@ public interface PushApplicationService {
     /**
      * Finder that returns all pushApplication object for the given owner/developer.
      */
-    List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
+    List<PushApplication> findAllPushApplicationsByUser(String loginName);
 
     /**
      * Returns the PushApplication entity, matching the given ID.
@@ -60,4 +60,5 @@ public interface PushApplicationService {
     void addVariant(PushApplication pushApp, Variant variant);
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
+
 }
