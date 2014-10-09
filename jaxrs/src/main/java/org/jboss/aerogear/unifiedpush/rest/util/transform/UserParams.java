@@ -30,7 +30,7 @@ import java.util.Map;
 import static java.text.MessageFormat.format;
 
 /**
- *
+ * UserParams is a DynamicTransformer that moves all user parameters to a separate data section.
  */
 public class UserParams implements DynamicTransformer {
     private static final List<String> KNOWN_KEYS = Arrays.asList("alert", "action-category", "sound", "badge",

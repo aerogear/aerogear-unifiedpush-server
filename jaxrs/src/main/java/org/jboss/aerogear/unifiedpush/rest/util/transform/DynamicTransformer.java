@@ -21,7 +21,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 
 /**
+ * DynamicTransformer can be declared in a api version json patch file and is invoked after the initial patch is executed.
+ * To change keys and values that are not known ahead of time, but dynamically based on the content.
  *
+ * @see org.jboss.aerogear.unifiedpush.rest.util.transform.UserParams
  */
 public interface DynamicTransformer {
 
