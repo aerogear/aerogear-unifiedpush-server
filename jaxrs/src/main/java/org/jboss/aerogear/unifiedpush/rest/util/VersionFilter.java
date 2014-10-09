@@ -1,5 +1,22 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -23,6 +40,10 @@ import java.io.InputStream;
 public class VersionFilter implements Filter {
 
     private static final String AEROGEAR_VERSION_PREFIX = "aerogear.v";
+    public static final int VERSION_LENGTH = 3;
+
+    @Inject
+    private RequestTransformer requestTransformer;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,8 +53,11 @@ public class VersionFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         final String accept = httpRequest.getHeader("accept");
-        if (accept.contains(AEROGEAR_VERSION_PREFIX)) {
-            chain.doFilter(new TransformHttpServletRequestWrapper(httpRequest), response);
+        final int index = accept.indexOf(AEROGEAR_VERSION_PREFIX);
+        if (index != -1) {
+            final int beginIndex = index + AEROGEAR_VERSION_PREFIX.length();
+            final String version = accept.substring(beginIndex, beginIndex + VERSION_LENGTH);
+            chain.doFilter(new TransformHttpServletRequestWrapper(version, httpRequest), response);
         } else {
             chain.doFilter(request, response);
         }
@@ -43,13 +67,13 @@ public class VersionFilter implements Filter {
     public void destroy() {
    }
 
-    private static class TransformHttpServletRequestWrapper extends HttpServletRequestWrapper {
-        private final StringBuilder data = new StringBuilder();
+    private class TransformHttpServletRequestWrapper extends HttpServletRequestWrapper {
+        private final StringBuilder jsonRequest = new StringBuilder();
+        private final String path;
+        private final String version;
 
-        public TransformHttpServletRequestWrapper(HttpServletRequest httpRequest) throws IOException {
+        public TransformHttpServletRequestWrapper(String version, HttpServletRequest httpRequest) throws IOException {
             super(httpRequest);
-
-            StringBuilder jsonRequest = new StringBuilder();
 
             final BufferedReader reader = httpRequest.getReader();
             String line;
@@ -57,18 +81,14 @@ public class VersionFilter implements Filter {
                 jsonRequest.append(line);
             }
 
-            if (jsonRequest.length() > 0) {
-//                List transformSpec = JsonUtils.classpathToList("/transform.json");
-//                Chainr chainr = Chainr.fromSpec(transformSpec);
-//
-//                final Object transform = chainr.transform(JsonUtils.jsonToObject(jsonRequest.toString()));
-//                System.out.println("transform = " + transform);
-//                data.append(JsonUtils.toJsonString(transform));
-            }
+            final String contextPath = httpRequest.getContextPath();
+            this.path = httpRequest.getRequestURI().substring(contextPath.length());
+            this.version = version;
         }
 
         @Override
         public ServletInputStream getInputStream() throws IOException {
+            StringBuilder data = requestTransformer.transform(path, version, jsonRequest);
             final byte[] bytes = data.toString().getBytes();
             return new ServletInputStream() {
                 private InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(bytes));
