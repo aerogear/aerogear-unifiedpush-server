@@ -23,12 +23,22 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class PushApplicationServiceImpl implements PushApplicationService {
 
+    private boolean isAdmin;
+
     @Inject
     private PushApplicationDao pushApplicationDao;
+
+    public PushApplicationServiceImpl(){}
+
+    @Inject
+    public PushApplicationServiceImpl(HttpServletRequest httpServletRequest){
+        this.isAdmin = httpServletRequest.isUserInRole("admin");
+    }
 
     @Override
     public void addPushApplication(PushApplication pushApp) {
@@ -37,10 +47,17 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
     public PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize) {
         return pushApplicationDao.findAllForDeveloper(loginName, page, pageSize);
+        if(isAdmin){
+            return pushApplicationDao.findAll();
+        }
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
+
+        if(isAdmin){
+            return pushApplicationDao.findAllByPushApplicationID(pushApplicationID);
+        }
         return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName);
     }
 

@@ -61,4 +61,5 @@ public interface PushApplicationService {
     void addVariant(PushApplication pushApp, Variant variant);
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
+
 }

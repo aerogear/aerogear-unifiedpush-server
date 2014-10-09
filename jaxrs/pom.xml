@@ -61,7 +61,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
+       <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-service</artifactId>
             <version>${project.version}</version>
@@ -135,33 +135,33 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>test</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            
+
             <dependencies>
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                     <scope>test</scope>
                 </dependency>
-            
+
                 <dependency>
                     <groupId>org.assertj</groupId>
                     <artifactId>assertj-core</artifactId>
                     <scope>test</scope>
                 </dependency>
-            
+
                 <dependency>
                     <groupId>org.mockito</groupId>
                     <artifactId>mockito-core</artifactId>
                     <scope>test</scope>
                 </dependency>
-            
+
             </dependencies>
         </profile>
     </profiles>

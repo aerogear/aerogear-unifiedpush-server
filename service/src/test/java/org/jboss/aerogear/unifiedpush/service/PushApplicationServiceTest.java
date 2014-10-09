@@ -104,6 +104,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
 
+        assertThat(pushApplicationService.findAllPushApplicationsByUser("admin")).isEmpty();
+
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -118,6 +120,9 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Test
     public void removePushApplication() {
+
+        boolean isAdmin = false;
+
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
