@@ -173,6 +173,26 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-tools</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <!-- Enforce java 1.7 for compiling -->
+                                    <!-- This is needed because jax-doclet is broken on jdk8 -->
+                                    <version>(,1.8)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
