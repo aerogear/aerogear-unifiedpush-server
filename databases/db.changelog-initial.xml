@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="edewit (generated)" id="1412851688198-2">
+        <createTable tableName="AndroidVariant">
+            <column name="googleKey" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="projectNumber" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-8">
+        <createTable tableName="Category">
+            <column autoIncrement="true" name="id" type="BIGINT(19)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-9">
+        <createTable tableName="ChromePackagedAppVariant">
+            <column name="clientId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientSecret" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refreshToken" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-12">
+        <createTable tableName="Installation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="deviceToken" type="LONGTEXT"/>
+            <column name="deviceType" type="VARCHAR(255)"/>
+            <column name="enabled" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operatingSystem" type="VARCHAR(255)"/>
+            <column name="osVersion" type="VARCHAR(255)"/>
+            <column name="platform" type="VARCHAR(255)"/>
+            <column name="variantID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-13">
+        <createTable tableName="Installation_categories">
+            <column name="Installation_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categories" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-15">
+        <createTable tableName="PushApplication">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="masterSecret" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pushApplicationID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-16">
+        <createTable tableName="PushMessageInformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientIdentifier" type="VARCHAR(255)"/>
+            <column name="ipAddress" type="VARCHAR(255)"/>
+            <column name="pushApplicationId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rawJsonMessage" type="LONGTEXT"/>
+            <column name="submitDate" type="datetime"/>
+            <column name="totalReceivers" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-27">
+        <createTable tableName="SimplePushVariant">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-37">
+        <createTable tableName="Variant">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="secret" type="VARCHAR(255)"/>
+            <column name="type" type="INT(10)"/>
+            <column name="variantID" type="VARCHAR(255)"/>
+            <column name="variants_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-38">
+        <createTable tableName="VariantMetricInformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deliveryStatus" type="BIT"/>
+            <column name="reason" type="VARCHAR(255)"/>
+            <column name="receivers" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantInformations_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-40">
+        <createTable tableName="WindowsVariant">
+            <column name="clientSecret" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-41">
+        <createTable tableName="hibernate_sequence">
+            <column name="next_val" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-42">
+        <createTable tableName="iOSVariant">
+            <column name="certificate" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passphrase" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="production" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-43">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="AndroidVariant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-48">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ChromePackagedAppVariant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-50">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Installation"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-52">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushApplication"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-53">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushMessageInformation"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-60">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="SimplePushVariant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-70">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-71">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="VariantMetricInformation"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-72">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="WindowsVariant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-73">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="iOSVariant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-79">
+        <addUniqueConstraint columnNames="variantID" constraintName="variantID" deferrable="false" disabled="false" initiallyDeferred="false" tableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-81">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="iOSVariant" constraintName="FK1294DBB8353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-85">
+        <addForeignKeyConstraint baseColumnNames="variantInformations_id" baseTableName="VariantMetricInformation" constraintName="FK41428777E758D260" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="PushMessageInformation"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-96">
+        <addForeignKeyConstraint baseColumnNames="variants_id" baseTableName="Variant" constraintName="FK7155A865A8892D0F" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="PushApplication"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-103">
+        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="Installation" constraintName="FK8338B25A305802B2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="variantID" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-104">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="ChromePackagedAppVariant" constraintName="FK893DB2DC353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-112">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="SimplePushVariant" constraintName="FKD44EBAD9353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-113">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="AndroidVariant" constraintName="FKE60DF336353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-114">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="WindowsVariant" constraintName="FKEC88A2353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet author="edewit (generated)" id="1412851688198-120">
+        <createIndex indexName="FK915DCD21DC2D45CD" tableName="Installation_categories" unique="false">
+            <column name="Installation_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
