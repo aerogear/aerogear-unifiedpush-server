@@ -3,8 +3,8 @@
 var backendMod = angular.module('upsConsole.services', []).
   value('version', '0.1');
 
-backendMod.factory('pushApplication', function ($resource) {
-  return $resource('rest/applications/:appId/:verb', {
+backendMod.factory('pushApplication', function ($resource, $q) {
+  var applicationService = $resource('rest/applications/:appId/:verb', {
     appId: '@appId'
   }, {
     get: {
@@ -29,6 +29,17 @@ backendMod.factory('pushApplication', function ($resource) {
       params: {verb: 'reset'}
     }
   });
+  applicationService.fetch = function(pageNo) {
+    var deferred = $q.defer();
+    this.query({page: pageNo - 1, per_page: 8}, function (data, responseHeaders) {
+      deferred.resolve({
+        page: data,
+        total: responseHeaders('total')
+      });
+    });
+    return deferred.promise;
+  };
+  return applicationService;
 });
 
 backendMod.factory('variants', function ($resource) {

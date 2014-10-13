@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -37,7 +38,7 @@ public interface PushApplicationService {
     /**
      * Finder that returns all pushApplication object for the given owner/developer.
      */
-    List<PushApplication> findAllPushApplicationsForDeveloper(String loginName);
+    PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize);
 
     /**
      * Returns the PushApplication entity, matching the given ID.

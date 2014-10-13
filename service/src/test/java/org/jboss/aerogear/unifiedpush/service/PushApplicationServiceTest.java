@@ -102,7 +102,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Test
     public void findAllPushApplicationsForDeveloper() {
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
 
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -112,8 +112,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
     }
 
     @Test
@@ -126,12 +126,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).hasSize(1);
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin")).isEmpty();
+        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 
