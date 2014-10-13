@@ -55,7 +55,7 @@ var UPS = (function() {
         controller: 'ApplicationController',
         resolve: {
           applications: function (pushApplication) {
-            return pushApplication.query().$promise;
+            return pushApplication.fetch(1);
           }
         },
         section: 'applications',

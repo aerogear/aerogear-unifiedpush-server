@@ -24,9 +24,9 @@ angular.module('upsConsole').controller('ApplicationController',
    */
 
   $scope.alerts = [];
+  $scope.currentPage = 1;
 
   //let's show all the applications
-  $scope.applications = applications;
   $rootScope.application = null;
 
   /*
@@ -68,10 +68,20 @@ angular.module('upsConsole').controller('ApplicationController',
     });
   };
 
+  $scope.pageChanged = function () {
+    $rootScope.isViewLoading = true;
+    fetch($scope.currentPage).then(function() {
+      $rootScope.isViewLoading = false;
+    });
+  };
 
   /*
    * PRIVATE METHODS
    */
+
+  function fetch(pageNo) {
+    return pushApplication.fetch(pageNo).then(update);
+  }
 
   function modalController($scope, $modalInstance, application) {
     $scope.application = application;
@@ -95,4 +105,11 @@ angular.module('upsConsole').controller('ApplicationController',
       }
     });
   }
+
+  function update(data) {
+    $scope.applications = data.page;
+    $scope.totalItems = data.total;
+  }
+
+  update(applications);
 });
