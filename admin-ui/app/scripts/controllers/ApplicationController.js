@@ -37,7 +37,10 @@ angular.module('upsConsole').controller('ApplicationController',
     var modalInstance = show(application, 'create-app.html');
     modalInstance.result.then(function (application) {
       pushApplication.create(application, function (newApp) {
-        $scope.applications.push(newApp);
+        if ($scope.applications.length < 8) {
+          $scope.applications.push(newApp);
+        }
+        $scope.totalItems = $scope.totalItems + 1;
         Notifications.success('Successfully created application "' + newApp.name + '".');
       }, function () {
         Notifications.error('Something went wrong...', 'danger');
@@ -63,6 +66,7 @@ angular.module('upsConsole').controller('ApplicationController',
     modalInstance.result.then(function () {
       pushApplication.remove({appId: application.pushApplicationID}, function () {
         $scope.applications.splice($scope.applications.indexOf(application), 1);
+        $scope.totalItems = $scope.totalItems - 1;
         Notifications.success('Successfully removed application "' + application.name + '".');
       });
     });
@@ -108,7 +112,7 @@ angular.module('upsConsole').controller('ApplicationController',
 
   function update(data) {
     $scope.applications = data.page;
-    $scope.totalItems = data.total;
+    $scope.totalItems = parseInt(data.total);
   }
 
   update(applications);
