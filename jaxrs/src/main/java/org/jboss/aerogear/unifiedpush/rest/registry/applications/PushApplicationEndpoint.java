@@ -52,7 +52,7 @@ import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUs
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private static final int MAX_PAGE_SIZE = 25;
-    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int DEFAULT_PAGE_SIZE = 8;
 
     @Inject
     private PushApplicationService pushAppService;
