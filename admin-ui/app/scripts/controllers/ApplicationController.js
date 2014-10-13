@@ -112,7 +112,7 @@ angular.module('upsConsole').controller('ApplicationController',
 
   function update(data) {
     $scope.applications = data.page;
-    $scope.totalItems = parseInt(data.total);
+    $scope.totalItems = parseInt(data.total, 10);
   }
 
   update(applications);
