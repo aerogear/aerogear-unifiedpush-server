@@ -1,0 +1,33 @@
+{
+  "ipAddress":null,
+  "clientIdentifier":null,
+  "message":{
+    "alert":"HELLO!",
+    "sound":"default",
+    "badge":2,
+    "data":{
+      "key2":"other value",
+      "key":"value"
+    },
+    "action-category":"some value",
+    "content-available":true,
+    "simple-push":"version=123"
+  },
+  "criteria":{
+    "categories":[
+      "someCategories"
+    ],
+    "variants":[
+      "someVariantIDs"
+    ],
+    "alias":[
+      "someUsername"
+    ],
+    "deviceType":[
+      "someDevice"
+    ]
+  },
+  "config":{
+    "ttl":3360
+  }
+}

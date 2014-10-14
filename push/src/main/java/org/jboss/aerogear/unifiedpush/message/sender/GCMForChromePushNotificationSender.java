@@ -67,7 +67,7 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
             try {
                 final String clientURL = MESSAGE_URL;
                 // POST the payload to the GCM For Chrome server
-                conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + pushMessage.getAlert() + "'}", accessToken);
+                conn = post(clientURL, "{'channelId': '" + channelID + "', 'subchannelId': '0', 'payload': '" + pushMessage.getMessage().getAlert() + "'}", accessToken);
                 int chromePackagedAppStatusCode = conn.getResponseCode();
 
                 // did we get a 'good' status code?

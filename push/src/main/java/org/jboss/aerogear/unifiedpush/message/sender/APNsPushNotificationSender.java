@@ -25,6 +25,7 @@ import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -56,20 +57,21 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         final iOSVariant iOSVariant = (iOSVariant) variant;
 
+        Message message = pushMessage.getMessage();
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
-                .alertBody(pushMessage.getAlert()) // alert dialog, in iOS
-                .badge(pushMessage.getBadge()) // little badge icon update;
-                .sound(pushMessage.getSound()) // sound to be played by app
-                .category(pushMessage.getActionCategory()); // iOS8: User Action category
+                .alertBody(message.getAlert()) // alert dialog, in iOS
+                .badge(message.getBadge()) // little badge icon update;
+                .sound(message.getSound()) // sound to be played by app
+                .category(message.getActionCategory()); // iOS8: User Action category
 
                 // apply the 'content-available:1' value:
-                if (pushMessage.isContentAvailable()) {
+                if (message.isContentAvailable()) {
                     // content-available is for 'silent' notifications and Newsstand
                     builder = builder.instantDeliveryOrSilentNotification();
                 }
 
-                builder = builder.customFields(pushMessage.getData()); // adding other (submitted) fields
+                builder = builder.customFields(message.getData()); // adding other (submitted) fields
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
@@ -91,7 +93,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 // send:
                 service.start();
 
-                Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
+                Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
                 service.push(tokens, apnsMessage, expireDate);
                 logger.info("Message to APNs has been submitted");
 

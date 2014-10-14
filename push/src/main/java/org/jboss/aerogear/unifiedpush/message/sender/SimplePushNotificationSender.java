@@ -47,7 +47,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        String payload = pushMessage.getSimplePush();
+        String payload = pushMessage.getMessage().getSimplePush();
         // if there was no payload provided, but we have clients, we send an empty string
         // the SimplePush Server accepts that and will use the timestamp
         if (payload == null) {

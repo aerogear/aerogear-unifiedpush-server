@@ -55,7 +55,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), true);
 
         //simple initial version just send toast message
-        WnsToast toast =  new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getAlert()).build();
+        WnsToast toast =  new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getMessage().getAlert()).build();
         try {
             Set<String> expiredClientIdentifiers = new HashSet<String>(clientIdentifiers.size());
             final List<WnsNotificationResponse> responses = wnsService.pushToast(new ArrayList<String>(clientIdentifiers), toast);

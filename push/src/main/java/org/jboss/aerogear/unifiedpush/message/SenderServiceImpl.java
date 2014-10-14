@@ -71,7 +71,7 @@ public class SenderServiceImpl implements SenderService {
         // collections for all the different variants:
         final Set<Variant> variants = new HashSet<Variant>();
 
-        final SendCriteria criteria = message.getSendCriteria();
+        final Criteria criteria = message.getCriteria();
         final List<String> variantIDs = criteria.getVariants();
 
         // if the criteria payload did specify the "variants" field,
@@ -100,7 +100,7 @@ public class SenderServiceImpl implements SenderService {
         // TODO: DISPATCH TO A QUEUE .....
         for (final Variant variant : variants) {
 
-            if (variant instanceof SimplePushVariant && message.getSimplePush() != null) {
+            if (variant instanceof SimplePushVariant && message.getMessage().getSimplePush() != null) {
                 // SP needs the 'simple-push' be present, the 'message' (aka data) has no meanings here
 
                 final PushNotificationSender simplePushSender = senders.select(new SenderTypeLiteral(SimplePushVariant.class)).get();
@@ -109,7 +109,7 @@ public class SenderServiceImpl implements SenderService {
                 final SenderServiceCallback senderCallback = new SenderServiceCallback(variant, tokenPerVariant.size(), pushMessageInformation);
                 simplePushSender.sendPushMessage(variant, tokenPerVariant, message, senderCallback);
 
-            } else if (!(variant instanceof SimplePushVariant) && message.getData() != null) {
+            } else if (!(variant instanceof SimplePushVariant) && message.getMessage().getData() != null) {
                 // all other variants require 'message' (aka data) to be present
 
                 final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
