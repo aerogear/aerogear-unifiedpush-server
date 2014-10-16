@@ -65,6 +65,13 @@ angular.module('upsConsole').controller('ExampleController',
     return tabs[tabName];
   };
 
+  $scope.cordovaVariantType = function(variant) {
+    switch (variant.type) {
+      case 'windows_mpns': return 'windows';
+      default: variant.type;
+    }
+  }
+
   $scope.projectNumber = function(variant) {
     if(variant) {
       return $scope.variantType === 'android' ? ('senderID: "' + variant.projectNumber +'",') : '';
