@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,16 +34,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
@@ -50,6 +51,8 @@ import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUs
 @TransactionAttribute
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
+    private static final int MAX_PAGE_SIZE = 25;
+    private static final int DEFAULT_PAGE_SIZE = 8;
 
     @Inject
     private PushApplicationService pushAppService;
@@ -84,8 +87,20 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllPushApplications(@Context HttpServletRequest request) {
-        return Response.ok(pushAppService.findAllPushApplicationsForDeveloper(extractUsername(request))).build();
+    public Response listAllPushApplications(@QueryParam("page") Integer page,
+                                            @QueryParam("per_page") Integer pageSize, @Context HttpServletRequest request) {
+        if (pageSize != null) {
+            pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
+        } else {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        if (page == null) {
+            page = 0;
+        }
+
+        final PageResult<PushApplication> pageResult = pushAppService.findAllPushApplicationsForDeveloper(extractUsername(request), page, pageSize);
+        return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
     }
 
     @GET
