@@ -46,7 +46,18 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <many-to-one name="variant" fetch="LAZY">
                 <join-column name="variantID" referenced-column-name="variantID"/>
             </many-to-one>
-            <element-collection name="categories" fetch="EAGER"/>
+            <many-to-many name="categories" fetch="EAGER">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="Category" access="FIELD">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
         </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">
