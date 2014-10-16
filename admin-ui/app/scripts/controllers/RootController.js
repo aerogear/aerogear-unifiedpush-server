@@ -17,13 +17,22 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('RootController', function ($rootScope, Auth) {
+  .controller('RootController', function ($rootScope, Auth, $http) {
     $rootScope.isViewLoading = false;
     //Retrieve the current logged in username
     $rootScope.username = Auth.authz.idToken.preferred_username;
 
     $rootScope.accountManagement = function() {
       window.location = Auth.authz.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
+    };
+
+    $rootScope.isProcessingData = function() {
+      return $http.pendingRequests.some(function(config) {
+        if (config.method !== 'GET') {
+          console.log(config);
+          return true;
+        }
+      });
     };
 
     $rootScope.$on('$routeChangeStart', function () {
