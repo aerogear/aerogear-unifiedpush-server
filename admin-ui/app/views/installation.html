@@ -38,10 +38,10 @@
                     </tr>
                     <tr collapse="isCollapsed(installation)" ng-repeat-end>
                         <td colspan="4">
-                            <table style="" class="ups-installation-detail">
-                                <tr>
+                            <table class="ups-installation-detail">
+                                <tr class="cat">
                                     <td>Categories:</td>
-                                    <td>{{ installation.categories }}</td>
+                                    <td><span ng-repeat="cat in installation.categories">{{ cat.name }}</span></td>
                                 </tr>
                                 <tr>
                                     <td>Device type:</td>

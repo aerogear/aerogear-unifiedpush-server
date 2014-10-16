@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -29,9 +30,7 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -265,7 +264,10 @@ public class VariantDaoTest {
 
         Installation androidInstallation1 = new Installation();
         androidInstallation1.setDeviceToken("1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678");
-        androidInstallation1.setCategories(new HashSet<String>(Arrays.asList("X", "Y")));
+        final HashSet<Category> categories = new HashSet<Category>();
+        categories.add(new Category("X"));
+        categories.add(new Category("Y"));
+        androidInstallation1.setCategories(categories);
         installationDao.create(androidInstallation1);
 
         androidInstallation1.setVariant(queriedVariant);
