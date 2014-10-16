@@ -152,8 +152,10 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     //Specific queries to the Admin
     @Override
-    public List<PushApplication> findAll() {
-        return createQuery("select pa from PushApplication pa").getResultList();
+    public PageResult<PushApplication> findAll() {
+
+        List<PushApplication> entities = createQuery("select pa from PushApplication pa").getResultList();
+        return new PageResult<PushApplication>(entities, 100);
     }
 
     @Override

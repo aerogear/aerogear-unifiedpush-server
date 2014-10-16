@@ -46,10 +46,10 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     public PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize) {
-        return pushApplicationDao.findAllForDeveloper(loginName, page, pageSize);
         if(isAdmin){
             return pushApplicationDao.findAll();
         }
+        return pushApplicationDao.findAllForDeveloper(loginName, page, pageSize);
     }
 
     @Override
