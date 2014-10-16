@@ -44,9 +44,9 @@
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
-<div class="feedback-aligner ng-cloak" data-ng-show="notifications.data.length > 0">
-  <div class="row" ng-repeat="notification in notifications.data">
-    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)">
+<div class="feedback-aligner ng-cloak" >
+  <div class="row" ng-repeat="notification in notifications.data" data-ng-show="notifications.data.length > 0">
+    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)" style="margin-bottom:1em">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
         <span class="pficon pficon-close"></span>
       </button>
@@ -61,6 +61,12 @@
                     <span class="pficon pficon-warning-exclamation"></span>
                 </span>
       <strong>{{notification.header}}</strong> {{notification.message}}
+    </div>
+  </div>
+  <div class="row" ng-show="isProcessingData()">
+    <div class="alert alert-info alert-dismissable" ng-click="notifications.remove($index)" style="margin-bottom:1em">
+      <span class="pficon spinner spinner-sm spinner-inline" style="top: 8px; left: 8px;"></span>
+      <strong>Processing...</strong>
     </div>
   </div>
 </div>
