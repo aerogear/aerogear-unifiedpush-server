@@ -71,6 +71,16 @@ angular.module('upsConsole').controller('ExampleController',
     }
   };
 
+  /**
+   *
+   * Used for Cordova Push Config file snippet (adds the quotes for senderID)
+   */
+  $scope.projectNumberJson = function(variant) {
+    if(variant) {
+      return $scope.variantType === 'android' ? ('"senderID": "' + variant.projectNumber +'",') : '';
+    }
+  };
+
   $scope.simplePushUrl = function() {
     var parser = document.createElement('a');
     parser.href = ContextProvider.contextPath();
