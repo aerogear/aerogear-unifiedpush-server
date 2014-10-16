@@ -16,30 +16,49 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 public class PushApplicationServiceImpl implements PushApplicationService {
 
+    private boolean isAdmin;
+
     @Inject
     private PushApplicationDao pushApplicationDao;
+
+    public PushApplicationServiceImpl(){}
+
+    @Inject
+    public PushApplicationServiceImpl(HttpServletRequest httpServletRequest){
+        this.isAdmin = httpServletRequest.isUserInRole("admin");
+    }
 
     @Override
     public void addPushApplication(PushApplication pushApp) {
         pushApplicationDao.create(pushApp);
     }
 
-    public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
+    public List<PushApplication> findAllPushApplicationsByUser(String loginName) {
+
+        if(isAdmin){
+            return pushApplicationDao.findAll();
+        }
         return pushApplicationDao.findAllForDeveloper(loginName);
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
+
+        if(isAdmin){
+            return pushApplicationDao.findAllByPushApplicationID(pushApplicationID);
+        }
         return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName);
     }
 

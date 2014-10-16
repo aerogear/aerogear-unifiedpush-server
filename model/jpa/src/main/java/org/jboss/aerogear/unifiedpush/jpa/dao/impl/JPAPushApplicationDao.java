@@ -144,4 +144,20 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
             return null;
         }
     }
+
+    //Specific queries to the Admin
+    @Override
+    public List<PushApplication> findAll() {
+        return createQuery("select pa from PushApplication pa").getResultList();
+    }
+
+    @Override
+    public PushApplication findAllByPushApplicationID(String pushApplicationID) {
+        PushApplication entity = getSingleResultForQuery(createQuery(
+                "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
+                .setParameter("pushApplicationID", pushApplicationID));
+
+        return entity;
+    }
+
 }
