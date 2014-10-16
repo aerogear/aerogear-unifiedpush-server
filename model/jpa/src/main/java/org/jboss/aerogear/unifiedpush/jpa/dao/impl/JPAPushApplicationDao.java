@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 
 import javax.persistence.Query;
@@ -54,12 +55,16 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     }
 
     @Override
-    public List<PushApplication> findAllForDeveloper(String loginName) {
+    public PageResult<PushApplication> findAllForDeveloper(String loginName, Integer page, Integer pageSize) {
+        String select = "from PushApplication pa where pa.developer = :developer";
 
-        List<PushApplication> entities = createQuery("select pa from PushApplication pa where pa.developer = :developer")
+        Long count = entityManager.createQuery("select count(*) " + select, Long.class)
+                .setParameter("developer", loginName).getSingleResult();
+        List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize)
                 .setParameter("developer", loginName).getResultList();
 
-        return entities;
+        return new PageResult<PushApplication>(entities, count);
     }
 
 

@@ -24,9 +24,9 @@ angular.module('upsConsole').controller('ApplicationController',
    */
 
   $scope.alerts = [];
+  $scope.currentPage = 1;
 
   //let's show all the applications
-  $scope.applications = applications;
   $rootScope.application = null;
 
   /*
@@ -37,7 +37,10 @@ angular.module('upsConsole').controller('ApplicationController',
     var modalInstance = show(application, 'create-app.html');
     modalInstance.result.then(function (application) {
       pushApplication.create(application, function (newApp) {
-        $scope.applications.push(newApp);
+        if ($scope.applications.length < 8) {
+          $scope.applications.push(newApp);
+        }
+        $scope.totalItems = $scope.totalItems + 1;
         Notifications.success('Successfully created application "' + newApp.name + '".');
       }, function () {
         Notifications.error('Something went wrong...', 'danger');
@@ -63,15 +66,26 @@ angular.module('upsConsole').controller('ApplicationController',
     modalInstance.result.then(function () {
       pushApplication.remove({appId: application.pushApplicationID}, function () {
         $scope.applications.splice($scope.applications.indexOf(application), 1);
+        $scope.totalItems = $scope.totalItems - 1;
         Notifications.success('Successfully removed application "' + application.name + '".');
       });
     });
   };
 
+  $scope.pageChanged = function () {
+    $rootScope.isViewLoading = true;
+    fetch($scope.currentPage).then(function() {
+      $rootScope.isViewLoading = false;
+    });
+  };
 
   /*
    * PRIVATE METHODS
    */
+
+  function fetch(pageNo) {
+    return pushApplication.fetch(pageNo).then(update);
+  }
 
   function modalController($scope, $modalInstance, application) {
     $scope.application = application;
@@ -95,4 +109,11 @@ angular.module('upsConsole').controller('ApplicationController',
       }
     });
   }
+
+  function update(data) {
+    $scope.applications = data.page;
+    $scope.totalItems = parseInt(data.total, 10);
+  }
+
+  update(applications);
 });

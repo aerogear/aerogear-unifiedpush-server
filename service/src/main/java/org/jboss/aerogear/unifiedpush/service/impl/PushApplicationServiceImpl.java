@@ -16,12 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Map;
 
 public class PushApplicationServiceImpl implements PushApplicationService {
@@ -34,8 +35,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
         pushApplicationDao.create(pushApp);
     }
 
-    public List<PushApplication> findAllPushApplicationsForDeveloper(String loginName) {
-        return pushApplicationDao.findAllForDeveloper(loginName);
+    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize) {
+        return pushApplicationDao.findAllForDeveloper(loginName, page, pageSize);
     }
 
     @Override
