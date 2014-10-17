@@ -81,7 +81,7 @@ public class InstallationRegistrationEndpoint {
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
      *
      * <pre>
-     * curl -3 -u "variantID:secret"
+     * curl -u "variantID:secret"
      *   -v -H "Accept: application/json" -H "Content-type: application/json"
      *   -X POST
      *   -d '{
@@ -140,7 +140,7 @@ public class InstallationRegistrationEndpoint {
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
      *
      * <pre>
-     * curl -3 -u "variantID:secret"
+     * curl -u "variantID:secret"
      *   -v -H "Accept: application/json" -H "Content-type: application/json"
      *   -X DELETE
      *   https://SERVER:PORT/context/rest/registry/device/{token}
@@ -186,7 +186,7 @@ public class InstallationRegistrationEndpoint {
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
      *
      * <pre>
-     * curl -3 -u "variantID:secret"
+     * curl -u "variantID:secret"
      *   -v -H "Accept: application/json" -H "Content-type: multipart/form-data"
      *   -F "file=@/path/to/my-devices-for-import.json"
      *   -X POST
