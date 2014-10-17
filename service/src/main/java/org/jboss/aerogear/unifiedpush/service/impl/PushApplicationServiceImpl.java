@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Map;
 
@@ -29,10 +30,15 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     @Inject
     private PushApplicationDao pushApplicationDao;
 
+    @Inject
+    private Instance<String> loginName;
+
     public PushApplicationServiceImpl(){}
 
     @Override
     public void addPushApplication(PushApplication pushApp) {
+
+        pushApp.setDeveloper(loginName.get());
         pushApplicationDao.create(pushApp);
     }
 

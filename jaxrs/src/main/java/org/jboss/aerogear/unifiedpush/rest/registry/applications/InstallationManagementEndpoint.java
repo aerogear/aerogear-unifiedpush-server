@@ -26,7 +26,6 @@ import org.jboss.resteasy.spi.LinkHeader;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,8 +38,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
 
 @Stateless
@@ -58,8 +55,7 @@ public class InstallationManagementEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findInstallations(@PathParam("variantID") String variantId, @QueryParam("page") Integer page,
-                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri,
-                                      @Context HttpServletRequest request) {
+                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -70,15 +66,13 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
-        final String developer = extractUsername(request);
-
         //Find the variant using the variantID
-        if (!genericVariantService.existsVariantIDForDeveloper(variantId, developer)) {
+        if (!genericVariantService.existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
         //Find the installations using the variantID
-        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, developer, page, pageSize);
+        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, page, pageSize);
 
         final long totalPages = pageResult.getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);

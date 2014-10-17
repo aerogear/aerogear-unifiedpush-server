@@ -22,9 +22,13 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class for loading various data for the Dashboard of the Admin UI
@@ -38,15 +42,18 @@ public class DashboardService {
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
 
+    @Inject
+    @LoggedIn
+    private Instance<String> principalName;
 
     /**
      * Receives the dashboard data for the given user
      */
-    public DashboardData loadDashboardData(String principalName) {
+    public DashboardData loadDashboardData() {
 
-        long totalApps = totalApplicationNumber(principalName);
-        long totalDevices = totalDeviceNumber(principalName);
-        long totalMessages = totalMessages(principalName);
+        long totalApps = totalApplicationNumber();
+        long totalDevices = totalDeviceNumber();
+        long totalMessages = totalMessages();
 
 
         final DashboardData data = new DashboardData();
@@ -61,8 +68,8 @@ public class DashboardService {
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
      */
-    public List<ApplicationVariant> getVariantsWithWarnings(String principalName) {
-        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName);
+    public List<ApplicationVariant> getVariantsWithWarnings() {
+        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings(principalName.get());
         if (warningIDs.isEmpty()) {
             return Collections.emptyList();
         }
@@ -73,8 +80,8 @@ public class DashboardService {
     /**
      * Loads all the Variant objects with the most received messages
      */
-    public List<Application> getTopThreeLastActivity(String principalName) {
-        return wrapApplication(pushMessageInformationDao.findLastThreeActivity(principalName));
+    public List<Application> getTopThreeLastActivity() {
+        return wrapApplication(pushMessageInformationDao.findLastThreeActivity(principalName.get()));
     }
 
     private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
@@ -99,15 +106,15 @@ public class DashboardService {
         return applications;
     }
 
-    private long totalMessages(String principalName) {
-        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(principalName);
+    private long totalMessages() {
+        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(principalName.get());
     }
 
-    private long totalDeviceNumber(String principalName) {
-        return installationDao.getNumberOfDevicesForVariantIDs(principalName);
+    private long totalDeviceNumber() {
+        return installationDao.getNumberOfDevicesForVariantIDs(principalName.get());
     }
 
-    private long totalApplicationNumber(String principalName) {
-        return  pushApplicationDao.getNumberOfPushApplicationsForDeveloper(principalName);
+    private long totalApplicationNumber() {
+        return  pushApplicationDao.getNumberOfPushApplicationsForDeveloper(principalName.get());
     }
 }
