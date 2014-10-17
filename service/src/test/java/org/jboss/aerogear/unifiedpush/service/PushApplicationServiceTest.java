@@ -107,7 +107,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Test
     public void findAllPushApplicationsForDeveloper() {
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();
 
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -117,8 +117,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
     }
 
     @Test
@@ -132,12 +132,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 
@@ -151,11 +151,11 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
+        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
         assertThat(queried).isNotNull();
         assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
-        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin2")).isNull();
-        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421", "admin")).isNull();
+        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper(uuid)).isNull();
+        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
     }
 }

@@ -41,8 +41,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
-
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
  * functionality.
@@ -64,9 +62,9 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response resetSecret(@Context HttpServletRequest request, @PathParam("variantId") String variantId) {
+    public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, extractUsername(request));
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             logger.log(Level.FINEST, "Resetting secret for: " + variant.getClass().getSimpleName());
@@ -87,7 +85,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findVariantById(@Context HttpServletRequest request, @PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, extractUsername(request));
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             return Response.ok(variant).build();
@@ -101,7 +99,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Path("/{variantId}")
     public Response deleteVariant(@Context HttpServletRequest request, @PathParam("variantId") String variantId) {
 
-        Variant variant = variantService.findByVariantIDForDeveloper(variantId, extractUsername(request));
+        Variant variant = variantService.findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             logger.log(Level.FINEST, "Deleting: " + variant.getClass().getSimpleName());

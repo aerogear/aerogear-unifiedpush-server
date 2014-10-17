@@ -19,7 +19,9 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 public class GenericVariantServiceImpl implements GenericVariantService {
@@ -27,8 +29,13 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Inject
     private VariantDao variantDao;
 
+    @Inject
+    @LoggedIn
+    private Instance<String> loginName;
+
     @Override
     public void addVariant(Variant variant) {
+        variant.setDeveloper(loginName.get());
         variantDao.create(variant);
     }
 
@@ -38,13 +45,13 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
-    public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
-        return variantDao.findByVariantIDForDeveloper(variantID, loginName);
+    public Variant findByVariantIDForDeveloper(String variantID) {
+        return variantDao.findByVariantIDForDeveloper(variantID, loginName.get());
     }
 
     @Override
-    public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
-        return variantDao.existsVariantIDForDeveloper(variantID, loginName);
+    public boolean existsVariantIDForDeveloper(String variantID) {
+        return variantDao.existsVariantIDForDeveloper(variantID, loginName.get());
     }
 
     @Override

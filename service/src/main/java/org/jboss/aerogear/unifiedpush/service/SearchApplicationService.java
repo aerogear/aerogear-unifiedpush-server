@@ -11,10 +11,10 @@ public interface SearchApplicationService {
     /**
      * Finder that returns all pushApplication object for the given owner/developer.
      */
-    PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize);
+    PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize);
 
     /**
      * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
      */
-    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
+    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID);
 }
