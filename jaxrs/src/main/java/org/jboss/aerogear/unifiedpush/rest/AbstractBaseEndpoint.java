@@ -17,6 +17,9 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import org.jboss.aerogear.unifiedpush.service.SearchApplicationService;
+import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +42,10 @@ public abstract class AbstractBaseEndpoint {
 
     @Inject
     private Validator validator;
+
+    @Inject
+    @SearchService
+    protected SearchApplicationService searchApplicationService;
 
     /**
      * Generic validator used to identify constraint violations of the given model class. 
