@@ -1,7 +1,10 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.service.SearchApplicationService;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
@@ -30,5 +33,15 @@ public class SearchManager {
         }
         return searchByDeveloper;
     }
+
+    @Produces
+    @LoggedIn
+    public String extractUsername(HttpServletRequest httpServletRequest) {
+        KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
+        KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
+        return kcSecurityContext.getToken().getPreferredUsername();
+
+    }
+
 
 }
