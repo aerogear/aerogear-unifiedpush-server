@@ -13,12 +13,12 @@ public class SearchAllApplicationServiceImpl implements SearchApplicationService
     private PushApplicationDao pushApplicationDao;
 
     @Override
-    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize) {
+    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
         return pushApplicationDao.findAll();
     }
 
     @Override
-    public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
+    public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID) {
         return pushApplicationDao.findAllByPushApplicationID(pushApplicationID);
     }
 
