@@ -55,7 +55,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @Context HttpServletRequest request) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -82,7 +82,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllChromePackagedAppVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        final PushApplication application = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
         return Response.ok(getVariantsByType(application, ChromePackagedAppVariant.class)).build();
     }
 

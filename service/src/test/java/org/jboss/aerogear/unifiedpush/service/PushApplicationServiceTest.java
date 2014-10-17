@@ -21,6 +21,7 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,10 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private PushApplicationService pushApplicationService;
+
+    @Inject
+    @SearchService
+    private SearchApplicationService searchApplicationService;
 
     @Module
     public Beans getBeans() {
@@ -102,7 +107,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Test
     public void findAllPushApplicationsForDeveloper() {
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
 
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -112,15 +117,13 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
     }
 
     @Test
     public void removePushApplication() {
 
-        boolean isAdmin = false;
-
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -129,12 +132,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isNotEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(pushApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper("admin", 0, 10).getResultList()).isEmpty();
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 
@@ -148,11 +151,11 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried =  pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
+        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin");
         assertThat(queried).isNotNull();
         assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
-        assertThat(pushApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin2")).isNull();
-        assertThat(pushApplicationService.findByPushApplicationIDForDeveloper("123-3421", "admin")).isNull();
+        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper(uuid, "admin2")).isNull();
+        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421", "admin")).isNull();
     }
 }

@@ -53,7 +53,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @Context HttpServletRequest request) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -87,7 +87,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID,
                                                           @Context HttpServletRequest request) {
 
-        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        final PushApplication application = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
         return Response.ok(getVariantsByType(application, SimplePushVariant.class)).build();
     }
 

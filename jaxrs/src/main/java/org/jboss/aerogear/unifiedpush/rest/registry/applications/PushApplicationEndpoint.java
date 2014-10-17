@@ -43,7 +43,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
@@ -97,7 +96,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             page = 0;
         }
 
-        final PageResult<PushApplication> pageResult = pushAppService.findAllPushApplicationsForDeveloper(extractUsername(request), page, pageSize);
+        final PageResult<PushApplication> pageResult = searchApplicationService.findAllPushApplicationsForDeveloper(extractUsername(request), page, pageSize);
         return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
     }
 
@@ -106,8 +105,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
-
+//        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
         if (pushApp != null) {
             return Response.ok(pushApp).build();
         }
@@ -122,7 +121,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+//        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp != null) {
 
@@ -155,7 +155,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response resetMasterSecret(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp != null) {
             // generate the new 'masterSecret' and apply it:
@@ -175,7 +176,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
