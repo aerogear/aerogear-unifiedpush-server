@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
