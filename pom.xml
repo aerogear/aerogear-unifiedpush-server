@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.6</version>
+        <version>0.2.8</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -114,60 +114,6 @@
                 <scope>import</scope>
             </dependency>
 
-
-            <!-- Keycloak override from 0.2.6 parent/bom -->
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-core</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-adapter-core</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-jboss-adapter-core</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-dependencies-server-min</artifactId>
-                <type>pom</type>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-connections-jpa</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-model-jpa</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-model-sessions-mem</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-model-sessions-jpa</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-as7-adapter</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-wildfly-adapter</artifactId>
-                <version>${keycloak.ups.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -222,10 +168,7 @@
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
         <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.6</aerogear.bom.version>
-
-        <!-- Keycloak version override from AeroGear BOMs -->
-        <keycloak.ups.version>1.0.2.Final</keycloak.ups.version>
+        <aerogear.bom.version>0.2.8</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
