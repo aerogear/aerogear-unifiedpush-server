@@ -20,7 +20,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
 import org.jboss.resteasy.spi.Link;
