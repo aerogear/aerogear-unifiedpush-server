@@ -36,7 +36,7 @@ public class SearchManager {
 
     @Produces
     @LoggedIn
-    public String extractUsername(HttpServletRequest httpServletRequest) {
+    public String extractUsername() {
         KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
         KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
         return kcSecurityContext.getToken().getPreferredUsername();
