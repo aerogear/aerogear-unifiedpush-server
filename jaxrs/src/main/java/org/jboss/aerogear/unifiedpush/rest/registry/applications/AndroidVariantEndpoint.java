@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -47,8 +46,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     public Response registerAndroidVariant(
             AndroidVariant androidVariant,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo,
-            @Context HttpServletRequest request) {
+            @Context UriInfo uriInfo) {
 
         // find the root push app
         PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -90,7 +88,6 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariation(
-            @Context HttpServletRequest request,
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
