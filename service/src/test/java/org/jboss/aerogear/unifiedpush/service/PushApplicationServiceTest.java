@@ -21,9 +21,9 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,7 +32,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
+
 @RunWith(ApplicationComposer.class)
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
@@ -45,6 +45,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Module
     public Beans getBeans() {
         final Beans beans = new Beans();
+        beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
