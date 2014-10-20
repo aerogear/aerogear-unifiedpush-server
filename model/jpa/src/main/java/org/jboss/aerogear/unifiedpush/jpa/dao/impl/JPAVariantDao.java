@@ -114,5 +114,24 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
         }
     }
 
+    //Admin queries
+    @Override
+    public Variant findAllByVariantID(String variantID) {
+
+        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
+                .setParameter("variantID", variantID));
+
+
+        return entity;
+    }
+
+    @Override
+    public boolean existsVariantIDForAdmin(String variantID) {
+
+        Long numberOfVariants = (Long) createQuery("select count(t) from Variant t where t.variantID = :variantID")
+                .setParameter("variantID", variantID).getSingleResult();
+
+        return numberOfVariants == 1L;
+    }
 
 }

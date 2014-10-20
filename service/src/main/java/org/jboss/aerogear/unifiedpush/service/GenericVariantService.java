@@ -39,16 +39,6 @@ public interface GenericVariantService {
     Variant findByVariantID(String variantID);
 
     /**
-     * Finder that returns the actual variant, identified by its ID and its owner/developer.
-     */
-    Variant findByVariantIDForDeveloper(String variantID);
-
-    /**
-     * See that variant exists for developer
-     */
-    boolean existsVariantIDForDeveloper(String variantID);
-
-    /**
      * Removes the given variant entity.
      */
     void removeVariant(Variant variant);

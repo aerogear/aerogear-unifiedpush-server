@@ -1,6 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.service.SearchApplicationService;
+import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
 import org.keycloak.KeycloakPrincipal;
@@ -23,8 +23,8 @@ public class SearchManager {
 
     @Produces
     @SearchService
-    public SearchApplicationService getSearch(@New SearchAllApplicationServiceImpl searchAll,
-                                              @New SearchByDeveloperApplicationServiceImpl searchByDeveloper) {
+    public PushSearchService getSearch(@New PushSearchServiceImpl searchAll,
+                                              @New PushSearchByDeveloperServiceImpl searchByDeveloper) {
 
         boolean isAdmin = httpServletRequest.isUserInRole("admin");
 
