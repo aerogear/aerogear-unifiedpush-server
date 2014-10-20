@@ -22,11 +22,13 @@ import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.util.UUID;
 
@@ -41,6 +43,22 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private PushSearchByDeveloperServiceImpl searchApplicationService;
+
+    private static class LoggedInTestProducer {
+
+        @Produces
+        @LoggedIn
+        public String userName() {
+            return "admin";
+        }
+    }
+
+    @Module
+    public Class<?>[] producers() {
+        return new Class<?>[] {
+                LoggedInTestProducer.class
+        };
+    }
 
     @Module
     public Beans getBeans() {
