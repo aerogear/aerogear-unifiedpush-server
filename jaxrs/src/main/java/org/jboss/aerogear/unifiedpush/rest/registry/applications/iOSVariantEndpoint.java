@@ -53,7 +53,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -97,7 +97,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        final PushApplication application = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
     }
 
@@ -110,7 +110,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID);
+        iOSVariant iOSVariant = (iOSVariant) searchService.findByVariantIDForDeveloper(iOSID);
 
         if (iOSVariant != null) {
 
@@ -134,7 +134,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantIDForDeveloper(iOSID);
+        iOSVariant iOSVariant = (iOSVariant) searchService.findByVariantIDForDeveloper(iOSID);
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?

@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.PushSearchService;
+import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
 
@@ -47,7 +49,8 @@ public class InstallationManagementEndpoint {
     private static final int DEFAULT_PAGE_SIZE = 25;
 
     @Inject
-    private GenericVariantService genericVariantService;
+    @SearchService
+    private PushSearchService searchService;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -67,7 +70,7 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the variant using the variantID
-        if (!genericVariantService.existsVariantIDForDeveloper(variantId)) {
+        if (!searchService.existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
