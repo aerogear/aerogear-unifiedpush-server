@@ -19,7 +19,7 @@ public class PushSearchServiceImpl implements PushSearchService {
 
     @Override
     public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
-        return pushApplicationDao.findAll();
+        return pushApplicationDao.findAll(page, pageSize);
     }
 
     @Override

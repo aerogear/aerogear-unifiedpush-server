@@ -18,46 +18,62 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import org.apache.openejb.jee.Beans;
 import org.apache.openejb.junit.ApplicationComposer;
+import org.apache.openejb.mockito.MockitoInjector;
+import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.AccessToken;
+import org.mockito.Mock;
 
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(ApplicationComposer.class)
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
-    private PushApplicationService pushApplicationService;
+    private PushApplicationServiceImpl pushApplicationService;
 
     @Inject
     private PushSearchByDeveloperServiceImpl searchApplicationService;
 
-    private static class LoggedInTestProducer {
+    @Mock
+    private HttpServletRequest httpServletRequest;
 
-        @Produces
-        @LoggedIn
-        public String userName() {
-            return "admin";
-        }
+    @Mock
+    private KeycloakSecurityContext context;
+
+    @Mock
+    private KeycloakPrincipal keycloakPrincipal;
+
+    @MockInjector
+    public Class<?> mockitoInjector() {
+        return MockitoInjector.class;
     }
 
-    @Module
-    public Class<?>[] producers() {
-        return new Class<?>[] {
-                LoggedInTestProducer.class
-        };
+    @Before
+    public void setUp(){
+        AccessToken token = new AccessToken();
+        //The current developer will always be the admin in this testing scenario
+        token.setPreferredUsername("admin");
+        when(context.getToken()).thenReturn(token);
+        when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
+        when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
+
     }
 
     @Module
@@ -176,7 +192,6 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         assertThat(queried).isNotNull();
         assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
-        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper(uuid)).isNull();
         assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
     }
 }
