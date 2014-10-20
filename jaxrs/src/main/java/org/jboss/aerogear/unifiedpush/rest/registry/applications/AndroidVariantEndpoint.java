@@ -49,7 +49,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -78,7 +78,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        final PushApplication application = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, AndroidVariant.class)).build();
     }
 
@@ -92,7 +92,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID);
+        AndroidVariant androidVariant = (AndroidVariant) searchService.findByVariantIDForDeveloper(androidID);
         if (androidVariant != null) {
 
             // some validation

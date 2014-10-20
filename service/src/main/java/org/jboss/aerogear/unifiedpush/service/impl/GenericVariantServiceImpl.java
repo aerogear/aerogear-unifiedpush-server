@@ -45,16 +45,6 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     }
 
     @Override
-    public Variant findByVariantIDForDeveloper(String variantID) {
-        return variantDao.findByVariantIDForDeveloper(variantID, loginName.get());
-    }
-
-    @Override
-    public boolean existsVariantIDForDeveloper(String variantID) {
-        return variantDao.existsVariantIDForDeveloper(variantID, loginName.get());
-    }
-
-    @Override
     public void updateVariant(Variant variant) {
         variantDao.update(variant);
     }

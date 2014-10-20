@@ -49,4 +49,9 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
      * Loads list of all variants, where IDs are given.
      */
     List<Variant> findAllVariantsByIDs(List<String> variantIDs);
+
+    //Admin queries
+    Variant findAllByVariantID(String variantID);
+
+    boolean existsVariantIDForAdmin(String variantID);
 }

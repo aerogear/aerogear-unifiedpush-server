@@ -1,18 +1,23 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.service.SearchApplicationService;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-public class SearchByDeveloperApplicationServiceImpl implements SearchApplicationService {
+public class PushSearchByDeveloperServiceImpl implements PushSearchService {
 
     @Inject
     private PushApplicationDao pushApplicationDao;
+
+    @Inject
+    private VariantDao variantDao;
 
     @Inject
     @LoggedIn
@@ -29,4 +34,13 @@ public class SearchByDeveloperApplicationServiceImpl implements SearchApplicatio
         return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
     }
 
+    @Override
+    public Variant findByVariantIDForDeveloper(String variantID) {
+        return variantDao.findByVariantIDForDeveloper(variantID, loginName.get());
+    }
+
+    @Override
+    public boolean existsVariantIDForDeveloper(String variantID) {
+        return variantDao.existsVariantIDForDeveloper(variantID, loginName.get());
+    }
 }

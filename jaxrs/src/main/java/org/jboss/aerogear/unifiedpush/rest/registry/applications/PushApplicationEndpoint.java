@@ -90,7 +90,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             page = 0;
         }
 
-        final PageResult<PushApplication> pageResult = searchApplicationService.findAllPushApplicationsForDeveloper(page, pageSize);
+        final PageResult<PushApplication> pageResult = searchService.findAllPushApplicationsForDeveloper(page, pageSize);
         return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
     }
 
@@ -99,7 +99,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
         if (pushApp != null) {
             return Response.ok(pushApp).build();
         }
@@ -114,7 +114,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
 
@@ -148,7 +148,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
         //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
             // generate the new 'masterSecret' and apply it:
@@ -168,7 +168,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = searchApplicationService.findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = searchService.findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
