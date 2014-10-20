@@ -92,6 +92,13 @@
                 </dependency>
 
                 <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>openejb-mockito</artifactId>
+                    <version>4.7.1</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <scope>test</scope>
