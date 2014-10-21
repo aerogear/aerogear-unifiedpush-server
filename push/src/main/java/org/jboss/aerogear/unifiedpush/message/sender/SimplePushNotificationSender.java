@@ -16,11 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -29,6 +24,12 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.ws.rs.core.Response.Status;
+
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 @SenderType(SimplePushVariant.class)
 public class SimplePushNotificationSender implements PushNotificationSender {
@@ -103,12 +104,15 @@ public class SimplePushNotificationSender implements PushNotificationSender {
         conn.setDoOutput(true);
         conn.setUseCaches(false);
         conn.setFixedLengthStreamingMode(bytes.length);
-        conn.setRequestProperty("Accept", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Content-Length", Integer.toString(bytes.length));
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Accept", "*/*");
         conn.setRequestMethod("PUT");
         OutputStream out = null;
         try {
             out = conn.getOutputStream();
             out.write(bytes);
+            out.flush();
         } finally {
             // in case something blows up, while writing
             // the payload, we wanna close the stream:
