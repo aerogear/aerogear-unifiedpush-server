@@ -11,7 +11,7 @@ The following steps are needed to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_database_configuration)
-* Start the {Wildfly|JBossAS7} server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
+* Start the WildFly server (e.g. ``$WILDFLY/bin/standalone.sh -b 0.0.0.0``)
 * Deploy the two `WAR` files to the [server](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_deploy_the_unifiedpush_server)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
@@ -40,31 +40,20 @@ The above `Getting started` section covers the latest release of the UnifiedPush
 
 ### Deployment 
 
-For deployment of the `master branch` to a specific server (Wildfly or JBossAS7), you need to build the WAR files and deploy them to a running and configured server.
+For deployment of the `master branch` to the WildFly server, you need to build the WAR files and deploy them to a running and configured instance of the server.
 
 First build the entire project:
 ```
 mvn clean install
 ```
 
-Note, this will build the also the WAR files for both, WildFly and JBossAS7. If you are only intereted in building for a specific platform, you can also use the profiles, discussed below.
-
 #### Deployment to WildFly
 
-For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
+For the deployment to WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured WildFly server.
 
 ```
 cd servers
 mvn wildfly:deploy -Pwildfly
-```
-
-#### Deployment to JBossAS7
-
-For JBossAS7, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured AS7 server.
-
-```
-cd servers
-mvn jboss-as:deploy -Pas7
 ```
 
 ### AdminUI and its release
