@@ -30,6 +30,8 @@ import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,9 +55,12 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+
     @Inject
     private GenericVariantService variantService;
 
+    @Inject
+    private SearchManager searchManager;
 
     @Inject
     private PushApplicationServiceImpl pushApplicationService;
@@ -64,7 +69,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     private PushSearchByDeveloperServiceImpl searchApplicationService;
 
     private AndroidVariant androidVariant;
-
 
     @Mock
     private HttpServletRequest httpServletRequest;
@@ -90,6 +94,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
+        beans.addManagedClass(PushSearchServiceImpl.class);
+        beans.addManagedClass(SearchManager.class);
 
         return beans;
     }
@@ -102,6 +108,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         when(context.getToken()).thenReturn(token);
         when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
         when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
+
+        searchManager.setHttpServletRequest(httpServletRequest);
 
         // setup a variant:
         androidVariant = new AndroidVariant();
