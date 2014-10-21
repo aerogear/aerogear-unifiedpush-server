@@ -76,10 +76,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         }
 
         // iterate over the missing keys:
-        Set<String> keys = message.getData().keySet();
+        Set<String> keys = message.getPayload().keySet();
         for (String key : keys) {
             // GCM needs stringified values:
-            gcmBuilder.addData(key, "" + message.getData().get(key));
+            gcmBuilder.addData(key, "" + message.getPayload().get(key));
         }
 
         Message gcmMessage = gcmBuilder.build();

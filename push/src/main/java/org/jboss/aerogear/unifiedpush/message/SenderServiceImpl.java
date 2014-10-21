@@ -109,7 +109,7 @@ public class SenderServiceImpl implements SenderService {
                 final SenderServiceCallback senderCallback = new SenderServiceCallback(variant, tokenPerVariant.size(), pushMessageInformation);
                 simplePushSender.sendPushMessage(variant, tokenPerVariant, message, senderCallback);
 
-            } else if (!(variant instanceof SimplePushVariant) && message.getMessage().getData() != null) {
+            } else if (!(variant instanceof SimplePushVariant) && message.getMessage().getPayload() != null) {
                 // all other variants require 'message' (aka data) to be present
 
                 final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);

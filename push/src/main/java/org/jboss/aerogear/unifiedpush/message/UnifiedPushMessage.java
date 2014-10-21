@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *   "sound": "default",
  *   "badge": 2,
  *   "content-available": true,
- *   "data": {
+ *   "payload": {
  *       "key": "value",
  *       "key2": "other value"
  *   },
@@ -58,7 +58,7 @@ public class UnifiedPushMessage {
     private String ipAddress;
     private String clientIdentifier;
 
-    private Message message;
+    private Message message = new Message();
 
     private Criteria criteria = new Criteria();
     private Config config = new Config();

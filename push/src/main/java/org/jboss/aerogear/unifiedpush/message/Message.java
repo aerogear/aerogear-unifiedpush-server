@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,7 +37,7 @@ public class Message {
     private boolean contentAvailable;
     private int badge = -1;
 
-    private Map<String, Object> data;
+    private Map<String, Object> payload = new HashMap<String, Object>();
 
     @JsonProperty("simple-push")
     private String simplePush;
@@ -117,17 +118,17 @@ public class Message {
      * Returns a Map, representing any other key-value pairs that were send
      * to the RESTful Sender API.
      *
-     * This map usually contains application specific data, like:
+     * This map usually contains application specific payload, like:
      * <pre>
      *  "sport-news-channel15" : "San Francisco 49er won last game"
      * </pre>
      */
-    public Map<String, Object> getData() {
-        return data;
+    public Map<String, Object> getPayload() {
+        return payload;
     }
 
-    public void setData(Map<String, Object> data) {
-        this.data = data;
+    public void setPayload(Map<String, Object> payload) {
+        this.payload = payload;
     }
 
     /**
@@ -149,7 +150,7 @@ public class Message {
                 ", sound='" + sound + '\'' +
                 ", contentAvailable=" + contentAvailable +
                 ", badge=" + badge +
-                ", data=" + data +
+                ", payload=" + payload +
                 ", simplePush='" + simplePush + '\'' +
                 '}';
     }
