@@ -3,28 +3,42 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
+import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 
-import javax.enterprise.inject.New;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
+/**
+ * Responsible for switch between different types of search
+ * Depending on the role of the current logged in user
+ */
+@ApplicationScoped
+public class SearchManager implements Serializable {
 
-public class SearchManager {
-
-    private final HttpServletRequest httpServletRequest;
+    private HttpServletRequest httpServletRequest;
 
     @Inject
-    public SearchManager(HttpServletRequest httpServletRequest) {
+    private PushSearchServiceImpl searchAll;
+    @Inject
+    private PushSearchByDeveloperServiceImpl searchByDeveloper;
+
+    public void setHttpServletRequest(HttpServletRequest httpServletRequest){
         this.httpServletRequest = httpServletRequest;
     }
 
+    /**
+     * Validate the current logged in role
+     * @return an implementation of the search service
+     */
     @Produces
     @SearchService
-    public PushSearchService getSearch(@New PushSearchServiceImpl searchAll,
-                                              @New PushSearchByDeveloperServiceImpl searchByDeveloper) {
+    public PushSearchService getSearch() {
 
         boolean isAdmin = httpServletRequest.isUserInRole("admin");
 
@@ -34,6 +48,10 @@ public class SearchManager {
         return searchByDeveloper;
     }
 
+    /**
+     * Extract the username to be used in multiple queries
+     * @return current logged in user
+     */
     @Produces
     @LoggedIn
     public String extractUsername() {
@@ -42,6 +60,4 @@ public class SearchManager {
         return kcSecurityContext.getToken().getPreferredUsername();
 
     }
-
-
 }

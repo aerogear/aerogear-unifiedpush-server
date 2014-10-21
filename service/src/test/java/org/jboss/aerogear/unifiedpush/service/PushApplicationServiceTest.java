@@ -26,6 +26,8 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +53,9 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     @Inject
     private PushSearchByDeveloperServiceImpl searchApplicationService;
 
+    @Inject
+    private SearchManager searchManager;
+
     @Mock
     private HttpServletRequest httpServletRequest;
 
@@ -73,7 +78,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         when(context.getToken()).thenReturn(token);
         when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
         when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
-
+        searchManager.setHttpServletRequest(httpServletRequest);
     }
 
     @Module
@@ -83,6 +88,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
+        beans.addManagedClass(PushSearchServiceImpl.class);
+        beans.addManagedClass(SearchManager.class);
 
         return beans;
     }
