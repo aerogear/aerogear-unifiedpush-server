@@ -46,10 +46,6 @@ public class InstallationManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 50;
     private static final int DEFAULT_PAGE_SIZE = 25;
 
-    //@Inject
-    //@SearchService
-    //private PushSearchService searchService;
-
     @Inject
     private SearchManager searchManager;
 
