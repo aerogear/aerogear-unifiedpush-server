@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.List;
 

@@ -16,8 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
 
 /**
  * Contains the data of the JSON payload that has been sent to the
@@ -112,6 +115,8 @@ public class UnifiedPushMessage {
         try {
             return new ObjectMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
+            return "[\"invalid json\"]";
+        } catch (IOException e) {
             return "[\"invalid json\"]";
         }
     }
