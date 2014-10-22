@@ -8,7 +8,7 @@ import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.io.Serializable;
  * Responsible for switch between different types of search
  * Depending on the role of the current logged in user
  */
-@ApplicationScoped
+@RequestScoped
 public class SearchManager implements Serializable {
 
     private HttpServletRequest httpServletRequest;
