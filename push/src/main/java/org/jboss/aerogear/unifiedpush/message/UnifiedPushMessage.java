@@ -29,7 +29,7 @@ import java.io.IOException;
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  *
- * Messages are submitted as flexible JSON maps, like:
+ * Messages are submitted as follows:
  * <pre>
  *  "message": {
  *   "alert": "HELLO!",
@@ -53,8 +53,6 @@ import java.io.IOException;
  *      "ttl": 3600
  *  }
  * </pre>
- * This class give some convenient methods to access the query components (<code>alias</code> or <code>deviceType</code>),
- * the <code>simple-push</code> value or some <i>highlighted</i> keywords.
  */
 public class UnifiedPushMessage {
 
