@@ -33,7 +33,7 @@ public class SearchManager implements Serializable {
      * Validate the current logged in role
      * @return an implementation of the search service
      */
-    public PushSearchService getSearch() {
+    public PushSearchService getSearchService() {
 
         boolean isAdmin = httpServletRequest.isUserInRole("admin");
 
