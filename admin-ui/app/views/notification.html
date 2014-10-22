@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                       <td>Message:</td>
-                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
+                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).message.alert }}" }</strong></td>
                     </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
