@@ -5,7 +5,25 @@
          version="3.0">
 
     <module-name>ag-push</module-name>
+    <context-param>
+        <param-name>liquibase.changelog</param-name>
+        <param-value>db.changelog-initial.xml</param-value>
+    </context-param>
 
+    <context-param>
+        <param-name>liquibase.datasource</param-name>
+        <param-value>java:jboss/datasources/UnifiedPushDS</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>liquibase.onerror.fail</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
+    </listener>
+    
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Admin</web-resource-name>
