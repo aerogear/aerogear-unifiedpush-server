@@ -21,8 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -52,8 +51,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     protected GenericVariantService variantService;
 
     @Inject
-    @SearchService
-    protected PushSearchService searchService;
+    protected SearchManager searchManager;
 
 
     // Secret Reset
@@ -62,7 +60,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
-        Variant variant = searchService.findByVariantIDForDeveloper(variantId);
+        Variant variant = searchManager.getSearch().findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             logger.log(Level.FINEST, "Resetting secret for: " + variant.getClass().getSimpleName());
@@ -83,7 +81,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findVariantById(@PathParam("variantId") String variantId) {
 
-        Variant variant = searchService.findByVariantIDForDeveloper(variantId);
+        Variant variant = searchManager.getSearch().findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             return Response.ok(variant).build();
@@ -97,7 +95,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Path("/{variantId}")
     public Response deleteVariant(@PathParam("variantId") String variantId) {
 
-        Variant variant = searchService.findByVariantIDForDeveloper(variantId);
+        Variant variant = searchManager.getSearch().findByVariantIDForDeveloper(variantId);
 
         if (variant != null) {
             logger.log(Level.FINEST, "Deleting: " + variant.getClass().getSimpleName());

@@ -2,9 +2,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.service.annotations.SearchService;
-import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 
@@ -36,8 +33,6 @@ public class SearchManager implements Serializable {
      * Validate the current logged in role
      * @return an implementation of the search service
      */
-    @Produces
-    @SearchService
     public PushSearchService getSearch() {
 
         boolean isAdmin = httpServletRequest.isUserInRole("admin");
