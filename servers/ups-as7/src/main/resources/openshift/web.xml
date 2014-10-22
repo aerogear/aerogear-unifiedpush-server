@@ -8,7 +8,7 @@
 
     <context-param>
         <param-name>liquibase.changelog</param-name>
-        <param-value>db.changelog-initial.xml</param-value>
+        <param-value>db.changelog-master.xml</param-value>
     </context-param>
 
     <context-param>

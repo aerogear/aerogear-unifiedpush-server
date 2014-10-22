@@ -7,8 +7,8 @@
     <module-name>ag-push</module-name>
 
     <context-param>
-        <param-name>liquibase.changelog.xml</param-name>
-        <param-value>db.changelog-initial</param-value>
+        <param-name>liquibase.changelog</param-name>
+        <param-value>db.changelog-master.xml</param-value>
     </context-param>
 
     <context-param>
