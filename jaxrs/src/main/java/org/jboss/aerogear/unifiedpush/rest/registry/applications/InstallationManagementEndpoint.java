@@ -71,7 +71,7 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the variant using the variantID
-        if (!searchManager.getSearch().existsVariantIDForDeveloper(variantId)) {
+        if (!searchManager.getSearchService().existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 

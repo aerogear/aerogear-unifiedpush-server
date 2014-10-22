@@ -51,7 +51,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = searchManager.getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -76,7 +76,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllChromePackagedAppVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = searchManager.getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, ChromePackagedAppVariant.class)).build();
     }
 
@@ -89,7 +89,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @PathParam("chromeAppID") String chromeAppID,
             ChromePackagedAppVariant updatedChromePackagedApplication) {
 
-        ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) searchManager.getSearch().findByVariantIDForDeveloper(chromeAppID);
+        ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) getSearch().findByVariantIDForDeveloper(chromeAppID);
         if (chromePackagedAppVariant != null) {
 
             // poor validation

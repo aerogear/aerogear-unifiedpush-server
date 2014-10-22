@@ -49,7 +49,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = searchManager.getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -79,7 +79,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        final PushApplication application = searchManager.getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, SimplePushVariant.class)).build();
     }
 
@@ -93,7 +93,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = (SimplePushVariant) searchManager.getSearch().findByVariantIDForDeveloper(simplePushID);
+        SimplePushVariant spVariant = (SimplePushVariant) getSearch().findByVariantIDForDeveloper(simplePushID);
         if (spVariant != null) {
 
             // some validation

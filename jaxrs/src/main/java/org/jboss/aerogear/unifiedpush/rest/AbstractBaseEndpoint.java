@@ -17,20 +17,22 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
@@ -44,6 +46,9 @@ public abstract class AbstractBaseEndpoint {
 
     @Inject
     protected SearchManager searchManager;
+
+    @Context
+    private HttpServletRequest httpServletRequest;
 
     /**
      * Generic validator used to identify constraint violations of the given model class. 
@@ -77,6 +82,10 @@ public abstract class AbstractBaseEndpoint {
 
         return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);
+    }
+
+    protected PushSearchService getSearch(){
+        return searchManager.getSearchService();
     }
 
 }
