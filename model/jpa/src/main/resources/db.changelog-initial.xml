@@ -41,7 +41,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="alias" type="VARCHAR(255)"/>
-            <column name="deviceToken" type="LONGTEXT"/>
+            <column name="deviceToken" type="VARCHAR(4096)"/>
             <column name="deviceType" type="VARCHAR(255)"/>
             <column name="enabled" type="BIT">
                 <constraints nullable="false"/>
@@ -84,7 +84,7 @@
             <column name="pushApplicationId" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="rawJsonMessage" type="LONGTEXT"/>
+            <column name="rawJsonMessage" type="VARCHAR(4500)"/>
             <column name="submitDate" type="datetime"/>
             <column name="totalReceivers" type="BIGINT(19)">
                 <constraints nullable="false"/>
