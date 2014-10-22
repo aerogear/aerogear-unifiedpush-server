@@ -16,15 +16,76 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.cdi;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * CDI Utility class, which contains various producer / factory methods.
+ * CDI Utility class, which produces the entity manager.
  */
 public final class Factory {
+    private final Logger logger = Logger.getLogger(Factory.class.getName());
+
+    @Inject
+    private SchemaUpdater schemaUpdater;
+
     @Produces
-    @PersistenceContext(unitName = "unifiedpush-default")
-    private EntityManager entityManager;
+    @ApplicationScoped
+    private EntityManager produceEntityManager() {
+        Connection connection = getConnection();
+        final boolean developmentDatabase = isDevelopmentDatabase(connection);
+        if (!developmentDatabase) {
+            schemaUpdater.update(connection);
+        }
+        close(connection);
+        return createEntityManager(developmentDatabase);
+    }
+
+    private Connection getConnection() {
+        try {
+            String dataSourceLookup = "java:jboss/datasources/UnifiedPushDS";
+            DataSource dataSource = (DataSource) new InitialContext().lookup(dataSourceLookup);
+            return dataSource.getConnection();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to connect to database", e);
+        }
+    }
+
+    private void close(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.log(Level.FINEST, "error closing database connection", e);
+            }
+        }
+    }
+
+    private EntityManager createEntityManager(boolean developmentDatabase) {
+        synchronized (this) {
+            String connection = developmentDatabase ? "unifiedpush-dev" : "unifiedpush-default";
+            final EntityManagerFactory factory = Persistence.createEntityManagerFactory(connection);
+            return factory.createEntityManager();
+        }
+    }
+
+    private boolean isDevelopmentDatabase(Connection connection ) {
+        boolean result = false;
+        try {
+            result = "H2".equals(connection.getMetaData().getDatabaseProductName());
+        } catch (SQLException e) {
+            logger.warning("error in determining database type, assuming production environment");
+        }
+
+        return result;
+    }
 }

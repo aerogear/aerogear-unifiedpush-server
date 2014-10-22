@@ -43,7 +43,6 @@ public abstract class JPABaseDao {
 
     protected void merge(Object entity) {
         entityManager.merge(entity);
-        entityManager.flush();
     }
 
     protected void remove(Object entity) {

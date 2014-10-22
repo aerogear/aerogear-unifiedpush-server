@@ -56,7 +56,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="Category" access="FIELD">
         <attributes>
             <id name="id">
-                <generated-value strategy="SEQUENCE"/>
+                <generated-value strategy="TABLE"/>
             </id>
         </attributes>
     </entity>
