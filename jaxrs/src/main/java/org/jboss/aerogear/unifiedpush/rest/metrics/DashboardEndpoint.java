@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.ejb.Singleton;
 import javax.inject.Inject;
@@ -37,12 +37,12 @@ import java.util.List;
 public class DashboardEndpoint {
 
     @Inject
-    private DashboardService service;
+    private SearchManager service;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response totalApplications(@Context HttpServletRequest request) {
-        final DashboardData dataForUser =  service.loadDashboardData();
+        final DashboardData dataForUser =  service.getSearchService().loadDashboardData();
 
         return Response.ok(dataForUser).build();
     }
@@ -51,7 +51,7 @@ public class DashboardEndpoint {
     @Path("/warnings")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
-        final List<ApplicationVariant> variantsWithWarnings = service.getVariantsWithWarnings();
+        final List<ApplicationVariant> variantsWithWarnings = service.getSearchService().getVariantsWithWarnings();
 
         return Response.ok(variantsWithWarnings).build();
     }
@@ -60,7 +60,7 @@ public class DashboardEndpoint {
     @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTopThreeLastActivity(@Context HttpServletRequest request) {
-        final List<Application> topThreeLastActivity = service.getTopThreeLastActivity();
+        final List<Application> topThreeLastActivity = service.getSearchService().getTopThreeLastActivity();
 
         return Response.ok(topThreeLastActivity).build();
     }
