@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class InstallationManagementEndpointTest {
 
-    private InstallationManagementEndpoint endpoint = new InstallationManagementEndpoint();
+    private final InstallationManagementEndpoint endpoint = new InstallationManagementEndpoint();
 
     @Test
     public void shouldGenerateHeaderLinksFirstPage() throws URISyntaxException {
