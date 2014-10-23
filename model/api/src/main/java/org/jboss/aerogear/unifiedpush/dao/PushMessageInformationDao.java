@@ -65,4 +65,11 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      * Delete all Push Message Information entries that are older than the given date
      */
     void deletePushInformationOlderThan(Date oldest);
+
+    //Admin queries
+    List<String> findVariantIDsWithWarnings();
+
+    List<PushMessageInformation> findLastThreeActivity();
+
+    long getNumberOfPushMessagesForApplications();
 }

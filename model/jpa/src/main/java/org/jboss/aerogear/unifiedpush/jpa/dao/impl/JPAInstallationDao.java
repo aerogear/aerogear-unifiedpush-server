@@ -122,6 +122,14 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         return entity;
     }
 
+    //Admin query
+    @Override
+    public long getNumberOfDevicesForVariantIDs() {
+        return (Long) createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ")
+                .getSingleResult();
+    }
+
+
     /**
      *
      * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.

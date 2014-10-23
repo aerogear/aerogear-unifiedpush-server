@@ -62,4 +62,6 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
     PushApplication findAllByPushApplicationID(String pushApplicationID);
 
     PageResult<PushApplication> findAll(Integer page, Integer pageSize);
+
+    long getNumberOfPushApplicationsForDeveloper();
 }
