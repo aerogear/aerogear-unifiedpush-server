@@ -34,8 +34,8 @@ import static java.text.MessageFormat.format;
  */
 public class UserParams implements DynamicTransformer {
     private static final List<String> KNOWN_KEYS = Arrays.asList("alert", "action-category", "sound", "badge",
-            "content-available","simple-push", "data");
-    public static final String MOVE_OP = "['{'\"op\": \"move\",\"from\": \"/message/{0}\",\"path\": \"/message/data/{0}\"'}']";
+            "content-available","simple-push", "payload");
+    public static final String MOVE_OP = "['{'\"op\": \"move\",\"from\": \"/message/{0}\",\"path\": \"/message/payload/{0}\"'}']";
 
     @Override
     public JsonNode transform(JsonNode patched) throws IOException {

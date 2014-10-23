@@ -63,7 +63,7 @@ public class PushNotificationSenderEndpoint {
      *      "sound": "default",
      *      "badge": 2,
      *      "content-available": true,
-     *      "data": {
+     *      "payload": {
      *          "key": "value",
      *          "key2": "other value"
      *      },
