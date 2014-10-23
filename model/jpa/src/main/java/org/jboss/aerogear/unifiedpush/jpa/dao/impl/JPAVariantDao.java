@@ -51,11 +51,8 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public Variant findByVariantID(String variantID) {
-
-        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
+        return getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));
-
-        return entity;
     }
 
     @Override
@@ -100,8 +97,7 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public Variant find(String id) {
-        Variant entity = entityManager.find(Variant.class, id);
-        return entity;
+        return entityManager.find(Variant.class, id);
     }
 
     private Variant getSingleResultForQuery(Query query) {
