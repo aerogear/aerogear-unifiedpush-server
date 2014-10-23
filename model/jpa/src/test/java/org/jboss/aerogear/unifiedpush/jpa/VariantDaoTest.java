@@ -289,7 +289,6 @@ public class VariantDaoTest {
         AndroidVariant av = new AndroidVariant();
         av.setGoogleKey("KEY");
         av.setDeveloper("admin");
-        final String androidId  = av.getVariantID();
 
         variantDao.create(av);
 
