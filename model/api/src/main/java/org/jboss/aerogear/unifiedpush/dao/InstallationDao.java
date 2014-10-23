@@ -54,4 +54,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * Counts the total number of registered devices/clients for the give List of variantIDs
      */
     long getNumberOfDevicesForVariantIDs(String loginName);
+
+    //Admin query
+    long getNumberOfDevicesForVariantIDs();
 }
