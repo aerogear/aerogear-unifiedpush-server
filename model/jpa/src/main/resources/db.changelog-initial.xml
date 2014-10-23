@@ -41,7 +41,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="alias" type="VARCHAR(255)"/>
-            <column name="deviceToken" type="LONGTEXT"/>
+            <column name="deviceToken" type="VARCHAR(4096)"/>
             <column name="deviceType" type="VARCHAR(255)"/>
             <column name="enabled" type="BIT">
                 <constraints nullable="false"/>
@@ -84,7 +84,7 @@
             <column name="pushApplicationId" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="rawJsonMessage" type="LONGTEXT"/>
+            <column name="rawJsonMessage" type="VARCHAR(4500)"/>
             <column name="submitDate" type="datetime"/>
             <column name="totalReceivers" type="BIGINT(19)">
                 <constraints nullable="false"/>
@@ -162,37 +162,37 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-43">
+    <changeSet author="edewit (generated)" id="1412851688198-43" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="AndroidVariant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-48">
+    <changeSet author="edewit (generated)" id="1412851688198-48" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ChromePackagedAppVariant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-50">
+    <changeSet author="edewit (generated)" id="1412851688198-50" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Installation"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-52">
+    <changeSet author="edewit (generated)" id="1412851688198-52" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushApplication"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-53">
+    <changeSet author="edewit (generated)" id="1412851688198-53" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushMessageInformation"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-60">
+    <changeSet author="edewit (generated)" id="1412851688198-60" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="SimplePushVariant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-70">
+    <changeSet author="edewit (generated)" id="1412851688198-70" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Variant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-71">
+    <changeSet author="edewit (generated)" id="1412851688198-71" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="VariantMetricInformation"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-72">
+    <changeSet author="edewit (generated)" id="1412851688198-72" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="WindowsVariant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-73">
+    <changeSet author="edewit (generated)" id="1412851688198-73" failOnError="false">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="iOSVariant"/>
     </changeSet>
-    <changeSet author="edewit (generated)" id="1412851688198-79">
+    <changeSet author="edewit (generated)" id="1412851688198-79" failOnError="false">
         <addUniqueConstraint columnNames="variantID" constraintName="variantID" deferrable="false" disabled="false" initiallyDeferred="false" tableName="Variant"/>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-81">
