@@ -186,7 +186,6 @@ public class InstallationDaoTest {
         assertThat(installationDao.getNumberOfDevicesForVariantIDs("me")).isEqualTo(6);
     }
 
-
     @Test
     public void findDeviceTokensForOneInstallationOfOneVariant() {
         String[] alias = { "foo@bar.org" };

@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -113,7 +112,4 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return variants;
     }
 
-    protected PushSearchService getSearch(){
-        return searchManager.getSearchService();
-    }
 }

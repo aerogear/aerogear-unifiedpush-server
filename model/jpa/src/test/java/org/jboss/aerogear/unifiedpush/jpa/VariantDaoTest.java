@@ -332,8 +332,21 @@ public class VariantDaoTest {
         variantDao.create(av);
 
         //when
-        final boolean exists = variantDao.existsVariantIDForDeveloper(variantID, "admin");
+        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "admin")).isEqualTo(true);
+        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "foo")).isEqualTo(false);
+    }
 
-        assertThat(exists).isEqualTo(true);
+    @Test
+    public void shouldDetectThatVariantIdExistsForAdmin() {
+        //given
+        AndroidVariant av = new AndroidVariant();
+        av.setGoogleKey("KEY");
+        av.setDeveloper("foo");
+        final String variantID  = av.getVariantID();
+        variantDao.create(av);
+
+        //when
+        assertThat(variantDao.existsVariantIDForAdmin(variantID)).isEqualTo(true);
+        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "foo")).isEqualTo(true);
     }
 }

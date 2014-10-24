@@ -95,6 +95,13 @@ public class PushApplicationDaoTest {
         assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Dave The Drummer")).isEqualTo(1);
         assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(2);
 
+        // check all:
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper()).isEqualTo(3);
+        assertThat(pushApplicationDao.findAll(0, 10).getCount()).isEqualTo(3);
+
+        // check exact:
+        assertThat(pushApplicationDao.findAllByPushApplicationID(pushApplication2.getPushApplicationID()).getName()).isEqualTo("Push App 2");
+        assertThat(pushApplicationDao.findAllByPushApplicationID(pushApplication2.getPushApplicationID()).getName()).isNotEqualTo("Push App 3");
 
     }
 
@@ -121,6 +128,10 @@ public class PushApplicationDaoTest {
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin")).hasSize(2);
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Dave The Drummer")).hasSize(1);
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin The Drummer")).isEmpty();
+
+        // check all:
+        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper()).isEqualTo(3);
+        assertThat(pushApplicationDao.findAll(0, 10).getCount()).isEqualTo(3);
     }
 
     @Test
