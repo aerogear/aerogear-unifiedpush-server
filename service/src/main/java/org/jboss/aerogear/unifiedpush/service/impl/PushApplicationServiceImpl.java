@@ -35,7 +35,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     @LoggedIn
     private Instance<String> loginName;
 
-    public PushApplicationServiceImpl(){}
+    public PushApplicationServiceImpl() {
+    }
 
     @Override
     public void addPushApplication(PushApplication pushApp) {

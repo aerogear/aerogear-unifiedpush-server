@@ -89,7 +89,7 @@ public class ChromePackagedAppEndpoint extends AbstractVariantEndpoint {
             @PathParam("chromeAppID") String chromeAppID,
             ChromePackagedAppVariant updatedChromePackagedApplication) {
 
-        ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) getSearch().findByVariantIDForDeveloper(chromeAppID);
+        ChromePackagedAppVariant chromePackagedAppVariant = (ChromePackagedAppVariant) variantService.findByVariantID(chromeAppID);
         if (chromePackagedAppVariant != null) {
 
             // poor validation

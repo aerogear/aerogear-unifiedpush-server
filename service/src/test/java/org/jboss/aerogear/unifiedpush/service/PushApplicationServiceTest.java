@@ -22,7 +22,10 @@ import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
@@ -85,11 +88,15 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     public Beans getBeans() {
         final Beans beans = new Beans();
         beans.addManagedClass(JPAVariantDao.class);
+        beans.addManagedClass(JPAInstallationDao.class);
+        beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
+        beans.addManagedClass(InstallationDao.class);
+
 
         return beans;
     }

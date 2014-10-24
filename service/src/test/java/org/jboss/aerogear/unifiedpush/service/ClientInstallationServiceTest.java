@@ -25,6 +25,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
@@ -88,6 +89,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     public Beans getBeans() {
         final Beans beans = new Beans();
         beans.addManagedClass(ClientInstallationServiceImpl.class);
+        beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);

@@ -50,11 +50,6 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     @Override
-    public Variant findByVariantIDForDeveloper(String variantID) {
-        return variantDao.findByVariantIDForDeveloper(variantID, loginName.get());
-    }
-
-    @Override
     public boolean existsVariantIDForDeveloper(String variantID) {
         return variantDao.existsVariantIDForDeveloper(variantID, loginName.get());
     }
@@ -109,7 +104,7 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     private long totalApplicationNumber() {
-        return  pushApplicationDao.getNumberOfPushApplicationsForDeveloper(loginName.get());
+        return pushApplicationDao.getNumberOfPushApplicationsForDeveloper(loginName.get());
     }
 
     private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
@@ -124,10 +119,10 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     private List<Application> wrapApplication(List<PushMessageInformation> pushMessageInformations) {
-        final List<Application> applications= new ArrayList<Application>(pushMessageInformations.size());
+        final List<Application> applications = new ArrayList<Application>(pushMessageInformations.size());
         for (PushMessageInformation pushMessageInformation : pushMessageInformations) {
             String applicationName = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId()).getName();
-            final Application application= new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(),pushMessageInformation.getSubmitDate());
+            final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
             applications.add(application);
 
         }

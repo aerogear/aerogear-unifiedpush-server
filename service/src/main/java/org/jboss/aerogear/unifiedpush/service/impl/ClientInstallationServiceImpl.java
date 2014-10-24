@@ -54,7 +54,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public void addInstallation(Variant variant, Installation entity) {
 
         // does it already exist ?
-        Installation installation  = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
@@ -95,7 +95,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
             // let's avoid duplicated tokens/devices per variant
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
-            if (! existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
+            if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
                 logger.log(Level.FINEST, "Importing device with token: " + current.getDeviceToken());
 
@@ -199,6 +199,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * A simple validation util that checks if a token is present
      */
     private boolean hasTokenValue(Installation installation) {
-        return (installation.getDeviceToken() != null && (! installation.getDeviceToken().isEmpty()));
+        return (installation.getDeviceToken() != null && (!installation.getDeviceToken().isEmpty()));
     }
 }

@@ -75,9 +75,8 @@ public class VariantDaoTest {
 
         variantDao.create(av);
 
-        assertThat(variantDao.findByVariantIDForDeveloper(uuid, "admin")).isNotNull();
-        assertThat(variantDao.findByVariantIDForDeveloper(null, "admin")).isNull();
-        assertThat(variantDao.findByVariantIDForDeveloper(uuid, "mr x")).isNull();
+        assertThat(variantDao.findByVariantID(uuid)).isNotNull();
+        assertThat(variantDao.findByVariantID(null)).isNull();
     }
 
     @Test
@@ -189,7 +188,7 @@ public class VariantDaoTest {
 
     @Test
     public void lookupNonExistingVariant() {
-        AndroidVariant variant = (AndroidVariant) variantDao.findByVariantIDForDeveloper("NOT-IN-DATABASE", "admin");
+        AndroidVariant variant = (AndroidVariant) variantDao.findByVariantID("NOT-IN-DATABASE");
         assertThat(variant).isNull();
     }
 
