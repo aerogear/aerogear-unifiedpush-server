@@ -45,7 +45,7 @@ public abstract class AbstractBaseEndpoint {
     private Validator validator;
 
     @Inject
-    protected SearchManager searchManager;
+    private SearchManager searchManager;
 
     @Context
     private HttpServletRequest httpServletRequest;
@@ -84,6 +84,9 @@ public abstract class AbstractBaseEndpoint {
                            .entity(responseObj);
     }
 
+    /**
+     * offers PushSearchService to subclasses
+     */
     protected PushSearchService getSearch(){
         return searchManager.getSearchService();
     }
