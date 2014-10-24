@@ -25,12 +25,13 @@ public class SearchManager implements Serializable {
     @Inject
     private PushSearchByDeveloperServiceImpl searchByDeveloper;
 
-    public void setHttpServletRequest(HttpServletRequest httpServletRequest){
+    public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
         this.httpServletRequest = httpServletRequest;
     }
 
     /**
      * Validate the current logged in role
+     *
      * @return an implementation of the search service
      */
     public PushSearchService getSearchService() {
@@ -45,6 +46,7 @@ public class SearchManager implements Serializable {
 
     /**
      * Extract the username to be used in multiple queries
+     *
      * @return current logged in user
      */
     @Produces

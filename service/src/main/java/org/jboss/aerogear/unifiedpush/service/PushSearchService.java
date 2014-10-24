@@ -23,8 +23,6 @@ public interface PushSearchService {
      */
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID);
 
-    Variant findByVariantIDForDeveloper(String variantID);
-
     boolean existsVariantIDForDeveloper(String variantID);
 
     DashboardData loadDashboardData();

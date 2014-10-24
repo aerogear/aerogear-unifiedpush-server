@@ -56,17 +56,6 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     }
 
     @Override
-    public Variant findByVariantIDForDeveloper(String variantID, String loginName) {
-
-        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID and t.developer = :developer")
-                .setParameter("variantID", variantID)
-                .setParameter("developer", loginName));
-
-
-        return entity;
-    }
-
-    @Override
     public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
 
         Long numberOfVariants = (Long) createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer")
@@ -111,16 +100,6 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     }
 
     //Admin queries
-    @Override
-    public Variant findAllByVariantID(String variantID) {
-
-        Variant entity = getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
-                .setParameter("variantID", variantID));
-
-
-        return entity;
-    }
-
     @Override
     public boolean existsVariantIDForAdmin(String variantID) {
 

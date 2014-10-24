@@ -92,7 +92,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) getSearch().findByVariantIDForDeveloper(androidID);
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantID(androidID);
         if (androidVariant != null) {
 
             // some validation

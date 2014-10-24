@@ -93,7 +93,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = (SimplePushVariant) getSearch().findByVariantIDForDeveloper(simplePushID);
+        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantID(simplePushID);
         if (spVariant != null) {
 
             // some validation
