@@ -49,11 +49,6 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     @Override
-    public Variant findByVariantIDForDeveloper(String variantID) {
-        return variantDao.findAllByVariantID(variantID);
-    }
-
-    @Override
     public boolean existsVariantIDForDeveloper(String variantID) {
         return variantDao.existsVariantIDForAdmin(variantID);
     }
@@ -77,6 +72,7 @@ public class PushSearchServiceImpl implements PushSearchService {
 
         return data;
     }
+
     /**
      * Loads all the Variant objects where we did notice some failures on sending
      * for the given user
@@ -108,7 +104,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     private long totalApplicationNumber() {
-        return  pushApplicationDao.getNumberOfPushApplicationsForDeveloper();
+        return pushApplicationDao.getNumberOfPushApplicationsForDeveloper();
     }
 
     private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
@@ -123,10 +119,10 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     private List<Application> wrapApplication(List<PushMessageInformation> pushMessageInformations) {
-        final List<Application> applications= new ArrayList<Application>(pushMessageInformations.size());
+        final List<Application> applications = new ArrayList<Application>(pushMessageInformations.size());
         for (PushMessageInformation pushMessageInformation : pushMessageInformations) {
             String applicationName = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId()).getName();
-            final Application application= new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(),pushMessageInformation.getSubmitDate());
+            final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
             applications.add(application);
 
         }

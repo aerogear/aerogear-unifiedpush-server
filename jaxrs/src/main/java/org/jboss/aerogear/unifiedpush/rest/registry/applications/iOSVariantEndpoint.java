@@ -110,7 +110,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant) getSearch().findByVariantIDForDeveloper(iOSID);
+        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
 
         if (iOSVariant != null) {
 
@@ -134,7 +134,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSVariant iOSVariant = (iOSVariant) getSearch().findByVariantIDForDeveloper(iOSID);
+        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
         if (iOSVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?
