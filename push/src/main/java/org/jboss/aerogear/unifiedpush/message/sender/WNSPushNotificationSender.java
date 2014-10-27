@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 @SenderType(WindowsVariant.class)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
-    private final Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
+    private final Logger logger = Logger.getLogger(WNSPushNotificationSender.class.getName());
 
     @Inject
     private ClientInstallationService clientInstallationService;
