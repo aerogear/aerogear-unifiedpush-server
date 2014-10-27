@@ -456,7 +456,7 @@ public class PushMessageInformationDaoTest {
         final AndroidVariant androidVariant = new AndroidVariant();
         androidVariant.setGoogleKey("123");
         androidVariant.setVariantID("231543432432");
-        androidVariant.setDeveloper(loginName);
+        androidVariant.setDeveloper("someone");
         entityManager.persist(androidVariant);
 
         final AndroidVariant androidVariant1 = new AndroidVariant();
@@ -472,7 +472,8 @@ public class PushMessageInformationDaoTest {
         entityManager.persist(androidVariant2);
         flushAndClear();
 
-        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings(loginName);
+        // all warnings:
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings();
 
         assertThat(variantIDsWithWarnings).hasSize(2);
         assertThat(variantIDsWithWarnings).contains("231543432432", "23154343243333");

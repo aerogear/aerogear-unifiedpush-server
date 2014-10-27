@@ -70,31 +70,22 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
-
-        List<String> ids = createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer")
+        return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer")
                 .setParameter("developer", loginName).getResultList();
-
-        return ids;
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
-
-        PushApplication entity = getSingleResultForQuery(createQuery(
+        return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
                 .setParameter("pushApplicationID", pushApplicationID)
                 .setParameter("developer", loginName));
-
-        return entity;
     }
 
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
-
-        PushApplication entity = getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
+        return getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));
-
-        return entity;
     }
 
     @Override
@@ -136,8 +127,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public PushApplication find(String id) {
-        PushApplication entity = entityManager.find(PushApplication.class, id);
-        return  entity;
+        return entityManager.find(PushApplication.class, id);
     }
 
     private PushApplication getSingleResultForQuery(Query query) {
@@ -149,4 +139,32 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
             return null;
         }
     }
+
+    //Specific queries to the Admin
+    @Override
+    public PageResult<PushApplication> findAll(Integer page, Integer pageSize) {
+
+        String select = "from PushApplication pa";
+
+        Long count = entityManager.createQuery("select count(*) " + select, Long.class).getSingleResult();
+
+        List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+        return new PageResult<PushApplication>(entities, count);
+    }
+
+    @Override
+    public PushApplication findAllByPushApplicationID(String pushApplicationID) {
+        return getSingleResultForQuery(createQuery(
+                "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
+                .setParameter("pushApplicationID", pushApplicationID));
+    }
+
+    @Override
+    public long getNumberOfPushApplicationsForDeveloper() {
+        return (Long) createQuery("select count(pa) from PushApplication pa")
+                .getSingleResult();
+    }
+
 }
