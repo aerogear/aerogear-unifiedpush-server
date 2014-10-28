@@ -33,7 +33,7 @@
         },
         {
             "username" : "developer",
-            "enabled": true,
+            "enabled": false,
             "credentials" : [
                 { "type" : "password",
                     "value" : "developer" }
