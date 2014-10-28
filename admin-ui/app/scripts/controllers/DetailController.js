@@ -116,7 +116,7 @@ angular.module('upsConsole').controller('DetailController',
       });
     });
   };
-    
+
   $scope.renewMasterSecret = function () {
     var modalInstance = show(null, 'renew-master-secret.html');
     modalInstance.result.then(function () {
@@ -193,6 +193,7 @@ angular.module('upsConsole').controller('DetailController',
       properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
       break;
     case 'ios':
+    case 'safari':
       if (variant.certificates && variant.certificates.length) {
         variant.certificate = variant.certificates[0];
       }
