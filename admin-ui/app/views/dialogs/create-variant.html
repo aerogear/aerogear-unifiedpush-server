@@ -48,6 +48,17 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
+              <input type="radio" name="createVariantType" id="variantTypeSafari" ng-model="variant.type" value="safari"  ng-required="true">
+              <label for="variantTypeSafari">
+                <div class="ups-platform ios">
+                  <strong>Safari</strong><br>
+                  <span>using Apple Push Network</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="radio ups-radio">
               <input type="radio" name="createVariantType" id="variantTypeChrome" ng-model="variant.type" value="chrome"  ng-required="true">
               <label for="variantTypeChrome">
                 <div class="ups-platform chrome">
@@ -82,7 +93,7 @@
         </div>
         <hr>
       </div>
-      
+
       <div ng-show="variant.type">
 
         <div ng-show="variant.type == 'android'">
@@ -91,7 +102,7 @@
             <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
               <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
             </div>
-          </div>    
+          </div>
           <div class="form-group">
             <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
             <div class="col-sm-7">
@@ -135,6 +146,39 @@
                   <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                   <div class="col-sm-9">
                     <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-show="variant.type == 'safari'">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Push Network</label>
+            <div class="col-sm-7">
+              <p><em>Apple Push Notification Service</em> certificate:</p>
+              <strong><input type="file" ups-files="variant.certificates" /></strong>
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <div class="row">
+                    <br><label class="col-sm-3 control-label">Type</label>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="safariType" id="safariType1" ng-model="variant.production" value="true" checked=checked>
+                            Production
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label" for="safariPassphrase">Passphrase</label>
+                  <div class="col-sm-9">
+                    <input type="password" id="safariPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'safari' && !variant.id">
                   </div>
                 </div>
               </div>
@@ -193,7 +237,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="modal-footer">
     <input type="button" class="btn btn-default" ng-click="cancel()" value="Cancel" />
     <input type="submit" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid" value="{{ variant.id ? 'Save' : 'Add' }}" />

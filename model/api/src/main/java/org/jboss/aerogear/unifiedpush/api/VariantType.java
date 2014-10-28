@@ -34,6 +34,11 @@ public enum VariantType {
     IOS("ios"),
 
     /**
+     * The type identifier for our Safari variants.
+     */
+    SAFARI("safari"),
+
+    /**
      * The type identifier for our SimplePush variants. 
      */
     SIMPLE_PUSH("simplePush"),

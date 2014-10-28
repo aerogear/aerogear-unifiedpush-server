@@ -36,6 +36,8 @@ public class UnifiedPushMessage {
     private final String simplePush;
     private final String actionCategory;
     private final String alert;
+    private final String title;
+    private final String action;
     private final String sound;
     private final boolean contentAvailable;
     private final int badge;
@@ -57,11 +59,13 @@ public class UnifiedPushMessage {
      *       "key":"value",
      *       "key2":"other value",
      *       "alert":"HELLO!",
+     *       "title":"Title",
      *       "action-category":"some value",
      *       "sound":"default",
      *       "badge":2,
      *       "content-available" : true
      *     },
+     *     "url-args":["arg1", "arg2"]
      *     "simple-push":"version=123"
      *   }
      * </pre>
@@ -81,6 +85,8 @@ public class UnifiedPushMessage {
             // remove the desired keywords:
             // special key words (for APNs)
             this.alert = (String) this.data.remove("alert"); // used in AGDROID as well
+            this.title = (String) this.data.remove("title");
+            this.action = (String) this.data.remove("action");
             this.sound = (String) this.data.remove("sound");
             this.actionCategory = (String) this.data.remove("action-category");
 
@@ -101,6 +107,8 @@ public class UnifiedPushMessage {
         } else {
             // satisfy the final
             this.alert = null;
+            this.title = null;
+            this.action = null;
             this.sound = null;
             this.actionCategory = null;
             this.badge = -1;
@@ -146,6 +154,30 @@ public class UnifiedPushMessage {
         return alert;
     }
 
+
+    /**
+     * Returns the value of the 'title' key from the submitted payload.
+     * This key is recognized in Safari, without any API invocation and
+     * on AeroGear's GCM offerings.
+     *
+     * Android users that are not using AGDROID can read the value as well,
+     * but need to call specific APIs to show the 'alert' value.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Returns the value of the 'action' key from the submitted payload.
+     * This key is recognized in Safari, without any API invocation and
+     * on AeroGear's GCM offerings.
+     *
+     * Android users that are not using AGDROID can read the value as well,
+     * but need to call specific APIs to show the 'alert' value.
+     */
+    public String getAction() {
+        return action;
+    }
 
     /**
      * Returns the value of the 'action-category', which is used on the client (iOS for now),
@@ -234,6 +266,8 @@ public class UnifiedPushMessage {
                 "\"clientIdentifier\":\"" + clientIdentifier + "\"," +
                 "\"simplePush\":\"" + simplePush + "\"," +
                 "\"alert\":\"" + alert + "\"," +
+                "\"title\":\"" + title + "\"," +
+                "\"action\":\"" + action + "\"," +
                 "\"action-category\":\"" + actionCategory + "\"," +
                 "\"sound\":\"" + sound + "\"," +
                 "\"contentAvailable\":" + contentAvailable + "," +
@@ -261,8 +295,8 @@ public class UnifiedPushMessage {
 
     @Override
     public String toString() {
-        return "[alert=" + alert + ", data=" + data+ ", criteria="
-                + criteria + ", sound=" + sound + ", action-category=" + actionCategory + ", badge=" + badge + ", time-to-live="
+        return "[alert=" + alert + ", title=" + title + ", data=" + data+ ", criteria="
+                + criteria + ", sound=" + sound + ", action=" + action + ", action-category=" + actionCategory + ", badge=" + badge + ", time-to-live="
                 + timeToLive + ", simplePush=" + simplePush + ", content-available=" + contentAvailable +"]";
     }
 }

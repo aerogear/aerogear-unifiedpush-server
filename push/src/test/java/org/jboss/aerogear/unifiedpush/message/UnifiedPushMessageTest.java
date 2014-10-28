@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -148,6 +149,22 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testTitle() {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("title", "I'm a Title");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        assertEquals("I'm a Title", unifiedPushMessage.getTitle());
+
+    }
+
+    @Test
     public void contentAvailable() {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
@@ -209,6 +226,38 @@ public class UnifiedPushMessageTest {
         assertNotNull(unifiedPushMessage.getSendCriteria().getAliases());
         assertEquals(1, unifiedPushMessage.getSendCriteria().getAliases().size());
         assertEquals("foo@bar.org", unifiedPushMessage.getSendCriteria().getAliases().get(0));
+    }
+
+    @Test
+    public void testAction() {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("action", "View");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        assertEquals("View", unifiedPushMessage.getAction());
+
+    }
+
+    @Test
+    public void testUrlArgs() {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("title", "I'm a Title");
+        messageObject.put("url-args",Arrays.asList("Arg1", "Arg2"));
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        assertEquals("[Arg1, Arg2]", unifiedPushMessage.getData().get("url-args").toString());
     }
 
     @Test
@@ -489,6 +538,8 @@ public class UnifiedPushMessageTest {
                 "\"clientIdentifier\":\"null\"," +
                 "\"simplePush\":\"null\"," +
                 "\"alert\":\"Howdy\"," +
+                "\"title\":\"null\"," +
+                "\"action\":\"null\"," +
                 "\"action-category\":\"null\"," +
                 "\"sound\":\"default\"," +
                 "\"contentAvailable\":false," +
