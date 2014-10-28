@@ -38,7 +38,8 @@ public class Message {
     private boolean contentAvailable;
     private int badge = -1;
 
-    private Map<String, Object> payload = new HashMap<String, Object>();
+    @JsonProperty("user-data")
+    private Map<String, Object> userData = new HashMap<String, Object>();
 
     @JsonProperty("simple-push")
     private String simplePush;
@@ -124,12 +125,12 @@ public class Message {
      *  "sport-news-channel15" : "San Francisco 49er won last game"
      * </pre>
      */
-    public Map<String, Object> getPayload() {
-        return payload;
+    public Map<String, Object> getUserData() {
+        return userData;
     }
 
-    public void setPayload(Map<String, Object> payload) {
-        this.payload = payload;
+    public void setUserData(Map<String, Object> userData) {
+        this.userData = userData;
     }
 
     /**
@@ -146,13 +147,13 @@ public class Message {
     @Override
     public String toString() {
         return "Message{" +
-                "actionCategory='" + actionCategory + '\'' +
+                "action-category='" + actionCategory + '\'' +
                 ", alert='" + alert + '\'' +
                 ", sound='" + sound + '\'' +
                 ", contentAvailable=" + contentAvailable +
                 ", badge=" + badge +
-                ", payload=" + payload +
-                ", simplePush='" + simplePush + '\'' +
+                ", user-data=" + userData +
+                ", simple-push='" + simplePush + '\'' +
                 '}';
     }
 }

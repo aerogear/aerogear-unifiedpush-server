@@ -37,7 +37,7 @@ import java.io.IOException;
  *   "sound": "default",
  *   "badge": 2,
  *   "content-available": true,
- *   "payload": {
+ *   "user-data": {
  *       "key": "value",
  *       "key2": "other value"
  *   },

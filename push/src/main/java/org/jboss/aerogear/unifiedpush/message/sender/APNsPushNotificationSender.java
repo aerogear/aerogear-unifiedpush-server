@@ -71,7 +71,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     builder = builder.instantDeliveryOrSilentNotification();
                 }
 
-                builder = builder.customFields(message.getPayload()); // adding other (submitted) fields
+                builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {

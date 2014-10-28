@@ -52,7 +52,7 @@ public class UnifiedPushMessageTest {
         final HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("key", "value");
         data.put("key2", "other value");
-        message.setPayload(data);
+        message.setUserData(data);
 
         message.setSimplePush("version=123");
         unifiedPushMessage.setMessage(message);
@@ -87,7 +87,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
@@ -98,14 +98,14 @@ public class UnifiedPushMessageTest {
         assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
         assertEquals("default", unifiedPushMessage.getMessage().getSound());
         assertEquals(2, unifiedPushMessage.getMessage().getBadge());
-        assertEquals("someValue", unifiedPushMessage.getMessage().getPayload().get("someKey"));
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         // no TTL:
         assertEquals(-1, unifiedPushMessage.getConfig().getTimeToLive());
 
         // multiple access?
         assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
-        assertEquals("someValue", unifiedPushMessage.getMessage().getPayload().get("someKey"));
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         assertNull(unifiedPushMessage.getCriteria().getAliases());
         assertNull(unifiedPushMessage.getCriteria().getDeviceTypes());
@@ -125,7 +125,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simple-push", "version=123");
@@ -136,11 +136,11 @@ public class UnifiedPushMessageTest {
         assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
         assertEquals("default", unifiedPushMessage.getMessage().getSound());
         assertEquals(2, unifiedPushMessage.getMessage().getBadge());
-        assertEquals("someValue", unifiedPushMessage.getMessage().getPayload().get("someKey"));
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         // multiple access?
         assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
-        assertEquals("someValue", unifiedPushMessage.getMessage().getPayload().get("someKey"));
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         assertNull(unifiedPushMessage.getCriteria().getAliases());
         assertNull(unifiedPushMessage.getCriteria().getDeviceTypes());
@@ -160,7 +160,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simplePush", "version=123");
@@ -179,7 +179,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("sound", "default");
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
@@ -201,7 +201,7 @@ public class UnifiedPushMessageTest {
 
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         messageObject.put("content-available", true);
 
@@ -225,7 +225,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("sound", "default");
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
@@ -247,7 +247,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simple-push", "version=123");
@@ -289,7 +289,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simple-push", "version=123");
@@ -317,7 +317,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simple-push", "version=123");
@@ -463,7 +463,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, String> data = new HashMap<String, String>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
         messageObject.put("simple-push", "version=123");
@@ -517,7 +517,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("badge", 2);
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("someKey", "someValue");
-        messageObject.put("payload", data);
+        messageObject.put("user-data", data);
         messageObject.put("simple-push", "version=123");
 
         container.put("message", messageObject);
@@ -534,11 +534,11 @@ public class UnifiedPushMessageTest {
                     "\"alert\":\"Howdy\"," +
                     "\"sound\":\"default\"," +
                     "\"badge\":2," +
-                    "\"payload\":{" +
-                        "\"someKey\":\"someValue\"" +
-                    "}," +
                     "\"action-category\":null," +
                     "\"content-available\":false," +
+                    "\"user-data\":{" +
+                    "\"someKey\":\"someValue\"" +
+                    "}," +
                     "\"simple-push\":\"version=123\"" +
                 "}," +
                 "\"criteria\":{" +
