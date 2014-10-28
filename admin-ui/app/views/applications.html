@@ -32,6 +32,7 @@
                       <li><i class="fa fa-cubes"></i><a href="#/detail/{{application.pushApplicationID}}"><ups-pluralize noun="variant" count="application.variants.length"></ups-pluralize></a></li>
                       <li><i class="fa fa-tachometer"></i><a href="#/activity/{{application.pushApplicationID}}">Activity</a></li>
                       <li><i class="fa fa-send"></i><a href="#/compose/{{ application.pushApplicationID }}">Send Push</a></li>
+                      <li><i class="pficon pficon-user"></i><a ng-click="accountManagement()" href="#">{{ application.developer }}</a></li>
                     </ul>
                 </div>
             </div>
