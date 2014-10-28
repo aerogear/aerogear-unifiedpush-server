@@ -18,10 +18,11 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Map;
 
@@ -30,18 +31,18 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     @Inject
     private PushApplicationDao pushApplicationDao;
 
+    @Inject
+    @LoggedIn
+    private Instance<String> loginName;
+
+    public PushApplicationServiceImpl() {
+    }
+
     @Override
     public void addPushApplication(PushApplication pushApp) {
+
+        pushApp.setDeveloper(loginName.get());
         pushApplicationDao.create(pushApp);
-    }
-
-    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize) {
-        return pushApplicationDao.findAllForDeveloper(loginName, page, pageSize);
-    }
-
-    @Override
-    public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
-        return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName);
     }
 
     @Override
@@ -69,4 +70,5 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public void removePushApplication(PushApplication pushApp) {
         pushApplicationDao.delete(pushApp);
     }
+
 }

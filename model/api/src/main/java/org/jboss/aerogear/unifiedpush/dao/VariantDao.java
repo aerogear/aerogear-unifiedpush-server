@@ -28,11 +28,6 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
     Variant findByVariantID(String variantID);
 
     /**
-     * Finder that returns the actual variant, identified by its ID and its owner/developer.
-     */
-    Variant findByVariantIDForDeveloper(String variantID, String loginName);
-
-    /**
      * Loads list of all variantIDs for given user.
      */
     List<String> findVariantIDsForDeveloper(String principalName);
@@ -49,4 +44,7 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
      * Loads list of all variants, where IDs are given.
      */
     List<Variant> findAllVariantsByIDs(List<String> variantIDs);
+
+    //Admin queries
+    boolean existsVariantIDForAdmin(String variantID);
 }

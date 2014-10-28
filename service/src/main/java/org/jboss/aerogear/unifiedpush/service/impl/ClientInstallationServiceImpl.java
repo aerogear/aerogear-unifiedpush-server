@@ -21,9 +21,11 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +45,16 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao dao;
 
+    @Inject
+    @LoggedIn
+    private Instance<String> developer;
+
     @Override
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
 
         // does it already exist ?
-        Installation installation  = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
@@ -89,7 +95,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
             // let's avoid duplicated tokens/devices per variant
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
-            if (! existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
+            if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
                 logger.log(Level.FINEST, "Importing device with token: " + current.getDeviceToken());
 
@@ -126,8 +132,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public PageResult<Installation> findInstallationsByVariant(String variantId, String developer, Integer page, Integer pageSize) {
-        return dao.findInstallationsByVariant(variantId, developer, page, pageSize);
+    public PageResult<Installation> findInstallationsByVariant(String variantId, Integer page, Integer pageSize) {
+        return dao.findInstallationsByVariant(variantId, developer.get(), page, pageSize);
     }
 
     @Override
@@ -193,6 +199,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * A simple validation util that checks if a token is present
      */
     private boolean hasTokenValue(Installation installation) {
-        return (installation.getDeviceToken() != null && (! installation.getDeviceToken().isEmpty()));
+        return (installation.getDeviceToken() != null && (!installation.getDeviceToken().isEmpty()));
     }
 }

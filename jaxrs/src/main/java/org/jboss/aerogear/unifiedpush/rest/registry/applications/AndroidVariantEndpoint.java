@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,8 +35,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
-
 @Stateless
 @Path("/applications/{pushAppID}/android")
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
@@ -49,11 +46,10 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     public Response registerAndroidVariant(
             AndroidVariant androidVariant,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo,
-            @Context HttpServletRequest request) {
+            @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -70,9 +66,6 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
-        // store the "developer:
-        androidVariant.setDeveloper(extractUsername(request));
-
         // store the Android variant:
         variantService.addVariant(androidVariant);
         // add iOS variant, and merge:
@@ -84,8 +77,8 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllAndroidVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, AndroidVariant.class)).build();
     }
 
@@ -95,12 +88,11 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariation(
-            @Context HttpServletRequest request,
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantIDForDeveloper(androidID, extractUsername(request));
+        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantID(androidID);
         if (androidVariant != null) {
 
             // some validation
