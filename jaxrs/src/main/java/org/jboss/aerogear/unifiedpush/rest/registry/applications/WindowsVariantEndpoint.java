@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,8 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
-
 @Stateless
 @Path("/applications/{pushAppID}/windows")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
@@ -46,10 +43,9 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     public Response registerWindowsVariant(
             WindowsVariant windowsVariant,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo,
-            @Context HttpServletRequest request) {
+            @Context UriInfo uriInfo) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -66,9 +62,6 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
-        // store the "developer:
-        windowsVariant.setDeveloper(extractUsername(request));
-
         // store the Windows variant:
         variantService.addVariant(windowsVariant);
         // add iOS variant, and merge:
@@ -79,8 +72,8 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllWindowsVariationsForPushApp(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
-        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+    public Response listAllWindowsVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, WindowsVariant.class)).build();
     }
 
@@ -90,11 +83,10 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateWindowsVariation(
-            @Context HttpServletRequest request,
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {
 
-        WindowsVariant windowsVariant = (WindowsVariant) variantService.findByVariantIDForDeveloper(windowsID, extractUsername(request));
+        WindowsVariant windowsVariant = (WindowsVariant) variantService.findByVariantID(windowsID);
         if (windowsVariant != null) {
 
             // some validation

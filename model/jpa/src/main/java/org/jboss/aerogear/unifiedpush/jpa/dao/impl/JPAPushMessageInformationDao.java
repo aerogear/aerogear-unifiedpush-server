@@ -36,10 +36,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
-        List<PushMessageInformation> messageInformations = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
+        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("pushApplicationId", pushApplicationId).getResultList();
-
-        return messageInformations;
     }
 
     @Override
@@ -97,25 +95,21 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        List<String> variantIDsWithWarnings = createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
                 " and vmi.deliveryStatus = false")
                 .setParameter("developer", loginName)
                 .getResultList();
-
-        return variantIDsWithWarnings;
     }
 
     @Override
     public List<PushMessageInformation> findLastThreeActivity(String loginName) {
-        final List<PushMessageInformation> topThree = createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
+        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
                 " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
                 .setMaxResults(3)
                 .getResultList();
-
-        return topThree;
     }
 
     @Override
@@ -130,6 +124,31 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
             remove(oldMessage);
         }
     }
+
+    //Admin queries
+    @Override
+    public List<String> findVariantIDsWithWarnings() {
+        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+                " where vmi.variantID IN (select t.variantID from Variant t)" +
+                " and vmi.deliveryStatus = false")
+                .getResultList();
+    }
+
+    @Override
+    public List<PushMessageInformation> findLastThreeActivity() {
+        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
+                " IN (select p.pushApplicationID from PushApplication p)" +
+                " ORDER BY pmi.submitDate " + DESC)
+                .setMaxResults(3)
+                .getResultList();
+    }
+
+    @Override
+    public long getNumberOfPushMessagesForApplications() {
+        return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
+                "IN (select p.pushApplicationID from PushApplication p)").getSingleResult();
+    }
+
 
     /**
      * Helper that returns 'ASC' when true and 'DESC' when false.

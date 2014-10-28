@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.apache.openejb.testing.Module;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
@@ -31,7 +32,7 @@ public abstract class AbstractBaseServiceTest {
 
     @Module
     public Class<?>[] app() throws Exception {
-        return new Class<?>[] { EntityManagerProducer.class};
+        return new Class<?>[] { EntityManagerProducer.class, SearchManager.class};
     }
 
     // test-ware: EM producer:

@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,8 +35,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
-
 @Stateless
 @Path("/applications/{pushAppID}/simplePush")
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
@@ -49,11 +46,10 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     public Response registerSimplePushVariant(
             SimplePushVariant simplePushVariant,
             @PathParam("pushAppID") String pushApplicationID,
-            @Context UriInfo uriInfo,
-            @Context HttpServletRequest request) {
+            @Context UriInfo uriInfo) {
 
         // find the root push app
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
@@ -70,9 +66,6 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
-        // store the "developer:
-        simplePushVariant.setDeveloper(extractUsername(request));
-
         // store the SimplePush variant:
         variantService.addVariant(simplePushVariant);
         // add iOS variant, and merge:
@@ -84,10 +77,9 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-                                                          @Context HttpServletRequest request) {
+    public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
-        final PushApplication application = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, SimplePushVariant.class)).build();
     }
 
@@ -97,12 +89,11 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateSimplePushVariation(
-            @Context HttpServletRequest request,
             @PathParam("pushAppID") String id,
             @PathParam("simplePushID") String simplePushID,
             SimplePushVariant updatedSimplePushApplication) {
 
-        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantIDForDeveloper(simplePushID, extractUsername(request));
+        SimplePushVariant spVariant = (SimplePushVariant) variantService.findByVariantID(simplePushID);
         if (spVariant != null) {
 
             // some validation

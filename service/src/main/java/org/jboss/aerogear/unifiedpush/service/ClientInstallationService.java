@@ -42,12 +42,11 @@ public interface ClientInstallationService {
     /**
      * Find all installations for the variant specified.
      *  @param variantId the id of the variant to find the installations for
-     * @param developer the developer
      * @param page the page number
      * @param pageSize the size of the pages
      * @return page result containing the list plus a total number of rows
      */
-    PageResult<Installation> findInstallationsByVariant(String variantId, String developer, Integer page, Integer pageSize);
+    PageResult<Installation> findInstallationsByVariant(String variantId, Integer page, Integer pageSize);
 
     /**
      * Performs an update/merge on the given entity.

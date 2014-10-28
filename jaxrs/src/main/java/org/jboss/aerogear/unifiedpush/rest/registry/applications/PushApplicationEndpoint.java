@@ -24,7 +24,6 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,7 +34,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -43,9 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
-
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractUsername;
 
 @Stateless
 @TransactionAttribute
@@ -57,13 +52,11 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private PushApplicationService pushAppService;
 
-    private static final Logger LOGGER = Logger.getLogger(PushApplicationEndpoint.class.getSimpleName());
-
     // CREATE
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerPushApplication(@Context HttpServletRequest request, PushApplication pushApp) {
+    public Response registerPushApplication(PushApplication pushApp) {
 
          // some validation
         try {
@@ -76,8 +69,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return builder.build();
         }
 
-        // store the "developer:
-        pushApp.setDeveloper(extractUsername(request));
         pushAppService.addPushApplication(pushApp);
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
@@ -88,7 +79,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications(@QueryParam("page") Integer page,
-                                            @QueryParam("per_page") Integer pageSize, @Context HttpServletRequest request) {
+                                            @QueryParam("per_page") Integer pageSize) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -99,17 +90,16 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             page = 0;
         }
 
-        final PageResult<PushApplication> pageResult = pushAppService.findAllPushApplicationsForDeveloper(extractUsername(request), page, pageSize);
+        final PageResult<PushApplication> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
         return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
     }
 
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findById(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
+    public Response findById(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
-
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         if (pushApp != null) {
             return Response.ok(pushApp).build();
         }
@@ -122,9 +112,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePushApplication(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
+    public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
 
@@ -155,9 +145,10 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Path("/{pushAppID}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response resetMasterSecret(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
+    public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
             // generate the new 'masterSecret' and apply it:
@@ -175,9 +166,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @DELETE
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePushApplication(@Context HttpServletRequest request, @PathParam("pushAppID") String pushApplicationID) {
+    public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
-        PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
             pushAppService.removePushApplication(pushApp);
@@ -189,6 +180,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}/count")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
+
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
 
         return Response.ok(result).build();

@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 import java.util.Map;
 
@@ -36,19 +35,9 @@ public interface PushApplicationService {
     void updatePushApplication(PushApplication pushApp);
 
     /**
-     * Finder that returns all pushApplication object for the given owner/developer.
-     */
-    PageResult<PushApplication> findAllPushApplicationsForDeveloper(String loginName, Integer page, Integer pageSize);
-
-    /**
      * Returns the PushApplication entity, matching the given ID.
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
-
-    /**
-     * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
-     */
-    PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
 
     /**
      * Removes the given PushApplication entity.
@@ -61,4 +50,5 @@ public interface PushApplicationService {
     void addVariant(PushApplication pushApp, Variant variant);
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
+
 }

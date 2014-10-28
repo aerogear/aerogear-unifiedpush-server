@@ -69,14 +69,12 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        Installation entity = getSingleResultForQuery(createQuery("select installation from Installation installation " +
+        return getSingleResultForQuery(createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
-
-        return entity;
     }
 
     @Override
@@ -87,15 +85,13 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
             return Collections.EMPTY_LIST;
         }
 
-        List<Installation> entities = createQuery("select installation from Installation installation " +
+        return createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant " +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)
                 .getResultList();
-
-        return entities;
     }
 
     @Override
@@ -117,10 +113,16 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
     @Override
     public Installation find(String id) {
-        Installation entity = entityManager.find(Installation.class, id);
-
-        return entity;
+        return entityManager.find(Installation.class, id);
     }
+
+    //Admin query
+    @Override
+    public long getNumberOfDevicesForVariantIDs() {
+        return (Long) createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ")
+                .getSingleResult();
+    }
+
 
     /**
      *

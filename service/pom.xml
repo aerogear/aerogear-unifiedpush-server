@@ -92,6 +92,13 @@
                 </dependency>
 
                 <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>openejb-mockito</artifactId>
+                    <version>4.7.1</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <scope>test</scope>
@@ -102,6 +109,26 @@
                     <version>1.6.1</version>
                     <scope>test</scope>
                 </dependency>
+
+                <!-- Required to inject the Http context and check for roles -->
+                <dependency>
+                    <groupId>org.jboss.spec.javax.servlet</groupId>
+                    <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.ws.rs</groupId>
+                    <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-core</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
             </dependencies>
         </profile>
     </profiles>
