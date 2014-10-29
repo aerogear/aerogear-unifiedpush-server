@@ -20,10 +20,10 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
@@ -31,7 +31,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
 
-    private final Logger logger = Logger.getLogger(JPAPushMessageInformationDao.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(JPAPushMessageInformationDao.class);
 
 
     @Override
@@ -118,7 +118,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
         List<PushMessageInformation> oldMessages = createQuery("select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
         .setParameter("oldest", oldest).getResultList();
 
-        logger.log(Level.INFO, "Deleting ['" + oldMessages.size() + "'] outdated PushMessageInformation objects");
+        logger.info("Deleting ['" + oldMessages.size() + "'] outdated PushMessageInformation objects");
 
         for (PushMessageInformation oldMessage : oldMessages) {
             remove(oldMessage);

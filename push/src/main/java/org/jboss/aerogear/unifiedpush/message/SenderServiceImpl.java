@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
@@ -36,14 +37,12 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Stateless
 @Asynchronous
 public class SenderServiceImpl implements SenderService {
 
-    private final Logger logger = Logger.getLogger(SenderServiceImpl.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(SenderServiceImpl.class);
 
     @Inject
     @Any
@@ -59,7 +58,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     @Asynchronous
     public void send(PushApplication pushApplication, UnifiedPushMessage message) {
-        logger.log(Level.INFO, "Processing send request with '" + message.toString() + "' payload");
+        logger.info("Processing send request with '" + message.toString() + "' payload");
 
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
@@ -153,13 +152,13 @@ public class SenderServiceImpl implements SenderService {
 
         @Override
         public void onSuccess() {
-            logger.log(Level.FINE, String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            logger.fine(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
 
         @Override
         public void onError(final String reason) {
-            logger.log(Level.WARNING, String.format("Error on '%s' delivery", variant.getType().getTypeName()));
+            logger.warning(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
         }
     }

@@ -17,6 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
@@ -32,14 +33,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
  */
 public abstract class AbstractBaseEndpoint {
 
-    protected final Logger logger = Logger.getLogger(getClass().getName());
+    protected final AeroGearLogger logger = AeroGearLogger.getInstance(getClass());
 
     @Inject
     private Validator validator;
