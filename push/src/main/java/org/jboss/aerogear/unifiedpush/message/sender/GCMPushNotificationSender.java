@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -34,8 +35,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SenderType(AndroidVariant.class)
 public class GCMPushNotificationSender implements PushNotificationSender {
@@ -45,7 +44,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final Logger logger = Logger.getLogger(GCMPushNotificationSender.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMPushNotificationSender.class);
 
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
@@ -86,7 +85,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            logger.log(Level.FINE, "Sending transformed GCM payload: " + gcmMessage);
+            logger.fine("Sending transformed GCM payload: " + gcmMessage);
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
@@ -105,12 +104,12 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                 registrationIDs.removeAll(sublist);
             }
 
-            logger.log(Level.INFO, "Message to GCM has been submitted");
+            logger.info("Message to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
             // GCM exceptions:
-            logger.log(Level.SEVERE, "Error sending payload to GCM server", e);
+            logger.severe("Error sending payload to GCM server", e);
             callback.onError("Error sending payload to GCM server");
         }
     }
@@ -120,7 +119,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
      */
     private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
-        logger.log(Level.INFO, "Sending payload for [" + registrationIDs.size() + "] devices to GCM");
+        logger.info("Sending payload for [" + registrationIDs.size() + "] devices to GCM");
 
         MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
 
@@ -166,7 +165,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         }
 
         // trigger asynchronous deletion:
-        logger.log(Level.FINE, "Deleting '" + inactiveTokens.size() + "' invalid Android installations");
+        logger.fine("Deleting '" + inactiveTokens.size() + "' invalid Android installations");
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
     }
 }

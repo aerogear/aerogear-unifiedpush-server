@@ -25,8 +25,9 @@ import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
@@ -34,13 +35,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
-    private final Logger logger = Logger.getLogger(APNsPushNotificationSender.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -74,7 +73,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
-            logger.log(Level.WARNING, "Nothing sent to APNs since the payload is too large");
+            logger.warning("Nothing sent to APNs since the payload is too large");
             // invoke the error callback and return, as it is pointless to send something out
             callback.onError("message too long for APNs");
 
@@ -88,13 +87,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         if (service != null) {
             try {
-                logger.log(Level.FINE, "Sending transformed APNs payload: " + apnsMessage);
+                logger.fine("Sending transformed APNs payload: " + apnsMessage);
                 // send:
                 service.start();
 
                 Date expireDate = createFutureDateBasedOnTTL(pushMessage.getTimeToLive());
                 service.push(tokens, apnsMessage, expireDate);
-                logger.log(Level.INFO, "Message to APNs has been submitted");
+                logger.info("Message to APNs has been submitted");
 
                 // after sending, let's ask for the inactive tokens:
                 final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
@@ -103,7 +102,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 // trigger asynchronous deletion:
                 if (! transformedTokens.isEmpty()) {
-                    logger.log(Level.INFO, "Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
+                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
                     clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
                 }
             } catch (Exception e) {
@@ -113,7 +112,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 service.stop();
             }
         } else {
-            logger.log(Level.SEVERE, "No certificate was found. Could not send messages to APNs");
+            logger.severe("No certificate was found. Could not send messages to APNs");
             callback.onError("No certificate for APNs was found");
         }
     }
@@ -165,7 +164,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
-                    logger.log(Level.SEVERE, "Error sending payload to APNs server", e);
+                    logger.severe("Error sending payload to APNs server", e);
                     notificationSenderCallback.onError("Error sending payload to APNs server: " + e.getMessage());
                 }
             });
@@ -178,7 +177,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 // release the stream
                 stream.close();
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error reading certificate", e);
+                logger.severe("Error reading certificate", e);
 
                 // indicating an incomplete service
                 return null;

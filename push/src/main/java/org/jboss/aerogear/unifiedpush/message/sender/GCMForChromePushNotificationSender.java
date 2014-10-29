@@ -18,8 +18,9 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 
 import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.helper.ChromePackagedAppTokenCache;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.helper.ChromePackagedAppTokenCache;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -36,8 +37,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SenderType(ChromePackagedAppVariant.class)
 public class GCMForChromePushNotificationSender implements PushNotificationSender {
@@ -46,7 +45,7 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
     private static final String MESSAGE_URL = "https://www.googleapis.com/gcm_for_chrome/v1/messages";
     private static final String ACCESS_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
 
-    private final Logger logger = Logger.getLogger(GCMForChromePushNotificationSender.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMForChromePushNotificationSender.class);
 
     // We need a place to hold the current access token/expire time for each GCM for Chrome application. Not good practice to always get a new access token
     private Map<String, ChromePackagedAppTokenCache> accessTokenMap = new HashMap<String, ChromePackagedAppTokenCache>();
@@ -75,11 +74,11 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
                 if (chromePackagedAppStatusCode < 400) {
                     callback.onSuccess();
                 } else {
-                    logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
+                    logger.severe("Error during Post execution to GCM for Chrome Network, status code was: " + chromePackagedAppStatusCode);
                     callback.onError("Error delivering GCM/Chrome payload");
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network", e);
+                logger.severe("Error during Post execution to GCM for Chrome Network", e);
                 callback.onError("Error delivering GCM/Chrome payload");
             } finally {
                 // tear down
@@ -188,9 +187,9 @@ public class GCMForChromePushNotificationSender implements PushNotificationSende
                 accessTokenMap.put(chromePackagedAppVariant.getClientId(),accessTokenObject);
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error during Post execution to GCM for Chrome Network For access token refresh", e);
+            logger.severe("Error during Post execution to GCM for Chrome Network For access token refresh", e);
         } catch (ParseException e) {
-            logger.log(Level.SEVERE, "Error during Parse of Response ", e);
+            logger.severe("Error during Parse of Response ", e);
         } finally {
             // tear down
             if (accessTokenConn != null ) {

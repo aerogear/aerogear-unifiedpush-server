@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
@@ -27,15 +28,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SenderType(SimplePushVariant.class)
 public class SimplePushNotificationSender implements PushNotificationSender {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private final Logger logger = Logger.getLogger(SimplePushNotificationSender.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(SimplePushNotificationSender.class);
 
     /**
      * Sends SimplePush notifications to all connected clients, that are represented by
@@ -61,24 +60,24 @@ public class SimplePushNotificationSender implements PushNotificationSender {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.log(Level.FINEST, "Sending out SimplePush payload: " + payload);
+                logger.finest("Sending out SimplePush payload: " + payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
-                logger.log(Level.INFO, "SimplePush Status: " + simplePushStatusCode);
+                logger.info("SimplePush Status: " + simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() == simplePushStatusCode) {
                     callback.onSuccess();
                 } else {
-                    logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
+                    logger.severe("Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
                     callback.onError("Error delivering the payload. SimplePush Network status code was: " + simplePushStatusCode );
                 }
             } catch (IOException e) {
                 // any error while performing the PUT
-                logger.log(Level.SEVERE, "Error during PUT execution to SimplePush Network", e);
+                logger.severe("Error during PUT execution to SimplePush Network", e);
                 callback.onError("Error delivering SimplePush payload");
             } catch (IllegalArgumentException e) {
                 // if, for some reason there is no token/URL on the metadata...
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                logger.severe(e.getMessage(), e);
                 callback.onError(e.getMessage());
             } finally {
                 // tear down
