@@ -69,6 +69,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
             case WINDOWS_WNS:
+            case WINDOWS_MPNS:
                 return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case SIMPLE_PUSH:
                 return SIMPLE_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
