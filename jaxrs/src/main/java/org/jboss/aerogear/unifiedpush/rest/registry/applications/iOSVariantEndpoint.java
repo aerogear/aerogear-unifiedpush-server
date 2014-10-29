@@ -38,7 +38,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import java.util.logging.Level;
 
 @Stateless
 @Path("/applications/{pushAppID}/ios")
@@ -182,7 +181,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             // ok we are good:
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not validate the given certificate and passphrase pair");
+            logger.severe("Could not validate the given certificate and passphrase pair");
             return false;
         }
     }

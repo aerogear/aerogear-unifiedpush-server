@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -30,8 +31,6 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -40,7 +39,7 @@ import java.util.logging.Logger;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
-    private final Logger logger = Logger.getLogger(ClientInstallationServiceImpl.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
 
     @Inject
     private InstallationDao dao;
@@ -61,14 +60,14 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
         // new device/client ?
         if (installation == null) {
-            logger.log(Level.FINEST, "Performing new device/client registration");
+            logger.finest("Performing new device/client registration");
             // store the installation:
             entity.setVariant(variant);
             dao.create(entity);
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
-                logger.log(Level.FINEST, "Updating received metadata for an 'enabled' installation");
+                logger.finest("Updating received metadata for an 'enabled' installation");
                 // update the entity:
                 this.updateInstallation(installation, entity);
             }
@@ -97,7 +96,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
             if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
-                logger.log(Level.FINEST, "Importing device with token: " + current.getDeviceToken());
+                logger.finest("Importing device with token: " + current.getDeviceToken());
 
                 // set reference
                 current.setVariant(variant);
@@ -109,12 +108,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
                 // some tunings, ever 10k devices releasing resources
                 if (i % 10000 == 0) {
-                    logger.log(Level.FINEST, "releasing some resources during import");
+                    logger.finest("releasing some resources during import");
                     dao.flushAndClear();
                 }
             } else {
                 // for now, we ignore them.... no update applied!
-                logger.log(Level.FINEST, "Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
+                logger.finest("Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
             }
         }
         // clear out:
