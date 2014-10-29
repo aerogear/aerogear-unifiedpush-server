@@ -67,10 +67,10 @@ angular.module('upsConsole').controller('ExampleController',
 
   $scope.cordovaVariantType = function(variant) {
     switch (variant.type) {
-      case 'windows_mpns':
-        return 'windows';
-      default:
-        return variant.type;
+    case 'windows_mpns':
+      return 'windows';
+    default:
+      return variant.type;
     }
   };
 
