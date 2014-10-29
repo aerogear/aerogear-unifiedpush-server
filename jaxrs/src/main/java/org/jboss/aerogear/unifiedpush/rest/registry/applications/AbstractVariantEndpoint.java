@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
@@ -58,7 +57,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant != null) {
-            logger.log(Level.FINEST, "Resetting secret for: " + variant.getClass().getSimpleName());
+            logger.finest("Resetting secret for: " + variant.getClass().getSimpleName());
 
             // generate the new 'secret' and apply it:
             String newSecret = UUID.randomUUID().toString();
@@ -93,7 +92,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant != null) {
-            logger.log(Level.FINEST, "Deleting: " + variant.getClass().getSimpleName());
+            logger.finest("Deleting: " + variant.getClass().getSimpleName());
 
             variantService.removeVariant(variant);
             return Response.noContent().build();

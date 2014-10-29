@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -44,8 +45,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Stateless
 @Path("/registry/device")
@@ -55,7 +54,7 @@ public class InstallationRegistrationEndpoint {
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
 
-    private final Logger logger = Logger.getLogger(InstallationRegistrationEndpoint.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(InstallationRegistrationEndpoint.class);
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
@@ -127,7 +126,7 @@ public class InstallationRegistrationEndpoint {
         // The 'mobile application' on the device/client was launched.
         // If the installation is already in the DB, let's update the metadata,
         // otherwise we register a new installation:
-        logger.log(Level.FINEST, "Mobile Application on device was launched");
+        logger.finest("Mobile Application on device was launched");
 
         // async:
         clientInstallationService.addInstallation(variant, entity);
@@ -173,7 +172,7 @@ public class InstallationRegistrationEndpoint {
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         } else {
-            logger.log(Level.INFO, "Deleting metadata Installation");
+            logger.info("Deleting metadata Installation");
             // remove
             clientInstallationService.removeInstallation(installation);
         }
@@ -243,12 +242,12 @@ public class InstallationRegistrationEndpoint {
         try {
             devices = mapper.readValue(form.getJsonFile(), new TypeReference<List<Installation>>() {});
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error when parsing importer json file", e);
+            logger.severe("Error when parsing importer json file", e);
 
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        logger.log(Level.INFO, "Devices to import: " + devices.size());
+        logger.info("Devices to import: " + devices.size());
 
         clientInstallationService.addInstallations(variant, devices);
 
