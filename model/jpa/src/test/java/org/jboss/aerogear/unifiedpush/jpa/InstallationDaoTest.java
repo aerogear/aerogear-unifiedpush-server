@@ -473,6 +473,21 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("http://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
+                + "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
+                + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
+
+        WindowsMPNSVariant variant = new WindowsMPNSVariant();
+        
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
+
+    @Test
     public void shouldSaveWhenValidChromeApp() {
         // given
         final Installation installation = new Installation();
