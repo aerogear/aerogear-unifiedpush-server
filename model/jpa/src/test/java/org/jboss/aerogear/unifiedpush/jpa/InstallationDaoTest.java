@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
+import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
@@ -432,6 +433,26 @@ public class InstallationDaoTest {
         installation.setVariant(variant);
 
         // when
+        installationDao.create(installation);
+        entityManager.flush();
+    }
+
+    @Test
+    public void shouldSaveWhenValidChromeApp() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken(DEVICE_TOKEN_1);
+
+        final ChromePackagedAppVariant variant = new ChromePackagedAppVariant();
+        variant.setClientId("12");
+        variant.setClientSecret("12");
+        variant.setRefreshToken("12");
+
+        entityManager.persist(variant);
+
+        installation.setVariant(variant);
+
+        //when
         installationDao.create(installation);
         entityManager.flush();
     }
