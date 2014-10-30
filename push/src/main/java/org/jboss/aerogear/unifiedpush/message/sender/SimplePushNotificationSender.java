@@ -29,12 +29,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-
 @SenderType(SimplePushVariant.class)
 public class SimplePushNotificationSender implements PushNotificationSender {
 
