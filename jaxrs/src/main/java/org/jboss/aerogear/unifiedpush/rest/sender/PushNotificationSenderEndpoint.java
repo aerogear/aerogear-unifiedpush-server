@@ -16,9 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.SenderService;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,19 +34,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.message.SenderService;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
 
 @Stateless
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
 
-    private final Logger logger = Logger.getLogger(PushNotificationSenderEndpoint.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(PushNotificationSenderEndpoint.class);
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
@@ -109,8 +107,8 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to @Async EJB:
         senderService.send(pushApplication, payload);
-        logger.log(Level.FINE, "Message sent by: '" + payload.getClientIdentifier() + "'");
-        logger.log(Level.INFO, "Message submitted to PushNetworks for further processing");
+        logger.fine("Message sent by: '" + payload.getClientIdentifier() + "'");
+        logger.info("Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)
                 .entity("Job submitted").build();
