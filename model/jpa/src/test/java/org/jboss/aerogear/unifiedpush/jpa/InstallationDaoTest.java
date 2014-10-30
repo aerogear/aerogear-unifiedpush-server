@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.ChromePackagedAppVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
@@ -375,7 +376,6 @@ public class InstallationDaoTest {
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
     }
 
-
     @Test
     public void shouldValidateDeviceId() {
         // given
@@ -412,13 +412,9 @@ public class InstallationDaoTest {
         final iOSVariant variant = new iOSVariant();
         variant.setPassphrase("12");
         variant.setCertificate("12".getBytes());
-        entityManager.persist(variant);
-
-        installation.setVariant(variant);
 
         // when
-        installationDao.create(installation);
-        entityManager.flush();
+        deviceTokenTest(installation, variant);
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -428,13 +424,9 @@ public class InstallationDaoTest {
         installation.setDeviceToken("htp://invalid");
 
         final SimplePushVariant variant = new SimplePushVariant();
-        entityManager.persist(variant);
-
-        installation.setVariant(variant);
 
         // when
-        installationDao.create(installation);
-        entityManager.flush();
+        deviceTokenTest(installation, variant);
     }
 
     @Test
@@ -448,13 +440,8 @@ public class InstallationDaoTest {
         variant.setClientSecret("12");
         variant.setRefreshToken("12");
 
-        entityManager.persist(variant);
-
-        installation.setVariant(variant);
-
         //when
-        installationDao.create(installation);
-        entityManager.flush();
+        deviceTokenTest(installation, variant);
     }
 
     @Test
@@ -464,13 +451,9 @@ public class InstallationDaoTest {
         installation.setDeviceToken("http://valid/but/you/should/use/https");
 
         final SimplePushVariant variant = new SimplePushVariant();
-        entityManager.persist(variant);
-
-        installation.setVariant(variant);
 
         // when
-        installationDao.create(installation);
-        entityManager.flush();
+        deviceTokenTest(installation, variant);
     }
 
     @Test
@@ -484,6 +467,12 @@ public class InstallationDaoTest {
         final AndroidVariant variant = new AndroidVariant();
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
+
+        // when
+        deviceTokenTest(installation, variant);
+    }
+
+    private void deviceTokenTest(Installation installation, Variant variant) {
         entityManager.persist(variant);
         installation.setVariant(variant);
 
