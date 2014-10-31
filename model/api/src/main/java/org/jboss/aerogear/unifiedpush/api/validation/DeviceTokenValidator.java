@@ -60,6 +60,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
         switch (type) {
             case IOS:
                 return IOS_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case CHROME_PACKAGED_APP:
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
             case SIMPLE_PUSH:
