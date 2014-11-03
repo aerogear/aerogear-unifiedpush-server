@@ -16,8 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -28,6 +30,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +45,10 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
 
     @Inject
-    private InstallationDao dao;
+    private InstallationDao installationDao;
+
+    @Inject
+    private CategoryDao categoryDao;
 
     @Inject
     @LoggedIn
@@ -63,7 +69,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             logger.finest("Performing new device/client registration");
             // store the installation:
             entity.setVariant(variant);
-            dao.create(entity);
+            mergeCategories(entity);
+
+            installationDao.create(entity);
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
@@ -72,6 +80,23 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 this.updateInstallation(installation, entity);
             }
         }
+    }
+
+    private void mergeCategories(Installation entity) {
+        if (entity.getCategories() != null) {
+            List<String> categoryNames = convertToNames(entity.getCategories());
+            final List<Category> categories = categoryDao.findByNames(categoryNames);
+            entity.getCategories().removeAll(categories);
+            entity.getCategories().addAll(categories);
+        }
+    }
+
+    private List<String> convertToNames(Set<Category> categories) {
+        List<String> result = new ArrayList<String>();
+        for (Category category : categories) {
+            result.add(category.getName());
+        }
+        return result;
     }
 
     @Override
@@ -86,7 +111,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         Set<String> existingTokens = new HashSet<String>(findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, null, null));
 
         // clear out:
-        dao.flushAndClear();
+        installationDao.flushAndClear();
 
         for (int i = 0; i < installations.size(); i++) {
 
@@ -101,7 +126,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 // set reference
                 current.setVariant(variant);
 
-                dao.create(current);
+                mergeCategories(current);
+                installationDao.create(current);
 
                 // and add a reference to the existing tokens set, to ensure the JSON file contains no duplicates:
                 existingTokens.add(current.getDeviceToken());
@@ -109,7 +135,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 // some tunings, ever 10k devices releasing resources
                 if (i % 10000 == 0) {
                     logger.finest("releasing some resources during import");
-                    dao.flushAndClear();
+                    installationDao.flushAndClear();
                 }
             } else {
                 // for now, we ignore them.... no update applied!
@@ -117,7 +143,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             }
         }
         // clear out:
-        dao.flushAndClear();
+        installationDao.flushAndClear();
     }
 
     @Override
@@ -132,19 +158,20 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     public PageResult<Installation> findInstallationsByVariant(String variantId, Integer page, Integer pageSize) {
-        return dao.findInstallationsByVariant(variantId, developer.get(), page, pageSize);
+        return installationDao.findInstallationsByVariant(variantId, developer.get(), page, pageSize);
     }
 
     @Override
     public void updateInstallation(
             Installation installation) {
-        dao.update(installation);
+        installationDao.update(installation);
     }
 
     @Override
     public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
         installationToUpdate.setCategories(postedInstallation.getCategories());
+        mergeCategories(installationToUpdate);
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
         installationToUpdate.setAlias(postedInstallation.getAlias());
         installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
@@ -160,26 +187,26 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     public Installation findById(String primaryKey) {
-        return dao.find(primaryKey);
+        return installationDao.find(primaryKey);
     }
 
     @Override
     public void removeInstallation(Installation installation) {
-        dao.delete(installation);
+        installationDao.delete(installation);
     }
 
     @Override
     @Asynchronous
     public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
         // collect inactive installations for the given variant:
-        List<Installation> inactiveInstallations = dao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
+        List<Installation> inactiveInstallations = installationDao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
         // get rid of them
         this.removeInstallations(inactiveInstallations);
     }
 
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-        return dao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
+        return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
 
     // =====================================================================
@@ -191,7 +218,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      */
     @Override
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-        return dao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
+        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
     }
 
     /**
