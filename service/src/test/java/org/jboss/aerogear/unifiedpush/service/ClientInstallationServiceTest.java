@@ -23,6 +23,7 @@ import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
@@ -91,6 +92,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         beans.addManagedClass(ClientInstallationServiceImpl.class);
         beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
+        beans.addManagedClass(JPACategoryDao.class);
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
