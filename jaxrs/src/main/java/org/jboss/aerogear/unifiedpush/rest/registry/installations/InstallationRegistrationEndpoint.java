@@ -131,7 +131,7 @@ public class InstallationRegistrationEndpoint {
         // async:
         clientInstallationService.addInstallation(variant, entity);
 
-        return appendAllowOriginHeader(Response.ok(entity), request);
+        return appendAllowOriginHeader(Response.noContent(), request);
     }
 
     /**
