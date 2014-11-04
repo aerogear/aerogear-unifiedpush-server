@@ -1,17 +1,19 @@
 'use strict';
 
 /*jshint unused: false*/
-var UPS = (function() {
+(function() {
 
   var app = angular.module('upsConsole', [
     'upsConsole.services',
     'ngResource',
     'ngRoute',
+    'ngAnimate',
     'ui.bootstrap',
     'ups.directives',
     'patternfly.notification',
     'patternfly.autofocus',
-    'hljs'
+    'hljs',
+    'ngIdle'
   ]);
 
   /**
@@ -20,13 +22,17 @@ var UPS = (function() {
   var auth = {};
 
   angular.element(document).ready(function () {
-    var keycloakAuth = new Keycloak('config/keycloak.json');
+    var keycloak = new Keycloak('config/keycloak.json');
     auth.loggedIn = false;
 
-    keycloakAuth.init({ onLoad: 'login-required' }).success(function () {
+    keycloak.init({ onLoad: 'login-required' }).success(function () {
       auth.loggedIn = true;
-      auth.authz = keycloakAuth;
-      auth.logoutUrl = keycloakAuth.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=' + window.location.href;
+      auth.keycloak = keycloak;
+      auth.logout = function() {
+        auth.loggedIn = false;
+        auth.keycloak = null;
+        window.location = keycloak.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=' + window.location.href;
+      };
       app.factory('Auth', function () {
         return auth;
       });
@@ -37,18 +43,31 @@ var UPS = (function() {
 
   });
 
-  var logout = function() {
-    auth.loggedIn = false;
-    auth.authz = null;
-    window.location = auth.logoutUrl;
-  };
-
   app.factory('Auth', function () {
     return auth;
   });
 
-  app.config(function ($routeProvider) {
+  var appConfig = {
+    logDebugEnabled: false,
+    idleDuration: 300,
+    idleWarningDuration : 30,
+    keepaliveInterval: 5
+  };
 
+  app.provider('appConfig', function () {
+    return {
+      set: function (settings) {
+        // allow to override configuration (e.g. in tests)
+        angular.extend(appConfig, settings);
+      },
+      $get: function () {
+        // default configuration
+        return appConfig;
+      }
+    };
+  });
+
+  app.config(function ($routeProvider) {
     $routeProvider
       .when('/applications', {
         templateUrl: 'views/applications.html',
@@ -226,10 +245,10 @@ var UPS = (function() {
           return config;
         }
 
-        if (Auth.authz && Auth.authz.token) {
-          Auth.authz.updateToken(5).success(function () {
+        if (Auth.keycloak && Auth.keycloak.token) {
+          Auth.keycloak.updateToken(5).success(function () {
             config.headers = config.headers || {};
-            config.headers.Authorization = 'Bearer ' + Auth.authz.token;
+            config.headers.Authorization = 'Bearer ' + Auth.keycloak.token;
 
             deferred.resolve(config);
           }).error(function () {
@@ -245,9 +264,10 @@ var UPS = (function() {
     $httpProvider.interceptors.push('authInterceptor');
   });
 
-  return {
-    logout: logout
-  };
+  app.config(function ($logProvider, appConfigProvider) {
+    var appConfig = appConfigProvider.$get();
+    $logProvider.debugEnabled( appConfig.logDebugEnabled );
+  });
 
 
 })();

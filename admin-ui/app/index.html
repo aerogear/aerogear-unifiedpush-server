@@ -26,18 +26,13 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="bower_components/highlightjs/styles/ir_black.css">
     <!-- endbuild -->
-    <style type="text/css">
-      #idletimeout { background:#CC5100; border:3px solid #FF6500; color:#fff; font-family:arial, sans-serif; text-align:center; font-size:12px; padding:10px; position:relative; top:0px; left:0; right:0; z-index:100000; display:none; }
-      #idletimeout a { color:#fff; font-weight:bold }
-      #idletimeout span { font-weight:bold }
-    </style>
 
 </head>
 <body class="app-dashboard"  ng-controller="RootController">
 
-<div id="idletimeout">
-	You will be logged off in <span><!-- countdown place holder --></span>&nbsp;seconds due to inactivity.
-	<a id="idletimeout-resume" href="#">Click here to continue using this web page</a>.
+<div class="idlebox ng-cloak"
+      ng-hide="idleCountdown > appConfig.idleWarningDuration">
+	You will be logged off in {{ idleCountdown }}&nbsp;seconds due to inactivity.
 </div>
 
 <!--[if lt IE 9]>
@@ -122,13 +117,13 @@
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
 <script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/highlightjs/highlight.pack.js"></script>
 <script src="bower_components/angular-highlightjs/angular-highlightjs.js"></script>
-<script src="bower_components/jquery-idle-timeout/src/jquery.idletimer.js"></script>
-<script src="bower_components/jquery-idle-timeout/src/jquery.idletimeout.js"></script>
+<script src="bower_components/ng-idle/angular-idle.js"></script>
 <!-- endbuild -->
 
 <script src="/auth/js/keycloak.js"></script>
@@ -147,7 +142,6 @@
 <script src="scripts/services/pushApplicationService.js"></script>
 <script src="scripts/services/errorReporting.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
-<script src="scripts/ui/idleService.js"></script>
 <script src="scripts/directives.js"></script>
 <!-- endbuild -->
 
