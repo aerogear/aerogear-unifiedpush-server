@@ -9,8 +9,8 @@
       <input type="checkbox" ng-checked="variantSelection.length == 0">All
       <div>
         <div ng-show="application.variants" ng-repeat="variant in application.variants">
-          <h5 style="text-transform: capitalize" ng-if="variant.type != 'ios' && application.variants[$index - 1].type != variant.type">{{variant.type}}</h5>
-          <h5 ng-if="variant.type == 'ios' && application.variants[$index - 1].type != variant.type">iOS</h5>
+          <h5 style="text-transform: capitalize" ng-if="variant.type != 'apns' && application.variants[$index - 1].type != variant.type">{{variant.type}}</h5>
+          <h5 ng-if="variant.type == 'apns' && application.variants[$index - 1].type != variant.type">APNs</h5>
           <ul style="margin-bottom: -1px;">
           <li class="list-group-item">
               <label>

@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
-public class iOSVariant extends Variant {
+public class APNsVariant extends Variant {
     private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;
@@ -85,6 +85,6 @@ public class iOSVariant extends Variant {
 
     @Override
     public VariantType getType() {
-        return VariantType.IOS;
+        return VariantType.APNS;
     }
 }

@@ -22,18 +22,18 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * The Android variant class encapsulates GCM specific behavior.
+ * The APNs variant class encapsulates APNs specific behavior.
  */
-public class iOSVariantTest {
+public class APNsVariantTest {
 
-    private iOSVariant variant;
+    private APNsVariant variant;
 
     @Before
     public void setup() {
-        variant = new iOSVariant();
+        variant = new APNsVariant();
         variant.setDescription("desc");
         variant.setDeveloper("Admin");
-        variant.setName("iOS Variant");
+        variant.setName("APNs Variant");
         variant.setCertificate("someCert".getBytes());
         variant.setPassphrase("passphrase");
     }
@@ -48,9 +48,9 @@ public class iOSVariantTest {
 
         assertThat(variant.getDescription()).isEqualTo("desc");
         assertThat(variant.getDeveloper()).isEqualTo("Admin");
-        assertThat(variant.getName()).isEqualTo("iOS Variant");
+        assertThat(variant.getName()).isEqualTo("APNs Variant");
 
-        assertThat(variant.getType()).isEqualTo(VariantType.IOS);
+        assertThat(variant.getType()).isEqualTo(VariantType.APNS);
         assertThat(variant.getCertificate()).isEqualTo("someCert".getBytes());
         assertThat(variant.getPassphrase()).isEqualTo("passphrase");
         assertThat(variant.isProduction()).isFalse();

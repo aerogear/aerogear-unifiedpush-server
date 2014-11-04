@@ -88,7 +88,7 @@ angular.module('upsConsole').controller('DetailController',
         Notifications.error('Something went wrong...');
       };
 
-      if (variant.type !== 'ios') {
+      if (variant.type !== 'apns') {
         variants.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
         if (variant.certificate) {
@@ -253,7 +253,7 @@ angular.module('upsConsole').controller('DetailController',
     case 'chrome':
       properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
       break;
-    case 'ios':
+    case 'apns':
       if (variant.certificates && variant.certificates.length) {
         variant.certificate = variant.certificates[0];
       }

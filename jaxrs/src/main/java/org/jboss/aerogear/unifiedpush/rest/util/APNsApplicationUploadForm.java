@@ -24,9 +24,9 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
  * Helper class to read values from the multipart request
  * that is performed when creating (or updating) an iOS variant. 
  */
-public class iOSApplicationUploadForm {
+public class APNsApplicationUploadForm {
 
-    public iOSApplicationUploadForm() {
+    public APNsApplicationUploadForm() {
     }
 
     private Boolean production; // RestEasy needs 'Boolean' here
@@ -43,7 +43,7 @@ public class iOSApplicationUploadForm {
      * Reads the boolean flag from the multipart request,
      * which indicates if the iOS variant is a 'production' variant or not. 
      * 
-     * The {@link iOSVariant} model differenciates between production and test
+     * The {@link APNsVariant} model differenciates between production and test
      * in order to establish connections to different APNs Servers.
      */
     @FormParam("production")

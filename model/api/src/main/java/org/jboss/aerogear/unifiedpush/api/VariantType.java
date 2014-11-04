@@ -31,7 +31,7 @@ public enum VariantType {
     /**
      * The type identifier for our iOS variants. 
      */
-    IOS("ios"),
+    APNS("apns"),
 
     /**
      * The type identifier for our SimplePush variants. 

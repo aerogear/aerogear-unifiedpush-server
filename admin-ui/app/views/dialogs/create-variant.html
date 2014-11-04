@@ -37,10 +37,10 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variant.type" value="ios"  ng-required="true">
-              <label for="variantTypeIOS">
+              <input type="radio" name="createVariantType" id="variantTypeAPNs" ng-model="variant.type" value="apns"  ng-required="true">
+              <label for="variantTypeAPNs">
                 <div class="ups-platform ios">
-                  <strong>iOS</strong><br>
+                  <strong>iOS & Safari</strong><br>
                   <span>using Apple Push Network</span>
                 </div>
               </label>
@@ -82,7 +82,7 @@
         </div>
         <hr>
       </div>
-      
+
       <div ng-show="variant.type">
 
         <div ng-show="variant.type == 'android'">
@@ -91,7 +91,7 @@
             <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
               <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
             </div>
-          </div>    
+          </div>
           <div class="form-group">
             <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
             <div class="col-sm-7">
@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <div ng-show="variant.type == 'ios'">
+        <div ng-show="variant.type == 'apns'">
           <div class="form-group">
             <label class="col-sm-3 control-label">Push Network</label>
             <div class="col-sm-7">
@@ -115,7 +115,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" checked>
+                            <input type="radio" name="apnsType" id="apnsType1" ng-model="variant.production" value="true" checked>
                             Production
                           </label>
                         </div>
@@ -123,7 +123,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false">
+                            <input type="radio" name="apnsType" id="apnsType2" ng-model="variant.production" value="false">
                             Development
                           </label>
                         </div>
@@ -134,7 +134,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                   <div class="col-sm-9">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
+                    <input type="password" id="apnsPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'apns' && !variant.id">
                   </div>
                 </div>
               </div>
@@ -224,7 +224,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="modal-footer">
     <input type="button" class="btn btn-default" ng-click="cancel()" value="Cancel" />
     <input type="submit" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid" value="{{ variant.id ? 'Save' : 'Add' }}" />
