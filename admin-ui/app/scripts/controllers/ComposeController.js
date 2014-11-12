@@ -24,7 +24,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   $scope.variantSelection = [];
   $scope.criteria = [];
   $scope.pushData = {'message': {'sound': 'default', 'alert': ''}, 'criteria' : {}};
-  $scope.pushData['simple-push'] = 'version=' + new Date().getTime();
+  $scope.pushData.message['simple-push'] = 'version=' + new Date().getTime();
 
   if (!$rootScope.application) {
     pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
