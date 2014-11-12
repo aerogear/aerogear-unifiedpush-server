@@ -16,19 +16,68 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.exc.UnrecognizedPropertyException;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class UnifiedPushMessageTest {
 
     @Test
-    public void createBroadcastMessage() {
+    public void shouldSerializeMessage() throws IOException {
+        //when
+        UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage();
+
+        Message message = new Message();
+
+        message.setAlert("HELLO!");
+        message.setActionCategory("some value");
+        message.setSound("default");
+        message.setBadge(2);
+        message.setContentAvailable(true);
+
+        final HashMap<String, Object> data = new HashMap<String, Object>();
+        data.put("key", "value");
+        data.put("key2", "other value");
+        message.setUserData(data);
+
+        message.setSimplePush("version=123");
+        unifiedPushMessage.setMessage(message);
+
+        final Criteria criteria = new Criteria();
+        criteria.setAliases(Arrays.asList("someUsername"));
+        criteria.setDeviceTypes(Arrays.asList("someDevice"));
+        criteria.setCategories(Arrays.asList("someCategories"));
+        criteria.setVariants(Arrays.asList("someVariantIDs"));
+        unifiedPushMessage.setCriteria(criteria);
+
+        final Config config = new Config();
+        config.setTimeToLive(3360);
+        unifiedPushMessage.setConfig(config);
+
+        //then
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode value = mapper.valueToTree(unifiedPushMessage);
+
+        JsonNode format = mapper.reader().readTree(getClass().getResourceAsStream("/message-format.json"));
+        assertEquals(format, value);
+    }
+
+    @Test
+    public void createBroadcastMessage() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
@@ -36,34 +85,37 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
 
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("default", unifiedPushMessage.getSound());
-        assertEquals(2, unifiedPushMessage.getBadge());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals("default", unifiedPushMessage.getMessage().getSound());
+        assertEquals(2, unifiedPushMessage.getMessage().getBadge());
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         // no TTL:
-        assertEquals(-1, unifiedPushMessage.getTimeToLive());
+        assertEquals(-1, unifiedPushMessage.getConfig().getTimeToLive());
 
         // multiple access?
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
-        assertNull(unifiedPushMessage.getSendCriteria().getAliases());
-        assertNull(unifiedPushMessage.getSendCriteria().getDeviceTypes());
-        assertNull(unifiedPushMessage.getSendCriteria().getCategories());
-        assertNull(unifiedPushMessage.getSendCriteria().getVariants());
-        assertNull(unifiedPushMessage.getSimplePush());
+        assertNull(unifiedPushMessage.getCriteria().getAliases());
+        assertNull(unifiedPushMessage.getCriteria().getDeviceTypes());
+        assertNull(unifiedPushMessage.getCriteria().getCategories());
+        assertNull(unifiedPushMessage.getCriteria().getVariants());
+        assertNull(unifiedPushMessage.getMessage().getSimplePush());
     }
 
     @Test
-    public void createBroadcastMessageWithSimplePush() {
+    public void createBroadcastMessageWithSimplePush() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
@@ -71,32 +123,34 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simple-push", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
 
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("default", unifiedPushMessage.getSound());
-        assertEquals(2, unifiedPushMessage.getBadge());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals("default", unifiedPushMessage.getMessage().getSound());
+        assertEquals(2, unifiedPushMessage.getMessage().getBadge());
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
         // multiple access?
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals("someValue", unifiedPushMessage.getMessage().getUserData().get("someKey"));
 
-        assertNull(unifiedPushMessage.getSendCriteria().getAliases());
-        assertNull(unifiedPushMessage.getSendCriteria().getDeviceTypes());
-        assertNull(unifiedPushMessage.getSendCriteria().getCategories());
-        assertNull(unifiedPushMessage.getSendCriteria().getVariants());
-        assertEquals("version=123", unifiedPushMessage.getSimplePush());
+        assertNull(unifiedPushMessage.getCriteria().getAliases());
+        assertNull(unifiedPushMessage.getCriteria().getDeviceTypes());
+        assertNull(unifiedPushMessage.getCriteria().getCategories());
+        assertNull(unifiedPushMessage.getCriteria().getVariants());
+        assertEquals("version=123", unifiedPushMessage.getMessage().getSimplePush());
     }
 
-    @Test
-    public void createBroadcastMessageWithIncorrectSimplePush() {
+    @Test(expected = UnrecognizedPropertyException.class)
+    public void createBroadcastMessageWithIncorrectSimplePush() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
@@ -104,115 +158,114 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simplePush", "version=123");
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("default", unifiedPushMessage.getSound());
-        assertEquals(2, unifiedPushMessage.getBadge());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
-
-        // multiple access?
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals("someValue", unifiedPushMessage.getData().get("someKey"));
-
-        assertNull(unifiedPushMessage.getSendCriteria().getAliases());
-        assertNull(unifiedPushMessage.getSendCriteria().getDeviceTypes());
-        assertNull(unifiedPushMessage.getSendCriteria().getCategories());
-        assertNull(unifiedPushMessage.getSendCriteria().getVariants());
-        assertNull(unifiedPushMessage.getSimplePush());
+        parsePushMessage(container);
     }
 
     @Test
-    public void noBadgePayload() {
+    public void noBadgePayload() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
 
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals(-1, unifiedPushMessage.getBadge());
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals(-1, unifiedPushMessage.getMessage().getBadge());
     }
 
     @Test
-    public void contentAvailable() {
+    public void contentAvailable() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
-        messageObject.put("someKey", "someValue");
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
+
         messageObject.put("content-available", true);
 
         container.put("message", messageObject);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
 
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals(-1, unifiedPushMessage.getBadge());
-        assertTrue(unifiedPushMessage.isContentAvailable());
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals(-1, unifiedPushMessage.getMessage().getBadge());
+        assertTrue(unifiedPushMessage.getMessage().isContentAvailable());
     }
 
     @Test
-    public void noContentAvailable() {
+    public void noContentAvailable() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
 
-        assertEquals("Howdy", unifiedPushMessage.getAlert());
-        assertEquals(-1, unifiedPushMessage.getBadge());
-        assertFalse(unifiedPushMessage.isContentAvailable());
+        assertEquals("Howdy", unifiedPushMessage.getMessage().getAlert());
+        assertEquals(-1, unifiedPushMessage.getMessage().getBadge());
+        assertFalse(unifiedPushMessage.getMessage().isContentAvailable());
     }
 
     @Test
-    public void testAliasCriteria() {
+    public void testAliasCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // criteria:
-        container.put("alias", Arrays.asList("foo@bar.org"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("alias", Arrays.asList("foo@bar.org"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getAliases());
-        assertEquals(1, unifiedPushMessage.getSendCriteria().getAliases().size());
-        assertEquals("foo@bar.org", unifiedPushMessage.getSendCriteria().getAliases().get(0));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getAliases());
+        assertEquals(1, unifiedPushMessage.getCriteria().getAliases().size());
+        assertEquals("foo@bar.org", unifiedPushMessage.getCriteria().getAliases().get(0));
     }
 
     @Test
-    public void testActionCategory() {
+    public void testActionCategory() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
@@ -222,247 +275,235 @@ public class UnifiedPushMessageTest {
         container.put("message", messageObject);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertEquals("POSTS", unifiedPushMessage.getActionCategory());
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("POSTS", unifiedPushMessage.getMessage().getActionCategory());
     }
 
     @Test
-    public void testMultipleAliasCriteria() {
+    public void testMultipleAliasCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // criteria:
-        container.put("alias", Arrays.asList("foo@bar.org", "bar@foo.com"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("alias", Arrays.asList("foo@bar.org", "bar@foo.com"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getAliases());
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getAliases().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getAliases().contains("foo@bar.org"));
-        assertTrue(unifiedPushMessage.getSendCriteria().getAliases().contains("bar@foo.com"));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getAliases());
+        assertEquals(2, unifiedPushMessage.getCriteria().getAliases().size());
+        assertTrue(unifiedPushMessage.getCriteria().getAliases().contains("foo@bar.org"));
+        assertTrue(unifiedPushMessage.getCriteria().getAliases().contains("bar@foo.com"));
     }
 
     @Test
-    public void testDeviceTypeCriteria() {
+    public void testDeviceTypeCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // criteria:
-        container.put("deviceType", Arrays.asList("iPad"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("deviceType", Arrays.asList("iPad"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getDeviceTypes());
-        assertEquals(1, unifiedPushMessage.getSendCriteria().getDeviceTypes().size());
-        assertEquals("iPad", unifiedPushMessage.getSendCriteria().getDeviceTypes().get(0));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getDeviceTypes());
+        assertEquals(1, unifiedPushMessage.getCriteria().getDeviceTypes().size());
+        assertEquals("iPad", unifiedPushMessage.getCriteria().getDeviceTypes().get(0));
     }
 
     @Test
-    public void testDeviceTypesCriteria() {
+    public void testDeviceTypesCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // criteria:
-        container.put("deviceType", Arrays.asList("iPad", "Android"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("deviceType", Arrays.asList("iPad", "Android"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getDeviceTypes());
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getDeviceTypes().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getDeviceTypes().contains("iPad"));
-        assertTrue(unifiedPushMessage.getSendCriteria().getDeviceTypes().contains("Android"));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getDeviceTypes());
+        assertEquals(2, unifiedPushMessage.getCriteria().getDeviceTypes().size());
+        assertTrue(unifiedPushMessage.getCriteria().getDeviceTypes().contains("iPad"));
+        assertTrue(unifiedPushMessage.getCriteria().getDeviceTypes().contains("Android"));
     }
 
     @Test
-    public void testCategoriesCriteria() {
+    public void testCategoriesCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
 
         // criteria:
-        container.put("categories", Arrays.asList("football"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("categories", Arrays.asList("football"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getCategories());
-        assertEquals(1, unifiedPushMessage.getSendCriteria().getCategories().size());
-        assertEquals("football", unifiedPushMessage.getSendCriteria().getCategories().get(0));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getCategories());
+        assertEquals(1, unifiedPushMessage.getCriteria().getCategories().size());
+        assertEquals("football", unifiedPushMessage.getCriteria().getCategories().get(0));
     }
 
     @Test
-    public void testMultipleCategoriesCriteria() {
+    public void testMultipleCategoriesCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
 
         // criteria:
-        container.put("categories", Arrays.asList("soccer", "olympics"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("categories", Arrays.asList("soccer", "olympics"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getCategories());
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getCategories().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getCategories().contains("olympics"));
-        assertTrue(unifiedPushMessage.getSendCriteria().getCategories().contains("soccer"));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getCategories());
+        assertEquals(2, unifiedPushMessage.getCriteria().getCategories().size());
+        assertTrue(unifiedPushMessage.getCriteria().getCategories().contains("olympics"));
+        assertTrue(unifiedPushMessage.getCriteria().getCategories().contains("soccer"));
     }
 
     @Test
-    public void testVariantsCriteria() {
+    public void testVariantsCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
 
         // criteria:
-        container.put("variants", Arrays.asList("abc-123-def-456"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("variants", Arrays.asList("abc-123-def-456"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getVariants());
-        assertEquals(1, unifiedPushMessage.getSendCriteria().getVariants().size());
-        assertEquals("abc-123-def-456", unifiedPushMessage.getSendCriteria().getVariants().get(0));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getVariants());
+        assertEquals(1, unifiedPushMessage.getCriteria().getVariants().size());
+        assertEquals("abc-123-def-456", unifiedPushMessage.getCriteria().getVariants().get(0));
     }
 
     @Test
-    public void testMultipleVariantsCriteria() {
+    public void testMultipleVariantsCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
 
         // criteria:
-        container.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-        assertNotNull(unifiedPushMessage.getSendCriteria().getVariants());
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getVariants().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getVariants().contains("abc-123-def-456"));
-        assertTrue(unifiedPushMessage.getSendCriteria().getVariants().contains("456-abc-123-def-bar"));
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertNotNull(unifiedPushMessage.getCriteria().getVariants());
+        assertEquals(2, unifiedPushMessage.getCriteria().getVariants().size());
+        assertTrue(unifiedPushMessage.getCriteria().getVariants().contains("abc-123-def-456"));
+        assertTrue(unifiedPushMessage.getCriteria().getVariants().contains("456-abc-123-def-bar"));
     }
 
     @Test
-    public void testAllCriteria() {
+    public void testAllCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
+        messageObject.put("simple-push", "version=123");
 
         // criteria:
-        container.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
-        container.put("categories", Arrays.asList("soccer", "olympics"));
-        container.put("deviceType", Arrays.asList("iPad", "Android"));
-        container.put("alias", Arrays.asList("foo@bar.org", "bar@foo.com"));
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
+        criteria.put("categories", Arrays.asList("soccer", "olympics"));
+        criteria.put("deviceType", Arrays.asList("iPad", "Android"));
+        criteria.put("alias", Arrays.asList("foo@bar.org", "bar@foo.com"));
+        container.put("criteria", criteria);
 
         // parse it:
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
 
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getAliases().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getAliases().contains("foo@bar.org"));
-        assertFalse(unifiedPushMessage.getSendCriteria().getAliases().contains("mrx@bar.org"));
+        assertEquals(2, unifiedPushMessage.getCriteria().getAliases().size());
+        assertTrue(unifiedPushMessage.getCriteria().getAliases().contains("foo@bar.org"));
+        assertFalse(unifiedPushMessage.getCriteria().getAliases().contains("mrx@bar.org"));
 
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getDeviceTypes().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getDeviceTypes().contains("Android"));
-        assertFalse(unifiedPushMessage.getSendCriteria().getDeviceTypes().contains("iPhone"));
+        assertEquals(2, unifiedPushMessage.getCriteria().getDeviceTypes().size());
+        assertTrue(unifiedPushMessage.getCriteria().getDeviceTypes().contains("Android"));
+        assertFalse(unifiedPushMessage.getCriteria().getDeviceTypes().contains("iPhone"));
 
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getCategories().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getCategories().contains("olympics"));
-        assertFalse(unifiedPushMessage.getSendCriteria().getCategories().contains("Bundesliga"));
+        assertEquals(2, unifiedPushMessage.getCriteria().getCategories().size());
+        assertTrue(unifiedPushMessage.getCriteria().getCategories().contains("olympics"));
+        assertFalse(unifiedPushMessage.getCriteria().getCategories().contains("Bundesliga"));
 
-        assertEquals(2, unifiedPushMessage.getSendCriteria().getVariants().size());
-        assertTrue(unifiedPushMessage.getSendCriteria().getVariants().contains("abc-123-def-456"));
-        assertFalse(unifiedPushMessage.getSendCriteria().getVariants().contains("0815")) ;
+        assertEquals(2, unifiedPushMessage.getCriteria().getVariants().size());
+        assertTrue(unifiedPushMessage.getCriteria().getVariants().contains("abc-123-def-456"));
+        assertFalse(unifiedPushMessage.getCriteria().getVariants().contains("0815"));
+        assertEquals("version=123", unifiedPushMessage.getMessage().getSimplePush());
     }
 
-    @Test(expected = ClassCastException.class)
-    public void testVariantCriteriaParseError() {
+    @Test(expected = JsonMappingException.class)
+    public void testVariantCriteriaParseError() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        container.put("variants", "abc-123-def-456");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testCategoriesCriteriaParseError() {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        container.put("categories", "soccer");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testDeviceTypeCriteriaParseError() {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        container.put("deviceType", "iPad");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testAliasCriteriaParseError() {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        container.put("alias", "foo@bar.org");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testMessageObjectParseError() {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        container.put("message", "payload");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        criteria.put("variants", "abc-123-def-456");
+        container.put("criteria", criteria);
+        parsePushMessage(container);
     }
 
     @Test
@@ -474,29 +515,48 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("someKey", "someValue");
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("someKey", "someValue");
+        messageObject.put("user-data", data);
+        messageObject.put("simple-push", "version=123");
 
         container.put("message", messageObject);
-        container.put("simplePush", "version=123");
-        final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage(container);
 
         //when
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
         String json = unifiedPushMessage.toJsonString();
 
         //then
         assertEquals("{" +
-                "\"ipAddress\":\"null\"," +
-                "\"clientIdentifier\":\"null\"," +
-                "\"simplePush\":\"null\"," +
-                "\"alert\":\"Howdy\"," +
-                "\"action-category\":\"null\"," +
-                "\"sound\":\"default\"," +
-                "\"contentAvailable\":false," +
-                "\"badge\":2," +
-                "\"timeToLive\":-1," +
-                "\"data\":{" +
-                "\"someKey\":\"someValue\"" +
+                "\"ipAddress\":null," +
+                "\"clientIdentifier\":null," +
+                "\"message\":{" +
+                    "\"alert\":\"Howdy\"," +
+                    "\"sound\":\"default\"," +
+                    "\"badge\":2," +
+                    "\"action-category\":null," +
+                    "\"content-available\":false," +
+                    "\"user-data\":{" +
+                    "\"someKey\":\"someValue\"" +
+                    "}," +
+                    "\"simple-push\":\"version=123\"" +
+                "}," +
+                "\"criteria\":{" +
+                    "\"categories\":null," +
+                    "\"variants\":null," +
+                    "\"alias\":null," +
+                    "\"deviceType\":null" +
+                "}," +
+                "\"config\":{" +
+                    "\"ttl\":-1" +
                 "}" +
-                "}", json);
+              "}", json);
+    }
+
+    private UnifiedPushMessage parsePushMessage(Map<String, Object> container) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        final String valueAsString = mapper.writeValueAsString(container);
+
+        return mapper.readValue(valueAsString, UnifiedPushMessage.class);
     }
 }

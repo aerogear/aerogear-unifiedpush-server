@@ -23,7 +23,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
      */
   $scope.variantSelection = [];
   $scope.criteria = [];
-  $scope.pushData = {'message': {'sound': 'default', 'alert': ''}};
+  $scope.pushData = {'message': {'sound': 'default', 'alert': ''}, 'criteria' : {}};
   $scope.pushData['simple-push'] = 'version=' + new Date().getTime();
 
   if (!$rootScope.application) {
@@ -34,7 +34,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
 
   $scope.sendMessage = function () {
 
-    var pushData = $scope.pushData;
+    var pushData = $scope.pushData.criteria;
     pushData.alias = undefined;
     pushData.deviceType = undefined;
     pushData.categories = undefined;
@@ -64,7 +64,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
     $http.defaults.headers.common.Authorization = 'Basic ' + btoa($rootScope.application.pushApplicationID +
       ':' + $rootScope.application.masterSecret);
 
-    messageSender.send({}, pushData, function() {
+    messageSender.send({}, $scope.pushData, function() {
       Notifications.success('Successfully sent Notification');
       $scope.pushData.message.alert = '';
     }, function() {

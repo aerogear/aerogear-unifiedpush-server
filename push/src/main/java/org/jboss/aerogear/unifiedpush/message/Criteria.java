@@ -16,30 +16,25 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import java.util.List;
-import java.util.Map;
 
 /**
- * Simple utility class, containing all "query criteria" options for a message,
+ * Simple class, containing all "query criteria" options for a message,
  * that has been sent to the Send-HTTP endpoint.
  * 
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class SendCriteria {
+public class Criteria {
 
-    private final List<String> aliases;
-    private final List<String> deviceTypes;
-    private final List<String> categories;
-    private final List<String> variants;
-
-    @SuppressWarnings("unchecked")
-    public SendCriteria(Map<String, Object> data) {
-        this.aliases = (List<String>) data.remove("alias");
-        this.deviceTypes = (List<String>) data.remove("deviceType");
-        this.categories = (List<String>) data.remove("categories");
-        this.variants = (List<String>) data.remove("variants");
-    }
+    @JsonProperty("alias")
+    private List<String> aliases;
+    @JsonProperty("deviceType")
+    private List<String> deviceTypes;
+    private List<String> categories;
+    private List<String> variants;
 
     /**
      * Returns a list of user names or email addresses that will receive
@@ -49,11 +44,19 @@ public class SendCriteria {
         return aliases;
     }
 
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
+    }
+
     /**
      * Returns a list of device types that will receive a push notification. 
      */
     public List<String> getDeviceTypes() {
         return deviceTypes;
+    }
+
+    public void setDeviceTypes(List<String> deviceTypes) {
+        this.deviceTypes = deviceTypes;
     }
 
     /**
@@ -63,6 +66,10 @@ public class SendCriteria {
         return categories;
     }
 
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
     /**
      * Returns a list of variant IDs that will receive a push notification. 
      */
@@ -70,8 +77,17 @@ public class SendCriteria {
         return variants;
     }
 
+    public void setVariants(List<String> variants) {
+        this.variants = variants;
+    }
+
     @Override
     public String toString() {
-        return "[aliases=" + aliases + ", deviceTypes=" + deviceTypes + ", categories=" + categories + ", variants=" + variants + "]";
+        return "Criteria{" +
+                "aliases=" + aliases +
+                ", deviceTypes=" + deviceTypes +
+                ", categories=" + categories +
+                ", variants=" + variants +
+                '}';
     }
 }

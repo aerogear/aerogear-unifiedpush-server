@@ -12,7 +12,7 @@
     },
     {
       "op": "add",
-      "path": "/message/data",
+      "path": "/message/user-data",
       "value": {}
     },
     {

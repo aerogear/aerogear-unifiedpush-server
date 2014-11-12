@@ -34,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.Map;
 
 @Stateless
 @Path("/sender")
@@ -57,22 +56,27 @@ public class PushNotificationSenderEndpoint {
      *   -v -H "Accept: application/json" -H "Content-type: application/json"
      *   -X POST
      *   -d '{
-     *     "alias" : ["someUsername"],
-     *     "deviceType" : ["someDevice"],
-     *     "categories" : ["someCategories"],
-     *     "variants" : ["someVariantIDs"],
-     *     "ttl" : 3600,
-     *     "message":
-     *     {
-     *       "key":"value",
-     *       "key2":"other value",
-     *       "alert":"HELLO!",
-     *       "action-category":"some value",
-     *       "sound":"default",
-     *       "badge":2,
-     *       "content-available" : true
+     *     "message": {
+     *      "alert": "HELLO!",
+     *      "action-category": "some value",
+     *      "sound": "default",
+     *      "badge": 2,
+     *      "content-available": true,
+     *      "user-data": {
+     *          "key": "value",
+     *          "key2": "other value"
+     *      },
+     *      "simple-push": "version=123"
      *     },
-     *     "simple-push":"version=123"
+     *     "criteria": {
+     *         "alias": [ "someUsername" ],
+     *         "deviceType": [ "someDevice" ],
+     *         "categories": [ "someCategories" ],
+     *         "variants": [ "someVariantIDs" ]
+     *     },
+     *     "config": {
+     *         "ttl": 3600
+     *     }
      *   }'
      *   https://SERVER:PORT/CONTEXT/rest/sender
      * </pre>
@@ -86,7 +90,7 @@ public class PushNotificationSenderEndpoint {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response send(final Map<String, Object> message, @Context HttpServletRequest request) {
+    public Response send(final UnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
@@ -96,18 +100,15 @@ public class PushNotificationSenderEndpoint {
                     .build();
         }
 
-        // transform map to service object:
-        final UnifiedPushMessage payload = new UnifiedPushMessage(message);
-
         // submit http request metadata:
-        payload.setIpAddress(HttpRequestUtil.extractIPAddress(request));
+        message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
 
         // add the client identifier
-        payload.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+        message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
 
         // submitted to @Async EJB:
-        senderService.send(pushApplication, payload);
-        logger.fine("Message sent by: '" + payload.getClientIdentifier() + "'");
+        senderService.send(pushApplication, message);
+        logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 
         return Response.status(Status.OK)

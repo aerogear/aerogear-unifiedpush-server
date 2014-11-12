@@ -57,28 +57,29 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final List<String>  registrationIDs = new ArrayList(tokens);
+        final List<String>  registrationIDs = new ArrayList<String>(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
         Builder gcmBuilder = new Message.Builder();
 
+        org.jboss.aerogear.unifiedpush.message.Message message = pushMessage.getMessage();
         // add the "recognized" keys...
-        gcmBuilder.addData("alert", pushMessage.getAlert());
-        gcmBuilder.addData("sound", pushMessage.getSound());
-        gcmBuilder.addData("badge", "" + pushMessage.getBadge());
+        gcmBuilder.addData("alert", message.getAlert());
+        gcmBuilder.addData("sound", message.getSound());
+        gcmBuilder.addData("badge", "" + message.getBadge());
 
         // if present, apply the time-to-live metadata:
-        int ttl = pushMessage.getTimeToLive();
+        int ttl = pushMessage.getConfig().getTimeToLive();
         if (ttl != -1) {
             gcmBuilder.timeToLive(ttl);
         }
 
         // iterate over the missing keys:
-        Set<String> keys = pushMessage.getData().keySet();
+        Set<String> keys = message.getUserData().keySet();
         for (String key : keys) {
             // GCM needs stringified values:
-            gcmBuilder.addData(key, "" + pushMessage.getData().get(key));
+            gcmBuilder.addData(key, "" + message.getUserData().get(key));
         }
 
         Message gcmMessage = gcmBuilder.build();

@@ -40,8 +40,8 @@ public class APNsPushNotificationSenderTest {
         final iOSVariant iosVariant = mock(iOSVariant.class);
         when(iosVariant.getCertificate()).thenReturn(readCertificate());
         when(iosVariant.getPassphrase()).thenReturn("123456");
-        
-        sender.sendPushMessage(iosVariant, Arrays.asList("token"), mock(UnifiedPushMessage.class), callback);
+
+        sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), callback);
         
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }
