@@ -55,6 +55,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
         }
 
         // iterate over all the given channels, if there are channels:
+        boolean hasWarning = false;
         for (String clientURL : tokens) {
 
             HttpURLConnection conn = null;
@@ -65,20 +66,13 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 int simplePushStatusCode = conn.getResponseCode();
                 logger.info("SimplePush Status: " + simplePushStatusCode);
 
-                if (Status.OK.getStatusCode() == simplePushStatusCode) {
-                    callback.onSuccess();
-                } else {
-                    logger.severe("Error during PUT execution to SimplePush Network, status code was: " + simplePushStatusCode);
-                    callback.onError("Error delivering the payload. SimplePush Network status code was: " + simplePushStatusCode );
+                if (Status.OK.getStatusCode() != simplePushStatusCode) {
+                    hasWarning = true;
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // any error while performing the PUT
-                logger.severe("Error during PUT execution to SimplePush Network", e);
-                callback.onError("Error delivering SimplePush payload");
-            } catch (IllegalArgumentException e) {
-                // if, for some reason there is no token/URL on the metadata...
-                logger.severe(e.getMessage(), e);
-                callback.onError(e.getMessage());
+                logger.severe("Error delivering SimplePush payload", e);
+                hasWarning = true;
             } finally {
                 // tear down
                 if (conn != null) {
@@ -86,6 +80,12 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 }
             }
         }
+       if (hasWarning) {
+           callback.onError("Error delivering SimplePush payload");
+       }
+       else {
+           callback.onSuccess();
+       }
     }
 
     /**

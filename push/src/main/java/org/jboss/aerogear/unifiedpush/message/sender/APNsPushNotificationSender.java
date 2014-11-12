@@ -107,6 +107,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
                     clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
                 }
+                callback.onSuccess();
             } catch (Exception e) {
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
@@ -157,17 +158,16 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             final ApnsServiceBuilder builder = APNS.newService().withNoErrorDetection();
 
-            // using the APNS Delegate callback to trigger our own notifications for success/failure status:
+            // using the APNS Delegate callback to log success/failure for each token:
             builder.withDelegate(new ApnsDelegateAdapter() {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
-                    notificationSenderCallback.onSuccess();
+                    logger.fine("Sending APNs message: " + message.getDeviceToken());
                 }
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
                     logger.severe("Error sending payload to APNs server", e);
-                    notificationSenderCallback.onError("Error sending payload to APNs server: " + e.getMessage());
                 }
             });
 
