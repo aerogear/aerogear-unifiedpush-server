@@ -20,21 +20,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -55,6 +51,8 @@ public class InstallationRegistrationEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
+    @Inject
+    private SearchManager searchManager;
 
     @OPTIONS
     @Path("{token: .*}")
@@ -250,6 +248,18 @@ public class InstallationRegistrationEndpoint {
         // return directly, the above is async and may take a bit :-)
         return Response.status(Status.OK)
                 .entity("Job submitted for processing").build();
+    }
+
+    /**
+     * Endpoint for exporting as JSON file device installations for a given variant.
+     * Only Keycloak authneitcated can access it
+     */
+    @GET
+    @Path("/exporter/{variantId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GZIP
+    public Response exportInstallations(@PathParam("variantId") String variantId) {
+        return Response.ok(searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE).getResultList()).build();
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {

@@ -120,6 +120,18 @@ backendMod.factory('installations', function ($resource, $q) {
   return installationsService;
 });
 
+backendMod.factory('exportImport', function ($resource ) {
+  return $resource('rest/registry/device/:verb/:variantId', {}, {
+    export: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        verb: 'exporter'
+      }
+    }
+  });
+});
+
 backendMod.factory('dashboard', function ($resource) {
   return $resource('rest/metrics/dashboard/:verb', {}, {
     totals: {

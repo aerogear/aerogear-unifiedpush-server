@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, exportImport, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
 
   /*
    * INITIALIZATION
@@ -116,7 +116,7 @@ angular.module('upsConsole').controller('DetailController',
       });
     });
   };
-    
+
   $scope.renewMasterSecret = function () {
     var modalInstance = show(null, 'renew-master-secret.html');
     modalInstance.result.then(function () {
@@ -140,6 +140,26 @@ angular.module('upsConsole').controller('DetailController',
       variants.reset(params, function (updatedVariant) {
         variant.secret = updatedVariant.secret;
         Notifications.success('Successfully renewed secret for variant "' + updatedVariant.name + '"');
+      });
+    });
+  };
+
+  $scope.exportInstallations = function (variant) {
+    variant.total = counts[variant.type];
+    var modalInstance = show(variant, 'export-installations.html');
+    modalInstance.result.then(function () {
+      var params = {
+        variantId: variant.variantID
+      };
+      exportImport.export(params, function (content) {
+        var hiddenElement = document.createElement('a');
+
+        hiddenElement.href = 'data:attachment/json,' + encodeURI(JSON.stringify(content));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = variant.variantID + '.json';
+        hiddenElement.click();
+
+        Notifications.success('Successfully exported installations "');
       });
     });
   };
