@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
-import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -32,7 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Singleton
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
 

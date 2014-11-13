@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.Response;
 /**
  * A class to test the Authorization status of a user
  */
-@Stateless
 @Path("/ping")
 public class Ping {
 
