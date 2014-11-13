@@ -316,6 +316,31 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void mergeCategories() {
+        //given
+        final SimplePushVariant variant = new SimplePushVariant();
+        entityManager.persist(variant);
+
+        final Installation installation = new Installation();
+        installation.setDeviceToken("http://test");
+        installation.setCategories(new HashSet<Category>(Arrays.asList(new Category("one"), new Category("two"))));
+
+        final Installation installation2 = new Installation();
+        installation2.setDeviceToken("http://test2");
+        installation2.setCategories(new HashSet<Category>(Arrays.asList(new Category("one"), new Category("three"))));
+
+        installation.setVariant(variant);
+        installation2.setVariant(variant);
+
+        //when
+        installationDao.create(installation);
+
+        //then
+        final List list = entityManager.createQuery("select c from Category c where c.name = 'one'").getResultList();
+        assertThat(list).hasSize(1);
+    }
+
+    @Test
     public void findPushEndpointsForAlias() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
