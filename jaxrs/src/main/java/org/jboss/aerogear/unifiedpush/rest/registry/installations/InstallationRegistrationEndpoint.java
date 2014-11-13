@@ -26,8 +26,6 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -46,9 +44,7 @@ import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
 
-@Stateless
 @Path("/registry/device")
-@TransactionAttribute
 public class InstallationRegistrationEndpoint {
 
     // at some point we should move the mapper to a util class.?

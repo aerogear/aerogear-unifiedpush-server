@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.Response;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 
-@Stateless
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
     private static final int MAX_PAGE_SIZE = 100;
