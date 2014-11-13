@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
@@ -59,6 +60,16 @@ public interface PushSearchService {
      * Loads all the Variant objects with the most received messages
      */
     List<Application> getTopThreeLastActivity();
+
+
+    /**
+     * Find all installations for the variant specified.
+     * @param variantID the id of the variant to find the installations for
+     * @param page the page number
+     * @param pageSize the size of the pages
+     * @return page result containing the list plus a total number of rows
+     */
+    PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize);
 
 
 }

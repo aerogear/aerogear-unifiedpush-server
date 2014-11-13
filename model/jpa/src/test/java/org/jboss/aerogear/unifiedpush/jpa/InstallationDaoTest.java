@@ -572,7 +572,7 @@ public class InstallationDaoTest {
         String developer = "me";
 
         //when
-        final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, developer, 0, 1);
+        final PageResult pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1);
 
         //then
         assertThat(pageResult).isNotNull();

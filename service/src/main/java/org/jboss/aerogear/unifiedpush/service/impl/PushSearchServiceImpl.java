@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -71,6 +72,11 @@ public class PushSearchServiceImpl implements PushSearchService {
     @Override
     public boolean existsVariantIDForDeveloper(String variantID) {
         return variantDao.existsVariantIDForAdmin(variantID);
+    }
+
+    @Override
+    public PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
+        return installationDao.findInstallationsByVariant(variantID, page, pageSize);
     }
 
 
