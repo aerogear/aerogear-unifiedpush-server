@@ -47,6 +47,10 @@ angular.module('ups.directives', ['upsConsole.services'])
           $scope.$parent.removeVariant(variant, type);
         };
 
+        $scope.exportInstallations = function (variant ) {
+          $scope.$parent.exportInstallations(variant);
+        };
+
         $scope.applicationId = $routeParams.applicationId;
         $scope.currentLocation = ContextProvider.contextPath();
 
