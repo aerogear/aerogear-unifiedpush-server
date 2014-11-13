@@ -38,21 +38,16 @@ public abstract class JPABaseDao {
     }
 
     protected void persist(Object entity) {
-        entityManager.joinTransaction();
         entityManager.persist(entity);
     }
 
     protected void merge(Object entity) {
-        entityManager.joinTransaction();
         entityManager.merge(entity);
-
         entityManager.flush();
     }
 
     protected void remove(Object entity) {
         if (entity != null) {
-
-            entityManager.joinTransaction();
             entityManager.remove(entity);
         }
     }
