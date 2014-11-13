@@ -68,11 +68,10 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 logger.log(Level.INFO, String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
+            logger.log(Level.INFO, "Message to WNS has been submitted");
+            senderCallback.onSuccess();
         } catch (WnsException exception) {
             senderCallback.onError(exception.getMessage());
         }
-
-        logger.log(Level.INFO, "Message to WNS has been submitted");
-        senderCallback.onSuccess();
     }
 }
