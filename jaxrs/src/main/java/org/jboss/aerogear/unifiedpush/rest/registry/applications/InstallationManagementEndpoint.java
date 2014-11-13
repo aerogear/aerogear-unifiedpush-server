@@ -70,7 +70,7 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the installations using the variantID
-        PageResult<Installation> pageResult = clientInstallationService.findInstallationsByVariant(variantId, page, pageSize);
+        PageResult<Installation> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize);
 
         final long totalPages = pageResult.getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);

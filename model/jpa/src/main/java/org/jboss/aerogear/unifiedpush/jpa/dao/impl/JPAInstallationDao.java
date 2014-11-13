@@ -42,7 +42,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         remove(entity);
     }
 
-    public PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize) {
+    public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
         Root<Installation> v = query.from(Installation.class);
@@ -56,6 +56,25 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         final Join<Object, Object> join1 = countQuery.from(Installation.class).join("variant");
         countQuery.where(getPredicates(variantID, developer, builder, join1));
+        final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
+
+        return new PageResult<Installation>(result, count);
+    }
+
+    public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
+        Root<Installation> v = query.from(Installation.class);
+        final Join join = v.join("variant");
+        final Predicate[] predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
+        query.where(predicates);
+
+        List<Installation> result = entityManager.createQuery(query)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        final Join<Object, Object> join1 = countQuery.from(Installation.class).join("variant");
+        countQuery.where(new Predicate[]{builder.equal(join1.get("variantID"), variantID)});
         final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
 
         return new PageResult<Installation>(result, count);

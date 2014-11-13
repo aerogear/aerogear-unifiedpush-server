@@ -41,14 +41,24 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
     List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
 
     /**
-     * Find all installations for the variant specified.
+     * Find all installations for the variant specified and for the authneticated user.
      * @param variantID the id of the variant to find the installations for
      * @param developer the developer
      * @param page the page number
      * @param pageSize the size of the pages
      * @return all installations found or empty list + the total count of results
      */
-    PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize);
+    PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize);
+
+    /**
+     * Find all installations for the variant specified (used for admin role)
+     * @param variantID the id of the variant to find the installations for
+     * @param page the page number
+     * @param pageSize the size of the pages
+     * @return all installations found or empty list + the total count of results
+     */
+    PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize);
+
 
     /**
      * Counts the total number of registered devices/clients for the give List of variantIDs
