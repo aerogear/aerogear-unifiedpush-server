@@ -21,8 +21,6 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -42,8 +40,6 @@ import javax.ws.rs.core.UriBuilder;
 import java.util.Map;
 import java.util.UUID;
 
-@Stateless
-@TransactionAttribute
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private static final int MAX_PAGE_SIZE = 25;

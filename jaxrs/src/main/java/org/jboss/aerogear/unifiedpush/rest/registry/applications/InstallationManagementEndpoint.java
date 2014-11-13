@@ -24,7 +24,6 @@ import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,7 +39,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 
-@Stateless
 @Path("/applications/{variantID}/installations/")
 public class InstallationManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 50;
