@@ -62,28 +62,22 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
     public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
-        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
-        Root<Installation> v = query.from(Installation.class);
-        final Join join = v.join("variant");
-        final Predicate[] predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
-        query.where(predicates);
-
-        List<Installation> result = entityManager.createQuery(query)
-                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
-
-        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-        final Join<Object, Object> join1 = countQuery.from(Installation.class).join("variant");
-        countQuery.where(new Predicate[]{builder.equal(join1.get("variantID"), variantID)});
-        final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
-
-        return new PageResult<Installation>(result, count);
+        return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize);
     }
 
     private Predicate[] getPredicates(String variantID, String developer, CriteriaBuilder builder, Join join) {
-        return new Predicate[]{builder.equal(join.get("variantID"), variantID),
+        Predicate[] predicates;
+        if(developer!=null) {
+            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID),
                     builder.and(builder.equal(join.get("developer"), developer))};
+        }
+        else {
+            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
+        }
+        return predicates;
     }
+
+
 
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
