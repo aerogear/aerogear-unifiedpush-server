@@ -26,12 +26,10 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,10 +52,6 @@ public class PushSearchServiceImpl implements PushSearchService {
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
-
-    @Inject
-    @LoggedIn
-    private Instance<String> principalName;
 
     @Override
     public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
