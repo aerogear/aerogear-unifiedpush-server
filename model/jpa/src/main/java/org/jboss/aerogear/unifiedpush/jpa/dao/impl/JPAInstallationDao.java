@@ -43,8 +43,8 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
     public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
+        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
         Root<Installation> v = query.from(Installation.class);
         final Join join = v.join("variant");
         final Predicate[] predicates = getPredicates(variantID, developer, builder, join);
@@ -62,8 +62,8 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
     public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
+        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
         Root<Installation> v = query.from(Installation.class);
         final Join join = v.join("variant");
         final Predicate[] predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
