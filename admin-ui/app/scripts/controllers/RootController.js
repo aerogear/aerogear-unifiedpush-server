@@ -17,13 +17,19 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('RootController', function ($rootScope, Auth, $http) {
+  .controller('RootController', function ($rootScope, $scope, Auth, $http, $keepalive, $idle, $log, appConfig) {
+
+    $scope.appConfig = appConfig;
+    
+    /**
+     * View loading status
+     */
     $rootScope.isViewLoading = false;
     //Retrieve the current logged in username
-    $rootScope.username = Auth.authz.idToken.preferred_username;
+    $rootScope.username = Auth.keycloak.idToken.preferred_username;
 
     $rootScope.accountManagement = function() {
-      window.location = Auth.authz.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
+      window.location = Auth.keycloak.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
     };
 
     $rootScope.isProcessingData = function() {
@@ -44,5 +50,46 @@ angular.module('upsConsole')
         $rootScope.section = routeData.$$route.section;
       }
     });
-  }
-);
+    
+    /**
+     * idle service, keepalive, auth token refresh
+     */
+    $idle.watch();
+    $scope.idleCountdown = appConfig.idleWarningDuration + 1;
+    $rootScope.$on('$keepalive', function() {
+      Auth.keycloak.updateToken(45).success(function(refreshed) {
+        if (refreshed) {
+          $log.debug('token was successfully refreshed');
+        } else {
+          $log.debug('token is still valid');
+        }
+      }).error(function() {
+        $log.debug('failed to refresh the token, or the session has expired');
+      });
+    });
+    
+    $rootScope.$on('$idleStart', function() {
+      $log.debug('idleStart');
+      
+    });
+    $rootScope.$on('$idleWarn', function() {
+      $log.debug('idleWarn');
+      $scope.idleCountdown = $scope.idleCountdown - 1;
+    });
+    $rootScope.$on('$idleEnd', function() {
+      $log.debug('idleEnd');
+      $scope.idleCountdown = appConfig.idleWarningDuration + 1;
+      
+    });
+    $rootScope.$on('$idleTimeout', function() {
+      $log.debug('idleTimeout');
+      Auth.logout();
+    });
+  })
+  
+  .config( function( $keepaliveProvider, $idleProvider, appConfigProvider ) {
+    var appConfig = appConfigProvider.$get();
+    $idleProvider.idleDuration( appConfig.idleDuration );
+    $idleProvider.warningDuration( appConfig.idleWarningDuration );
+    $keepaliveProvider.interval( appConfig.keepaliveInterval );
+  });
