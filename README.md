@@ -79,6 +79,14 @@ These instructions contains also specific instructions how to upgrade NPM packag
 
 Note that the {{frontend-maven-plugin}} may fail if you killed the build during its work - it may leave the downloaded modules in inconsistent state, see [`admin-ui/README.md`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/admin-ui/README.md#build-errors).
 
+#### Cleaning the Admin UI build
+
+In order to clean the state of Admin UI build caches, run maven build with the following parameter
+
+    mvn clean install -Dfrontend.clean.force
+
+Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
+
 
 ## Openshift
 
