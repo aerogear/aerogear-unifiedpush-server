@@ -402,7 +402,7 @@ using AeroGear.Push;
 protected override void OnLaunched(LaunchActivatedEventArgs e)
 {
   PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
-  Registration registration = new Registration();
+  Registration registration = new WnsRegistration();
   registration.PushReceivedEvent += HandleNotification;
   registration.Register(pushConfig);
 
@@ -411,7 +411,7 @@ protected override void OnLaunched(LaunchActivatedEventArgs e)
 
 void HandleNotification(object sender, PushReceivedEvent e)
 {
-  Debug.WriteLine("notification received {0}", e.Args.ToastNotification.Content.GetXml());
+  Debug.WriteLine("notification received {0}", e.Args.message);
 }
 
                     </div>
