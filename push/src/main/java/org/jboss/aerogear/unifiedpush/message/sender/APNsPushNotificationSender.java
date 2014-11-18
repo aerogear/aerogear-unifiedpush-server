@@ -153,7 +153,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
 
-            final ApnsServiceBuilder builder = APNS.newService().withNoErrorDetection();
+            final ApnsServiceBuilder builder = APNS.newService();
 
             // using the APNS Delegate callback to log success/failure for each token:
             builder.withDelegate(new ApnsDelegateAdapter() {
