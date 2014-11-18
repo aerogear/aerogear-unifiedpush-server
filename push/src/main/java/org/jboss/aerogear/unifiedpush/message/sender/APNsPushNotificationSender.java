@@ -159,7 +159,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             builder.withDelegate(new ApnsDelegateAdapter() {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
-                    logger.fine("Sending APNs message: " + message.getDeviceToken());
+                    // Invoked for EVERY devicetoken:
+                    logger.finest("Sending APNs message: " + message.getDeviceToken());
                 }
 
                 @Override
