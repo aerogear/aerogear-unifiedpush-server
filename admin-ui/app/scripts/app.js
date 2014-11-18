@@ -22,7 +22,7 @@
   var auth = {};
 
   angular.element(document).ready(function () {
-    var keycloak = new Keycloak('config/keycloak.json');
+    var keycloak = new Keycloak('config/admin-ui-keycloak.json');
     auth.loggedIn = false;
 
     keycloak.init({ onLoad: 'login-required' }).success(function () {
