@@ -36,11 +36,11 @@ public class APNsPushNotificationSenderTest {
     public void callbackOnError() throws Exception {
         final APNsPushNotificationSender sender = new APNsPushNotificationSender();
         final NotificationSenderCallback callback = mock(NotificationSenderCallback.class);
-        final APNsVariant APNsVariant = mock(APNsVariant.class);
-        when(APNsVariant.getCertificate()).thenReturn(readCertificate());
-        when(APNsVariant.getPassphrase()).thenReturn("123456");
+        final APNsVariant apnsVariant = mock(APNsVariant.class);
+        when(apnsVariant.getCertificate()).thenReturn(readCertificate());
+        when(apnsVariant.getPassphrase()).thenReturn("123456");
         
-        sender.sendPushMessage(APNsVariant, Arrays.asList("token"), new UnifiedPushMessage(), callback);
+        sender.sendPushMessage(apnsVariant, Arrays.asList("token"), new UnifiedPushMessage(), callback);
         
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }

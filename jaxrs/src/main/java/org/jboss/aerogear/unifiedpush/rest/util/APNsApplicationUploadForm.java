@@ -22,7 +22,7 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 /**
  * Helper class to read values from the multipart request
- * that is performed when creating (or updating) an iOS variant. 
+ * that is performed when creating (or updating) an APNs variant.
  */
 public class APNsApplicationUploadForm {
 
@@ -41,9 +41,9 @@ public class APNsApplicationUploadForm {
 
     /**
      * Reads the boolean flag from the multipart request,
-     * which indicates if the iOS variant is a 'production' variant or not. 
+     * which indicates if the APNs variant is a 'production' variant or not.
      * 
-     * The {@link APNsVariant} model differenciates between production and test
+     * The {@see APNsVariant} model differentiates between production and test
      * in order to establish connections to different APNs Servers.
      */
     @FormParam("production")

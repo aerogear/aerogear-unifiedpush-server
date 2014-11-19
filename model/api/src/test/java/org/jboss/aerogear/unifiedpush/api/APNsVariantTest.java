@@ -39,7 +39,7 @@ public class APNsVariantTest {
     }
 
     @Test
-    public void iOSValues() {
+    public void apnsValues() {
 
         assertThat(variant).isNotNull();
 

@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
  */
 public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenCheck, Installation> {
     /**
-     * Pattern for iOS is pretty well defined as the library we use for sending assumes HEX.
-     * @see <a href="https://github.com/notnoop/java-apns/blob/20c10ebd22e15a55c0c1c12695c535d37435dcfd/src/main/java/com/notnoop/apns/internal/Utilities.java#L114">notnoop apns</a>
+     * Pattern for APNs is pretty well defined as the library we use for sending assumes HEX.
+     * @see <a href="https://github.com/notnoop/java-apns/blob/master/src/main/java/com/notnoop/apns/internal/Utilities.java#L115">notnoop apns</a>
      */
     private static final Pattern APNS_DEVICE_TOKEN = Pattern.compile("(?i)[a-f0-9 -]{64,}");
     /**

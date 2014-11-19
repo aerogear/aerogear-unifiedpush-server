@@ -433,7 +433,7 @@ public class InstallationDaoTest {
     }
 
     @Test
-    public void shouldSaveWhenValidateDeviceIdIOS() {
+    public void shouldSaveWhenValidateDeviceIdAPNs() {
         // given
         final Installation installation = new Installation();
         installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");

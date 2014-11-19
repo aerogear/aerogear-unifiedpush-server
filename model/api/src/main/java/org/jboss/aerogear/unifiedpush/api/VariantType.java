@@ -29,7 +29,7 @@ public enum VariantType {
     ANDROID("android"),
 
     /**
-     * The type identifier for our iOS variants. 
+     * The type identifier for our APNs variants (Safari and iOS).
      */
     APNS("apns"),
 

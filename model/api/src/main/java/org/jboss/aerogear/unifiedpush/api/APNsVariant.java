@@ -23,7 +23,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * The iOS variant class encapsulates APNs specific behavior.
+ * The APNs variant class is used for Safari and iOS push messages.
+ * The class encapsulates generic APNs specific configuration behavior.
  */
 public class APNsVariant extends Variant {
     private static final long serialVersionUID = -889367404039436329L;
@@ -41,11 +42,11 @@ public class APNsVariant extends Variant {
 
     /**
      * If <code>true</code> a connection to Apple's Production APNs server
-     * will be established for this iOS variant.
+     * will be established for this APNs variant.
      *
      * If the method returns <code>false</code> a connection to
      * Apple's Sandbox/Development APNs server will be established
-     * for this iOS variant.
+     * for this APNs variant.
      */
     public boolean isProduction() {
         return production;
