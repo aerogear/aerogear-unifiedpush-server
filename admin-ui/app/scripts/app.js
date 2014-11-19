@@ -241,7 +241,7 @@
       request: function (config) {
         var deferred = $q.defer();
 
-        if (config.url === 'rest/sender') {
+        if (config.url === 'rest/sender' || config.url === 'rest/registry/device/importer') {
           return config;
         }
 

@@ -1,0 +1,17 @@
+<form name="form" class="modal-content ups-modal-content">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
+        <span class="pficon pficon-close"></span>
+      </button>
+      <h4 class="modal-title">Import Installations </h4>
+    </div>
+    <div class="modal-body">
+      <strong><input type="file" ups-files="variant.installations" /></strong>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary text-left" ng-click="ok(variant)">Import</button>
+      <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+  </div>
+</form>

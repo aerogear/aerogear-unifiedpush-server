@@ -51,6 +51,10 @@ angular.module('ups.directives', ['upsConsole.services'])
           $scope.$parent.exportInstallations(variant);
         };
 
+        $scope.importInstallations = function (variant ) {
+          $scope.$parent.importInstallations(variant);
+        };
+
         $scope.applicationId = $routeParams.applicationId;
         $scope.currentLocation = ContextProvider.contextPath();
 
