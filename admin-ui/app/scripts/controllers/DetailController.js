@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $scope, $routeParams, $location, $modal, $http,  pushApplication, variants, importer, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
 
   /*
    * INITIALIZATION
@@ -164,7 +164,22 @@ angular.module('upsConsole').controller('DetailController',
     });
   };
 
-
+  $scope.importInstallations = function (variant) {
+    variant.installations = [];
+    var modalInstance = show(variant, 'import-installations.html');
+    modalInstance.result.then(function (result) {
+      $rootScope.isViewLoading = true;
+      var fd = new FormData();
+      fd.append('file', result.variant.installations[0]);
+      $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
+      ':' + variant.secret);
+      importer.import(null,fd,function(){
+        $rootScope.isViewLoading = false;
+        $scope.counts = pushApplication.count({appId: $scope.application.pushApplicationID}).$promise;
+        Notifications.success('Successfully imported installations "');
+      });
+    });
+  };
   /*
    * PRIVATE FUNCTIONS
    */
