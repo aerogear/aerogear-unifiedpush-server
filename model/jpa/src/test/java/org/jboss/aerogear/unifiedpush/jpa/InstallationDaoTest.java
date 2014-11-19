@@ -549,12 +549,26 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void shouldSelectInstallationsByVariantForDeveloper() {
+        //given
+        String developer = "me";
+
+        //when
+        final PageResult pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1);
+
+        //then
+        assertThat(pageResult).isNotNull();
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+        assertThat(pageResult.getCount()).isEqualTo(3);
+    }
+
+    @Test
     public void shouldSelectInstallationsByVariant() {
         //given
         String developer = "me";
 
         //when
-        final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, developer, 0, 1);
+        final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1);
 
         //then
         assertThat(pageResult).isNotNull();
