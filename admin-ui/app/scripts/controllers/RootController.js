@@ -20,7 +20,7 @@ angular.module('upsConsole')
   .controller('RootController', function ($rootScope, $scope, Auth, $http, $keepalive, $idle, $log, appConfig) {
 
     $scope.appConfig = appConfig;
-    
+
     /**
      * View loading status
      */
@@ -30,6 +30,10 @@ angular.module('upsConsole')
 
     $rootScope.accountManagement = function() {
       window.location = Auth.keycloak.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
+    };
+
+    $rootScope.logout = function() {
+      Auth.logout();
     };
 
     $rootScope.isProcessingData = function() {
@@ -50,7 +54,7 @@ angular.module('upsConsole')
         $rootScope.section = routeData.$$route.section;
       }
     });
-    
+
     /**
      * idle service, keepalive, auth token refresh
      */
@@ -67,10 +71,10 @@ angular.module('upsConsole')
         $log.debug('failed to refresh the token, or the session has expired');
       });
     });
-    
+
     $rootScope.$on('$idleStart', function() {
       $log.debug('idleStart');
-      
+
     });
     $rootScope.$on('$idleWarn', function() {
       $log.debug('idleWarn');
@@ -79,14 +83,14 @@ angular.module('upsConsole')
     $rootScope.$on('$idleEnd', function() {
       $log.debug('idleEnd');
       $scope.idleCountdown = appConfig.idleWarningDuration + 1;
-      
+
     });
     $rootScope.$on('$idleTimeout', function() {
       $log.debug('idleTimeout');
       Auth.logout();
     });
   })
-  
+
   .config( function( $keepaliveProvider, $idleProvider, appConfigProvider ) {
     var appConfig = appConfigProvider.$get();
     $idleProvider.idleDuration( appConfig.idleDuration );
