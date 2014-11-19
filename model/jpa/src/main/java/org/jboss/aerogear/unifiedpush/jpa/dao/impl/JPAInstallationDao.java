@@ -42,9 +42,9 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         remove(entity);
     }
 
-    public PageResult<Installation> findInstallationsByVariant(String variantID, String developer, Integer page, Integer pageSize) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
+    public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
+        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
         Root<Installation> v = query.from(Installation.class);
         final Join join = v.join("variant");
         final Predicate[] predicates = getPredicates(variantID, developer, builder, join);
@@ -61,10 +61,23 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         return new PageResult<Installation>(result, count);
     }
 
-    private Predicate[] getPredicates(String variantID, String developer, CriteriaBuilder builder, Join join) {
-        return new Predicate[]{builder.equal(join.get("variantID"), variantID),
-                    builder.and(builder.equal(join.get("developer"), developer))};
+    public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
+        return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize);
     }
+
+    private Predicate[] getPredicates(String variantID, String developer, CriteriaBuilder builder, Join join) {
+        Predicate[] predicates;
+        if(developer!=null) {
+            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID),
+                    builder.and(builder.equal(join.get("developer"), developer))};
+        }
+        else {
+            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
+        }
+        return predicates;
+    }
+
+
 
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -25,12 +26,10 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,10 +53,6 @@ public class PushSearchServiceImpl implements PushSearchService {
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
 
-    @Inject
-    @LoggedIn
-    private Instance<String> principalName;
-
     @Override
     public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
         return pushApplicationDao.findAll(page, pageSize);
@@ -71,6 +66,11 @@ public class PushSearchServiceImpl implements PushSearchService {
     @Override
     public boolean existsVariantIDForDeveloper(String variantID) {
         return variantDao.existsVariantIDForAdmin(variantID);
+    }
+
+    @Override
+    public PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
+        return installationDao.findInstallationsByVariant(variantID, page, pageSize);
     }
 
 

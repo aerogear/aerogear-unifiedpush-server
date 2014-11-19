@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -113,6 +114,11 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     @Override
     public List<Application> getTopThreeLastActivity() {
         return wrapApplication(pushMessageInformationDao.findLastThreeActivity(loginName.get()));
+    }
+
+    @Override
+    public PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
+        return installationDao.findInstallationsByVariantForDeveloper(variantID,loginName.get(), page, pageSize);
     }
 
     private long totalMessages() {
