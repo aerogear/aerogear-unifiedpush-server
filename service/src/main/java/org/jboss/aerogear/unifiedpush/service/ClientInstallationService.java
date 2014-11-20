@@ -72,6 +72,11 @@ public interface ClientInstallationService {
     void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
+     * Used to remove single device token from UPS. Used for error handling of specific tokens
+     */
+    void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+
+    /**
      * Used for "Device Registration":
      * 
      * Finder that returns the actual client installation, identified by its device-token, for the given variant.

@@ -21,8 +21,11 @@ import com.notnoop.apns.ApnsDelegateAdapter;
 import com.notnoop.apns.ApnsNotification;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ApnsServiceBuilder;
+import com.notnoop.apns.DeliveryError;
 import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
+import com.notnoop.apns.internal.Utilities;
+import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -147,7 +150,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Returns the ApnsService, based on the required profile (production VS sandbox/test).
      * Null is returned if there is no "configuration" for the request stage
      */
-    private ApnsService buildApnsService(iOSVariant iOSVariant, final NotificationSenderCallback notificationSenderCallback) {
+    private ApnsService buildApnsService(final iOSVariant iOSVariant, final NotificationSenderCallback notificationSenderCallback) {
 
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
@@ -159,12 +162,22 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
                     // Invoked for EVERY devicetoken:
-                    logger.finest("Sending APNs message: " + message.getDeviceToken());
+                    logger.finest("Sending APNs message to: " + message.getDeviceToken());
                 }
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
-                    logger.severe("Error sending payload to APNs server", e);
+                    if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
+                        ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
+                        if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
+                            final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
+                            logger.info("Removing invalid token: " + invalidToken);
+                            clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
+                        } else {
+                            // for now, we just log the other cases
+                            logger.severe("Error sending payload to APNs server", e);
+                        }
+                    }
                 }
             });
 
