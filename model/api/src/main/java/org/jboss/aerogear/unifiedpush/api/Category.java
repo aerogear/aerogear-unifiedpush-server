@@ -33,7 +33,7 @@ public class Category {
         this.name = name;
     }
 
-    @JsonIgnore
+    @JsonIgnore //we don't want the id of the category in the JSON since the import will not work otherwise.
     public Long getId() {
         return id;
     }

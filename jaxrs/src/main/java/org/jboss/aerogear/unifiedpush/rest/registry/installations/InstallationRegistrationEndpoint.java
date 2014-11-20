@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Path("/registry/device")
-public class InstallationRegistrationEndpoint {
+public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
@@ -50,8 +50,7 @@ public class InstallationRegistrationEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-    @Inject
-    private SearchManager searchManager;
+
 
     @OPTIONS
     @Path("{token: .*}")
