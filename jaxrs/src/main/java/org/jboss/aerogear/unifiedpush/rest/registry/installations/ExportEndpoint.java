@@ -32,10 +32,10 @@ public class ExportEndpoint extends AbstractBaseEndpoint {
 
     /**
      * Endpoint for exporting as JSON file device installations for a given variant.
-     * Only Keycloak authneitcated can access it
+     * Only Keycloak authenticated can access it
      */
     @GET
-    @Path("/installation/{variantId}")
+    @Path("/{variantId}/installations/")
     @Produces(MediaType.APPLICATION_JSON)
     @GZIP
     public Response exportInstallations(@PathParam("variantId") String variantId) {

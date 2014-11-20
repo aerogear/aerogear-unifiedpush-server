@@ -121,7 +121,7 @@ backendMod.factory('installations', function ($resource, $q) {
 });
 
 backendMod.factory('exporter', function ($resource ) {
-  return $resource('rest/export/installation/:variantId', {}, {
+  return $resource('rest/export/:variantId/installations', {}, {
     export: {
       method: 'GET',
       isArray: true
