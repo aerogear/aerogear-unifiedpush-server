@@ -120,14 +120,11 @@ backendMod.factory('installations', function ($resource, $q) {
   return installationsService;
 });
 
-backendMod.factory('exportImport', function ($resource ) {
-  return $resource('rest/registry/device/:verb/:variantId', {}, {
+backendMod.factory('exporter', function ($resource ) {
+  return $resource('rest/export/installation/:variantId', {}, {
     export: {
       method: 'GET',
-      isArray: true,
-      params: {
-        verb: 'exporter'
-      }
+      isArray: true
     }
   });
 });

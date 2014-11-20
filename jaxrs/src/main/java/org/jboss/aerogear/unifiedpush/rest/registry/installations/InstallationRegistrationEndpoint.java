@@ -25,7 +25,6 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.inject.Inject;
@@ -248,18 +247,6 @@ public class InstallationRegistrationEndpoint {
         // return directly, the above is async and may take a bit :-)
         return Response.status(Status.OK)
                 .entity("Job submitted for processing").build();
-    }
-
-    /**
-     * Endpoint for exporting as JSON file device installations for a given variant.
-     * Only Keycloak authneitcated can access it
-     */
-    @GET
-    @Path("/exporter/{variantId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GZIP
-    public Response exportInstallations(@PathParam("variantId") String variantId) {
-        return Response.ok(searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE).getResultList()).build();
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {

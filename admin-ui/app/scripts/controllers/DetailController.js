@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, exportImport, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
 
   /*
    * INITIALIZATION
@@ -151,7 +151,7 @@ angular.module('upsConsole').controller('DetailController',
       var params = {
         variantId: variant.variantID
       };
-      exportImport.export(params, function (content) {
+      exporter.export(params, function (content) {
         var hiddenElement = document.createElement('a');
 
         hiddenElement.href = 'data:attachment/json,' + encodeURI(JSON.stringify(content));

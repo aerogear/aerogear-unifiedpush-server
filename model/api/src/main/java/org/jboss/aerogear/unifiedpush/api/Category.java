@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * A category of a specific installation.
  * @see Installation
@@ -31,6 +33,7 @@ public class Category {
         this.name = name;
     }
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }
