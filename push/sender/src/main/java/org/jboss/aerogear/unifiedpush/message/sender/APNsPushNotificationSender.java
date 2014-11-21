@@ -67,13 +67,11 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 .alertBody(message.getAlert()) // alert dialog, in iOS
                 .alertTitle(message.getTitle())
                 .alertAction(message.getAction())
+                .urlArgs(message.getUrlArgs())
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
                 .category(message.getActionCategory()); // iOS8: User Action category
 
-        if (message.getUrlArgs() != null) {
-            builder.urlArgs(message.getUrlArgs());
-        }
                 // apply the 'content-available:1' value:
                 if (message.isContentAvailable()) {
                     // content-available is for 'silent' notifications and Newsstand
