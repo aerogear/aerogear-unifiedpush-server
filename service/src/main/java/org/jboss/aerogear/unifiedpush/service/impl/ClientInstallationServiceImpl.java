@@ -198,6 +198,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
+    @Asynchronous
+    public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+        removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
+    }
+
+    @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
