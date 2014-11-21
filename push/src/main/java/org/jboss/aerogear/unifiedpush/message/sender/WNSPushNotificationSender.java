@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +25,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -33,13 +34,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SenderType(WindowsVariant.class)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
-    private final Logger logger = Logger.getLogger(WNSPushNotificationSender.class.getName());
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -65,10 +64,10 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 }
             }
             if (!expiredClientIdentifiers.isEmpty()) {
-                logger.log(Level.INFO, String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
+                logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
-            logger.log(Level.FINE, "Message to WNS has been submitted");
+            logger.fine("Message to WNS has been submitted");
             senderCallback.onSuccess();
         } catch (WnsException exception) {
             senderCallback.onError(exception.getMessage());
