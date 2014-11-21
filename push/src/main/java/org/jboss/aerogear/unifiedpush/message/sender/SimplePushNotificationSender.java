@@ -64,7 +64,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 logger.finest("Sending out SimplePush payload: " + payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
-                logger.info("SimplePush Status: " + simplePushStatusCode);
+                logger.finest("SimplePush Status: " + simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
                     hasWarning = true;
