@@ -123,7 +123,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
     }
 
+    @Test
+    public void createAndDeleteDeviceByToken() {
 
+        Installation device = new Installation();
+        device.setDeviceToken(generateFakedDeviceTokenString());
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+
+        final String singleToken = device.getDeviceToken();
+        clientInstallationService.removeInstallationForVariantByDeviceToken(androidVariant.getVariantID(), singleToken);
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).isEmpty();
+    }
 
     @Test
     public void importDevicesWithoutDuplicates() {
