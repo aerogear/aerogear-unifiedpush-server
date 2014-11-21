@@ -72,13 +72,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 .sound(message.getSound()) // sound to be played by app
                 .category(message.getActionCategory()); // iOS8: User Action category
 
-                // apply the 'content-available:1' value:
-                if (message.isContentAvailable()) {
-                    // content-available is for 'silent' notifications and Newsstand
-                    builder = builder.instantDeliveryOrSilentNotification();
-                }
+        // apply the 'content-available:1' value:
+        if (message.isContentAvailable()) {
+            // content-available is for 'silent' notifications and Newsstand
+            builder = builder.instantDeliveryOrSilentNotification();
+        }
 
-                builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
+        builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
