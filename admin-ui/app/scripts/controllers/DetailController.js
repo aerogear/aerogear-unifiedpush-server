@@ -110,6 +110,7 @@ angular.module('upsConsole').controller('DetailController',
       variants.remove(params, function () {
         var osVariants = $scope.application.variants;
         osVariants.splice(osVariants.indexOf(variant), 1);
+        updateCounts();
         Notifications.success('Successfully removed variant');
       }, function () {
         Notifications.error('Something went wrong...');
@@ -175,14 +176,18 @@ angular.module('upsConsole').controller('DetailController',
       ':' + variant.secret);
       importer.import(null,fd,function(){
         $rootScope.isViewLoading = false;
-        $scope.counts = pushApplication.count({appId: $scope.application.pushApplicationID}).$promise;
         Notifications.success('Successfully imported installations "');
+        updateCounts();
       });
     });
   };
   /*
    * PRIVATE FUNCTIONS
    */
+
+  function updateCounts() {
+    $scope.counts = pushApplication.count({appId: $scope.application.pushApplicationID});
+  }
 
   function modalController($scope, $modalInstance, variant) {
     $scope.variant = variant;
@@ -200,6 +205,18 @@ angular.module('upsConsole').controller('DetailController',
 
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
+    };
+
+    //preview function for the import
+    $scope.previewImport = function() {
+      if (window.File && window.FileList && window.FileReader) {
+        var importFiles = variant.installations[0];
+        var fileReader = new FileReader();
+        fileReader.readAsText(importFiles);
+        fileReader.onload = function(e) {
+          $scope.importPreview = JSON.parse(e).length;
+        };
+      }
     };
   }
 
