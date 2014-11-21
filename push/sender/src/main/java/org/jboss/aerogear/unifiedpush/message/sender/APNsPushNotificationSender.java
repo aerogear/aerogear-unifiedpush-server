@@ -109,7 +109,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 // trigger asynchronous deletion:
                 if (! transformedTokens.isEmpty()) {
-                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
+                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid APNs installations");
                     clientInstallationService.removeInstallationsForVariantByDeviceTokens(APNsVariant.getVariantID(), transformedTokens);
                 }
                 callback.onSuccess();
