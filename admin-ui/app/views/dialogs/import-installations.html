@@ -15,9 +15,15 @@
         <ups-pluralize noun="installation" count="importPreview" zero="No"></ups-pluralize>
         <span>will be imported</span>
       </p>
+      <p ng-show="incorrectFornmat">
+        <strong>
+          <i class="fa fa-warning"></i>
+          This file can not be parsed !
+        </strong>
+      </p>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary text-left" ng-click="ok(variant)">Import</button>
+      <button ng-disabled="!importPreview" type="submit" class="btn btn-primary text-left" ng-click="ok(variant)">Import</button>
       <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
     </div>
   </div>
