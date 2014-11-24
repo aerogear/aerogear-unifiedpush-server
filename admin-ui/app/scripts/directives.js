@@ -84,7 +84,7 @@ angular.module('ups.directives', ['upsConsole.services'])
               $scope.files.push(e.target.files[i]);
             }
           }
-          scope.previewImport();
+          $scope.previewImport();
         });
       }
     };

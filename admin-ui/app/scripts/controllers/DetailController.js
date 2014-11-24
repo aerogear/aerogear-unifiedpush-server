@@ -214,7 +214,7 @@ angular.module('upsConsole').controller('DetailController',
         var fileReader = new FileReader();
         fileReader.readAsText(importFiles);
         fileReader.onload = function(e) {
-          $scope.importPreview = JSON.parse(e).length;
+          $scope.importPreview = JSON.parse(e.target.result).length;
         };
       }
     };

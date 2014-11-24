@@ -7,7 +7,14 @@
       <h4 class="modal-title">Import Installations </h4>
     </div>
     <div class="modal-body">
-      <strong><input type="file" ups-files="variant.installations" previewImport="previewImport()"/></strong>
+      <p>
+        <strong><input type="file" ups-files="variant.installations" preview-import="previewImport()"/></strong>
+      </p>
+
+      <p ng-show="importPreview">
+        <ups-pluralize noun="installation" count="importPreview" zero="No"></ups-pluralize>
+        <span>will be imported</span>
+      </p>
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary text-left" ng-click="ok(variant)">Import</button>
