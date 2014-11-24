@@ -159,7 +159,7 @@ angular.module('upsConsole').controller('DetailController',
         hiddenElement.download = variant.variantID + '.json';
         hiddenElement.click();
 
-        Notifications.success('Successfully exported installations "');
+        Notifications.success('Successfully exported installations');
       });
     });
   };
