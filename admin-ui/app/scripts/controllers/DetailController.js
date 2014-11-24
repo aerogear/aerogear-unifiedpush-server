@@ -176,7 +176,7 @@ angular.module('upsConsole').controller('DetailController',
       ':' + variant.secret);
       importer.import(null,fd,function(){
         $rootScope.isViewLoading = false;
-        Notifications.success('Successfully imported installations "');
+        Notifications.success('Import process has started"');
         updateCounts();
       });
     });
@@ -214,7 +214,15 @@ angular.module('upsConsole').controller('DetailController',
         var fileReader = new FileReader();
         fileReader.readAsText(importFiles);
         fileReader.onload = function(e) {
-          $scope.importPreview = JSON.parse(e.target.result).length;
+          try {
+            $scope.importPreview = JSON.parse(e.target.result).length;
+            $scope.incorrectFornmat = false;
+          }
+          catch(e) {
+            $scope.importPreview = null;
+            $scope.incorrectFornmat = true;
+          }
+
         };
       }
     };
