@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, pushApplication, variants, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $scope, $routeParams, $location, $modal, $http,  pushApplication, variants, importer, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
 
   /*
    * INITIALIZATION
@@ -110,6 +110,7 @@ angular.module('upsConsole').controller('DetailController',
       variants.remove(params, function () {
         var osVariants = $scope.application.variants;
         osVariants.splice(osVariants.indexOf(variant), 1);
+        updateCounts();
         Notifications.success('Successfully removed variant');
       }, function () {
         Notifications.error('Something went wrong...');
@@ -164,10 +165,29 @@ angular.module('upsConsole').controller('DetailController',
     });
   };
 
-
+  $scope.importInstallations = function (variant) {
+    variant.installations = [];
+    var modalInstance = show(variant, 'import-installations.html');
+    modalInstance.result.then(function (result) {
+      $rootScope.isViewLoading = true;
+      var fd = new FormData();
+      fd.append('file', result.variant.installations[0]);
+      $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
+      ':' + variant.secret);
+      importer.import(null,fd,function(){
+        $rootScope.isViewLoading = false;
+        Notifications.success('Import process has started"');
+        updateCounts();
+      });
+    });
+  };
   /*
    * PRIVATE FUNCTIONS
    */
+
+  function updateCounts() {
+    $scope.counts = pushApplication.count({appId: $scope.application.pushApplicationID});
+  }
 
   function modalController($scope, $modalInstance, variant) {
     $scope.variant = variant;
@@ -185,6 +205,26 @@ angular.module('upsConsole').controller('DetailController',
 
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
+    };
+
+    //preview function for the import
+    $scope.previewImport = function() {
+      if (window.File && window.FileList && window.FileReader) {
+        var importFiles = variant.installations[0];
+        var fileReader = new FileReader();
+        fileReader.readAsText(importFiles);
+        fileReader.onload = function(e) {
+          try {
+            $scope.importPreview = JSON.parse(e.target.result).length;
+            $scope.incorrectFornmat = false;
+          }
+          catch(e) {
+            $scope.importPreview = null;
+            $scope.incorrectFornmat = true;
+          }
+
+        };
+      }
     };
   }
 

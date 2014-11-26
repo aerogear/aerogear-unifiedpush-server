@@ -51,6 +51,10 @@ angular.module('ups.directives', ['upsConsole.services'])
           $scope.$parent.exportInstallations(variant);
         };
 
+        $scope.importInstallations = function (variant ) {
+          $scope.$parent.importInstallations(variant);
+        };
+
         $scope.applicationId = $routeParams.applicationId;
         $scope.currentLocation = ContextProvider.contextPath();
 
@@ -65,7 +69,8 @@ angular.module('ups.directives', ['upsConsole.services'])
   .directive('upsFiles', function () {
     return {
       scope: {
-        'files': '=upsFiles'
+        'files': '=upsFiles',
+        previewImport: '&'
       },
       restrict: 'A',
       replace: false,
@@ -79,6 +84,7 @@ angular.module('ups.directives', ['upsConsole.services'])
               $scope.files.push(e.target.files[i]);
             }
           }
+          $scope.previewImport();
         });
       }
     };

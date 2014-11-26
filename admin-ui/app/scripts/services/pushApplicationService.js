@@ -129,6 +129,17 @@ backendMod.factory('exporter', function ($resource ) {
   });
 });
 
+backendMod.factory('importer', function ($resource ) {
+  return $resource('rest/registry/device/importer', {}, {
+    import: {
+      method: 'POST',
+      headers: {'Content-Type': undefined},
+      withCredentials: true,
+      transformRequest: angular.identity
+    }
+  });
+});
+
 backendMod.factory('dashboard', function ($resource) {
   return $resource('rest/metrics/dashboard/:verb', {}, {
     totals: {
