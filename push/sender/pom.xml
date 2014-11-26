@@ -29,11 +29,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-push-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
@@ -77,6 +72,12 @@
             <artifactId>unifiedpush-service</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-push-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
