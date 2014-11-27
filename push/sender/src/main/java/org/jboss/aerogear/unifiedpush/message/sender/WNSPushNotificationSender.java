@@ -80,8 +80,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     }
 
     WnsToast createToastMessage(UnifiedPushMessage pushMessage) {
-        final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getAlert());
-        final Map<String, Object> data = pushMessage.getData();
+        final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getMessage().getAlert());
+        final Map<String, Object> data = pushMessage.getMessage().getUserData();
         builder.launch(createLaunchParam(data));
         return builder.build();
     }
