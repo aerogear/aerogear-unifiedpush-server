@@ -20,8 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 
-import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -35,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Stateless
 @Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
