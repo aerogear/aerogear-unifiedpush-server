@@ -187,7 +187,7 @@ public class PushApplication extends Application {
         [NSURL URLWithString:@"{{ currentLocation }}"]];
 
    [registration registerWithClientInfo:^(id clientInfo) {
-     
+
      // apply the token, to identify this device
      [clientInfo setDeviceToken:deviceToken];
 
@@ -220,7 +220,7 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
     let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ currentLocation }}"))
 
     registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!)  in
-        
+
         // apply the token, to identify this device
         clientInfo.deviceToken = deviceToken
 
@@ -229,7 +229,7 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
 
         // --optional config--
         // set some 'useful' hardware information params
-        let currentDevice = UIDevice()        
+        let currentDevice = UIDevice()
         clientInfo.operatingSystem = currentDevice.systemName
         clientInfo.osVersion = currentDevice.systemVersion
         clientInfo.deviceType = currentDevice.model
@@ -267,7 +267,7 @@ var app = {
         app.receivedEvent('deviceready');
         var pushConfig = {
            pushServerURL: "{{ currentLocation }}",
-           {{variant.type}}: {
+           {{ cordovaVariantType(variant) }}: {
               {{ projectNumber(variant) }}
               variantID: "{{ variant.variantID }}",
               variantSecret: "{{ variant.secret }}"
@@ -310,7 +310,7 @@ app.initialize();
 // ../www/push-config.json
 {
   "pushServerURL": "{{ currentLocation }}",
-  "{{variant.type}}" : {
+  {{ cordovaVariantType(variant) }} : {
     {{ projectNumberJson(variant) }}
     "variantID": "{{ variant.variantID }}",
     "variantSecret": "{{ variant.secret }}"
@@ -395,16 +395,37 @@ defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
                     </div>
                 </tab>
 
-                <tab heading="C#" ng-hide="variantType != 'windows'" active="tab('windows').active" ng-click="tab('windows').active = true">
+                <tab heading="C#" ng-hide="variantType != 'windows_wns'" active="tab('windows_wns').active" ng-click="tab('windows_wns').active = true">
                     <div class="ups-code-block csharp" hljs compile="true">
 using AeroGear.Push;
 
-protected override void OnLaunched(LaunchActivatedEventArgs e)
+protected async override void OnLaunched(LaunchActivatedEventArgs e)
 {
   PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
   Registration registration = new WnsRegistration();
   registration.PushReceivedEvent += HandleNotification;
-  registration.Register(pushConfig);
+  await registration.Register(pushConfig);
+
+  ...
+}
+
+void HandleNotification(object sender, PushReceivedEvent e)
+{
+  Debug.WriteLine("notification received {0}", e.Args.message);
+}
+
+                    </div>
+                </tab>
+                <tab heading="C#" ng-hide="variantType != 'windows_mpns'" active="tab('windows_mpns').active" ng-click="tab('windows_mpns').active = true">
+                    <div class="ups-code-block csharp" hljs compile="true">
+using AeroGear.Push;
+
+protected async override void OnLaunched(LaunchActivatedEventArgs e)
+{
+  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
+  Registration registration = new MpnsRegistration();
+  registration.PushReceivedEvent += HandleNotification;
+  await registration.Register(pushConfig);
 
   ...
 }
@@ -418,6 +439,7 @@ void HandleNotification(object sender, PushReceivedEvent e)
                 </tab>
 
             </tabset>
+
         </div>
     </div>
 </div>

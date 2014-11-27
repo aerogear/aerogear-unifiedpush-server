@@ -85,8 +85,11 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="ChromePackagedAppVariant" access="FIELD">
         <discriminator-value>chromePackagedApp</discriminator-value>
     </entity>
-    <entity class="WindowsVariant" access="FIELD">
-        <discriminator-value>windows</discriminator-value>
+    <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
+        <discriminator-value>windows_wns</discriminator-value>
+    </entity>
+    <entity class="org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant" access="FIELD">
+        <discriminator-value>windows_mpns</discriminator-value>
     </entity>
 
 

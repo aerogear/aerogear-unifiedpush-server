@@ -23,7 +23,8 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
@@ -452,7 +453,7 @@ public class InstallationDaoTest {
                 + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
                 + "615fPox8bwoxrTU%3d");
         
-        final WindowsVariant variant = new WindowsVariant();
+        final WindowsWNSVariant variant = new WindowsWNSVariant();
         variant.setClientSecret("12");
         variant.setSid("12");
 
@@ -471,6 +472,21 @@ public class InstallationDaoTest {
         // when
         deviceTokenTest(installation, variant);
     }
+
+    @Test
+    public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("http://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
+                + "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
+                + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
+
+        WindowsMPNSVariant variant = new WindowsMPNSVariant();
+        
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
 
     @Test
     public void shouldSaveWhenValidChromeApp() {

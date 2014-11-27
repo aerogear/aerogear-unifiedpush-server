@@ -42,7 +42,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      * Pattern for windows is a uri that can be 1024 characters long
      * @see <a href="http://blogs.windows.com/windows_phone/b/wpdev/archive/2013/10/22/recommended-practices-for-using-microsoft-push-notification-service-mpns.aspx?Redirected=true">Windows developer blog</a>
      */
-    private static final Pattern WINDOWS_DEVICE_TOKEN = Pattern.compile("https://.{0,1024}");
+    private static final Pattern WINDOWS_DEVICE_TOKEN = Pattern.compile("https?://.{0,1024}");
 
     /**
      * The SimplePush token is an URI. While we strongly recommend https, it is in theory possible that users of the
@@ -68,7 +68,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
             case CHROME_PACKAGED_APP:
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
-            case WINDOWS:
+            case WINDOWS_WNS:
+            case WINDOWS_MPNS:
                 return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case SIMPLE_PUSH:
                 return SIMPLE_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
