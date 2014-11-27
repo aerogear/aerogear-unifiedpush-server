@@ -17,12 +17,17 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -178,6 +183,57 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
     }
+
+    @Test @Ignore
+    public void findSingleDeviceTokenWithMultipleCategories() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);
+    }
+
+    @Test @Ignore
+    public void findSingleDeviceTokenWithMultipleCategoriesAndByAlias() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        device.setAlias("root");
+
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
+    }
+
+    @Test
+    public void findDeviceTokensByAlias() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        device.setAlias("root");
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        // apply some update:
+        Installation otherDevice = new Installation();
+        otherDevice.setDeviceToken(generateFakedDeviceTokenString());
+        otherDevice.setAlias("root");
+        clientInstallationService.addInstallation(androidVariant, otherDevice);
+
+        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
+    }
+
+
 
     private String generateFakedDeviceTokenString() {
         final StringBuilder sb = new StringBuilder();
