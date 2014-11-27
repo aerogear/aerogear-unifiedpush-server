@@ -184,7 +184,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
     }
 
-    @Test @Ignore
+    @Test
     public void findSingleDeviceTokenWithMultipleCategories() {
 
         Installation device = new Installation();
@@ -199,7 +199,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);
     }
 
-    @Test @Ignore
+    @Test
     public void findSingleDeviceTokenWithMultipleCategoriesAndByAlias() {
 
         Installation device = new Installation();
