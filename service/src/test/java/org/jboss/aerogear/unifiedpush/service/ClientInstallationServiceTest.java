@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.inject.Inject;
