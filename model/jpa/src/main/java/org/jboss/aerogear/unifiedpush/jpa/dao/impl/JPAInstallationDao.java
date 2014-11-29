@@ -111,7 +111,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = new StringBuilder("select installation.deviceToken from Installation installation")
+        final StringBuilder jpqlString = new StringBuilder("select distinct installation.deviceToken from Installation installation")
                 .append( " left join installation.categories c ")
                 .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
