@@ -16,12 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import javax.validation.constraints.AssertTrue;
-import javax.ws.rs.FormParam;
-
 import org.jboss.aerogear.crypto.util.PKCS12;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
+
+import javax.validation.constraints.AssertTrue;
+import javax.ws.rs.FormParam;
 
 /**
  * Helper class to read values from the multipart request
@@ -46,7 +46,7 @@ public class iOSApplicationUploadForm {
      * Reads the boolean flag from the multipart request,
      * which indicates if the iOS variant is a 'production' variant or not.
      *
-     * The {@link iOSVariant} model differenciates between production and test
+     * The {@link iOSVariant} model differentiates between production and test
      * in order to establish connections to different APNs Servers.
      */
     @FormParam("production")
