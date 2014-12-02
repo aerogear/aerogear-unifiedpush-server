@@ -43,7 +43,7 @@ angular.module('upsConsole').controller('ApplicationController',
         $scope.totalItems = $scope.totalItems + 1;
         Notifications.success('Successfully created application "' + newApp.name + '".');
       }, function () {
-        Notifications.error('Something went wrong...', 'danger');
+        Notifications.error('Unable to create application', 'danger');
       });
     });
   };
