@@ -65,7 +65,7 @@ angular.module('upsConsole').controller('DetailController',
         $scope.application.variants.splice(i, 0, newVariant);
         Notifications.success('Successfully created variant');
       }, function () {
-        Notifications.error('Something went wrong...');
+        Notifications.error('Unable to add the variant...');
       });
     });
   };
@@ -84,7 +84,7 @@ angular.module('upsConsole').controller('DetailController',
         Notifications.success('Successfully modified variant');
       };
       var failureCallback = function () {
-        Notifications.error('Something went wrong...');
+        Notifications.error('Unable to save the variant...');
       };
 
       if (variant.type !== 'ios') {
@@ -112,7 +112,7 @@ angular.module('upsConsole').controller('DetailController',
         osVariants.splice(osVariants.indexOf(variant), 1);
         Notifications.success('Successfully removed variant');
       }, function () {
-        Notifications.error('Something went wrong...');
+        Notifications.error('Unable to remove the variant...');
       });
     });
   };
