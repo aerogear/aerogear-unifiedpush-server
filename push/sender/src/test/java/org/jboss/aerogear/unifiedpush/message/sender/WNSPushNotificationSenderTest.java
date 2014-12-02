@@ -34,7 +34,7 @@ public class WNSPushNotificationSenderTest {
     public void shouldEncodeUserDataInCordovaPage() {
         //given
         UnifiedPushMessage pushMessage = getUnifiedPushMessage();
-        pushMessage.getData().put("page", "cordova");
+        pushMessage.getMessage().getUserData().put("page", "cordova");
 
         //when
         final WnsToast toast = sender.createToastMessage(pushMessage);
@@ -47,7 +47,7 @@ public class WNSPushNotificationSenderTest {
     public void shouldNoPage() {
         //given
         UnifiedPushMessage pushMessage = getUnifiedPushMessage();
-        pushMessage.getData().remove("page");
+        pushMessage.getMessage().getUserData().remove("page");
 
         //when
         final WnsToast toast = sender.createToastMessage(pushMessage);
@@ -57,12 +57,12 @@ public class WNSPushNotificationSenderTest {
     }
 
     private UnifiedPushMessage getUnifiedPushMessage() {
-        Map<String, Object> message = new HashMap<String, Object>();
-        Map<String, String> data = new HashMap<String, String>();
+        UnifiedPushMessage message = new UnifiedPushMessage();
+        Map<String, Object> data = new HashMap<String, Object>();
         data.put("key", "value");
         data.put("ke2", "value2");
         data.put("page", "/Root.xaml");
-        message.put("message", data);
-        return new UnifiedPushMessage(message);
+        message.getMessage().setUserData(data);
+        return message;
     }
 }
