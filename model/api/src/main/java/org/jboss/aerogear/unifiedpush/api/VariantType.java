@@ -29,9 +29,9 @@ public enum VariantType {
     ANDROID("android"),
 
     /**
-     * The type identifier for our iOS variants. 
+     * The type identifier for our APNs variants (Safari and iOS).
      */
-    IOS("ios"),
+    APNS("apns"),
 
     /**
      * The type identifier for our SimplePush variants. 

@@ -191,6 +191,22 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testTitle() throws IOException {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("title", "I'm a Title");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("I'm a Title", unifiedPushMessage.getMessage().getTitle());
+
+    }
+
+    @Test
     public void contentAvailable() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
@@ -262,6 +278,41 @@ public class UnifiedPushMessageTest {
         assertNotNull(unifiedPushMessage.getCriteria().getAliases());
         assertEquals(1, unifiedPushMessage.getCriteria().getAliases().size());
         assertEquals("foo@bar.org", unifiedPushMessage.getCriteria().getAliases().get(0));
+    }
+
+    @Test
+    public void testAction() throws IOException{
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("action", "View");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("View", unifiedPushMessage.getMessage().getAction());
+
+    }
+
+    @Test
+    public void testUrlArgs() throws IOException {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final String[] urlArgs = { "Arg1", "Arg2" };
+
+
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("title", "I'm a Title");
+        messageObject.put("url-args", urlArgs);
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("[Arg1, Arg2]", Arrays.toString(unifiedPushMessage.getMessage().getUrlArgs()));
     }
 
     @Test
@@ -532,9 +583,12 @@ public class UnifiedPushMessageTest {
                 "\"clientIdentifier\":null," +
                 "\"message\":{" +
                     "\"alert\":\"Howdy\"," +
+                    "\"title\":null," +
+                    "\"action\":null," +
                     "\"sound\":\"default\"," +
                     "\"badge\":2," +
                     "\"action-category\":null," +
+                    "\"url-args\":null," +
                     "\"content-available\":false," +
                     "\"user-data\":{" +
                     "\"someKey\":\"someValue\"" +

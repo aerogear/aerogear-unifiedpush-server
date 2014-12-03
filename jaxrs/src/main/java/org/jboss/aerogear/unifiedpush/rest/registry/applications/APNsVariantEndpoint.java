@@ -17,10 +17,10 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.crypto.util.PKCS12;
+import org.jboss.aerogear.unifiedpush.api.APNsVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.aerogear.unifiedpush.rest.util.APNsApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.validation.ConstraintViolationException;
@@ -38,15 +38,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/applications/{pushAppID}/ios")
-public class iOSVariantEndpoint extends AbstractVariantEndpoint {
+@Path("/applications/{pushAppID}/apns")
+public class APNsVariantEndpoint extends AbstractVariantEndpoint {
 
-    // new iOS
+    // new APNs
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registeriOSVariant(
-            @MultipartForm iOSApplicationUploadForm form,
+    public Response registerAPNsVariant(
+            @MultipartForm APNsApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
@@ -63,16 +63,16 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // extract form values:
-        iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setName(form.getName());
-        iOSVariant.setDescription(form.getDescription());
-        iOSVariant.setPassphrase(form.getPassphrase());
-        iOSVariant.setCertificate(form.getCertificate());
-        iOSVariant.setProduction(form.getProduction());
+        APNsVariant apnsVariant = new APNsVariant();
+        apnsVariant.setName(form.getName());
+        apnsVariant.setDescription(form.getDescription());
+        apnsVariant.setPassphrase(form.getPassphrase());
+        apnsVariant.setCertificate(form.getCertificate());
+        apnsVariant.setProduction(form.getProduction());
 
         // some model validation on the entity:
         try {
-            validateModelClass(iOSVariant);
+            validateModelClass(apnsVariant);
         } catch (ConstraintViolationException cve) {
 
             // Build and return the 400 (Bad Request) response
@@ -81,41 +81,41 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
-        // store the iOS variant:
-        variantService.addVariant(iOSVariant);
+        // store the APNs variant:
+        variantService.addVariant(apnsVariant);
 
-        // add iOS variant, and merge:
-        pushAppService.addVariant(pushApp, iOSVariant);
+        // add APNs variant, and merge:
+        pushAppService.addVariant(pushApp, apnsVariant);
 
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariant.getVariantID())).build()).entity(iOSVariant).build();
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(apnsVariant.getVariantID())).build()).entity(apnsVariant).build();
     }
 
     // READ
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+    public Response listAllAPNsVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
+        return Response.ok(getVariantsByType(application, APNsVariant.class)).build();
     }
 
     @PATCH
-    @Path("/{iOSID}")
+    @Path("/{APNsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateiOSVariant(
+    public Response updateAPNsVariant(
             @PathParam("pushAppID") String pushApplicationId,
-            @PathParam("iOSID") String iOSID,
-            iOSVariant updatediOSVariant) {
+            @PathParam("APNsID") String APNsID,
+            APNsVariant updatedAPNsVariant) {
 
-        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
+        APNsVariant apnsVariant = (APNsVariant)variantService.findByVariantID(APNsID);
 
-        if (iOSVariant != null) {
+        if (apnsVariant != null) {
 
             // apply update:
-            iOSVariant.setName(updatediOSVariant.getName());
-            iOSVariant.setDescription(updatediOSVariant.getDescription());
+            apnsVariant.setName(updatedAPNsVariant.getName());
+            apnsVariant.setDescription(updatedAPNsVariant.getDescription());
 
-            variantService.updateVariant(iOSVariant);
+            variantService.updateVariant(apnsVariant);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
@@ -123,16 +123,16 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     // UPDATE
     @PUT
-    @Path("/{iOSID}")
+    @Path("/{APNsID}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateiOSVariant(
-            @MultipartForm iOSApplicationUploadForm updatedForm,
+    public Response updateAPNsVariant(
+            @MultipartForm APNsApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
-            @PathParam("iOSID") String iOSID) {
+            @PathParam("APNsID") String APNsID) {
 
-        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
-        if (iOSVariant != null) {
+        APNsVariant apnsVariant = (APNsVariant)variantService.findByVariantID(APNsID);
+        if (apnsVariant != null) {
 
             // uploaded certificate/passphrase pair OK (do they match)?
             if (!validateCertificateAndPassphrase(updatedForm)) {
@@ -141,15 +141,15 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             }
 
             // apply update:
-            iOSVariant.setName(updatedForm.getName());
-            iOSVariant.setDescription(updatedForm.getDescription());
-            iOSVariant.setPassphrase(updatedForm.getPassphrase());
-            iOSVariant.setCertificate(updatedForm.getCertificate());
-            iOSVariant.setProduction(updatedForm.getProduction());
+            apnsVariant.setName(updatedForm.getName());
+            apnsVariant.setDescription(updatedForm.getDescription());
+            apnsVariant.setPassphrase(updatedForm.getPassphrase());
+            apnsVariant.setCertificate(updatedForm.getCertificate());
+            apnsVariant.setProduction(updatedForm.getProduction());
 
             // some model validation on the entity:
             try {
-                validateModelClass(iOSVariant);
+                validateModelClass(apnsVariant);
             } catch (ConstraintViolationException cve) {
 
                 // Build and return the 400 (Bad Request) response
@@ -158,7 +158,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
                 return builder.build();
             }
 
-            variantService.updateVariant(iOSVariant);
+            variantService.updateVariant(apnsVariant);
             return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
@@ -170,7 +170,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @return true if valid, otherwise false
      */
-    private boolean validateCertificateAndPassphrase(iOSApplicationUploadForm form) {
+    private boolean validateCertificateAndPassphrase(APNsApplicationUploadForm form) {
 
         // got certificate/passphrase, with content that makes sense ?
         try {

@@ -26,8 +26,8 @@ import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
 import com.notnoop.apns.internal.Utilities;
 import com.notnoop.exceptions.ApnsDeliveryErrorException;
+import org.jboss.aerogear.unifiedpush.api.APNsVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@SenderType(iOSVariant.class)
+@SenderType(APNsVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
@@ -50,7 +50,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
-     * the {@link Collection} of tokens for the given {@link iOSVariant}.
+     * the {@link Collection} of tokens for the given {@link org.jboss.aerogear.unifiedpush.api.APNsVariant}.
      */
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final NotificationSenderCallback callback) {
         // no need to send empty list
@@ -58,23 +58,27 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final iOSVariant iOSVariant = (iOSVariant) variant;
-
         Message message = pushMessage.getMessage();
+
+        final APNsVariant APNsVariant = (APNsVariant) variant;
+
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
-                .alertBody(message.getAlert()) // alert dialog, in iOS
+                .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
+                .alertTitle(message.getTitle()) // The title of the notification in Safari
+                .alertAction(message.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
+                .urlArgs(message.getUrlArgs())
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
                 .category(message.getActionCategory()); // iOS8: User Action category
 
-                // apply the 'content-available:1' value:
-                if (message.isContentAvailable()) {
-                    // content-available is for 'silent' notifications and Newsstand
-                    builder = builder.instantDeliveryOrSilentNotification();
-                }
+        // apply the 'content-available:1' value:
+        if (message.isContentAvailable()) {
+            // content-available is for 'silent' notifications and Newsstand
+            builder = builder.instantDeliveryOrSilentNotification();
+        }
 
-                builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
+        builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
@@ -86,7 +90,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        ApnsService service = buildApnsService(iOSVariant, callback);
+        ApnsService service = buildApnsService(APNsVariant, callback);
 
         if (service != null) {
             try {
@@ -105,8 +109,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 // trigger asynchronous deletion:
                 if (! transformedTokens.isEmpty()) {
-                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
-                    clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid APNs installations");
+                    clientInstallationService.removeInstallationsForVariantByDeviceTokens(APNsVariant.getVariantID(), transformedTokens);
                 }
                 callback.onSuccess();
             } catch (Exception e) {
@@ -151,10 +155,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Returns the ApnsService, based on the required profile (production VS sandbox/test).
      * Null is returned if there is no "configuration" for the request stage
      */
-    private ApnsService buildApnsService(final iOSVariant iOSVariant, final NotificationSenderCallback notificationSenderCallback) {
+    private ApnsService buildApnsService(final APNsVariant APNsVariant, final NotificationSenderCallback notificationSenderCallback) {
 
         // this check should not be needed, but you never know:
-        if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
+        if (APNsVariant.getCertificate() != null && APNsVariant.getPassphrase() != null) {
 
             final ApnsServiceBuilder builder = APNS.newService();
 
@@ -173,7 +177,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                         if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
                             logger.info("Removing invalid token: " + invalidToken);
-                            clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
+                            clientInstallationService.removeInstallationForVariantByDeviceToken(APNsVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases
                             logger.severe("Error sending payload to APNs server", e);
@@ -184,8 +188,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             // add the certificate:
             try {
-                ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
-                builder.withCert(stream, iOSVariant.getPassphrase());
+                ByteArrayInputStream stream = new ByteArrayInputStream(APNsVariant.getCertificate());
+                builder.withCert(stream, APNsVariant.getPassphrase());
 
                 // release the stream
                 stream.close();
@@ -197,7 +201,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             }
 
             // pick the destination:
-            if (iOSVariant.isProduction()) {
+            if (APNsVariant.isProduction()) {
                 builder.withProductionDestination();
             } else {
                 builder.withSandboxDestination();

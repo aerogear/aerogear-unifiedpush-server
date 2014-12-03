@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.APNsVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
@@ -410,7 +410,7 @@ public class InstallationDaoTest {
         final Installation installation = new Installation();
         installation.setDeviceToken("invalid");
 
-        final iOSVariant variant = new iOSVariant();
+        final APNsVariant variant = new APNsVariant();
         variant.setPassphrase("12");
         variant.setCertificate("12".getBytes());
         entityManager.persist(variant);
@@ -433,11 +433,11 @@ public class InstallationDaoTest {
     }
 
     @Test
-    public void shouldSaveWhenValidateDeviceIdIOS() {
+    public void shouldSaveWhenValidateDeviceIdAPNs() {
         // given
         final Installation installation = new Installation();
         installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");
-        final iOSVariant variant = new iOSVariant();
+        final APNsVariant variant = new APNsVariant();
         variant.setPassphrase("12");
         variant.setCertificate("12".getBytes());
 

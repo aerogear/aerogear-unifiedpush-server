@@ -60,8 +60,8 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </id>
         </attributes>
     </entity>
-    <entity class="iOSVariant" access="FIELD">
-        <discriminator-value>ios</discriminator-value>
+    <entity class="APNsVariant" access="FIELD">
+        <discriminator-value>apns</discriminator-value>
         <attributes>
             <basic name="certificate">
                 <lob/>

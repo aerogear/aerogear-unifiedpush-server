@@ -3,6 +3,9 @@
   "clientIdentifier":null,
   "message":{
     "alert":"HELLO!",
+    "title": null,
+    "action": null,
+    "url-args": null,
     "sound":"default",
     "badge":2,
     "user-data":{

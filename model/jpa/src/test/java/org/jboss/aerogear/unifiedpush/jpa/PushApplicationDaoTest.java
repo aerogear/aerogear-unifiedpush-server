@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import org.jboss.aerogear.unifiedpush.api.APNsVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
@@ -316,7 +316,7 @@ public class PushApplicationDaoTest {
         av.setGoogleKey("KEY...");
         variantDao.create(av);
 
-        iOSVariant ios = new iOSVariant();
+        APNsVariant ios = new APNsVariant();
         ios.setName("spelling is hard");
         ios.setPassphrase("123");
         ios.setCertificate("12".getBytes());
@@ -378,15 +378,15 @@ public class PushApplicationDaoTest {
         ignored.setGoogleKey("123");
         variantDao.create(ignored);
 
-        iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setName("ignored");
-        iOSVariant.setCertificate(new byte[1]);
-        iOSVariant.setPassphrase("123");
-        variantDao.create(iOSVariant);
+        APNsVariant APNsVariant = new APNsVariant();
+        APNsVariant.setName("ignored");
+        APNsVariant.setCertificate(new byte[1]);
+        APNsVariant.setPassphrase("123");
+        variantDao.create(APNsVariant);
 
         pa.getVariants().add(av);
         pa.getVariants().add(ignored);
-        pa.getVariants().add(iOSVariant);
+        pa.getVariants().add(APNsVariant);
         pushApplicationDao.update(pa);
 
         entityManager.flush();

@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import org.jboss.aerogear.unifiedpush.api.APNsVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.junit.After;
@@ -299,7 +299,7 @@ public class VariantDaoTest {
         entityManager.clear();
 
 
-        iOSVariant iOS = new iOSVariant();
+        APNsVariant iOS = new APNsVariant();
         iOS.setCertificate("test".getBytes());
         iOS.setPassphrase("secret");
         final String iOSid = iOS.getVariantID();

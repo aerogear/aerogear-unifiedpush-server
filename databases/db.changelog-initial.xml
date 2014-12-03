@@ -147,7 +147,7 @@
         </createTable>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-42">
-        <createTable tableName="iOSVariant">
+        <createTable tableName="APNsVariant">
             <column name="certificate" type="LONGBLOB">
                 <constraints nullable="false"/>
             </column>
@@ -190,13 +190,13 @@
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="WindowsVariant"/>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-73">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="iOSVariant"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="APNsVariant"/>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-79">
         <addUniqueConstraint columnNames="variantID" constraintName="variantID" deferrable="false" disabled="false" initiallyDeferred="false" tableName="Variant"/>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-81">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="iOSVariant" constraintName="FK1294DBB8353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="APNsVariant" constraintName="FK1294DBB8353CFF6D" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
     </changeSet>
     <changeSet author="edewit (generated)" id="1412851688198-85">
         <addForeignKeyConstraint baseColumnNames="variantInformations_id" baseTableName="VariantMetricInformation" constraintName="FK41428777E758D260" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="PushMessageInformation"/>
