@@ -18,14 +18,14 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersistentObjectTest {
 
@@ -45,18 +45,6 @@ public class PersistentObjectTest {
         variantDao.setEntityManager(entityManager);
     }
 
-    @After
-    public void tearDown() {
-        EntityTransaction transaction = entityManager.getTransaction();
-
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
-    }
-
     @Test
     public void saveObject() {
         final AndroidVariant av = new AndroidVariant();
@@ -64,8 +52,10 @@ public class PersistentObjectTest {
         av.setDeveloper("admin");
 
         variantDao.create(av);
+        entityManager.flush();
     }
 
+    @Test(expected = PersistenceException.class)
     public void updateIdToNull() {
 
         final AndroidVariant av = new AndroidVariant();
@@ -74,12 +64,10 @@ public class PersistentObjectTest {
 
         variantDao.create(av);
 
-        String id = av.getId();
         av.setId(null);
         variantDao.update(av);
 
-        assertThat(id).isEqualTo(av.getId());
-
+        entityManager.flush();
     }
 
     @Test(expected = PersistenceException.class)
@@ -93,5 +81,7 @@ public class PersistentObjectTest {
 
         av.setId(UUID.randomUUID().toString());
         variantDao.update(av);
+
+        entityManager.flush();
     }
 }
