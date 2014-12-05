@@ -38,7 +38,7 @@
    for a sake of compatibility, I leave out original names */
 @c_green: #4296B4;
 @c_greenxlight: lighten(@c_green, 50%);
-@c_greenlight: lighten(@c_green, 35%);
+@c_greenlight: lighten(@c_green, 10%);
 @c_greenmedium: darken(@c_green, 5%);
 @c_greendark: darken(@c_green, 10%);
 
@@ -54,14 +54,12 @@
 @images: "../img/";
 
 
-
 // btn-primary-color: ; 
 @btn-primary-bg: @c_green; 
-@btn-primary-bg-img-start: @c_green; 
-@btn-primary-bg-img-stop: @c_greenmedium; 
+@btn-primary-bg-img-start: @c_greenlight; 
+@btn-primary-bg-img-stop: @c_green; 
 @btn-primary-border: @c_green;
 
-//@btn-default-bg-img-start:red!important;
 
 /*
 ***********************************
@@ -70,7 +68,7 @@
 */
 
 body {
-  line-height: 1.909em;
+//  line-height: 1.909em;
   font-family: @exo;
   color: @c_gray;
   background-color: @c_mainpane;
