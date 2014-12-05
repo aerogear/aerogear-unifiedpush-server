@@ -36,20 +36,30 @@
 
 /* these colors are originally green in liveoak console,
    for a sake of compatibility, I leave out original names */
-@c_green: #00A9EC;
+@c_green: #4296B4;
 @c_greenxlight: lighten(@c_green, 50%);
 @c_greenlight: lighten(@c_green, 35%);
-@c_greenmedium: darken(@c_green, 10%);
-@c_greendark: #00618A;
+@c_greenmedium: darken(@c_green, 5%);
+@c_greendark: darken(@c_green, 10%);
 
-@c_blue_logo: #669eb2;
+@c_blue_logo: #4296B4;
 
 @c_red: #cb0000;
+
+@brand-primary:@c_green;
 
 /* Border colors */
 @c_border: #cacaca;
 
 @images: "../img/";
+
+
+
+//@btn-primary-color: ; 
+@btn-primary-bg: @c_green; 
+@btn-primary-bg-img-start: @c_green; 
+@btn-primary-bg-img-stop: @c_greenmedium; 
+@btn-primary-border: @c_green;
 
 /*
 ***********************************
@@ -1044,3 +1054,6 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
     margin-bottom: 10px;
   }
 }
+
+
+
