@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('DashboardController',
-  function ($rootScope, dashboard, totals, warnings, topThree) {
+  function ($rootScope, totals, warnings, topThree) {
     var $scope = this;
     $rootScope.application = null;
 

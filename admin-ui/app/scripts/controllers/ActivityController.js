@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('ActivityController',
-  function ($rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs, data) {
+  function ($rootScope, $routeParams, $modal, metricsEndpoint, applicationsEndpoint, breadcrumbs, data) {
     var $scope = this;
 
     $scope.applicationId = $routeParams.applicationId;
@@ -50,13 +50,13 @@ angular.module('upsConsole').controller('ActivityController',
     $scope.pageChanged = function () {
       $rootScope.isViewLoading = true;
       if (onDetailsPage()) {
-        metrics.fetchVariantMetrics($routeParams.variantId, $scope.currentPage)
+        metricsEndpoint.fetchVariantMetrics($routeParams.variantId, $scope.currentPage)
           .then(applyVariantMetricsData)
           .then(function() {
             $rootScope.isViewLoading = false;
           });
       } else {
-        metrics.fetchApplicationMetrics($routeParams.applicationId, $scope.currentPage)
+        metricsEndpoint.fetchApplicationMetrics($routeParams.applicationId, $scope.currentPage)
           .then(applyApplicationMetricsData)
           .then(function() {
             $rootScope.isViewLoading = false;
@@ -64,15 +64,15 @@ angular.module('upsConsole').controller('ActivityController',
       }
     };
 
-    $scope.variantMetricInformation = function(metrics) {
-      angular.forEach(metrics, function(variantInfo) {
+    $scope.variantMetricInformation = function(metricsEndpoint) {
+      angular.forEach(metricsEndpoint, function(variantInfo) {
         angular.forEach($scope.application.variants, function (variant) {
           if (variant.variantID === variantInfo.variantID) {
             variantInfo.name = variant.name;
           }
         });
       });
-      return metrics;
+      return metricsEndpoint;
     };
 
     $scope.detailsPage = function() {

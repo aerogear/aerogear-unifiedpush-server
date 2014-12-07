@@ -17,7 +17,8 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $routeParams, $location, $modal, $http,  pushApplication, variants, importer, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $routeParams, $location, $modal, $http, applicationsEndpoint, variantsEndpoint,
+    importerEndpoint, exporterEndpoint, Notifications, breadcrumbs, application, counts, ContextProvider, metricsEndpoint) {
 
   var $scope = this;
 
@@ -30,9 +31,9 @@ angular.module('upsConsole').controller('DetailController',
   breadcrumbs.generateBreadcrumbs();
   $scope.currentLocation = ContextProvider.contextPath();
 
-  metrics.application({id: $routeParams.applicationId}, function(data) {
+  metricsEndpoint.application({id: $routeParams.applicationId}, function(data) {
     angular.forEach(data, function (warning) {
-      angular.forEach(application.variants, function (variant) {
+      angular.forEach(application.variantsEndpoint, function (variant) {
         if (warning.variantInformations.length &&
             variant.variantID === warning.variantInformations[0].variantID &&
             !warning.variantInformations[0].deliveryStatus) {
@@ -56,16 +57,16 @@ angular.module('upsConsole').controller('DetailController',
         variantType: result.variant.type
       });
 
-      var createFunction = (variantData instanceof FormData) ? variants.createWithFormData : variants.create;
+      var createFunction = (variantData instanceof FormData) ? variantsEndpoint.createWithFormData : variantsEndpoint.create;
 
       createFunction(params, variantData, function (newVariant) {
-        var length = application.variants.length;
+        var length = application.variantsEndpoint.length;
         for (var i = 0; i < length; i++) {
-          if (newVariant.type === application.variants[i].type) {
+          if (newVariant.type === application.variantsEndpoint[i].type) {
             break;
           }
         }
-        $scope.application.variants.splice(i, 0, newVariant);
+        $scope.application.variantsEndpoint.splice(i, 0, newVariant);
         Notifications.success('Successfully created variant');
       }, function () {
         Notifications.error('Unable to add the variant...');
@@ -92,12 +93,12 @@ angular.module('upsConsole').controller('DetailController',
       };
 
       if (variant.type !== 'ios') {
-        variants.update(params, variantDataUpdate, successCallback, failureCallback);
+        variantsEndpoint.update(params, variantDataUpdate, successCallback, failureCallback);
       } else {
         if (variant.certificate) {
-          variants.updateWithFormData(params, variantDataUpdate, successCallback, failureCallback);
+          variantsEndpoint.updateWithFormData(params, variantDataUpdate, successCallback, failureCallback);
         } else {
-          variants.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
+          variantsEndpoint.patch(params, { name: variant.name, description: variant.description}, successCallback, failureCallback);
         }
       }
     });
@@ -111,9 +112,9 @@ angular.module('upsConsole').controller('DetailController',
         variantType: result.variant.type,
         variantId: result.variant.variantID
       });
-      variants.remove(params, function () {
-        var osVariants = $scope.application.variants;
-        osVariants.splice(osVariants.indexOf(variant), 1);
+      variantsEndpoint.remove(params, function () {
+        var osVariantsEndpoint = $scope.application.variantsEndpoint;
+        osVariantsEndpoint.splice(osVariantsEndpoint.indexOf(variant), 1);
         updateCounts();
         Notifications.success('Successfully removed variant');
       }, function () {
@@ -126,14 +127,14 @@ angular.module('upsConsole').controller('DetailController',
     var modalInstance = show(null, 'renew-master-secret.html');
     modalInstance.result.then(function () {
       var app = $scope.application;
-      pushApplication.reset({appId: app.pushApplicationID}, function (application) {
+      applicationsEndpoint.reset({appId: app.pushApplicationID}, function (application) {
         $scope.application.masterSecret = application.masterSecret;
         Notifications.success('Successfully renewed master secret for "' + app.name + '"');
       });
     });
   };
 
-  $scope.renewVariantSecret = function (variant) {
+  $scope.renewVariantSecretEndpoint = function (variant) {
     var modalInstance = show(null, 'renew-variant-secret.html');
     modalInstance.result.then(function () {
       var app = $scope.application;
@@ -142,7 +143,7 @@ angular.module('upsConsole').controller('DetailController',
         variantType: variant.type,
         variantId: variant.variantID
       };
-      variants.reset(params, function (updatedVariant) {
+      variantsEndpoint.reset(params, function (updatedVariant) {
         variant.secret = updatedVariant.secret;
         Notifications.success('Successfully renewed secret for variant "' + updatedVariant.name + '"');
       });
@@ -156,7 +157,7 @@ angular.module('upsConsole').controller('DetailController',
       var params = {
         variantId: variant.variantID
       };
-      exporter.export(params, function (content) {
+      exporterEndpoint.export(params, function (content) {
         var hiddenElement = document.createElement('a');
 
         hiddenElement.href = 'data:attachment/json,' + encodeURI(JSON.stringify(content));
@@ -178,7 +179,7 @@ angular.module('upsConsole').controller('DetailController',
       fd.append('file', result.variant.installations[0]);
       $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
       ':' + variant.secret);
-      importer.import(null,fd,function(){
+      importerEndpoint.import(null,fd,function(){
         $rootScope.isViewLoading = false;
         Notifications.success('Import process has started"');
         updateCounts();
@@ -190,7 +191,7 @@ angular.module('upsConsole').controller('DetailController',
    */
 
   function updateCounts() {
-    $scope.counts = pushApplication.count({appId: $scope.application.pushApplicationID});
+    $scope.counts =applicationsEndpoint.count({appId: $scope.application.pushApplicationID});
   }
 
   function modalController($scope, $modalInstance, variant) {

@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('ApplicationController',
-  function($rootScope, $modal, pushApplication, Notifications, applications) {
+  function($rootScope, $modal, applicationsEndpoint, Notifications, applications) {
 
   var $scope = this;
 
@@ -38,7 +38,7 @@ angular.module('upsConsole').controller('ApplicationController',
   $scope.open = function (application) {
     var modalInstance = show(application, 'create-app.html');
     modalInstance.result.then(function (application) {
-      pushApplication.create(application, function (newApp) {
+      applicationsEndpoint.create(application, function (newApp) {
         if ($scope.applications.length < 8) {
           $scope.applications.push(newApp);
         }
@@ -57,7 +57,7 @@ angular.module('upsConsole').controller('ApplicationController',
         name: application.name,
         description: application.description
       };
-      pushApplication.update({appId: application.pushApplicationID}, updateApplication, function () {
+      applicationsEndpoint.update({appId: application.applicationsEndpointID}, updateApplication, function () {
         Notifications.success('Successfully edited application "' + application.name + '".');
       });
     });
@@ -66,7 +66,7 @@ angular.module('upsConsole').controller('ApplicationController',
   $scope.remove = function (application) {
     var modalInstance = show(application, 'remove-app.html');
     modalInstance.result.then(function () {
-      pushApplication.remove({appId: application.pushApplicationID}, function () {
+      applicationsEndpoint.remove({appId: application.applicationsEndpointID}, function () {
         $scope.applications.splice($scope.applications.indexOf(application), 1);
         $scope.totalItems = $scope.totalItems - 1;
         Notifications.success('Successfully removed application "' + application.name + '".');
@@ -86,7 +86,7 @@ angular.module('upsConsole').controller('ApplicationController',
    */
 
   function fetch(pageNo) {
-    return pushApplication.fetch(pageNo).then(update);
+    return applicationsEndpoint.fetch(pageNo).then(update);
   }
 
   function modalController($scope, $modalInstance, application) {

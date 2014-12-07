@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('InstallationController',
-  function($rootScope, $routeParams, installations, $sce, data) {
+  function($rootScope, $routeParams, installationsEndpoint, $sce, data) {
 
   var $scope = this;
 
@@ -33,7 +33,7 @@ angular.module('upsConsole').controller('InstallationController',
 
   $scope.pageChanged = function () {
     $rootScope.isViewLoading = true;
-    fetchInstallations($scope.currentPage).then(function() {
+    fetchInstallationsEndpoint($scope.currentPage).then(function() {
       $rootScope.isViewLoading = false;
     });
   };
@@ -54,16 +54,16 @@ angular.module('upsConsole').controller('InstallationController',
     delete installation.expand;
     var params = {variantId: $routeParams.variantId, installationId: installation.id};
     installation.enabled = !installation.enabled;
-    installations.update(params, installation);
+    installationsEndpoint.update(params, installation);
   };
 
   function updateData(data) {
-    $scope.installations = data.page;
+    $scope.installationsEndpoint = data.page;
     $scope.totalItems = data.total;
   }
 
-  function fetchInstallations(pageNo) {
-    return installations.fetchInstallations($routeParams.variantId, pageNo).then(updateData);
+  function fetchInstallationsEndpoint(pageNo) {
+    return installationsEndpoint.fetchInstallationsEndpoint($routeParams.variantId, pageNo).then(updateData);
   }
 
   updateData(data);

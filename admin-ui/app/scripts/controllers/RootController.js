@@ -17,7 +17,9 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('RootController', function ($rootScope, Auth, $http, $keepalive, $idle, $log, appConfig) {
+  .controller('RootController',
+      function ($rootScope, Auth, $http, $keepalive, $idle, $log, appConfig) {
+        
     var $scope = this;
 
     $scope.appConfig = appConfig;

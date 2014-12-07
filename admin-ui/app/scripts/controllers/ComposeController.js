@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole').controller('ComposeController',
-    function($rootScope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
+    function($rootScope, $routeParams, $modal, $http, applicationsEndpoint, Notifications, messageSenderEndpoint) {
   
   var $scope = this;
   
@@ -30,7 +30,7 @@ angular.module('upsConsole').controller('ComposeController',
   $scope.pushData.message['simple-push'] = 'version=' + new Date().getTime();
 
   if (!$rootScope.application) {
-    pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
+    applicationsEndpoint.get( {appId: $routeParams.applicationId}, function ( application ) {
       $rootScope.application = application;
     });
   }
@@ -67,7 +67,7 @@ angular.module('upsConsole').controller('ComposeController',
     $http.defaults.headers.common.Authorization = 'Basic ' + btoa($rootScope.application.pushApplicationID +
       ':' + $rootScope.application.masterSecret);
 
-    messageSender.send({}, $scope.pushData, function() {
+    messageSenderEndpoint.send({}, $scope.pushData, function() {
       Notifications.success('Successfully sent Notification');
       $scope.pushData.message.alert = '';
     }, function() {
