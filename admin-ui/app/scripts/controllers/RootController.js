@@ -17,7 +17,8 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('RootController', function ($rootScope, $scope, Auth, $http, $keepalive, $idle, $log, appConfig) {
+  .controller('RootController', function ($rootScope, Auth, $http, $keepalive, $idle, $log, appConfig) {
+    var $scope = this;
 
     $scope.appConfig = appConfig;
 
@@ -26,17 +27,17 @@ angular.module('upsConsole')
      */
     $rootScope.isViewLoading = false;
     //Retrieve the current logged in username
-    $rootScope.username = Auth.keycloak.idToken.preferred_username;
+    $scope.username = Auth.keycloak.idToken.preferred_username;
 
-    $rootScope.accountManagement = function() {
+    $scope.accountManagement = function() {
       window.location = Auth.keycloak.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
     };
 
-    $rootScope.logout = function() {
+    $scope.logout = function() {
       Auth.logout();
     };
 
-    $rootScope.isProcessingData = function() {
+    $scope.isProcessingData = function() {
       return $http.pendingRequests.some(function(config) {
         if (config.method !== 'GET') {
           console.log(config);

@@ -17,8 +17,9 @@
 'use strict';
 
 angular.module('upsConsole').controller('ExampleController',
-  function($rootScope, $scope, $routeParams, variants, pushApplication, ContextProvider) {
+  function($rootScope, $routeParams, variants, pushApplication, ContextProvider) {
 
+  var $scope = this;
   /*
    * INITIALIZATION
    */
@@ -28,6 +29,7 @@ angular.module('upsConsole').controller('ExampleController',
     variantId: $routeParams.variantId
   };
   $scope.variantType = $routeParams.variantType;
+  console.log($scope.variantType);
   $scope.applicationId = $routeParams.applicationId;
   $scope.currentLocation = ContextProvider.contextPath();
 

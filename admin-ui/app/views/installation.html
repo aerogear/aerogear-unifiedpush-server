@@ -9,8 +9,8 @@
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <p ng-hide="installations.length">No Installations yet</p>
-                <table class="ups-installations" ng-show="installations.length">
+                <p ng-hide="installationCtrl.installations.length">No Installations yet</p>
+                <table class="ups-installations" ng-show="installationCtrl.installations.length">
                     <thead>
                     <tr>
                         <th class="col-md-6">Device token</th>
@@ -20,10 +20,10 @@
                     </tr>
                     </thead>
                     <tbody >
-                    <tr ng-repeat-start="installation in installations | filter:search">
+                    <tr ng-repeat-start="installation in installationCtrl.installations | filter:search">
                         <td>
-                            <a href="" ng-click="expand(installation)">
-                                <i class="fa" ng-class="{'fa-caret-right': isCollapsed(installation), 'fa-caret-down': !isCollapsed(installation)}"></i>
+                            <a href="" ng-click="installationCtrl.expand(installation)">
+                                <i class="fa" ng-class="{'fa-caret-right': installationCtrl.isCollapsed(installation), 'fa-caret-down': !installationCtrl.isCollapsed(installation)}"></i>
                                 {{ installation.deviceToken | limitTo : 50 }}...
                             </a>
                         </td>
@@ -31,12 +31,12 @@
                         <td>{{ installation.os }}</td>
                         <td>
                             <label class="ups-switch">
-                                <input type="checkbox" class="ups-switch__input" ng-checked="installation.enabled" ng-click="update(installation)">
+                                <input type="checkbox" class="ups-switch__input" ng-checked="installation.enabled" ng-click="installationCtrl.update(installation)">
                                 <div class="ups-switch__toggle"></div>
                             </label>
                         </td>
                     </tr>
-                    <tr collapse="isCollapsed(installation)" ng-repeat-end>
+                    <tr collapse="installationCtrl.isCollapsed(installation)" ng-repeat-end>
                         <td colspan="4">
                             <table class="ups-installation-detail">
                                 <tr>
@@ -49,7 +49,7 @@
                                 </tr>
                                 <tr>
                                     <td >Token:</td>
-                                    <td><div ng-bind-html="wrapText(installation.deviceToken)"></div></td>
+                                    <td><div ng-bind-html="installationCtrl.wrapText(installation.deviceToken)"></div></td>
                                 </tr>
                             </table>
                         </td>
@@ -57,7 +57,7 @@
                     </tbody>
                 </table>
             </div>
-            <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="installations.length" ng-change="pageChanged()" max-size="5" rotate="false"></pagination>
+            <pagination direction-links="true" boundary-links="false" total-items="installationCtrl.totalItems" ng-model="installationCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="installationCtrl.installations.length" ng-change="installationCtrl.pageChanged()" max-size="5" rotate="false"></pagination>
         </div>
     </div>
 </div>
