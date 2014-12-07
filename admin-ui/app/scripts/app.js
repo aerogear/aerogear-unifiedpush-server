@@ -43,6 +43,11 @@
 
   });
 
+  app.run(function($rootScope) {
+    // allow to retrieve $rootScope in views (for claritication of access scope)
+    $rootScope.$rootScope = $rootScope;
+  });
+
   app.factory('Auth', function () {
     return auth;
   });
@@ -71,7 +76,7 @@
     $routeProvider
       .when('/applications', {
         templateUrl: 'views/applications.html',
-        controller: 'ApplicationController',
+        controller: 'ApplicationController as appCtrl',
         resolve: {
           applications: function (pushApplication) {
             return pushApplication.fetch(1);
@@ -85,7 +90,7 @@
       })
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
-        controller: 'DetailController',
+        controller: 'DetailController as detailCtrl',
         resolve: {
           application: function ($route, pushApplication) {
             return pushApplication.get({appId: $route.current.params.applicationId}).$promise;
@@ -103,7 +108,7 @@
       })
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
-        controller: 'InstallationController',
+        controller: 'InstallationController as installationCtrl',
         resolve: {
           data: function ($route, installations) {
             return installations.fetchInstallations($route.current.params.variantId, 1);
@@ -117,7 +122,7 @@
       })
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController',
+        controller: 'ExampleController as exampleCtrl',
         section: 'applications',
         crumb: {
           parent: 'app-detail',
@@ -126,7 +131,7 @@
       })
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController',
+        controller: 'ExampleController as exampleCtrl',
         section: 'applications',
         crumb: {
           parent: 'app-detail',
@@ -135,7 +140,7 @@
       })
       .when('/compose', {
         templateUrl: 'views/compose-app.html',
-        controller: 'PreComposeController',
+        controller: 'PreComposeController as preComposeCtrl',
         resolve: {
           applications: function (pushApplication) {
             return pushApplication.query({}).$promise;
@@ -148,7 +153,7 @@
       })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
-        controller: 'ComposeController',
+        controller: 'ComposeController as composeCtrl',
         section: 'compose',
         crumb: {
           parent: 'app-detail',
@@ -157,7 +162,7 @@
       })
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html',
-        controller: 'DashboardController',
+        controller: 'DashboardController as dashboardCtrl',
         resolve: {
           totals: function (dashboard) {
             return dashboard.totals({}).$promise;
@@ -177,7 +182,7 @@
       })
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
-        controller: 'ActivityController',
+        controller: 'ActivityController as activityCtrl',
         resolve: {
           data: function ($route, $q, pushApplication, metrics) {
             var applicationMetricsPromise = metrics.fetchApplicationMetrics($route.current.params.applicationId, 1);
@@ -200,7 +205,7 @@
       })
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
-        controller: 'ActivityController',
+        controller: 'ActivityController as activityCtrl',
         resolve: {
           data: function ($route, $q, metrics, pushApplication) {
             var variantMetricsPromise = metrics.fetchVariantMetrics($route.current.params.variantId, 1);

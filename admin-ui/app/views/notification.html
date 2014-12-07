@@ -19,11 +19,11 @@
                 </td>
               </tr>
             </th>
-            <tr style="border-top: 1px #eee solid" ng-repeat-start="metric in pushMetrics">
+            <tr style="border-top: 1px #eee solid" ng-repeat-start="metric in activityCtrl.pushMetrics">
               <td style="padding: 8px 0;">
-                <a href ng-click="expand(metric)">
+                <a href ng-click="activityCtrl.expand(metric)">
                   <i class="fa"
-                     ng-class="{'fa-plus-square-o': isCollapsed(metric), 'fa-minus-square-o': !isCollapsed(metric)}"></i>
+                     ng-class="{'fa-plus-square-o': activityCtrl.isCollapsed(metric), 'fa-minus-square-o': !activityCtrl.isCollapsed(metric)}"></i>
                   {{ metric.rawJsonMessage | limitTo : 50 }}...
                 </a>
               </td>
@@ -41,7 +41,7 @@
                 {{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}
               </td>
             </tr>
-            <tr collapse="isCollapsed(metric)" ng-repeat-end>
+            <tr collapse="activityCtrl.isCollapsed(metric)" ng-repeat-end>
               <td colspan="4" style="padding: 8px;">
                 <div class="ups-toggle-box ups-panel-details">
                   <table>
@@ -49,12 +49,12 @@
                       <td>Request IP:</td>
                       <td><strong>{{ metric.ipAddress }}</strong>
                       </td>
-                      <td><a href ng-click="showFullRequest(metric.rawJsonMessage)">Full Request</a>
+                      <td><a href ng-click="activityCtrl.showFullRequest(metric.rawJsonMessage)">Full Request</a>
                       </td>
                     </tr>
                     <tr>
                       <td>Message:</td>
-                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).message.alert }}" }</strong></td>
+                      <td colspan="2"><strong>{ "message" : "{{ activityCtrl.parse(metric).message.alert }}" }</strong></td>
                     </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
@@ -62,20 +62,20 @@
                     <tr>
                       <td>Error:</td>
                       <td><strong>Problem occurred during sending push notification(s)</strong></td>
-                      <td><a href="#/detail/{{applicationId}}">Edit Push Network...</a></td>
+                      <td><a href="#/detail/{{activityCtrl.applicationId}}">Edit Push Network...</a></td>
                     </tr>
-                    <tr ng-if="detailsPage()">
+                    <tr ng-if="activityCtrl.detailsPage()">
                       <td>Reason:</td>
                       <td colspan="2">{{ metric.variantInformations[0].reason }}</td>
                     </tr>
                   </table>
-                  <hr ng-show="!detailsPage() && metric.variantInformations.length">
-                  <table ng-if="!detailsPage() && metric.variantInformations.length">
+                  <hr ng-show="!activityCtrl.detailsPage() && metric.variantInformations.length">
+                  <table ng-if="!activityCtrl.detailsPage() && metric.variantInformations.length">
                     <tr>
                       <td>Variants:</td>
                       <td>
                         <table class="expand">
-                          <tr ng-repeat="variant in variantMetricInformation(metric.variantInformations)">
+                          <tr ng-repeat="variant in activityCtrl.variantMetricInformation(metric.variantInformations)">
                             <td>
                               <a href="#/detail/{{applicationId}}">{{ variant.name ? variant.name : variant.variantID }}</a>
                             </td>
@@ -93,7 +93,7 @@
             </tr>
           </table>
         </div>
-        <pagination direction-links="true" boundary-links="false" total-items="totalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="pushMetrics.length" ng-change="pageChanged()" max-size="5" rotate="false"></pagination>
+        <pagination direction-links="true" boundary-links="false" total-items="activityCtrl.totalItems" ng-model="activityCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" class="pull-right ups-pagination" ng-show="activityCtrl.pushMetrics.length" ng-change="activityCtrl.pageChanged()" max-size="5" rotate="false"></pagination>
       </div>
     </div>
   </div>

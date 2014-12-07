@@ -17,7 +17,8 @@
 'use strict';
 
 angular.module('upsConsole').controller('DashboardController',
-  function ($rootScope, $scope, dashboard, totals, warnings, topThree) {
+  function ($rootScope, dashboard, totals, warnings, topThree) {
+    var $scope = this;
     $rootScope.application = null;
 
     $scope.dashboardData = totals;
@@ -26,7 +27,8 @@ angular.module('upsConsole').controller('DashboardController',
   });
 
 angular.module('upsConsole').controller('ActivityController',
-  function ($scope, $rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs, data) {
+  function ($rootScope, $routeParams, $modal, metrics, pushApplication, breadcrumbs, data) {
+    var $scope = this;
 
     $scope.applicationId = $routeParams.applicationId;
     $scope.currentPage = 1;

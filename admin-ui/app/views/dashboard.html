@@ -10,7 +10,7 @@
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard active-apps">
             <i class="fa fa-list-alt"></i>
-            <span class="count">{{ dashboardData.applications }}</span>
+            <span class="count">{{ dashboardCtrl.dashboardData.applications }}</span>
           </div>
           <div class="pull-left">applications
             <br>active
@@ -19,7 +19,7 @@
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard notifications">
             <i class="fa fa-send"></i>
-            <span class="count">{{ dashboardData.messages }}</span>
+            <span class="count">{{ dashboardCtrl.dashboardData.messages }}</span>
           </div>
           <div class="pull-left">
             notifications
@@ -29,7 +29,7 @@
         <div class="pull-left ups-padding-box">
           <div class="pull-left dashboard installations">
             <i class="fa fa-tablet"></i>
-            <span class="count">{{ dashboardData.devices }}</span>
+            <span class="count">{{ dashboardCtrl.dashboardData.devices }}</span>
           </div>
           <div class="pull-left">installations
             <br>registered
@@ -53,13 +53,13 @@
             <div class="clearfix"></div>
           </div>
           <ul class="list-group ">
-            <li class="list-group-item" ng-repeat="warning in warnings">
+            <li class="list-group-item" ng-repeat="warning in dashboardCtrl.warnings">
               <i class="fa fa-warning"></i> {{ warning.applicationName }} &raquo; {{ warning.variant.name }}
               <a class="pull-right" href="#/activity/{{warning.applicationID}}/{{warning.variant.variantID}}">
                 Activity &raquo;
               </a>
             </li>
-            <li class="list-group-item" ng-hide="warnings.length">
+            <li class="list-group-item" ng-hide="dashboardCtrl.warnings.length">
               <i class="fa fa-check-circle"></i>&nbsp; No problems detected currently.
             </li>
           </ul>
@@ -74,12 +74,12 @@
               <h2>Recent Activity</h2>
             </div>
             <div class="pull-right">
-              <span ng-show="topThree.length">Number of receivers</span>
+              <span ng-show="dashboardCtrl.topThree.length">Number of receivers</span>
             </div>
             <div class="clearfix"></div>
           </div>
           <ul class="list-group " id="recent-activity">
-            <li class="list-group-item" ng-repeat="top in topThree">
+            <li class="list-group-item" ng-repeat="top in dashboardCtrl.topThree">
               <a href="#/activity/{{top.id}}">
                 {{ top.name }} &nbsp; ({{ top.submittedDate | date : 'd MMM, HH:mm:ss, yyyy' }})
               </a>

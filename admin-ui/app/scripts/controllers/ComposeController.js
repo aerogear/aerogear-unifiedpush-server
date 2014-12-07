@@ -16,8 +16,8 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
-
+angular.module('upsConsole').controller('ComposeController', function($rootScope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
+  var $scope = this;
     /*
      * INITIALIZATION
      */
@@ -141,7 +141,9 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
 
 });
 
-angular.module('upsConsole').controller('PreComposeController', function($rootScope, $scope, $location, applications) {
+angular.module('upsConsole').controller('PreComposeController', function($rootScope, $location, applications) {
+  var $scope = this;
+
   if ($rootScope.application && !$scope.applicationChosen) {
     $location.path('/compose/' + $rootScope.application.pushApplicationID);
   }

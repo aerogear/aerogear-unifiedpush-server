@@ -4,26 +4,26 @@
             <div ups-breadcrumb/>
 
             <h1>Example:
-                <span ng-hide="variantType != 'send'">Sending push notifications</span>
-                <span ng-show="variantType != 'send'">Register devices for receiving notifications</span>
+                <span ng-hide="exampleCtrl.variantType != 'send'">Sending push notifications</span>
+                <span ng-show="exampleCtrl.variantType != 'send'">Register devices for receiving notifications</span>
             </h1>
 
-            <p ng-hide="variantType != 'send'">Make your backend server send push notifications through this UnifiedPush Server.</p>
+            <p ng-hide="exampleCtrl.variantType != 'send'">Make your backend server send push notifications through this UnifiedPush Server.</p>
 
-            <p ng-show="variantType != 'send'">Use the code snippet bellow to register your device and allow it to receiving notifications through this UnifiedPush Server.</p>
+            <p ng-show="exampleCtrl.variantType != 'send'">Use the code snippet bellow to register your device and allow it to receiving notifications through this UnifiedPush Server.</p>
 
             <tabset class="ups-code-examples">
-                <tab heading="Simple push" ng-hide="variantType != 'simplePush'" active="tab('simplePush').active">
+                <tab heading="Simple push" ng-hide="exampleCtrl.variantType != 'simplePush'" active="exampleCtrl.tab('simplePush').active">
                     <div class="ups-code-block js" hljs compile="true">
 (function() {
      var endpoint, endpointRequest, SPClient, UPClient;
 
      // config params for UnifiedPush server
-     var variantId = "{{ variant.variantID }}";
-     var variantSecret = "{{ variant.secret }}";
-     var unifiedPushUrl = "{{ currentLocation }}";
+     var variantId = "{{ exampleCtrl.variant.variantID }}";
+     var variantSecret = "{{ exampleCtrl.variant.secret }}";
+     var unifiedPushUrl = "{{ exampleCtrl.currentLocation }}";
 
-      // If your SimplePush Server is running on Openshift, the URL is {{ simplePushUrl() }}
+      // If your SimplePush Server is running on Openshift, the URL is {{ exampleCtrl.simplePushUrl() }}
       // If your SimplePush Server is using Mozilla's network, the URL will be wss://push.services.mozilla.com
       // or do you run a custom server?
      var simplePushUrl = "[URL of the SimplePush Server you are using]";
@@ -88,15 +88,15 @@
  })();
                     </div>
                 </tab>
-                <tab heading="Chrome" ng-hide="variantType != 'chrome'" active="tab('chrome').active">
+                <tab heading="Chrome" ng-hide="exampleCtrl.variantType != 'chrome'" active="exampleCtrl.tab('chrome').active">
                     <div class="ups-code-block js" hljs compile="true">
 chrome.pushMessaging.getChannelId( true, function(channelId) {
     /*
         Set our Variant ID and Secret and the location of the UnifiedPush Server
     */
-    var variantId = "{{ variant.variantID }}",
-        variantSecret = "{{ variant.secret }}",
-        pushServerURL = "{{ currentLocation }}";
+    var variantId = "{{ exampleCtrl.variant.variantID }}",
+        variantSecret = "{{ exampleCtrl.variant.secret }}",
+        pushServerURL = "{{ exampleCtrl.currentLocation }}";
 
     // Once we have the channelID we can then register with the UnifiedPush Server using
     // the AeroGear.js library
@@ -117,7 +117,7 @@ chrome.pushMessaging.getChannelId( true, function(channelId) {
 });
                     </div>
                 </tab>
-                <tab heading="Android" ng-hide="variantType != 'android'" active="tab('android').active" ng-click="tab('android').active = true">
+                <tab heading="Android" ng-hide="exampleCtrl.variantType != 'android'" active="exampleCtrl.tab('android').active" ng-click="exampleCtrl.tab('android').active = true">
  <div class="ups-code-block java" hljs compile="true">
 package com.push.pushapplication;
 
@@ -132,10 +132,10 @@ import android.app.Application;
 
 public class PushApplication extends Application {
 
-    private final String VARIANT_ID       = "{{ variant.variantID }}";
-    private final String SECRET           = "{{ variant.secret }}";
-    private final String GCM_SENDER_ID    = "{{ variant.projectNumber }}";
-    private final String UNIFIED_PUSH_URL = "{{ currentLocation }}";
+    private final String VARIANT_ID       = "{{ exampleCtrl.variant.variantID }}";
+    private final String SECRET           = "{{ exampleCtrl.variant.secret }}";
+    private final String GCM_SENDER_ID    = "{{ exampleCtrl.variant.projectNumber }}";
+    private final String UNIFIED_PUSH_URL = "{{ exampleCtrl.currentLocation }}";
 
     private PushRegistrar registration;
 
@@ -175,7 +175,7 @@ public class PushApplication extends Application {
 }
 </div>
                 </tab>
-                <tab heading="iOS - Objective-C" ng-hide="variantType != 'ios'" active="tab('ios').active" ng-click="tab('ios').active = true">
+                <tab heading="iOS - Objective-C" ng-hide="exampleCtrl.variantType != 'ios'" active="exampleCtrl.tab('ios').active" ng-click="exampleCtrl.tab('ios').active = true">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'objectivec'"></div>
                     <script type="text/ng-template" id="objectivec">
 - (void)application:(UIApplication *)application
@@ -184,15 +184,15 @@ public class PushApplication extends Application {
 
    AGDeviceRegistration *registration =
      [[AGDeviceRegistration alloc] initWithServerURL:
-        [NSURL URLWithString:@"{{ currentLocation }}"]];
+        [NSURL URLWithString:@"{{ exampleCtrl.currentLocation }}"]];
 
    [registration registerWithClientInfo:^(id clientInfo) {
 
      // apply the token, to identify this device
      [clientInfo setDeviceToken:deviceToken];
 
-     [clientInfo setVariantID:@"{{ variant.variantID }}"];
-     [clientInfo setVariantSecret:@"{{ variant.secret }}"];
+     [clientInfo setVariantID:@"{{ exampleCtrl.variant.variantID }}"];
+     [clientInfo setVariantSecret:@"{{ exampleCtrl.variant.secret }}"];
 
      // --optional config--
      // set some 'useful' hardware information params
@@ -211,21 +211,21 @@ public class PushApplication extends Application {
                   </script>
 
                 </tab>
-                <tab heading="iOS - Swift" ng-hide="variantType != 'ios'" active="tab('iOSSwift').active" ng-click="tab('iOSSwift').active = true">
+                <tab heading="iOS - Swift" ng-hide="exampleCtrl.variantType != 'ios'" active="exampleCtrl.tab('iOSSwift').active" ng-click="exampleCtrl.tab('iOSSwift').active = true">
                     <div class="ups-code-block" hljs compile="true" language="objectivec" include="'swift'"></div>
                     <script type="text/ng-template" id="swift">
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
     println("APNS Success")
 
-    let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ currentLocation }}"))
+    let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ exampleCtrl.currentLocation }}"))
 
     registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!)  in
 
         // apply the token, to identify this device
         clientInfo.deviceToken = deviceToken
 
-        clientInfo.variantID = "{{ variant.variantID }}"
-        clientInfo.variantSecret = "{{ variant.secret }}"
+        clientInfo.variantID = "{{ exampleCtrl.variant.variantID }}"
+        clientInfo.variantSecret = "{{ exampleCtrl.variant.secret }}"
 
         // --optional config--
         // set some 'useful' hardware information params
@@ -244,8 +244,8 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                     </script>
 
                 </tab>
-                <tab heading="Cordova" ng-hide="variantType == 'chrome' || variantType == 'simplePush' || variantType == 'send'"
-                     active="tab('cordova').active" ng-click="tab('cordova').active = true">
+                <tab heading="Cordova" ng-hide="exampleCtrl.variantType == 'chrome' || exampleCtrl.variantType == 'simplePush' || exampleCtrl.variantType == 'send'"
+                     active="exampleCtrl.tab('cordova').active" ng-click="exampleCtrl.tab('cordova').active = true">
                     <div class="ups-code-block js" hljs compile="true">
 var app = {
     // Application Constructor
@@ -266,11 +266,11 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
         var pushConfig = {
-           pushServerURL: "{{ currentLocation }}",
-           {{ cordovaVariantType(variant) }}: {
-              {{ projectNumber(variant) }}
-              variantID: "{{ variant.variantID }}",
-              variantSecret: "{{ variant.secret }}"
+           pushServerURL: "{{ exampleCtrl.currentLocation }}",
+           {{ exampleCtrl.cordovaVariantType(exampleCtrl.variant) }}: {
+              {{ exampleCtrl.projectNumber(exampleCtrl.variant) }}
+              variantID: "{{ exampleCtrl.variant.variantID }}",
+              variantSecret: "{{ exampleCtrl.variant.secret }}"
            }
         };
         push.register(app.onNotification, successHandler, errorHandler, pushConfig);
@@ -302,18 +302,18 @@ var app = {
 app.initialize();
                     </div>
 <br>
-<p ng-show="variantType != 'send'">It's also possible to use an external config file named <b>push-config.json</b> and placed in the root of your <b>www</b> folder :</p>
+<p ng-show="exampleCtrl.variantType != 'send'">It's also possible to use an external config file named <b>push-config.json</b> and placed in the root of your <b>www</b> folder :</p>
 <br>
                     <div class="ups-code-block">
 <pre>
 <code>
 // ../www/push-config.json
 {
-  "pushServerURL": "{{ currentLocation }}",
-  {{ cordovaVariantType(variant) }} : {
-    {{ projectNumberJson(variant) }}
-    "variantID": "{{ variant.variantID }}",
-    "variantSecret": "{{ variant.secret }}"
+  "pushServerURL": "{{ exampleCtrl.currentLocation }}",
+  {{ exampleCtrl.cordovaVariantType(exampleCtrl.variant) }} : {
+    {{ exampleCtrl.projectNumberJson(exampleCtrl.variant) }}
+    "variantID": "{{ exampleCtrl.variant.variantID }}",
+    "variantSecret": "{{ exampleCtrl.variant.secret }}"
   }
 }
 </code>
@@ -372,12 +372,12 @@ app.initialize();
 
                 </tab>
 
-                <tab heading="Sending" ng-hide="variantType != 'send'" active="tab('send').active" ng-click="tab('send').active = true">
+                <tab heading="Sending" ng-hide="exampleCtrl.variantType != 'send'" active="exampleCtrl.tab('send').active" ng-click="exampleCtrl.tab('send').active = true">
                     <div class="ups-code-block java" hljs compile="true">
-JavaSender defaultJavaSender = new SenderClient.Builder("{{ currentLocation }}").build();
+JavaSender defaultJavaSender = new SenderClient.Builder("{{ exampleCtrl.currentLocation }}").build();
 UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-        .pushApplicationId("{{ applicationId }}")
-        .masterSecret("{{ application.masterSecret }}")
+        .pushApplicationId("{{ exampleCtrl.applicationId }}")
+        .masterSecret("{{ exampleCtrl.application.masterSecret }}")
         .alert("Hello from Java Sender API!")
         .build();
 defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
@@ -395,13 +395,13 @@ defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
                     </div>
                 </tab>
 
-                <tab heading="C#" ng-hide="variantType != 'windows_wns'" active="tab('windows_wns').active" ng-click="tab('windows_wns').active = true">
+                <tab heading="C#" ng-hide="exampleCtrl.variantType != 'windows_wns'" active="exampleCtrl.tab('windows_wns').active" ng-click="exampleCtrl.tab('windows_wns').active = true">
                     <div class="ups-code-block csharp" hljs compile="true">
 using AeroGear.Push;
 
 protected async override void OnLaunched(LaunchActivatedEventArgs e)
 {
-  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
+  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ exampleCtrl.currentLocation }}"), VariantId = "{{ exampleCtrl.variant.variantID }}", VariantSecret = "{{ exampleCtrl.variant.secret }}" };
   Registration registration = new WnsRegistration();
   registration.PushReceivedEvent += HandleNotification;
   await registration.Register(pushConfig);
@@ -416,13 +416,13 @@ void HandleNotification(object sender, PushReceivedEvent e)
 
                     </div>
                 </tab>
-                <tab heading="C#" ng-hide="variantType != 'windows_mpns'" active="tab('windows_mpns').active" ng-click="tab('windows_mpns').active = true">
+                <tab heading="C#" ng-hide="exampleCtrl.variantType != 'windows_mpns'" active="exampleCtrl.tab('windows_mpns').active" ng-click="exampleCtrl.tab('windows_mpns').active = true">
                     <div class="ups-code-block csharp" hljs compile="true">
 using AeroGear.Push;
 
 protected async override void OnLaunched(LaunchActivatedEventArgs e)
 {
-  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ currentLocation }}"), VariantId = "{{ variant.variantID }}", VariantSecret = "{{ variant.secret }}" };
+  PushConfig pushConfig = new PushConfig() { UnifiedPushUri = new Uri("{{ exampleCtrl.currentLocation }}"), VariantId = "{{ exampleCtrl.variant.variantID }}", VariantSecret = "{{ exampleCtrl.variant.secret }}" };
   Registration registration = new MpnsRegistration();
   registration.PushReceivedEvent += HandleNotification;
   await registration.Register(pushConfig);
