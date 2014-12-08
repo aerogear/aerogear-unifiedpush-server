@@ -26,10 +26,10 @@ public class AndroidVariant extends Variant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 255, message = "Google Cloud Messaging Key must be max. 255 chars long")
     private String googleKey;
 
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 255, message = "Project Number must be max. 255 chars long")
     private String projectNumber;
 
     /**

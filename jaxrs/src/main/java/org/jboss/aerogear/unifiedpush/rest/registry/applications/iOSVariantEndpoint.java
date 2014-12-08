@@ -16,13 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.crypto.util.PKCS12;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,6 +30,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
+import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 @Path("/applications/{pushAppID}/ios")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
@@ -56,10 +55,13 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
         }
 
-        // uploaded certificate/passphrase pair OK (do they match)?
-        if (!validateCertificateAndPassphrase(form)) {
-            // nope, keep 400 response empty to not leak details about cert/passphrase
-            return Response.status(Status.BAD_REQUEST).build();
+        // some model validation on the uploaded form
+        try {
+            validateModelClass(form);
+        } catch (ConstraintViolationException cve) {
+            // Build and return the 400 (Bad Request) response
+            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+            return builder.build();
         }
 
         // extract form values:
@@ -134,10 +136,13 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
         if (iOSVariant != null) {
 
-            // uploaded certificate/passphrase pair OK (do they match)?
-            if (!validateCertificateAndPassphrase(updatedForm)) {
-                // nope, keep 400 response empty to not leak details about cert/passphrase
-                return Response.status(Status.BAD_REQUEST).build();
+            // some model validation on the uploaded form
+            try {
+                validateModelClass(updatedForm);
+            } catch (ConstraintViolationException cve) {
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+                return builder.build();
             }
 
             // apply update:
@@ -164,23 +169,5 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    /**
-     * Helper to validate if we got a certificate/passphrase pair AND (if present)
-     * if that pair is also valid, and does not contain any bogus content.
-     *
-     * @return true if valid, otherwise false
-     */
-    private boolean validateCertificateAndPassphrase(iOSApplicationUploadForm form) {
 
-        // got certificate/passphrase, with content that makes sense ?
-        try {
-            PKCS12.validate(form.getCertificate(), form.getPassphrase());
-
-            // ok we are good:
-            return true;
-        } catch (Exception e) {
-            logger.severe("Could not validate the given certificate and passphrase pair");
-            return false;
-        }
-    }
 }

@@ -16,13 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import javax.ws.rs.FormParam;
-
+import org.jboss.aerogear.crypto.util.PKCS12;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
+
+import javax.validation.constraints.AssertTrue;
+import javax.ws.rs.FormParam;
 
 /**
  * Helper class to read values from the multipart request
- * that is performed when creating (or updating) an iOS variant. 
+ * that is performed when creating (or updating) an iOS variant.
  */
 public class iOSApplicationUploadForm {
 
@@ -41,9 +44,9 @@ public class iOSApplicationUploadForm {
 
     /**
      * Reads the boolean flag from the multipart request,
-     * which indicates if the iOS variant is a 'production' variant or not. 
-     * 
-     * The {@link iOSVariant} model differenciates between production and test
+     * which indicates if the iOS variant is a 'production' variant or not.
+     *
+     * The {@link iOSVariant} model differentiates between production and test
      * in order to establish connections to different APNs Servers.
      */
     @FormParam("production")
@@ -100,4 +103,19 @@ public class iOSApplicationUploadForm {
         this.certificate = data;
     }
 
+    /**
+     * Validates whether the certificate/passphrase pair
+     * is valid, and does not contain any bogus content.
+     *
+     * @return true if valid, otherwise false
+     */
+    @AssertTrue(message = "the provided certificate passphrase does not match with the uploaded certificate")
+    public boolean isCertificatePassphraseValid() {
+        try {
+            PKCS12.validate(certificate, passphrase);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

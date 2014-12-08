@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The iOS variant class encapsulates APNs specific behavior.
@@ -31,11 +31,11 @@ public class iOSVariant extends Variant {
     private boolean production;
 
     @NotNull
-    @Size(max = 255)
+    @Size(max = 255, message = "Passphrase must be 1-255 characters long")
     @JsonIgnore
     private String passphrase;
 
-    @NotNull
+    @NotNull(message = "Certificate must be provided")
     @JsonIgnore
     private byte[] certificate;
 

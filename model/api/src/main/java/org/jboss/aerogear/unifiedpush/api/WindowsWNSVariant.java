@@ -22,11 +22,11 @@ import javax.validation.constraints.Size;
 public class WindowsWNSVariant extends WindowsVariant {
 
     @NotNull
-    @Size(max = 255)
+    @Size(max = 255, message = "Package SID must be max. 255 chars long")
     private String sid;
 
     @NotNull
-    @Size(max = 255)
+    @Size(max = 255, message = "Client Secret must be max. 255 chars long")
     private String clientSecret;
 
 

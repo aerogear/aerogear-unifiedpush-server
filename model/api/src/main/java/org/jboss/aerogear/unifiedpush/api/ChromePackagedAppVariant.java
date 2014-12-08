@@ -25,13 +25,13 @@ import javax.validation.constraints.NotNull;
 public class ChromePackagedAppVariant extends Variant {
     private static final long serialVersionUID = -5473752252296190311L;
 
-    @NotNull
+    @NotNull(message = "Client ID must be provided")
     private String clientId;
 
-    @NotNull
+    @NotNull(message = "Client Secret must be provided")
     private String clientSecret;
 
-    @NotNull
+    @NotNull(message = "Refresh Token must be provided")
     private String refreshToken;
 
     /**
