@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Helper for various tasks for working with {@link javax.servlet.http.HttpServletRequest} objects.
@@ -44,15 +46,15 @@ public final class HttpRequestUtil {
      */
     public static String extractIPAddress(final HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
-        if (hasValue(ip)) {
+        if (isIPAdressValid(ip)) {
             return ip;
         }
         ip = request.getHeader("Proxy-Client-IP");
-        if (hasValue(ip)) {
+        if (isIPAdressValid(ip)) {
             return ip;
         }
         ip = request.getHeader("WL-Proxy-Client-IP");
-        if (hasValue(ip)) {
+        if (isIPAdressValid(ip)) {
             return ip;
         }
         return request.getRemoteAddr();
@@ -71,7 +73,24 @@ public final class HttpRequestUtil {
         return request.getHeader("user-agent");
     }
 
-    private static boolean hasValue(String value) {
-        return value != null && !value.isEmpty() && !"unknown".equalsIgnoreCase(value);
+    /**
+     * Simple validation, using java.net.InetAddress.getByName().
+     */
+    private static boolean isIPAdressValid(final String ip){
+
+        // InetAddress.getByName() validates 'null' as a valid IP (localhost).
+        // we do not want that
+        if (hasValue(ip)) {
+            try {
+                InetAddress.getByName(ip);
+                return true;
+            } catch (UnknownHostException uhe) {
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasValue(final String value) {
+        return value != null && !value.isEmpty();
     }
 }
