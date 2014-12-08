@@ -53,6 +53,30 @@ public class HttpRequestHelperTest {
     }
 
     @Test
+    public void extractInvalidWLProxyClientIPHeader() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn(null);
+        Mockito.when(request.getHeader("Proxy-Client-IP")).thenReturn(null);
+        Mockito.when(request.getHeader("WL-Proxy-Client-IP")).thenReturn("300.400.0.15");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
+    }
+
+    @Test
+    public void extractInvalidWLProxyClientIPHeaderText() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn(null);
+        Mockito.when(request.getHeader("Proxy-Client-IP")).thenReturn(null);
+        Mockito.when(request.getHeader("WL-Proxy-Client-IP")).thenReturn("This is not an IP4 address!");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
+    }
+
+    @Test
     public void extractProxyClientIPHeader() {
         final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getHeader("x-forwarded-for")).thenReturn(null);
@@ -65,6 +89,28 @@ public class HttpRequestHelperTest {
     }
 
     @Test
+    public void extractInvalidProxyClientIPHeader() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn(null);
+        Mockito.when(request.getHeader("Proxy-Client-IP")).thenReturn("300.400.0.15");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
+    }
+
+    @Test
+    public void extractInvalidProxyClientIPHeaderText() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn(null);
+        Mockito.when(request.getHeader("Proxy-Client-IP")).thenReturn("This is not an IP4 address!");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
+    }
+
+    @Test
     public void extractXForwardForHeader() {
         final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getHeader("x-forwarded-for")).thenReturn("127.0.0.1");
@@ -73,6 +119,26 @@ public class HttpRequestHelperTest {
 
         assertThat(remoteAddress).isNotNull();
         assertThat(remoteAddress).isEqualTo("127.0.0.1");
+    }
+
+    @Test
+    public void extractInvalidXForwardForHeader() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn("300.400.0.15");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
+    }
+
+    @Test
+    public void extractInvalidXForwardForHeaderText() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("x-forwarded-for")).thenReturn("This is not an IP4 address!");
+
+        final String remoteAddress = HttpRequestUtil.extractIPAddress(request);
+
+        assertThat(remoteAddress).isNull();
     }
 
     @Test
