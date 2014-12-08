@@ -24,12 +24,12 @@
 
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-cog"></i> <i class="fa fa-caret-down"></i></a>
             <ul class="dropdown-menu">
-                <li><a role="menuitem" ng-click="editVariant(variant, variant.type)">Edit...</a></li>
+                <li><a role="menuitem" ng-click="detailCtrl.editVariant(variant, variant.type)">Edit...</a></li>
                 <li><a role="menuitem" href="#/activity/{{applicationId}}/{{variant.variantID}}">Activity</a></li>
-                <li><a role="menuitem" ng-click="exportInstallations(variant)">Export Installations</a></li>
-                <li><a role="menuitem" ng-click="importInstallations(variant)">Import Installations...</a></li>
+                <li><a role="menuitem" ng-click="detailCtrl.exportInstallations(variant)">Export Installations</a></li>
+                <li><a role="menuitem" ng-click="detailCtrl.importInstallations(variant)">Import Installations...</a></li>
                 <li role="presentation" class="divider"></li>
-                <li><a role="menuitem" ng-click="removeVariant(variant, variant.type)">Remove...</a></li>
+                <li><a role="menuitem" ng-click="detailCtrl.removeVariant(variant, variant.type)">Remove...</a></li>
             </ul>
         </div>
         <div class="ups-toggle-box" collapse="isCollapsed(variant)">

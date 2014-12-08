@@ -39,28 +39,13 @@ angular.module('ups.directives', ['upsConsole.services'])
           return !variant.expand;
         };
 
-        $scope.editVariant = function (variant, type) {
-          $scope.$parent.editVariant(variant, type);
-        };
-
-        $scope.removeVariant = function (variant, type) {
-          $scope.$parent.removeVariant(variant, type);
-        };
-
-        $scope.exportInstallations = function (variant ) {
-          $scope.$parent.exportInstallations(variant);
-        };
-
-        $scope.importInstallations = function (variant ) {
-          $scope.$parent.importInstallations(variant);
-        };
-
-        $scope.applicationId = $routeParams.applicationId;
-        $scope.currentLocation = ContextProvider.contextPath();
-
         $scope.currentVariant = function (variant) {
           $rootScope.variant = variant;
         };
+
+        $scope.detailCtrl = $scope.$parent.$parent.detailCtrl;
+        $scope.applicationId = $routeParams.applicationId;
+        $scope.currentLocation = ContextProvider.contextPath();        
       },
       templateUrl: 'directives/variant-details.html'
     };
