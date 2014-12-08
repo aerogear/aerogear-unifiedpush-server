@@ -17,11 +17,14 @@
 'use strict';
 
 angular.module('upsConsole').controller('DetailController',
-  function($rootScope, $scope, $routeParams, $location, $modal, $http,  pushApplication, variants, importer, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+  function($rootScope, $routeParams, $location, $modal, $http,  pushApplication, variants, importer, exporter, Notifications, breadcrumbs, application, counts, ContextProvider, metrics) {
+
+  var $scope = this;
 
   /*
    * INITIALIZATION
    */
+  $scope.application = application;
   $rootScope.application = application;
   $scope.counts = counts;
   breadcrumbs.generateBreadcrumbs();

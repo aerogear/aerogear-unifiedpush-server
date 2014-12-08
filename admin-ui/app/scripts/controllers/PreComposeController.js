@@ -16,12 +16,19 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('DashboardController',
-  function ($rootScope, dashboard, totals, warnings, topThree) {
-    var $scope = this;
-    $rootScope.application = null;
+angular.module('upsConsole').controller('PreComposeController',
+	function($rootScope, $location, applications) {
 
-    $scope.dashboardData = totals;
-    $scope.warnings = warnings;
-    $scope.topThree = topThree;
-  });
+  var $scope = this;
+
+  if ($rootScope.application && !$scope.applicationChosen) {
+    $location.path('/compose/' + $rootScope.application.pushApplicationID);
+  }
+
+  $scope.applications = applications;
+
+  $scope.setApplication = function(application) {
+    $rootScope.application = application;
+    $scope.applicationChosen = !!application;
+  };
+});

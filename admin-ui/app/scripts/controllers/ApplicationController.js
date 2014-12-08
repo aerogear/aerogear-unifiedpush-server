@@ -17,7 +17,9 @@
 'use strict';
 
 angular.module('upsConsole').controller('ApplicationController',
-  function($rootScope, $scope, $modal, pushApplication, Notifications, applications) {
+  function($rootScope, $modal, pushApplication, Notifications, applications) {
+
+  var $scope = this;
 
   /*
    * INITIALIZATION

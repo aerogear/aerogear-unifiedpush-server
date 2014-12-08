@@ -16,8 +16,11 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
-
+angular.module('upsConsole').controller('ComposeController',
+    function($rootScope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
+  
+  var $scope = this;
+  
     /*
      * INITIALIZATION
      */
@@ -139,17 +142,4 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
     } );
   }
 
-});
-
-angular.module('upsConsole').controller('PreComposeController', function($rootScope, $scope, $location, applications) {
-  if ($rootScope.application && !$scope.applicationChosen) {
-    $location.path('/compose/' + $rootScope.application.pushApplicationID);
-  }
-
-  $scope.applications = applications;
-
-  $scope.setApplication = function(application) {
-    $rootScope.application = application;
-    $scope.applicationChosen = !!application;
-  };
 });

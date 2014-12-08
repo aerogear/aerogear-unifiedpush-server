@@ -17,7 +17,9 @@
 'use strict';
 
 angular.module('upsConsole').controller('InstallationController',
-  function($rootScope, $scope, $routeParams, installations, $sce, data) {
+  function($rootScope, $routeParams, installations, $sce, data) {
+
+  var $scope = this;
 
   $scope.currentPage = 1;
 
