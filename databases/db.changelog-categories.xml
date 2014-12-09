@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="edewit" id="1412851688198-41">
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="VARCHAR(255)"/>
+            <column name="sequence_next_hi_value" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit" id="1412851688198-8">
+        <createTable tableName="Category">
+            <column autoIncrement="true" name="id" type="BIGINT(19)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="edewit" id="1414001600089">
+        <createTable tableName="Installation_Category">
+            <column name="Installation_id" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="categories_id" type="BIGINT(19)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex indexName="index9A83A563DC2D45CD" tableName="Installation_Category">
+            <column name="Installation_id" type="varchar(255)"/>
+        </createIndex>
+        <createIndex indexName="index9A83A563B9183AEF" tableName="Installation_Category">
+            <column name="categories_id" type="BIGINT(19)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="edewit" id="1414001600089-1" failOnError="false">
+        <addPrimaryKey columnNames="Installation_id, categories_id" constraintName="PRIMARY" tableName="Installation_Category" />
+    </changeSet>
+    <changeSet author="edewit" id="1414001600089-2">
+        <addForeignKeyConstraint baseColumnNames="Installation_id" baseTableName="Installation_Category" constraintName="fk_install_category" referencedColumnNames="id" referencedTableName="Installation" />
+        <addForeignKeyConstraint baseColumnNames="categories_id" baseTableName="Installation_Category" constraintName="fk_category_category" referencedColumnNames="id" referencedTableName="Category" />
+    </changeSet>
+    <changeSet id="1414001600089-4" author="edewit">
+        <sql>
+            insert into Category (name) select distinct categories from Installation_categories
+        </sql>
+        <sql>
+            insert into Installation_Category SELECT installation_id, id FROM Installation_categories ic join Category c on c.name = ic.categories
+        </sql>
+    </changeSet>
+    <changeSet author="edewit" id="1414001600089-5">
+        <dropTable tableName="Installation_categories"/>
+    </changeSet>
+    <changeSet author="edewit" id="1412851688198-40">
+        <createTable tableName="WindowsVariant">
+            <column name="clientSecret" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
