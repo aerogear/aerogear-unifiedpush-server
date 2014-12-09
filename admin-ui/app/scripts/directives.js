@@ -45,7 +45,7 @@ angular.module('ups.directives', ['upsConsole.services'])
 
         $scope.detailCtrl = $scope.$parent.$parent.detailCtrl;
         $scope.applicationId = $routeParams.applicationId;
-        $scope.currentLocation = ContextProvider.contextPath();        
+        $scope.currentLocation = ContextProvider.contextPath();
       },
       templateUrl: 'directives/variant-details.html'
     };

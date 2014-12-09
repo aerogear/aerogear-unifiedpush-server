@@ -200,11 +200,10 @@ angular.module('upsConsole').controller('DetailController',
 
   $scope.generatePushConfigDialog = function() {
     var application = $scope.application;
-
-    var modalInstance = show('generate-push-config.html', {
+    show('generate-push-config.html', {
       application: function () { return application; }
     });
-  }
+  };
 
   /*
    * PRIVATE FUNCTIONS
@@ -258,7 +257,7 @@ angular.module('upsConsole').controller('DetailController',
     };
     $scope.generatePushConfig = function() {
       var selectedVariants = Object.keys($scope.variantSelection).map(function (type) {
-          return $scope.variantSelection[type];
+        return $scope.variantSelection[type];
       });
       return pushConfigGenerator.generate(selectedVariants);
     };
@@ -269,7 +268,7 @@ angular.module('upsConsole').controller('DetailController',
       pom.setAttribute('download', 'push-config.json');
       pom.click();
       $scope.cancel();
-    }
+    };
   }
 
   function show(template, resolve) {
