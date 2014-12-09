@@ -104,7 +104,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" ng-required="true">
+                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" ng-required="variant.type == 'ios'">
                             Production
                           </label>
                         </div>
@@ -112,7 +112,7 @@
                       <div class="row">
                         <div class="radio">
                           <label>
-                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false" ng-required="true">
+                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false" ng-required="variant.type == 'ios'">
                             Development
                           </label>
                         </div>
