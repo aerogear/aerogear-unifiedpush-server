@@ -310,7 +310,7 @@ app.initialize();
 // ../www/push-config.json
 {
   "pushServerURL": "{{ exampleCtrl.currentLocation }}",
-  {{ exampleCtrl.cordovaVariantType(exampleCtrl.variant) }} : {
+  "{{ exampleCtrl.cordovaVariantType(exampleCtrl.variant) }}" : {
     {{ exampleCtrl.projectNumberJson(exampleCtrl.variant) }}
     "variantID": "{{ exampleCtrl.variant.variantID }}",
     "variantSecret": "{{ exampleCtrl.variant.secret }}"
