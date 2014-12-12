@@ -16,8 +16,11 @@
  */
 'use strict';
 
-angular.module('upsConsole').controller('ComposeController', function($rootScope, $scope, $routeParams, $modal, $http, pushApplication, Notifications, messageSender) {
-
+angular.module('upsConsole').controller('ComposeController',
+    function($rootScope, $routeParams, $modal, $http, applicationsEndpoint, Notifications, messageSenderEndpoint) {
+  
+  var $scope = this;
+  
     /*
      * INITIALIZATION
      */
@@ -27,7 +30,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
   $scope.pushData.message['simple-push'] = 'version=' + new Date().getTime();
 
   if (!$rootScope.application) {
-    pushApplication.get( {appId: $routeParams.applicationId}, function ( application ) {
+    applicationsEndpoint.get( {appId: $routeParams.applicationId}, function ( application ) {
       $rootScope.application = application;
     });
   }
@@ -64,7 +67,7 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
     $http.defaults.headers.common.Authorization = 'Basic ' + btoa($rootScope.application.pushApplicationID +
       ':' + $rootScope.application.masterSecret);
 
-    messageSender.send({}, $scope.pushData, function() {
+    messageSenderEndpoint.send({}, $scope.pushData, function() {
       Notifications.success('Successfully sent Notification');
       $scope.pushData.message.alert = '';
     }, function() {
@@ -139,17 +142,4 @@ angular.module('upsConsole').controller('ComposeController', function($rootScope
     } );
   }
 
-});
-
-angular.module('upsConsole').controller('PreComposeController', function($rootScope, $scope, $location, applications) {
-  if ($rootScope.application && !$scope.applicationChosen) {
-    $location.path('/compose/' + $rootScope.application.pushApplicationID);
-  }
-
-  $scope.applications = applications;
-
-  $scope.setApplication = function(application) {
-    $rootScope.application = application;
-    $scope.applicationChosen = !!application;
-  };
 });

@@ -11,15 +11,15 @@
 
           <div class="col-sm-10">
             <select class="form-control" id="select" ng-model="application"
-                    ng-options="app.name for app in applications" ng-change="setApplication(application)">
+                    ng-options="app.name for app in preComposeCtrl.applications" ng-change="preComposeCtrl.setApplication(application)">
               <option value="">-- choose application --</option>
             </select>
           </div>
         </div>
       </form>
 
-      <div ng-if="applicationChosen">
-        <div ng-include="'views/include/compose.html'" ng-controller="ComposeController"></div>
+      <div ng-if="preComposeCtrl.applicationChosen">
+        <div ng-include="'views/include/compose.html'" ng-controller="ComposeController as composeCtrl"></div>
       </div>
     </div>
   </div>

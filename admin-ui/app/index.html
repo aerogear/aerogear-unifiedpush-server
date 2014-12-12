@@ -28,11 +28,11 @@
     <!-- endbuild -->
 
 </head>
-<body class="app-dashboard"  ng-controller="RootController">
+<body class="app-dashboard"  ng-controller="RootController as rootCtrl">
 
 <div class="idlebox ng-cloak"
-      ng-hide="idleCountdown > appConfig.idleWarningDuration">
-	You will be logged off in {{ idleCountdown }}&nbsp;seconds due to inactivity.
+      ng-hide="rootCtrl.idleCountdown > rootCtrl.appConfig.idleWarningDuration">
+	You will be logged off in {{ rootCtrl.idleCountdown }}&nbsp;seconds due to inactivity.
 </div>
 
 <!--[if lt IE 9]>
@@ -85,14 +85,14 @@
                     <li class="dropdown">
                         <a href="#" class="lo-user dropdown-toggle ng-binding" data-toggle="dropdown">
                           <span class="pficon pficon-user"></span>
-                            {{username}} <b class="caret"></b>
+                            {{rootCtrl.username}} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" ng-click="accountManagement()">Account Management</a>
+                                <a href="#" ng-click="rootCtrl.accountManagement()">Account Management</a>
                             </li>
                             <li>
-                                <a href="#" ng-click="logout()">Log Out</a>
+                                <a href="#" ng-click="rootCtrl.logout()">Log Out</a>
                             </li>
                         </ul>
                     </li>
@@ -104,10 +104,10 @@
 
 <!-- ngView:  -->
 <div class="row lo-main-pane lo-content-row ups-main-pane ng-scope" >
-  <ups-navigation current="{{section}}"></ups-navigation>
+  <ups-navigation current="{{$rootScope.section}}"></ups-navigation>
 
   <ng-view ng-show="!isViewLoading"></ng-view>
-  <div ng-include="'views/loading.html'" ng-show="isViewLoading"></div>
+  <div ng-include="'views/loading.html'" ng-show="$rootScope.isViewLoading"></div>
 </div>
 
 <!-- build:js scripts/modules.js -->
@@ -138,10 +138,22 @@
 <script src="scripts/controllers/InstallationController.js"></script>
 <script src="scripts/controllers/ExampleController.js"></script>
 <script src="scripts/controllers/ComposeController.js"></script>
+<script src="scripts/controllers/PreComposeController.js"></script>
 <script src="scripts/controllers/DashboardController.js"></script>
-<script src="scripts/services/pushApplicationService.js"></script>
+<script src="scripts/controllers/ActivityController.js"></script>
+<script src="scripts/services/upsConsole.services.module.js"></script>
+<script src="scripts/services/applicationsEndpoint.js"></script>
+<script src="scripts/services/dashboardEndpoint.js"></script>
+<script src="scripts/services/exporterEndpoint.js"></script>
+<script src="scripts/services/importerEndpoint.js"></script>
+<script src="scripts/services/installationsEndpoint.js"></script>
+<script src="scripts/services/messageSenderEndpoint.js"></script>
+<script src="scripts/services/metricsEndpoint.js"></script>
+<script src="scripts/services/variantsEndpoint.js"></script>
+<script src="scripts/services/breadcrumbsService.js"></script>
 <script src="scripts/services/errorReporting.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
+<script src="scripts/services/pushConfigGenerator.js"></script>
 <script src="scripts/directives.js"></script>
 <!-- endbuild -->
 

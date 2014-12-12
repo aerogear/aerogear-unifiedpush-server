@@ -43,6 +43,11 @@
 
   });
 
+  app.run(function($rootScope) {
+    // allow to retrieve $rootScope in views (for claritication of access scope)
+    $rootScope.$rootScope = $rootScope;
+  });
+
   app.factory('Auth', function () {
     return auth;
   });
@@ -71,10 +76,10 @@
     $routeProvider
       .when('/applications', {
         templateUrl: 'views/applications.html',
-        controller: 'ApplicationController',
+        controller: 'ApplicationController as appCtrl',
         resolve: {
-          applications: function (pushApplication) {
-            return pushApplication.fetch(1);
+          applications: function (applicationsEndpoint) {
+            return applicationsEndpoint.fetch(1);
           }
         },
         section: 'applications',
@@ -85,13 +90,13 @@
       })
       .when('/detail/:applicationId', {
         templateUrl: 'views/detail.html',
-        controller: 'DetailController',
+        controller: 'DetailController as detailCtrl',
         resolve: {
-          application: function ($route, pushApplication) {
-            return pushApplication.get({appId: $route.current.params.applicationId}).$promise;
+          application: function ($route, applicationsEndpoint) {
+            return applicationsEndpoint.get({appId: $route.current.params.applicationId}).$promise;
           },
-          counts: function ($route, pushApplication) {
-            return pushApplication.count({appId: $route.current.params.applicationId}).$promise;
+          counts: function ($route, applicationsEndpoint) {
+            return applicationsEndpoint.count({appId: $route.current.params.applicationId}).$promise;
           }
         },
         section: 'applications',
@@ -103,10 +108,10 @@
       })
       .when('/:applicationId/installations/:variantId', {
         templateUrl: 'views/installation.html',
-        controller: 'InstallationController',
+        controller: 'InstallationController as installationCtrl',
         resolve: {
-          data: function ($route, installations) {
-            return installations.fetchInstallations($route.current.params.variantId, 1);
+          data: function ($route, installationsEndpoint) {
+            return installationsEndpoint.fetchInstallations($route.current.params.variantId, 1);
           }
         },
         section: 'applications',
@@ -117,7 +122,7 @@
       })
       .when('/example/:applicationId/:variantType/:variantId', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController',
+        controller: 'ExampleController as exampleCtrl',
         section: 'applications',
         crumb: {
           parent: 'app-detail',
@@ -126,7 +131,7 @@
       })
       .when('/example/:applicationId/:variantType', {
         templateUrl: 'views/example.html',
-        controller: 'ExampleController',
+        controller: 'ExampleController as exampleCtrl',
         section: 'applications',
         crumb: {
           parent: 'app-detail',
@@ -135,10 +140,10 @@
       })
       .when('/compose', {
         templateUrl: 'views/compose-app.html',
-        controller: 'PreComposeController',
+        controller: 'PreComposeController as preComposeCtrl',
         resolve: {
-          applications: function (pushApplication) {
-            return pushApplication.query({}).$promise;
+          applications: function (applicationsEndpoint) {
+            return applicationsEndpoint.query({}).$promise;
           }
         },
         section: 'compose',
@@ -148,7 +153,7 @@
       })
       .when('/compose/:applicationId', {
         templateUrl: 'views/compose.html',
-        controller: 'ComposeController',
+        controller: 'ComposeController as composeCtrl',
         section: 'compose',
         crumb: {
           parent: 'app-detail',
@@ -157,16 +162,16 @@
       })
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html',
-        controller: 'DashboardController',
+        controller: 'DashboardController as dashboardCtrl',
         resolve: {
-          totals: function (dashboard) {
-            return dashboard.totals({}).$promise;
+          totals: function (dashboardEndpoint) {
+            return dashboardEndpoint.totals({}).$promise;
           },
-          warnings: function (dashboard) {
-            return dashboard.warnings({}).$promise;
+          warnings: function (dashboardEndpoint) {
+            return dashboardEndpoint.warnings({}).$promise;
           },
-          topThree: function (dashboard) {
-            return dashboard.topThree({}).$promise;
+          topThree: function (dashboardEndpoint) {
+            return dashboardEndpoint.topThree({}).$promise;
           }
         },
         section: 'dashboard',
@@ -177,11 +182,11 @@
       })
       .when('/activity/:applicationId', {
         templateUrl: 'views/notification.html',
-        controller: 'ActivityController',
+        controller: 'ActivityController as activityCtrl',
         resolve: {
-          data: function ($route, $q, pushApplication, metrics) {
-            var applicationMetricsPromise = metrics.fetchApplicationMetrics($route.current.params.applicationId, 1);
-            var applicationDetailPromise = pushApplication.get({appId: $route.current.params.applicationId}).$promise
+          data: function ($route, $q, applicationsEndpoint, metricsEndpoint) {
+            var applicationMetricsPromise = metricsEndpoint.fetchApplicationMetrics($route.current.params.applicationId, 1);
+            var applicationDetailPromise = applicationsEndpoint.get({appId: $route.current.params.applicationId}).$promise
               .then(function(application) {
                 return { application: application };
               });
@@ -200,11 +205,11 @@
       })
       .when('/activity/:applicationId/:variantId', {
         templateUrl: 'views/notification.html',
-        controller: 'ActivityController',
+        controller: 'ActivityController as activityCtrl',
         resolve: {
-          data: function ($route, $q, metrics, pushApplication) {
-            var variantMetricsPromise = metrics.fetchVariantMetrics($route.current.params.variantId, 1);
-            var applicationDetailPromise = pushApplication.get({appId: $route.current.params.applicationId}).$promise
+          data: function ($route, $q, metricsEndpoint, applicationsEndpoint) {
+            var variantMetricsPromise = metricsEndpoint.fetchVariantMetrics($route.current.params.variantId, 1);
+            var applicationDetailPromise = applicationsEndpoint.get({appId: $route.current.params.applicationId}).$promise
               .then(function(application) {
                 // determine variant from its ID
                 function findVariant() {
