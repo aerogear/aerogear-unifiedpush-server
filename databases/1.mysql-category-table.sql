@@ -1,3 +1,9 @@
+use unifiedpush;
+
+CREATE TABLE `hibernate_sequence` (
+    `next_val` BIGINT(19) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 --
 -- Table structure for table `Category`
 --
@@ -22,13 +28,6 @@ CREATE TABLE `Installation_Category` (
   KEY `FK9A83A563B9183AEF` (`categories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Constraints for table `Installation_Category`
---
-ALTER TABLE `Installation_Category`
-ADD CONSTRAINT `FK9A83A563B9183AEF` FOREIGN KEY (`categories_id`) REFERENCES `Category` (`id`),
-ADD CONSTRAINT `FK9A83A563DC2D45CD` FOREIGN KEY (`Installation_id`) REFERENCES `Installation` (`id`);
-
 
 --
 -- Migrate data from `Installation_categories` to `Installation_Category`
@@ -36,5 +35,7 @@ ADD CONSTRAINT `FK9A83A563DC2D45CD` FOREIGN KEY (`Installation_id`) REFERENCES `
 
 insert into Category (name) select distinct categories from Installation_categories;
 insert into Installation_Category SELECT installation_id, id FROM Installation_categories ic join Category c on c.name = ic.categories;
+
+insert into hibernate_sequence (next_val) select max(id) + 1 from Category;
 
 drop table Installation_categories;
