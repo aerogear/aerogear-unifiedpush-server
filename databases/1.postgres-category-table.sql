@@ -27,4 +27,4 @@ CREATE TABLE Installation_Category (
 insert into Category (name) select distinct categories from Installation_categories;
 insert into Installation_Category SELECT installation_id, id FROM Installation_categories ic join Category c on c.name = ic.categories;
 
-drop table Installation_categories;
+drop table installation_categories;
