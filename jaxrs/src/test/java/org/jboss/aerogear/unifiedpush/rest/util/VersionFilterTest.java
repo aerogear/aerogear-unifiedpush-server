@@ -2,14 +2,12 @@ package org.jboss.aerogear.unifiedpush.rest.util;
 
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 public class VersionFilterTest {
