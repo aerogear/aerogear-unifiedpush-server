@@ -53,14 +53,16 @@ public class VersionFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         final String accept = httpRequest.getHeader("accept");
-        final int index = accept.indexOf(AEROGEAR_VERSION_PREFIX);
-        if (index != -1) {
-            final int beginIndex = index + AEROGEAR_VERSION_PREFIX.length();
-            final String version = accept.substring(beginIndex, beginIndex + VERSION_LENGTH);
-            chain.doFilter(new TransformHttpServletRequestWrapper(version, httpRequest), response);
-        } else {
-            chain.doFilter(request, response);
+        if (accept != null) {
+            final int index = accept.indexOf(AEROGEAR_VERSION_PREFIX);
+            if (index != -1) {
+                final int beginIndex = index + AEROGEAR_VERSION_PREFIX.length();
+                final String version = accept.substring(beginIndex, beginIndex + VERSION_LENGTH);
+                chain.doFilter(new TransformHttpServletRequestWrapper(version, httpRequest), response);
+                return;
+            }
         }
+        chain.doFilter(request, response);
     }
 
     @Override
