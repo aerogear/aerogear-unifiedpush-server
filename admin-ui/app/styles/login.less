@@ -1,0 +1,66 @@
+@import "patternfly/less/patternfly";
+
+@font-path:      "../fonts";
+@fa-font-path:   "../fonts";
+@icon-font-path: "../fonts";
+@ups-font-path:  "../fonts/";
+
+
+@c_green: #4296B4;
+@c_greenxlight: lighten(@c_green, 50%);
+@c_greenlight: lighten(@c_green, 10%);
+@c_greenmedium: darken(@c_green, 5%);
+@c_greendark: darken(@c_green, 10%);
+
+@btn-primary-bg: @c_green; 
+@btn-primary-bg-img-start: @c_greenlight; 
+@btn-primary-bg-img-stop: @c_green; 
+@btn-primary-border: @c_green;
+
+.login-pf body {
+  background-color: #669eb2;
+  font-family: "Exo 2", sans-serif;
+  background-image: url(../img/bg-login.svg);
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+#kc-logo-wrapper {
+  background-image: url("../img/logo.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  height: 45px;
+  margin-right: 64px;
+  margin-top: 50px;
+  margin-bottom: 44px;
+}
+
+#kc-header-wrapper {
+  margin-bottom: 20px;
+}
+
+
+.login-pf .container {
+  padding-top: 40px; 
+  background-color: rgba(0,0,0,0.15);
+}
+
+
+#kc-passwd-update-form .col-xs-12.col-sm-12.col-md-4.col-lg-3 {
+  padding-right: 0;
+}
+
+@media (max-width: 767px) {
+
+  #kc-content-wrapper {
+    overflow-x: hidden;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .login-pf .container .details {
+    border-left: none;
+  }
+}

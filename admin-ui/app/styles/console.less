@@ -36,18 +36,30 @@
 
 /* these colors are originally green in liveoak console,
    for a sake of compatibility, I leave out original names */
-@c_green: #00A9EC;
+@c_green: #4296B4;
 @c_greenxlight: lighten(@c_green, 50%);
-@c_greenlight: lighten(@c_green, 35%);
-@c_greenmedium: darken(@c_green, 10%);
-@c_greendark: #00618A;
+@c_greenlight: lighten(@c_green, 10%);
+@c_greenmedium: darken(@c_green, 5%);
+@c_greendark: darken(@c_green, 10%);
+
+@c_blue_logo: #4296B4;
 
 @c_red: #cb0000;
+
+@brand-primary:@c_green;
 
 /* Border colors */
 @c_border: #cacaca;
 
 @images: "../img/";
+
+
+// btn-primary-color: ; 
+@btn-primary-bg: @c_green; 
+@btn-primary-bg-img-start: @c_greenlight; 
+@btn-primary-bg-img-stop: @c_green; 
+@btn-primary-border: @c_green;
+
 
 /*
 ***********************************
@@ -56,7 +68,7 @@
 */
 
 body {
-  line-height: 1.909em;
+//  line-height: 1.909em;
   font-family: @exo;
   color: @c_gray;
   background-color: @c_mainpane;
@@ -159,7 +171,7 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
 /* Top Menu */
 
 .navbar-pf {
-  background-color: @c_green;
+  background-color: @c_blue_logo;
   border: none;
 
   .navbar-header {
@@ -178,12 +190,18 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
       font-size: @fsizebig;
       font-size: 13px;
 
-      &:hover {
-        background-color: @c_greenmedium;
+      &:hover,
+      &:active {
+        background-color: darken(@c_blue_logo, 10%);
       }
     }
+    
+    > .open > a.lo-user:focus,
+    > .open > a.lo-user {
+      background-color: darken(@c_blue_logo, 10%);
+    } 
   }
-
+  
   .navbar-primary {
     background-color: @c_navlight;
     background-image: none;
@@ -1036,3 +1054,6 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
     margin-bottom: 10px;
   }
 }
+
+
+

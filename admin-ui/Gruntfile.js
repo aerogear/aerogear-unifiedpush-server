@@ -48,8 +48,14 @@ module.exports = function (grunt) {
         },
         src: '<%= yeoman.app %>/styles/account.less',
         dest: '<%= yeoman.tmp %>/styles/account.css'
+      },
+      login: {
+        options: {
+          paths: ['<%= yeoman.lib %>']
+        },
+        src: '<%= yeoman.app %>/styles/login.less',
+        dest: '<%= yeoman.tmp %>/styles/login.css'
       }
-
     },
     watch: {
       options: {
@@ -210,7 +216,7 @@ module.exports = function (grunt) {
               '*.{ico,txt}',
               '.htaccess',
               'keycloak.json',
-              'img/{,*/}*.{webp,gif,png,svg}'
+              'img/{,*/}*.{webp,gif,png,jpg,svg}'
             ]
           },
           {

@@ -7,16 +7,29 @@
 @ups-font-path:  "../fonts/";
 
 
+@c_green: #4296B4;
+@c_greenxlight: lighten(@c_green, 50%);
+@c_greenlight: lighten(@c_green, 10%);
+@c_greenmedium: darken(@c_green, 5%);
+@c_greendark: darken(@c_green, 10%);
+
+@btn-primary-bg: @c_green; 
+@btn-primary-bg-img-start: @c_greenlight; 
+@btn-primary-bg-img-stop: @c_green; 
+@btn-primary-border: @c_green;
+
 /* AeroGear theme for account settings */
 
-@c_default: #00a9ec;
+@c_default: #4196b4;
+@c_blue_logo: #4196b4;
+
 
 html, body {
   height: 100%;
 }
 
 body > .container {
-  min-height: calc(~"100% - 37px");
+  min-height: calc(~"100% - 36px");
   overflow: hidden;
   height: auto;
 }
@@ -58,7 +71,7 @@ a:focus {
   
   .navbar-pf {
     border: none;
-    background-color: @c_default;
+    background-color: @c_blue_logo;
   }
   
   .navbar-pf .navbar-header {
@@ -95,7 +108,10 @@ a:focus {
     padding: 7px 10px;
     border-left: 0;
   }
-
+  
+  .navbar-pf .navbar-utility a:hover {
+    background-color: darken(@c_blue_logo, 10%)!important;
+  }
 }
 
 
