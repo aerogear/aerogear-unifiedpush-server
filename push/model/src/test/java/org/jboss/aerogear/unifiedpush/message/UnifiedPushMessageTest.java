@@ -47,6 +47,7 @@ public class UnifiedPushMessageTest {
         message.setActionCategory("some value");
         message.setSound("default");
         message.setBadge(2);
+        message.setPage("/MainPage.xaml");
         message.setContentAvailable(true);
 
         final HashMap<String, Object> data = new HashMap<String, Object>();
@@ -515,6 +516,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
+        messageObject.put("page", "cordova");
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
@@ -534,6 +536,7 @@ public class UnifiedPushMessageTest {
                     "\"alert\":\"Howdy\"," +
                     "\"sound\":\"default\"," +
                     "\"badge\":2," +
+                    "\"page\":\"cordova\"," +
                     "\"action-category\":null," +
                     "\"content-available\":false," +
                     "\"user-data\":{" +
