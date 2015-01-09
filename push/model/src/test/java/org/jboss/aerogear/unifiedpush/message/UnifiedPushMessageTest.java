@@ -20,9 +20,16 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.exc.UnrecognizedPropertyException;
+import org.jboss.aerogear.unifiedpush.message.windows.TileType;
+import org.jboss.aerogear.unifiedpush.message.windows.Type;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -48,6 +55,8 @@ public class UnifiedPushMessageTest {
         message.setSound("default");
         message.setBadge(2);
         message.setPage("/MainPage.xaml");
+        message.getWindows().setType(Type.tile);
+        message.getWindows().setTileType(TileType.TileWideBlockAndText01);
         message.setContentAvailable(true);
 
         final HashMap<String, Object> data = new HashMap<String, Object>();
@@ -543,19 +552,26 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
-    public void testMessageToJson() throws IOException {
+    public void testMessageToJson() throws IOException, URISyntaxException {
         //given
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
 
-        messageObject.put("alert", "Howdy");
+        messageObject.put("alert", "HELLO!");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
         messageObject.put("page", "cordova");
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("someKey", "someValue");
+        data.put("key", "value");
+        data.put("key2", "value");
         messageObject.put("user-data", data);
+        messageObject.put("action-category", "category");
+        messageObject.put("content-available", "true");
         messageObject.put("simple-push", "version=123");
+        Map<String, Object> windows = new HashMap<String, Object>();
+        windows.put("type", "tile");
+        windows.put("tileType", "TileWideBlockAndText01");
+        messageObject.put("windows", windows);
 
         container.put("message", messageObject);
 
@@ -564,20 +580,10 @@ public class UnifiedPushMessageTest {
         String json = unifiedPushMessage.toJsonString();
 
         //then
-        assertEquals("{" +
-                "\"ipAddress\":null," +
-                "\"clientIdentifier\":null," +
-                "\"alert\":\"Howdy\"," +
-                "\"criteria\":{" +
-                    "\"categories\":null," +
-                    "\"variants\":null," +
-                    "\"alias\":null," +
-                    "\"deviceType\":null" +
-                "}," +
-                "\"config\":{" +
-                    "\"ttl\":-1" +
-                "}" +
-              "}", json);
+        Path path = Paths.get(getClass().getResource("/message-tojson.json").toURI());
+        String expectedJson = new String(Files.readAllBytes(path), Charset.defaultCharset());
+        //poor mans equals ignore white space
+        assertEquals(expectedJson.replaceAll("\\s", ""), json);
     }
 
     private UnifiedPushMessage parsePushMessage(Map<String, Object> container) throws IOException {

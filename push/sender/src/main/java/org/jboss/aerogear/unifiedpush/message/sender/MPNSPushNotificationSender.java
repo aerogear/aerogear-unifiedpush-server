@@ -20,7 +20,9 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.windows.mpns.MPNS;
+import org.jboss.aerogear.windows.mpns.MpnsNotification;
 import org.jboss.aerogear.windows.mpns.MpnsService;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 
@@ -40,12 +42,50 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
 
         MpnsService mpnsService = MPNS.newService().build();
         final Message message = pushMessage.getMessage();
-        final ToastNotification toastNotification = MPNS.newNotification().toast()
-                .parameter(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()))
-                .title(message.getAlert()).build();
+
+        MpnsNotification notification;
+        if (message.getWindows().getType() != null) {
+            switch (message.getWindows().getType()) {
+                case toast:
+                    ToastNotification.Builder builder = MPNS.newNotification().toast()
+                            .parameter(createLaunchParam(message.getUserData()))
+                            .title(message.getAlert());
+                    if (!message.getWindows().getTextFields().isEmpty()) {
+                        builder.subtitle(message.getWindows().getTextFields().get(0));
+                    }
+                    notification = builder.build();
+                    break;
+                case badge:
+                    notification = MPNS.newNotification().flipTile()
+                            .count(message.getBadge()).build();
+                    break;
+                case raw:
+                    notification = MPNS.newNotification().raw().body(message.getAlert()).build();
+                    break;
+                case tile:
+                    Windows windows = message.getWindows();
+                    notification = MPNS.newNotification().flipTile()
+                            .backBackgroundImage(windows.getImages().get(0))
+                            .backgroundImage(windows.getImages().get(1))
+                            .title(message.getAlert())
+                            .backTitle(windows.getTextFields().get(0))
+                            .backContent(windows.getTextFields().get(1))
+                            .build();
+                    break;
+                default:
+                    senderCallback.onError("unknown type: " + message.getWindows().getType());
+                    throw new IllegalArgumentException("unknown type: " + message.getWindows().getType());
+            }
+        } else {
+            notification = MPNS.newNotification().toast()
+                    .parameter(createLaunchParam(message.getUserData()))
+                    .title(message.getAlert()).build();
+        }
 
         for (String identifier : clientIdentifiers) {
-            mpnsService.push(identifier, toastNotification);
+            mpnsService.push(identifier, notification);
         }
+
+        senderCallback.onSuccess();
     }
 }
