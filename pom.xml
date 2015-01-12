@@ -114,6 +114,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- overriding apns from base -->
+            <dependency>
+                <groupId>com.notnoop.apns</groupId>
+                <artifactId>apns</artifactId>
+                <version>1.0.0.Beta5</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
