@@ -24,9 +24,11 @@ import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.windows.mpns.MPNS;
 import org.jboss.aerogear.windows.mpns.MpnsNotification;
 import org.jboss.aerogear.windows.mpns.MpnsService;
+import org.jboss.aerogear.windows.mpns.notifications.FlipTileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.jboss.aerogear.unifiedpush.message.sender.WNSPushNotificationSender.createLaunchParam;
 
@@ -64,13 +66,26 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     break;
                 case tile:
                     Windows windows = message.getWindows();
-                    notification = MPNS.newNotification().flipTile()
-                            .backBackgroundImage(windows.getImages().get(0))
-                            .backgroundImage(windows.getImages().get(1))
-                            .title(message.getAlert())
-                            .backTitle(windows.getTextFields().get(0))
-                            .backContent(windows.getTextFields().get(1))
-                            .build();
+                    FlipTileNotification.Builder flipTile = MPNS.newNotification().flipTile();
+                    flipTile.title(message.getAlert());
+
+                    List<String> images = windows.getImages();
+                    if (images.size() >= 1) {
+                        flipTile.backgroundImage(images.get(0));
+                    }
+
+                    if (images.size() >= 2) {
+                        flipTile.backBackgroundImage(images.get(1));
+                    }
+
+                    List<String> textFields = windows.getTextFields();
+                    if (textFields.size() >= 1) {
+                        flipTile.backTitle(textFields.get(0));
+                    }
+                    if (textFields.size() >= 2) {
+                        flipTile.backContent(textFields.get(1));
+                    }
+                    notification = flipTile.build();
                     break;
                 default:
                     senderCallback.onError("unknown type: " + message.getWindows().getType());
