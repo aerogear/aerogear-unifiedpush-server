@@ -5,6 +5,7 @@
             <module name="org.jboss.resteasy.resteasy-jackson-provider" services="import"/>
             <module name="org.codehaus.jackson.jackson-core-asl"/>
             <module name="org.codehaus.jackson.jackson-mapper-asl"/>
+            <module name="org.infinispan"/>
         </dependencies>
         <exclusions>
             <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
@@ -15,5 +16,9 @@
             <module name="org.keycloak.keycloak-undertow-adapter" />
             <module name="org.keycloak.keycloak-as7-adapter" />
         </exclusions>
+        <exclude-subsystems>
+            <subsystem name="webservices"/>
+        </exclude-subsystems>
+
     </deployment>
 </jboss-deployment-structure>

@@ -3,6 +3,7 @@
         <dependencies>
             <module name="org.apache.httpcomponents"/>
             <module name="org.jboss.resteasy.resteasy-jackson-provider"  services="import" />
+            <module name="org.jboss.xnio"/>
         </dependencies>
         <exclusions>
             <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
