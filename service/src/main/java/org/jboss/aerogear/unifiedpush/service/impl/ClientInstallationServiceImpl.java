@@ -83,8 +83,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     private void mergeCategories(Installation entity) {
         if (entity.getCategories() != null) {
-            List<String> categoryNames = convertToNames(entity.getCategories());
+            final List<String> categoryNames = convertToNames(entity.getCategories());
             final List<Category> categories = categoryDao.findByNames(categoryNames);
+            //replace json deserialised categories with their persistent counter parts see Category.equals
             entity.getCategories().removeAll(categories);
             entity.getCategories().addAll(categories);
         }
