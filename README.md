@@ -21,18 +21,6 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 For more details about the current release, please consult [our documentation](http://aerogear.org/docs/unifiedpush/).
 
-### Instructions for Keycloak administration console
-
-Note: The instructions below are pretty much based on [Keycloak integration with UPS](https://github.com/keycloak/keycloak/blob/master/project-integrations/aerogear-ups/README.md).
-
-* The aerogear security admin (keycloak) http://localhost:8080/auth/admin/aerogear/console/index.html
-* The aerogear user account page (keycloak) http://localhost:8080/auth/realms/aerogear/account
-
-### SSL by default
-
-The Keycloak directives inside UnifiedPush server will enforce SSL to **all** external IP addresses, except for *localhost* and Docker images.
-
-
 ## Development 
 
 The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
