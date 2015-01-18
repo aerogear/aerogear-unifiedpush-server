@@ -21,6 +21,11 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 For more details about the current release, please consult [our documentation](http://aerogear.org/docs/unifiedpush/).
 
+
+## Who is using it?
+
+We have a list of users in our [wiki](https://github.com/aerogear/aerogear-unifiedpush-server/wiki/Users-of-the-UnifiedPush-Server). If you are using the UnifiedPush Server, please add yourself to the list!
+
 ## Development 
 
 The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
