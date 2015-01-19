@@ -81,23 +81,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
     }
 
-    private void mergeCategories(Installation entity) {
-        if (entity.getCategories() != null) {
-            List<String> categoryNames = convertToNames(entity.getCategories());
-            final List<Category> categories = categoryDao.findByNames(categoryNames);
-            entity.getCategories().removeAll(categories);
-            entity.getCategories().addAll(categories);
-        }
-    }
-
-    private List<String> convertToNames(Set<Category> categories) {
-        List<String> result = new ArrayList<String>();
-        for (Category category : categories) {
-            result.add(category.getName());
-        }
-        return result;
-    }
-
     @Override
     @Asynchronous
     public void addInstallations(Variant variant, List<Installation> installations) {
@@ -225,5 +208,29 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      */
     private boolean hasTokenValue(Installation installation) {
         return (installation.getDeviceToken() != null && (!installation.getDeviceToken().isEmpty()));
+    }
+
+    /**
+     * When an installation is created or updated, the categories are passed without IDs.
+     * This method solve this issue by checking for existing categories and updating them (otherwise it would
+     * persist a new object).
+     * @param entity
+     */
+    private void mergeCategories(Installation entity) {
+        if (entity.getCategories() != null) {
+            final List<String> categoryNames = convertToNames(entity.getCategories());
+            final List<Category> categories = categoryDao.findByNames(categoryNames);
+            //Replace json deserialised categories with their persistent counter parts see Category.equals
+            entity.getCategories().removeAll(categories);
+            entity.getCategories().addAll(categories);
+        }
+    }
+
+    private List<String> convertToNames(Set<Category> categories) {
+        List<String> result = new ArrayList<String>();
+        for (Category category : categories) {
+            result.add(category.getName());
+        }
+        return result;
     }
 }
