@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <table name="SA.PUSHAPPLICATION">
+        <column>id</column>
+        <column>pushApplicationID</column>
+        <column>description</column>
+        <column>name</column>
+        <column>developer</column>
+        <row>
+            <value>1</value>
+            <value>888</value>
+            <value>hahaha</value>
+            <value>Push App 1</value>
+            <value>Admin</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>123</value>
+            <value>hahaha</value>
+            <value>Push App 2</value>
+            <value>Admin</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>999</value>
+            <value>mine</value>
+            <value>Push App 3</value>
+            <value>Dave The Drummer</value>
+        </row>
+    </table>
+    <table name="SA.VARIANT">
+        <column>id</column>
+        <column>VARIANT_TYPE</column>
+        <column>name</column>
+        <column>variantID</column>
+        <column>variants_id</column>
+        <column>type</column>
+        <row>
+            <value>1</value>
+            <value>android</value>
+            <value>Android Variant</value>
+            <value>1</value>
+            <value>1</value>
+            <value>0</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>android</value>
+            <value>ignored</value>
+            <value>2</value>
+            <value>1</value>
+            <value>0</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>ios</value>
+            <value>ignored</value>
+            <value>3</value>
+            <value>1</value>
+            <value>1</value>
+        </row>
+    </table>
+    <table name="SA.ANDROIDVARIANT">
+        <column>id</column>
+        <column>googleKey</column>
+        <row>
+            <value>1</value>
+            <value>KEY...</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>123</value>
+        </row>
+    </table>
+    <table name="SA.IOSVARIANT">
+        <column>id</column>
+        <column>certificate</column>
+        <column>passphrase</column>
+        <column>production</column>
+        <row>
+            <value>3</value>
+            <value>1</value>
+            <value>123</value>
+            <value>false</value>
+        </row>
+    </table>
+
+    <table name="SA.INSTALLATION">
+        <column>id</column>
+        <column>enabled</column>
+        <column>deviceToken</column>
+        <column>variantID</column>
+        <row>
+            <value>1</value>
+            <value>true</value>
+            <value>CSPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>true</value>
+            <value>ASPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>true</value>
+            <value>33ee51dad49a77ca7b45924074bcc4f19aea20308f5feda202fbba3baed7073d7</value>
+            <value>3</value>
+        </row>
+    </table>
+</dataset>
