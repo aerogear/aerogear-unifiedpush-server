@@ -49,6 +49,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <many-to-many name="categories" fetch="EAGER">
                 <cascade>
                     <cascade-persist/>
+                    <cascade-merge/>
                 </cascade>
             </many-to-many>
         </attributes>

@@ -16,59 +16,39 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
-import org.junit.After;
-import org.junit.Before;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.RollbackException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Arquillian.class)
 public class CategoryDaoTest {
 
+    @Inject
     private EntityManager entityManager;
+    @Inject
     private JPACategoryDao categoryDao;
 
-    @Before
-    public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
-        // start the shindig
-        entityManager.getTransaction().begin();
-
-        createTestData(entityManager);
-        categoryDao = new JPACategoryDao();
-        categoryDao.setEntityManager(entityManager);
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return DaoDeployment.createDeployment();
     }
 
-    @After
-    public void tearDown() {
-        try {
-            entityManager.getTransaction().commit();
-        } catch (RollbackException e) {
-            //ignore
-        }
-
-        entityManager.close();
-    }
-
-    private void createTestData(EntityManager entityManager) {
-        Category cat1 = new Category("cat1");
-        Category cat2 = new Category("cat2");
-        Category cat3 = new Category("cat3");
-
-        entityManager.persist(cat1);
-        entityManager.persist(cat2);
-        entityManager.persist(cat3);
-    }
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Categories.xml");
 
     @Test
     public void shouldFindCategoriesByName() {

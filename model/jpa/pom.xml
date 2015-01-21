@@ -87,10 +87,18 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.spec</groupId>
-                    <artifactId>jboss-javaee-6.0</artifactId>
-                    <version>1.0.0.Final</version>
-                    <type>pom</type>
+                    <groupId>org.jboss.spec.javax.ejb</groupId>
+                    <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.spec.javax.el</groupId>
+                    <artifactId>jboss-el-api_2.2_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.inject</groupId>
+                    <artifactId>javax.inject</artifactId>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
@@ -113,6 +121,12 @@
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-simple</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>net.jakubholy.testing</groupId>
+                    <artifactId>dbunit-express</artifactId>
+                    <version>1.3.0</version>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
