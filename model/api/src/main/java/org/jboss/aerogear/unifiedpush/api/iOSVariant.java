@@ -21,11 +21,13 @@ import javax.validation.constraints.Size;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.jboss.aerogear.crypto.encoders.Base64;
 
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
 public class iOSVariant extends Variant {
+    private static final Base64 encoder = new Base64();
     private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;
@@ -37,7 +39,7 @@ public class iOSVariant extends Variant {
 
     @NotNull(message = "Certificate must be provided")
     @JsonIgnore
-    private byte[] certificate;
+    private String certificateData;
 
     /**
      * If <code>true</code> a connection to Apple's Production APNs server
@@ -75,12 +77,12 @@ public class iOSVariant extends Variant {
      */
     @JsonIgnore
     public byte[] getCertificate() {
-        return certificate;
+        return encoder.decode(certificateData);
     }
 
     @JsonProperty
     public void setCertificate(byte[] cert) {
-        this.certificate = cert;
+        this.certificateData = encoder.encode(cert);
     }
 
     @Override
