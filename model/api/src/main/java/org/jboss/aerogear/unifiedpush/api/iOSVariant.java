@@ -19,15 +19,16 @@ package org.jboss.aerogear.unifiedpush.api;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import net.iharder.Base64;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.jboss.aerogear.crypto.encoders.Base64;
+
+import java.io.IOException;
 
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
 public class iOSVariant extends Variant {
-    private static final Base64 encoder = new Base64();
     private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;
@@ -77,12 +78,16 @@ public class iOSVariant extends Variant {
      */
     @JsonIgnore
     public byte[] getCertificate() {
-        return encoder.decode(certificateData);
+        try {
+            return Base64.decode(certificateData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @JsonProperty
     public void setCertificate(byte[] cert) {
-        this.certificateData = encoder.encode(cert);
+        this.certificateData = Base64.encodeBytes(cert);
     }
 
     @Override
