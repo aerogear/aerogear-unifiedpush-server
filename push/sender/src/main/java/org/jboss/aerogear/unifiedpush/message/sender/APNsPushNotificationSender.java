@@ -196,17 +196,52 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 return null;
             }
 
-            // pick the destination:
-            if (iOSVariant.isProduction()) {
-                builder.withProductionDestination();
-            } else {
-                builder.withSandboxDestination();
-            }
+            configureDestinations(iOSVariant, builder);
+
 
             // create the service
             return builder.build();
         }
         // null if, why ever, there was no cert/passphrase
         return null;
+    }
+
+    /**
+     * Configure the Gateway to the Apns servers.
+     * Default gateway and port can be override with respectively :
+     *  - aerogear.apns.push.host
+     *  - aerogear.apns.push.port
+     *
+     * Feedback gateway and port can be override with  respectively :
+     *  - aerogear.apns.feedback.host
+     *  - aerogear.apns.feedback.port
+     * @param iOSVariant
+     * @param builder
+     */
+    private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
+        // pick the destination:
+        if (iOSVariant.isProduction()) {
+            builder.withProductionDestination();
+        } else {
+            builder.withSandboxDestination();
+        }
+
+        //Is the gateway host&port provided by a system property ?
+        if(System.getProperty("aerogear.apns.push.host")!= null){
+            int port = Utilities.SANDBOX_GATEWAY_PORT;
+            if(System.getProperty("aerogear.apns.push.port")!= null) {
+                port = Integer.parseInt(System.getProperty("aerogear.apns.push.port"));
+            }
+            builder.withGatewayDestination(System.getProperty("aerogear.apns.push.host"),port);
+        }
+
+        //Is the feedback gateway provided by a system property ?
+        if(System.getProperty("aerogear.apns.feedback.host")!= null){
+            int port = Utilities.SANDBOX_FEEDBACK_PORT;
+            if(System.getProperty("aerogear.apns.feedback.port")!= null) {
+                port = Integer.parseInt(System.getProperty("aerogear.apns.feedback.port"));
+            }
+            builder.withFeedbackDestination(System.getProperty("aerogear.apns.feedback.host"),port);
+        }
     }
 }
