@@ -20,12 +20,14 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.junit.Test;
-
+import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Properties;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,6 +46,29 @@ public class APNsPushNotificationSenderTest {
         sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), callback);
         
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
+    }
+
+    @Test
+    public void customGateway() throws Exception {
+        Properties props = System.getProperties();
+        props.setProperty("aerogear.apns.push.host","host.not.exist");
+        final APNsPushNotificationSender sender = new APNsPushNotificationSender();
+        final NotificationSenderCallback callback = new NotificationSenderCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(String reason) {
+                assertEquals("Error sending payload to APNs server: java.net.UnknownHostException: host.not.exist", reason);
+            }
+        };
+
+        final iOSVariant iosVariant = mock(iOSVariant.class);
+        when(iosVariant.getCertificate()).thenReturn(readCertificate());
+        when(iosVariant.getPassphrase()).thenReturn("123456");
+        sender.sendPushMessage(iosVariant, Arrays.asList("2ed202ac08ea9cf8d55910df290567037dcc4"), new UnifiedPushMessage(), callback);
     }
 
     /**
