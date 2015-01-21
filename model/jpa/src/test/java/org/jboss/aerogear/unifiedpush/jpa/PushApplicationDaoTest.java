@@ -20,50 +20,60 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.jboss.aerogear.unifiedpush.utils.EntityFactory;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Arquillian.class)
 public class PushApplicationDaoTest {
 
+    @Inject
     private EntityManager entityManager;
-    private JPAPushApplicationDao pushApplicationDao;
-    private JPAVariantDao variantDao;
-    private JPAInstallationDao installationDao;
+    @Inject
+    private PushApplicationDao pushApplicationDao;
+    @Inject
+    private VariantDao variantDao;
+    @Inject
+    private InstallationDao installationDao;
+
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class)
+                .addPackage("org.jboss.aerogear.unifiedpush.jpa.dao.impl")
+                .addPackage("org.jboss.aerogear.unifiedpush.api")
+                .addPackage("org.jboss.aerogear.unifiedpush.api.dao")
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addClass(EntityFactory.class)
+                .addAsManifestResource("META-INF/persistence.xml");
+    }
 
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
         // start the shindig
         entityManager.getTransaction().begin();
-
-        pushApplicationDao = new JPAPushApplicationDao();
-        pushApplicationDao.setEntityManager(entityManager);
-        variantDao = new JPAVariantDao();
-        variantDao.setEntityManager(entityManager);
-        installationDao = new JPAInstallationDao();
-        installationDao.setEntityManager(entityManager);
     }
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().commit();
-
-        entityManager.close();
+        entityManager.getTransaction().rollback();
     }
 
 
@@ -351,7 +361,6 @@ public class PushApplicationDaoTest {
 
         final Map<String, Long> result = pushApplicationDao.countInstallationsByType(pushApplication1.getPushApplicationID());
 
-        System.out.println("result = " + result);
         assertThat(result).isNotEmpty();
         assertThat(result.get(av.getVariantID())).isEqualTo(2L);
         assertThat(result.get(ios.getVariantID())).isEqualTo(1L);
