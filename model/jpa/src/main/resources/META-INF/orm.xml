@@ -63,8 +63,8 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="iOSVariant" access="FIELD">
         <discriminator-value>ios</discriminator-value>
         <attributes>
-            <basic name="certificate">
-                <lob/>
+            <basic name="certificateData">
+                <column length="100000"/>
             </basic>
         </attributes>
     </entity>
