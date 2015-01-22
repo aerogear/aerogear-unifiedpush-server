@@ -22,11 +22,9 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.utils.EntityFactory;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
@@ -52,13 +50,7 @@ public class PushApplicationDaoTest {
 
     @Deployment
     public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addPackage("org.jboss.aerogear.unifiedpush.jpa.dao.impl")
-                .addPackage("org.jboss.aerogear.unifiedpush.api")
-                .addPackage("org.jboss.aerogear.unifiedpush.api.dao")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClass(EntityFactory.class)
-                .addAsManifestResource("META-INF/persistence.xml");
+        return DaoDeployment.createDeployment();
     }
 
     @Before
