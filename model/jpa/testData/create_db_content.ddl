@@ -41,10 +41,16 @@ CREATE TABLE Installation (
   alias           VARCHAR(255)  DEFAULT NULL,
   deviceToken     VARCHAR(4096) DEFAULT NULL,
   deviceType      VARCHAR(255)  DEFAULT NULL,
-  enabled         BOOLEAN       NOT NULL,
+  enabled         BOOLEAN      NOT NULL,
   operatingSystem VARCHAR(255)  DEFAULT NULL,
   osVersion       VARCHAR(255)  DEFAULT NULL,
   platform        VARCHAR(255)  DEFAULT NULL,
   variantID       VARCHAR(255)  DEFAULT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE Category (
+  id   BIGINT NOT NULL,
+  name VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+) 

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <table name="SA.CATEGORY">
+        <column>id</column>
+        <column>name</column>
+        <row>
+            <value>1</value>
+            <value>cat1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>cat2</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>cat3</value>
+        </row>
+    </table>
+</dataset>
