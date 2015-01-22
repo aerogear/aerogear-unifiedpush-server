@@ -51,7 +51,7 @@ public class APNsPushNotificationSenderTest {
     @Test
     public void customGateway() throws Exception {
         Properties props = System.getProperties();
-        props.setProperty("aerogear.apns.push.host","host.not.exist");
+        props.setProperty("custom.aerogear.apns.push.host","host.not.exist");
         final APNsPushNotificationSender sender = new APNsPushNotificationSender();
         final NotificationSenderCallback callback = new NotificationSenderCallback() {
             @Override
