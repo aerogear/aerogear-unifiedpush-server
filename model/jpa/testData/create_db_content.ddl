@@ -62,6 +62,27 @@ CREATE TABLE Category (
 
 CREATE TABLE Installation_Category (
   Installation_id VARCHAR(255) NOT NULL,
-  categories_id   BIGINT NOT NULL,
+  categories_id   BIGINT       NOT NULL,
   PRIMARY KEY (Installation_id, categories_id)
-)
+);
+
+CREATE TABLE PushMessageInformation (
+  id                VARCHAR(255) NOT NULL,
+  clientIdentifier  VARCHAR(255)  DEFAULT NULL,
+  ipAddress         VARCHAR(255)  DEFAULT NULL,
+  pushApplicationId VARCHAR(255) NOT NULL,
+  rawJsonMessage    VARCHAR(4500) DEFAULT NULL,
+  submitDate        DATETIME      DEFAULT NULL,
+  totalReceivers    BIGINT       NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE VariantMetricInformation (
+  id                     VARCHAR(255) NOT NULL,
+  deliveryStatus         BOOLEAN      DEFAULT NULL,
+  reason                 VARCHAR(255) DEFAULT NULL,
+  receivers              BIGINT       NOT NULL,
+  variantID              VARCHAR(255) NOT NULL,
+  variantInformations_id VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
