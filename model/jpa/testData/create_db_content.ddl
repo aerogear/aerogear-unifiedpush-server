@@ -72,7 +72,7 @@ CREATE TABLE PushMessageInformation (
   ipAddress         VARCHAR(255)  DEFAULT NULL,
   pushApplicationId VARCHAR(255) NOT NULL,
   rawJsonMessage    VARCHAR(4500) DEFAULT NULL,
-  submitDate        DATETIME      DEFAULT NULL,
+  submitDate        DATE          DEFAULT NULL,
   totalReceivers    BIGINT       NOT NULL,
   PRIMARY KEY (id)
 );
