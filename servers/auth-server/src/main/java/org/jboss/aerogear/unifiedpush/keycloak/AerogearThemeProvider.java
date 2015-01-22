@@ -35,11 +35,13 @@ public class AerogearThemeProvider implements ThemeProvider {
     private static Set<String> ACCOUNT_THEMES = new HashSet<String>();
     private static Set<String> LOGIN_THEMES = new HashSet<String>();
     private static Set<String> ADMIN_THEMES = new HashSet<String>();
+    private static Set<String> WELCOME_THEMES = new HashSet<String>();
 
     static {
         Collections.addAll(ACCOUNT_THEMES, AEROGEAR);
         Collections.addAll(LOGIN_THEMES, AEROGEAR);
         Collections.addAll(ADMIN_THEMES, AEROGEAR);
+        Collections.addAll(WELCOME_THEMES, AEROGEAR);
     }
 
     @Override
@@ -65,6 +67,8 @@ public class AerogearThemeProvider implements ThemeProvider {
                 return ACCOUNT_THEMES;
             case ADMIN:
                 return ADMIN_THEMES;
+            case WELCOME:
+                return WELCOME_THEMES;
             default:
                 return Collections.emptySet();
         }
