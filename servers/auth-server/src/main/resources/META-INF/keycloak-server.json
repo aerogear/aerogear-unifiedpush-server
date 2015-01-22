@@ -39,6 +39,7 @@
 
     "theme": {
         "default": "keycloak",
+        "welcomeTheme": "aerogear",
         "staticMaxAge": 2592000,
         "cacheTemplates": true,
         "folder": {
