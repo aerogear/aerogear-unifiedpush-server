@@ -23,6 +23,11 @@ CREATE TABLE iOSVariant (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE SimplePushVariant (
+  id VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE Variant (
   VARIANT_TYPE VARCHAR(31)  NOT NULL,
   id           VARCHAR(255) NOT NULL,
@@ -53,4 +58,10 @@ CREATE TABLE Category (
   id   BIGINT NOT NULL,
   name VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
-) 
+);
+
+CREATE TABLE Installation_Category (
+  Installation_id VARCHAR(255) NOT NULL,
+  categories_id   BIGINT NOT NULL,
+  PRIMARY KEY (Installation_id, categories_id)
+)

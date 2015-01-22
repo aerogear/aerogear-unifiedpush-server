@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
@@ -27,163 +27,60 @@ import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
+@RunWith(Arquillian.class)
 public class InstallationDaoTest {
 
     public static final String DEVICE_TOKEN_1 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
     public static final String DEVICE_TOKEN_2 = "67890167890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+
+    @Inject
     private EntityManager entityManager;
+    @Inject
     private JPAInstallationDao installationDao;
-    private String androidVariantID;
-    private String simplePushVariantID;
+
+    private String androidVariantID = "1";
+    private String simplePushVariantID = "2";
+
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return DaoDeployment.createDeployment();
+    }
+
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
 
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
-        // start the shindig
         entityManager.getTransaction().begin();
-
-        this.createTestData(entityManager);
-    }
-
-    private void createTestData(EntityManager entityManager) {
-
-        // create abd configure all the DAOs:
-        JPAPushApplicationDao pushApplicationDao = new JPAPushApplicationDao();
-
-        // generic variant DAO:
-        JPAVariantDao variantDao = new JPAVariantDao();
-
-        pushApplicationDao.setEntityManager(entityManager);
-        variantDao.setEntityManager(entityManager);
-
-        this.installationDao = new JPAInstallationDao();
-        this.installationDao.setEntityManager(entityManager);
-
-        // create the PushApplication and a few variants:
-        PushApplication pa = new PushApplication();
-        pa.setName("PushApplication");
-        pushApplicationDao.create(pa);
-
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("Key");
-        av.setName("Android");
-        av.setDeveloper("me");
-        // stash the ID:
-        this.androidVariantID = av.getVariantID();
-        variantDao.create(av);
-
-        SimplePushVariant sp = new SimplePushVariant();
-        sp.setDeveloper("me");
-        sp.setName("SimplePush");
-        // stash the ID:
-        this.simplePushVariantID = sp.getVariantID();
-        variantDao.create(sp);
-
-        // register the variants with the Push Application:
-        pa.getVariants().add(av);
-        pa.getVariants().add(sp);
-        pushApplicationDao.update(pa);
-
-        // ============== Android client installations =========
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(DEVICE_TOKEN_1);
-        android1.setDeviceType("Android Phone");
-        final Set<Category> categoriesOne = new HashSet<Category>();
-        categoriesOne.add(new Category("soccer"));
-        android1.setCategories(categoriesOne);
-
-        installationDao.create(android1);
-
-        Installation android2 = new Installation();
-        android2.setAlias("foo@bar.org");
-        android2.setDeviceToken(DEVICE_TOKEN_2);
-        android2.setDeviceType("Android Tablet");
-        final Set<Category> categoriesTwo = new HashSet<Category>();
-        categoriesTwo.add(new Category("news"));
-        android2.setCategories(categoriesTwo);
-
-        installationDao.create(android2);
-
-        // disabled
-        Installation android3 = new Installation();
-        android3.setAlias("foo@bar.org");
-        android3.setDeviceToken("543234234890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
-        android3.setDeviceType("Android Tablet");
-        android3.setEnabled(false);
-
-        installationDao.create(android3);
-
-        // register them:
-        android1.setVariant(av);
-        android2.setVariant(av);
-        android3.setVariant(av);
-        variantDao.update(av);
-
-        // ============== SimplePush client installations =========
-        Installation simplePush1 = new Installation();
-        simplePush1.setAlias("foo@bar.org");
-        simplePush1.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
-        simplePush1.setCategories(categoriesOne);
-
-        installationDao.create(simplePush1);
-
-        Installation simplePush2 = new Installation();
-        simplePush2.setAlias("foo@bar.org");
-        simplePush2.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
-        simplePush2.setCategories(categoriesTwo);
-
-        installationDao.create(simplePush2);
-
-        Installation simplePush3 = new Installation();
-        simplePush3.setAlias("foo@bar.org");
-        simplePush3.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
-        simplePush3.setCategories(categoriesTwo);
-        simplePush3.setDeviceType("JavaFX Monitor");
-
-        installationDao.create(simplePush3);
-
-        // register the installation:
-        simplePush1.setVariant(sp);
-        simplePush2.setVariant(sp);
-        simplePush3.setVariant(sp);
-        variantDao.update(sp);
     }
 
     @After
     public void tearDown() {
-        try {
-            entityManager.getTransaction().commit();
-        } catch (RollbackException e) {
-            //ignore
-        }
-
-        entityManager.close();
+        entityManager.getTransaction().rollback();
     }
 
     @Test
@@ -581,9 +478,6 @@ public class InstallationDaoTest {
 
     @Test
     public void shouldSelectInstallationsByVariant() {
-        //given
-        String developer = "me";
-
         //when
         final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1);
 
