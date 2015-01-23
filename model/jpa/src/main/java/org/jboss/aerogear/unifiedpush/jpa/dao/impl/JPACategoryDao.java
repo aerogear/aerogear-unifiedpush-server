@@ -22,14 +22,10 @@ import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JPACategoryDao extends JPABaseDao implements CategoryDao {
-    @Override
-    public Category find(Integer id) {
-        return entityManager.find(Category.class, id);
-    }
+public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
 
     @Override
-    public List findByNames(List<String> names) {
+    public List<Category> findByNames(List<String> names) {
         List<Category> categoryList = new ArrayList<Category>();
         if(!names.isEmpty()){
             categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
@@ -39,18 +35,7 @@ public class JPACategoryDao extends JPABaseDao implements CategoryDao {
     }
 
     @Override
-    public void create(Category category) {
-        persist(category);
-    }
-
-    @Override
-    public void update(Category category) {
-        merge(category);
-
-    }
-
-    @Override
-    public void delete(Category category) {
-        remove(category);
+    public Class<Category> getType() {
+        return Category.class;
     }
 }

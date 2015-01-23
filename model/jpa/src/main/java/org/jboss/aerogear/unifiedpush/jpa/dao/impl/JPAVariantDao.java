@@ -20,22 +20,11 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
-import javax.persistence.Query;
 import java.util.Collections;
 import java.util.List;
 
-public class JPAVariantDao extends JPABaseDao implements VariantDao {
+public class JPAVariantDao extends JPABaseDao<Variant, String> implements VariantDao {
 
-
-    @Override
-    public void create(Variant variant) {
-        persist(variant);
-    }
-
-    @Override
-    public void update(Variant variant) {
-        merge(variant);
-    }
 
     @Override
     public void delete(Variant variant) {
@@ -44,8 +33,8 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
         for (Installation installation : resultList) {
             entityManager.remove(installation);
         }
-        Variant entity = entityManager.find(Variant.class, variant.getId());
-        remove(entity);
+        Variant entity = find(variant.getId());
+        super.delete(entity);
     }
 
 
@@ -58,7 +47,7 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
     @Override
     public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
 
-        Long numberOfVariants = (Long) createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer")
+        Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer", Long.class)
                 .setParameter("variantID", variantID)
                 .setParameter("developer", loginName).getSingleResult();
 
@@ -69,13 +58,12 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
 
     @Override
     public List<String> findVariantIDsForDeveloper(String loginName) {
-        return createQuery("select t.variantID from Variant t where t.developer = :developer")
+        return createQuery("select t.variantID from Variant t where t.developer = :developer", String.class)
                 .setParameter("developer", loginName).getResultList();
     }
 
     @Override
     public List<Variant> findAllVariantsByIDs(List<String> variantIDs) {
-
         if (variantIDs.isEmpty()) {
             return Collections.emptyList();
         }
@@ -84,29 +72,18 @@ public class JPAVariantDao extends JPABaseDao implements VariantDao {
                 .setParameter("variantIDs", variantIDs).getResultList();
     }
 
-    @Override
-    public Variant find(String id) {
-        return entityManager.find(Variant.class, id);
-    }
-
-    private Variant getSingleResultForQuery(Query query) {
-        List<Variant> result = query.getResultList();
-
-        if (!result.isEmpty()) {
-            return result.get(0);
-        } else {
-            return null;
-        }
-    }
-
     //Admin queries
     @Override
     public boolean existsVariantIDForAdmin(String variantID) {
 
-        Long numberOfVariants = (Long) createQuery("select count(t) from Variant t where t.variantID = :variantID")
+        Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID", Long.class)
                 .setParameter("variantID", variantID).getSingleResult();
 
         return numberOfVariants == 1L;
     }
 
+    @Override
+    public Class<Variant> getType() {
+        return Variant.class;
+    }
 }
