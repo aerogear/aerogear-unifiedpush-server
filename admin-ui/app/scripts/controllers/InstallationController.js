@@ -33,7 +33,7 @@ angular.module('upsConsole').controller('InstallationController',
 
   $scope.pageChanged = function () {
     $rootScope.isViewLoading = true;
-    fetchInstallationsEndpoint($scope.currentPage).then(function() {
+    fetchInstallations($scope.currentPage).then(function() {
       $rootScope.isViewLoading = false;
     });
   };
@@ -58,12 +58,12 @@ angular.module('upsConsole').controller('InstallationController',
   };
 
   function updateData(data) {
-    $scope.installationsEndpoint = data.page;
+    $scope.installations = data.page;
     $scope.totalItems = data.total;
   }
 
-  function fetchInstallationsEndpoint(pageNo) {
-    return installationsEndpoint.fetchInstallationsEndpoint($routeParams.variantId, pageNo).then(updateData);
+  function fetchInstallations(pageNo) {
+    return installationsEndpoint.fetchInstallations($routeParams.variantId, pageNo).then(updateData);
   }
 
   updateData(data);
