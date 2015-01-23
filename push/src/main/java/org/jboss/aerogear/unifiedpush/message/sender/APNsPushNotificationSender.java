@@ -38,9 +38,20 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
 
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
+
+    private static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
+    private static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
+    private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST = "custom.aerogear.apns.feedback.host";
+    private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
+    
+    private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
+    private static final String customAerogearApnsPushPort = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
+    private static final String customAerogearApnsFeedbackHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST);
+    private static final String customAerogearApnsFeedbackPort  = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT);
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
 
@@ -195,17 +206,51 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 return null;
             }
 
-            // pick the destination:
-            if (iOSVariant.isProduction()) {
-                builder.withProductionDestination();
-            } else {
-                builder.withSandboxDestination();
-            }
+            configureDestinations(iOSVariant, builder);
+
 
             // create the service
             return builder.build();
         }
         // null if, why ever, there was no cert/passphrase
         return null;
+    }
+
+    /**
+     * Configure the Gateway to the Apns servers.
+     * Default gateway and port can be override with respectively :
+     *  - aerogear.apns.push.host
+     *  - aerogear.apns.push.port
+     *
+     * Feedback gateway and port can be override with  respectively :
+     *  - aerogear.apns.feedback.host
+     *  - aerogear.apns.feedback.port
+     * @param iOSVariant
+     * @param builder
+     */
+    private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
+        // pick the destination:
+        if (iOSVariant.isProduction()) {
+            builder.withProductionDestination();
+        } else {
+            builder.withSandboxDestination();
+        }
+        //Is the gateway host&port provided by a system property ?
+        if(customAerogearApnsPushHost != null){
+            int port = Utilities.SANDBOX_GATEWAY_PORT;
+            if(customAerogearApnsPushPort != null) {
+                port = Integer.parseInt(customAerogearApnsPushPort);
+            }
+            builder.withGatewayDestination(customAerogearApnsPushHost,port);
+        }
+
+        //Is the feedback gateway provided by a system property ?
+        if(customAerogearApnsFeedbackHost != null){
+            int port = Utilities.SANDBOX_FEEDBACK_PORT;
+            if(customAerogearApnsFeedbackPort!= null) {
+                port = Integer.parseInt(customAerogearApnsFeedbackPort);
+            }
+            builder.withFeedbackDestination(customAerogearApnsFeedbackPort,port);
+        }
     }
 }

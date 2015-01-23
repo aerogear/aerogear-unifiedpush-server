@@ -20,12 +20,10 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,6 +43,8 @@ public class APNsPushNotificationSenderTest {
         
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }
+
+
 
     /**
      * The store read by this method was copied from
