@@ -90,7 +90,7 @@
     </table>
     <table name="SA.IOSVARIANT">
         <column>id</column>
-        <column>certificate</column>
+        <column>cert_data</column>
         <column>passphrase</column>
         <column>production</column>
         <row>
