@@ -16,10 +16,10 @@ CREATE TABLE AndroidVariant (
 );
 
 CREATE TABLE iOSVariant (
-  certificate BLOB         NOT NULL,
-  passphrase  VARCHAR(255) NOT NULL,
-  production  BOOLEAN      NOT NULL,
-  id          VARCHAR(255) NOT NULL,
+  cert_data  VARCHAR(1000) NOT NULL,
+  passphrase VARCHAR(255)  NOT NULL,
+  production BOOLEAN       NOT NULL,
+  id         VARCHAR(255)  NOT NULL,
   PRIMARY KEY (id)
 );
 
