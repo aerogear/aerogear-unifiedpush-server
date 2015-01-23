@@ -110,6 +110,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
 
-    <entity class="VariantMetricInformation" access="FIELD" />
+    <entity class="VariantMetricInformation" access="FIELD">
+        <attributes>
+            <many-to-one name="pushMessageInformation"/>
+        </attributes>
+    </entity>
 
 </entity-mappings>

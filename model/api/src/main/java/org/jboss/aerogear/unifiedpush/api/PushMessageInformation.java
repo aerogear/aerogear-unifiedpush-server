@@ -112,4 +112,9 @@ public class PushMessageInformation extends BaseModel {
     public void setTotalReceivers(long totalReceivers) {
         this.totalReceivers = totalReceivers;
     }
+
+    public void addVariantInformations(VariantMetricInformation variantMetricInformation) {
+        this.variantInformations.add(variantMetricInformation);
+        variantMetricInformation.setPushMessageInformation(this);
+    }
 }

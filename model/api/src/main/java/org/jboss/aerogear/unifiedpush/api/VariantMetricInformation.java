@@ -30,6 +30,8 @@ public class VariantMetricInformation extends BaseModel {
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
 
+    private PushMessageInformation pushMessageInformation;
+
     public VariantMetricInformation() {
     }
 
@@ -75,5 +77,13 @@ public class VariantMetricInformation extends BaseModel {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public PushMessageInformation getPushMessageInformation() {
+        return pushMessageInformation;
+    }
+
+    public void setPushMessageInformation(PushMessageInformation pushMessageInformation) {
+        this.pushMessageInformation = pushMessageInformation;
     }
 }

@@ -117,7 +117,7 @@ public class SenderServiceImpl implements SenderService {
         variantMetricInformation.setReceivers(receives);
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
-        pushMessageInformation.getVariantInformations().add(variantMetricInformation);
+        pushMessageInformation.addVariantInformations(variantMetricInformation);
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + receives);
 
         // store it!
