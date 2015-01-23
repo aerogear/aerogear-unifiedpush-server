@@ -27,7 +27,12 @@ import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import javax.persistence.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -58,7 +63,7 @@ public class PushMessageInformationDaoTest {
         // old date:
         final Calendar calendar = Calendar.getInstance();
         calendar.clear();
-        calendar.set(1980, 02, 01);
+        calendar.set(1980, Calendar.FEBRUARY, 1);
         pushMessageInformation.setSubmitDate(calendar.getTime());
 
         pushMessageInformation.setPushApplicationId("231231231");
@@ -68,7 +73,7 @@ public class PushMessageInformationDaoTest {
         variantOne.setDeliveryStatus(Boolean.FALSE);
         variantOne.setReceivers(200);
         variantOne.setVariantID("213");
-        pushMessageInformation.getVariantInformations().add(variantOne);
+        pushMessageInformation.addVariantInformations(variantOne);
 
         pushMessageInformationDao.create(pushMessageInformation);
 

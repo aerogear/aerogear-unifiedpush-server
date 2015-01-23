@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -34,12 +33,9 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         final List<Variant> variants = entity.getVariants();
-        if (variants != null && !variants.isEmpty()) {
-            final List<Installation> resultList = createQuery("from Installation i where i.variant in :variants", Installation.class)
-                    .setParameter("variants", variants).getResultList();
-            for (Installation installation : resultList) {
-                entityManager.remove(installation);
-            }
+        if (!variants.isEmpty()) {
+            createQuery("delete from Installation i where i.variant in :variants")
+                    .setParameter("variants", variants).executeUpdate();
         }
         super.delete(entity);
     }
