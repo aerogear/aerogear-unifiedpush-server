@@ -31,6 +31,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,16 @@ import java.util.Set;
 @SenderType(AndroidVariant.class)
 public class GCMPushNotificationSender implements PushNotificationSender {
 
+    // allowed tokens per HTTP request (Google policy)
     private static final int GCM_PAGE = 1000;
+
+    // collection of error codes we check for in the GCM response
+    // in order to clean-up invalid or incorrect device tokens
+    private static final Set<String> GCM_ERROR_CODES =
+            new HashSet<String>(Arrays.asList(
+                    Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
+                    Constants.ERROR_NOT_REGISTERED)        // The user has uninstalled the application or turned off notifications.
+            );
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -151,17 +161,19 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         // read the results:
         for (int i = 0; i < results.size(); i++) {
             // use the current index to access the individual results
-            Result result = results.get(i);
+            final Result result = results.get(i);
 
-            // is there an error code that indicates an invalid regID ?
-            if (Constants.ERROR_INVALID_REGISTRATION.equals(result.getErrorCodeName())) {
+            final String errorCodeName = result.getErrorCodeName();
 
-                // Ok the result at INDEX 'i' was an 'InvalidRegistration'!
+            // is there any 'interesting' error code, which requires a clean up of the registration IDs
+            if (GCM_ERROR_CODES.contains(errorCodeName)) {
 
-                // Now use the INDEX of the 'InvalidRegistration' result object, and look
+                // Ok the result at INDEX 'i' represents a 'bad' registrationID
+
+                // Now use the INDEX of the _that_ result object, and look
                 // for the matching registrationID inside of the List that contains
-                // all the used registration IDs and store it:
-                inactiveTokens.add(registrationIDs.get(i));
+                // _all_ the used registration IDs and store it:
+               inactiveTokens.add(registrationIDs.get(i));
             }
         }
 
