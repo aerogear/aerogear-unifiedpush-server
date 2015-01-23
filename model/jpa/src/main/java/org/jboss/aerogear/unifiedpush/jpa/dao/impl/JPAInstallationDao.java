@@ -20,27 +20,19 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
-import javax.persistence.Query;
-import javax.persistence.criteria.*;
-import java.util.*;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
-
-    @Override
-    public void create(Installation installation) {
-        persist(installation);
-    }
-
-    @Override
-    public void update(Installation installation) {
-        merge(installation);
-    }
-
-    @Override
-    public void delete(Installation installation) {
-        Installation entity = entityManager.find(Installation.class, installation.getId());
-        remove(entity);
-    }
+public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
     public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -78,7 +70,6 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
     }
 
 
-
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
@@ -95,7 +86,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         // if there are no device-tokens, no need to bug the database
         if (deviceTokens == null || deviceTokens.isEmpty()) {
             // be nice and return an empty list...
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return createQuery("select installation from Installation installation " +
@@ -120,22 +111,21 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
 
     @Override
     public long getNumberOfDevicesForVariantIDs(String loginName) {
-        return (Long) createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ")
+        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
     }
 
     @Override
-    public Installation find(String id) {
-        return entityManager.find(Installation.class, id);
+    public Class<Installation> getType() {
+        return Installation.class;
     }
 
     //Admin query
     @Override
     public long getNumberOfDevicesForVariantIDs() {
-        return (Long) createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ")
+        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ", Long.class)
                 .getSingleResult();
     }
-
 
     /**
      *
@@ -146,7 +136,6 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
      *
      * TODO: perhaps moving to Criteria API for this later
      */
-    @SuppressWarnings("unchecked")
     private List<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // parameter names and values, stored in a map:
@@ -176,7 +165,7 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
         }
 
         // the entire JPQL string
-        Query jpql = createQuery(jpqlBaseString.toString());
+        TypedQuery<String> jpql = createQuery(jpqlBaseString.toString(), String.class);
         // add REQUIRED param:
         jpql.setParameter("variantID", variantID);
 
@@ -193,15 +182,5 @@ public class JPAInstallationDao extends JPABaseDao implements InstallationDao {
      */
     private boolean isListEmpty(List list) {
         return (list != null && !list.isEmpty());
-    }
-
-    private Installation getSingleResultForQuery(Query query) {
-        List<Installation> result = query.getResultList();
-
-        if (!result.isEmpty()) {
-            return result.get(0);
-        } else {
-            return null;
-        }
     }
 }

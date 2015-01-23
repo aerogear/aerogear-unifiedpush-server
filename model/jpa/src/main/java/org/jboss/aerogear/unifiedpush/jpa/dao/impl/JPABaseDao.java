@@ -16,11 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.dao.GenericBaseDao;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
-public abstract class JPABaseDao {
+public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
 
     @Inject
     protected EntityManager entityManager;
@@ -33,20 +36,31 @@ public abstract class JPABaseDao {
     }
 
 
-    protected Query createQuery(String jpql) {
-        return entityManager.createQuery(jpql);
+    protected TypedQuery<T> createQuery(String jpql) {
+        return entityManager.createQuery(jpql, getType());
     }
 
-    protected void persist(Object entity) {
+    protected <O> TypedQuery<O> createQuery(String jpql, Class<O> type) {
+        return entityManager.createQuery(jpql, type);
+    }
+
+    //because you can't do T.class
+    public abstract Class<T> getType();
+
+    public T find(K id) {
+        return entityManager.find(getType(), id);
+    }
+
+    public void create(T entity) {
         entityManager.persist(entity);
     }
 
-    protected void merge(Object entity) {
+    public void update(T entity) {
         entityManager.merge(entity);
         entityManager.flush();
     }
 
-    protected void remove(Object entity) {
+    public void delete(T entity) {
         if (entity != null) {
             entityManager.remove(entity);
         }
@@ -59,5 +73,15 @@ public abstract class JPABaseDao {
     public void flushAndClear() {
         entityManager.flush();
         entityManager.clear();
+    }
+
+    protected T getSingleResultForQuery(TypedQuery<T> query) {
+        List<T> result = query.getResultList();
+
+        if (!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
     }
 }
