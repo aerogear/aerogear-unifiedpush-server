@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.message.util;
 
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import java.util.Properties;
 
 public class ConfigurationUtilsTest {
@@ -27,12 +27,12 @@ public class ConfigurationUtilsTest {
     public void testExistingTryGetProperty(){
         Properties properties = System.getProperties();
         properties.setProperty("MyNiceProp","MyNiceValue");
-        assertEquals(ConfigurationUtils.tryGetProperty("MyNiceProp"),"MyNiceValue");
+        assertThat(ConfigurationUtils.tryGetProperty("MyNiceProp")).isEqualTo("MyNiceValue");
     }
 
     @Test
     public void testNonExistingTryGetProperty(){
-        assertNull(ConfigurationUtils.tryGetProperty("MyNiceOtherProp"));
+        assertThat(ConfigurationUtils.tryGetProperty("MyNiceOtherProp")).isNull();
     }
 
 }
