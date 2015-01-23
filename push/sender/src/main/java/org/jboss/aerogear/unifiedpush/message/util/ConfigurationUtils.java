@@ -19,9 +19,13 @@ package org.jboss.aerogear.unifiedpush.message.util;
 
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class SenderUtils {
+public final class ConfigurationUtils {
 
-    private final static AeroGearLogger logger = AeroGearLogger.getInstance(SenderUtils.class);
+    private final static AeroGearLogger logger = AeroGearLogger.getInstance(ConfigurationUtils.class);
+
+    private ConfigurationUtils() {
+        // no-op
+    }
 
     /**
      * Try to retrieve a system property and returns null if SecurityManager blocks it.
@@ -33,7 +37,7 @@ public class SenderUtils {
         try {
             return System.getProperty(key);
         } catch (SecurityException e) {
-            logger.severe("Could not get value of property `" + key + "` due to SecurityManager. Using null value.");
+            logger.severe("Could not get value of property " + key + " due to SecurityManager. Using null value.");
             return null;
         }
     }

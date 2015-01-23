@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import static org.jboss.aerogear.unifiedpush.message.util.SenderUtils.tryGetProperty;
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
 
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
@@ -48,6 +48,12 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST = "custom.aerogear.apns.feedback.host";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
+    
+    private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
+    private static final String customAerogearApnsPushPort = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
+    private static final String customAerogearApnsFeedbackHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST);
+    private static final String customAerogearApnsFeedbackPort  = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT);
+
     private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
 
     @Inject
@@ -230,23 +236,22 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         } else {
             builder.withSandboxDestination();
         }
-
         //Is the gateway host&port provided by a system property ?
-        if(tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST)!= null){
+        if(customAerogearApnsPushHost != null){
             int port = Utilities.SANDBOX_GATEWAY_PORT;
-            if(tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT)!= null) {
-                port = Integer.parseInt(tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT));
+            if(customAerogearApnsPushPort != null) {
+                port = Integer.parseInt(customAerogearApnsPushPort);
             }
-            builder.withGatewayDestination(tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST),port);
+            builder.withGatewayDestination(customAerogearApnsPushHost,port);
         }
 
         //Is the feedback gateway provided by a system property ?
-        if(tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST)!= null){
+        if(customAerogearApnsFeedbackHost != null){
             int port = Utilities.SANDBOX_FEEDBACK_PORT;
-            if(tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT)!= null) {
-                port = Integer.parseInt(tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT));
+            if(customAerogearApnsFeedbackPort!= null) {
+                port = Integer.parseInt(customAerogearApnsFeedbackPort);
             }
-            builder.withFeedbackDestination(tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST),port);
+            builder.withFeedbackDestination(customAerogearApnsFeedbackPort,port);
         }
     }
 }
