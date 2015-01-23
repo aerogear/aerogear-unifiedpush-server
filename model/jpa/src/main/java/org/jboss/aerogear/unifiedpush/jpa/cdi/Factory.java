@@ -18,16 +18,13 @@ package org.jboss.aerogear.unifiedpush.jpa.cdi;
 
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 
 /**
  * CDI Utility class, which contains various producer / factory methods.
  */
 public final class Factory {
     @Produces
-    private EntityManager entityManage() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("unifiedpush-default");
-        return emf.createEntityManager();
-    }
+    @PersistenceContext(unitName = "unifiedpush-default")
+    private EntityManager entityManager;
 }
