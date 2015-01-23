@@ -64,4 +64,6 @@
             <value>123</value>
         </row>
     </table>
+    <table name="SA.IOSVARIANT"/>
+    <table name="SA.SIMPLEPUSHVARIANT"/>
 </dataset>

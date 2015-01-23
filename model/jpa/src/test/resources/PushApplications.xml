@@ -101,6 +101,8 @@
         </row>
     </table>
 
+    <table name="SA.SIMPLEPUSHVARIANT"/>
+
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>
@@ -125,4 +127,6 @@
             <value>3</value>
         </row>
     </table>
+    <table name="SA.CATEGORY"/>
+    <table name="SA.INSTALLATION_CATEGORY"/>
 </dataset>
