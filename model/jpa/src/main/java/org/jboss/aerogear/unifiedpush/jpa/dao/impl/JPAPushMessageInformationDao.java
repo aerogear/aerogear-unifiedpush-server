@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class JPAPushMessageInformationDao extends JPABaseDao implements PushMessageInformationDao {
+public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
 
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
@@ -60,44 +60,23 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
                 .setParameter(paramName, param)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
 
-        Long count = (Long) createQuery(countQuery).setParameter(paramName, param).getSingleResult();
+        Long count = createQuery(countQuery, Long.class).setParameter(paramName, param).getSingleResult();
 
         return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
     }
 
     @Override
     public long getNumberOfPushMessagesForApplications(String loginName) {
-        return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
-                "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)")
+        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
+                "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
-    }
-
-    @Override
-    public PushMessageInformation find(String id) {
-        return entityManager.find(PushMessageInformation.class, id);
-    }
-
-    @Override
-    public void create(PushMessageInformation pushMessageInformation) {
-        persist(pushMessageInformation);
-    }
-
-    @Override
-    public void update(PushMessageInformation pushMessageInformation) {
-        merge(pushMessageInformation);
-    }
-
-    @Override
-    public void delete(PushMessageInformation pushMessageInformation) {
-        PushMessageInformation entity = find(pushMessageInformation.getId());
-        remove(entity);
     }
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
         return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
-                " and vmi.deliveryStatus = false")
+                " and vmi.deliveryStatus = false", String.class)
                 .setParameter("developer", loginName)
                 .getResultList();
     }
@@ -121,7 +100,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
         logger.info("Deleting ['" + oldMessages.size() + "'] outdated PushMessageInformation objects");
 
         for (PushMessageInformation oldMessage : oldMessages) {
-            remove(oldMessage);
+            delete(oldMessage);
         }
     }
 
@@ -130,7 +109,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
     public List<String> findVariantIDsWithWarnings() {
         return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.variantID IN (select t.variantID from Variant t)" +
-                " and vmi.deliveryStatus = false")
+                " and vmi.deliveryStatus = false", String.class)
                 .getResultList();
     }
 
@@ -145,8 +124,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
 
     @Override
     public long getNumberOfPushMessagesForApplications() {
-        return (Long) createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
-                "IN (select p.pushApplicationID from PushApplication p)").getSingleResult();
+        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
+                "IN (select p.pushApplicationID from PushApplication p)", Long.class).getSingleResult();
     }
 
 
@@ -159,5 +138,10 @@ public class JPAPushMessageInformationDao extends JPABaseDao implements PushMess
         } else {
             return DESC;
         }
+    }
+
+    @Override
+    public Class<PushMessageInformation> getType() {
+        return PushMessageInformation.class;
     }
 }

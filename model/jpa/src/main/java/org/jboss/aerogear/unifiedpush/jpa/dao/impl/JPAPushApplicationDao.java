@@ -23,35 +23,25 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JPAPushApplicationDao extends JPABaseDao implements PushApplicationDao {
-
-    @Override
-    public void create(PushApplication pushApplication) {
-        persist(pushApplication);
-    }
-
-    @Override
-    public void update(PushApplication pushApplication) {
-        merge(pushApplication);
-    }
+public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
 
     @Override
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         final List<Variant> variants = entity.getVariants();
         if (variants != null && !variants.isEmpty()) {
-            final List<Installation> resultList = entityManager.createQuery("from Installation i where i.variant in :variants", Installation.class)
+            final List<Installation> resultList = createQuery("from Installation i where i.variant in :variants", Installation.class)
                     .setParameter("variants", variants).getResultList();
             for (Installation installation : resultList) {
                 entityManager.remove(installation);
             }
         }
-        remove(entity);
+        super.delete(entity);
     }
 
     @Override
@@ -70,7 +60,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
-        return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer")
+        return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer", String.class)
                 .setParameter("developer", loginName).getResultList();
     }
 
@@ -99,7 +89,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
         for (VariantType type : VariantType.values()) {
             results.put(type.getTypeName(), 0L);
         }
-        final Query query = createQuery(jpql)
+        final TypedQuery<Object[]> query = createQuery(jpql, Object[].class)
                 .setParameter("pushApplicationID", pushApplicationID);
         final List<Object[]> resultList = query.getResultList();
         for (Object[] objects : resultList) {
@@ -114,7 +104,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public long getNumberOfPushApplicationsForDeveloper(String name) {
-        return (Long) createQuery("select count(pa) from PushApplication pa where pa.developer = :developer")
+        return createQuery("select count(pa) from PushApplication pa where pa.developer = :developer", Long.class)
                 .setParameter("developer", name).getSingleResult();
     }
 
@@ -122,22 +112,12 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
     public List<PushApplication> findByVariantIds(List<String> variantIDs) {
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
 
-        return (List<PushApplication>) createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
+        return createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
     }
 
     @Override
-    public PushApplication find(String id) {
-        return entityManager.find(PushApplication.class, id);
-    }
-
-    private PushApplication getSingleResultForQuery(Query query) {
-        List<PushApplication> result = query.getResultList();
-
-        if (!result.isEmpty()) {
-            return result.get(0);
-        } else {
-            return null;
-        }
+    public Class<PushApplication> getType() {
+        return PushApplication.class;
     }
 
     //Specific queries to the Admin
@@ -163,7 +143,7 @@ public class JPAPushApplicationDao extends JPABaseDao implements PushApplication
 
     @Override
     public long getNumberOfPushApplicationsForDeveloper() {
-        return (Long) createQuery("select count(pa) from PushApplication pa")
+        return createQuery("select count(pa) from PushApplication pa", Long.class)
                 .getSingleResult();
     }
 
