@@ -32,4 +32,5 @@
             <value>cat3</value>
         </row>
     </table>
+    <table name="SA.INSTALLATION_CATEGORY"/>
 </dataset>
