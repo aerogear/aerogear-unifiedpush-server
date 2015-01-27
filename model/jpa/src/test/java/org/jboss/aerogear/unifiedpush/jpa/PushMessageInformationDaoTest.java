@@ -23,7 +23,6 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
-import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -106,14 +105,12 @@ public class PushMessageInformationDaoTest {
     @Test
     public void addJsonToPushMessageInformation() {
         pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
-        pushMessageInformation.setRawJsonMessage("{\"alert\" : \"hello\"}");
         pushMessageInformationDao.update(pushMessageInformation);
 
         flushAndClear();
 
         pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
 
-        assertThat(pushMessageInformation.getRawJsonMessage()).isEqualTo("{\"alert\" : \"hello\"}");
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
     }
 
@@ -521,23 +518,6 @@ public class PushMessageInformationDaoTest {
         assertThat(list).hasSize(2);
 
         assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
-    }
-
-    @Test
-    public void testLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
-        largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4500));
-        pushMessageInformationDao.create(largePushMessageInformation);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testTooLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
-        largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4501));
-        pushMessageInformationDao.create(largePushMessageInformation);
-        flushAndClear();
     }
 
     @Test
