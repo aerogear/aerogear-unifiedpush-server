@@ -87,31 +87,4 @@ angular.module('upsConsole').controller('ActivityController',
       return !metric.expand;
     };
 
-    $scope.parse = function (metric) {
-      try {
-        return JSON.parse(metric.rawJsonMessage);
-      } catch (err) {
-        return {};
-      }
-    };
-
-    $scope.showFullRequest = function (rawJsonMessage) {
-      $modal.open({
-        templateUrl: 'views/dialogs/request.html',
-        controller: function ($scope, $modalInstance, request) {
-          $scope.request = request;
-
-          $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-          };
-        },
-        resolve: {
-          request: function () {
-            //nasty way to get formatted json
-            return JSON.stringify(JSON.parse(rawJsonMessage), null, 4);
-          }
-        }
-      });
-    };
-
   });
