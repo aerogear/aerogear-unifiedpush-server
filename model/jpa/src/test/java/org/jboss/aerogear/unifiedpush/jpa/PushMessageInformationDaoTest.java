@@ -521,21 +521,6 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void testLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
-        largePushMessageInformation.setPushApplicationId("231231231");
-        pushMessageInformationDao.create(largePushMessageInformation);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testTooLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
-        largePushMessageInformation.setPushApplicationId("231231231");
-        pushMessageInformationDao.create(largePushMessageInformation);
-        flushAndClear();
-    }
-
-    @Test
     public void deleteOldPushMessageInformations() {
 
         List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
