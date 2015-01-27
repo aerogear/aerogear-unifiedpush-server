@@ -32,7 +32,6 @@ public class PushMessageInformationTest {
         // general job data
         pushMessageInformation = new PushMessageInformation();
         pushMessageInformation.setPushApplicationId("123");
-        pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
         pushMessageInformation.setClientIdentifier("Java Sender Client");
 
@@ -62,7 +61,6 @@ public class PushMessageInformationTest {
                         tuple(100L, Boolean.TRUE)
                 );
 
-        assertThat(pushMessageInformation.getRawJsonMessage()).isEqualTo("{\"data\" : \"something\"}");
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
         assertThat(pushMessageInformation.getId()).isNotNull();
         assertThat(pushMessageInformation.getIpAddress()).isEqualTo("127.0.0.1");

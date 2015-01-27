@@ -29,7 +29,6 @@ public class PushMessageInformation extends BaseModel {
     @NotNull
     private String pushApplicationId;
 
-    private String rawJsonMessage;
     private String ipAddress;
     private String clientIdentifier;
 
@@ -37,17 +36,6 @@ public class PushMessageInformation extends BaseModel {
     private long totalReceivers;
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
-
-    /**
-     * The raw JSON payload of the push message request
-     */
-    public String getRawJsonMessage() {
-        return rawJsonMessage;
-    }
-
-    public void setRawJsonMessage(String rawJsonMessage) {
-        this.rawJsonMessage = rawJsonMessage;
-    }
 
     /**
      * The IP from the submitter of the push message request

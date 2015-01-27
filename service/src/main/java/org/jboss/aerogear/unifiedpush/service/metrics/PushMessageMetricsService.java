@@ -50,7 +50,6 @@ public class PushMessageMetricsService {
     public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
         final PushMessageInformation information = new PushMessageInformation();
 
-        information.setRawJsonMessage(json);
         information.setIpAddress(ipAddress);
         information.setPushApplicationId(pushAppId);
         information.setClientIdentifier(clientIdentifier);
