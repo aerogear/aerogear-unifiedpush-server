@@ -15,7 +15,8 @@
     },
     "action-category":"some value",
     "content-available":true,
-    "simple-push":"version=123"
+    "simple-push":"version=123",
+    "consolidationKey":null
   },
   "criteria":{
     "categories":[

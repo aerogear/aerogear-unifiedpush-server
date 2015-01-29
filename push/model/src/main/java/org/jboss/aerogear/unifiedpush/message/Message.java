@@ -51,6 +51,8 @@ public class Message {
 
     private String page;
 
+    private String consolidationKey;
+
     /**
      * Returns the value of the 'action-category', which is used on the client (iOS for now),
      * to invoke a certain "user action" on the device, based on the push message. Implemented for iOS8
@@ -201,6 +203,20 @@ public class Message {
         this.simplePush = simplePush;
     }
 
+    /**
+     * Used for ADM Payload when used for "sync" Push messages.
+     * Not supported on other platforms.
+     *
+     * @return the consolidation key
+     */
+    public String getConsolidationKey() {
+        return consolidationKey;
+    }
+
+    public void setConsolidationKey(String consolidationKey) {
+        this.consolidationKey = consolidationKey;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
@@ -209,6 +225,7 @@ public class Message {
                 ", sound='" + sound + '\'' +
                 ", contentAvailable=" + contentAvailable +
                 ", badge=" + badge +
+                ", consolidationKey=" + consolidationKey +
                 ", user-data=" + userData +
                 ", simple-push='" + simplePush + '\'' +
                 '}';
