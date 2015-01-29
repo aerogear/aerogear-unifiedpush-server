@@ -290,9 +290,6 @@ angular.module('upsConsole').controller('DetailController',
     case 'simplePush':
       properties = properties.concat([]);
       break;
-    case 'chrome':
-      properties = properties.concat(['clientId', 'clientSecret', 'refreshToken']);
-      break;
     case 'ios':
       if (variant.certificates && variant.certificates.length) {
         variant.certificate = variant.certificates[0];

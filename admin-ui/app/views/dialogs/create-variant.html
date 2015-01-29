@@ -48,17 +48,6 @@
           </div>
           <div class="row">
             <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeChrome" ng-model="variant.type" value="chrome"  ng-required="true">
-              <label for="variantTypeChrome">
-                <div class="ups-platform chrome">
-                <b>Chrome</b><br />
-                <span>using Google Cloud Messaging for Chrome</span>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="radio ups-radio">
               <input type="radio" name="createVariantType" id="variantTypeWindows" ng-model="variant.type" value="windows"  ng-required="true">
               <label for="variantTypeWindows">
                 <div class="ups-platform windows">
@@ -141,33 +130,6 @@
             </div>
           </div>
         </div>
-
-        <div ng-show="variant.type == 'chrome'">
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Push Network</label>
-            <div class="col-sm-7">
-              <div class="form-group">
-                <label class="col-sm-5 control-label" for="chromeClientId">Client ID</label>
-                <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 291796959215.apps.googleusercontent.com" id="chromeClientId" class="form-control" ng-model="variant.clientId" ng-required="variant.type == 'chrome'">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-5 control-label" for="chromeClientSecret">Client Secret</label>
-                <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 0bKUtXN6ykk7Mj1lQxoBZ2mh" id="chromeClientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.type == 'chrome'">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-5 control-label" for="chromeRefreshToken">Refresh Token</label>
-                <div class="col-sm-7">
-                  <input type="text" placeholder="e.g. 1%wMfyZvGcCxMSNEX4iTRdE0H1_Yt0wvImBz_iCuXF-UM" id="chromeRefreshToken" class="form-control" ng-model="variant.refreshToken" ng-required="variant.type == 'chrome'">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div ng-show="variant.type.indexOf('windows') == 0">
         <div class="form-group">

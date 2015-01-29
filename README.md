@@ -100,6 +100,20 @@ The content of the [Release Process](https://github.com/aerogear/collateral/wiki
 mvn release:GOAL -Pdist,test
 ```
 
+
+## Deprecation Notices
+
+###  1.1.0
+
+*Chrome Packaged Apps*
+
+The Chrome Packaged App Variant will be removed.  Google has deprecated the [chrome.pushMessaging API](https://developer.chrome.com/extensions/pushMessaging) in favor of the [chrome.gcm API](https://developer.chrome.com/extensions/gcm).
+
+This change allows the UnifiedPush Server to now use the Android Variant for both Android and Chrome Apps.
+
+If you are using this functionality, please convert your applications to use the new API and recreate your variants.
+
+
 ### Any questions ?
 
 Join our [mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev) for any questions and help! We really hope you enjoy our UnifiedPush Server!
