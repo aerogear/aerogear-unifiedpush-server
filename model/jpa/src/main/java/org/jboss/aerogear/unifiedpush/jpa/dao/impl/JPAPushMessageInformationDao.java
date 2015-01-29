@@ -94,11 +94,11 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public void deletePushInformationOlderThan(Date oldest) {
         // TODO: use criteria API...
-        createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
+        entityManager.createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        int affectedRows = createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
+        int affectedRows = entityManager.createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
