@@ -230,13 +230,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param builder
      */
     private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
-        // pick the destination:
-        if (iOSVariant.isProduction()) {
-            builder.withProductionDestination();
-        } else {
-            builder.withSandboxDestination();
-        }
-        //Is the gateway host&port provided by a system property ?
+        // pick the destination, based on submitted profile:
+        builder.withAppleDestination(iOSVariant.isProduction());
+
+        //Is the gateway host&port provided by a system property, for tests ?
         if(customAerogearApnsPushHost != null){
             int port = Utilities.SANDBOX_GATEWAY_PORT;
             if(customAerogearApnsPushPort != null) {
@@ -245,7 +242,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             builder.withGatewayDestination(customAerogearApnsPushHost,port);
         }
 
-        //Is the feedback gateway provided by a system property ?
+        //Is the feedback gateway provided by a system property, for tests ?
         if(customAerogearApnsFeedbackHost != null){
             int port = Utilities.SANDBOX_FEEDBACK_PORT;
             if(customAerogearApnsFeedbackPort!= null) {
