@@ -312,6 +312,9 @@ angular.module('upsConsole').controller('DetailController',
       result.protocolType = 'mpns';
       properties = properties.concat([]);
       break;
+    case 'adm':
+      properties = properties.concat(['clientId','clientSecret']);
+      break;
     default:
       Notifications.error('Unknown variant type ' + variant.type);
     }

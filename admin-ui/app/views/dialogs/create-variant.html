@@ -68,6 +68,17 @@
               </label>
             </div>
           </div>
+          <div class="row">
+            <div class="radio ups-radio">
+              <input type="radio" name="createVariantType" id="variantTypeAdm" ng-model="variant.type" value="adm"  ng-required="true">
+              <label for="variantTypeAdm">
+                <div class="ups-platform adm">
+                  <b>ADM</b><br />
+                  <span>using Amazon Push Network</span>
+                </div>
+              </label>
+            </div>
+          </div>
         </div>
         <hr>
       </div>
@@ -184,6 +195,23 @@
           <div class="col-sm-7"><strong>No configuration needed</strong><p>This server's <em>SimplePush</em> implementation will be used.</p></div>
         </div>
       </div>
+
+      <div ng-show="variant.type == 'adm'">
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="admClientId">Push Network</label>
+          <div class="col-sm-7">Client ID<br>
+            <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="admClientId" class="form-control" ng-model="variant.clientId" ng-required="variant.type == 'adm'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="admclientSecret"></label>
+          <div class="col-sm-7">
+            Client Secret<br>
+            <input type="text" placeholder="e.g. 5da448c2f31700a466fbc9d33d33942b043a27596" id="admclientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.type == 'adm'">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

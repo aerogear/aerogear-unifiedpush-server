@@ -58,10 +58,14 @@
                 <table ng-show="variant.production != undefined">
                     <tr><td>Type:</td><td>{{ variant.production ? 'Production' : 'Development' }}</td></tr>
                 </table>
-                <table ng-show="variant.clientId.length">
+                <table ng-show="variant.type == 'chrome'">
                     <tr><td>Client Id:</td><td>{{ variant.clientId }}</td></tr>
                     <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
                     <tr><td>Refresh Token:</td><td>{{ variant.refreshToken }}</td></tr>
+                </table>
+                <table ng-show="variant.type == 'adm'">
+                    <tr><td>Client Id:</td><td>{{ variant.clientId }}</td></tr>
+                    <tr><td>Client Secret:</td><td>{{ variant.clientSecret }}</td></tr>
                 </table>
             </div>
             <hr class="spacer-15" />
