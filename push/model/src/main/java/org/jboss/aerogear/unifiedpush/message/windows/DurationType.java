@@ -17,7 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.windows;
 
 /**
- *
+ * Duration a Toast message is displayed long or short
+ * <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br230846.aspx">xml schema</a>
  */
 public enum DurationType {
     SHORT("short"),

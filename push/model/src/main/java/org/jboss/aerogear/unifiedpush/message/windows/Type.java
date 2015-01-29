@@ -17,8 +17,9 @@
 package org.jboss.aerogear.unifiedpush.message.windows;
 
 /**
-*
-*/
+ * The type of message to send toast, raw, badge or tile.
+ * From <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh465403.aspx">more info about the types</a>
+ */
 public enum Type {
     badge,
     raw,

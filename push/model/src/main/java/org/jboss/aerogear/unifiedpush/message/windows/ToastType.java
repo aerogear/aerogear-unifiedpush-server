@@ -17,8 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.windows;
 
 /**
-*
-*/
+ * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Toast template catalog</a>
+ */
 public enum ToastType {
     ToastText01,
     ToastText02,

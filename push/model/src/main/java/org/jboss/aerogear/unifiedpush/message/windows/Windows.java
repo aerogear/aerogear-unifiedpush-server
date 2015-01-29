@@ -21,6 +21,9 @@ import java.util.List;
 
 /**
  * Windows specific push notification settings support for Tile, Raw, Badge and Toast messages
+ * For all the templates as much as possible the main parts of the message are re-used. Alert is the main text
+ * as is the badge number for badge notifications. Only specific windows settings are put in this part of the message
+ * and ignored by other message senders.
  */
 public class Windows {
     private Type type;

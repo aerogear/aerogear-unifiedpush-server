@@ -17,8 +17,9 @@
 package org.jboss.aerogear.unifiedpush.message.windows;
 
 /**
-*
-*/
+ * Different type of tile messages with different sizes
+ * See the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx">tile template catalog</a>
+ */
 public enum TileType {
     TileSquareBlock,
     TileSquareText01,

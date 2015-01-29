@@ -17,8 +17,9 @@
 package org.jboss.aerogear.unifiedpush.message.windows;
 
 /**
-*
-*/
+ * Badge notifications type for badges that are not numbers, for numbers use the value in the main part of the message.
+ * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Tile and badge catalog</a>
+ */
 public enum BadgeType {
     none,
     activity,
