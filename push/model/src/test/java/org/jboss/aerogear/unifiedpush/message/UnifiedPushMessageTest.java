@@ -265,6 +265,41 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testAction() throws IOException{
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("action", "View");
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("View", unifiedPushMessage.getMessage().getAction());
+
+    }
+
+    @Test
+    public void testUrlArgs() throws IOException {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final String[] urlArgs = { "Arg1", "Arg2" };
+
+
+
+        messageObject.put("alert", "howdy");
+        messageObject.put("title", "I'm a Title");
+        messageObject.put("url-args", urlArgs);
+
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("[Arg1, Arg2]", Arrays.toString(unifiedPushMessage.getMessage().getUrlArgs()));
+    }
+
+    @Test
     public void testActionCategory() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
@@ -532,9 +567,12 @@ public class UnifiedPushMessageTest {
                 "\"clientIdentifier\":null," +
                 "\"message\":{" +
                     "\"alert\":\"Howdy\"," +
+                    "\"title\":null," +
+                    "\"action\":null," +
                     "\"sound\":\"default\"," +
                     "\"badge\":2," +
                     "\"action-category\":null," +
+                    "\"url-args\":null," +
                     "\"content-available\":false," +
                     "\"user-data\":{" +
                     "\"someKey\":\"someValue\"" +
