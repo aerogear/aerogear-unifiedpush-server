@@ -88,35 +88,6 @@
  })();
                     </div>
                 </tab>
-                <tab heading="Chrome" ng-hide="exampleCtrl.variantType != 'chrome'" active="exampleCtrl.tab('chrome').active">
-                    <div class="ups-code-block js" hljs compile="true">
-chrome.pushMessaging.getChannelId( true, function(channelId) {
-    /*
-        Set our Variant ID and Secret and the location of the UnifiedPush Server
-    */
-    var variantId = "{{ exampleCtrl.variant.variantID }}",
-        variantSecret = "{{ exampleCtrl.variant.secret }}",
-        pushServerURL = "{{ exampleCtrl.currentLocation }}";
-
-    // Once we have the channelID we can then register with the UnifiedPush Server using
-    // the AeroGear.js library
-    var client = AeroGear.UnifiedPushClient(
-            variantId,
-            variantSecret,
-            pushServerURL
-        ),settings = {};
-        // The channelId will be the "device token"
-
-    settings.metadata = {
-        deviceToken: channelId.channelId
-    };
-
-    // Register with the UnifiedPush Server
-    client.registerWithPushServer( settings );
-
-});
-                    </div>
-                </tab>
                 <tab heading="Android" ng-hide="exampleCtrl.variantType != 'android'" active="exampleCtrl.tab('android').active" ng-click="exampleCtrl.tab('android').active = true">
  <div class="ups-code-block java" hljs compile="true">
 package com.push.pushapplication;
@@ -244,7 +215,7 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                     </script>
 
                 </tab>
-                <tab heading="Cordova" ng-hide="exampleCtrl.variantType == 'chrome' || exampleCtrl.variantType == 'simplePush' || exampleCtrl.variantType == 'send'"
+                <tab heading="Cordova" ng-hide="exampleCtrl.variantType == 'simplePush' || exampleCtrl.variantType == 'send'"
                      active="exampleCtrl.tab('cordova').active" ng-click="exampleCtrl.tab('cordova').active = true">
                     <div class="ups-code-block js" hljs compile="true">
 var app = {

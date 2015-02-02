@@ -39,11 +39,6 @@ public enum VariantType {
     SIMPLE_PUSH("simplePush"),
 
     /**
-     * The type identifier for our Chrome Packaged App variants.
-     */
-    CHROME_PACKAGED_APP("chrome"),
-
-    /**
      * The type identifier for our Windows WNS variants.
      */
     WINDOWS_WNS("windows_wns"),
