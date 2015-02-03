@@ -38,18 +38,6 @@ angular.module('upsConsole').controller('InstallationController',
     });
   };
 
-  $scope.wrapText = function(text) {
-    var width = 80, block = '<br/>';
-
-    if (text.length > width) {
-      var left = text.substring(0, width);
-      var right = text.substring(width + 1);
-      return $sce.trustAsHtml(left + block + $scope.wrapText(right));
-    } else {
-      return $sce.trustAsHtml(text);
-    }
-  };
-
   $scope.update = function (installation) {
     delete installation.expand;
     var params = {variantId: $routeParams.variantId, installationId: installation.id};
