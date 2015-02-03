@@ -33,6 +33,9 @@ import java.io.IOException;
  * <pre>
  *  "message": {
  *   "alert": "HELLO!",
+ *   "title": "Safari Title",
+ *   "action": "Safari Action",
+ *   "url-args":[ "arg1", "arg2" ],
  *   "action-category": "some value",
  *   "sound": "default",
  *   "badge": 2,
