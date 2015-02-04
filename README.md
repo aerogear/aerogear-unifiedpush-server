@@ -4,6 +4,16 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 <img src="http://people.apache.org/~matzew/UPS_UI.png" height="303px" width="510px" />
 
+## Project Info
+
+|                 | Project Info  |
+| --------------- | ------------- |
+| License:        | Apache License, Version 2.0  |
+| Build:          | Maven  |
+| Documentation:  | https://aerogear.org/push/  |
+| Issue tracker:  | https://issues.jboss.org/browse/AGPUSH  |
+| Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-users))  |
+|                 | [aerogear-dev](http://aerogear-dev.1069024.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-dev))  |
 
 ## Getting started
 
@@ -113,7 +123,16 @@ This change allows the UnifiedPush Server to now use the Android Variant for bot
 
 If you are using this functionality, please convert your applications to use the new API and recreate your variants.
 
+## Contributing
 
-### Any questions ?
+If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
 
-Join our [mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev) for any questions and help! We really hope you enjoy our UnifiedPush Server!
+Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
+
+## Questions?
+
+Join our [user mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-users) for any questions or help! We really hope you enjoy app development with AeroGear!
+
+## Found a bug?
+
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AGPUSH) with some steps to reproduce it.
