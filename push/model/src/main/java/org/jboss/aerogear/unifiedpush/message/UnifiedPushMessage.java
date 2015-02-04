@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Contains the data of the JSON payload that has been sent to the
  * RESTful Sender endpoint.
- * 
+ *
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  *
@@ -33,7 +33,7 @@ import java.io.IOException;
  * <pre>
  *  "message": {
  *   "alert": "HELLO!",
- *   "title": "Safari Title",
+ *   "title": "Title",
  *   "action": "Safari Action",
  *   "url-args":[ "arg1", "arg2" ],
  *   "action-category": "some value",
