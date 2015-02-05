@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -232,37 +231,14 @@ public class UnifiedPushMessage {
         return "{" +
                 "\"ipAddress\":\"" + ipAddress + "\"," +
                 "\"clientIdentifier\":\"" + clientIdentifier + "\"," +
-                "\"simplePush\":\"" + simplePush + "\"," +
-                "\"alert\":\"" + alert + "\"," +
-                "\"action-category\":\"" + actionCategory + "\"," +
-                "\"sound\":\"" + sound + "\"," +
-                "\"contentAvailable\":" + contentAvailable + "," +
-                "\"badge\":" + badge + "," +
-                "\"timeToLive\":" + timeToLive + "," +
-                "\"data\":" + toJson(data) +
+                "\"alert\":\"" + alert + "\"" +
                 "}";
-    }
-
-    private String toJson(Map<String, Object> map) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        if (map != null) {
-            for (Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-                Map.Entry<String, Object> entry = iterator.next();
-                sb.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
-                if (iterator.hasNext()) {
-                    sb.append(",");
-                }
-            }
-        }
-        sb.append("}");
-        return sb.toString();
     }
 
     @Override
     public String toString() {
-        return "[alert=" + alert + ", data=" + data+ ", criteria="
-                + criteria + ", sound=" + sound + ", action-category=" + actionCategory + ", badge=" + badge + ", time-to-live="
-                + timeToLive + ", simplePush=" + simplePush + ", content-available=" + contentAvailable +"]";
+        return "[alert=" + alert + ", criteria="
+                + criteria + ", time-to-live="
+                + timeToLive + "]";
     }
 }
