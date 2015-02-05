@@ -49,12 +49,12 @@
                       <td>Request IP:</td>
                       <td><strong>{{ metric.ipAddress }}</strong>
                       </td>
-                      <td><a href ng-click="showFullRequest(metric.rawJsonMessage)">Full Request</a>
+                      <td><a href ng-click="showFullRequest(metric.rawJsonMessage)">Details</a>
                       </td>
                     </tr>
                     <tr>
                       <td>Message:</td>
-                      <td colspan="2"><strong>{ "message" : "{{ parse(metric).alert }}" }</strong></td>
+                      <td colspan="2"><strong>{{ activityCtrl.parse(metric).alert }}</strong></td>
                     </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
