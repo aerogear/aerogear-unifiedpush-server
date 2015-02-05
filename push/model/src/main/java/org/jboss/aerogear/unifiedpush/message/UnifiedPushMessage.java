@@ -21,6 +21,8 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Contains the data of the JSON payload that has been sent to the
@@ -58,6 +60,8 @@ import java.io.IOException;
  * </pre>
  */
 public class UnifiedPushMessage {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private String ipAddress;
     private String clientIdentifier;
@@ -114,7 +118,13 @@ public class UnifiedPushMessage {
 
     public String toJsonString() {
         try {
-            return new ObjectMapper().writeValueAsString(this);
+            final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
+            json.put("ipAddress", this.ipAddress);
+            json.put("clientIdentifier", this.clientIdentifier);
+            json.put("alert", this.message.getAlert());
+            json.put("criteria", this.criteria);
+            json.put("config", this.config);
+            return OBJECT_MAPPER.writeValueAsString(json);
         } catch (JsonProcessingException e) {
             return "[\"invalid json\"]";
         } catch (IOException e) {
@@ -124,7 +134,8 @@ public class UnifiedPushMessage {
 
     @Override
     public String toString() {
-        return "[message=" + message + ", criteria="
+        return "[alert=" + message.getAlert() + ", criteria="
                 + criteria + ", time-to-live=" + config + "]";
     }
+
 }

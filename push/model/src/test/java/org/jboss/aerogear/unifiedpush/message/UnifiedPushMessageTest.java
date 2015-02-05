@@ -565,20 +565,7 @@ public class UnifiedPushMessageTest {
         assertEquals("{" +
                 "\"ipAddress\":null," +
                 "\"clientIdentifier\":null," +
-                "\"message\":{" +
-                    "\"alert\":\"Howdy\"," +
-                    "\"title\":null," +
-                    "\"action\":null," +
-                    "\"sound\":\"default\"," +
-                    "\"badge\":2," +
-                    "\"action-category\":null," +
-                    "\"url-args\":null," +
-                    "\"content-available\":false," +
-                    "\"user-data\":{" +
-                    "\"someKey\":\"someValue\"" +
-                    "}," +
-                    "\"simple-push\":\"version=123\"" +
-                "}," +
+                "\"alert\":\"Howdy\"," +
                 "\"criteria\":{" +
                     "\"categories\":null," +
                     "\"variants\":null," +
