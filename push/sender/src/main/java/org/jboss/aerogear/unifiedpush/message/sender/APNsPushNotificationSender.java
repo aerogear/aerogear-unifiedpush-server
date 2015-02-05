@@ -74,7 +74,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         Message message = pushMessage.getMessage();
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
-                .alertBody(message.getAlert()) // alert dialog, in iOS
+                .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
+                .alertTitle(message.getTitle()) // The title of the notification in Safari
+                .alertAction(message.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
+                .urlArgs(message.getUrlArgs())
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
                 .category(message.getActionCategory()); // iOS8: User Action category

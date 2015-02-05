@@ -32,7 +32,12 @@ public class Message {
     @JsonProperty("action-category")
     private String actionCategory;
     private String alert;
+    private String title;
+    private String action;
     private String sound;
+
+    @JsonProperty("url-args")
+    private String[] urlArgs;
 
     @JsonProperty("content-available")
     private boolean contentAvailable;
@@ -71,6 +76,26 @@ public class Message {
     public void setAlert(String alert) {
         this.alert = alert;
     }
+
+    /**
+     * Returns the value of the 'title' key from the submitted payload.
+     * This key is recognized in APNs for Safari, without any API invocation and
+     * on AeroGear's GCM offerings.
+     *
+     */
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    /**
+     * Returns the value of the 'action' key from the submitted payload.
+     * This key is recognized in APNs for Safari, without any API invocation and
+     * on AeroGear's GCM offerings.
+     *
+     */
+    public String getAction() { return action; }
+
+    public void setAction(String action) { this.action = action; }
 
     /**
      * Returns the value of the 'sound' key from the submitted payload.
@@ -132,6 +157,16 @@ public class Message {
     public void setUserData(Map<String, Object> userData) {
         this.userData = userData;
     }
+
+    /**
+     * Returns the value of the 'url-args' key from the submitted payload.
+     * This key is recognized in APNs for Safari, without any API invocation and
+     * on AeroGear's GCM offerings.
+     *
+     */
+    public String[] getUrlArgs() { return urlArgs; }
+
+    public void setUrlArgs(String[] urlArgs) { this.urlArgs = urlArgs; }
 
     /**
      * Returns the SimplePush specific version number.
