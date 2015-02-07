@@ -170,4 +170,6 @@ fi
 exec "$JAVACMD" \
   $UPS_MIGRATOR_OPTS \
   -classpath "${UPS_MIGRATOR_HOME}"/ups-migrator.jar \
+  -Dliquibase.databaseChangeLogTableName="ups_db_changelog" \
+  -Dliquibase.databaseChangeLogLockTableName="ups_db_changeloglock" \
   liquibase.integration.commandline.Main "--defaultsFile=liquibase.properties" $@
