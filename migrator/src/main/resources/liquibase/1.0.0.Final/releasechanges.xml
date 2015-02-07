@@ -1,0 +1,145 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="2014-08-21-001" author="generated">
+        <createTable tableName="AndroidVariant">
+            <column name="googleKey" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="projectNumber" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="ChromePackagedAppVariant">
+            <column name="clientId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientSecret" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refreshToken" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="Installation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="deviceToken" type="VARCHAR(4096)"/>
+            <column name="deviceType" type="VARCHAR(255)"/>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operatingSystem" type="VARCHAR(255)"/>
+            <column name="osVersion" type="VARCHAR(255)"/>
+            <column name="platform" type="VARCHAR(255)"/>
+            <column name="variantID" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="Installation_categories">
+            <column name="Installation_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categories" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="PushApplication">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="masterSecret" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pushApplicationID" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="PushMessageInformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientIdentifier" type="VARCHAR(255)"/>
+            <column name="ipAddress" type="VARCHAR(255)"/>
+            <column name="pushApplicationId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rawJsonMessage" type="VARCHAR(4500)"/>
+            <column name="submitDate" type="DATETIME"/>
+            <column name="totalReceivers" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="SimplePushVariant">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="Variant">
+            <column name="VARIANT_TYPE" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="secret" type="VARCHAR(255)"/>
+            <column name="type" type="INT"/>
+            <column name="variantID" type="VARCHAR(255)"/>
+            <column name="variants_id" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="VariantMetricInformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deliveryStatus" type="BOOLEAN"/>
+            <column name="reason" type="VARCHAR(255)"/>
+            <column name="receivers" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantInformations_id" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="iOSVariant">
+            <column name="certificate" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passphrase" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="production" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="AndroidVariant"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ChromePackagedAppVariant"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Installation"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushApplication"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushMessageInformation"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="SimplePushVariant"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Variant"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="VariantMetricInformation"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="iOSVariant"/>
+        <addUniqueConstraint columnNames="variantID" constraintName="UK_jlpkx1qkcjaps25wqhp4nkfel" deferrable="false" disabled="false" initiallyDeferred="false" tableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="Installation_id" baseTableName="Installation_categories" constraintName="FK_7jk4ols9cel7xo5bi10yk1gvl" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Installation"/>
+        <addForeignKeyConstraint baseColumnNames="variants_id" baseTableName="Variant" constraintName="FK_7vjqh1lbqvlh4ni98qnh8hxkr" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="PushApplication"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="iOSVariant" constraintName="FK_a7ndfcxa9m4wt4m2x2mxajr56" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="AndroidVariant" constraintName="FK_abna7p5c0p8ju2pf4ucqv5cby" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="variantInformations_id" baseTableName="VariantMetricInformation" constraintName="FK_ci9sa3eevtel9l172w9b0musj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="PushMessageInformation"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="ChromePackagedAppVariant" constraintName="FK_craam2a14eghbd6ohlnbbe7bq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="SimplePushVariant" constraintName="FK_hombuwogx5wv7hnup407gnwpg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Variant"/>
+        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="Installation" constraintName="FK_se07q3nt9pb7v949p4ia77uvc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="variantID" referencedTableName="Variant"/>
+    </changeSet>
+</databaseChangeLog>
