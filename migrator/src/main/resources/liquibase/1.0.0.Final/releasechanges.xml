@@ -191,14 +191,86 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="2014-08-24-010" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="AndroidVariant"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="AndroidVariant"/>
+    </changeSet>
+    <changeSet id="2014-08-24-011" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="ChromePackagedAppVariant"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ChromePackagedAppVariant"/>
+    </changeSet>
+    <changeSet id="2014-08-24-012" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="Installation"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Installation"/>
+    </changeSet>
+    <changeSet id="2014-08-24-013" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="PushApplication"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushApplication"/>
+    </changeSet>
+    <changeSet id="2014-08-24-014" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="PushMessageInformation"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="PushMessageInformation"/>
+    </changeSet>
+    <changeSet id="2014-08-24-015" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="SimplePushVariant"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="SimplePushVariant"/>
+    </changeSet>
+    <changeSet id="2014-08-24-016" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="Variant"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Variant"/>
+    </changeSet>
+    <changeSet id="2014-08-24-017" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="VariantMetricInformation"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="VariantMetricInformation"/>
+    </changeSet>
+    <changeSet id="2014-08-24-018" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+            <not>
+                <primaryKeyExists tableName="iOSVariant"/>
+            </not>
+        </preConditions>
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="iOSVariant"/>
         <addUniqueConstraint columnNames="variantID" constraintName="UK_jlpkx1qkcjaps25wqhp4nkfel" deferrable="false" disabled="false" initiallyDeferred="false" tableName="Variant"/>
         <addForeignKeyConstraint baseColumnNames="Installation_id" baseTableName="Installation_categories" constraintName="FK_7jk4ols9cel7xo5bi10yk1gvl" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="Installation"/>
