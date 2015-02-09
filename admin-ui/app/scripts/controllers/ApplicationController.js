@@ -57,7 +57,7 @@ angular.module('upsConsole').controller('ApplicationController',
         name: application.name,
         description: application.description
       };
-      applicationsEndpoint.update({appId: application.applicationsEndpointID}, updateApplication, function () {
+      applicationsEndpoint.update({appId: application.pushApplicationID}, updateApplication, function () {
         Notifications.success('Successfully edited application "' + application.name + '".');
       });
     });
@@ -66,7 +66,7 @@ angular.module('upsConsole').controller('ApplicationController',
   $scope.remove = function (application) {
     var modalInstance = show(application, 'remove-app.html');
     modalInstance.result.then(function () {
-      applicationsEndpoint.remove({appId: application.applicationsEndpointID}, function () {
+      applicationsEndpoint.delete({appId: application.pushApplicationID}, function () {
         $scope.applications.splice($scope.applications.indexOf(application), 1);
         $scope.totalItems = $scope.totalItems - 1;
         Notifications.success('Successfully removed application "' + application.name + '".');
