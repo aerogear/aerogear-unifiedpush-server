@@ -41,7 +41,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
         MpnsService mpnsService = MPNS.newService().build();
         final Message message = pushMessage.getMessage();
         final ToastNotification toastNotification = MPNS.newNotification().toast()
-                .parameter(createLaunchParam(message.getUserData()))
+                .parameter(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()))
                 .title(message.getAlert()).build();
 
         for (String identifier : clientIdentifiers) {

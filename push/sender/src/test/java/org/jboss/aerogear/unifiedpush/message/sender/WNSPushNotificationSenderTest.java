@@ -1,7 +1,7 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 import ar.com.fernandospr.wns.model.WnsToast;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Message;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -17,14 +17,39 @@ public class WNSPushNotificationSenderTest {
     private static final String QUERY = "?ke2=value2&key=value";
     private WNSPushNotificationSender sender = new WNSPushNotificationSender();
 
+    @Test
+    public void shouldWorkWithEmptyNullUserData() {
+        //given
+        Message message = getUnifiedPushMessage();
+        message.setUserData(new HashMap<String, Object>());
+
+        //when
+        WnsToast toastMessage = sender.createToastMessage(message);
+
+        //then
+        assertThat(toastMessage.launch).isEqualTo("/Root.xaml");
+    }
+
+    @Test
+    public void shouldAddAlertAutomatically() {
+        //given
+        Message message = getUnifiedPushMessage();
+        message.setAlert("My message");
+
+        //when
+        WnsToast toastMessage = sender.createToastMessage(message);
+
+        //then
+        assertThat(toastMessage.launch).isEqualTo("/Root.xaml" + QUERY + "&message=My+message");
+    }
 
     @Test
     public void shouldEncodeUserDataInLaunchParam() {
         //given
-        UnifiedPushMessage pushMessage = getUnifiedPushMessage();
+        Message message = getUnifiedPushMessage();
 
         //when
-        final WnsToast toast = sender.createToastMessage(pushMessage);
+        final WnsToast toast = sender.createToastMessage(message);
 
         //then
         assertThat(toast.launch).isEqualTo("/Root.xaml" + QUERY);
@@ -33,8 +58,8 @@ public class WNSPushNotificationSenderTest {
     @Test
     public void shouldEncodeUserDataInCordovaPage() {
         //given
-        UnifiedPushMessage pushMessage = getUnifiedPushMessage();
-        pushMessage.getMessage().getUserData().put("page", "cordova");
+        Message pushMessage = getUnifiedPushMessage();
+        pushMessage.setPage("cordova");
 
         //when
         final WnsToast toast = sender.createToastMessage(pushMessage);
@@ -46,23 +71,23 @@ public class WNSPushNotificationSenderTest {
     @Test
     public void shouldNoPage() {
         //given
-        UnifiedPushMessage pushMessage = getUnifiedPushMessage();
-        pushMessage.getMessage().getUserData().remove("page");
+        Message message = getUnifiedPushMessage();
+        message.setPage(null);
 
         //when
-        final WnsToast toast = sender.createToastMessage(pushMessage);
+        final WnsToast toast = sender.createToastMessage(message);
 
         //then
         assertThat(toast.launch).isNull();
     }
 
-    private UnifiedPushMessage getUnifiedPushMessage() {
-        UnifiedPushMessage message = new UnifiedPushMessage();
+    private Message getUnifiedPushMessage() {
+        Message message = new Message();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("key", "value");
         data.put("ke2", "value2");
-        data.put("page", "/Root.xaml");
-        message.getMessage().setUserData(data);
+        message.setPage("/Root.xaml");
+        message.setUserData(data);
         return message;
     }
 }

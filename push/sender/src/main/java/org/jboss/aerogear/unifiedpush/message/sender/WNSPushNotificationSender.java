@@ -23,6 +23,7 @@ import ar.com.fernandospr.wns.model.WnsToast;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -42,7 +43,6 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
 
-    private static final String PAGE_KEY = "page";
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/org.jboss.aerogear.cordova.push/P.xaml";
 
@@ -59,7 +59,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
-        WnsToast toast = createToastMessage(pushMessage);
+        WnsToast toast = createToastMessage(pushMessage.getMessage());
         try {
             Set<String> expiredClientIdentifiers = new HashSet<String>(clientIdentifiers.size());
             final List<WnsNotificationResponse> responses = wnsService.pushToast(new ArrayList<String>(clientIdentifiers), toast);
@@ -79,22 +79,24 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         }
     }
 
-    WnsToast createToastMessage(UnifiedPushMessage pushMessage) {
-        final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(pushMessage.getMessage().getAlert());
-        final Map<String, Object> data = pushMessage.getMessage().getUserData();
-        builder.launch(createLaunchParam(data));
+    WnsToast createToastMessage(Message message) {
+        final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(message.getAlert());
+        final Map<String, Object> data = message.getUserData();
+        builder.launch(createLaunchParam(message.getPage(), message.getAlert(), data));
         return builder.build();
     }
 
-    static String createLaunchParam(Map<String, Object> data) {
-        final String page = (String) data.remove(PAGE_KEY);
+    static String createLaunchParam(String page, String message, Map<String, Object> data) {
         if (page != null) {
             final UriBuilder uriBuilder = UriBuilder.fromPath("");
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 uriBuilder.queryParam(entry.getKey(), entry.getValue());
             }
+            if (message != null) {
+                uriBuilder.queryParam("message", message);
+            }
             final String query = uriBuilder.build().getQuery();
-            return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + "?" + query;
+            return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
         }
         return null;
     }

@@ -8,6 +8,7 @@
     "url-args": null,
     "sound":"default",
     "badge":2,
+    "page":"/MainPage.xaml",
     "user-data":{
       "key2":"other value",
       "key":"value"
