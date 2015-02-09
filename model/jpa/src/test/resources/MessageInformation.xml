@@ -64,11 +64,13 @@
         <column>receivers</column>
         <column>variantID</column>
         <column>variantInformations_id</column>
+        <column>pushmessageinformation_id</column>
         <row>
             <value>1</value>
             <value>false</value>
             <value>200</value>
             <value>213</value>
+            <value>1</value>
             <value>1</value>
         </row>
         <row>
@@ -76,6 +78,7 @@
             <value>false</value>
             <value>200</value>
             <value>231543432432</value>
+            <value>2</value>
             <value>2</value>
         </row>
         <row>
@@ -84,6 +87,7 @@
             <value>300</value>
             <value>23154343243333</value>
             <value>2</value>
+            <value>2</value>
         </row>
         <row>
             <value>4</value>
@@ -91,12 +95,14 @@
             <value>1000</value>
             <value>231543432434</value>
             <value>2</value>
+            <value>2</value>
         </row>
         <row>
             <value>5</value>
             <value>true</value>
             <value>2000</value>
             <value>231543432432</value>
+            <value>3</value>
             <value>3</value>
         </row>
     </table>

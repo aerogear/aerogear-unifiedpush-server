@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
