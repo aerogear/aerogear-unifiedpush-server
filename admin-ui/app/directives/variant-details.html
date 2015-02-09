@@ -46,6 +46,9 @@
                 More information can be found in <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol">SimplePush Protocol Draft</a>.
                 The <a href="https://github.com/aerogear/aerogear-simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
                 </p>
+                <p ng-show="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
+                To learn more about, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-adm/">adm</a> or <a href="http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/">Apache Cordova</a> guides for push.
+                </p>
                 <hr class="spacer-15" />
                 <table ng-show="variant.projectNumber.length">
                     <tr><td>Project Number:</td><td>{{ variant.projectNumber }}</td></tr>

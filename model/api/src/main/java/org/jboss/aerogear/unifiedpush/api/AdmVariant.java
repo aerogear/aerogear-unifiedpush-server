@@ -29,6 +29,10 @@ public class AdmVariant extends Variant {
     private String clientSecret;
 
 
+    /**
+     * The client id to connect to the Amazon Device Messaging services
+     * @return the client secret
+     */
     public String getClientId() {
         return clientId;
     }
@@ -37,6 +41,10 @@ public class AdmVariant extends Variant {
         this.clientId = clientId;
     }
 
+    /**
+     * The client secret (password) to connect to the Amazon Device Messaging services
+     * @return the client secret
+     */
     public String getClientSecret() {
         return clientSecret;
     }
