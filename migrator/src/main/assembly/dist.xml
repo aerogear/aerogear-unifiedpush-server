@@ -13,6 +13,14 @@
             <unpack>false</unpack>
         </dependencySet>
     </dependencySets>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>*.properties</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
             <source>${project.basedir}/target/${project.artifactId}.jar</source>
