@@ -189,7 +189,7 @@
             </not>
         </preConditions>
         <createTable tableName="iosvariant">
-            <column name="certificate" type="BLOB">
+            <column name="certificate" type="OID">
                 <constraints nullable="false"/>
             </column>
             <column name="passphrase" type="VARCHAR(255)">

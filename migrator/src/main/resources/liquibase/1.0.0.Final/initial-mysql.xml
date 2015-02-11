@@ -188,7 +188,7 @@
             </not>
         </preConditions>
         <createTable tableName="iOSVariant">
-            <column name="certificate" type="BLOB">
+            <column name="certificate" type="LONGBLOB">
                 <constraints nullable="false"/>
             </column>
             <column name="passphrase" type="VARCHAR(255)">
