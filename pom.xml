@@ -49,6 +49,7 @@
     </ciManagement>
 
     <modules>
+        <module>migrator</module>
         <module>model</module>
         <module>push</module>
         <module>service</module>
