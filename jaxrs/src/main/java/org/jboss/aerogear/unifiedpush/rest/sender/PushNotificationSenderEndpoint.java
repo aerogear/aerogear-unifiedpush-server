@@ -81,7 +81,7 @@ public class PushNotificationSenderEndpoint {
      *
      * Details about the Message Format can be found HERE!
      *
-     * @HTTP 200 (OK) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
+     * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested PushApplication resource does not exist.
      * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
@@ -109,7 +109,7 @@ public class PushNotificationSenderEndpoint {
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 
-        return Response.status(Status.OK)
+        return Response.status(Status.ACCEPTED)
                 .entity("Job submitted").build();
     }
 
