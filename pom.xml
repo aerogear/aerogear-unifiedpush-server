@@ -253,6 +253,67 @@
             </modules>
         </profile>
 
+        <!-- this profile will get auto-activated on Travis and will reduce logging verbosity -->
+        <profile>
+            <id>travis</id>
+            <activation>
+                <property>
+                    <name>env.TRAVIS</name>
+                </property>
+            </activation>
+
+            <!-- this is copied from 'test' profile -->
+            <!-- another option would be to alter .travis.yml to activate said profile and this one -->
+            <dependencyManagement>
+                <dependencies>
+                    <!-- AeroGear Test Dependencies BOM Imports -->
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-test-bom</artifactId>
+                        <version>${aerogear.bom.version}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>add-resource</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- as basically we don't have a way how to reference current (parent) directory,
+                                         let's try to copy the file from upper directory of the module multiple times -->
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/../../</directory>
+                                            <includes>
+                                                <include>simplelogger.properties</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${basedir}/../</directory>
+                                            <includes>
+                                                <include>simplelogger.properties</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>  
+                </plugins>
+	        </build>
+		</profile>
         <profile>
             <id>code-coverage</id>
             <properties>
