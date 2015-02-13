@@ -24,5 +24,8 @@
   "devDependencies": {
     "angular-mocks": "1.2.26",
     "angular-scenario": "1.2.26"
+  },
+  "resolutions": {
+    "angular": "1.2.26"
   }
 }
