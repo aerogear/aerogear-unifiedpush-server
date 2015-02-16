@@ -46,7 +46,12 @@ public enum VariantType {
     /**
      * The type identifier for our Windows MPNS variants.
      */
-    WINDOWS_MPNS("windows_mpns");
+    WINDOWS_MPNS("windows_mpns"),
+
+    /**
+     * The type identifier for our Amazon Device Messaging (ADM) variants.
+     */
+    ADM("adm");
 
 
     private final String typeName;

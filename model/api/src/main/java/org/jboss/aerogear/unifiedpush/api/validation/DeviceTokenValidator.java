@@ -50,6 +50,12 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      */
     private static final Pattern SIMPLE_PUSH_DEVICE_TOKEN = Pattern.compile("https?://.{0,2000}");
 
+    /**
+     * Pattern for Amazon is harder to define that is why we kept it lenient it is at least 100 characters long and can
+     * consist of digits, alphas, - , _ and . and all have one of these separators
+     */
+    private static final Pattern ADM_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_.]{100,}");
+
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {
     }
@@ -72,6 +78,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case SIMPLE_PUSH:
                 return SIMPLE_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case ADM:
+                return ADM_DEVICE_TOKEN.matcher(deviceToken).matches();
         }
         return false;
     }

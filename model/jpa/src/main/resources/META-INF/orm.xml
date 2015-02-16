@@ -82,6 +82,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="SimplePushVariant" access="FIELD">
         <discriminator-value>simplePush</discriminator-value>
     </entity>
+    <entity class="AdmVariant" access="FIELD">
+        <discriminator-value>admVariant</discriminator-value>
+    </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
         <discriminator-value>windows_wns</discriminator-value>
     </entity>

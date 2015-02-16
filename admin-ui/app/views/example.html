@@ -215,8 +215,14 @@ func application(application: UIApplication!, didRegisterForRemoteNotificationsW
                     </script>
 
                 </tab>
-                <tab heading="Cordova" ng-hide="exampleCtrl.variantType == 'simplePush' || exampleCtrl.variantType == 'send'"
-                     active="exampleCtrl.tab('cordova').active" ng-click="exampleCtrl.tab('cordova').active = true">
+              <tab heading="Amazon - FireOS" ng-hide="exampleCtrl.variantType != 'adm'" active="exampleCtrl.tab('adm').active" ng-click="exampleCtrl.tab('adm').active = true">
+                <div class="ups-code-block java" hljs compile="true"  include="'adm'"></div>
+                <script type="text/ng-template" id="adm">
+                 //TODO Will be filled in once the client SDK is there
+                </script>
+
+              </tab>
+              <tab heading="Cordova" ng-hide="exampleCtrl.variantType == 'simplePush' || exampleCtrl.variantType == 'send'" active="exampleCtrl.tab('cordova').active" ng-click="exampleCtrl.tab('cordova').active = true">
                     <div class="ups-code-block js" hljs compile="true">
 var app = {
     // Application Constructor
