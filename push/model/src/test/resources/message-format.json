@@ -1,38 +1,49 @@
 {
-  "ipAddress":null,
-  "clientIdentifier":null,
-  "message":{
-    "alert":"HELLO!",
+  "ipAddress": null,
+  "clientIdentifier": null,
+  "message": {
+    "alert": "HELLO!",
     "title": null,
     "action": null,
-    "url-args": null,
-    "sound":"default",
-    "badge":2,
-    "page":"/MainPage.xaml",
-    "user-data":{
-      "key2":"other value",
-      "key":"value"
+    "sound": "default",
+    "badge": 2,
+    "page": "/MainPage.xaml",
+    "consolidationKey": null,
+    "windows": {
+      "type": "tile",
+      "duration": null,
+      "badge": null,
+      "tileType": "TileWideBlockAndText01",
+      "toastType": null,
+      "images": [
+      ],
+      "textFields": [
+      ]
     },
-    "action-category":"some value",
-    "content-available":true,
-    "simple-push":"version=123",
-    "consolidationKey":null
+    "action-category": "some value",
+    "url-args": null,
+    "content-available": true,
+    "user-data": {
+      "key2": "other value",
+      "key": "value"
+    },
+    "simple-push": "version=123"
   },
-  "criteria":{
-    "categories":[
+  "criteria": {
+    "categories": [
       "someCategories"
     ],
-    "variants":[
+    "variants": [
       "someVariantIDs"
     ],
-    "alias":[
+    "alias": [
       "someUsername"
     ],
-    "deviceType":[
+    "deviceType": [
       "someDevice"
     ]
   },
-  "config":{
-    "ttl":3360
+  "config": {
+    "ttl": 3360
   }
 }

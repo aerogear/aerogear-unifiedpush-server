@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,8 @@ public class Message {
     private String page;
 
     private String consolidationKey;
+
+    private Windows windows = new Windows();
 
     /**
      * Returns the value of the 'action-category', which is used on the client (iOS for now),
@@ -215,6 +218,17 @@ public class Message {
 
     public void setConsolidationKey(String consolidationKey) {
         this.consolidationKey = consolidationKey;
+    }
+
+    /**
+     * Windows specific parameters to configure how the message will be displayed.
+     */
+    public Windows getWindows() {
+        return windows;
+    }
+
+    public void setWindows(Windows windows) {
+        this.windows = windows;
     }
 
     @Override

@@ -1,9 +1,15 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import ar.com.fernandospr.wns.model.WnsTile;
 import ar.com.fernandospr.wns.model.WnsToast;
 import org.jboss.aerogear.unifiedpush.message.Message;
+import org.jboss.aerogear.unifiedpush.message.windows.TileType;
+import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
+import org.jboss.aerogear.unifiedpush.message.windows.Type;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +30,7 @@ public class WNSPushNotificationSenderTest {
         message.setUserData(new HashMap<String, Object>());
 
         //when
-        WnsToast toastMessage = sender.createToastMessage(message);
+        WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toastMessage.launch).isEqualTo("/Root.xaml");
@@ -37,7 +43,7 @@ public class WNSPushNotificationSenderTest {
         message.setAlert("My message");
 
         //when
-        WnsToast toastMessage = sender.createToastMessage(message);
+        WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toastMessage.launch).isEqualTo("/Root.xaml" + QUERY + "&message=My+message");
@@ -46,10 +52,10 @@ public class WNSPushNotificationSenderTest {
     @Test
     public void shouldEncodeUserDataInLaunchParam() {
         //given
-        Message message = getUnifiedPushMessage();
+        Message pushMessage = getUnifiedPushMessage();
 
         //when
-        final WnsToast toast = sender.createToastMessage(message);
+        final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
 
         //then
         assertThat(toast.launch).isEqualTo("/Root.xaml" + QUERY);
@@ -62,7 +68,7 @@ public class WNSPushNotificationSenderTest {
         pushMessage.setPage("cordova");
 
         //when
-        final WnsToast toast = sender.createToastMessage(pushMessage);
+        final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
 
         //then
         assertThat(toast.launch).isEqualTo(WNSPushNotificationSender.CORDOVA_PAGE + QUERY);
@@ -75,10 +81,48 @@ public class WNSPushNotificationSenderTest {
         message.setPage(null);
 
         //when
-        final WnsToast toast = sender.createToastMessage(message);
+        final WnsToast toast = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toast.launch).isNull();
+    }
+
+    @Test
+    public void shouldCreateRightToastTemplate() {
+        //given
+        Message message = new Message();
+        Windows windows = message.getWindows();
+        windows.setType(Type.toast);
+        windows.setToastType(ToastType.ToastImageAndText04);
+        windows.setTextFields(Arrays.asList("item1", "item2"));
+        message.setAlert("title");
+        windows.setImages(Arrays.asList("image1.jpg"));
+
+        //when
+        WnsToast toastMessage = sender.createToastMessage(message);
+
+        //then
+        assertThat(toastMessage).isNotNull();
+        assertThat(toastMessage.visual.binding.texts.get(0).value).isEqualTo("title");
+        assertThat(toastMessage.visual.binding.images.get(0).src).contains("image1.jpg");
+    }
+
+    @Test
+    public void shouldCreateRightTileTemplate() {
+        //given
+        Message message = new Message();
+        Windows windows = message.getWindows();
+        windows.setType(Type.tile);
+        windows.setTileType(TileType.TileWideBlockAndText01);
+        windows.setTextFields(Arrays.asList("item1", "item2", "item3", "item4", "item5"));
+        message.setAlert("title");
+
+        //when
+        WnsTile tileMessage = sender.createTileMessage(message);
+
+        //then
+        assertThat(tileMessage).isNotNull();
+        assertThat(tileMessage.visual.binding.texts.get(0).value).isEqualTo("title");
     }
 
     private Message getUnifiedPushMessage() {
