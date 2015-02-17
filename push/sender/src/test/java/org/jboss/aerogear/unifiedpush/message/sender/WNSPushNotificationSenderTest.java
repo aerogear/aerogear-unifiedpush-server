@@ -30,7 +30,7 @@ public class WNSPushNotificationSenderTest {
         message.setUserData(new HashMap<String, Object>());
 
         //when
-        WnsToast toastMessage = sender.createToastMessage(message);
+        WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toastMessage.launch).isEqualTo("/Root.xaml");
@@ -43,7 +43,7 @@ public class WNSPushNotificationSenderTest {
         message.setAlert("My message");
 
         //when
-        WnsToast toastMessage = sender.createToastMessage(message);
+        WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toastMessage.launch).isEqualTo("/Root.xaml" + QUERY + "&message=My+message");
@@ -81,7 +81,7 @@ public class WNSPushNotificationSenderTest {
         message.setPage(null);
 
         //when
-        final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
+        final WnsToast toast = sender.createSimpleToastMessage(message);
 
         //then
         assertThat(toast.launch).isNull();

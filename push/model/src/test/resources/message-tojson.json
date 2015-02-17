@@ -1,32 +1,14 @@
 {
   "ipAddress": null,
   "clientIdentifier": null,
-  "message": {
-    "alert": "HELLO!",
-    "sound": "default",
-    "badge": 2,
-    "windows": {
-      "type": "tile",
-      "duration": null,
-      "badge": null,
-      "tileType": "TileWideBlockAndText01",
-      "toastType": null,
-      "images": [],
-      "textFields": []
-    },
-    "action-category": "category",
-    "content-available": true,
-    "user-data": {
-      "key2": "value",
-      "key": "value"
-    },
-    "simple-push": "version=123"
-  },
+  "alert": "HELLO!",
   "criteria": {
     "categories": null,
     "variants": null,
     "alias": null,
     "deviceType": null
   },
-  "config": {"ttl": -1}
+  "config": {
+    "ttl": -1
+  }
 }

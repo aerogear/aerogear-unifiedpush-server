@@ -40,7 +40,6 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
 
-    private static final String PAGE_KEY = "page";
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/org.jboss.aerogear.cordova.push/P.xaml";
 
@@ -108,7 +107,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             builder.duration(windows.getDuration().toString());
         }
         builder.audioSrc(message.getSound());
-        builder.launch(createLaunchParam(message.getUserData()));
+        builder.launch(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()));
         createMessage(message, windows.getToastType().toString(), builder);
         return builder.build();
     }
@@ -169,7 +168,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     WnsToast createSimpleToastMessage(Message message) {
         final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(message.getAlert());
         final Map<String, Object> data = message.getUserData();
-        builder.launch(createLaunchParam(data));
+        builder.launch(createLaunchParam(message.getPage(), message.getAlert(), data));
         return builder.build();
     }
 

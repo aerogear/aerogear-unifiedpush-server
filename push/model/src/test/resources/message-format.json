@@ -3,24 +3,30 @@
   "clientIdentifier": null,
   "message": {
     "alert": "HELLO!",
+    "title": null,
+    "action": null,
     "sound": "default",
-	"page":"/MainPage.xaml",
     "badge": 2,
+    "page": "/MainPage.xaml",
+    "consolidationKey": null,
     "windows": {
       "type": "tile",
       "duration": null,
       "badge": null,
       "tileType": "TileWideBlockAndText01",
       "toastType": null,
-      "images": [],
-      "textFields": []
+      "images": [
+      ],
+      "textFields": [
+      ]
     },
+    "action-category": "some value",
+    "url-args": null,
+    "content-available": true,
     "user-data": {
       "key2": "other value",
       "key": "value"
     },
-    "action-category": "some value",
-    "content-available": true,
     "simple-push": "version=123"
   },
   "criteria": {
