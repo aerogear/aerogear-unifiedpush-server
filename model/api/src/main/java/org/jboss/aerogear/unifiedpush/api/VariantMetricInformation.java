@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -30,6 +32,7 @@ public class VariantMetricInformation extends BaseModel {
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
 
+    @JsonIgnore
     private PushMessageInformation pushMessageInformation;
 
     public VariantMetricInformation() {
