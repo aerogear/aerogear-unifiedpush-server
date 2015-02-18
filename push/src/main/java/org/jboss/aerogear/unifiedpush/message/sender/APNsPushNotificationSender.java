@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
 
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
@@ -49,9 +50,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
     
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
-    private static final String customAerogearApnsPushPort = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
+    private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
     private static final String customAerogearApnsFeedbackHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST);
-    private static final String customAerogearApnsFeedbackPort  = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT);
+    private static final Integer customAerogearApnsFeedbackPort  = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT);
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
 
@@ -219,12 +220,12 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     /**
      * Configure the Gateway to the Apns servers.
      * Default gateway and port can be override with respectively :
-     *  - aerogear.apns.push.host
-     *  - aerogear.apns.push.port
+     *  - custom.aerogear.apns.push.host
+     *  - custom.aerogear.apns.push.port
      *
      * Feedback gateway and port can be override with  respectively :
-     *  - aerogear.apns.feedback.host
-     *  - aerogear.apns.feedback.port
+     *  - custom.aerogear.apns.feedback.host
+     *  - custom.aerogear.apns.feedback.port
      * @param iOSVariant
      * @param builder
      */
@@ -239,18 +240,18 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if(customAerogearApnsPushHost != null){
             int port = Utilities.SANDBOX_GATEWAY_PORT;
             if(customAerogearApnsPushPort != null) {
-                port = Integer.parseInt(customAerogearApnsPushPort);
+                port = customAerogearApnsPushPort;
             }
-            builder.withGatewayDestination(customAerogearApnsPushHost,port);
+            builder.withGatewayDestination(customAerogearApnsPushHost, port);
         }
 
         //Is the feedback gateway provided by a system property ?
         if(customAerogearApnsFeedbackHost != null){
             int port = Utilities.SANDBOX_FEEDBACK_PORT;
-            if(customAerogearApnsFeedbackPort!= null) {
-                port = Integer.parseInt(customAerogearApnsFeedbackPort);
+            if(customAerogearApnsFeedbackPort != null) {
+                port = customAerogearApnsFeedbackPort;
             }
-            builder.withFeedbackDestination(customAerogearApnsFeedbackPort,port);
+            builder.withFeedbackDestination(customAerogearApnsFeedbackHost, port);
         }
     }
 }

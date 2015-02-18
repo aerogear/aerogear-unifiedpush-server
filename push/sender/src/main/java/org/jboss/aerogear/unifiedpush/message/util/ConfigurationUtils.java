@@ -41,4 +41,34 @@ public final class ConfigurationUtils {
             return null;
         }
     }
+
+    /**
+     * Try to retrieve a system property and returns null if SecurityManager blocks it.
+     *
+     * @param key Name of the system property to get the integer for.
+     * @return the value of the System property
+     */
+    public static Integer tryGetIntegerProperty(String key) {
+        return tryGetIntegerProperty(key, null);
+    }
+
+    /**
+     * Try to retrieve a system property and returns the defaultValue if SecurityManager blocks it.
+     *
+     * @param key Name of the system property to get the integer for.
+     * @param defaultValue Value to be returned on unsuccessful operation or if the propety is not set.
+     *
+     * @return the value of the System property
+     */
+    public static Integer tryGetIntegerProperty(String key, Integer defaultValue) {
+        try {
+            return Integer.getInteger(key, defaultValue);
+        } catch (SecurityException e) {
+            logger.severe("Could not get value of property " + key + " due to SecurityManager. Using null value.");
+            return defaultValue;
+        }
+    }
+
+
+
 }
