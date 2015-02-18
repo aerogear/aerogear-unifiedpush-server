@@ -17,22 +17,46 @@
 package org.jboss.aerogear.unifiedpush.message.util;
 
 
+import org.junit.After;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
 import java.util.Properties;
 
 public class ConfigurationUtilsTest {
 
+    private static final String TEST_PROPERTY_NAME = "ConfigurationUtilsTestProperty";
+
+    @After
+    public void cleanupTestProperty() {
+        Properties properties = System.getProperties();
+        properties.remove(TEST_PROPERTY_NAME);
+    }
+
     @Test
     public void testExistingTryGetProperty(){
-        Properties properties = System.getProperties();
-        properties.setProperty("MyNiceProp","MyNiceValue");
-        assertThat(ConfigurationUtils.tryGetProperty("MyNiceProp")).isEqualTo("MyNiceValue");
+        System.setProperty(TEST_PROPERTY_NAME, "MyNiceValue");
+        assertThat(ConfigurationUtils.tryGetProperty(TEST_PROPERTY_NAME)).isEqualTo("MyNiceValue");
     }
 
     @Test
     public void testNonExistingTryGetProperty(){
-        assertThat(ConfigurationUtils.tryGetProperty("MyNiceOtherProp")).isNull();
+        assertThat(ConfigurationUtils.tryGetProperty(TEST_PROPERTY_NAME)).isNull();
+    }
+
+    @Test
+    public void testExistingTryGetIntegerProperty() {
+        System.setProperty(TEST_PROPERTY_NAME, "123456");
+        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME)).isEqualTo(123456);
+    }
+
+    @Test
+    public void testNonExistingTryGetIntegerProperty() {
+        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME)).isNull();
+    }
+
+    @Test
+    public void testNonExistingTryGetIntegerPropertyWithDefaultValue() {
+        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME, 123)).isEqualTo(123);
     }
 
 }
