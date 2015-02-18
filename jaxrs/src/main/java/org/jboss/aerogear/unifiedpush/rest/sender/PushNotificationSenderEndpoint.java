@@ -64,6 +64,14 @@ public class PushNotificationSenderEndpoint {
      *          "key": "value",
      *          "key2": "other value"
      *      },
+     *      "windows": {
+     *          "type": "tile",
+     *          "duration": "short",
+     *          "badge": "alert",
+     *          "tileType": "TileWideBlockAndText01",
+     *          "images": ["Assets/test.jpg", "Assets/background.png"],
+     *          "textFields": ["foreground text"]
+     *      },
      *      "simple-push": "version=123"
      *     },
      *     "criteria": {
