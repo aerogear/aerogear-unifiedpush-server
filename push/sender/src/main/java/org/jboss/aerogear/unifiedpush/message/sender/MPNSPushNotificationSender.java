@@ -24,7 +24,7 @@ import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.windows.mpns.MPNS;
 import org.jboss.aerogear.windows.mpns.MpnsNotification;
 import org.jboss.aerogear.windows.mpns.MpnsService;
-import org.jboss.aerogear.windows.mpns.notifications.FlipTileNotification;
+import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 
 import java.util.Collection;
@@ -58,7 +58,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     notification = builder.build();
                     break;
                 case badge:
-                    notification = MPNS.newNotification().flipTile()
+                    notification = MPNS.newNotification().tile()
                             .count(message.getBadge()).build();
                     break;
                 case raw:
@@ -66,26 +66,26 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     break;
                 case tile:
                     Windows windows = message.getWindows();
-                    FlipTileNotification.Builder flipTile = MPNS.newNotification().flipTile();
-                    flipTile.title(message.getAlert());
+                    TileNotification.Builder tile = MPNS.newNotification().tile();
+                    tile.title(message.getAlert());
 
                     List<String> images = windows.getImages();
                     if (images.size() >= 1) {
-                        flipTile.backgroundImage(images.get(0));
+                        tile.backgroundImage(images.get(0));
                     }
 
                     if (images.size() >= 2) {
-                        flipTile.backBackgroundImage(images.get(1));
+                        tile.backBackgroundImage(images.get(1));
                     }
 
                     List<String> textFields = windows.getTextFields();
                     if (textFields.size() >= 1) {
-                        flipTile.backTitle(textFields.get(0));
+                        tile.backTitle(textFields.get(0));
                     }
                     if (textFields.size() >= 2) {
-                        flipTile.backContent(textFields.get(1));
+                        tile.backContent(textFields.get(1));
                     }
-                    notification = flipTile.build();
+                    notification = tile.build();
                     break;
                 default:
                     senderCallback.onError("unknown type: " + message.getWindows().getType());
