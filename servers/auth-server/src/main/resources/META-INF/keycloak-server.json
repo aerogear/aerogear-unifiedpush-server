@@ -65,7 +65,7 @@
 
     "connectionsJpa": {
         "default": {
-            "dataSource": "java:jboss/datasources/UnifiedPushDS",
+            "dataSource": "java:jboss/datasources/KeycloakDS",
             "user": "${keycloak.connectionsJpa.user:sa}",
             "password": "${keycloak.connectionsJpa.password:sa}",
             "databaseSchema": "update"

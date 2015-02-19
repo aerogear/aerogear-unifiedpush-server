@@ -8,5 +8,8 @@ batch
 ## Add UnifiedPush Datasource
 data-source add --name=UnifiedPushDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:mysql://localhost:3306/unifiedpush?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
 
+## Add Keycloak Datasource
+data-source add --name=KeycloakDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/KeycloakDS --connection-url="jdbc:mysql://localhost:3306/keycloak?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+
 run-batch
 #:reload
