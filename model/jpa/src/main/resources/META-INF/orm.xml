@@ -71,6 +71,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">
+        <table name="ios_variant"/>
         <discriminator-value>ios</discriminator-value>
         <attributes>
             <basic name="certificateData">
