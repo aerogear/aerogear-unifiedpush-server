@@ -23,4 +23,5 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="2014-10-16-add-category-entity.xml" relativeToChangelogFile="true"/>
+    <include file="2015-01-22-change-blob-into-a-base64-string.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
