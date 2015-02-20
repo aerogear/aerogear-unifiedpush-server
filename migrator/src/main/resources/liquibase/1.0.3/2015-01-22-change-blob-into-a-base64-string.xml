@@ -5,16 +5,22 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <property name="text_type" value="LONGTEXT" dbms="mysql"/>
     <property name="text_type" value="TEXT" dbms="postgresql"/>
-    <changeSet id="001m" author="qmx">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="mysql"/>
-        </preConditions>
+    <changeSet id="001m" author="qmx" dbms="mysql">
         <renameTable oldTableName="iOSVariant" newTableName="ios_variant"/>
     </changeSet>
-    <changeSet id="001p" author="qmx">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql"/>
-        </preConditions>
+    <changeSet id="001p" author="qmx" dbms="postgresql">
         <renameTable oldTableName="iosvariant" newTableName="ios_variant"/>
+    </changeSet>
+    <changeSet id="002" author="qmx">
+        <addColumn tableName="ios_variant">
+            <column name="cert_data" type="${text_type}"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="003" author="qmx">
+        <customChange class="org.jboss.aerogear.unifiedpush.migrator.CertificateBlobToBase64"/>
+        <addNotNullConstraint tableName="ios_variant" columnName="cert_data" columnDataType="${text_type}"/>
+    </changeSet>
+    <changeSet id="004" author="qmx">
+        <dropColumn tableName="ios_variant" columnName="certificate"/>
     </changeSet>
 </databaseChangeLog>
