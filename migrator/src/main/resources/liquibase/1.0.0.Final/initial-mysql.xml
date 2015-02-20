@@ -305,7 +305,11 @@
         <preConditions onFail="MARK_RAN">
             <dbms type="mysql"/>
             <not>
-                <indexExists indexName="UK_jlpkx1qkcjaps25wqhp4nkfel" tableName="Variant" columnNames="variantID"/>
+                <customPrecondition className="org.jboss.aerogear.unifiedpush.migrator.UniqueConstraintExistsCheck">
+                    <param name="tableName" value="Variant"/>
+                    <param name="columnNames" value="variantID"/>
+                    <param name="constraintName" value="UK_jlpkx1qkcjaps25wqhp4nkfel"/>
+                </customPrecondition>
             </not>
         </preConditions>
         <addUniqueConstraint columnNames="variantID" constraintName="UK_jlpkx1qkcjaps25wqhp4nkfel" deferrable="false"
