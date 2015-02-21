@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<dataset>
+    <table name="SA.CATEGORY">
+        <column>id</column>
+        <column>name</column>
+        <row>
+            <value>1</value>
+            <value>cat1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>cat2</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>cat3</value>
+        </row>
+    </table>
+    <table name="SA.INSTALLATION_CATEGORY"/>
+</dataset>

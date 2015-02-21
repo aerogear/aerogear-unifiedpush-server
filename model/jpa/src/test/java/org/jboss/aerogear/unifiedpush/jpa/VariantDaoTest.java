@@ -16,136 +16,83 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Arquillian.class)
 public class VariantDaoTest {
 
-
+    @Inject
     private EntityManager entityManager;
-    private JPAVariantDao variantDao;
+    @Inject
+    private VariantDao variantDao;
     private JPAInstallationDao installationDao;
 
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return DaoDeployment.createDeployment();
+    }
+
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Variant.xml");
 
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
-        // start the shindig
         entityManager.getTransaction().begin();
-
-        variantDao = new JPAVariantDao();
-        variantDao.setEntityManager(entityManager);
-        installationDao = new JPAInstallationDao();
-        installationDao.setEntityManager(entityManager);
     }
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().commit();
-
-        entityManager.close();
+        entityManager.getTransaction().rollback();
     }
 
     @Test
     public void findVariantByIdForDeveloper() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        assertThat(variantDao.findByVariantID(uuid)).isNotNull();
+        assertThat(variantDao.findByVariantID("1")).isNotNull();
         assertThat(variantDao.findByVariantID(null)).isNull();
     }
 
     @Test
     public void findVariantIDsForDeveloper() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
         assertThat(variantDao.findVariantIDsForDeveloper("admin")).isNotNull();
-        assertThat(variantDao.findVariantIDsForDeveloper("admin")).containsOnly(uuid);
+        assertThat(variantDao.findVariantIDsForDeveloper("admin")).containsOnly("1");
     }
 
     @Test
     public void findVariantsByIDs() {
 
-        final List<String> variantIDs = new ArrayList<String>(4);
-
-        final AndroidVariant av1 = new AndroidVariant();
-        av1.setName("Something Android");
-        av1.setGoogleKey("KEY");
-        av1.setDeveloper("admin");
-        variantIDs.add(av1.getVariantID());
-        variantDao.create(av1);
-        final AndroidVariant av2 = new AndroidVariant();
-        av2.setName("Something more Android");
-        av2.setGoogleKey("KEY");
-        av2.setDeveloper("admin");
-        variantIDs.add(av2.getVariantID());
-        variantDao.create(av2);
-
-        // add some invalid IDs:
-        variantIDs.add("foo");
-        variantIDs.add("bar");
+        //two valid and two invalid variantIDs
+        final List<String> variantIDs = Arrays.asList("1", "2", "foo", "bar");
 
         final List<Variant> variants = variantDao.findAllVariantsByIDs(variantIDs);
 
         assertThat(variants).hasSize(2);
-        assertThat(variants).extracting("name").contains("Something Android", "Something more Android");
-    }
-
-    @Test
-    public void findVariantById() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        assertThat(variantDao.findByVariantID(uuid)).isNotNull();
-        assertThat(variantDao.findByVariantID(null)).isNull();
+        assertThat(variants).extracting("name").contains("Android Variant", "Something more Android");
     }
 
     @Test
     public void updateVariant() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         final String primaryKey = queriedVariant.getId();
         assertThat(queriedVariant).isNotNull();
         assertThat(queriedVariant.getGoogleKey()).isEqualTo("KEY");
@@ -153,7 +100,7 @@ public class VariantDaoTest {
         queriedVariant.setGoogleKey("NEW_KEY");
         variantDao.update(queriedVariant);
 
-        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         assertThat(queriedVariant).isNotNull();
         assertThat(queriedVariant.getGoogleKey()).isEqualTo("NEW_KEY");
         assertThat(queriedVariant.getId()).isEqualTo(primaryKey);
@@ -161,15 +108,7 @@ public class VariantDaoTest {
 
     @Test
     public void updateAndDeleteVariant() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         final String primaryKey = queriedVariant.getId();
         assertThat(queriedVariant).isNotNull();
         assertThat(queriedVariant.getGoogleKey()).isEqualTo("KEY");
@@ -177,13 +116,13 @@ public class VariantDaoTest {
         queriedVariant.setGoogleKey("NEW_KEY");
         variantDao.update(queriedVariant);
 
-        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         assertThat(queriedVariant).isNotNull();
         assertThat(queriedVariant.getGoogleKey()).isEqualTo("NEW_KEY");
         assertThat(queriedVariant.getId()).isEqualTo(primaryKey);
 
         variantDao.delete(queriedVariant);
-        assertThat(variantDao.findByVariantID(uuid)).isNull();
+        assertThat(variantDao.findByVariantID("1")).isNull();
     }
 
     @Test
@@ -194,48 +133,29 @@ public class VariantDaoTest {
 
     @Test
     public void variantIDUnmodifiedAfterUpdate() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         final String primaryKey = queriedVariant.getId();
-        assertThat(queriedVariant.getVariantID()).isEqualTo(uuid);
+        assertThat(queriedVariant.getVariantID()).isEqualTo("1");
         assertThat(queriedVariant).isNotNull();
 
         queriedVariant.setGoogleKey("NEW_KEY");
         variantDao.update(queriedVariant);
 
-        queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
+        queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
         assertThat(queriedVariant).isNotNull();
-        assertThat(queriedVariant.getVariantID()).isEqualTo(uuid);
+        assertThat(queriedVariant.getVariantID()).isEqualTo("1");
         assertThat(queriedVariant.getId()).isEqualTo(primaryKey);
     }
 
     @Test
     public void primaryKeyUnmodifiedAfterUpdate() {
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String id  = av.getId();
-
-        variantDao.create(av);
-
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
+        final String id  = "1";
 
         AndroidVariant variant = (AndroidVariant) variantDao.find(id);
-
         assertThat(variant.getId()).isEqualTo(id);
 
-        av.setGoogleKey("NEW_KEY");
-        variantDao.update(av);
+        variant.setGoogleKey("NEW_KEY");
+        variantDao.update(variant);
 
         entityManager.flush();
         entityManager.clear();
@@ -244,72 +164,20 @@ public class VariantDaoTest {
 
         assertThat(variant.getGoogleKey()).isEqualTo("NEW_KEY");
 
-        assertThat(av.getId()).isEqualTo(id);
+        assertThat(variant.getId()).isEqualTo(id);
     }
 
     @Test
     public void deleteVariantIncludingInstallations() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String uuid  = av.getVariantID();
-
-        variantDao.create(av);
-
-        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID(uuid);
-        assertThat(queriedVariant).isNotNull();
-        assertThat(queriedVariant.getGoogleKey()).isEqualTo("KEY");
-
-        Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678");
-        final HashSet<Category> categories = new HashSet<Category>();
-        categories.add(new Category("X"));
-        categories.add(new Category("Y"));
-        androidInstallation1.setCategories(categories);
-        installationDao.create(androidInstallation1);
-
-        androidInstallation1.setVariant(queriedVariant);
-        variantDao.update(queriedVariant);
-
-        Installation storedInstallation =  installationDao.find(androidInstallation1.getId());
-        assertThat(storedInstallation.getId()).isEqualTo(androidInstallation1.getId());
+        AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
 
         variantDao.delete(queriedVariant);
         entityManager.flush();
         entityManager.clear();
-        assertThat(variantDao.findByVariantID(uuid)).isNull();
+        assertThat(variantDao.findByVariantID("1")).isNull();
 
         // Installation should be gone...
-        assertThat(installationDao.find(androidInstallation1.getId())).isNull();
-    }
-
-
-    @Test
-    public void createDifferentVariantTypes() {
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-
-        variantDao.create(av);
-
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
-
-        iOSVariant iOS = new iOSVariant();
-        iOS.setCertificate("test".getBytes());
-        iOS.setPassphrase("secret");
-        final String iOSid = iOS.getVariantID();
-
-        variantDao.create(iOS);
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
+        assertThat(entityManager.find(Installation.class, "1")).isNull();
     }
 
 
@@ -326,29 +194,13 @@ public class VariantDaoTest {
 
     @Test
     public void shouldDetectThatVariantIdExists() {
-        //given
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-        final String variantID  = av.getVariantID();
-        variantDao.create(av);
-
-        //when
-        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "admin")).isEqualTo(true);
-        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "foo")).isEqualTo(false);
+        assertThat(variantDao.existsVariantIDForDeveloper("1", "admin")).isEqualTo(true);
+        assertThat(variantDao.existsVariantIDForDeveloper("1", "foo")).isEqualTo(false);
     }
 
     @Test
     public void shouldDetectThatVariantIdExistsForAdmin() {
-        //given
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("foo");
-        final String variantID  = av.getVariantID();
-        variantDao.create(av);
-
-        //when
-        assertThat(variantDao.existsVariantIDForAdmin(variantID)).isEqualTo(true);
-        assertThat(variantDao.existsVariantIDForDeveloper(variantID, "foo")).isEqualTo(true);
+        assertThat(variantDao.existsVariantIDForAdmin("1")).isEqualTo(true);
+        assertThat(variantDao.existsVariantIDForDeveloper("2", "foo")).isEqualTo(true);
     }
 }
