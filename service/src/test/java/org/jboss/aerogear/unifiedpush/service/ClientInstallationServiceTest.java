@@ -276,6 +276,37 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    public void findDeviceTokensWithMultipleCategoriesAndDeleteONe() {
+
+        Installation device1 = new Installation();
+        device1.setDeviceToken(generateFakedDeviceTokenString());
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device1.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device1);
+
+        Installation device2 = new Installation();
+        device2.setDeviceToken(generateFakedDeviceTokenString());
+        categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
+        device2.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device2);
+
+        Installation device3 = new Installation();
+        device3.setDeviceToken(generateFakedDeviceTokenString());
+        categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device3.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device3);
+
+        clientInstallationService.removeInstallation(device3);
+        final List<String> queriedTokens =clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
+
+
+        assertThat(queriedTokens).contains(
+                device1.getDeviceToken(),
+                device2.getDeviceToken()
+        );
+    }
+
+    @Test
     public void findDeviceTokensWithoutAnyCriteria() {
 
         Installation device1 = new Installation();

@@ -108,12 +108,14 @@ public class InstallationDaoTest {
         pushApplicationDao.update(pa);
 
         // ============== Android client installations =========
+        Category soccer = new Category("soccer");
+
         Installation android1 = new Installation();
         android1.setAlias("foo@bar.org");
         android1.setDeviceToken(DEVICE_TOKEN_1);
         android1.setDeviceType("Android Phone");
         final Set<Category> categoriesOne = new HashSet<Category>();
-        categoriesOne.add(new Category("soccer"));
+        categoriesOne.add(soccer);
         android1.setCategories(categoriesOne);
 
         installationDao.create(android1);
@@ -137,10 +139,22 @@ public class InstallationDaoTest {
 
         installationDao.create(android3);
 
+        // installation with shared category
+        Installation android4 = new Installation();
+        android4.setAlias("barz@bar.org");
+        android4.setDeviceToken("54323423489550123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+        android4.setDeviceType("Android Tablet");
+        final Set<Category> categoriesThree= new HashSet<Category>();
+        categoriesThree.add(soccer);
+        android4.setCategories(categoriesThree);
+
+        installationDao.create(android4);
+
         // register them:
         android1.setVariant(av);
         android2.setVariant(av);
         android3.setVariant(av);
+        android4.setVariant(av);
         variantDao.update(av);
 
         // ============== SimplePush client installations =========
@@ -186,7 +200,7 @@ public class InstallationDaoTest {
 
     @Test
     public void countDevicesForVariants() {
-        assertThat(installationDao.getNumberOfDevicesForVariantIDs("me")).isEqualTo(6);
+        assertThat(installationDao.getNumberOfDevicesForVariantIDs("me")).isEqualTo(7);
     }
 
     @Test
@@ -269,7 +283,7 @@ public class InstallationDaoTest {
     public void findTwoDeviceTokensCategories() {
         String[] cats = { "soccer", "news", "weather" };
         List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
-        assertThat(tokens).hasSize(2);
+        assertThat(tokens).hasSize(3);
     }
 
     @Test
@@ -559,7 +573,7 @@ public class InstallationDaoTest {
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getCount()).isEqualTo(3);
+        assertThat(pageResult.getCount()).isEqualTo(4);
     }
 
     @Test
@@ -573,7 +587,7 @@ public class InstallationDaoTest {
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getCount()).isEqualTo(3);
+        assertThat(pageResult.getCount()).isEqualTo(4);
     }
 
     @Test(expected = PersistenceException.class)
