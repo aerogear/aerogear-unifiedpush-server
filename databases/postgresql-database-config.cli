@@ -9,5 +9,10 @@ batch
 data-source add --name=UnifiedPushDS --driver-name=psqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url=jdbc:postgresql://localhost:5432/unifiedpush --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000
 data-source enable --name=UnifiedPushDS
 
+## Add Keycloak Datasource
+data-source add --name=KeycloakDS --driver-name=psqlup --jndi-name=java:jboss/datasources/KeycloakDS --connection-url=jdbc:postgresql://localhost:5432/keycloak --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000
+data-source enable --name=KeycloakDS
+
+
 run-batch
 #:reload
