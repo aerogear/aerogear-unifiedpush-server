@@ -47,6 +47,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <join-column name="variantID" referenced-column-name="variantID"/>
             </many-to-one>
             <many-to-many name="categories" fetch="EAGER">
+                <join-table name="installation_category">
+                    <join-column name="installation_id" referenced-column-name="id"/>
+                    <inverse-join-column name="category_id" referenced-column-name="id"/>
+                </join-table>
                 <cascade>
                     <cascade-persist/>
                 </cascade>
@@ -54,13 +58,19 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="Category" access="FIELD">
+        <table name="category"/>
         <attributes>
             <id name="id">
-                <generated-value strategy="SEQUENCE"/>
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
             </id>
+            <basic name="name">
+                <column name="name" length="255"/>
+            </basic>
         </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">
+        <table name="ios_variant"/>
         <discriminator-value>ios</discriminator-value>
         <attributes>
             <basic name="certificateData">
