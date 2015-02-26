@@ -62,7 +62,8 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <attributes>
             <id name="id">
                 <column name="id"/>
-                <generated-value strategy="IDENTITY"/>
+                <generated-value strategy="SEQUENCE" generator="category_seq"/>
+                <sequence-generator name="category_seq" sequence-name="category_seq" />
             </id>
             <basic name="name">
                 <column name="name" length="255"/>
