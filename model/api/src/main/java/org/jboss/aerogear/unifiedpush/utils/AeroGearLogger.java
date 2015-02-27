@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.utils;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Responsible for Logging on UPS and prevent log forgery
@@ -37,7 +37,7 @@ public class AeroGearLogger {
     }
 
     public static AeroGearLogger getInstance(Class clazz) {
-        AeroGearLogger.logger = Logger.getLogger(clazz.getSimpleName());
+    	AeroGearLogger.logger = LoggerFactory.getLogger(clazz);
         return SingletonHolder.instance;
     }
 
@@ -46,23 +46,23 @@ public class AeroGearLogger {
     }
 
     public void warning(String message){
-        AeroGearLogger.logger.log(Level.WARNING, format(message));
+        AeroGearLogger.logger.warn(format(message));
     }
 
     public void severe(String message){
-        AeroGearLogger.logger.log(Level.SEVERE, format(message));
+        AeroGearLogger.logger.error(format(message));
     }
 
     public void severe(String message, Throwable t){
-        AeroGearLogger.logger.log(Level.SEVERE, format(message), t);
+        AeroGearLogger.logger.error(format(message), t);
     }
 
     public void fine(String message){
-        AeroGearLogger.logger.log(Level.FINE, format(message));
+        AeroGearLogger.logger.trace("[FINE] " + format(message));
     }
 
     public void finest(String message){
-        AeroGearLogger.logger.log(Level.FINEST, format(message));
+        AeroGearLogger.logger.trace("[FINEST] " + format(message));
     }
 
     /**
