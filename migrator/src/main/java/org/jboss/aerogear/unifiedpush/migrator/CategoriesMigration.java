@@ -23,24 +23,39 @@ import liquibase.exception.CustomChangeException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
+import liquibase.snapshot.SnapshotGeneratorFactory;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.InsertStatement;
 import liquibase.statement.core.RawSqlStatement;
 import liquibase.statement.core.UpdateStatement;
+import liquibase.structure.core.Table;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesMigration implements CustomSqlChange {
+    private String confirmationMessage;
+
     @Override
     public SqlStatement[] generateStatements(Database database) throws CustomChangeException {
+
+
         ArrayList<SqlStatement> sqlStatements = new ArrayList<SqlStatement>();
-        Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
+
 
         try {
+            Table tableA = new Table(null, null, "Installation_categories");
+            Table tableB = new Table(null, null, "installation_categories");
+
+            SnapshotGeneratorFactory instance = SnapshotGeneratorFactory.getInstance();
+            if (!instance.has(tableA, database) || !instance.has(tableB, database)) {
+                // table doesn't exist, aborting
+                this.confirmationMessage = "table doesn't exists, skipping";
+                return unwrap(sqlStatements);
+            }
+            Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
             ResultSet rs = conn.createStatement().executeQuery("select distinct categories from installation_categories");
             List<String> categories = new ArrayList<String>();
             while (rs.next()) {
@@ -55,7 +70,7 @@ public class CategoriesMigration implements CustomSqlChange {
                         .addColumnValue("name", category);
                 sqlStatements.add(categoryInsert);
             }
-            
+
             if ("mysql".equals(database.getShortName())) {
                 UpdateStatement updateStatement = new UpdateStatement(null, null, "category_seq")
                         .addNewColumnValue("nextval", categoryCounter + 1)
@@ -66,16 +81,20 @@ public class CategoriesMigration implements CustomSqlChange {
                 RawSqlStatement rawSqlStatement = new RawSqlStatement("alter sequence category_seq start " + categoryCounter + 1);
                 sqlStatements.add(rawSqlStatement);
             }
-
-        } catch (SQLException e) {
+            this.confirmationMessage = categoryCounter + " categories migrated successfully";
+        } catch (Exception e) {
             throw new CustomChangeException(e);
         }
+        return unwrap(sqlStatements);
+    }
+
+    private SqlStatement[] unwrap(ArrayList<SqlStatement> sqlStatements) {
         return sqlStatements.toArray(new SqlStatement[sqlStatements.size()]);
     }
 
     @Override
     public String getConfirmationMessage() {
-        return null;
+        return this.confirmationMessage;
     }
 
     @Override
