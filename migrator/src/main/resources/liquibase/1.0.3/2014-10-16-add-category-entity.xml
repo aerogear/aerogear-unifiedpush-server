@@ -22,23 +22,46 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <property name="pk_type" value="BIGINT(20)" dbms="mysql"/>
-    <property name="pk_type" value="SERIAL" dbms="postgresql"/>
-    <property name="autoIncrement" value="true" dbms="mysql"/>
-    <property name="autoIncrement" value="false" dbms="postgresql"/>
-
     <changeSet id="001" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="category"/>
+            </not>
+        </preConditions>
         <createTable tableName="category">
-            <column name="id" type="${pk_type}" autoIncrement="${autoIncrement}">
+            <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="category_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet id="002" author="generated">
-        <sql>insert into category (name) (select distinct categories from Installation_categories)</sql>
+    <changeSet id="002m" author="generated" dbms="mysql">
+        <preConditions>
+            <not>
+                <tableExists tableName="category_seq"/>
+            </not>
+        </preConditions>
+        <createTable tableName="category_seq">
+            <column name="nextval" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="002p" author="generated" dbms="postgresql">
+        <preConditions>
+            <not>
+                <sequenceExists sequenceName="category_seq"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="category_seq"/>
     </changeSet>
     <changeSet id="003" author="generated">
+        <customChange class="org.jboss.aerogear.unifiedpush.migrator.CategoriesMigration"/>
+    </changeSet>
+    <changeSet id="004" author="generated">
+        <preConditions>
+            <not>
+                <tableExists tableName="installation_category"/>
+            </not>
+        </preConditions>
         <createTable tableName="installation_category">
             <column name="installation_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -58,19 +81,17 @@
                                  referencedTableName="category"
                                  referencedColumnNames="id"/>
     </changeSet>
-    <changeSet id="004" author="generated">
+    <changeSet id="005" author="generated">
         <sql>insert into Installation_Category (SELECT installation_id, id FROM Installation_categories ic join category c on c.name = ic.categories)</sql>
     </changeSet>
-    <changeSet id="005m" author="generated">
+    <changeSet id="006m" author="generated" dbms="mysql">
         <preConditions onFail="MARK_RAN">
-            <dbms type="mysql"/>
             <tableExists tableName="Installation_categories"/>
         </preConditions>
         <dropTable tableName="Installation_categories"/>
     </changeSet>
-    <changeSet id="005p" author="generated">
+    <changeSet id="006p" author="generated" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql"/>
             <tableExists tableName="installation_categories"/>
         </preConditions>
         <dropTable tableName="installation_categories"/>
