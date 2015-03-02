@@ -42,70 +42,26 @@ public class AeroGearLogger {
     }
 
     public void info(String message){
-        AeroGearLogger.logger.info(format(message));
+        AeroGearLogger.logger.info(message);
     }
 
     public void warning(String message){
-        AeroGearLogger.logger.warn(format(message));
+        AeroGearLogger.logger.warn(message);
     }
 
     public void severe(String message){
-        AeroGearLogger.logger.error(format(message));
+        AeroGearLogger.logger.error(message);
     }
 
     public void severe(String message, Throwable t){
-        AeroGearLogger.logger.error(format(message), t);
+        AeroGearLogger.logger.error(message, t);
     }
 
     public void fine(String message){
-        AeroGearLogger.logger.trace("[FINE] " + format(message));
+        AeroGearLogger.logger.trace("[FINE] " + message);
     }
 
     public void finest(String message){
-        AeroGearLogger.logger.trace("[FINEST] " + format(message));
-    }
-
-    /**
-     * Taken with some modifications from Log4j
-     * @see <a href="https://github.com/apache/logging-log4j2/blob/master/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/EncodingPatternConverter.java">logging-log4j2</a>
-     * @param logMessage
-     * @return Encoded string
-     */
-    private String format(final String logMessage) {
-        final StringBuilder message = new StringBuilder(logMessage);
-        final StringBuilder str = new StringBuilder();
-        for (int i = 0; i < message.length(); i++) {
-            final char c = message.charAt(i);
-            switch (c) {
-                case '\r':
-                    str.append("\\r");
-                    break;
-                case '\n':
-                    str.append("\\n");
-                    break;
-                case '&':
-                    str.append("&amp;");
-                    break;
-                case '<':
-                    str.append("&lt;");
-                    break;
-                case '>':
-                    str.append("&gt;");
-                    break;
-                case '"':
-                    str.append("&quot;");
-                    break;
-                case '\'':
-                    str.append("&apos;");
-                    break;
-                case '/':
-                    str.append("&#x2F;");
-                    break;
-                default:
-                    str.append(c);
-                    break;
-            }
-        }
-        return str.toString();
+        AeroGearLogger.logger.trace("[FINEST] " + message);
     }
 }
