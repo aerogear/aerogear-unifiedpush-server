@@ -112,6 +112,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
 
     <entity class="VariantMetricInformation" access="FIELD">
         <attributes>
+        	<basic name="reason">
+        		<lob/>
+        	</basic>
             <many-to-one name="pushMessageInformation"/>
         </attributes>
     </entity>
