@@ -73,8 +73,8 @@ public class CategoriesMigration implements CustomSqlChange {
 
             if ("mysql".equals(database.getShortName())) {
                 UpdateStatement updateStatement = new UpdateStatement(null, null, "category_seq")
-                        .addNewColumnValue("nextval", categoryCounter + 1)
-                        .addWhereColumnName("nextval")
+                        .addNewColumnValue("next_val", categoryCounter + 1)
+                        .addWhereColumnName("next_val")
                         .addWhereParameter(categoryCounter);
                 sqlStatements.add(updateStatement);
             } else if ("postgresql".equals(database.getShortName())) {
