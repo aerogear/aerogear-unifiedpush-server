@@ -38,7 +38,6 @@
 			<onMismatch>DENY</onMismatch>
 		</filter>		
 	</appender>
-	<logger name="org.springframework" level="ERROR" />
 	<logger name="org.hibernate" level="ERROR" />
 	<logger name="org.jboss.aerogear" level="TRACE" />
 	<logger name="syslog" level="INFO" additivity="false">
