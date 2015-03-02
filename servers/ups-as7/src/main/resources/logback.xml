@@ -1,0 +1,55 @@
+<configuration>
+	<jmxConfigurator />
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/AeroGear/AeroGear.log</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n
+			</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- roll per day -->
+			<fileNamePattern>logs/AeroGear/AeroGear.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<!-- remove files older than 30 days -->
+			<maxHistory>30</maxHistory>
+			<!-- or whenever the file size reaches 100MB -->
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+		<syslogHost>localhost</syslogHost>
+		<facility>USER</facility>
+		<suffixPattern>%msg</suffixPattern>
+	</appender>
+	<appender name="ERRFILE"
+		class="ch.qos.logback.core.FileAppender">
+		<file>logs/AeroGear/AeroGear.err</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n
+			</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>		
+	</appender>
+	<logger name="org.hibernate" level="ERROR" />
+	<logger name="org.jboss.aerogear" level="TRACE" />
+	<logger name="syslog" level="INFO" additivity="false">
+		<appender-ref ref="SYSLOG" />
+	</logger>
+
+
+	<root level="INFO">
+		<!-- <appender-ref ref="SYSLOG" /> -->
+		<appender-ref ref="FILE" />
+	</root>
+	<root level="ERROR">
+		<appender-ref ref="ERRFILE" />
+	</root>
+</configuration>
