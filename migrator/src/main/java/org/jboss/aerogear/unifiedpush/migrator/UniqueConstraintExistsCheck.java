@@ -46,12 +46,17 @@ public class UniqueConstraintExistsCheck implements CustomPrecondition {
     public void check(Database database) throws CustomPreconditionFailedException, CustomPreconditionErrorException {
         Column column = new Column(this.columnNames);
         UniqueConstraint uniqueConstraint = new UniqueConstraint(this.constraintName, null, null, this.tableName, column);
+        boolean markFailed = false;
         try {
             if (!SnapshotGeneratorFactory.getInstance().has(uniqueConstraint, database)) {
-                throw new CustomPreconditionFailedException(this.constraintName + " doesn't exist");
+                markFailed = true;
             }
         } catch (Exception e) {
-            throw new CustomPreconditionErrorException("custom precondition check failed", e);
+            throw new CustomPreconditionErrorException("custom precondition check errored", e);
+        }
+
+        if (markFailed) {
+            throw new CustomPreconditionFailedException(this.constraintName + " doesn't exist");
         }
     }
 }
