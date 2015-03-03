@@ -27,4 +27,24 @@
         </preConditions>
         <renameTable oldTableName="Installation" newTableName="installation"/>
     </changeSet>
+    <changeSet id="002m" author="qmx" dbms="mysql">
+        <preConditions>
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="FK_se07q3nt9pb7v949p4ia77uvc"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="FK_se07q3nt9pb7v949p4ia77uvc"/>
+    </changeSet>
+    <changeSet id="002p" author="qmx" dbms="postgresql">
+        <preConditions>
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="fk_se07q3nt9pb7v949p4ia77uvc"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="fk_se07q3nt9pb7v949p4ia77uvc"/>
+    </changeSet>
+    <changeSet id="003" author="qmx">
+        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="installation"
+                                 constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="variantID" referencedTableName="Variant"/>
+    </changeSet>
 </databaseChangeLog>
