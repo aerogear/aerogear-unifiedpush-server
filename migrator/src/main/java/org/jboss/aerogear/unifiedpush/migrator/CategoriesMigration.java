@@ -16,34 +16,43 @@
  */
 package org.jboss.aerogear.unifiedpush.migrator;
 
-import liquibase.change.custom.CustomSqlChange;
+import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.CustomChangeException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-import liquibase.snapshot.SnapshotGeneratorFactory;
-import liquibase.statement.SqlStatement;
-import liquibase.statement.core.InsertStatement;
-import liquibase.statement.core.RawSqlStatement;
-import liquibase.statement.core.UpdateStatement;
-import liquibase.structure.core.Table;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriesMigration implements CustomSqlChange {
+public class CategoriesMigration implements CustomTaskChange {
     private String confirmationMessage;
 
     @Override
-    public SqlStatement[] generateStatements(Database database) throws CustomChangeException {
+    public String getConfirmationMessage() {
+        return this.confirmationMessage;
+    }
 
+    @Override
+    public void setUp() throws SetupException {
 
-        ArrayList<SqlStatement> sqlStatements = new ArrayList<SqlStatement>();
+    }
 
+    @Override
+    public void setFileOpener(ResourceAccessor resourceAccessor) {
 
+    }
+
+    @Override
+    public ValidationErrors validate(Database database) {
+        return null;
+    }
+
+    @Override
+    public void execute(Database database) throws CustomChangeException {
         try {
             Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
 
@@ -70,53 +79,30 @@ public class CategoriesMigration implements CustomSqlChange {
             }
             rs.close();
             conn.setAutoCommit(false);
+            PreparedStatement categoriesStatement = conn.prepareStatement("insert into category (id, name) values (?, ?)");
             long categoryCounter = 1;
             for (String category : categories) {
-                InsertStatement categoryInsert = new InsertStatement(null, null, "category")
-                        .addColumnValue("id", categoryCounter++)
-                        .addColumnValue("name", category);
-                sqlStatements.add(categoryInsert);
+                categoriesStatement.setLong(1, categoryCounter);
+                categoriesStatement.setString(2, category);
+                categoriesStatement.executeUpdate();
+                categoryCounter++;
             }
-
+            categoriesStatement.close();
             if ("mysql".equals(database.getShortName())) {
-                UpdateStatement updateStatement = new UpdateStatement(null, null, "category_seq")
-                        .addNewColumnValue("next_val", categoryCounter + 1)
-                        .addWhereColumnName("next_val")
-                        .addWhereParameter(categoryCounter);
-                sqlStatements.add(updateStatement);
+                PreparedStatement sequenceStatement = conn.prepareStatement("update category_seq set next_val = ? where next_val = ?");
+                sequenceStatement.setLong(1, categoryCounter + 1);
+                sequenceStatement.setLong(2, categoryCounter);
+                sequenceStatement.executeUpdate();
+                sequenceStatement.close();
             } else if ("postgresql".equals(database.getShortName())) {
-                RawSqlStatement rawSqlStatement = new RawSqlStatement("alter sequence category_seq start " + categoryCounter + 1);
-                sqlStatements.add(rawSqlStatement);
+                Statement statement = conn.createStatement();
+                statement.executeUpdate("alter sequence category_seq restart with " + categoryCounter + 1);
+                statement.close();
             }
             conn.commit();
             this.confirmationMessage = categoryCounter + " categories migrated successfully";
         } catch (Exception e) {
             throw new CustomChangeException(e);
         }
-        return unwrap(sqlStatements);
-    }
-
-    private SqlStatement[] unwrap(ArrayList<SqlStatement> sqlStatements) {
-        return sqlStatements.toArray(new SqlStatement[sqlStatements.size()]);
-    }
-
-    @Override
-    public String getConfirmationMessage() {
-        return this.confirmationMessage;
-    }
-
-    @Override
-    public void setUp() throws SetupException {
-
-    }
-
-    @Override
-    public void setFileOpener(ResourceAccessor resourceAccessor) {
-
-    }
-
-    @Override
-    public ValidationErrors validate(Database database) {
-        return null;
     }
 }
