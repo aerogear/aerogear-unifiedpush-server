@@ -41,4 +41,7 @@
     <changeSet id="004" author="qmx">
         <dropColumn tableName="ios_variant" columnName="certificate"/>
     </changeSet>
+    <changeSet id="005" author="qmx">
+        <addDefaultValue tableName="ios_variant" columnName="production" defaultValueBoolean="false"/>
+    </changeSet>
 </databaseChangeLog>
