@@ -59,7 +59,7 @@ public class CategoriesMigration implements CustomSqlChange {
             ResultSet rs = conn.createStatement().executeQuery("select distinct categories from installation_categories");
             List<String> categories = new ArrayList<String>();
             while (rs.next()) {
-                String category = rs.getString(0);
+                String category = rs.getString(1);
                 categories.add(category);
             }
             rs.close();
