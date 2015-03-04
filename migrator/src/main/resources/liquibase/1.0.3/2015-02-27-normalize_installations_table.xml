@@ -48,9 +48,9 @@
                                  referencedColumnNames="variantID" referencedTableName="Variant"/>
     </changeSet>
     <changeSet id="003p" author="qmx" dbms="postgresql">
-        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="installation"
+        <addForeignKeyConstraint baseColumnNames="variantid" baseTableName="installation"
                                  constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="variantID" referencedTableName="variant"/>
+                                 referencedColumnNames="variantid" referencedTableName="variant"/>
     </changeSet>
 </databaseChangeLog>
