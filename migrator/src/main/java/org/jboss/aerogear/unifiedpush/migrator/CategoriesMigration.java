@@ -61,7 +61,8 @@ public class CategoriesMigration implements CustomSqlChange {
                 this.confirmationMessage = "table doesn't exists, skipping";
                 return;
             }
-            ResultSet rs = conn.createStatement().executeQuery("select distinct categories from installation_categories");
+
+            ResultSet rs = conn.createStatement().executeQuery("select distinct categories from Installation_categories");
             List<String> categories = new ArrayList<String>();
             while (rs.next()) {
                 String category = rs.getString(1);
