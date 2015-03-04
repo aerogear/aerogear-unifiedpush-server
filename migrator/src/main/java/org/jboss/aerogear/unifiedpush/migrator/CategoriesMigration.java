@@ -30,8 +30,7 @@ import liquibase.statement.core.RawSqlStatement;
 import liquibase.statement.core.UpdateStatement;
 import liquibase.structure.core.Table;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,16 +45,22 @@ public class CategoriesMigration implements CustomSqlChange {
 
 
         try {
-            Table tableA = new Table(null, null, "Installation_categories");
-            Table tableB = new Table(null, null, "installation_categories");
-
-            SnapshotGeneratorFactory instance = SnapshotGeneratorFactory.getInstance();
-            if (!instance.has(tableA, database) || !instance.has(tableB, database)) {
-                // table doesn't exist, aborting
-                this.confirmationMessage = "table doesn't exists, skipping";
-                return unwrap(sqlStatements);
-            }
             Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
+
+            DatabaseMetaData metaData = conn.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, null, null);
+            boolean hasTable = false;
+            while (tables.next()) {
+                String tableName = tables.getString(3);
+                if ("Installation_categories".equals(tableName) || "installation_categories".equals(tableName)) {
+                    hasTable = true;
+                }
+            }
+
+            if (!hasTable) {
+                this.confirmationMessage = "table doesn't exists, skipping";
+                return;
+            }
             ResultSet rs = conn.createStatement().executeQuery("select distinct categories from installation_categories");
             List<String> categories = new ArrayList<String>();
             while (rs.next()) {
