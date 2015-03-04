@@ -69,6 +69,7 @@ public class CategoriesMigration implements CustomSqlChange {
                 categories.add(category);
             }
             rs.close();
+            conn.setAutoCommit(false);
             long categoryCounter = 1;
             for (String category : categories) {
                 InsertStatement categoryInsert = new InsertStatement(null, null, "category")
@@ -87,6 +88,7 @@ public class CategoriesMigration implements CustomSqlChange {
                 RawSqlStatement rawSqlStatement = new RawSqlStatement("alter sequence category_seq start " + categoryCounter + 1);
                 sqlStatements.add(rawSqlStatement);
             }
+            conn.commit();
             this.confirmationMessage = categoryCounter + " categories migrated successfully";
         } catch (Exception e) {
             throw new CustomChangeException(e);
