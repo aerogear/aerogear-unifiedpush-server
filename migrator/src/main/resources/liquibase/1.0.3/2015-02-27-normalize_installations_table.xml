@@ -41,10 +41,16 @@
         </preConditions>
         <dropForeignKeyConstraint baseTableName="installation" constraintName="fk_se07q3nt9pb7v949p4ia77uvc"/>
     </changeSet>
-    <changeSet id="003" author="qmx">
+    <changeSet id="003m" author="qmx" dbms="mysql">
         <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="installation"
                                  constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="variantID" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet id="003p" author="qmx" dbms="postgresql">
+        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="installation"
+                                 constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="variantID" referencedTableName="variant"/>
     </changeSet>
 </databaseChangeLog>
