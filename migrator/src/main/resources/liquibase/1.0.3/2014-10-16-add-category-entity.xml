@@ -63,7 +63,7 @@
             </not>
         </preConditions>
         <createTable tableName="category_seq">
-            <column name="nextval" type="BIGINT"/>
+            <column name="next_val" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet id="003p" author="generated" dbms="postgresql">
