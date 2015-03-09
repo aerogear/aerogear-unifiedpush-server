@@ -29,6 +29,7 @@ import net.iharder.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class CertificateBlobToBase64 implements CustomSqlChange {
             ResultSet resultSet = conn.createStatement().executeQuery("SELECT id, certificate from ios_variant");
             while (resultSet.next()) {
                 String id = resultSet.getString("id");
-                InputStream certificate = resultSet.getBinaryStream("certificate");
+                Blob blob = resultSet.getBlob("certificate");
+                InputStream certificate = blob.getBinaryStream();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 int bytesRead = -1;
                 byte[] buffer = new byte[1024];
@@ -60,7 +62,6 @@ public class CertificateBlobToBase64 implements CustomSqlChange {
                 UpdateStatement updateStatement = new UpdateStatement(null, null, "ios_variant")
                         .addNewColumnValue("cert_data", certificateData)
                         .setWhereClause("id='" + id + "'");
-                System.out.println(updateStatement.toString());
                 statements.add(updateStatement);
 
             }
