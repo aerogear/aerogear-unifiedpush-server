@@ -332,7 +332,7 @@
                                  referencedColumnNames="id" referencedTableName="Variant"/>
     </changeSet>
     <changeSet id="024" author="generated" dbms="mysql">
-        <preConditions onFail="MARK_RAN"
+        <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyTableName="AndroidVariant"
                                             foreignKeyName="FK_abna7p5c0p8ju2pf4ucqv5cby"/>
@@ -391,6 +391,4 @@
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="variantID" referencedTableName="Variant"/>
     </changeSet>
-
-
 </databaseChangeLog>
