@@ -80,21 +80,36 @@
     <changeSet id="004" author="generated">
         <customChange class="org.jboss.aerogear.unifiedpush.migrator.CategoriesMigration"/>
     </changeSet>
-    <changeSet id="004m1" author="generated" dbms="mysql">
+    <changeSet id="004m1" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FK_6j3n2uplg1110ud68gp09hquv"
+                                        foreignKeyTableName="Installation_Category"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="Installation_Category" constraintName="FK_6j3n2uplg1110ud68gp09hquv"/>
+    </changeSet>
+    <changeSet id="004m2" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FK_fsttk1rb4luv8tpnuc817578j"
+                                        foreignKeyTableName="Installation_Category"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="Installation_Category" constraintName="FK_fsttk1rb4luv8tpnuc817578j"/>
+    </changeSet>
+    <changeSet id="004m3" author="generated" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="Installation_Category"/>
         </preConditions>
         <renameTable oldTableName="Installation_Category" newTableName="installation_category"/>
     </changeSet>
-    <changeSet id="004m2" author="generated" dbms="mysql">
+    <changeSet id="004m4" author="generated" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="installation_category" columnName="Installation_id"/>
         </preConditions>
         <renameColumn tableName="installation_category" oldColumnName="Installation_id" newColumnName="installation_id"
                       columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="004m3" author="generated" dbms="mysql">
+    <changeSet id="004m5" author="generated" dbms="mysql">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="installation_category"/>
             <columnExists tableName="installation_category" columnName="categories_id"/>
         </preConditions>
         <renameColumn tableName="installation_category" oldColumnName="categories_id" newColumnName="category_id"
@@ -116,16 +131,34 @@
         </createTable>
         <addPrimaryKey columnNames="installation_id, category_id" constraintName="installation_category_pkey"
                        tableName="installation_category"/>
+    </changeSet>
+    <changeSet id="006" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="FK_dttushnsf13kdwywyba8njqv7"/>
+            </not>
+        </preConditions>
         <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="installation_id"
                                  constraintName="FK_dttushnsf13kdwywyba8njqv7"
                                  referencedTableName="installation"
                                  referencedColumnNames="id"/>
+
+    </changeSet>
+    <changeSet id="007" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="FK_ox56uwmry1x6kfoi3dkw1to8o"/>
+            </not>
+        </preConditions>
         <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="category_id"
                                  constraintName="FK_ox56uwmry1x6kfoi3dkw1to8o"
                                  referencedTableName="category"
                                  referencedColumnNames="id"/>
+
     </changeSet>
-    <changeSet id="006" author="generated">
+    <changeSet id="008" author="generated">
         <preConditions onFail="MARK_RAN">
             <or>
                 <tableExists tableName="Installation_categories"/>
@@ -134,13 +167,13 @@
         </preConditions>
         <sql>insert into installation_category (SELECT installation_id, id FROM Installation_categories ic join category c on c.name = ic.categories)</sql>
     </changeSet>
-    <changeSet id="007m" author="generated" dbms="mysql">
+    <changeSet id="009m" author="generated" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="Installation_categories"/>
         </preConditions>
         <dropTable tableName="Installation_categories"/>
     </changeSet>
-    <changeSet id="007p" author="generated" dbms="postgresql">
+    <changeSet id="009p" author="generated" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="installation_categories"/>
         </preConditions>
