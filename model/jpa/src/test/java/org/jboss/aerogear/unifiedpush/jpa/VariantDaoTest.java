@@ -267,9 +267,9 @@ public class VariantDaoTest {
         categories.add(new Category("X"));
         categories.add(new Category("Y"));
         androidInstallation1.setCategories(categories);
+        androidInstallation1.setVariant(queriedVariant);
         installationDao.create(androidInstallation1);
 
-        androidInstallation1.setVariant(queriedVariant);
         variantDao.update(queriedVariant);
 
         Installation storedInstallation =  installationDao.find(androidInstallation1.getId());

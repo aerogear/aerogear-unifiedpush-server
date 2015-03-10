@@ -1,0 +1,210 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="001" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <or>
+                    <tableExists tableName="Category"/>
+                    <tableExists tableName="category"/>
+                </or>
+            </not>
+        </preConditions>
+        <createTable tableName="category">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="category_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="002" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Category"/>
+        </preConditions>
+        <renameTable oldTableName="Category" newTableName="category"/>
+    </changeSet>
+    <changeSet id="002m" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="hibernate_sequence"/>
+        </preConditions>
+        <renameTable oldTableName="hibernate_sequence" newTableName="category_seq"/>
+    </changeSet>
+    <changeSet id="002p" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <sequenceExists sequenceName="hibernate_sequence"/>
+        </preConditions>
+        <sql>alter sequence hibernate_sequence rename to category_seq</sql>
+    </changeSet>
+    <changeSet id="003m" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="category_seq"/>
+            </not>
+        </preConditions>
+        <createTable tableName="category_seq">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+        <insert tableName="category_seq">
+            <column name="next_val" value="1"/>
+        </insert>
+    </changeSet>
+    <changeSet id="003p" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="category_seq"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="category_seq"/>
+    </changeSet>
+    <changeSet id="004" author="generated">
+        <customChange class="org.jboss.aerogear.unifiedpush.migrator.CategoriesMigration"/>
+    </changeSet>
+    <changeSet id="004m1" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FK_6j3n2uplg1110ud68gp09hquv"
+                                        foreignKeyTableName="Installation_Category"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="Installation_Category" constraintName="FK_6j3n2uplg1110ud68gp09hquv"/>
+    </changeSet>
+    <changeSet id="004m2" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FK_fsttk1rb4luv8tpnuc817578j"
+                                        foreignKeyTableName="Installation_Category"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="Installation_Category" constraintName="FK_fsttk1rb4luv8tpnuc817578j"/>
+    </changeSet>
+    <changeSet id="004m3" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Installation_Category"/>
+        </preConditions>
+        <renameTable oldTableName="Installation_Category" newTableName="installation_category"/>
+    </changeSet>
+    <changeSet id="004m4" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation_category" columnName="Installation_id"/>
+        </preConditions>
+        <renameColumn tableName="installation_category" oldColumnName="Installation_id" newColumnName="installation_id"
+                      columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="004a" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="installation_category"/>
+            <columnExists tableName="installation_category" columnName="categories_id"/>
+        </preConditions>
+        <renameColumn tableName="installation_category" oldColumnName="categories_id" newColumnName="category_id"
+                      columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet id="005" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="installation_category"/>
+            </not>
+        </preConditions>
+        <createTable tableName="installation_category">
+            <column name="installation_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="installation_id, category_id" constraintName="installation_category_pkey"
+                       tableName="installation_category"/>
+    </changeSet>
+    <changeSet id="006m" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="FK_dttushnsf13kdwywyba8njqv7"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="installation_id"
+                                 constraintName="FK_dttushnsf13kdwywyba8njqv7"
+                                 referencedTableName="installation"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+    <changeSet id="006p" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="fk_dttushnsf13kdwywyba8njqv7"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="installation_id"
+                                 constraintName="fk_dttushnsf13kdwywyba8njqv7"
+                                 referencedTableName="installation"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <changeSet id="007m" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="FK_ox56uwmry1x6kfoi3dkw1to8o"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="category_id"
+                                 constraintName="FK_ox56uwmry1x6kfoi3dkw1to8o"
+                                 referencedTableName="category"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+    <changeSet id="007p" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                            foreignKeyName="fk_ox56uwmry1x6kfoi3dkw1to8o"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="installation_category" baseColumnNames="category_id"
+                                 constraintName="fk_ox56uwmry1x6kfoi3dkw1to8o"
+                                 referencedTableName="category"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <changeSet id="008" author="generated">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <tableExists tableName="Installation_categories"/>
+                <tableExists tableName="installation_categories"/>
+            </or>
+        </preConditions>
+        <sql>insert into installation_category (SELECT installation_id, id FROM Installation_categories ic join category c on c.name = ic.categories)</sql>
+    </changeSet>
+    <changeSet id="009m" author="generated" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Installation_categories"/>
+        </preConditions>
+        <dropTable tableName="Installation_categories"/>
+    </changeSet>
+    <changeSet id="009p" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="installation_categories"/>
+        </preConditions>
+        <dropTable tableName="installation_categories"/>
+    </changeSet>
+</databaseChangeLog>
