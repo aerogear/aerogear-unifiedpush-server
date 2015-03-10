@@ -107,7 +107,7 @@
         <renameColumn tableName="installation_category" oldColumnName="Installation_id" newColumnName="installation_id"
                       columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="004m5" author="generated" dbms="mysql">
+    <changeSet id="004a" author="generated">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="installation_category"/>
             <columnExists tableName="installation_category" columnName="categories_id"/>
