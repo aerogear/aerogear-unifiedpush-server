@@ -30,6 +30,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.ios.APNs;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -73,18 +74,19 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         final iOSVariant iOSVariant = (iOSVariant) variant;
 
         Message message = pushMessage.getMessage();
+        APNs apns = message.getApns();
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
                 .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
-                .alertTitle(message.getApns().getTitle()) // The title of the notification in Safari
-                .alertAction(message.getApns().getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
-                .urlArgs(message.getApns().getUrlArgs())
-                .category(message.getApns().getActionCategory()); // iOS8: User Action category
+                .alertTitle(apns.getTitle()) // The title of the notification in Safari
+                .alertAction(apns.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
+                .urlArgs(apns.getUrlArgs())
+                .category(apns.getActionCategory()); // iOS8: User Action category
 
                 // apply the 'content-available:1' value:
-                if (message.getApns().isContentAvailable()) {
+                if (apns.isContentAvailable()) {
                     // content-available is for 'silent' notifications and Newsstand
                     builder = builder.instantDeliveryOrSilentNotification();
                 }

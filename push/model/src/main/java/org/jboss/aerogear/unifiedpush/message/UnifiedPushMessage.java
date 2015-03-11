@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
  *
  * Messages are submitted as follows:
  * <pre>
- * {    
+ * {
  *   "message": {
  *       "alert": "HELLO!",
  *       "sound": "default",

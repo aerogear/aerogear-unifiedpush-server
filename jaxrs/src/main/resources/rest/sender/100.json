@@ -16,6 +16,21 @@
       "value": {}
     },
     {
+      "op": "add",
+      "path": "/message/apns",
+      "value": {}
+    },
+    {
+      "op": "move",
+      "from": "/message/action-category",
+      "path": "/message/apns/action-category"
+    },
+    {
+      "op": "move",
+      "from": "/message/content-available",
+      "path": "/message/apns/content-available"
+    },
+    {
       "op": "move",
       "from": "/alias",
       "path": "/criteria/alias"
