@@ -28,7 +28,7 @@ Inside of the extracted zip file, there is a `liquibase-postgresql-example.prope
 
     cp liquibase-postgresql-example.properties liquibase.properties
 
-Once done, you need to edit the new file to match your database credentials.
+Once done, you need to edit the new file to match your database name and credentials.
 
 #### MySQL
 
@@ -36,7 +36,7 @@ Inside of the extracted zip file, there is a `liquibase-mysql-example.properties
 
     cp liquibase-mysql-example.properties liquibase.properties
 
-Once done, you need to edit the new file to match your database credentials.
+Once done, you need to edit the new file to match your database name and credentials.
 
 #### Run the script
 
