@@ -1,13 +1,15 @@
 {
   "message": {
     "alert": "HELLO!",
-    "action-category": "some value",
     "sound": "default",
     "badge": 2,
-    "content-available": true,
     "user-data": {
       "key": "value",
       "key2": "other value"
+    },
+    "apns": {
+      "content-available": true,
+      "action-category": "some value"
     },
     "simple-push": "version=123"
   },
