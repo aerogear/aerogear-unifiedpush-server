@@ -3,8 +3,6 @@
   "clientIdentifier": null,
   "message": {
     "alert": "HELLO!",
-    "title": null,
-    "action": null,
     "sound": "default",
     "badge": 2,
     "page": "/MainPage.xaml",
@@ -20,9 +18,14 @@
       "textFields": [
       ]
     },
-    "action-category": "some value",
-    "url-args": null,
-    "content-available": true,
+    "apns": {
+      "title": null,
+      "action": null,
+      "action-category": "some value",
+      "url-args": null,
+      "content-available": true
+    },
+
     "user-data": {
       "key2": "other value",
       "key": "value"

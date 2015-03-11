@@ -56,10 +56,8 @@ public class PushNotificationSenderEndpoint {
      *   -d '{
      *     "message": {
      *      "alert": "HELLO!",
-     *      "action-category": "some value",
      *      "sound": "default",
      *      "badge": 2,
-     *      "content-available": true,
      *      "user-data": {
      *          "key": "value",
      *          "key2": "other value"
@@ -72,6 +70,13 @@ public class PushNotificationSenderEndpoint {
      *          "images": ["Assets/test.jpg", "Assets/background.png"],
      *          "textFields": ["foreground text"]
      *      },
+     *      "apns": {
+     *          "title" : "someTitle",
+     *          "action-category": "some value",
+     *          "content-available": true,
+     *          "action" : "someAction"
+     *          "url-args" :["args1","arg2"]
+     *      }
      *      "simple-push": "version=123"
      *     },
      *     "criteria": {

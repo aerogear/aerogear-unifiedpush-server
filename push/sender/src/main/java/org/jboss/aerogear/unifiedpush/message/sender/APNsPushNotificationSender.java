@@ -76,15 +76,15 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
                 .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
-                .alertTitle(message.getTitle()) // The title of the notification in Safari
-                .alertAction(message.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
-                .urlArgs(message.getUrlArgs())
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
-                .category(message.getActionCategory()); // iOS8: User Action category
+                .alertTitle(message.getApns().getTitle()) // The title of the notification in Safari
+                .alertAction(message.getApns().getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
+                .urlArgs(message.getApns().getUrlArgs())
+                .category(message.getApns().getActionCategory()); // iOS8: User Action category
 
                 // apply the 'content-available:1' value:
-                if (message.isContentAvailable()) {
+                if (message.getApns().isContentAvailable()) {
                     // content-available is for 'silent' notifications and Newsstand
                     builder = builder.instantDeliveryOrSilentNotification();
                 }
