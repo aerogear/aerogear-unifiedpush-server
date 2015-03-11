@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.jboss.aerogear.unifiedpush.message.ios.APNs;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import java.util.HashMap;
@@ -30,18 +31,9 @@ import java.util.Map;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Message {
-    @JsonProperty("action-category")
-    private String actionCategory;
+
     private String alert;
-    private String title;
-    private String action;
     private String sound;
-
-    @JsonProperty("url-args")
-    private String[] urlArgs;
-
-    @JsonProperty("content-available")
-    private boolean contentAvailable;
     private int badge = -1;
 
     @JsonProperty("user-data")
@@ -55,18 +47,7 @@ public class Message {
     private String consolidationKey;
 
     private Windows windows = new Windows();
-
-    /**
-     * Returns the value of the 'action-category', which is used on the client (iOS for now),
-     * to invoke a certain "user action" on the device, based on the push message. Implemented for iOS8
-     */
-    public String getActionCategory() {
-        return actionCategory;
-    }
-
-    public void setActionCategory(String actionCategory) {
-        this.actionCategory = actionCategory;
-    }
+    private APNs apns = new APNs();
 
     /**
      * Returns the value of the 'alert' key from the submitted payload.
@@ -84,25 +65,6 @@ public class Message {
         this.alert = alert;
     }
 
-    /**
-     * Returns the value of the 'title' key from the submitted payload.
-     * This key is recognized in APNs for Safari, without any API invocation and
-     * on AeroGear's GCM offerings.
-     *
-     */
-    public String getTitle() { return title; }
-
-    public void setTitle(String title) { this.title = title; }
-
-    /**
-     * Returns the value of the 'action' key from the submitted payload.
-     * This key is recognized in APNs for Safari, without any API invocation and
-     * on AeroGear's GCM offerings.
-     *
-     */
-    public String getAction() { return action; }
-
-    public void setAction(String action) { this.action = action; }
 
     /**
      * Returns the value of the 'sound' key from the submitted payload.
@@ -117,20 +79,6 @@ public class Message {
 
     public void setSound(String sound) {
         this.sound = sound;
-    }
-
-    /**
-     * Used for in iOS specific feature, to indicate if content (for Newsstand or silent messages) has marked as
-     * being available
-     *
-     * Not supported on other platforms.
-     */
-    public boolean isContentAvailable() {
-        return contentAvailable;
-    }
-
-    public void setContentAvailable(boolean contentAvailable) {
-        this.contentAvailable = contentAvailable;
     }
 
     /**
@@ -165,15 +113,6 @@ public class Message {
         this.userData = userData;
     }
 
-    /**
-     * Returns the value of the 'url-args' key from the submitted payload.
-     * This key is recognized in APNs for Safari, without any API invocation and
-     * on AeroGear's GCM offerings.
-     *
-     */
-    public String[] getUrlArgs() { return urlArgs; }
-
-    public void setUrlArgs(String[] urlArgs) { this.urlArgs = urlArgs; }
 
     /**
      * Returns the SimplePush specific version number.
@@ -221,6 +160,17 @@ public class Message {
     }
 
     /**
+     * Apns specific parameters to configure how the message will be displayed.
+     */
+    public APNs getApns() {
+        return apns;
+    }
+
+    public void setApns(APNs apns) {
+        this.apns = apns;
+    }
+
+    /**
      * Windows specific parameters to configure how the message will be displayed.
      */
     public Windows getWindows() {
@@ -234,10 +184,8 @@ public class Message {
     @Override
     public String toString() {
         return "Message{" +
-                "action-category='" + actionCategory + '\'' +
                 ", alert='" + alert + '\'' +
                 ", sound='" + sound + '\'' +
-                ", contentAvailable=" + contentAvailable +
                 ", badge=" + badge +
                 ", consolidationKey=" + consolidationKey +
                 ", user-data=" + userData +
