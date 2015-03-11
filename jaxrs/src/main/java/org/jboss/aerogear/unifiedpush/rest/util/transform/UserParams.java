@@ -33,8 +33,8 @@ import static java.text.MessageFormat.format;
  * UserParams is a DynamicTransformer that moves all user parameters to a separate user-data section.
  */
 public class UserParams implements DynamicTransformer {
-    private static final List<String> KNOWN_KEYS = Arrays.asList("alert", "action-category", "sound", "badge",
-            "content-available","simple-push", "user-data");
+    private static final List<String> KNOWN_KEYS = Arrays.asList("alert", "apns", "sound", "badge",
+            "simple-push", "user-data");
     public static final String MOVE_OP = "['{'\"op\": \"move\",\"from\": \"/message/{0}\",\"path\": \"/message/user-data/{0}\"'}']";
 
     @Override
