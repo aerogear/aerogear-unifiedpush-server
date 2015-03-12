@@ -37,6 +37,14 @@
                 <include>*.war</include>
             </includes>
         </fileSet>
+        <!-- Bundle the migration distribution --> 
+        <fileSet>
+            <directory>${project.basedir}/../migrator/target</directory>
+            <outputDirectory>/migration</outputDirectory>
+            <includes>
+                <include>*.zip</include>
+            </includes>
+        </fileSet>
         <!-- Bundle the unifiedpush-* source JAR files --> 
         <fileSet>
             <directory>target/src</directory>
