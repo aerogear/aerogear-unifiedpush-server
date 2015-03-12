@@ -40,7 +40,7 @@
         <!-- Bundle the migration distribution --> 
         <fileSet>
             <directory>${project.basedir}/../migrator/target</directory>
-            <outputDirectory>/migration</outputDirectory>
+            <outputDirectory>/migrator</outputDirectory>
             <includes>
                 <include>*.zip</include>
             </includes>
