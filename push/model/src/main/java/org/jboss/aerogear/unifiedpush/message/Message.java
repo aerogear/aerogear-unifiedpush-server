@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.jboss.aerogear.unifiedpush.message.ios.APNs;
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import java.util.HashMap;
