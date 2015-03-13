@@ -23,7 +23,9 @@
       "action": null,
       "action-category": "some value",
       "url-args": null,
-      "content-available": true
+      "content-available": true,
+      "localized-title-key": null,
+      "localized-title-arguments": null
     },
 
     "user-data": {

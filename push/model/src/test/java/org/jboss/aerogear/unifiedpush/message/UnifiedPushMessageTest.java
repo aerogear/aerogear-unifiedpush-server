@@ -329,6 +329,38 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testLocalizedTitleKey() throws IOException {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+
+        apnsObject.put("localized-title-key", "myLocalizedTitle");
+        messageObject.put("alert", "Howdy");
+        messageObject.put("apns",apnsObject);
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("myLocalizedTitle", unifiedPushMessage.getMessage().getApns().getLocalizedTitleKey());
+    }
+
+    @Test
+    public void testLocalizedTitleArguments() throws IOException {
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        String[] arguments = {"Jambon","ham"};
+        apnsObject.put("localized-title-arguments", arguments);
+        messageObject.put("alert", "Howdy");
+        messageObject.put("apns",apnsObject);
+        container.put("message", messageObject);
+
+        // parse it:
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        assertEquals("[Jambon, ham]", Arrays.toString(unifiedPushMessage.getMessage().getApns().getLocalizedTitleArguments()));
+    }
+
+    @Test
     public void testMultipleAliasCriteria() throws IOException {
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
         final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
