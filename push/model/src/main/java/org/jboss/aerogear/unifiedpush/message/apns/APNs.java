@@ -30,6 +30,12 @@ public class APNs {
     private String title;
     private String action;
 
+    @JsonProperty("localized-title-key")
+    private String localizedTitleKey;
+
+    @JsonProperty("localized-title-arguments")
+    private String[] localizedTitleArguments;
+
     @JsonProperty("url-args")
     private String[] urlArgs;
 
@@ -88,5 +94,21 @@ public class APNs {
     public String[] getUrlArgs() { return urlArgs; }
 
     public void setUrlArgs(String[] urlArgs) { this.urlArgs = urlArgs; }
+
+    /**
+     * The key to a title string in the Localizable.strings file for the current localization.
+     */
+    public String getLocalizedTitleKey() { return localizedTitleKey;}
+
+    public void setLocalizedTitleKey(String localizedTitleKey) {this.localizedTitleKey = localizedTitleKey;}
+
+    /**
+     * Sets the arguments for the localizable title key
+     */
+    public String[] getLocalizedTitleArguments() { return localizedTitleArguments;}
+
+    public void setLocalizedTitleArguments(String[] localizedTitleArguments) {this.localizedTitleArguments = localizedTitleArguments;}
+
+
 
 }

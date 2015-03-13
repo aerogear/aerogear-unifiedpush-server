@@ -83,15 +83,21 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 .alertTitle(apns.getTitle()) // The title of the notification in Safari
                 .alertAction(apns.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
                 .urlArgs(apns.getUrlArgs())
-                .category(apns.getActionCategory()); // iOS8: User Action category
+                .category(apns.getActionCategory()) // iOS8: User Action category
+                .localizedTitleKey(apns.getLocalizedTitleKey()); //iOS8 : Localized Title Key
 
-                // apply the 'content-available:1' value:
-                if (apns.isContentAvailable()) {
-                    // content-available is for 'silent' notifications and Newsstand
-                    builder = builder.instantDeliveryOrSilentNotification();
-                }
+        //this kind of check should belong in java-apns
+        if(apns.getLocalizedTitleArguments() != null) {
+            builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
+        }
 
-                builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
+       // apply the 'content-available:1' value:
+        if (apns.isContentAvailable()) {
+            // content-available is for 'silent' notifications and Newsstand
+            builder = builder.instantDeliveryOrSilentNotification();
+        }
+
+        builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
