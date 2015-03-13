@@ -80,7 +80,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
                 .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
-                .alertTitle(apns.getTitle()) // The title of the notification in Safari
+                .alertTitle(apns.getTitle()) // The title of the notification in Safari and Apple Watch
                 .alertAction(apns.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
                 .urlArgs(apns.getUrlArgs())
                 .category(apns.getActionCategory()) // iOS8: User Action category
