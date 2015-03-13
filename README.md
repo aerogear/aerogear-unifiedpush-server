@@ -20,16 +20,16 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 The following steps are needed to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
-* Setup a database of [your choice](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_database_configuration)
+* Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
 * Start the {Wildfly|EAP 6.3} server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
-* Deploy the two `WAR` files to the [server](http://aerogear.org/docs/unifiedpush/ups_userguide/server-installation/#_deploy_the_unifiedpush_server)
+* Deploy the two `WAR` files to the [server](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#deploy)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
 ## Documentation
 
-For more details about the current release, please consult [our documentation](http://aerogear.org/docs/unifiedpush/).
+For more details about the current release, please consult [our documentation](https://aerogear.org/getstarted/guides/#push).
 
 
 ## Who is using it?
