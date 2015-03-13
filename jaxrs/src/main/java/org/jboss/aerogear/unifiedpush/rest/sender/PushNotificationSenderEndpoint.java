@@ -74,8 +74,10 @@ public class PushNotificationSenderEndpoint {
      *          "title" : "someTitle",
      *          "action-category": "some value",
      *          "content-available": true,
-     *          "action" : "someAction"
-     *          "url-args" :["args1","arg2"]
+     *          "action" : "someAction",
+     *          "url-args" :["args1","arg2"],
+     *          "localized-title-key" : "some value",
+     *          "localized-title-arguments" : ["args1","arg2"]
      *      }
      *      "simple-push": "version=123"
      *     },
