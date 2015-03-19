@@ -44,6 +44,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <!-- "The max size for a registration_id is bounded by the max size for a cookie, which is 4K (4096 bytes)." -->
                 <column length="4096" />
             </basic>
+            <basic name="enabled">
+                <column column-definition="BIT" />
+            </basic>
             <many-to-one name="variant" fetch="LAZY">
                 <join-column name="variantID" referenced-column-name="variantID"/>
             </many-to-one>
@@ -77,6 +80,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <attributes>
             <basic name="certificateData">
                 <column name="cert_data" length="100000"/>
+            </basic>
+            <basic name="production">
+                <column column-definition="BIT" />
             </basic>
         </attributes>
     </entity>
@@ -116,6 +122,12 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
 
-    <entity class="VariantMetricInformation" access="FIELD" />
+    <entity class="VariantMetricInformation" access="FIELD">
+        <attributes>
+            <basic name="deliveryStatus">
+                <column column-definition="BIT" />
+            </basic>
+        </attributes>
+    </entity>
 
 </entity-mappings>
