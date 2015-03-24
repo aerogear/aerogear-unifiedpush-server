@@ -25,10 +25,14 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 
+
+import javax.ejb.Stateless;
+
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
  * on the Admin UI.
  */
+@Stateless
 public class PushMessageMetricsService {
 
     // that's what we currently use as the maximum days the message information objects are stored
@@ -128,5 +132,9 @@ public class PushMessageMetricsService {
     public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
+    }
+
+    public PushMessageInformation getPushMessageInformation(String id) {
+        return pushMessageInformationDao.getPushMessageInformation(id);
     }
 }
