@@ -44,7 +44,7 @@ import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.try
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
 
 @SenderType(iOSVariant.class)
-public class APNsPushNotificationSender implements PushNotificationSender {
+public class APNsPushNotificationSender  implements PushNotificationSender {
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
@@ -70,7 +70,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if (tokens.isEmpty()) {
             return;
         }
-
         final iOSVariant iOSVariant = (iOSVariant) variant;
 
         Message message = pushMessage.getMessage();
