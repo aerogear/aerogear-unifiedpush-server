@@ -67,6 +67,7 @@ public class SenderServiceImpl implements SenderService {
                         message.getClientIdentifier()
                         );
 
+        message.getMessage().getUserData().put("push-identifier",pushMessageInformation.getId());
         // collections for all the different variants:
         final Set<Variant> variants = new HashSet<Variant>();
 
@@ -145,6 +146,11 @@ public class SenderServiceImpl implements SenderService {
         public void onError(final String reason) {
             logger.warning(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
+        }
+
+        @Override
+        public PushMessageInformation getPushMessageInformation() {
+            return pushMessageInformation;
         }
     }
 }
