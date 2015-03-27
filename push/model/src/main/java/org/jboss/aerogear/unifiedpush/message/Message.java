@@ -42,8 +42,6 @@ public class Message {
     @JsonProperty("simple-push")
     private String simplePush;
 
-    private String page;
-
     private String consolidationKey;
 
     private Windows windows = new Windows();
@@ -119,26 +117,6 @@ public class Message {
      */
     public String getSimplePush() {
         return simplePush;
-    }
-
-    /**
-     * Returns the page, this is a Windows specific setting that contains the
-     * page in you application to launch when the user 'touches' the notification
-     * in the notification dock. For cordova applications set this to 'cordova' to
-     * launch your app and invoke the javascript callback.
-     *
-     * Payload example:
-     * <pre>
-     *     "page": "/MainPage.xaml"
-     * </pre>
-     * @return the page to launch for the notification
-     */
-    public String getPage() {
-        return page;
-    }
-
-    public void setPage(String page) {
-        this.page = page;
     }
 
     public void setSimplePush(String simplePush) {

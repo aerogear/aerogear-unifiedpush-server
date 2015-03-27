@@ -5,7 +5,6 @@
     "alert": "HELLO!",
     "sound": "default",
     "badge": 2,
-    "page": "/MainPage.xaml",
     "consolidationKey": null,
     "windows": {
       "type": "tile",
@@ -16,7 +15,8 @@
       "images": [
       ],
       "textFields": [
-      ]
+      ],
+      "page": "/MainPage.xaml"
     },
     "apns": {
       "title": null,

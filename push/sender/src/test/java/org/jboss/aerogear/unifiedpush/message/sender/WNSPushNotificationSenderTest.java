@@ -65,7 +65,7 @@ public class WNSPushNotificationSenderTest {
     public void shouldEncodeUserDataInCordovaPage() {
         //given
         Message pushMessage = getUnifiedPushMessage();
-        pushMessage.setPage("cordova");
+        pushMessage.getWindows().setPage("cordova");
 
         //when
         final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
@@ -78,7 +78,7 @@ public class WNSPushNotificationSenderTest {
     public void shouldNoPage() {
         //given
         Message message = getUnifiedPushMessage();
-        message.setPage(null);
+        message.getWindows().setPage(null);
 
         //when
         final WnsToast toast = sender.createSimpleToastMessage(message);
@@ -130,7 +130,7 @@ public class WNSPushNotificationSenderTest {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("key", "value");
         data.put("ke2", "value2");
-        message.setPage("/Root.xaml");
+        message.getWindows().setPage("/Root.xaml");
         message.setUserData(data);
         return message;
     }
