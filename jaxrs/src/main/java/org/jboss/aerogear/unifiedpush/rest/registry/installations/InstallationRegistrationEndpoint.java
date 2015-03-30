@@ -139,12 +139,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
                     pushMessageInformation.setLastOpenDate(new Date());
                 } else {
                     pushMessageInformation.setFirstOpenDate(new Date());
+                    pushMessageInformation.setLastOpenDate(new Date());
                 }
 
-                long counter = pushMessageInformation.getAppOpenCounter();
-                pushMessageInformation.setAppOpenCounter(counter++);
+
+                pushMessageInformation.setAppOpenCounter(pushMessageInformation.getAppOpenCounter() + 1);
                 metricsService.updatePushMessageInformation(pushMessageInformation);
-                logger.info("Mobile Application opened for the " + counter + " time.");
+                logger.info("Mobile Application opened for the " + pushMessageInformation.getAppOpenCounter() + " time.");
             }
         }
         // async:
