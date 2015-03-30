@@ -1,0 +1,114 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-sm-8 col-md-9">
+
+      <div class="page-header page-header-bleed-right">
+        <div class="actions pull-right">
+          <a ng-link="welcome" class="btn btn-primary ups-create-app-btn"><span class="pficon pficon-add"></span> Create Application</a>
+        </div>
+        <h1>Applications</h1>
+      </div>
+
+      <div class="ups-sub-header">
+
+        <form role="form" class="search-pf has-button">
+          <div class="form-group has-clear">
+            <div class="search-pf-input-group">
+              <label for="search1" class="sr-only">Search</label>
+              <input id="search1" type="search" class="form-control" placeholder="Search">
+              <button type="button" class="clear" aria-hidden="true"><span class="pficon pficon-close"></span></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
+          </div>
+        </form>
+      </div><!-- subheader -->
+
+
+
+
+      <ul class="media-list ups-app-stream">
+
+        <li class="media" ng-repeat="app in home.apps">
+          <div class="actions">
+            <ul class="list-inline">
+              <li><a href="#"><span class="pficon pficon-edit"></span> Change name</a></li>
+              <li class="danger"><a href="#" ng-click="home.deleteApp( app )"><span class="pficon pficon-delete"></span> Delete</a></li>
+            </ul>
+          </div>
+
+          <a ng-link="appDetail({app: app.pushApplicationID, tab: 'variants'})">
+            <div class="media-left">
+              <div class="app-icon">{{ app.name | limitTo: 1 }}</div>
+            </div>
+
+            <div class="media-body">
+
+              <h2 class="media-heading">{{ app.name }} <small></small></h2>
+              <ul class="list-inline">
+                <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
+                <li><i class="fa fa-code-fork"></i> <strong>{{ app.variants.length }}</strong> variants</li>
+                <li><span class="pficon pficon-messages"></span> <strong>???</strong> notifications delivered</li>
+                <li><i class="fa fa-mobile"></i> <strong>???</strong> devices registered</li>
+              </ul>
+
+            </div>
+          </a>
+
+        </li>
+
+      </ul>
+
+      <pagination items-per-page="8" max-size="5" total-items="home.totalItems"
+                  ng-model="home.currentPage"
+                  ng-change="home.pageChanged(home.currentPage)"
+                  ng-show="home.totalItems / 8 > 1"
+                  direction-links="true" boundary-links="false" rotate="false"
+                  previous-text="&lsaquo;" next-text="&rsaquo;" class="ups-pagination">
+      </pagination>
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <h2 class="h5">General Statistics</h2>
+      </div>
+      <ul class="list-unstyled ups-statistics">
+        <li><span>6</span>Apps</li>
+        <li><span>725</span>Delivered</li>
+        <li><span>92</span>Devices</li>
+      </ul>
+
+
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <h2 class="h5">Latest Notifications</h2>
+      </div>
+      <div class="list-group">
+        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
+          <h3 class="list-group-item-heading">Application One</h3>
+          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
+        </a>
+        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
+          <h3 class="list-group-item-heading">Application One</h3>
+          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
+        </a>
+        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
+          <h3 class="list-group-item-heading">Best App ever</h3>
+          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
+        </a>
+        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
+          <h3 class="list-group-item-heading">Application One</h3>
+          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
+        </a>
+
+      </div>
+      <!--           <p><a href="#"><span class="pficon pficon-history"></span> See all notifications</a></p> -->
+    </div><!-- /col -->
+
+  </div><!-- /row -->
+</div><!-- /container -->

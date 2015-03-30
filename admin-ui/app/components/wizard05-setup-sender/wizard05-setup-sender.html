@@ -1,0 +1,86 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+
+
+
+      <div class="page-header page-header-bleed-right">
+
+        <div class="actions pull-right">
+          <ul class="list-inline">
+            <li><a href="#"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+          </ul>
+        </div>
+
+        <h1>Application Name</h1>
+      </div>
+
+
+      <h2><strong>Backend:</strong> Set up sender API</h2>
+      <p><strong>Last step!</strong> Now that your mobile device is set up, lets make your backend server send notifications to this UnifiedPush Server using <a target="_blank" href="https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/">Aerogears Java sender API</a>:</p>
+      <dl class="dl-horizontal">
+        <dt>Server URL</dt>
+        <dd>http://localhost:8080/ag-push/</dd>
+        <dt>Application ID</dt>
+        <dd>bff6aeb2-6b30-4967-bf0a-9a99d0873a63</dd>
+        <dt>Master Secret</dt>
+        <dd>be608987-a0db-458e-b5cd-62200ed006a8</dd>
+      </dl>
+      <div class="ups-snippet">
+        <a href="#" data-toggle="tooltip" data-placement="left" title="Copy to clipboard">Copy</a>
+<pre class="pre-scrollable prettyprint">
+JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push/").build();
+UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+        .pushApplicationId("bff6aeb2-6b30-4967-bf0a-9a99d0873a63")
+        .masterSecret("be608987-a0db-458e-b5cd-62200ed006a8")
+        .alert("Hello from Java Sender API!")
+        .build();
+defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
+
+    @Override
+    public void onComplete(int statusCode) {
+        //do cool stuff
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        //bring out the bad news
+    }
+});
+</pre>
+      </div>
+
+      <p>If you have questions about this process, <a href="#">visit the documentation for full sept by step explanation</a>.</p>
+
+
+      <div class="actions pull-right ups-wizard-actions">
+        <a ng-link="wizard06Done" class="btn btn-primary btn-lg">Continue <i class="fa fa-angle-double-right"></i></a>
+      </div>
+
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <div class="actions pull-right">
+          <a href="#"><a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+        </div>
+        <h2 class="h5">Wizard steps</h2>
+      </div>
+      <ol class="list-unstyled ups-steps">
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Add a variant</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Mobile device: Set up variant</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Test! Send notification</li>
+        <li class="active"><strong>5</strong> Backend: Set up sender API</li>
+      </ol>
+
+
+
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->

@@ -1,0 +1,57 @@
+<h3>Sending push notifications</h3>
+<p>Make your backend server send push notifications through this UnifiedPush Server using <a target="_blank" href="https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/">Aerogears Java sender API</a>:</p>
+<dl class="dl-horizontal">
+  <dt>Server URL</dt>
+  <dd>{{ appDetail.contextPath }}</dd>
+  <dt>Application ID</dt>
+  <dd>{{ appDetail.app.pushApplicationID }}</dd>
+  <dt>Master Secret</dt>
+  <dd>{{ appDetail.app.masterSecret }}
+    <br /><button class="btn btn-sm btn-primary" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
+  </dd>
+</dl>
+
+<div class="alert alert-info">
+  <span class="pficon pficon-info"></span>
+  <strong>Keep this info secure!</strong> Never publish your Master Secret or Application ID. <a href="#" class="alert-link">Read more info about this</a>.
+</div>
+
+<ul class="nav nav-tabs nav-tabs-pf">
+  <li ng-class="{ active: sender.activeSnippet == 'java' || !sender.activeSnippet }"><a ng-click="sender.activeSnippet = 'java'">Java Sender API</a></li>
+  <li ng-class="{ active: sender.activeSnippet == 'nodejs' }"><a ng-click="sender.activeSnippet = 'nodejs'">Node.js Sender API</a></li>
+  <li ng-class="{ active: sender.activeSnippet == 'curl' }"><a ng-click="sender.activeSnippet = 'curl'">CURL Sender API</a></li>
+</ul>
+
+
+<h3>Set up Java UPS Sender API</h3>
+<p>You can send notifications to your apps following this 2 stpes. First, on your backend, set up <a target="_blank" href="#">UnifiedPush Server</a>. Second, <a href="#">add a variant</a> and use the snippet on your mobile app to <a href="#">register you device</a>. You can add as many variants as needed. (TODO: improve this text and add links to docs)</p>
+
+
+<div class="ups-snippet">
+  <a href="#" data-toggle="tooltip" data-placement="left" title="Copy to clipboard">Copy</a>
+  <pre class="pre-scrollable prettyprint" ng-show="sender.activeSnippet == 'java' || !sender.activeSnippet"><ng-include src="'snippets/senders/sender.java'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-show="sender.activeSnippet == 'nodejs'"><ng-include src="'snippets/senders/sender-nodejs.js'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-show="sender.activeSnippet == 'curl'"><ng-include src="'snippets/senders/sender-curl.sh'"></ng-include></pre>
+</div>
+
+<h3>Next step:</h3>
+<p>This only appears if there are no devices installed on any variant. If you haven't done it yet, the first step to set up your mobile device is to click on Variants and <a href="#">add a variant</a>. Once you get the variant snippet go and <a target="_blank" href="#">register you device</a>.</p>
+
+<script type="text/ng-template" id="inline:renew-master-secret.html">
+  <div class="modal-header">
+    <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel">Renew Master Secret</h4>
+  </div>
+  <div class="modal-body">
+    <h4>You are about to change the master secret!</h4>
+    <p>Be aware that this cannot be undone and you'll have to change your sender in order to continue sending push notifications.</p>
+    <p>Are you sure you want to prosigue?</p>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="dismiss()">No, cancel</button>
+    <button class="btn btn-danger" ng-click="confirm()">Yes, Renew Master Secret</button>
+  </div>
+</script>
