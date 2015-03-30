@@ -107,7 +107,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             builder.duration(windows.getDuration().toString());
         }
         builder.audioSrc(message.getSound());
-        builder.launch(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()));
         createMessage(message, windows.getToastType().toString(), builder);
         return builder.build();
     }
@@ -168,7 +168,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     WnsToast createSimpleToastMessage(Message message) {
         final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(message.getAlert());
         final Map<String, Object> data = message.getUserData();
-        builder.launch(createLaunchParam(message.getPage(), message.getAlert(), data));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), data));
         return builder.build();
     }
 

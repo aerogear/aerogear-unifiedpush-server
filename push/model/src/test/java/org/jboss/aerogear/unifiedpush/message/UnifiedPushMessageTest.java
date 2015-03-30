@@ -54,7 +54,7 @@ public class UnifiedPushMessageTest {
         message.getApns().setActionCategory("some value");
         message.setSound("default");
         message.setBadge(2);
-        message.setPage("/MainPage.xaml");
+        message.getWindows().setPage("/MainPage.xaml");
         message.getWindows().setType(Type.tile);
         message.getWindows().setTileType(TileType.TileWideBlockAndText01);
         message.getApns().setContentAvailable(true);
@@ -597,7 +597,6 @@ public class UnifiedPushMessageTest {
         messageObject.put("alert", "HELLO!");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        messageObject.put("page", "cordova");
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("key", "value");
         data.put("key2", "value");
@@ -608,6 +607,7 @@ public class UnifiedPushMessageTest {
         Map<String, Object> windows = new HashMap<String, Object>();
         windows.put("type", "tile");
         windows.put("tileType", "TileWideBlockAndText01");
+        windows.put("page", "cordova");
         messageObject.put("windows", windows);
         messageObject.put("apns",apnsObject);
 

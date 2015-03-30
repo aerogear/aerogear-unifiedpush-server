@@ -33,6 +33,7 @@ public class Windows {
     private ToastType toastType;
     private List<String> images = new ArrayList<String>();
     private List<String> textFields = new ArrayList<String>();
+    private String page;
 
     public Type getType() {
         return type;
@@ -88,5 +89,25 @@ public class Windows {
 
     public void setTextFields(List<String> textFields) {
         this.textFields = textFields;
+    }
+
+    /**
+     * Returns the page, this is a Windows specific setting that contains the
+     * page in you application to launch when the user 'touches' the notification
+     * in the notification dock. For cordova applications set this to 'cordova' to
+     * launch your app and invoke the javascript callback.
+     *
+     * Payload example:
+     * <pre>
+     *     "page": "/MainPage.xaml"
+     * </pre>
+     * @return the page to launch for the notification
+     */
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
     }
 }

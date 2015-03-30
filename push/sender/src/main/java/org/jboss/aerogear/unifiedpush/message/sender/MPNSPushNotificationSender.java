@@ -50,7 +50,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
             switch (message.getWindows().getType()) {
                 case toast:
                     ToastNotification.Builder builder = MPNS.newNotification().toast()
-                            .parameter(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()))
+                            .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()))
                             .title(message.getAlert());
                     if (!message.getWindows().getTextFields().isEmpty()) {
                         builder.subtitle(message.getWindows().getTextFields().get(0));
@@ -93,7 +93,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
             }
         } else {
             notification = MPNS.newNotification().toast()
-                    .parameter(createLaunchParam(message.getPage(), message.getAlert(), message.getUserData()))
+                    .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()))
                     .title(message.getAlert()).build();
         }
 
