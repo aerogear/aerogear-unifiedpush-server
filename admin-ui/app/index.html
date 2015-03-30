@@ -4,7 +4,9 @@
 <!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]-->
+<html class="no-js lt-ie9 ie8"> <![endif]-->
+<!--[if IE 9]>
+<html class="no-js ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js"> <!--<![endif]-->
 <head>
@@ -12,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AeroGear UnifiedPush Server</title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" href="img/favicon.png">
 
@@ -22,138 +24,125 @@
       }
     </style>
 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/patternfly/components/html5shiv/dist/html5shiv.min.js"></script>
+    <script src="bower_components/patternfly/components/respond/dest/respond.min.js"></script>
+    <![endif]-->
+
     <!-- build:css({.tmp,app}) styles/dist.css -->
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="bower_components/highlightjs/styles/ir_black.css">
     <!-- endbuild -->
 
 </head>
-<body class="app-dashboard"  ng-controller="RootController as rootCtrl">
+<body class="app-dashboard" ng-controller="AppController as app">
 
-<div class="idlebox ng-cloak"
-      ng-hide="rootCtrl.idleCountdown > rootCtrl.appConfig.idleWarningDuration">
-	You will be logged off in {{ rootCtrl.idleCountdown }}&nbsp;seconds due to inactivity.
-</div>
+<!--<div class="ups-main-warning">-->
+  <!--<div class="alert alert-warning alert-dismissable">-->
+    <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">-->
+      <!--<span class="pficon pficon-close"></span>-->
+    <!--</button>-->
+            <!--<span class="pficon-layered">-->
+              <!--<span class="pficon pficon-warning-triangle"></span>-->
+              <!--<span class="pficon pficon-warning-exclamation"></span>-->
+            <!--</span>-->
+    <!--<strong>Main console alerts goes here!</strong> We are not really sure, but <a href="#" class="alert-link">it might be bad</a>.-->
+  <!--</div>-->
+<!--</div>&lt;!&ndash; ups main warning&ndash;&gt;-->
 
-<!--[if lt IE 9]>
-<script src="bower_components/es5-shim/es5-shim.js"></script>
-<script src="bower_components/json3/lib/json3.min.js"></script>
-<![endif]-->
-<div class="feedback-aligner ng-cloak" >
-  <div class="row" ng-repeat="notification in notifications.data" data-ng-show="notifications.data.length > 0">
-    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)" style="margin-bottom:1em">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-        <span class="pficon pficon-close"></span>
-      </button>
-      <span class="pficon pficon-ok" ng-show="notification.type == 'success'"></span>
-      <span class="pficon pficon-info" ng-show="notification.type == 'info'"></span>
-                <span class="pficon-layered" ng-show="notification.type == 'danger'">
-                    <span class="pficon pficon-error-octagon"></span>
-                    <span class="pficon pficon-error-exclamation"></span>
-                </span>
-                <span class="pficon-layered" ng-show="notification.type == 'warning'">
-                    <span class="pficon pficon-warning-triangle"></span>
-                    <span class="pficon pficon-warning-exclamation"></span>
-                </span>
-      <strong>{{notification.header}}</strong> {{notification.message}}
-    </div>
+
+
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" ng-link="home">
+      <img src="img/brand.svg" alt="AeroGear UnifiedPush Server" />
+    </a>
   </div>
-  <div class="row" ng-show="isProcessingData()">
-    <div class="alert alert-info alert-dismissable" ng-click="notifications.remove($index)" style="margin-bottom:1em">
-      <span class="pficon spinner spinner-sm spinner-inline" style="top: 8px; left: 8px;"></span>
-      <strong>Processing...</strong>
-    </div>
+  <div class="collapse navbar-collapse navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-utility">
+      <li class="dropdown">
+        <a href="#" data-toggle="dropdown">
+          <span class="pficon pficon-info"></span>
+          Warnings: <strong>2</strong>
+        </a>
+        <div class="dropdown-menu infotip bottom-right">
+          <div class="arrow"></div>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <span class="i pficon pficon-info"></span>
+              Added Datasources TestDS
+            </li>
+            <li class="list-group-item">
+              <span class="i pficon pficon-info"></span>
+              Modified Datasources ExampleDS
+            </li>
+          </ul>
+          <div class="footer"><a href="#">Clear Warnings</a></div>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="pficon pficon-user"></span>
+          Brian Johnson <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="#">Accont management</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#">Logout</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
-</div>
+  <div class="collapse navbar-collapse navbar-collapse-1">
+  </div>
+</nav>
 
-<div class="row">
-    <header>
-        <nav class="navbar navbar-default navbar-pf ng-cloak">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#/">
-                    <h1>AeroGear UnifiedPush Server</h1>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse" ng-class="{'in':!navCollapsed}">
-                <ul class="nav navbar-nav navbar-utility">
-                    <li class="dropdown">
-                        <a href="#" class="lo-user dropdown-toggle ng-binding" data-toggle="dropdown">
-                          <span class="pficon pficon-user"></span>
-                            {{rootCtrl.username}} <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" ng-click="rootCtrl.accountManagement()">Account Management</a>
-                            </li>
-                            <li>
-                                <a href="#" ng-click="rootCtrl.logout()">Log Out</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-</div>
 
-<!-- ngView:  -->
-<div class="row lo-main-pane lo-content-row ups-main-pane ng-scope" >
-  <ups-navigation current="{{$rootScope.section}}"></ups-navigation>
+<ng-viewport></ng-viewport>
 
-  <ng-view ng-show="!isViewLoading"></ng-view>
-  <div ng-include="'views/loading.html'" ng-show="$rootScope.isViewLoading"></div>
-</div>
 
 <!-- build:js scripts/modules.js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
+
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
-<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-router/dist/router.es5.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
+
 <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
-<script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="bower_components/highlightjs/highlight.pack.js"></script>
-<script src="bower_components/angular-highlightjs/angular-highlightjs.js"></script>
-<script src="bower_components/ng-idle/angular-idle.js"></script>
 <!-- endbuild -->
 
 <script src="/auth/js/keycloak.js"></script>
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
+<script src="scripts/decorators/$resourceDecorator.js"></script>
+<script src="scripts/router.js"></script>
 
-<script src="scripts/ui/bootstrap-customization.js"></script>
-<script src="scripts/controllers/RootController.js"></script>
-<script src="scripts/controllers/ApplicationController.js"></script>
-<script src="scripts/controllers/DetailController.js"></script>
-<script src="scripts/controllers/InstallationController.js"></script>
-<script src="scripts/controllers/ExampleController.js"></script>
-<script src="scripts/controllers/ComposeController.js"></script>
-<script src="scripts/controllers/PreComposeController.js"></script>
-<script src="scripts/controllers/DashboardController.js"></script>
-<script src="scripts/controllers/ActivityController.js"></script>
+<script src="components/home/home.js"></script>
+<script src="components/app-detail/app-detail.js"></script>
+<script src="components/app-detail/include/sender.js"></script>
+<script src="components/app-detail/include/variants.js"></script>
+<script src="components/wizard01-create-app/wizard01-create-app.js"></script>
+<script src="components/wizard02-add-variant/wizard02-add-variant.js"></script>
+<script src="components/wizard03-register-device/wizard03-register-device.js"></script>
+
 <script src="scripts/services/upsConsole.services.module.js"></script>
+<script src="scripts/services/variantModal.js"></script>
 <script src="scripts/services/applicationsEndpoint.js"></script>
-<script src="scripts/services/dashboardEndpoint.js"></script>
-<script src="scripts/services/exporterEndpoint.js"></script>
-<script src="scripts/services/importerEndpoint.js"></script>
-<script src="scripts/services/installationsEndpoint.js"></script>
-<script src="scripts/services/messageSenderEndpoint.js"></script>
-<script src="scripts/services/metricsEndpoint.js"></script>
 <script src="scripts/services/variantsEndpoint.js"></script>
-<script src="scripts/services/breadcrumbsService.js"></script>
-<script src="scripts/services/errorReporting.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
-<script src="scripts/services/pushConfigGenerator.js"></script>
 <script src="scripts/directives.js"></script>
 <!-- endbuild -->
 

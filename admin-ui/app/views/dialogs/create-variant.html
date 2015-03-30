@@ -1,146 +1,153 @@
-<form name="form" class="modal-content ups-modal-content">
+<form name="form" class="modal-content ups-modal-content ups-add-variable">
   <div class="modal-header">
-    <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
+    <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
+    <h4 class="modal-title" id="myModalLabel">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
   </div>
-  <div class="modal-body">
-    <div class="form-horizontal">
-      <div class="form-group">
-        <label class="col-sm-3 control-label" for="createAppName">Name</label>
-        <div class="col-sm-7">
-          <input type="text" placeholder="e.g. Demo" id="createAppName" class="form-control" ng-model="variant.name" required pf-focused="true">
-        </div>
+  <div class="modal-body form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Name</label>
+      <div class="col-sm-9">
+        <input type="text" id="textInput-modal-markup" class="form-control" placeholder="eg. Demo" ng-model="variant.name" required="required">
       </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label" for="createAppDescription">Description</label>
-        <div class="col-sm-7">
-          <input type="text" placeholder="e.g. The free demo version" id="createAppDescription" class="form-control" ng-model="variant.description">
-        </div>
-      </div>
+    </div>
 
-      <div class="form-group" ng-hide="variant.id">
-        <hr>
-        <label class="col-sm-3 control-label"></label>
-        <div class="ups-platform-selection col-sm-7">
-          <div class="row">
-            <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeAndroid" ng-model="variant.type" value="android" ng-required="true">
-              <label for="variantTypeAndroid">
-                <div class="ups-platform android">
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="optionAndroid">Choose a platform</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionAndroid" value="android" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-android">
                   <strong>Android</strong><br>
-                  <span>using Google Cloud Messaging</span>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeIOS" ng-model="variant.type" value="ios"  ng-required="true">
-              <label for="variantTypeIOS">
-                <div class="ups-platform ios">
+                  using Google Cloud Messaging
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label sr-only" for="optionIos">iOS</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionIos" value="ios" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-ios">
                   <strong>iOS</strong><br>
-                  <span>using Apple Push Network</span>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeWindows" ng-model="variant.type" value="windows"  ng-required="true">
-              <label for="variantTypeWindows">
-                <div class="ups-platform windows">
+                  using Apple Push Network
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label sr-only" for="optionWindows">Windows</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionWindows" value="windows" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-windows">
                   <strong>Windows</strong><br>
-                  <span>using Windows Network Services</span>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeSimplePush" ng-model="variant.type" value="simplePush"  ng-required="true">
-              <label for="variantTypeSimplePush">
-                <div class="ups-platform simplepush">
-                <b>SimplePush</b><br />
-                <span>using the Mozilla WebAPI</span>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="radio ups-radio">
-              <input type="radio" name="createVariantType" id="variantTypeAdm" ng-model="variant.type" value="adm"  ng-required="true">
-              <label for="variantTypeAdm">
-                <div class="ups-platform adm">
-                  <b>ADM</b><br />
-                  <span>using Amazon Push Network</span>
-                </div>
-              </label>
-            </div>
+                  using Windows Network Services
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label sr-only" for="optionSimplePush">SimplePush</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionSimplePush" value="simplePush" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-simplePush">
+                  <strong>SimplePush</strong><br>
+                  using the Mozilla WebAPI
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label sr-only" for="optionsAdm">SimplePush</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionsAdm" value="adm" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-adm">
+                  <strong>ADM</strong><br>
+                  using Amazon Push Network
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="variant.type">
+
+      <div ng-show="variant.type == 'android'">
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="gcmApiKey">Push Network</label>
+          <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
+            <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
           </div>
         </div>
-        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
+          <div class="col-sm-7">
+            Project Number<br>
+            <input type="text" placeholder="e.g. 42" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber" ng-required="variant.type == 'android'">
+          </div>
+        </div>
       </div>
 
-      <div ng-show="variant.type">
-
-        <div ng-show="variant.type == 'android'">
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="gcmApiKey">Push Network</label>
-            <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
-              <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
-            <div class="col-sm-7">
-              Project Number<br>
-              <input type="text" placeholder="e.g. 42" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber" ng-required="variant.type == 'android'">
-            </div>
-          </div>
-        </div>
-
-        <div ng-show="variant.type == 'ios'">
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Push Network</label>
-            <div class="col-sm-7">
-              <p><em>Apple Push Notification Service</em> certificate:</p>
-              <strong><input type="file" ups-files="variant.certificates" /></strong>
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <div class="row">
-                    <br><label class="col-sm-3 control-label">Type</label>
-                    <div class="col-sm-9">
-                      <div class="row">
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" ng-required="variant.type == 'ios'">
-                            Production
-                          </label>
-                        </div>
+      <div ng-show="variant.type == 'ios'">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Push Network</label>
+          <div class="col-sm-7">
+            <p><em>Apple Push Notification Service</em> certificate:</p>
+            <strong><input type="file" ups-files="variant.certificates" ng-required="variant.type == 'ios'" /></strong>
+            <div class="form-horizontal">
+              <div class="form-group">
+                <div class="row">
+                  <br><label class="col-sm-3 control-label">Type</label>
+                  <div class="col-sm-9">
+                    <div class="row">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" value="true" ng-required="variant.type == 'ios'">
+                          Production
+                        </label>
                       </div>
-                      <div class="row">
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false" ng-required="variant.type == 'ios'">
-                            Development
-                          </label>
-                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" value="false" ng-required="variant.type == 'ios'">
+                          Development
+                        </label>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
-                  <div class="col-sm-9">
-                    <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
+                <div class="col-sm-9">
+                  <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
       <div ng-show="variant.type.indexOf('windows') == 0">
         <div class="form-group">
@@ -213,10 +220,10 @@
       </div>
 
     </div>
-  </div>
 
+  </div>
   <div class="modal-footer">
-    <input type="button" class="btn btn-default" ng-click="cancel()" value="Cancel" />
-    <input type="submit" class="btn btn-primary" ng-click="ok(variant)" ng-disabled="form.$invalid" value="{{ variant.id ? 'Save' : 'Add' }}" />
+    <button ng-click="dismiss()" type="button" class="btn btn-default">Cancel</button>
+    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()">Create</button>
   </div>
 </form>
