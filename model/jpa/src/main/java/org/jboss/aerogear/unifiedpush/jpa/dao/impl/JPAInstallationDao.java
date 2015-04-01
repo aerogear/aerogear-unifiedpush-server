@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,11 +28,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -106,7 +107,24 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .append( " left join installation.categories c ")
                 .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
 
-        return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes);
+        return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes, null, null).getResultList();
+    }
+
+    public List<String> findAllDeviceTokenForVariantIDByCriteriaWithLimits(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, Integer offset, Integer limit, String tokenFrom, String tokenTo) {
+        // the required part: Join + all tokens for variantID;
+
+        final StringBuilder jpqlString = new StringBuilder("select distinct installation.deviceToken from Installation installation")
+                .append( " left join installation.categories c ")
+                .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
+
+        TypedQuery<String> dynamicQuery = this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes, tokenFrom, tokenTo);
+        if (offset != null) {
+            dynamicQuery.setFirstResult(offset);
+        }
+        if (limit != null) {
+            dynamicQuery.setMaxResults(limit);
+        }
+        return dynamicQuery.getResultList();
     }
 
     @Override
@@ -136,7 +154,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
      *
      * TODO: perhaps moving to Criteria API for this later
      */
-    private List<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    private TypedQuery<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, String fromToken, String toToken) {
 
         // parameter names and values, stored in a map:
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
@@ -164,6 +182,19 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("categories", categories);
         }
 
+        if (fromToken != null) {
+            jpqlBaseString.append(" and installation.deviceToken >= :fromToken");
+            parameters.put("fromToken", fromToken);
+        }
+
+        if (toToken != null) {
+            jpqlBaseString.append(" and installation.deviceToken < :toToken");
+            parameters.put("toToken", toToken);
+        }
+
+        // sort on ids so that we can handle paging properly
+        jpqlBaseString.append(" ORDER BY installation.deviceToken ASC");
+
         // the entire JPQL string
         TypedQuery<String> jpql = createQuery(jpqlBaseString.toString(), String.class);
         // add REQUIRED param:
@@ -175,7 +206,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             jpql.setParameter(parameterName, parameters.get(parameterName));
         }
 
-        return jpql.getResultList();
+        return jpql;
     }
     /**
      * Checks if the list is empty, and not null
