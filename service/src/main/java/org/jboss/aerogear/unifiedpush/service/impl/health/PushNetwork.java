@@ -14,17 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.impl.health;
 
-import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
+public class PushNetwork {
+    private String name;
+    private String host;
+    private int port;
 
-import java.util.List;
-import java.util.concurrent.Future;
+    public PushNetwork(String name, String host, int port) {
+        this.name = name;
+        this.host = host;
+        this.port = port;
+    }
 
-/**
- * Service query various dependencies to see how how healthy we are.
- */
-public interface HealthService {
-    Future<HealthDetails> dbStatus();
-    Future<List<HealthDetails>> networkStatus();
+    public String getName() {
+        return name;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
 }

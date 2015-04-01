@@ -14,17 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.impl.health;
 
-import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
+import org.junit.Test;
 
-import java.util.List;
-import java.util.concurrent.Future;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Service query various dependencies to see how how healthy we are.
- */
-public interface HealthService {
-    Future<HealthDetails> dbStatus();
-    Future<List<HealthDetails>> networkStatus();
+public class PingTest {
+
+    @Test
+    public void testIsReachable() throws Exception {
+        //given
+        String host = "google.com";
+
+        //when
+        final boolean reachable = Ping.isReachable(host, 80);
+
+        //then
+        assertThat(reachable).isTrue();
+    }
 }

@@ -14,17 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.impl.health;
 
-import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
+import java.io.IOException;
+import java.net.Socket;
 
-import java.util.List;
-import java.util.concurrent.Future;
+public class Ping {
 
-/**
- * Service query various dependencies to see how how healthy we are.
- */
-public interface HealthService {
-    Future<HealthDetails> dbStatus();
-    Future<List<HealthDetails>> networkStatus();
+    public static boolean isReachable(String host, int port) {
+        Socket socket = null;
+        boolean reachable;
+        try {
+            socket = new Socket(host, port);
+            reachable = true;
+        } catch (IOException e) {
+            reachable = false;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    //ignore
+                }
+            }
+        }
+        return reachable;
+    }
 }

@@ -23,7 +23,7 @@ public class HealthDetails {
     private String description;
     private Status test_status;
     private String result;
-    private int runtime;
+    private long runtime;
 
     public String getDescription() {
         return description;
@@ -49,11 +49,11 @@ public class HealthDetails {
         this.result = result;
     }
 
-    public int getRuntime() {
+    public long getRuntime() {
         return runtime;
     }
 
-    public void setRuntime(int runtime) {
+    public void setRuntime(long runtime) {
         this.runtime = runtime;
     }
 }

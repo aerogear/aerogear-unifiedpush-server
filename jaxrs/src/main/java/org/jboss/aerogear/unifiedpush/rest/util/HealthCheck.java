@@ -23,6 +23,9 @@ import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -36,14 +39,18 @@ public class HealthCheck {
     private HealthService healthService;
 
     @GET
+    @Path("/health")
+    @Produces(MediaType.APPLICATION_JSON)
     public HealthStatus health() throws ExecutionException, InterruptedException {
         final HealthStatus status = new HealthStatus();
 
         final Future<HealthDetails> dbStatus = healthService.dbStatus();
-        final Future<HealthDetails> networkStatus = healthService.networkStatus();
+        final Future<List<HealthDetails>> networkStatus = healthService.networkStatus();
 
         status.add(dbStatus.get());
-        status.add(networkStatus.get());
+        for (HealthDetails details : networkStatus.get()) {
+            status.add(details);
+        }
 
         return status;
     }

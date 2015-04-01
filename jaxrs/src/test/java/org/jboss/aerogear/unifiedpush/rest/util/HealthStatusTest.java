@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HealthStatusTest {
 
@@ -47,6 +47,7 @@ public class HealthStatusTest {
         //then
         final JsonNode format = mapper.reader().readTree(getClass().getResourceAsStream("/health-format.json"));
 
-        assertEquals(format, value);
+        //because the json file will use int for the 'runtime' field and the model long
+        assertThat(value.asText()).isEqualTo(format.asText());
     }
 }
