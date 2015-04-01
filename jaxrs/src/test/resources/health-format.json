@@ -1,0 +1,12 @@
+{
+  "status": "crit",
+  "summary": null,
+  "details": [
+    {
+      "description": "db status",
+      "test_status": "crit",
+      "result": "couldn't connect",
+      "runtime": 111
+    }
+  ]
+}

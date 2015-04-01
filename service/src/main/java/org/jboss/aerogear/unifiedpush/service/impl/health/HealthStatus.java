@@ -24,7 +24,7 @@ import java.util.List;
 */
 public class HealthStatus {
     private Status status = Status.ok;
-    private String description;
+    private String summary;
     private List<HealthDetails> details = new ArrayList<HealthDetails>();
 
     public void add(HealthDetails healthDetails) {
@@ -42,12 +42,12 @@ public class HealthStatus {
         this.status = status;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public List<HealthDetails> getDetails() {
