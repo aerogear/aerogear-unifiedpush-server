@@ -26,7 +26,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.RollbackException;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
@@ -44,6 +43,9 @@ public class InstallationDaoBatchTest {
     private EntityManager entityManager;
     private JPAInstallationDao installationDao;
     private String simplePushVariantID;
+
+    private static int TOKENS_SIZE = 100500;
+    private static int TOKENS_BATCH = 1000;
 
     @Before
     public void setUp() {
@@ -75,14 +77,6 @@ public class InstallationDaoBatchTest {
         pa.setName("PushApplication");
         pushApplicationDao.create(pa);
 
-        AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("Key");
-        av.setName("Android");
-        av.setDeveloper("me");
-        // stash the ID:
-        this.androidVariantID = av.getVariantID();
-        variantDao.create(av);
-
         SimplePushVariant sp = new SimplePushVariant();
         sp.setDeveloper("me");
         sp.setName("SimplePush");
@@ -95,7 +89,7 @@ public class InstallationDaoBatchTest {
         pushApplicationDao.update(pa);
 
         // ============== SimplePush client installations =========
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < TOKENS_SIZE; i++) {
             Installation simplePush1 = new Installation();
             simplePush1.setAlias("foo@bar.org");
             simplePush1.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
@@ -118,24 +112,31 @@ public class InstallationDaoBatchTest {
         entityManager.close();
     }
 
+    // http://www.numerati.com/2012/06/26/reading-large-result-sets-with-hibernate-and-mysql/
+
     @Test
     public void findPushEndpointsWithoutDeviceType() {
         String tokenFrom, tokenTo;
 
+        long startTime = System.currentTimeMillis();
+
+
         List<String> tokensAll = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
-        assertEquals(100, tokensAll.size());
+        assertEquals(TOKENS_SIZE, tokensAll.size());
 
-        tokenFrom = null;
-        tokenTo = tokensAll.get(50);
-        List<String> firstBatch = installationDao.findAllDeviceTokenForVariantIDByCriteriaWithLimits(simplePushVariantID, null, null, null, null, null, tokenFrom, tokenTo);
-        assertEquals(50, firstBatch.size());
-        assertEquals(tokensAll.subList(0, 50), firstBatch);
 
-        tokenFrom = tokensAll.get(50);
-        tokenTo = null;
-        List<String> secondBatch = installationDao.findAllDeviceTokenForVariantIDByCriteriaWithLimits(simplePushVariantID, null, null, null, null, null, tokenFrom, tokenTo);
-        assertEquals(50, secondBatch.size());
-        assertEquals(tokensAll.subList(50, 100), secondBatch);
+//        int counter = 0;
+//        Query query = installationDao.findAllDeviceTokenForVariantIDByCriteriaWithLimits(simplePushVariantID, null, null, null, null, null, null, null);
+//        query.setReadOnly(true);
+//        query.setFetchSize(TOKENS_BATCH * 15);
+//        ScrollableResults results = query.scroll(ScrollMode.FORWARD_ONLY);
+//        while (results.next()) {
+//            counter++;
+//        }
+//        results.close();
+//        assertEquals(TOKENS_SIZE, counter);
+
+        System.err.println(System.currentTimeMillis() - startTime);
 
     }
 }
