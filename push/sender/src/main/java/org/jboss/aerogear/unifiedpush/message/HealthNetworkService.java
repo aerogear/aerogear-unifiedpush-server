@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.message;
 
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 
@@ -22,21 +22,14 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * Service query various dependencies to see how how healthy we are.
+ * Finds out about the status of the push networks
  */
-public interface HealthService {
-    /**
-     * Get the database status and return a HealthDetails.
-     * If the database is reachable and functioning Status.ok otherwise Status.crit
-     * @see org.jboss.aerogear.unifiedpush.service.impl.health.Status
-     * @return the HealthDetails with the current database health
-     */
-    Future<HealthDetails> dbStatus();
-
+public interface HealthNetworkService {
     /**
      * Get the status about the push networks.
-     * If one of them is not reachable Status.warn
+     * If one of them is not reachable Status.WARN
      * @return a list of HealthDetails with the status of each PushNetwork
      */
     Future<List<HealthDetails>> networkStatus();
+
 }

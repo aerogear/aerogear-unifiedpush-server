@@ -17,28 +17,18 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAHealthDao;
-import org.jboss.aerogear.unifiedpush.service.HealthService;
+import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
-import org.jboss.aerogear.unifiedpush.service.impl.health.Ping;
-import org.jboss.aerogear.unifiedpush.service.impl.health.PushNetwork;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;
 
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
 
 @Stateless
-public class HealthServiceImpl implements HealthService {
-    private static final PushNetwork[] PUSH_NETWORKS = new PushNetwork[] {
-            new PushNetwork("Google Cloud Messaging", "android.googleapis.com", 80),
-            new PushNetwork("Apple Push Network", "gateway.sandbox.push.apple.com", 2195),
-            new PushNetwork("Windows Push Network", "db3.notify.windows.com", 443)
-    };
-
+public class HealthServiceImpl implements HealthDBService {
     @Inject
     private JPAHealthDao healthDao;
 
@@ -49,37 +39,13 @@ public class HealthServiceImpl implements HealthService {
         details.start();
         try {
             healthDao.dbCheck();
-            details.setTest_status(Status.ok);
-            details.setResult("database status is ok");
+            details.setTestStatus(Status.OK);
+            details.setResult("database status is OK");
         } catch (Exception e) {
-            details.setTest_status(Status.crit);
+            details.setTestStatus(Status.CRIT);
             details.setResult(e.getMessage());
         }
         details.stop();
         return new AsyncResult<HealthDetails>(details);
-    }
-
-    @Asynchronous
-    @Override
-    public Future<List<HealthDetails>> networkStatus() {
-        List<HealthDetails> results = new ArrayList<HealthDetails>(PUSH_NETWORKS.length);
-
-        for (PushNetwork pushNetwork : PUSH_NETWORKS) {
-            HealthDetails details = new HealthDetails();
-            details.start();
-            if (Ping.isReachable(pushNetwork.getHost(), pushNetwork.getPort())) {
-                details.setTest_status(Status.ok);
-                details.setDescription(pushNetwork.getName());
-            } else {
-                details.setResult("Could not connect");
-                details.setDescription(String.format("Network not reachable '%s'", pushNetwork.getName()));
-                details.setTest_status(Status.warn);
-            }
-
-            results.add(details);
-            details.stop();
-        }
-
-        return new AsyncResult<List<HealthDetails>>(results);
     }
 }

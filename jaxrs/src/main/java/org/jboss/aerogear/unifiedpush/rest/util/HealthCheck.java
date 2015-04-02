@@ -16,7 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import org.jboss.aerogear.unifiedpush.service.HealthService;
+import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
+import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
 
@@ -36,7 +37,10 @@ import java.util.concurrent.Future;
 public class HealthCheck {
 
     @Inject
-    private HealthService healthService;
+    private HealthDBService healthDBService;
+
+    @Inject
+    private HealthNetworkService healthNetworkService;
 
     @GET
     @Path("/health")
@@ -44,8 +48,8 @@ public class HealthCheck {
     public HealthStatus health() throws ExecutionException, InterruptedException {
         final HealthStatus status = new HealthStatus();
 
-        final Future<HealthDetails> dbStatus = healthService.dbStatus();
-        final Future<List<HealthDetails>> networkStatus = healthService.networkStatus();
+        final Future<HealthDetails> dbStatus = healthDBService.dbStatus();
+        final Future<List<HealthDetails>> networkStatus = healthNetworkService.networkStatus();
 
         status.add(dbStatus.get());
         for (HealthDetails details : networkStatus.get()) {

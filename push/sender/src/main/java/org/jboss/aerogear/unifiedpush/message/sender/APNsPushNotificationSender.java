@@ -46,8 +46,8 @@ import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.try
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
-    private static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
-    private static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
+    public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
+    public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST = "custom.aerogear.apns.feedback.host";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
     
