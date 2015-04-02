@@ -25,6 +25,18 @@ import java.util.concurrent.Future;
  * Service query various dependencies to see how how healthy we are.
  */
 public interface HealthService {
+    /**
+     * Get the database status and return a HealthDetails.
+     * If the database is reachable and functioning Status.ok otherwise Status.crit
+     * @see org.jboss.aerogear.unifiedpush.service.impl.health.Status
+     * @return the HealthDetails with the current database health
+     */
     Future<HealthDetails> dbStatus();
+
+    /**
+     * Get the status about the push networks.
+     * If one of them is not reachable Status.warn
+     * @return a list of HealthDetails with the status of each PushNetwork
+     */
     Future<List<HealthDetails>> networkStatus();
 }

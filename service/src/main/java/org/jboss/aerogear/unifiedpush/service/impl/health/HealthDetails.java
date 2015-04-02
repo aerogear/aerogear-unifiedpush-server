@@ -24,6 +24,15 @@ public class HealthDetails {
     private Status test_status;
     private String result;
     private long runtime;
+    private long startTime;
+
+    public void start() {
+        startTime = System.currentTimeMillis();
+    }
+
+    public void stop() {
+        runtime = System.currentTimeMillis() - startTime;
+    }
 
     public String getDescription() {
         return description;

@@ -46,7 +46,7 @@ public class HealthServiceImpl implements HealthService {
     @Override
     public Future<HealthDetails> dbStatus() {
         HealthDetails details = new HealthDetails();
-        long current = System.currentTimeMillis();
+        details.start();
         try {
             healthDao.dbCheck();
             details.setTest_status(Status.ok);
@@ -55,7 +55,7 @@ public class HealthServiceImpl implements HealthService {
             details.setTest_status(Status.crit);
             details.setResult(e.getMessage());
         }
-        details.setRuntime(System.currentTimeMillis() - current);
+        details.stop();
         return new AsyncResult<HealthDetails>(details);
     }
 
@@ -66,6 +66,7 @@ public class HealthServiceImpl implements HealthService {
 
         for (PushNetwork pushNetwork : PUSH_NETWORKS) {
             HealthDetails details = new HealthDetails();
+            details.start();
             if (Ping.isReachable(pushNetwork.getHost(), pushNetwork.getPort())) {
                 details.setTest_status(Status.ok);
                 details.setDescription(pushNetwork.getName());
@@ -76,6 +77,7 @@ public class HealthServiceImpl implements HealthService {
             }
 
             results.add(details);
+            details.stop();
         }
 
         return new AsyncResult<List<HealthDetails>>(results);

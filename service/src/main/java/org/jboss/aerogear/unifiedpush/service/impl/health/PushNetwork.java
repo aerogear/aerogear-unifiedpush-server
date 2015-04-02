@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
+/**
+ * Readonly holder of Push network information
+ */
 public class PushNetwork {
     private String name;
     private String host;
