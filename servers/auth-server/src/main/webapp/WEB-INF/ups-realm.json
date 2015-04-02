@@ -23,9 +23,6 @@
                 { "type" : "password",
                     "value" : "123" }
             ],
-            "requiredActions": [
-                "UPDATE_PASSWORD"
-            ],
             "realmRoles": [ "admin" ],
             "applicationRoles": {
                "realm-management": [ "realm-admin" ],
@@ -38,9 +35,6 @@
             "credentials" : [
                 { "type" : "password",
                     "value" : "developer" }
-            ],
-            "requiredActions": [
-                "UPDATE_PASSWORD"
             ],
             "realmRoles": [ "developer" ],
             "applicationRoles": {
@@ -64,6 +58,10 @@
         {
             "client": "unified-push-server-js",
             "roles": ["admin", "developer"]
+        },
+        {
+            "client": "ups-client",
+            "roles": ["admin", "developer"]
         }
     ],
     "applications": [
@@ -81,5 +79,14 @@
                 "/ag-push/*"
             ]
         }
+    ],
+    "oauthClients": [
+        {
+            "name": "ups-client",
+            "enabled": true,
+            "publicClient": true,
+            "directGrantsOnly": true
+        }
     ]
+
 }
