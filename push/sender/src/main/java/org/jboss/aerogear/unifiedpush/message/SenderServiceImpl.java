@@ -20,22 +20,35 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
+import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.HashSet;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.jms.Session;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map.Entry;
 
 @Stateless
 @Asynchronous
@@ -54,8 +67,15 @@ public class SenderServiceImpl implements SenderService {
     @Inject
     private PushMessageMetricsService metricsService;
 
+    @Resource(mappedName = "java:/ConnectionFactory")
+    private ConnectionFactory connectionFactory;
+
+    @Resource(mappedName = "java:/queue/VariantTypeQueue")
+    private Queue variantTypeQueue;
+
     @Override
     @Asynchronous
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void send(PushApplication pushApplication, UnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");
 
@@ -68,7 +88,7 @@ public class SenderServiceImpl implements SenderService {
                         );
 
         // collections for all the different variants:
-        final Set<Variant> variants = new HashSet<Variant>();
+        final VariantMap variants = new VariantMap();
 
         final Criteria criteria = message.getCriteria();
         final List<String> variantIDs = criteria.getVariants();
@@ -92,15 +112,27 @@ public class SenderServiceImpl implements SenderService {
         }
 
         // all possible criteria
-        final List<String> categories = criteria.getCategories();
-        final List<String> aliases = criteria.getAliases();
-        final List<String> deviceTypes = criteria.getDeviceTypes();
+//        final List<String> categories = criteria.getCategories();
+//        final List<String> aliases = criteria.getAliases();
+//        final List<String> deviceTypes = criteria.getDeviceTypes();
 
-        // TODO: DISPATCH TO A QUEUE .....
-        for (final Variant variant : variants) {
-            final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
-            senders.select(new SenderTypeLiteral(variant.getClass())).get()
-                    .sendPushMessage(variant, tokenPerVariant, message, new SenderServiceCallback(variant, tokenPerVariant.size(), pushMessageInformation));
+        // we split the variants per type since each type has its own
+        Connection connection;
+        try {
+            connection = connectionFactory.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(variantTypeQueue);
+            connection.start();
+
+            for (final Entry<VariantType, List<Variant>> variant : variants.entrySet()) {
+    //            final List<String> tokenPerVariant = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes);
+    //            senders.select(new SenderTypeLiteral(variant.getClass())).get()
+    //                    .sendPushMessage(variant, tokenPerVariant, message, new SenderServiceCallback(variant, tokenPerVariant.size(), pushMessageInformation));
+                ObjectMessage messageWithVariants = session.createObjectMessage(new MessageForVariants(message, variant.getValue()));
+                messageProducer.send(messageWithVariants);
+            }
+        } catch (JMSException e) {
+            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
         }
     }
 
@@ -145,6 +177,29 @@ public class SenderServiceImpl implements SenderService {
         public void onError(final String reason) {
             logger.warning(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
+        }
+    }
+
+    /**
+     * Map for storing variants split by the variant type
+     */
+    private static class VariantMap extends EnumMap<VariantType, List<Variant>> {
+        private static final long serialVersionUID = -1942168038908630961L;
+        VariantMap() {
+            super(VariantType.class);
+        }
+        void add(Variant variant) {
+            List<Variant> list = this.get(variant.getType());
+            if (list == null) {
+                list = new ArrayList<Variant>();
+                this.put(variant.getType(), list);
+            }
+            list.add(variant);
+        }
+        void addAll(Collection<Variant> variants) {
+            for (Variant variant : variants) {
+                this.add(variant);
+            }
         }
     }
 }

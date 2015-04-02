@@ -21,6 +21,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -73,7 +74,9 @@ import java.util.LinkedHashMap;
  * }
  * </pre>
  */
-public class UnifiedPushMessage {
+public class UnifiedPushMessage implements Serializable {
+
+    private static final long serialVersionUID = -5978882928783277261L;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
