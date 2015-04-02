@@ -16,12 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
 * Model for details of health check
 */
 public class HealthDetails {
     private String description;
-    private Status test_status;
+    @JsonProperty("test_status")
+    private Status testStatus;
     private String result;
     private long runtime;
     private long startTime;
@@ -42,12 +45,12 @@ public class HealthDetails {
         this.description = description;
     }
 
-    public Status getTest_status() {
-        return test_status;
+    public Status getTestStatus() {
+        return testStatus;
     }
 
-    public void setTest_status(Status test_status) {
-        this.test_status = test_status;
+    public void setTestStatus(Status testStatus) {
+        this.testStatus = testStatus;
     }
 
     public String getResult() {

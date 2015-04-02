@@ -23,13 +23,13 @@ import java.util.List;
 * Holder for the health status
 */
 public class HealthStatus {
-    private Status status = Status.ok;
+    private Status status = Status.OK;
     private String summary;
     private List<HealthDetails> details = new ArrayList<HealthDetails>();
 
     public void add(HealthDetails healthDetails) {
-        if (status.ordinal() < healthDetails.getTest_status().ordinal()) {
-            status = healthDetails.getTest_status();
+        if (status.ordinal() < healthDetails.getTestStatus().ordinal()) {
+            status = healthDetails.getTestStatus();
         }
         details.add(healthDetails);
     }

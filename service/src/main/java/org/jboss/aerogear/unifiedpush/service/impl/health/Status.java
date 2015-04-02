@@ -16,11 +16,24 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
+import org.codehaus.jackson.annotate.JsonValue;
+
 /**
  * status
  */
 public enum Status {
-    ok,
-    warn,
-    crit
+    OK("ok"),
+    WARN("warn"),
+    CRIT("crit");
+
+    private final String name;
+
+    Status(String name) {
+        this.name = name;
+    }
+
+    @JsonValue
+    public String getName() {
+        return name;
+    }
 }

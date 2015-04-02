@@ -37,7 +37,7 @@ public class HealthStatusTest {
         details.setDescription("db status");
         details.setResult("couldn't connect");
         details.setRuntime(111);
-        details.setTest_status(Status.crit);
+        details.setTestStatus(Status.CRIT);
         status.add(details);
 
         //when
@@ -48,6 +48,6 @@ public class HealthStatusTest {
         final JsonNode format = mapper.reader().readTree(getClass().getResourceAsStream("/health-format.json"));
 
         //because the json file will use int for the 'runtime' field and the model long
-        assertThat(value.asText()).isEqualTo(format.asText());
+        assertThat(value.toString()).isEqualTo(format.toString());
     }
 }
