@@ -30,15 +30,15 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class TokenLoaderMDB implements MessageListener {
 
-    private final static AeroGearLogger LOGGER = AeroGearLogger.getInstance(TokenLoaderMDB.class);
-
     private final static int BATCH_SIZE = 1000;
+
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoaderMDB.class);
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "java:/queue/VariantTypeQueue")
-    private Queue variantTypeQueue;
+    @Resource(mappedName = "java:/queue/TokenBatchQueue")
+    private Queue batchQueue;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -50,13 +50,13 @@ public class TokenLoaderMDB implements MessageListener {
                 final MessageForVariants msgPayload = (MessageForVariants) ((ObjectMessage) jmsMessage).getObject();
                 final UnifiedPushMessage message = msgPayload.getUnifiedPushMessage();
                 final List<Variant> variants = msgPayload.getVariants();
-                LOGGER.fine("Received message from queue: " + message.getMessage().getAlert());
+                logger.fine("Received message from queue: " + message.getMessage().getAlert());
 
-                Connection connection;
+                Connection connection = null;
                 try {
                     connection = connectionFactory.createConnection();
                     Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                    MessageProducer messageProducer = session.createProducer(variantTypeQueue);
+                    MessageProducer messageProducer = session.createProducer(batchQueue);
                     connection.start();
 
                     final Criteria criteria = message.getCriteria();
@@ -76,15 +76,23 @@ public class TokenLoaderMDB implements MessageListener {
                             ObjectMessage messageWithTokens = session.createObjectMessage(new MessageForTokens(message, variant, tokens));
                             messageProducer.send(messageWithTokens);
                         } catch (BatchException e) {
-                            LOGGER.severe("Failed to load batch of tokens", e);
+                            logger.severe("Failed to load batch of tokens", e);
                         }
                     }
 
                 } catch (JMSException e) {
                     throw new MessageDeliveryException("Failed to queue push message for further processing", e);
+                } finally {
+                    if (connection != null) {
+                        try {
+                            connection.close();
+                        } catch (JMSException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             } else {
-                LOGGER.warning("Received message of wrong type: " + jmsMessage.getClass().getName());
+                logger.warning("Received message of wrong type: " + jmsMessage.getClass().getName());
             }
         } catch (JMSException e) {
             throw new MessageDeliveryException("Failed to handle message from VariantTypeQueue", e);
