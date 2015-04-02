@@ -17,18 +17,13 @@ public class MessageForVariants implements Serializable {
         this.unifiedPushMessage = unifiedPushMessage;
         this.variants = new ArrayList<Variant>(variants);
     }
+
     public UnifiedPushMessage getUnifiedPushMessage() {
         return unifiedPushMessage;
     }
-    public void setUnifiedPushMessage(UnifiedPushMessage unifiedPushMessage) {
-        this.unifiedPushMessage = unifiedPushMessage;
-    }
+
     public ArrayList<Variant> getVariants() {
         return variants;
     }
-    public void setVariants(ArrayList<Variant> variants) {
-        this.variants = variants;
-    }
-
 
 }

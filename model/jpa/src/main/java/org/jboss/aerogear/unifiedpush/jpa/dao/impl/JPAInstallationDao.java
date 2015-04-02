@@ -17,9 +17,11 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.TypedQuery;
@@ -30,9 +32,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.BatchException;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -100,30 +106,64 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .getResultList();
     }
 
+
+
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-        // the required part: Join + all tokens for variantID;
-
-        final StringBuilder jpqlString = new StringBuilder("select distinct installation.deviceToken from Installation installation")
-                .append( " left join installation.categories c ")
-                .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true");
-
-        return this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes).getResultList();
+    public Set<String> findAllDeviceTokenForVariantID(String variantID) {
+        TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
+        query.setParameter("variantID", variantID);
+        return new HashSet<String>(query.getResultList());
     }
 
-    public Query findAllDeviceTokenForVariantIDByCriteriaWithLimits(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, Integer offset, Integer limit, String tokenFrom, String tokenTo) {
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken from Installation installation"
+                    + " left join installation.categories c "
+                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
+
+    @Override
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = new StringBuilder("select distinct installation.deviceToken from Installation installation")
-                .append( " left join installation.categories c ")
-                .append(" join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true")
-                .append(" ORDER BY installation.deviceToken ASC");
+        final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
+        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("variantID", variantID);
 
-//        Query dynamicQuery = this.executeDynamicQuery(jpqlString, variantID, categories, aliases, deviceTypes, tokenFrom, tokenTo);
-//        return dynamicQuery;
-        Query query = createHibernateQuery(jpqlString.toString());
-        query.setParameter("variantID", variantID);
-        return query;
+        // apend query conditions based on specified message parameters
+        appendDynamicQuery(jpqlString, parameters, categories, aliases, deviceTypes);
+
+        // sort on ids so that we can handle paging properly
+        jpqlString.append(" ORDER BY installation.deviceToken ASC");
+
+        return new ResultsStream.QueryBuilder<String>() {
+            private Integer fetchSize = null;
+            @Override
+            public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
+                this.fetchSize = fetchSize;
+                return this;
+            }
+            @Override
+            public ResultsStream<String> executeQuery() {
+                Query hibernateQuery = JPAInstallationDao.this.createHibernateQuery(jpqlString.toString());
+                for (Entry<String, Object> parameter : parameters.entrySet()) {
+                    hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
+                }
+                hibernateQuery.setReadOnly(true);
+                if (fetchSize != null) {
+                    hibernateQuery.setFetchSize(fetchSize);
+                }
+                final ScrollableResults results = hibernateQuery.scroll(ScrollMode.FORWARD_ONLY);
+                return new ResultsStream<String>() {
+                    @Override
+                    public boolean next() throws BatchException {
+                        return results.next();
+                    }
+                    @Override
+                    public String get() throws BatchException {
+                        return (String) results.get()[0];
+                    }
+                };
+            }
+
+        };
     }
 
     @Override
@@ -153,16 +193,13 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
      *
      * TODO: perhaps moving to Criteria API for this later
      */
-    private TypedQuery<String> executeDynamicQuery(final StringBuilder jpqlBaseString, String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-
-        // parameter names and values, stored in a map:
-        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+    private void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??
         if (isListEmpty(aliases)) {
             // append the string:
-            jpqlBaseString.append(" and installation.alias IN :aliases");
+            jpqlString.append(" and installation.alias IN :aliases");
             // add the params:
             parameters.put("aliases", aliases);
         }
@@ -170,32 +207,16 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         // are devices present ??
         if (isListEmpty(deviceTypes)) {
             // append the string:
-            jpqlBaseString.append(" and installation.deviceType IN :deviceTypes");
+            jpqlString.append(" and installation.deviceType IN :deviceTypes");
             // add the params:
             parameters.put("deviceTypes", deviceTypes);
         }
 
         // is a category present ?
         if (isListEmpty(categories)) {
-            jpqlBaseString.append(" and ( c.name in (:categories))");
+            jpqlString.append(" and ( c.name in (:categories))");
             parameters.put("categories", categories);
         }
-
-        // sort on ids so that we can handle paging properly
-        jpqlBaseString.append(" ORDER BY installation.deviceToken ASC");
-
-        // the entire JPQL string
-        TypedQuery<String> query = createQuery(jpqlBaseString.toString(), String.class);
-        // add REQUIRED param:
-        query.setParameter("variantID", variantID);
-
-        // add the optionals, as needed:
-        Set<String> paramKeys = parameters.keySet();
-        for (String parameterName : paramKeys) {
-            query.setParameter(parameterName, parameters.get(parameterName));
-        }
-
-        return query;
     }
     /**
      * Checks if the list is empty, and not null

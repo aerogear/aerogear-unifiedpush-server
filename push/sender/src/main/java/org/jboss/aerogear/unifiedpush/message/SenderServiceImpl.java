@@ -90,8 +90,7 @@ public class SenderServiceImpl implements SenderService {
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();
 
-        final Criteria criteria = message.getCriteria();
-        final List<String> variantIDs = criteria.getVariants();
+        final List<String> variantIDs = message.getCriteria().getVariants();
 
         // if the criteria payload did specify the "variants" field,
         // we look up each of those mentioned variants, by their "variantID":
@@ -110,11 +109,6 @@ public class SenderServiceImpl implements SenderService {
             // we get all the variants, from the given PushApplicationEntity:
             variants.addAll(pushApplication.getVariants());
         }
-
-        // all possible criteria
-//        final List<String> categories = criteria.getCategories();
-//        final List<String> aliases = criteria.getAliases();
-//        final List<String> deviceTypes = criteria.getDeviceTypes();
 
         // we split the variants per type since each type has its own
         Connection connection;

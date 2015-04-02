@@ -26,7 +26,9 @@ import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
+import org.jboss.aerogear.unifiedpush.dao.BatchException;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -44,6 +46,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -92,7 +96,7 @@ public class InstallationDaoTest {
     @Test
     public void findDeviceTokensForOneInstallationOfOneVariant() {
         String[] alias = { "foo@bar.org" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
         assertThat(tokens).hasSize(2);
 
         Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
@@ -109,14 +113,14 @@ public class InstallationDaoTest {
     @Test
     public void findDeviceTokensForAliasOfVariant() {
         String[] alias = { "foo@bar.org" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
          assertThat(tokens).hasSize(2);
     }
 
     @Test
     public void findNoDeviceTokensForAliasOfVariant() {
         String[] alias = { "bar@foo.org" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
          assertThat(tokens).hasSize(0);
     }
 
@@ -124,7 +128,7 @@ public class InstallationDaoTest {
     public void findDeviceTokensForAliasAndDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Tablet" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
         assertThat(tokens).hasSize(1);
         assertThat(tokens).containsOnly(DEVICE_TOKEN_2);
     }
@@ -133,7 +137,7 @@ public class InstallationDaoTest {
     public void findNoDeviceTokensForAliasAndUnusedDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Clock" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
         assertThat(tokens).isEmpty();
     }
 
@@ -142,7 +146,7 @@ public class InstallationDaoTest {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Tablet" };
         String[] categories = { "soccer" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories), Arrays.asList(alias), Arrays
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories), Arrays.asList(alias), Arrays
                 .asList(types));
         assertThat(tokens).isEmpty();
     }
@@ -152,7 +156,7 @@ public class InstallationDaoTest {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Phone" };
         String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
         assertThat(tokens).hasSize(1);
         assertThat(tokens).containsOnly(DEVICE_TOKEN_1);
     }
@@ -161,14 +165,14 @@ public class InstallationDaoTest {
     public void findTwoDeviceTokensForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertThat(tokens).hasSize(2);
     }
 
     @Test
     public void findTwoDeviceTokensCategories() {
         String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
         assertThat(tokens).hasSize(2);
     }
 
@@ -241,7 +245,7 @@ public class InstallationDaoTest {
     @Test
     public void findPushEndpointsForAlias() {
         String[] alias = { "foo@bar.org" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
         assertThat(tokens).hasSize(3);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
         assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
@@ -251,7 +255,7 @@ public class InstallationDaoTest {
     public void findZeroPushEndpointsForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] categories = { "US Football" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories), Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories), Arrays.asList(alias), null);
         assertThat(tokens).isEmpty();
     }
 
@@ -259,7 +263,7 @@ public class InstallationDaoTest {
     public void findOnePushEndpointForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertThat(tokens).hasSize(1);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
 
@@ -269,7 +273,7 @@ public class InstallationDaoTest {
     public void findThreePushEndpointsForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
         assertThat(tokens).hasSize(3);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
         assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
@@ -279,7 +283,7 @@ public class InstallationDaoTest {
     @Test
     public void findThreePushEndpointsForCategories() {
         String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
         assertThat(tokens).hasSize(3);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
         assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
@@ -289,14 +293,14 @@ public class InstallationDaoTest {
     @Test
     public void findPushEndpointsWithDeviceType() {
         String[] types = {"JavaFX Monitor"};
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, Arrays.asList(types));
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, Arrays.asList(types));
         assertThat(tokens).hasSize(1);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
     }
 
     @Test
     public void findPushEndpointsWithoutDeviceType() {
-        List<String> tokens = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
         assertThat(tokens).hasSize(3);
         assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
     }
@@ -349,7 +353,7 @@ public class InstallationDaoTest {
         installation.setDeviceToken("https://db3.notify.windows.com/?token=AgYAAACH%2fZixlZK4v%2bkD3LFiz7zHOJm13"
                 + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
                 + "615fPox8bwoxrTU%3d");
-        
+
         final WindowsWNSVariant variant = new WindowsWNSVariant();
         variant.setClientSecret("12");
         variant.setSid("12");
@@ -399,7 +403,7 @@ public class InstallationDaoTest {
                 + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
 
         WindowsMPNSVariant variant = new WindowsMPNSVariant();
-        
+
         // when
         deviceTokenTest(installation, variant);
     }
@@ -542,5 +546,18 @@ public class InstallationDaoTest {
         installationDao.create(android1);
 
         entityManager.flush();
+    }
+
+    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        try {
+            ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes).executeQuery();
+            List<String> list = new ArrayList<String>();
+            while (tokenStream.next()) {
+                list.add(tokenStream.get());
+            }
+            return list;
+        } catch (BatchException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

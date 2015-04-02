@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -121,10 +118,10 @@ public class InstallationDaoBatchTest {
         long startTime = System.currentTimeMillis();
 
 
-        List<String> tokensAll = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
-        assertEquals(TOKENS_SIZE, tokensAll.size());
-
-
+//        List<String> tokensAll = installationDao.findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
+//        assertEquals(TOKENS_SIZE, tokensAll.size());
+//
+//
 //        int counter = 0;
 //        Query query = installationDao.findAllDeviceTokenForVariantIDByCriteriaWithLimits(simplePushVariantID, null, null, null, null, null, null, null);
 //        query.setReadOnly(true);
