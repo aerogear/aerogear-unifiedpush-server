@@ -1,4 +1,4 @@
-var http = require('http');
+var http = require('http'); // replace with require('https') for ssl support
 
 
 var options = {

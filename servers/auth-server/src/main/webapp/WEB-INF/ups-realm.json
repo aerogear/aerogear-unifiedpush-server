@@ -25,7 +25,7 @@
             ],
             "realmRoles": [ "admin" ],
             "applicationRoles": {
-               "realm-management": [ "realm-admin" ],
+               "realm-management": [ "realm-admin"],
                "account": [ "manage-account" ]
             }
         },
@@ -85,7 +85,8 @@
             "name": "ups-client",
             "enabled": true,
             "publicClient": true,
-            "directGrantsOnly": true
+            "directGrantsOnly": true,
+            "fullScopeAllowed" : true
         }
     ]
 
