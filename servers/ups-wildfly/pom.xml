@@ -1,151 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  JBoss, Home of Professional Open Source
-  Copyright Red Hat, Inc., and individual contributors
+<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and 
+	individual contributors Licensed under the Apache License, Version 2.0 (the 
+	"License"); you may not use this file except in compliance with the License. 
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jboss.aerogear.unifiedpush</groupId>
+		<artifactId>unifiedpush-parent</artifactId>
+		<version>1.1.0-alpha.2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+	<artifactId>unifiedpush-server-wildfly</artifactId>
+	<packaging>war</packaging>
+	<name>UnifiedPush Server for Wildfly (WAR)</name>
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	<dependencies>
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jboss.aerogear.unifiedpush</groupId>
-        <artifactId>unifiedpush-parent</artifactId>
-        <version>1.1.0-alpha.2-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-server-dependencies</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
 
-    <artifactId>unifiedpush-server-wildfly</artifactId>
-    <packaging>war</packaging>
-    <name>UnifiedPush Server for Wildfly (WAR)</name>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-wildfly-adapter</artifactId>
+		</dependency>
 
-    <dependencies>
+	</dependencies>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-server-dependencies</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
+	<repositories>
+		<repository>
+			<id>JBOSS_NEXUS</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
 
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-wildfly-adapter</artifactId>
-        </dependency>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.jboss.as.plugins</groupId>
+					<artifactId>jboss-as-maven-plugin</artifactId>
+					<version>${jboss-as-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-    </dependencies>
+		<resources>
+			<resource>
+				<!-- no need to include the database modules -->
+				<directory>src/main/resources/</directory>
+				<excludes>
+					<exclude>modules/**/*.*</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<finalName>ag-push</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<wtpmanifest>true</wtpmanifest>
+					<wtpapplicationxml>true</wtpapplicationxml>
+					<wtpversion>2.0</wtpversion>
+				</configuration>
+			</plugin>
 
-    <repositories>
-        <repository>
-            <id>JBOSS_NEXUS</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-    </repositories>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<extensions>false</extensions>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
+			<!-- To use, set the JBOSS_HOME environment variable and run: mvn package 
+				jboss-as:deploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jboss.as.plugins</groupId>
-                    <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>${jboss-as-maven-plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
-        <resources>
-            <resource>
-                <!-- no need to include the database modules -->
-                <directory>src/main/resources/</directory>
-                <excludes>
-                    <exclude>modules/**/*.*</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <finalName>ag-push</finalName>
-        <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <extensions>false</extensions>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            <!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
-            <!-- To use, set the JBOSS_HOME environment variable and run: mvn package jboss-as:deploy -->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+			<dependencies>
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-            <dependencies>
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-validator</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-entitymanager</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-validator</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-      </profile>
-    </profiles>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 </project>

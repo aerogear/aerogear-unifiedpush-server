@@ -24,11 +24,5 @@ release.properties
 .settings/
 .metadata
 
-# ln -s links - Used to overcome eclipse bug (Ignore .project project name)
-unifiedpush-jaxrs/*
-unifiedpush-service/*
-unifiedpush-admin-ui/*
-unifiedpush-dist/*
-
 .DS_Store
 admin-ui/node
