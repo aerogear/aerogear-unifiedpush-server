@@ -167,11 +167,33 @@
                 </configuration>
             </plugin>
 
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<wtpapplicationxml>true</wtpapplicationxml>
+					<wtpversion>2.0</wtpversion>
+					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
+					<downloadSources>true</downloadSources>
+					<ajdtVersion>none</ajdtVersion>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 
     <properties>
+    	<java.version>1.7</java.version>
+    
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
@@ -199,6 +221,7 @@
         <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
         <ant.contrib.version>20020829</ant.contrib.version>
         <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+        
     </properties>
 
     <profiles>
