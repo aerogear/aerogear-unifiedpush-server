@@ -22,7 +22,7 @@ import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @MessageDriven(name = "TokenBatchQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/TokenBatchQueue"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/TokenBatchQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class SenderMDB implements MessageListener {

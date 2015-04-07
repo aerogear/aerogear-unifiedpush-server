@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @MessageDriven(name = "VariantTypeQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/VariantTypeQueue"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/VariantTypeQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class TokenLoaderMDB implements MessageListener {
