@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -125,11 +126,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
-        parameters.put("variantID", variantID);
 
         // apend query conditions based on specified message parameters
         appendDynamicQuery(jpqlString, parameters, categories, aliases, deviceTypes);
 
+        parameters.put("variantID", variantID);
         // sort on ids so that we can handle paging properly
         jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
@@ -144,7 +145,13 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             public ResultsStream<String> executeQuery() {
                 Query hibernateQuery = JPAInstallationDao.this.createHibernateQuery(jpqlString.toString());
                 for (Entry<String, Object> parameter : parameters.entrySet()) {
-                    hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
+                    Object value = parameter.getValue();
+                    if (value instanceof Collection<?>) {
+                        hibernateQuery.setParameterList(parameter.getKey(), (Collection<?>) parameter.getValue());
+                    } else {
+                        hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
+                    }
+
                 }
                 hibernateQuery.setReadOnly(true);
                 if (fetchSize != null) {
