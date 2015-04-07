@@ -47,9 +47,9 @@ public class TokenLoaderMDB implements MessageListener {
     public void onMessage(javax.jms.Message jmsMessage) {
         try {
             if (jmsMessage instanceof ObjectMessage) {
-                final MessageForVariants msgPayload = (MessageForVariants) ((ObjectMessage) jmsMessage).getObject();
-                final UnifiedPushMessage message = msgPayload.getUnifiedPushMessage();
-                final List<Variant> variants = msgPayload.getVariants();
+                final MessageWithVariants msg = (MessageWithVariants) ((ObjectMessage) jmsMessage).getObject();
+                final UnifiedPushMessage message = msg.getUnifiedPushMessage();
+                final List<Variant> variants = msg.getVariants();
                 logger.fine("Received message from queue: " + message.getMessage().getAlert());
 
                 Connection connection = null;
@@ -73,7 +73,7 @@ public class TokenLoaderMDB implements MessageListener {
                             for (int i = 0; i < BATCH_SIZE && tokenStream.next(); i++) {
                                 tokens.add(tokenStream.get());
                             }
-                            ObjectMessage messageWithTokens = session.createObjectMessage(new MessageForTokens(message, variant, tokens));
+                            ObjectMessage messageWithTokens = session.createObjectMessage(new MessageWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
                             messageProducer.send(messageWithTokens);
                         } catch (BatchException e) {
                             logger.severe("Failed to load batch of tokens", e);

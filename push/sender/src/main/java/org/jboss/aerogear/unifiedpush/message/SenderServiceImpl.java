@@ -107,7 +107,7 @@ public class SenderServiceImpl implements SenderService {
 
             // we split the variants per type since each type may have its own configuration (e.g. batch size)
             for (final Entry<VariantType, List<Variant>> variant : variants.entrySet()) {
-                ObjectMessage messageWithVariants = session.createObjectMessage(new MessageForVariants(message, variant.getValue()));
+                ObjectMessage messageWithVariants = session.createObjectMessage(new MessageWithVariants(pushMessageInformation, message, variant.getValue()));
                 messageProducer.send(messageWithVariants);
             }
         } catch (JMSException e) {
