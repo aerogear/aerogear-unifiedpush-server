@@ -50,6 +50,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <version>4.2.15.Final</version>
             <scope>provided</scope>
         </dependency>
 
