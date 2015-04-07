@@ -25,7 +25,7 @@
             ],
             "realmRoles": [ "admin" ],
             "applicationRoles": {
-               "realm-management": [ "realm-admin"],
+               "realm-management": [ "realm-admin" ],
                "account": [ "manage-account" ]
             }
         },
