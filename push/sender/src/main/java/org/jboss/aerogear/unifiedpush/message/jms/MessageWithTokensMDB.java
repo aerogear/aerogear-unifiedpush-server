@@ -1,7 +1,5 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
@@ -16,10 +14,6 @@ import org.jboss.aerogear.unifiedpush.message.MessageWithTokens;
 import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-@MessageDriven(name = "SimplePushTokenBatchQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/SimplePushTokenBatchQueue"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class MessageWithTokensMDB implements MessageListener {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
