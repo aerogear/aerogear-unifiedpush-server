@@ -21,22 +21,16 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
-import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.Session;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,11 +49,9 @@ public class SenderServiceImpl implements SenderService {
     @Inject
     private PushMessageMetricsService metricsService;
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-
-    @Resource(mappedName = "java:/queue/VariantTypeQueue")
-    private Queue variantTypeQueue;
+    @Inject
+    @DispatchToQueue
+    private Event<MessageWithVariants> dispatchVariantMessageEvent;
 
     @Override
     @Asynchronous
@@ -98,28 +90,10 @@ public class SenderServiceImpl implements SenderService {
             variants.addAll(pushApplication.getVariants());
         }
 
-        Connection connection = null;
-        try {
-            connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(variantTypeQueue);
-            connection.start();
 
-            // we split the variants per type since each type may have its own configuration (e.g. batch size)
-            for (final Entry<VariantType, List<Variant>> variant : variants.entrySet()) {
-                ObjectMessage messageWithVariants = session.createObjectMessage(new MessageWithVariants(pushMessageInformation, message, variant.getValue()));
-                messageProducer.send(messageWithVariants);
-            }
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-            }
+        // we split the variants per type since each type may have its own configuration (e.g. batch size)
+        for (final Entry<VariantType, List<Variant>> variant : variants.entrySet()) {
+            dispatchVariantMessageEvent.fire(new MessageWithVariants(pushMessageInformation, message, variant.getValue()));
         }
     }
 

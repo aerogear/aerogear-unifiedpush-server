@@ -24,6 +24,9 @@
             <jms-queue name="TokenBatchQueue">
                 <entry name="/queue/TokenBatchQueue"/>
             </jms-queue>
+            <jms-queue name="VariantMetricQueue">
+                <entry name="/queue/VariantMetricQueue"/>
+            </jms-queue>
         </jms-destinations>
     </hornetq-server>
 </messaging-deployment>
