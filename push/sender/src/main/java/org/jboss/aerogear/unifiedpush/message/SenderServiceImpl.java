@@ -25,7 +25,6 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @Stateless
-@Asynchronous
 public class SenderServiceImpl implements SenderService {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(SenderServiceImpl.class);
@@ -54,7 +52,6 @@ public class SenderServiceImpl implements SenderService {
     private Event<MessageWithVariants> dispatchVariantMessageEvent;
 
     @Override
-    @Asynchronous
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void send(PushApplication pushApplication, UnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");
