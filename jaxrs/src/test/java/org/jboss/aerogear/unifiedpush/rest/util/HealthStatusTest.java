@@ -32,13 +32,7 @@ public class HealthStatusTest {
     @Test
     public void shouldReturnJson() throws IOException {
         //given
-        HealthStatus status = new HealthStatus();
-        final HealthDetails details = new HealthDetails();
-        details.setDescription("db status");
-        details.setResult("couldn't connect");
-        details.setRuntime(111);
-        details.setTestStatus(Status.CRIT);
-        status.add(details);
+        HealthStatus status = getHealthStatus();
 
         //when
         final ObjectMapper mapper = new ObjectMapper();
@@ -49,5 +43,27 @@ public class HealthStatusTest {
 
         //because the json file will use int for the 'runtime' field and the model long
         assertThat(value.toString()).isEqualTo(format.toString());
+    }
+
+    @Test
+    public void shouldCountMultipleErrors() throws IOException {
+        //given
+        HealthStatus status = getHealthStatus();
+        HealthDetails secondError = new HealthDetails();
+        secondError.setTestStatus(Status.WARN);
+        status.add(secondError);
+
+        assertThat(status.getSummary()).isEqualTo("There are 2 errors found");
+    }
+
+    private HealthStatus getHealthStatus() {
+        HealthStatus status = new HealthStatus();
+        final HealthDetails details = new HealthDetails();
+        details.setDescription("db status");
+        details.setResult("couldn't connect");
+        details.setRuntime(111);
+        details.setTestStatus(Status.CRIT);
+        status.add(details);
+        return status;
     }
 }

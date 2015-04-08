@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Holder for the health status
-*/
+ * Holder for the health status
+ */
 public class HealthStatus {
+    private static final String NO_ERROR = "Everything is ok";
+    private static final String ONE_ERROR_MESSAGE = "There is 1 error found";
+    private static final String ERROR_MESSAGE = "There are %d errors found";
+
     private Status status = Status.OK;
-    private String summary;
     private List<HealthDetails> details = new ArrayList<HealthDetails>();
 
     public void add(HealthDetails healthDetails) {
@@ -43,11 +46,14 @@ public class HealthStatus {
     }
 
     public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
+        int numberOfErrors = 0;
+        for (HealthDetails detail : details) {
+            if (detail.getTestStatus() != Status.OK) {
+                numberOfErrors++;
+            }
+        }
+        return numberOfErrors == 0 ? NO_ERROR :
+                (numberOfErrors == 1 ? ONE_ERROR_MESSAGE : String.format(ERROR_MESSAGE, numberOfErrors));
     }
 
     public List<HealthDetails> getDetails() {

@@ -36,11 +36,12 @@ public class HealthServiceImpl implements HealthDBService {
     @Override
     public Future<HealthDetails> dbStatus() {
         HealthDetails details = new HealthDetails();
+        details.setDescription("Database connection");
         details.start();
         try {
             healthDao.dbCheck();
             details.setTestStatus(Status.OK);
-            details.setResult("database status is OK");
+            details.setResult("connected");
         } catch (Exception e) {
             details.setTestStatus(Status.CRIT);
             details.setResult(e.getMessage());

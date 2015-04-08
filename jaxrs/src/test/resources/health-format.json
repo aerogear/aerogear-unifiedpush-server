@@ -1,6 +1,5 @@
 {
   "status": "crit",
-  "summary": null,
   "details": [
     {
       "description": "db status",
@@ -8,5 +7,6 @@
       "runtime": 111,
       "test_status": "crit"
     }
-  ]
+  ],
+  "summary": "There is 1 error found"
 }
