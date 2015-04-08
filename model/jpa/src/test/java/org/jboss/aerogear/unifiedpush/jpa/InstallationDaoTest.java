@@ -118,6 +118,7 @@ public class InstallationDaoTest {
         final Set<Category> categoriesOne = new HashSet<Category>();
         categoriesOne.add(new Category("soccer"));
         android1.setCategories(categoriesOne);
+        android1.setVariant(av);
 
         installationDao.create(android1);
 
@@ -128,6 +129,7 @@ public class InstallationDaoTest {
         final Set<Category> categoriesTwo = new HashSet<Category>();
         categoriesTwo.add(new Category("news"));
         android2.setCategories(categoriesTwo);
+        android2.setVariant(av);
 
         installationDao.create(android2);
 
@@ -137,6 +139,7 @@ public class InstallationDaoTest {
         android3.setDeviceToken("543234234890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
         android3.setDeviceType("Android Tablet");
         android3.setEnabled(false);
+        android3.setVariant(av);
 
         installationDao.create(android3);
 
@@ -151,6 +154,7 @@ public class InstallationDaoTest {
         simplePush1.setAlias("foo@bar.org");
         simplePush1.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
         simplePush1.setCategories(categoriesOne);
+        simplePush1.setVariant(sp);
 
         installationDao.create(simplePush1);
 
@@ -158,6 +162,7 @@ public class InstallationDaoTest {
         simplePush2.setAlias("foo@bar.org");
         simplePush2.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
         simplePush2.setCategories(categoriesTwo);
+        simplePush2.setVariant(sp);
 
         installationDao.create(simplePush2);
 
@@ -166,13 +171,11 @@ public class InstallationDaoTest {
         simplePush3.setDeviceToken("http://server:8080/update/" + UUID.randomUUID().toString());
         simplePush3.setCategories(categoriesTwo);
         simplePush3.setDeviceType("JavaFX Monitor");
+        simplePush3.setVariant(sp);
 
         installationDao.create(simplePush3);
 
         // register the installation:
-        simplePush1.setVariant(sp);
-        simplePush2.setVariant(sp);
-        simplePush3.setVariant(sp);
         variantDao.update(sp);
     }
 
