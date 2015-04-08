@@ -7,6 +7,11 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+/**
+ * Denotes message that will be dispatched to JMS queue
+ *
+ * @author Lukas Fryc
+ */
 @Qualifier
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

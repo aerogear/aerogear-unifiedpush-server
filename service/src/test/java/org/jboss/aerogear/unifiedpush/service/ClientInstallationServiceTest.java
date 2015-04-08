@@ -339,7 +339,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
-            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes).executeQuery();
+            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
             List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
