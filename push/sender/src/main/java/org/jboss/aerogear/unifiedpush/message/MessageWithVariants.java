@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 
 public class MessageWithVariants implements Serializable {
 
@@ -13,17 +14,23 @@ public class MessageWithVariants implements Serializable {
 
     private PushMessageInformation pushMessageInformation;
     private UnifiedPushMessage unifiedPushMessage;
+    private VariantType variantType;
     private ArrayList<Variant> variants;
 
 
-    public MessageWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Collection<Variant> variants) {
+    public MessageWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
         this.pushMessageInformation = pushMessageInformation;
         this.unifiedPushMessage = unifiedPushMessage;
+        this.variantType = variantType;
         this.variants = new ArrayList<Variant>(variants);
     }
 
     public PushMessageInformation getPushMessageInformation() {
         return pushMessageInformation;
+    }
+
+    public VariantType getVariantType() {
+        return variantType;
     }
 
     public UnifiedPushMessage getUnifiedPushMessage() {

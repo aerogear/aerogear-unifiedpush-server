@@ -16,8 +16,8 @@ import org.jboss.aerogear.unifiedpush.message.MessageWithVariants;
 import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-@MessageDriven(name = "VariantTypeQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/VariantTypeQueue"),
+@MessageDriven(name = "SimplePushMessageQueue", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/SimplePushMessageQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class MessageWithVariantsMDB implements MessageListener {

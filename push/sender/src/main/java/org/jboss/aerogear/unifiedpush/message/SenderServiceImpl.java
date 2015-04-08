@@ -92,8 +92,8 @@ public class SenderServiceImpl implements SenderService {
 
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
-        for (final Entry<VariantType, List<Variant>> variant : variants.entrySet()) {
-            dispatchVariantMessageEvent.fire(new MessageWithVariants(pushMessageInformation, message, variant.getValue()));
+        for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
+            dispatchVariantMessageEvent.fire(new MessageWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
         }
     }
 

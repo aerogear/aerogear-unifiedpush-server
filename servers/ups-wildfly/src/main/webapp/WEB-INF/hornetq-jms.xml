@@ -18,12 +18,47 @@
 <messaging-deployment xmlns="urn:jboss:messaging-deployment:1.0">
     <hornetq-server>
         <jms-destinations>
-            <jms-queue name="VariantTypeQueue">
-                <entry name="/queue/VariantTypeQueue"/>
+            <!-- Push Message Queues split by Push Networks -->
+            <jms-queue name="AdmPushMessageQueue">
+                <entry name="/queue/AdmPushMessageQueue"/>
             </jms-queue>
-            <jms-queue name="TokenBatchQueue">
-                <entry name="/queue/TokenBatchQueue"/>
+            <jms-queue name="APNsPushMessageQueue">
+                <entry name="/queue/APNsPushMessageQueue"/>
             </jms-queue>
+            <jms-queue name="GCMPushMessageQueue">
+                <entry name="/queue/GCMPushMessageQueue"/>
+            </jms-queue>
+            <jms-queue name="MPNSPushMessageQueue">
+                <entry name="/queue/MPNSPushMessageQueue"/>
+            </jms-queue>
+            <jms-queue name="SimplePushMessageQueue">
+                <entry name="/queue/SimplePushMessageQueue"/>
+            </jms-queue>
+            <jms-queue name="WNSPushMessageQueue">
+                <entry name="/queue/WNSPushMessageQueue"/>
+            </jms-queue>
+            
+            <!-- Token Batches split by Push Network Types -->
+            <jms-queue name="AdmTokenBatchQueue">
+                <entry name="/queue/AdmTokenBatchQueue"/>
+            </jms-queue>
+            <jms-queue name="APNsTokenBatchQueue">
+                <entry name="/queue/APNsTokenBatchQueue"/>
+            </jms-queue>
+            <jms-queue name="GCMTokenBatchQueue">
+                <entry name="/queue/GCMTokenBatchQueue"/>
+            </jms-queue>
+            <jms-queue name="MPNSTokenBatchQueue">
+                <entry name="/queue/MPNSTokenBatchQueue"/>
+            </jms-queue>
+            <jms-queue name="SimplePushTokenBatchQueue">
+                <entry name="/queue/SimplePushTokenBatchQueue"/>
+            </jms-queue>
+            <jms-queue name="WNSTokenBatchQueue">
+                <entry name="/queue/WNSTokenBatchQueue" />
+            </jms-queue>
+            
+            <!-- Variant Metric Collection Queue -->
             <jms-queue name="VariantMetricQueue">
                 <entry name="/queue/VariantMetricQueue"/>
             </jms-queue>

@@ -16,8 +16,8 @@ import org.jboss.aerogear.unifiedpush.message.MessageWithTokens;
 import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-@MessageDriven(name = "TokenBatchQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/TokenBatchQueue"),
+@MessageDriven(name = "SimplePushTokenBatchQueue", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/SimplePushTokenBatchQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class MessageWithTokensMDB implements MessageListener {
@@ -41,7 +41,4 @@ public class MessageWithTokensMDB implements MessageListener {
             throw new MessageDeliveryException("Failed to handle message from VariantTypeQueue", e);
         }
     }
-
-
-
 }
