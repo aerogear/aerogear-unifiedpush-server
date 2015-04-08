@@ -16,13 +16,19 @@ public class MessageWithVariants implements Serializable {
     private UnifiedPushMessage unifiedPushMessage;
     private VariantType variantType;
     private ArrayList<Variant> variants;
-
+    private String lastTokenFromPreviousBatch;
 
     public MessageWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
+        this(pushMessageInformation, unifiedPushMessage, variantType, variants, null);
+    }
+
+
+    public MessageWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, String lastTokenFromPreviousBatch) {
         this.pushMessageInformation = pushMessageInformation;
         this.unifiedPushMessage = unifiedPushMessage;
         this.variantType = variantType;
         this.variants = new ArrayList<Variant>(variants);
+        this.lastTokenFromPreviousBatch = lastTokenFromPreviousBatch;
     }
 
     public PushMessageInformation getPushMessageInformation() {
@@ -41,4 +47,7 @@ public class MessageWithVariants implements Serializable {
         return variants;
     }
 
+    public String getLastTokenFromPreviousBatch() {
+        return lastTokenFromPreviousBatch;
+    }
 }

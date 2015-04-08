@@ -43,6 +43,10 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken from Installation installation"
+                    + " left join installation.categories c "
+                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
+
     public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
@@ -116,22 +120,23 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         return new HashSet<String>(query.getResultList());
     }
 
-    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken from Installation installation"
-                    + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
-
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch) {
         // the required part: Join + all tokens for variantID;
 
         final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("variantID", variantID);
 
         // apend query conditions based on specified message parameters
         appendDynamicQuery(jpqlString, parameters, categories, aliases, deviceTypes);
 
-        parameters.put("variantID", variantID);
         // sort on ids so that we can handle paging properly
+        if (lastTokenFromPreviousBatch != null) {
+            jpqlString.append(" AND installation.deviceToken > :lastTokenFromPreviousBatch");
+            parameters.put("lastTokenFromPreviousBatch", lastTokenFromPreviousBatch);
+        }
+
         jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
         return new ResultsStream.QueryBuilder<String>() {
@@ -144,6 +149,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             @Override
             public ResultsStream<String> executeQuery() {
                 Query hibernateQuery = JPAInstallationDao.this.createHibernateQuery(jpqlString.toString());
+                hibernateQuery.setMaxResults(maxResults);
                 for (Entry<String, Object> parameter : parameters.entrySet()) {
                     Object value = parameter.getValue();
                     if (value instanceof Collection<?>) {
@@ -206,7 +212,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         // are aliases present ??
         if (isListEmpty(aliases)) {
             // append the string:
-            jpqlString.append(" and installation.alias IN :aliases");
+            jpqlString.append(" AND installation.alias IN :aliases");
             // add the params:
             parameters.put("aliases", aliases);
         }
@@ -214,14 +220,14 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         // are devices present ??
         if (isListEmpty(deviceTypes)) {
             // append the string:
-            jpqlString.append(" and installation.deviceType IN :deviceTypes");
+            jpqlString.append(" AND installation.deviceType IN :deviceTypes");
             // add the params:
             parameters.put("deviceTypes", deviceTypes);
         }
 
         // is a category present ?
         if (isListEmpty(categories)) {
-            jpqlString.append(" and ( c.name in (:categories))");
+            jpqlString.append(" AND ( c.name in (:categories))");
             parameters.put("categories", categories);
         }
     }

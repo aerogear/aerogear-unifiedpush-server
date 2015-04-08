@@ -17,6 +17,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 public class TokenLoader {
 
+    private final static int NUMBER_OF_BATCHES = 10;
     private final static int BATCH_SIZE = 1000;
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
@@ -28,9 +29,14 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<MessageWithTokens> dispatchTokensEvent;
 
+    @Inject
+    @DispatchToQueue
+    private Event<MessageWithVariants> nextBatchEvent;
+
     public void loadAndQueueTokenBatch(@Observes @Dequeue MessageWithVariants msg) {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final List<Variant> variants = msg.getVariants();
+        final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
         logger.fine("Received message from queue: " + message.getMessage().getAlert());
 
         final Criteria criteria = message.getCriteria();
@@ -39,15 +45,27 @@ public class TokenLoader {
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
         for (Variant variant : variants) {
-            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes)
-                .fetchSize(BATCH_SIZE).executeQuery();
+            ResultsStream<String> tokenStream =
+                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, NUMBER_OF_BATCHES * BATCH_SIZE, lastTokenFromPreviousBatch)
+                                         .fetchSize(BATCH_SIZE)
+                                         .executeQuery();
 
             try {
-                ArrayList<String> tokens = new ArrayList<String>(BATCH_SIZE);
-                for (int i = 0; i < BATCH_SIZE && tokenStream.next(); i++) {
-                    tokens.add(tokenStream.get());
+                String lastTokenInBatch = null;
+                int tokensLoaded = 0;
+                for (int batchNumber = 0; batchNumber < NUMBER_OF_BATCHES; batchNumber++) {
+                    ArrayList<String> tokens = new ArrayList<String>(BATCH_SIZE);
+                    for (int i = 0; i < BATCH_SIZE && tokenStream.next(); i++) {
+                        lastTokenInBatch = tokenStream.get();
+                        tokens.add(lastTokenInBatch);
+                        tokensLoaded += 1;
+                    }
+                    dispatchTokensEvent.fire(new MessageWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
                 }
-                dispatchTokensEvent.fire(new MessageWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
+                // should we load next batch ?
+                if (tokensLoaded >= NUMBER_OF_BATCHES * BATCH_SIZE) {
+                    nextBatchEvent.fire(new MessageWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
+                }
             } catch (BatchException e) {
                 logger.severe("Failed to load batch of tokens", e);
             }

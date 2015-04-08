@@ -89,6 +89,6 @@ public interface ClientInstallationService {
     /**
      * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria
      */
-    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
+    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
 }
