@@ -101,6 +101,8 @@ import android.app.Application;
 
 public class PushApplication extends Application {
 
+    private final String TAG = PushApplication.class.getName();
+
     private final String VARIANT_ID       = "{{ exampleCtrl.variant.variantID }}";
     private final String SECRET           = "{{ exampleCtrl.variant.secret }}";
     private final String GCM_SENDER_ID    = "{{ exampleCtrl.variant.projectNumber }}";
@@ -123,12 +125,12 @@ public class PushApplication extends Application {
             registrar.register(getApplicationContext(), new Callback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
-                    Log.i("PushApplication", "Registration Succeeded!");
+                    Log.i(TAG, "Registration Succeeded!");
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.e("PushApplication", exception.getMessage(), exception);
+                    Log.e(TAG, exception.getMessage(), exception);
                 }
             });
 
