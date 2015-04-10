@@ -28,8 +28,10 @@ import javax.persistence.PersistenceException;
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -47,8 +49,12 @@ public class PushMessageInformationDaoTest {
 
     @Inject
     private EntityManager entityManager;
+
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
+
+    @Inject
+    private JPAVariantMetricInformationDao variantMetricInformationDao;
     private String pushMessageInformationID = "1";
 
     @Deployment
@@ -59,10 +65,12 @@ public class PushMessageInformationDaoTest {
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("MessageInformation.xml");
 
+
     @Before
     public void setUp() {
         // start the shindig
         entityManager.getTransaction().begin();
+
     }
 
     private void flushAndClear() {
@@ -260,5 +268,11 @@ public class PushMessageInformationDaoTest {
 
         messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(0);
+    }
+
+    @Test
+    public void findVariantMetricByVariantId() {
+        VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213");
+        assertThat(variantMetricInformation).isNotNull();
     }
 }
