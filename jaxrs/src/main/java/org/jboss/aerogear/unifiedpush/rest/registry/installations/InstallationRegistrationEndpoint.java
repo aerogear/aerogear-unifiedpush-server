@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -39,7 +38,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @Path("/registry/device")
@@ -127,26 +125,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         logger.finest("Mobile Application on device was launched");
 
         //let's do update the analytics
-        //TODO should move to the service layer
+
         String pushIdentifier = extractPushIdentifier(request);
-        logger.info("PUSHIDENTIFIER : " + pushIdentifier);
         if(pushIdentifier != null) {
-            PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(pushIdentifier);
-            if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message
-
-                //if the firstOpenDate is not null that means it's no the first one, let's update the lastDateOpen
-                if (pushMessageInformation.getFirstOpenDate() != null) {
-                    pushMessageInformation.setLastOpenDate(new Date());
-                } else {
-                    pushMessageInformation.setFirstOpenDate(new Date());
-                    pushMessageInformation.setLastOpenDate(new Date());
-                }
-
-
-                pushMessageInformation.setAppOpenCounter(pushMessageInformation.getAppOpenCounter() + 1);
-                metricsService.updatePushMessageInformation(pushMessageInformation);
-                logger.info("Mobile Application opened for the " + pushMessageInformation.getAppOpenCounter() + " time.");
-            }
+            metricsService.updateAnalytics(pushIdentifier, variant.getVariantID());
         }
         // async:
         clientInstallationService.addInstallation(variant, entity);
