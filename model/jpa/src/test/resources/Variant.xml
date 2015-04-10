@@ -40,18 +40,7 @@
             <value>foo</value>
         </row>
     </table>
-    <table name="SA.INSTALLATION">
-        <column>id</column>
-        <column>enabled</column>
-        <column>deviceToken</column>
-        <column>variantID</column>
-        <row>
-            <value>1</value>
-            <value>true</value>
-            <value>1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678</value>
-            <value>1</value>
-        </row>
-    </table>
+
     <table name="SA.ANDROIDVARIANT">
         <column>id</column>
         <column>googleKey</column>
@@ -66,4 +55,20 @@
     </table>
     <table name="SA.IOSVARIANT"/>
     <table name="SA.SIMPLEPUSHVARIANT"/>
+
+    <table name="SA.INSTALLATION">
+        <column>id</column>
+        <column>enabled</column>
+        <column>deviceToken</column>
+        <column>variantID</column>
+        <row>
+            <value>1</value>
+            <value>true</value>
+            <value>1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678</value>
+            <value>1</value>
+        </row>
+    </table>
+
+    <table name="SA.CATEGORY"/>
+    <table name="SA.INSTALLATION_CATEGORY"/>
 </dataset>

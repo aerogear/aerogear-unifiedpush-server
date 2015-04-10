@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
@@ -24,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,6 +46,9 @@ public class PersistentObjectTest {
     public static JavaArchive createDeployment() {
         return DaoDeployment.createDeployment();
     }
+
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("AndroidVariant.xml");
 
     @Before
     public void setUp() {
