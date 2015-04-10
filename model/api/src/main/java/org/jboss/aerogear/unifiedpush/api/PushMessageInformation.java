@@ -117,6 +117,11 @@ public class PushMessageInformation extends BaseModel {
         this.totalReceivers = totalReceivers;
     }
 
+    /**
+     * The number of time this Push Application was opened after a Push Notification
+     *
+     * @return the number of time this Push Application was opened after a Push Notification
+     */
     public long getAppOpenCounter() {
         return appOpenCounter;
     }
@@ -125,6 +130,11 @@ public class PushMessageInformation extends BaseModel {
         this.appOpenCounter = appOpenCounter;
     }
 
+    /**
+     * The date of the first time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the first time this Push Application was opened after a Push Notification
+     */
     public Date getFirstOpenDate() {
         return firstOpenDate;
     }
@@ -133,6 +143,11 @@ public class PushMessageInformation extends BaseModel {
         this.firstOpenDate = firstOpenDate;
     }
 
+    /**
+     * The date of the last time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the last time this Push Application was opened after a Push Notification
+     */
     public Date getLastOpenDate() {
         return lastOpenDate;
     }

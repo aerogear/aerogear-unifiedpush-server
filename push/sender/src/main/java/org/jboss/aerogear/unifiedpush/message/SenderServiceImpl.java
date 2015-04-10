@@ -67,6 +67,7 @@ public class SenderServiceImpl implements SenderService {
                         message.getClientIdentifier()
                         );
 
+        //Let's put a unique identifier into the payload to be able to do some analytics around that Push Notification
         message.getMessage().getUserData().put("push-identifier",pushMessageInformation.getId());
         // collections for all the different variants:
         final Set<Variant> variants = new HashSet<Variant>();

@@ -74,4 +74,5 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     long getNumberOfPushMessagesForApplications();
 
     PushMessageInformation getPushMessageInformation(String id);
+
 }
