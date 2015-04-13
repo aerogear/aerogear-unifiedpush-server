@@ -1,7 +1,8 @@
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -54,7 +55,7 @@ public class TokenLoader {
                 String lastTokenInBatch = null;
                 int tokensLoaded = 0;
                 for (int batchNumber = 0; batchNumber < NUMBER_OF_BATCHES; batchNumber++) {
-                    ArrayList<String> tokens = new ArrayList<String>(BATCH_SIZE);
+                    Set<String> tokens = new TreeSet<String>();
                     for (int i = 0; i < BATCH_SIZE && tokenStream.next(); i++) {
                         lastTokenInBatch = tokenStream.get();
                         tokens.add(lastTokenInBatch);

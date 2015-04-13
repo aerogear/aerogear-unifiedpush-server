@@ -119,7 +119,7 @@ public class PushNotificationSenderEndpoint {
         // add the client identifier
         message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
 
-        // submitted to @Async EJB:
+        // submitted to EJB:
         senderService.send(pushApplication, message);
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");

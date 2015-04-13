@@ -1,6 +1,6 @@
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -33,7 +33,7 @@ public class Sender {
     public void sendMessagesToPushNetwork(@Observes @Dequeue MessageWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
-        final List<String> deviceTokens = msg.getDeviceTokens();
+        final Collection<String> deviceTokens = msg.getDeviceTokens();
 
         logger.fine("Received message from queue: " + msg.getUnifiedPushMessage().getMessage().getAlert());
 

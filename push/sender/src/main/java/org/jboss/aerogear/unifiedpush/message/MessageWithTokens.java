@@ -1,8 +1,7 @@
 package org.jboss.aerogear.unifiedpush.message;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -14,9 +13,12 @@ public class MessageWithTokens implements Serializable {
     private PushMessageInformation pushMessageInformation;
     private UnifiedPushMessage unifiedPushMessage;
     private Variant variant;
-    private List<String> deviceTokens;
+    private Collection<String> deviceTokens;
 
-    public MessageWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, ArrayList<String> deviceTokens) {
+    public MessageWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, Collection<String> deviceTokens) {
+        if (!(deviceTokens instanceof Serializable)) {
+            throw new IllegalArgumentException("deviceTokens must be a serializable collection");
+        }
         this.pushMessageInformation = pushMessageInformation;
         this.unifiedPushMessage = unifiedPushMessage;
         this.variant = variant;
@@ -35,7 +37,7 @@ public class MessageWithTokens implements Serializable {
         return variant;
     }
 
-    public List<String> getDeviceTokens() {
+    public Collection<String> getDeviceTokens() {
         return deviceTokens;
     }
 }
