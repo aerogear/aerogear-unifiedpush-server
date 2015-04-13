@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -48,10 +49,19 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected GenericVariantService variantService;
 
-    // Secret Reset
+    /**
+     * Secret Reset
+     *
+     * @param variantId id of {@link Variant}
+     * @return          {@link Variant} with new secret
+     *
+     * @statuscode 200 The secret of Variant reset successfully
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Variant")
     public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
@@ -70,9 +80,18 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
+    /**
+     * Get Variant
+     *
+     * @param variantId id of {@link Variant}
+     * @return          requested {@link Variant}
+     *
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @GET
     @Path("/{variantId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Variant")
     public Response findVariantById(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
@@ -84,9 +103,17 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    // DELETE
+    /**
+     * Delete Variant
+     *
+     * @param variantId id of {@link Variant}
+     *
+     * @statuscode 204 The Variant successfully deleted
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @DELETE
     @Path("/{variantId}")
+    @ReturnType("java.lang.Void")
     public Response deleteVariant(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);

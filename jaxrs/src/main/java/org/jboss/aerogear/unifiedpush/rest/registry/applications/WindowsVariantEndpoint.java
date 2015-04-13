@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -36,9 +37,21 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
+    /**
+     * Add Windows Variant
+     *
+     * @param windowsVariant    new {@link WindowsVariant}
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  created {@link WindowsVariant}
+     *
+     * @statuscode 201 The Windows Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.WindowsVariant")
     public Response registerWindowsVariant(
             WindowsVariant windowsVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -69,18 +82,35 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(windowsVariant.getVariantID())).build()).entity(windowsVariant).build();
     }
 
+    /**
+     * List Windows Variants for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  list of {@link WindowsVariant}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.WindowsVariant>")
     public Response listAllWindowsVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, WindowsVariant.class)).build();
     }
 
-    // UPDATE
+    /**
+     * Update Windows Variant
+     *
+     * @param windowsID             id of {@link WindowsVariant}
+     * @param updatedWindowsVariant new info of {@link WindowsVariant}
+     *
+     * @statuscode 204 The Windows Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested Windows Variant resource does not exist
+     */
     @PUT
     @Path("/{windowsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateWindowsVariation(
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {
