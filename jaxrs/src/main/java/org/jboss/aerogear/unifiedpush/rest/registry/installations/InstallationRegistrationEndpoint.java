@@ -18,8 +18,11 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -30,7 +33,14 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -55,9 +65,24 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private PushMessageMetricsService metricsService;
 
-
+    /**
+     * Cross Origin for Installations
+     *
+     * @param headers   "Origin" header
+     * @param token     token
+     * @return          "Access-Control-Allow-Origin" header for your response
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Methods     POST, DELETE
+     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader Access-Control-Max-Age           604800
+     *
+     * @statuscode 200 Successful response for your request
+     */
     @OPTIONS
     @Path("{token: .*}")
+    @ReturnType("java.lang.Void")
     public Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
@@ -65,7 +90,22 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
+    /**
+     * Cross Origin for Installations
+     *
+     * @param headers   "Origin" header
+     * @return          "Access-Control-Allow-Origin" header for your response
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Methods     POST, DELETE
+     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader Access-Control-Max-Age           604800
+     *
+     * @statuscode 200 Successful response for your request
+     */
     @OPTIONS
+    @ReturnType("java.lang.Void")
     public Response crossOriginForInstallations(@Context HttpHeaders headers) {
 
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
@@ -95,11 +135,22 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 200 (OK) Successful storage of the device metadata.
      * @HTTP 400 (Bad Request) The format of the client request was incorrect (e.g. missing required values).
      * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     *
+     * @param entity    {@link Installation} for Device registration
+     * @return          registered {@link Installation}
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
+     * @statuscode 401 The request requires authentication
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
     public Response registerInstallation(
             Installation entity,
             @Context HttpServletRequest request) {
@@ -127,13 +178,33 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     }
 
     /**
-     * DOC WILL BE DONE WITH MIREDOT!
+     * RESTful API for Push Notification metrics registration.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X PUT
+     *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
+     * </pre>
+     *
+     * @HTTP 200 (OK) Successful indicated that application was opened due to push.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     *
+     * @param pushMessageId push message identifier
+     * @return              empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 401 The request requires authentication
      */
     @PUT
     @Path("/pushMessage/{id: .*}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response increasePushMessageReadCounter( @PathParam("id") String pushMessageId,
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+    public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
                            @Context HttpServletRequest request) {
 
         // find the matching variation:
@@ -143,11 +214,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
 
         //let's do update the analytics
-        if(pushMessageId!= null) {
+        if (pushMessageId != null) {
             metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
         }
 
-        return Response.ok("{}").build();
+        return Response.ok(EmptyJSON.STRING).build();
     }
 
     /**
@@ -164,9 +235,20 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 204 (OK) Successful unregistration.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested device metadata does not exist.
+     *
+     * @param token device token
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 204 Successful unregistration
+     * @statuscode 401 The request requires authentication
+     * @statuscode 404 The requested device metadata does not exist
      */
     @DELETE
     @Path("{token: .*}")
+    @ReturnType("java.lang.Void")
     public Response unregisterInstallations(
             @PathParam("token") String token,
             @Context HttpServletRequest request) {
@@ -230,12 +312,22 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 200 (OK) Successful submission of import job.
      * @HTTP 400 (Bad Request) The format of the client request was incorrect.
      * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     *
+     * @param form  JSON file to import
+     * @return      empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful submission of import job
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 401 The request requires authentication
      */
     @POST
     @Path("/importer")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @BodyType("org.jboss.aerogear.unifiedpush.rest.registry.installations.ImporterForm")
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response importDevice(
             @MultipartForm
             ImporterForm form,
@@ -261,7 +353,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         clientInstallationService.addInstallations(variant, devices);
 
         // return directly, the above is async and may take a bit :-)
-        return Response.ok("{}").build();
+        return Response.ok(EmptyJSON.STRING).build();
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {

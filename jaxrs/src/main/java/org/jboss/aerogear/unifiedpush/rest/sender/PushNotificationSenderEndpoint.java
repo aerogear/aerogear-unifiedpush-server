@@ -27,7 +27,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -99,12 +102,21 @@ public class PushNotificationSenderEndpoint {
      *
      * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
      * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @HTTP 404 (Not Found) The requested PushApplication resource does not exist.
      * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     *
+     * @param message   message to send
+     * @return          empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 202 Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server
+     * @statuscode 401 The request requires authentication
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @BodyType("org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage")
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
@@ -126,7 +138,7 @@ public class PushNotificationSenderEndpoint {
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 
-        return Response.status(Status.ACCEPTED).entity("{}").build();
+        return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }
 
     /**
