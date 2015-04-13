@@ -42,6 +42,11 @@ public class HealthCheck {
     @Inject
     private HealthNetworkService healthNetworkService;
 
+    /**
+     * Get health status
+     *
+     * @return {@link HealthStatus} with details
+     */
     @GET
     @Path("/health")
     @Produces(MediaType.APPLICATION_JSON)
