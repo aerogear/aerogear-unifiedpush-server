@@ -74,6 +74,7 @@ CREATE TABLE PushMessageInformation (
   rawJsonMessage    VARCHAR(4500) DEFAULT NULL,
   submitDate        DATE          DEFAULT NULL,
   totalReceivers    BIGINT       NOT NULL,
+  appOpenCounter    BIGINT      DEFAULT 0,
   PRIMARY KEY (id)
 );
 
@@ -84,5 +85,7 @@ CREATE TABLE VariantMetricInformation (
   receivers              BIGINT       NOT NULL,
   variantID              VARCHAR(255) NOT NULL,
   variantInformations_id VARCHAR(255) DEFAULT NULL,
+  pushMessageInformation_id VARCHAR(255) DEFAULT NULL,
+  variantOpenCounter    BIGINT  DEFAULT 0,
   PRIMARY KEY (id)
 );
