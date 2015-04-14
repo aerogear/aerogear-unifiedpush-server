@@ -58,9 +58,9 @@
                 <entry name="/queue/WNSTokenBatchQueue" />
             </jms-queue>
             
-            <!-- Variant Metric Collection Queue -->
-            <jms-queue name="VariantMetricQueue">
-                <entry name="/queue/VariantMetricQueue"/>
+            <!-- Metric Collection Queue -->
+            <jms-queue name="MetricQueue">
+                <entry name="/queue/MetricQueue"/>
             </jms-queue>
         </jms-destinations>
     </hornetq-server>

@@ -17,7 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.message.SenderService;
+import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -41,7 +41,7 @@ public class PushNotificationSenderEndpoint {
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
-    private SenderService senderService;
+    private NotificationRouter notificationRouter;
 
     /**
      * RESTful API for sending Push Notifications.
@@ -120,7 +120,7 @@ public class PushNotificationSenderEndpoint {
         message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
 
         // submitted to EJB:
-        senderService.send(pushApplication, message);
+        notificationRouter.submit(pushApplication, message);
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 

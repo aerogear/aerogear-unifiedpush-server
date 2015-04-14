@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import java.util.Collection;
 
+import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
@@ -18,9 +20,10 @@ import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class Sender {
+@Stateless
+public class NotificationDispatcher {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(Sender.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(NotificationDispatcher.class);
 
     @Inject
     @Any
@@ -30,7 +33,7 @@ public class Sender {
     @DispatchToQueue
     private Event<VariantMetricInformation> dispatchVariantMetricEvent;
 
-    public void sendMessagesToPushNetwork(@Observes @Dequeue MessageWithTokens msg) {
+    public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();

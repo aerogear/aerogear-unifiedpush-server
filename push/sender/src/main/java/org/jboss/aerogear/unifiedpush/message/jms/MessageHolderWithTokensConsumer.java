@@ -10,24 +10,24 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.message.MessageWithVariants;
 import org.jboss.aerogear.unifiedpush.message.TokenLoader;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class MessageWithVariantsMDB implements MessageListener {
+public class MessageHolderWithTokensConsumer implements MessageListener {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
 
     @Inject
     @Dequeue
-    private Event<MessageWithVariants> message;
+    private Event<MessageHolderWithTokens> message;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void onMessage(Message jmsMessage) {
         try {
-            if (jmsMessage instanceof ObjectMessage && ((ObjectMessage) jmsMessage).getObject() instanceof MessageWithVariants) {
-                message.fire((MessageWithVariants) ((ObjectMessage) jmsMessage).getObject());
+            if (jmsMessage instanceof ObjectMessage && ((ObjectMessage) jmsMessage).getObject() instanceof MessageHolderWithTokens) {
+                message.fire((MessageHolderWithTokens) ((ObjectMessage) jmsMessage).getObject());
             } else {
                 logger.warning("Received message of wrong type: " + jmsMessage.getClass().getName());
             }

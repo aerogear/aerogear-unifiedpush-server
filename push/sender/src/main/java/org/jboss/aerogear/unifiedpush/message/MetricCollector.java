@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.message;
 
+import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -8,7 +9,8 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
-public class VariantMetricCollector {
+@Stateless
+public class MetricCollector {
 
     @Inject
     private PushMessageMetricsService metricsService;

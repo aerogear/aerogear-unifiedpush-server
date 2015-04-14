@@ -17,10 +17,10 @@ import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @MessageDriven(name = "VariantMetricQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/VariantMetricQueue"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MetricQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-public class VariantMetricInformationMDB implements MessageListener {
+public class VariantMetricInformationConsumer implements MessageListener {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
 

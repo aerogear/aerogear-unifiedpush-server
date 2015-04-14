@@ -14,12 +14,12 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
 
 @Stateless
-public class VariantMetricInformationDispatcher {
+public class VariantMetricInformationProducer {
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "java:/queue/VariantMetricQueue")
+    @Resource(mappedName = "java:/queue/MetricQueue")
     private Queue tokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue VariantMetricInformation msg) {

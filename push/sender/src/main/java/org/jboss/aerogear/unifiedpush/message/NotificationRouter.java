@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -38,9 +39,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @Stateless
-public class SenderServiceImpl implements SenderService {
+public class NotificationRouter {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(SenderServiceImpl.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(NotificationRouter.class);
 
     @Inject
     private GenericVariantService genericVariantService;
@@ -49,11 +50,10 @@ public class SenderServiceImpl implements SenderService {
 
     @Inject
     @DispatchToQueue
-    private Event<MessageWithVariants> dispatchVariantMessageEvent;
+    private Event<MessageHolderWithVariants> dispatchVariantMessageEvent;
 
-    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void send(PushApplication pushApplication, UnifiedPushMessage message) {
+    public void submit(PushApplication pushApplication, UnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");
 
         final PushMessageInformation pushMessageInformation =
@@ -90,7 +90,7 @@ public class SenderServiceImpl implements SenderService {
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
-            dispatchVariantMessageEvent.fire(new MessageWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
+            dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
         }
     }
 
