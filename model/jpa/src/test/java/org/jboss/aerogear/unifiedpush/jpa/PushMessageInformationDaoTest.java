@@ -18,9 +18,10 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -49,7 +50,7 @@ public class PushMessageInformationDaoTest {
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
     @Inject
-    private JPAVariantMetricInformationDao variantMetricInformationDao;
+    private VariantMetricInformationDao variantMetricInformationDao;
     private String pushMessageInformationID = "1";
 
     @Deployment
@@ -64,9 +65,6 @@ public class PushMessageInformationDaoTest {
     public void setUp() {
         // start the shindig
         entityManager.getTransaction().begin();
-        variantMetricInformationDao = new JPAVariantMetricInformationDao();
-        variantMetricInformationDao.setEntityManager(entityManager);
-
     }
 
     private void flushAndClear() {
