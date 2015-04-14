@@ -102,45 +102,48 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jax-rs-docs</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <doclet>com.lunatech.doclets.jax.jaxrs.JAXRSDoclet</doclet>
-                            <docletArtifacts>
-                                <docletArtifact>
-                                    <groupId>com.lunatech.jax-doclets</groupId>
-                                    <artifactId>doclets</artifactId>
-                                    <version>0.10.0</version>
-                                </docletArtifact>
-                            </docletArtifacts>
-                            <detectOfflineLinks>false</detectOfflineLinks>
-                            <offlineLinks>
-                                <offlineLink>
-                                    <url>../javadocs</url>
-                                    <location>${project.basedir}/../target/site/apidocs</location>
-                                </offlineLink>
-                            </offlineLinks>
-                            <additionalparam>-disablehttpexample -disablejavascriptexample</additionalparam>
-                            <!-- only document the BASIC protected URIs for sender and (un)registration -->
-                            <excludePackageNames>org.jboss.aerogear.unifiedpush.rest.metrics:org.jboss.aerogear.unifiedpush.rest.registry.applications:*.util.*</excludePackageNames>
-                        </configuration>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <profiles>
+        <profile>
+            <id>jaxrs-doclet</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jax-rs-docs</id>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <doclet>com.lunatech.doclets.jax.jaxrs.JAXRSDoclet</doclet>
+                                    <docletArtifacts>
+                                        <docletArtifact>
+                                            <groupId>com.lunatech.jax-doclets</groupId>
+                                            <artifactId>doclets</artifactId>
+                                            <version>0.10.0</version>
+                                        </docletArtifact>
+                                    </docletArtifacts>
+                                    <detectOfflineLinks>false</detectOfflineLinks>
+                                    <offlineLinks>
+                                        <offlineLink>
+                                            <url>../javadocs</url>
+                                            <location>${project.basedir}/../target/site/apidocs</location>
+                                        </offlineLink>
+                                    </offlineLinks>
+                                    <additionalparam>-disablehttpexample -disablejavascriptexample</additionalparam>
+                                    <!-- only document the BASIC protected URIs for sender and (un)registration -->
+                                    <excludePackageNames>org.jboss.aerogear.unifiedpush.rest.metrics:org.jboss.aerogear.unifiedpush.rest.registry.applications:*.util.*</excludePackageNames>
+                                </configuration>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+	            </plugins>
+	        </build>
+		</profile>
+
         <profile>
             <id>test</id>
             <activation>
