@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.ejb.ActivationConfigProperty;
@@ -6,40 +22,28 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
 
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.message.TokenLoader;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-@MessageDriven(name = "VariantMetricQueue", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MetricQueue"),
+/**
+ * Consumes {@link VariantMetricInformation} from queue and pass them as a CDI event for further processing.
+ *
+ * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
+ */
+@MessageDriven(name = "MetricsConsumer", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MetricsQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-public class VariantMetricInformationConsumer implements MessageListener {
-
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
+public class VariantMetricInformationConsumer extends AbstractJMSMessageConsumer<VariantMetricInformation> {
 
     @Inject
     @Dequeue
-    private Event<VariantMetricInformation> message;
+    private Event<VariantMetricInformation> dequeueEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void onMessage(Message jmsMessage) {
-        try {
-            if (jmsMessage instanceof ObjectMessage && ((ObjectMessage) jmsMessage).getObject() instanceof VariantMetricInformation) {
-                message.fire((VariantMetricInformation) ((ObjectMessage) jmsMessage).getObject());
-            } else {
-                logger.warning("Received message of wrong type: " + jmsMessage.getClass().getName());
-            }
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to handle message from VariantTypeQueue", e);
-        }
+    public void onMessage(VariantMetricInformation message) {
+        dequeueEvent.fire(message);
     }
 
 

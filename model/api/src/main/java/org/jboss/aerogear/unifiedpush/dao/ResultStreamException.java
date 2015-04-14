@@ -14,32 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.dao;
 
 /**
- * Thrown when messaging subsystem fails to queue the notification for processing, so that the push notification couldn't be delivered
+ * Exception thrown when stream of results is failed to be read from underlying database
  */
-public class MessageDeliveryException extends RuntimeException {
+public class ResultStreamException extends Exception {
 
-    private static final long serialVersionUID = 5679901095720892005L;
+    private static final long serialVersionUID = 1L;
 
-    public MessageDeliveryException() {
+    public ResultStreamException() {
         super();
     }
 
-    public MessageDeliveryException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ResultStreamException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public MessageDeliveryException(String message, Throwable cause) {
+    public ResultStreamException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public MessageDeliveryException(String message) {
+    public ResultStreamException(String message) {
         super(message);
     }
 
-    public MessageDeliveryException(Throwable cause) {
+    public ResultStreamException(Throwable cause) {
         super(cause);
     }
+
+
+
 }

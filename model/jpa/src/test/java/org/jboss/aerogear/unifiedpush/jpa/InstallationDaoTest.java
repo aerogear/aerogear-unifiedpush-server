@@ -26,7 +26,7 @@ import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
-import org.jboss.aerogear.unifiedpush.dao.BatchException;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
@@ -556,7 +556,7 @@ public class InstallationDaoTest {
                 list.add(tokenStream.get());
             }
             return list;
-        } catch (BatchException e) {
+        } catch (ResultStreamException e) {
             throw new IllegalStateException(e);
         }
     }

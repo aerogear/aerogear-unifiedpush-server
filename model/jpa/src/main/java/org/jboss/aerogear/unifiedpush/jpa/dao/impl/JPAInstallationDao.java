@@ -36,7 +36,7 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.BatchException;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -167,11 +167,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 final ScrollableResults results = hibernateQuery.scroll(ScrollMode.FORWARD_ONLY);
                 return new ResultsStream<String>() {
                     @Override
-                    public boolean next() throws BatchException {
+                    public boolean next() throws ResultStreamException {
                         return results.next();
                     }
                     @Override
-                    public String get() throws BatchException {
+                    public String get() throws ResultStreamException {
                         return (String) results.get()[0];
                     }
                 };

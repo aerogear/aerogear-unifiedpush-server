@@ -1,38 +1,42 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
 
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class MessageHolderWithTokensConsumer implements MessageListener {
-
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
+/**
+ * Consumes {@link MessageHolderWithTokens} from queue and pass them as a CDI event for further processing.
+ *
+ * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
+ */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class MessageHolderWithTokensConsumer extends AbstractJMSMessageConsumer<MessageHolderWithTokens> {
 
     @Inject
     @Dequeue
-    private Event<MessageHolderWithTokens> message;
+    private Event<MessageHolderWithTokens> dequeueEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void onMessage(Message jmsMessage) {
-        try {
-            if (jmsMessage instanceof ObjectMessage && ((ObjectMessage) jmsMessage).getObject() instanceof MessageHolderWithTokens) {
-                message.fire((MessageHolderWithTokens) ((ObjectMessage) jmsMessage).getObject());
-            } else {
-                logger.warning("Received message of wrong type: " + jmsMessage.getClass().getName());
-            }
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to handle message from VariantTypeQueue", e);
-        }
+    public void onMessage(MessageHolderWithTokens message) {
+        dequeueEvent.fire(message);
     }
 }

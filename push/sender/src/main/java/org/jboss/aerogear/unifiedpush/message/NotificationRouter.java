@@ -38,6 +38,17 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+/**
+ * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
+ *
+ * Router splits messages to specific variant types (push network type) so that they can be processed separately,
+ * giving attention to limitations and requirements of specific push networks.
+ *
+ * {@link NotificationRouter} receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in transaction.
+ * The transactional behavior makes sure the request for sending notification is recorded and then asynchronously processed.
+ *
+ * The further processing of the push message happens in {@link TokenLoader}.
+ */
 @Stateless
 public class NotificationRouter {
 
@@ -52,6 +63,11 @@ public class NotificationRouter {
     @DispatchToQueue
     private Event<MessageHolderWithVariants> dispatchVariantMessageEvent;
 
+    /**
+     * Receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in one transaction.
+     *
+     * Once this method returns, message is recorded and will be eventually delivered in the future.
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, UnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");

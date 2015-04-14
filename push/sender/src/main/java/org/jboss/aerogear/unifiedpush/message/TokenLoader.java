@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.message;
 
 import java.util.List;
@@ -10,7 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.BatchException;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -19,6 +35,11 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
+/**
+ * Loads messages from a database and queues them for processing.
+ *
+ * {@link TokenLoader} uses result stream with configured fetch size so that it can split database results into several batches.
+ */
 @Stateless
 public class TokenLoader {
 
@@ -38,6 +59,13 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<MessageHolderWithVariants> nextBatchEvent;
 
+    /**
+     * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
+     *
+     * Device tokens are loaded in stream and split to batches of {@link #BATCH_SIZE}.
+     * Once the pre-configured {@link #NUMBER_OF_BATCHES} is reached, this method resends message to the same queue it took the request from,
+     * so that the transaction it worked in is split and further processing may continue in next transaction.
+     */
     public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final List<Variant> variants = msg.getVariants();
@@ -71,7 +99,7 @@ public class TokenLoader {
                 if (tokensLoaded >= NUMBER_OF_BATCHES * BATCH_SIZE) {
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
                 }
-            } catch (BatchException e) {
+            } catch (ResultStreamException e) {
                 logger.severe("Failed to load batch of tokens", e);
             }
         }

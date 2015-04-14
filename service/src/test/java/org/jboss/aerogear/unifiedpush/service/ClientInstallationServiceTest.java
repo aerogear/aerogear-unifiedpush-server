@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.BatchException;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
 
@@ -345,7 +345,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
                 list.add(tokenStream.get());
             }
             return list;
-        } catch (BatchException e) {
+        } catch (ResultStreamException e) {
             throw new IllegalStateException(e);
         }
     }
