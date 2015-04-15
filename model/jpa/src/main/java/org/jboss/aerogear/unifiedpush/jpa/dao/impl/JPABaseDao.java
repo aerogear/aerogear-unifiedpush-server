@@ -62,6 +62,12 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
 
     public void delete(T entity) {
         if (entity != null) {
+            // making sure the entity in question,
+            // is really part of this transaction
+            if (! entityManager.contains(entity)) {
+                entity = entityManager.merge(entity);
+            }
+
             entityManager.remove(entity);
         }
     }
