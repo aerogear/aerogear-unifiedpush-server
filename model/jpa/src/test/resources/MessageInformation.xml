@@ -153,4 +153,6 @@
     </table>
     <table name="SA.IOSVARIANT"/>
     <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.INSTALLATION"/>
+    <table name="SA.INSTALLATION_CATEGORY"/>
 </dataset>
