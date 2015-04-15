@@ -62,7 +62,7 @@ public class SenderServiceImpl implements SenderService {
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
-                        message.toJsonString(),
+                        message.toStrippedJsonString(),
                         message.getIpAddress(),
                         message.getClientIdentifier()
                         );

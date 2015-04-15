@@ -1,0 +1,14 @@
+{
+  "ipAddress": null,
+  "clientIdentifier": null,
+  "alert": "HELLO!",
+  "criteria": {
+    "categories": null,
+    "variants": null,
+    "alias": null,
+    "deviceType": null
+  },
+  "config": {
+    "ttl": -1
+  }
+}

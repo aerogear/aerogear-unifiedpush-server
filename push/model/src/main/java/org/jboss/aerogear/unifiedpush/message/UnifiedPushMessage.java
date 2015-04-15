@@ -130,7 +130,7 @@ public class UnifiedPushMessage {
 
     public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
 
-    public String toJsonString() {
+    public String toStrippedJsonString() {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
             json.put("ipAddress", this.ipAddress);
@@ -139,6 +139,16 @@ public class UnifiedPushMessage {
             json.put("criteria", this.criteria);
             json.put("config", this.config);
             return OBJECT_MAPPER.writeValueAsString(json);
+        } catch (JsonProcessingException e) {
+            return "[\"invalid json\"]";
+        } catch (IOException e) {
+            return "[\"invalid json\"]";
+        }
+    }
+
+    public String toJsonString() {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             return "[\"invalid json\"]";
         } catch (IOException e) {

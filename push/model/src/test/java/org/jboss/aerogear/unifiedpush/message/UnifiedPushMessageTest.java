@@ -588,6 +588,43 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testMessageToStrippedJson() throws IOException, URISyntaxException {
+        //given
+        final Map<String, Object> container = new LinkedHashMap<String, Object>();
+        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+
+        messageObject.put("alert", "HELLO!");
+        messageObject.put("sound", "default");
+        messageObject.put("badge", 2);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("key", "value");
+        data.put("key2", "value");
+        messageObject.put("user-data", data);
+        apnsObject.put("action-category", "category");
+        apnsObject.put("content-available", "true");
+        messageObject.put("simple-push", "version=123");
+        Map<String, Object> windows = new HashMap<String, Object>();
+        windows.put("type", "tile");
+        windows.put("tileType", "TileWideBlockAndText01");
+        windows.put("page", "cordova");
+        messageObject.put("windows", windows);
+        messageObject.put("apns",apnsObject);
+
+        container.put("message", messageObject);
+
+        //when
+        final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
+        String json = unifiedPushMessage.toStrippedJsonString();
+
+        //then
+        Path path = Paths.get(getClass().getResource("/message-tostrippedjson.json").toURI());
+        String expectedJson = new String(Files.readAllBytes(path), Charset.defaultCharset());
+        //poor mans equals ignore white space
+        assertEquals(expectedJson.replaceAll("\\s", ""), json);
+    }
+
+    @Test
     public void testMessageToJson() throws IOException, URISyntaxException {
         //given
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
@@ -615,7 +652,7 @@ public class UnifiedPushMessageTest {
 
         //when
         final UnifiedPushMessage unifiedPushMessage = parsePushMessage(container);
-        String json = unifiedPushMessage.toJsonString();
+        String json = unifiedPushMessage.toStrippedJsonString();
 
         //then
         Path path = Paths.get(getClass().getResource("/message-tojson.json").toURI());
