@@ -19,19 +19,16 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
-import java.io.Serializable;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
  * or user-agent (SimplePush)
  */
 @DeviceTokenCheck
-public class Installation implements Serializable {
+public class Installation extends BaseModel {
     private static final long serialVersionUID = 7177135979544758234L;
 
-    private String id = UUID.randomUUID().toString();
     private boolean enabled = true;
     private String deviceToken;
     private String deviceType;
@@ -43,18 +40,6 @@ public class Installation implements Serializable {
     private String platform;
     @JsonIgnore
     private Variant variant;
-
-    /**
-     * Key identifying the model object in the underlying database (primary key)
-     *
-     * @param id value of the primary key
-     */
-    public void setId(final String id) {
-        this.id = id;
-    }
-    public String getId() {
-        return this.id;
-    }
 
     public boolean isEnabled() {
         return this.enabled;
