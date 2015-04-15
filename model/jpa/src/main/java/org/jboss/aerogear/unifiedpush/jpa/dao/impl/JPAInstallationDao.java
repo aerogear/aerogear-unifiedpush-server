@@ -43,7 +43,7 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
-    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select installation.deviceToken"
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
                     + " from Installation installation"
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
@@ -138,7 +138,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("lastTokenFromPreviousBatch", lastTokenFromPreviousBatch);
         }
 
-        jpqlString.append(" ORDER BY installation.id ASC");
+        jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
         return new ResultsStream.QueryBuilder<String>() {
             private Integer fetchSize = null;

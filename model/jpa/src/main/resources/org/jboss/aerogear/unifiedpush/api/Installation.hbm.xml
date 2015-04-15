@@ -10,7 +10,7 @@
         <property name="alias" type="java.lang.String">
             <column name="alias" />
         </property>
-        <property name="deviceToken" type="java.lang.String">
+        <property name="deviceToken" type="java.lang.String" index="deviceTokenIndex">
             <column name="deviceToken" length="4096" />
         </property>
         <property name="deviceType" type="java.lang.String">
