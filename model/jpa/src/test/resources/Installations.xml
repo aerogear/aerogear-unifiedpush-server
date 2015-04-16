@@ -136,11 +136,11 @@
         <column>id</column>
         <column>name</column>
         <row>
-            <value>1</value>
+            <value>101</value>
             <value>soccer</value>
         </row>
         <row>
-            <value>2</value>
+            <value>102</value>
             <value>news</value>
         </row>
     </table>
@@ -150,23 +150,23 @@
         <column>categories_id</column>
         <row>
             <value>1</value>
-            <value>1</value>
+            <value>101</value>
         </row>
         <row>
             <value>2</value>
-            <value>2</value>
+            <value>102</value>
         </row>
         <row>
             <value>4</value>
-            <value>1</value>
+            <value>101</value>
         </row>
         <row>
             <value>5</value>
-            <value>2</value>
+            <value>102</value>
         </row>
         <row>
             <value>6</value>
-            <value>2</value>
+            <value>102</value>
         </row>
     </table>
 </dataset>
