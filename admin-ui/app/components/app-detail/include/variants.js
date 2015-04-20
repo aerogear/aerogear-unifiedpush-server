@@ -11,10 +11,12 @@ angular.module('upsConsole')
         .sort(function(a, b) {
           return a.type.localeCompare(b.type);
         })
-        .reduce(function(result, variant) {
-          result[variant.type] = result[variant.type] || [];
-          result[variant.type].push(variant);
-          return result;
+        .reduce(function(variantList, variant) {
+          var variantType = variantList[variant.type] = variantList[variant.type] || [];
+          variantType.push(variant);
+          variantType.$deviceCount = (variantType.$deviceCount  || 0) + variant.$deviceCount;
+          variantType.$messageCount = (variantType.$messageCount  || 0) + variant.$messageCount;
+          return variantList;
         }, {});
     }
     this.byType = splitByType( this.app.variants );

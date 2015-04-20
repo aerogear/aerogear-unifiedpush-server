@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-
 import java.util.List;
 import java.util.Set;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
@@ -70,4 +70,6 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * Counts the total number of all registered devices/clients
      */
     long getNumberOfDevicesForVariantIDs();
+
+    long getNumberOfDevicesForVariantID(String variantId);
 }

@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-
 import java.util.Date;
 import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
@@ -27,6 +27,10 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      * Does a count for all the push message that have been submitted for the given PushApplication.
      */
     long getNumberOfPushMessagesForApplications(String loginName);
+
+    long countMessagesForPushApplication(String pushApplicationId);
+
+    long countMessagesForVariant(String variantId);
 
     /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.

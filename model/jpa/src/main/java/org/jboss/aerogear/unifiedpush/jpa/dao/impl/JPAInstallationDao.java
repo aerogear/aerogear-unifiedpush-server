@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,11 +28,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -124,6 +125,13 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public long getNumberOfDevicesForVariantIDs() {
         return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ", Long.class)
+                .getSingleResult();
+    }
+
+    @Override
+    public long getNumberOfDevicesForVariantID(String variantId) {
+        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID = :variantId ", Long.class)
+                .setParameter("variantId", variantId)
                 .getSingleResult();
     }
 
