@@ -3,7 +3,7 @@
     <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title" id="myModalLabel">{{ variant.id ? 'Edit' : 'Add' }} Variant</h4>
+    <h4 class="modal-title" id="myModalLabel">{{ isNew ? 'Add' : 'Edit' }} Variant</h4>
   </div>
   <div class="modal-body form-horizontal">
     <div class="form-group">
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label" for="optionAndroid">Choose a platform</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -29,7 +29,7 @@
     </div>
 
 
-    <div class="form-group">
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label sr-only" for="optionIos">iOS</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -45,7 +45,7 @@
     </div>
 
 
-    <div class="form-group">
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label sr-only" for="optionWindows">Windows</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label sr-only" for="optionSimplePush">SimplePush</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -75,7 +75,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label sr-only" for="optionsAdm">SimplePush</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -141,7 +141,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                 <div class="col-sm-9">
-                  <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && !variant.id">
+                  <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && isNew">
                 </div>
               </div>
             </div>
@@ -153,7 +153,7 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">Push Network</label>
           <div class="col-sm-7">
-            <div class="form-horizontal" ng-show="!variant.id">
+            <div class="form-horizontal" ng-show="isNew">
               <div class="form-group">
                 <div class="row">
                   <br><label class="col-sm-3 control-label">Type</label>
@@ -224,6 +224,6 @@
   </div>
   <div class="modal-footer">
     <button ng-click="dismiss()" type="button" class="btn btn-default">Cancel</button>
-    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()">Create</button>
+    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()">{{ isNew ? 'Create' : 'Save' }}</button>
   </div>
 </form>

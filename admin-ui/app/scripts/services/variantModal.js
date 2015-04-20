@@ -7,6 +7,7 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
         templateUrl: 'views/dialogs/create-variant.html',
         controller: function ($scope, $modalInstance) {
 
+          $scope.isNew = true;
           $scope.variant = {}; // start with empty variant
           $scope.variant.certificates = []; // initialize file list for upload
 
@@ -16,7 +17,6 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
               variantType: $scope.variant.type
             }, extractValidVariantData($scope.variant))
               .then(function (variant) {
-                console.log(variant);
                 $modalInstance.close(variant);
               })
               .catch(function (err) {
@@ -44,11 +44,16 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
         templateUrl: 'views/dialogs/create-variant.html',
         controller: function ($scope, $modalInstance) {
 
+          $scope.isNew = false;
           $scope.variant = variant;
           $scope.variant.certificates = []; // initialize file list for upload
 
           $scope.confirm = function () {
-            var endpointParams = {appId: app.pushApplicationID, variantType: $scope.variant.type};
+            var endpointParams = {
+              appId: app.pushApplicationID,
+              variantType: $scope.variant.type,
+              variantId: variant.variantID
+            };
             var variantData = extractValidVariantData($scope.variant);
             var promise;
             if (variant.type !== 'ios') {
@@ -63,8 +68,9 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
                 });
               }
             }
-            promise.then(function (variant) {
-              $modalInstance.close(variant);
+            promise.then(function (modifiedVariant) {
+              modifiedVariant.variantID = variant.variantID;
+              $modalInstance.close(modifiedVariant);
             });
           };
 
@@ -124,7 +130,6 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
     properties.forEach(function (property) {
       result[property] = variant[property];
     });
-    console.log(result);
     return result;
   }
 

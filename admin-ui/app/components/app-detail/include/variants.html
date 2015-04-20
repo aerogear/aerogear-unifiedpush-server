@@ -19,7 +19,7 @@
       <div class="ups-variant-header">
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href="#"><span class="pficon pficon-edit"></span> Edit</a></li>
+            <li><a ng-click="variants.edit( variant )"><span class="pficon pficon-edit"></span> Edit</a></li>
             <li class="danger"><a ng-click="variants.delete( variant )"><span class="pficon pficon-delete"></span> Delete</a></li>
           </ul>
         </div>
@@ -54,7 +54,7 @@
           <dt>Google API Key:</dt>
           <dd>
             {{ variant.googleKey }}<br />
-            <a href="#" class="btn btn-sm btn-primary"><span class="pficon pficon-refresh"></span> Change network options</a>
+            <button href="#" class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
         <dl class="dl-horizontal" ng-show="variant.type == 'windows_wns'">
