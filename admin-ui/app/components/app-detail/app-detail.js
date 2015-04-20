@@ -8,7 +8,7 @@ angular.module('upsConsole')
     this.contextPath = ContextProvider.contextPath();
 
     this.canActivate = function() {
-      return applicationsEndpoint.get({appId: $routeParams.app})
+      return applicationsEndpoint.getWithMetrics({appId: $routeParams.app})
         .then(function( app ) {
           self.app = app;
           if ( !app.variants.length ) {

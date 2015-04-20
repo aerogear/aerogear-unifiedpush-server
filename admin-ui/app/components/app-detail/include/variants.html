@@ -8,8 +8,8 @@
   <div class="panel-heading ups-has-icon ups-variant-{{ variantType }}">
     <h3 class="panel-title">{{ variants.typeEnum[variantType].name }} Variants</h3>
     <ul class="list-inline">
-      <li><span class="pficon pficon-messages"></span> <strong>???</strong> Delivered</li>
-      <li><i class="fa fa-mobile"></i> <strong>???</strong> Devices</li>
+      <li><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Delivered</li>
+      <li><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
     </ul>
   </div>
   <div class="panel-body">
@@ -25,13 +25,15 @@
           </ul>
         </div>
 
-        <h4 ng-click="variant.toggled = !variant.toggled"><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.toggled, 'fa-minus-square-o': variant.toggled }"></i> {{ variant.name }}</h4>
+        <h4 ng-click="variant.$toggled = !variant.$toggled"><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
         <ul class="list-inline">
-          <li><i class="fa fa-ban"></i> No installation yet</li>
+          <li ng-if="variant.$deviceCount == 0"><i class="fa fa-ban"></i> No installation yet</li>
+          <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <strong>{{ variant.$messageCount }}</strong> Delivered</li>
+          <li ng-if="variant.$deviceCount > 0"><i class="fa fa-mobile"></i> <strong>{{ variant.$deviceCount }}</strong> Devices</li>
         </ul>
 
       </div><!-- vaiant header -->
-      <div class="ups-variant-body" ng-show="variant.toggled">
+      <div class="ups-variant-body" ng-show="variant.$toggled">
 
         <p ng-show="variant.type == 'ios'">Apple's Push Network (APNs) will be used.
           To learn more about APNs, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-ios/">iOS</a>

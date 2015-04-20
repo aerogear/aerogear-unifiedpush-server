@@ -36,6 +36,21 @@ upsServices.factory('applicationsEndpoint', function ($resource, $q) {
         });
       });
       return deferred.promise;
+    },
+    getWithMetrics: function(params) {
+      params.includeDeviceCount = true;
+      params.includeActivity = true;
+      var deferred = $q.defer();
+      this.get(params, function (app, responseHeaders) {
+        app.$messageCount = parseInt(responseHeaders('activity_app_' + app.pushApplicationID), 10);
+        app.$deviceCount = parseInt(responseHeaders('deviceCount_app_' + app.pushApplicationID), 10);
+        app.variants.forEach(function( variant ) {
+          variant.$messageCount = parseInt(responseHeaders('activity_variant_' + variant.variantID), 10);
+          variant.$deviceCount = parseInt(responseHeaders('deviceCount_variant_' + variant.variantID), 10);
+        });
+        deferred.resolve( app );
+      });
+      return deferred.promise;
     }
   });
 });
