@@ -41,14 +41,14 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public long countMessagesForPushApplication(String pushApplicationId) {
+    public long getNumberOfPushMessagesForPushApplication(String pushApplicationId) {
         return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
                 .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
     }
 
     @Override
-    public long countMessagesForVariant(String variantId) {
-        return createQuery("select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantId", Integer.class)
+    public long getNumberOfPushMessagesForVariant(String variantId) {
+        return createQuery("select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantId", Long.class)
                 .setParameter("variantId", variantId).getSingleResult();
     }
 
@@ -78,7 +78,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public long getNumberOfPushMessagesForApplications(String loginName) {
+    public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
                 "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
                 .setParameter("developer", loginName).getSingleResult();

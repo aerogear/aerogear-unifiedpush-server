@@ -83,12 +83,18 @@ public class PushMessageMetricsService {
         return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
     }
 
+    /**
+     * Returns number of push messages for given push application ID
+     */
     public long countMessagesForPushApplication(String pushApplicationId) {
-        return pushMessageInformationDao.countMessagesForPushApplication(pushApplicationId);
+        return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
     }
 
+    /**
+     * Returns number of push messages for given push variant ID
+     */
     long countMessagesForVariant(String variantId) {
-        return pushMessageInformationDao.countMessagesForVariant(variantId);
+        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantId);
     }
 
     /**

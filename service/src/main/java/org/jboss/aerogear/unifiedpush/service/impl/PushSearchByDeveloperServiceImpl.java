@@ -122,11 +122,11 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     private long totalMessages() {
-        return pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName.get());
+        return pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName.get());
     }
 
     private long totalDeviceNumber() {
-        return installationDao.getNumberOfDevicesForVariantIDs(loginName.get());
+        return installationDao.getNumberOfDevicesForLoginName(loginName.get());
     }
 
     private long totalApplicationNumber() {

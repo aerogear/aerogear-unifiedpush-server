@@ -120,7 +120,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     private long totalDeviceNumber() {
-        return installationDao.getNumberOfDevicesForVariantIDs();
+        return installationDao.getTotalNumberOfDevices();
     }
 
     private long totalApplicationNumber() {
