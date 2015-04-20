@@ -30,7 +30,14 @@ angular.module('upsConsole')
     };
 
     this.edit = function( variant ) {
-      return variantModal.edit( this.app, variant)
+      var variantEditableCopy = angular.extend({}, variant)
+      return variantModal.edit( this.app, variantEditableCopy )
+        .then(function( variant ) {
+          var variantToUpdate = self.app.variants.filter(function(v) {
+            return v.variantID === variant.variantID;
+          })[0];
+          angular.extend(variantToUpdate, variant);
+        });
     };
 
     this.delete = function( variant ) {
