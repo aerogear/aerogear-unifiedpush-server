@@ -17,10 +17,13 @@
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Date;
 
@@ -28,6 +31,7 @@ import java.util.Date;
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
  * on the Admin UI.
  */
+@Stateless
 public class PushMessageMetricsService {
 
     // that's what we currently use as the maximum days the message information objects are stored
@@ -36,6 +40,9 @@ public class PushMessageMetricsService {
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
+
+    @Inject
+    private VariantMetricInformationDao variantMetricInformationDao;
 
     /**
      * Starts the capturing of metadata around a push message request.
@@ -89,5 +96,34 @@ public class PushMessageMetricsService {
     public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
+    }
+
+    public PushMessageInformation getPushMessageInformation(String id) {
+        return pushMessageInformationDao.getPushMessageInformation(id);
+    }
+
+    public void updateAnalytics(String pushIdentifier, String variantID) {
+        PushMessageInformation pushMessageInformation = this.getPushMessageInformation(pushIdentifier);
+
+        if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message
+
+            //if the firstOpenDate is not null that means it's no the first one, let's update the lastDateOpen
+            if (pushMessageInformation.getFirstOpenDate() != null) {
+                pushMessageInformation.setLastOpenDate(new Date());
+            } else {
+                pushMessageInformation.setFirstOpenDate(new Date());
+                pushMessageInformation.setLastOpenDate(new Date());
+            }
+            //update the general counter
+            pushMessageInformation.setAppOpenCounter(pushMessageInformation.getAppOpenCounter() + 1);
+
+            //update the variant counter
+            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID);
+            variantMetricInformation.setVariantOpenCounter(variantMetricInformation.getVariantOpenCounter() +1);
+            variantMetricInformationDao.update(variantMetricInformation);
+
+            this.updatePushMessageInformation(pushMessageInformation);
+        }
+
     }
 }

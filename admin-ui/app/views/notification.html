@@ -56,6 +56,18 @@
                       <td>Message:</td>
                       <td colspan="2"><strong>{{ activityCtrl.parse(metric).alert }}</strong></td>
                     </tr>
+                    <tr>
+                      <td>Installations being opened:</td>
+                      <td colspan="2">{{ metric.appOpenCounter }}</td>
+                    </tr>
+                    <tr>
+                      <td>First time being opened:</td>
+                      <td colspan="2">{{ metric.firstOpenDate | date : 'd MMM, HH:mm:ss, yyyy'}}</td>
+                    </tr>
+                    <tr>
+                      <td>last time being opened:</td>
+                      <td colspan="2">{{ metric.lastOpenDate | date : 'd MMM, HH:mm:ss, yyyy'}}</td>
+                    </tr>
                   </table>
                   <hr ng-show="metric.deliveryFailed">
                   <table ng-show="metric.deliveryFailed">

@@ -36,6 +36,10 @@ public class PushMessageInformation extends BaseModel {
     private Date submitDate = new Date();
     private long totalReceivers;
 
+    private long appOpenCounter;
+    private Date firstOpenDate;
+    private Date lastOpenDate;
+
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
     /**
@@ -111,6 +115,45 @@ public class PushMessageInformation extends BaseModel {
 
     public void setTotalReceivers(long totalReceivers) {
         this.totalReceivers = totalReceivers;
+    }
+
+    /**
+     * The number of time this Push Application was opened after a Push Notification
+     *
+     * @return the number of time this Push Application was opened after a Push Notification
+     */
+    public long getAppOpenCounter() {
+        return appOpenCounter;
+    }
+
+    public void setAppOpenCounter(long appOpenCounter) {
+        this.appOpenCounter = appOpenCounter;
+    }
+
+    /**
+     * The date of the first time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the first time this Push Application was opened after a Push Notification
+     */
+    public Date getFirstOpenDate() {
+        return firstOpenDate;
+    }
+
+    public void setFirstOpenDate(Date firstOpenDate) {
+        this.firstOpenDate = firstOpenDate;
+    }
+
+    /**
+     * The date of the last time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the last time this Push Application was opened after a Push Notification
+     */
+    public Date getLastOpenDate() {
+        return lastOpenDate;
+    }
+
+    public void setLastOpenDate(Date lastOpenDate) {
+        this.lastOpenDate = lastOpenDate;
     }
 
     public void addVariantInformations(VariantMetricInformation variantMetricInformation) {

@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+
 /**
  * A simple Callback interface used when sending {@link org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage} to
  * an actual push network.
@@ -35,4 +37,6 @@ public interface NotificationSenderCallback {
      * underlying push network.
      */
     void onError(String reason);
+
+    PushMessageInformation getPushMessageInformation();
 }
