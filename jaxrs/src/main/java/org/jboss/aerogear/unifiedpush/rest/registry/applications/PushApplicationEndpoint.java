@@ -86,7 +86,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications(@QueryParam("page") Integer page,
-                                            @QueryParam("per_page") Integer pageSize) {
+                                            @QueryParam("per_page") Integer pageSize,
+                                            @QueryParam("includeDeviceCount") @DefaultValue("false") boolean includeDeviceCount,
+                                            @QueryParam("includeActivity")    @DefaultValue("false") boolean includeActivity) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -98,7 +100,17 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         final PageResult<PushApplication> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
-        return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
+        ResponseBuilder response = Response.ok(pageResult.getResultList());
+        response.header("total", pageResult.getCount());
+        for (PushApplication app : pageResult.getResultList()) {
+            if (includeActivity) {
+                putActivityIntoResponseHeaders(app, response);
+            }
+            if (includeDeviceCount) {
+                putDeviceCountIntoResponseHeaders(app, response);
+            }
+        }
+        return response.build();
     }
 
     @GET
