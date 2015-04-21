@@ -58,8 +58,8 @@ angular.module('ups.directives', ['upsConsole.services'])
       },
       restrict: 'E',
       template:
-        '<span ng-show="count > 0"><strong>{{count}}</strong> {{ noun }}<span ng-show="count > 1">s</span></span>' +
-        '<span ng-show="count == 0">{{zero ? zero : "No"}} {{ noun }}s</span>'
+      '<span class="ups-pluralize" ng-if="count > 0"><span class="count">{{ count }}</span> {{ noun }}{{ count > 1 ? "s" : "" }}</span>' +
+      '<span class="ups-pluralize zero" ng-if="count == 0"><span class="count">{{ zero == null ? "0" : zero }}</span> {{ noun }}s</span>'
     };
   })
 

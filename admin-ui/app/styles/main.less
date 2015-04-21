@@ -89,7 +89,7 @@
   margin: 0;
   .clearfix();
 
-  span{
+  span.count {
     display: block;
     font-size: @font-size-h1;
     line-height: normal;
@@ -359,6 +359,12 @@ h2 span{
     text-align: center;
     width: 50px;
     text-transform: capitalize;
+  }
+
+  .list-inline {
+    span.count {
+      font-weight: bold;
+    }
   }
 
 }// ups media stream

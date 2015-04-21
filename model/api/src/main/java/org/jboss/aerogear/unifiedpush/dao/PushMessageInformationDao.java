@@ -69,7 +69,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Filters the three most recent PushMessageInformation objects
      */
-    List<PushMessageInformation> findLastThreeActivity(String loginName);
+    List<PushMessageInformation> findLatestActivity(String loginName, int maxResults);
 
     /**
      * Delete all Push Message Information entries that are older than the given date
@@ -78,8 +78,6 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
 
     //Admin queries
     List<String> findVariantIDsWithWarnings();
-
-    List<PushMessageInformation> findLastThreeActivity();
-
+    List<PushMessageInformation> findLatestActivity(int maxResults);
     long getNumberOfPushMessagesForApplications();
 }

@@ -1,21 +1,29 @@
 angular.module('upsConsole')
-  .controller('AppDetailController', function( $http, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, ContextProvider ) {
+  .controller('AppDetailController', function( $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider ) {
 
     var self = this;
 
     this.app = null; // is retrieved in canActivate
+    this.notifications = null; // is retrieved in canActivate
     this.tab = $routeParams.tab;
+
 
     this.contextPath = ContextProvider.contextPath();
 
     this.canActivate = function() {
-      return applicationsEndpoint.getWithMetrics({appId: $routeParams.app})
-        .then(function( app ) {
-          self.app = app;
-          if ( !app.variants.length ) {
-            self.tab = 'variants';
-          }
-        });
+      return $q.all([
+        applicationsEndpoint.getWithMetrics({appId: $routeParams.app})
+          .then(function( app ) {
+            self.app = app;
+            if ( !app.variants.length ) {
+              self.tab = 'variants';
+            }
+          }),
+        metricsEndpoint.fetchApplicationMetrics($routeParams.app, 1)
+          .then(function( data ) {
+            self.notifications = data.pushMetrics;
+          })
+      ]);
     };
 
     this.sendNotification = function() {
@@ -51,6 +59,8 @@ angular.module('upsConsole')
 
             messageSenderEndpoint( self.app.pushApplicationID, self.app.masterSecret ).send({}, $scope.pushData)
               .then(function() {
+                self.app.$messageCount += 1;
+                self.notifications.unshift({ submitDate: new Date().getTime() });
                 $modalInstance.close();
               });
           };

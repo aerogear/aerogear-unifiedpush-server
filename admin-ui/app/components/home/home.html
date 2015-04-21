@@ -49,9 +49,9 @@
               <h2 class="media-heading">{{ app.name }} <small></small></h2>
               <ul class="list-inline">
                 <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
-                <li><i class="fa fa-code-fork"></i> <strong>{{ app.variants.length }}</strong> variants</li>
-                <li><span class="pficon pficon-messages"></span> <strong>???</strong> notifications delivered</li>
-                <li><i class="fa fa-mobile"></i> <strong>???</strong> devices registered</li>
+                <li><i class="fa fa-code-fork"></i> <ups-pluralize noun="variant" count="app.variants.length"></ups-pluralize></li>
+                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="notification" count="app.$messageCount"></ups-pluralize> delivered</li>
+                <li><i class="fa fa-mobile"></i> <ups-pluralize noun="device" count="app.$deviceCount"></ups-pluralize> registered</li>
               </ul>
 
             </div>
@@ -78,34 +78,19 @@
         <h2 class="h5">General Statistics</h2>
       </div>
       <ul class="list-unstyled ups-statistics">
-        <li><span>6</span>Apps</li>
-        <li><span>725</span>Delivered</li>
-        <li><span>92</span>Devices</li>
+        <li><ups-pluralize noun="App" count="home.stats.applications"></ups-pluralize></li>
+        <li><span class="count">{{ home.stats.messages }}</span>Delivered</li>
+        <li><ups-pluralize noun="Device" count="home.stats.devices"></ups-pluralize></li>
       </ul>
-
-
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <h2 class="h5">Latest Notifications</h2>
       </div>
       <div class="list-group">
-        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
-          <h3 class="list-group-item-heading">Application One</h3>
-          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
+        <a ng-link="appDetail({app: notification.id, tab: 'variants'})" class="list-group-item" ng-repeat="notification in home.topNotifications | limitTo:4">
+          <h3 class="list-group-item-heading">{{ notification.name }}</h3>
+          <p class="list-group-item-text">{{ notification.submittedDate | date:'d MMM, H:mm:ss, yyyy' }}</p>
         </a>
-        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
-          <h3 class="list-group-item-heading">Application One</h3>
-          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
-        </a>
-        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
-          <h3 class="list-group-item-heading">Best App ever</h3>
-          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
-        </a>
-        <a ng-link="appDetail({app: '123', tab: 'activity'})" class="list-group-item">
-          <h3 class="list-group-item-heading">Application One</h3>
-          <p class="list-group-item-text">29 Dec, 12:12:30, 2014</p>
-        </a>
-
       </div>
       <!--           <p><a href="#"><span class="pficon pficon-history"></span> See all notifications</a></p> -->
     </div><!-- /col -->

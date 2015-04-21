@@ -7,9 +7,20 @@ upsServices.factory('applicationsEndpoint', function ($resource, $q) {
     appId: '@appId'
   }, {
     get: {
-      method: 'GET'
+      method: 'GET',
+      params: {
+        includeDeviceCount: true,
+        includeActivity: true
+      }
     },
-    query: {method: 'GET', isArray: true},
+    list: {
+      method: 'GET',
+      isArray: true,
+      params: {
+        includeDeviceCount: true,
+        includeActivity: true
+      }
+    },
     create: {
       method: 'POST'
     },
@@ -29,17 +40,20 @@ upsServices.factory('applicationsEndpoint', function ($resource, $q) {
     },
     fetch: function(pageNo) {
       var deferred = $q.defer();
-      this.query({page: pageNo - 1, per_page: 8}, function (data, responseHeaders) {
-        deferred.resolve({
-          apps: data,
+      this.list({page: pageNo - 1, per_page: 8}, function (apps, responseHeaders) {
+        var result = {
+          apps: apps,
           totalItems: responseHeaders('total')
+        };
+        apps.forEach(function(app) {
+          app.$messageCount = parseInt(responseHeaders('activity_app_' + app.pushApplicationID), 10);
+          app.$deviceCount = parseInt(responseHeaders('deviceCount_app_' + app.pushApplicationID), 10);
         });
+        deferred.resolve( result );
       });
       return deferred.promise;
     },
     getWithMetrics: function(params) {
-      params.includeDeviceCount = true;
-      params.includeActivity = true;
       var deferred = $q.defer();
       this.get(params, function (app, responseHeaders) {
         app.$messageCount = parseInt(responseHeaders('activity_app_' + app.pushApplicationID), 10);
