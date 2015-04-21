@@ -16,6 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
@@ -30,12 +37,6 @@ import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Implementation of the <code>PushSearchService</code> internally used for 'developer' role,
@@ -112,8 +113,8 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
      * Loads all the Variant objects with the most received messages
      */
     @Override
-    public List<Application> getTopThreeLastActivity() {
-        return wrapApplication(pushMessageInformationDao.findLastThreeActivity(loginName.get()));
+    public List<Application> getLatestActivity(int maxResults) {
+        return wrapApplication(pushMessageInformationDao.findLatestActivity(loginName.get(), maxResults));
     }
 
     @Override

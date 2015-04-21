@@ -188,7 +188,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void findMostBusyVariants() {
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLastThreeActivity("admin");
+        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
     }
 
@@ -196,7 +196,7 @@ public class PushMessageInformationDaoTest {
     public void findMostBusyVariantsForOnlyTwo() {
         final PushMessageInformation pushMessageInformation = pushMessageInformationDao.find("3");
         entityManager.remove(pushMessageInformation);
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLastThreeActivity("admin");
+        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(2);
 
     }

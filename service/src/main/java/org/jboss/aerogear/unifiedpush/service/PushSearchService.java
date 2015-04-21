@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.util.List;
+
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-
-import java.util.List;
 
 /**
  * Base of the implementation for the admin/developer view
@@ -57,9 +57,9 @@ public interface PushSearchService {
     List<ApplicationVariant> getVariantsWithWarnings();
 
     /**
-     * Loads all the Variant objects with the most received messages
+     * Loads all the Variant objects with the most recent received messages
      */
-    List<Application> getTopThreeLastActivity();
+    List<Application> getLatestActivity(int maxResults);
 
 
     /**
