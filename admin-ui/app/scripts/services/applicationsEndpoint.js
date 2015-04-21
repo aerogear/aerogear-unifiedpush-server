@@ -49,7 +49,6 @@ upsServices.factory('applicationsEndpoint', function ($resource, $q) {
           app.$messageCount = parseInt(responseHeaders('activity_app_' + app.pushApplicationID), 10);
           app.$deviceCount = parseInt(responseHeaders('deviceCount_app_' + app.pushApplicationID), 10);
         });
-        console.log(result);
         deferred.resolve( result );
       });
       return deferred.promise;
