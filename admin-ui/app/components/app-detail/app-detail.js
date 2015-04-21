@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('AppDetailController', function( $q, $http, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider ) {
+  .controller('AppDetailController', function( $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider ) {
 
     var self = this;
 

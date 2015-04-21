@@ -49,9 +49,9 @@
               <h2 class="media-heading">{{ app.name }} <small></small></h2>
               <ul class="list-inline">
                 <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
-                <li><i class="fa fa-code-fork"></i> <strong>{{ app.variants.length }}</strong> variants</li>
-                <li><span class="pficon pficon-messages"></span> <strong>{{ app.$messageCount }}</strong> notifications delivered</li>
-                <li><i class="fa fa-mobile"></i> <strong>{{ app.$deviceCount }}</strong> devices registered</li>
+                <li><i class="fa fa-code-fork"></i> <ups-pluralize noun="variant" count="app.variants.length"></ups-pluralize></li>
+                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="notification" count="app.$messageCount"></ups-pluralize> delivered</li>
+                <li><i class="fa fa-mobile"></i> <ups-pluralize noun="device" count="app.$deviceCount"></ups-pluralize> registered</li>
               </ul>
 
             </div>
