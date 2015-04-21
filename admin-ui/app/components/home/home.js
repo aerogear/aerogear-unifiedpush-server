@@ -1,19 +1,31 @@
 angular.module('upsConsole')
-  .controller('HomeController', function( $modal, applicationsEndpoint, $router ) {
+  .controller('HomeController', function( $q, $modal, $router, applicationsEndpoint, dashboardEndpoint ) {
 
     var self = this;
 
     this.apps = [];
+    this.stats = {};
+    this.topNotifications = [];
 
     this.canActivate = function() {
       this.currentPage = 1;
-      return self.fetchNewPage(1).then(function() {
-        console.log(self.totalItems);
-        if (self.totalItems < 1) {
-          $router.parent.navigate('/welcome');
-          return false;
-        }
-      });
+      return $q.all([
+        self.fetchNewPage(1)
+          .then(function() {
+            if (self.totalItems < 1) {
+              $router.parent.navigate('/welcome');
+              return false;
+            }
+          }),
+        dashboardEndpoint.totals()
+          .then(function( data ) {
+            self.stats = data;
+          }),
+        dashboardEndpoint.topThree()
+          .then(function( data ) {
+            self.topNotifications = data;
+          })
+      ]);
     };
 
     this.pageChanged = function(page) {
