@@ -19,9 +19,12 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
 
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,7 +62,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setDeviceToken(deviceToken);
         clientInstallationService.addInstallation(androidVariant, device);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
 
         // apply some update:
         Installation otherDevice = new Installation();
@@ -67,7 +70,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         otherDevice.setAlias("username");
 
         clientInstallationService.addInstallation(androidVariant, otherDevice);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
     }
 
     @Test
@@ -77,7 +80,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setDeviceToken(deviceToken);
         clientInstallationService.addInstallation(androidVariant, device);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
 
         // apply some update:
         Installation sameDeviceDifferentRegistration = new Installation();
@@ -85,7 +88,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         sameDeviceDifferentRegistration.setAlias("username");
 
         clientInstallationService.addInstallation(androidVariant, sameDeviceDifferentRegistration);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
     }
 
     @Test
@@ -115,7 +118,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         clientInstallationService.addInstallations(androidVariant, devices);
 
         // but they got ignored:
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
 
         // add just one device:
         device = new Installation();
@@ -124,7 +127,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         // run the importer again
         clientInstallationService.addInstallations(androidVariant, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
     }
 
     @Test
@@ -134,11 +137,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setDeviceToken(generateFakedDeviceTokenString());
 
         clientInstallationService.addInstallation(androidVariant, device);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(1);
 
         final String singleToken = device.getDeviceToken();
         clientInstallationService.removeInstallationForVariantByDeviceToken(androidVariant.getVariantID(), singleToken);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).isEmpty();
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).isEmpty();
     }
 
     @Test
@@ -154,7 +157,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         }
 
         clientInstallationService.addInstallations(androidVariant, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
 
         // add just one device:
         Installation device = new Installation();
@@ -163,7 +166,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         // run the importer again
         clientInstallationService.addInstallations(androidVariant, devices);
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS + 1);
     }
 
     @Test
@@ -180,7 +183,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         clientInstallationService.addInstallations(androidVariant, devices);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(NUMBER_OF_INSTALLATIONS);
     }
 
     @Test
@@ -195,7 +198,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         clientInstallationService.addInstallation(androidVariant, device);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);
     }
 
     @Test
@@ -211,7 +214,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         clientInstallationService.addInstallation(androidVariant, device);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
     }
 
     @Test
@@ -235,7 +238,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setCategories(categories);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
+        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
 
         assertThat(queriedTokens).hasSize(2);
         assertThat(queriedTokens).contains(
@@ -265,7 +268,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setCategories(categories);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens =clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
+        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
 
         assertThat(queriedTokens).hasSize(3);
         assertThat(queriedTokens).contains(
@@ -296,7 +299,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setCategories(categories);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens =clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
+        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
 
         assertThat(queriedTokens).hasSize(3);
         assertThat(queriedTokens).contains(
@@ -321,7 +324,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         otherDevice.setAlias("root");
         clientInstallationService.addInstallation(androidVariant, otherDevice);
 
-        assertThat(clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
     }
 
 
@@ -332,6 +335,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         sb.append(UUID.randomUUID().toString());
         sb.append(UUID.randomUUID().toString());
         return sb.toString();
+    }
+
+    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        try {
+            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            List<String> list = new ArrayList<String>();
+            while (tokenStream.next()) {
+                list.add(tokenStream.get());
+            }
+            return list;
+        } catch (ResultStreamException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.windows;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
  * as is the badge number for badge notifications. Only specific windows settings are put in this part of the message
  * and ignored by other message senders.
  */
-public class Windows {
+public class Windows implements Serializable {
     private Type type;
     private DurationType duration;
     private BadgeType badge;

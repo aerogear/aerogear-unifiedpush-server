@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -29,8 +30,8 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -90,7 +91,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             return;
         }
 
-        Set<String> existingTokens = new HashSet<String>(findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, null, null));
+        Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getVariantID());
 
         // clear out:
         installationDao.flushAndClear();
@@ -199,8 +200,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android, iOS and SimplePush clients
      */
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes);
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch);
     }
 
     /**

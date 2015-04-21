@@ -18,16 +18,17 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Simple class, containing all "query criteria" options for a message,
  * that has been sent to the Send-HTTP endpoint.
- * 
+ *
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class Criteria {
+public class Criteria implements Serializable {
 
     @JsonProperty("alias")
     private List<String> aliases;
@@ -49,7 +50,7 @@ public class Criteria {
     }
 
     /**
-     * Returns a list of device types that will receive a push notification. 
+     * Returns a list of device types that will receive a push notification.
      */
     public List<String> getDeviceTypes() {
         return deviceTypes;
@@ -60,7 +61,7 @@ public class Criteria {
     }
 
     /**
-     * Returns a category that will receive a push notification. 
+     * Returns a category that will receive a push notification.
      */
     public List<String> getCategories() {
         return categories;
@@ -71,7 +72,7 @@ public class Criteria {
     }
 
     /**
-     * Returns a list of variant IDs that will receive a push notification. 
+     * Returns a list of variant IDs that will receive a push notification.
      */
     public List<String> getVariants() {
         return variants;

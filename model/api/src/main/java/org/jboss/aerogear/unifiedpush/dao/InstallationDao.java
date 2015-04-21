@@ -38,7 +38,9 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * Query all tokens for the given variant, by respecting a few criteria arguments (categories, aliases and deviceTypes)
      */
-    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
+    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+
+    Set<String> findAllDeviceTokenForVariantID(String variantID);
 
     /**
      * Find all installations for the variant specified and for the authneticated user.

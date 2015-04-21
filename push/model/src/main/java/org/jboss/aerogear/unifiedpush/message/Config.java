@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -24,7 +26,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class Config {
+public class Config implements Serializable {
     @JsonProperty("ttl")
     private int timeToLive = -1;
 
