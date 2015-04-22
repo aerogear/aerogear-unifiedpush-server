@@ -116,6 +116,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             // apply update:
             iOSVariant.setName(updatediOSVariant.getName());
             iOSVariant.setDescription(updatediOSVariant.getDescription());
+            iOSVariant.setProduction(updatediOSVariant.isProduction());
 
             variantService.updateVariant(iOSVariant);
             return Response.noContent().build();

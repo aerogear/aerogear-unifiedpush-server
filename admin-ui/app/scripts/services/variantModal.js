@@ -63,12 +63,13 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
             if (variant.type !== 'ios') {
               promise = variantsEndpoint.update(endpointParams, variantData);
             } else {
-              if (variant.certificate) {
+              if (variant.certificates.length > 0) {
                 promise = variantsEndpoint.updateWithFormData(endpointParams, variantData);
               } else {
                 promise = variantsEndpoint.patch(endpointParams, {
                   name: variant.name,
-                  description: variant.description
+                  description: variant.description,
+                  production: variant.production
                 });
               }
             }
@@ -83,9 +84,16 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           };
 
           $scope.validateFileInputs = function () {
-            switch ($scope.variant.type) {
-            case 'ios':
-              return $scope.variant.certificates.length > 0;
+            if ($scope.variant.type === 'ios') {
+              if (!$scope.variant.id) {
+                // for new variant
+                return $scope.variant.certificates.length > 0 && !!variant.passphrase; // we must enter certificate and passphrase
+              } else {
+                // for existing variant...
+                if ($scope.variant.certificates.length > 0) { // if there is a certificate selected
+                  return !!variant.passphrase; // we must provide a passphase
+                }
+              }
             }
             return true;
           };
@@ -110,7 +118,7 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
       properties = properties.concat(['production', 'passphrase', 'certificate']);
       var formData = new FormData();
       properties.forEach(function (property) {
-        formData.append(property, variant[property] || '');
+        formData.append(property, variant[property] === undefined ? '' : variant[property]);
       });
       return formData;
     case 'windows':
