@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint ) {
+  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications ) {
 
     var self = this;
 
@@ -29,6 +29,10 @@ angular.module('upsConsole')
           variant.$messageCount = 0;
           self.app.variants.push( variant );
           self.byType = splitByType( self.app.variants );
+          Notifications.success('Variant ' + variant.name + ' successfully created');
+        })
+        .catch(function() {
+          Notifications.error('Failed to create variant ' + variant.name);
         });
     };
 
@@ -40,6 +44,10 @@ angular.module('upsConsole')
             return v.variantID === variant.variantID;
           })[0];
           angular.extend(variantToUpdate, variant);
+          Notifications.success('Variant ' + variant.name + ' was successfully modified');
+        })
+        .catch(function() {
+          Notifications.error('Failed to create variant ' + variant.name);
         });
     };
 
