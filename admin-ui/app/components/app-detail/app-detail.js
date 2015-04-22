@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('AppDetailController', function( $http, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, ContextProvider ) {
+  .controller('AppDetailController', function( $rootScope, $http, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, ContextProvider ) {
 
     var self = this;
 
@@ -52,6 +52,7 @@ angular.module('upsConsole')
             messageSenderEndpoint( self.app.pushApplicationID, self.app.masterSecret ).send({}, $scope.pushData)
               .then(function() {
                 $modalInstance.close();
+                $rootScope.$broadcast('upsNotificationSent', $scope.pushData, $scope.app);
               });
           };
 

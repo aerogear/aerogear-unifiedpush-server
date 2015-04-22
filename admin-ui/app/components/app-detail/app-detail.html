@@ -23,7 +23,7 @@
       <ng-include src="'components/app-detail/include/blank.html'" ng-if="appDetail.tab == 'variants' && !appDetail.app.variants.length" ng-controller="VariantsController as variants"></ng-include>
       <ng-include src="'components/app-detail/include/variants.html'" ng-if="appDetail.tab == 'variants' && appDetail.app.variants.length" ng-controller="VariantsController as variants"></ng-include>
       <ng-include src="'components/app-detail/include/sender.html'" ng-if="appDetail.tab == 'sender'" ng-controller="SenderController as sender"></ng-include>
-      <ng-include src="'components/app-detail/include/activity.html'" ng-if="appDetail.tab == 'activity'"></ng-include>
+      <ng-include src="'components/app-detail/include/activity.html'" ng-if="appDetail.tab == 'activity'" ng-controller="ActivityController as activity"></ng-include>
     </div><!-- /col -->
 
     <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">

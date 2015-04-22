@@ -360,9 +360,19 @@ h2 span{
     width: 50px;
     text-transform: capitalize;
   }
-
 }// ups media stream
 
+
+// table =====================================================
+.dataTables_footer{
+  padding: 5px;
+}
+.datatable{
+  width: 100%!important;
+ td[colspan="6"]{
+   padding: 11px 10px 1px 10px;
+ }
+}
 
 //app options ============================================================
 
@@ -425,19 +435,6 @@ h2 span{
   .ups-variant-header h4{
     color: @gray-light;
   }
-  //  .ups-variant-body{
-  //    &:before{
-  //      background: rgba(255,255,255,.6);
-  //      bottom: 0;
-  //      content: ".";
-  //      left: 0;
-  //      position: absolute;
-  //      right: 0;
-  //      text-indent: -99999px;
-  //      top:0;
-  //      z-index: 99999;
-  //    }
-  //  }
 }
 
 .ups-variant-body{
@@ -466,7 +463,6 @@ h2 span{
     line-height: 40px;
     margin-right: 10px;
   }
-
 }
 
 .ups-main-action{
@@ -512,6 +508,8 @@ h2 span{
 .ups-variant-ios:before, .ups-variant-ios span:before{background-position:                   center -40px}
 .ups-variant-chrome:before, .ups-variant-chrome span:before{background-position:             center -80px}
 .ups-variant-windows:before, .ups-variant-windows span:before{background-position:           center -120px}
+.ups-variant-windows_mpns:before, .ups-variant-windows_mpns span:before{background-position:           center -120px}
+.ups-variant-windows_wns:before, .ups-variant-windows_wns span:before{background-position:           center -120px}
 .ups-variant-simplePush:before, .ups-variant-simplePush span:before{background-position:             center -160px}
 .ups-variant-adm:before, .ups-variant-adm span:before{background-position:             center -200px}
 

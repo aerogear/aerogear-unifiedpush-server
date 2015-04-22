@@ -12,10 +12,14 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           $scope.variant.certificates = []; // initialize file list for upload
 
           $scope.confirm = function () {
-            variantsEndpoint.create({
+            var variantData = extractValidVariantData($scope.variant);
+
+            var createFunction = (variantData instanceof FormData) ? variantsEndpoint.createWithFormData : variantsEndpoint.create;
+
+            createFunction({
               appId: app.pushApplicationID,
-              variantType: $scope.variant.type
-            }, extractValidVariantData($scope.variant))
+              variantType: extractVariantType($scope.variant)
+            }, variantData)
               .then(function (variant) {
                 $modalInstance.close(variant);
               })
@@ -51,7 +55,7 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           $scope.confirm = function () {
             var endpointParams = {
               appId: app.pushApplicationID,
-              variantType: $scope.variant.type,
+              variantType: extractVariantType($scope.variant),
               variantId: variant.variantID
             };
             var variantData = extractValidVariantData($scope.variant);
@@ -59,12 +63,13 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
             if (variant.type !== 'ios') {
               promise = variantsEndpoint.update(endpointParams, variantData);
             } else {
-              if (variant.certificate) {
+              if (variant.certificates.length > 0) {
                 promise = variantsEndpoint.updateWithFormData(endpointParams, variantData);
               } else {
                 promise = variantsEndpoint.patch(endpointParams, {
                   name: variant.name,
-                  description: variant.description
+                  description: variant.description,
+                  production: variant.production
                 });
               }
             }
@@ -79,9 +84,16 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           };
 
           $scope.validateFileInputs = function () {
-            switch ($scope.variant.type) {
-            case 'ios':
-              return $scope.variant.certificates.length > 0;
+            if ($scope.variant.type === 'ios') {
+              if (!$scope.variant.id) {
+                // for new variant
+                return $scope.variant.certificates.length > 0 && !!variant.passphrase; // we must enter certificate and passphrase
+              } else {
+                // for existing variant...
+                if ($scope.variant.certificates.length > 0) { // if there is a certificate selected
+                  return !!variant.passphrase; // we must provide a passphase
+                }
+              }
             }
             return true;
           };
@@ -106,12 +118,15 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
       properties = properties.concat(['production', 'passphrase', 'certificate']);
       var formData = new FormData();
       properties.forEach(function (property) {
-        formData.append(property, variant[property] || '');
+        formData.append(property, variant[property] === undefined ? '' : variant[property]);
       });
       return formData;
     case 'windows':
-      variant.type = variant.type + '_' + variant.protocolType;
-      properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
+      if (variant.protocolType === 'wns') {
+        properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
+      } else {
+        properties = properties.concat(['protocolType']);
+      }
       break;
     case 'windows_wns':
       result.protocolType = 'wns';
@@ -131,6 +146,15 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
       result[property] = variant[property];
     });
     return result;
+  }
+
+  function extractVariantType( variant ) {
+    switch(variant.type) {
+    case 'windows':
+      return 'windows_' + variant.protocolType;
+    default:
+      return variant.type;
+    }
   }
 
   return service;
