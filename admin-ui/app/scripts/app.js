@@ -8,6 +8,7 @@
     'ngResource',
     'ngNewRouter',
     'ngAnimate',
+    'ngIdle',
     'ui.bootstrap',
     'ups.directives'
   ]);
@@ -40,7 +41,7 @@
   });
 
   app.run(function($rootScope) {
-    // allow to retrieve $rootScope in views (for claritication of access scope)
+    // allow to retrieve $rootScope in views (for clarification of access scope)
     $rootScope.$rootScope = $rootScope;
   });
 
