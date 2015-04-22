@@ -10,7 +10,8 @@
     'ngAnimate',
     'ngIdle',
     'ui.bootstrap',
-    'ups.directives'
+    'ups.directives',
+    'patternfly.notification'
   ]);
 
   /**

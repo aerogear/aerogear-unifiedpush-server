@@ -42,18 +42,32 @@
   You will be logged off in {{ idle.idleCountdown }}&nbsp;seconds due to inactivity.
 </div>
 
-<!--<div class="ups-main-warning">-->
-  <!--<div class="alert alert-warning alert-dismissable">-->
-    <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">-->
-      <!--<span class="pficon pficon-close"></span>-->
-    <!--</button>-->
-            <!--<span class="pficon-layered">-->
-              <!--<span class="pficon pficon-warning-triangle"></span>-->
-              <!--<span class="pficon pficon-warning-exclamation"></span>-->
-            <!--</span>-->
-    <!--<strong>Main console alerts goes here!</strong> We are not really sure, but <a href="#" class="alert-link">it might be bad</a>.-->
-  <!--</div>-->
-<!--</div>&lt;!&ndash; ups main warning&ndash;&gt;-->
+<div class="ups-main-warning ng-cloak">
+  <div class="row" ng-repeat="notification in notifications.data" data-ng-show="notifications.data.length > 0">
+    <div class="alert alert-{{notification.type}} alert-dismissable" ng-click="notifications.remove($index)" style="margin-bottom:1em">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+        <span class="pficon pficon-close"></span>
+      </button>
+      <span class="pficon pficon-ok" ng-show="notification.type == 'success'"></span>
+      <span class="pficon pficon-info" ng-show="notification.type == 'info'"></span>
+                <span class="pficon-layered" ng-show="notification.type == 'danger'">
+                    <span class="pficon pficon-error-octagon"></span>
+                    <span class="pficon pficon-error-exclamation"></span>
+                </span>
+                <span class="pficon-layered" ng-show="notification.type == 'warning'">
+                    <span class="pficon pficon-warning-triangle"></span>
+                    <span class="pficon pficon-warning-exclamation"></span>
+                </span>
+      <strong>{{notification.header}}</strong> {{notification.message}}
+    </div>
+  </div>
+  <div class="row" ng-show="app.havePendingRequests()">
+    <div class="alert alert-info" style="margin-bottom:1em">
+      <span class="pficon spinner spinner-sm spinner-inline" style="top: 8px; left: 8px;"></span>
+      <strong>Processing...</strong>
+    </div>
+  </div>
+</div>
 
 
 
@@ -113,7 +127,7 @@
 </nav>
 
 
-<ng-viewport></ng-viewport>
+<ng-viewport ng-controller="RouteController"></ng-viewport>
 
 
 <!-- build:js scripts/modules.js -->
@@ -125,6 +139,7 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 
 <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
+<script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/ng-idle/angular-idle.js"></script>
 <!-- endbuild -->
@@ -136,6 +151,8 @@
 <script src="scripts/decorators/$resourceDecorator.js"></script>
 <script src="scripts/router.js"></script>
 <script src="scripts/idleService.js"></script>
+
+<script src="scripts/controllers/AppController.js"></script>
 
 <script src="components/home/home.js"></script>
 <script src="components/app-detail/app-detail.js"></script>
@@ -154,6 +171,7 @@
 <script src="scripts/services/metricsEndpoint.js"></script>
 <script src="scripts/services/dashboardEndpoint.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
+<script src="scripts/services/errorReporting.js"></script>
 <script src="scripts/directives.js"></script>
 <!-- endbuild -->
 

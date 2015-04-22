@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('AppController', function($router) {
+  .controller('RouteController', function($router) {
     $router.config([
       {path: '/',                     component: 'home'},
       {path: '/welcome',              component: 'welcome'},
