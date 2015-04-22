@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.unifiedpush.message.jms;
 
-package org.jboss.aerogear.unifiedpush.message;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import javax.inject.Qualifier;
 
-public interface SenderService {
-
-    /**
-     * Sends the given message/payload to ALL installations of the variants, matching the given criterias.
-     * 
-     * @param pushApplication the root target for all installations being notified 
-     * @param payload the payload to be sent
-     */
-    void send(PushApplication pushApplication, UnifiedPushMessage payload);
+/**
+ * Denotes an event with message that will be dispatched to JMS queue
+ */
+@Qualifier
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DispatchToQueue {
 }

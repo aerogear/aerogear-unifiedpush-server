@@ -81,11 +81,16 @@
                 Here we use
                 the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
             <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
                 <version>${jboss-javaee-6.0.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>4.2.15.Final</version>
             </dependency>
 
             <!-- AeroGear Dependencies BOM Imports -->
@@ -156,7 +161,7 @@
 
         <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
             version defined by this BOM -->
-        <jboss-javaee-6.0.version>3.0.2.Final</jboss-javaee-6.0.version>
+        <jboss-javaee-6.0.version>1.0.7.Final</jboss-javaee-6.0.version>
 
         <!--
             Options to override the compiler arguments directly on the compiler arument line to separate between what

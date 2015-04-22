@@ -21,7 +21,7 @@ The following steps are needed to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
-* Start the {Wildfly|EAP 6.3} server (e.g. ``$JBOSS/bin/standalone.sh -b 0.0.0.0``)
+* Start the {Wildfly|EAP 6.3} server (e.g. ``$JBOSS/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0``)
 * Deploy the two `WAR` files to the [server](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#deploy)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.

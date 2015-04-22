@@ -16,15 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+
 /**
  * Service class used by the Server to work with Installations
- * for the different Variants. 
+ * for the different Variants.
  */
 public interface ClientInstallationService {
 
@@ -78,7 +79,7 @@ public interface ClientInstallationService {
 
     /**
      * Used for "Device Registration":
-     * 
+     *
      * Finder that returns the actual client installation, identified by its device-token, for the given variant.
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
@@ -88,6 +89,6 @@ public interface ClientInstallationService {
     /**
      * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria
      */
-    List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);
+    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
 }
