@@ -4,15 +4,15 @@
 
    AGDeviceRegistration *registration =
      [[AGDeviceRegistration alloc] initWithServerURL:
-        [NSURL URLWithString:@"{{ exampleCtrl.currentLocation }}"]];
+        [NSURL URLWithString:@"{{ contextPath }}"]];
 
    [registration registerWithClientInfo:^(id clientInfo) {
 
      // apply the token, to identify this device
      [clientInfo setDeviceToken:deviceToken];
 
-     [clientInfo setVariantID:@"{{ exampleCtrl.variant.variantID }}"];
-     [clientInfo setVariantSecret:@"{{ exampleCtrl.variant.secret }}"];
+     [clientInfo setVariantID:@"{{ variant.variantID }}"];
+     [clientInfo setVariantSecret:@"{{ variant.secret }}"];
 
      // --optional config--
      // set some 'useful' hardware information params

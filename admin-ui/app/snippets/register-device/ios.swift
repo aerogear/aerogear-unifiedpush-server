@@ -1,15 +1,15 @@
 func application(application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
     println("APNS Success")
 
-    let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ exampleCtrl.currentLocation }}"))
+    let registration = AGDeviceRegistration(serverURL: NSURL(string: "{{ contextPath }}"))
 
     registration.registerWithClientInfo({ (clientInfo: AGClientDeviceInformation!)  in
 
         // apply the token, to identify this device
         clientInfo.deviceToken = deviceToken
 
-        clientInfo.variantID = "{{ exampleCtrl.variant.variantID }}"
-        clientInfo.variantSecret = "{{ exampleCtrl.variant.secret }}"
+        clientInfo.variantID = "{{ variant.variantID }}"
+        clientInfo.variantSecret = "{{ variant.secret }}"
 
         // --optional config--
         // set some 'useful' hardware information params
