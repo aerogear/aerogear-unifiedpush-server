@@ -18,7 +18,7 @@
 
 angular.module('upsConsole')
   .controller('AppController',
-      function ( $rootScope, Auth, $http, $log, appConfig ) {
+      function ( $rootScope, $scope, Auth, $http, $log, appConfig ) {
 
     var self = this;
 
@@ -30,7 +30,13 @@ angular.module('upsConsole')
     this.isViewLoading = false;
 
     //Retrieve the current logged in username
-    this.username = Auth.keycloak.idToken.preferred_username;
+    function getUsername() {
+      return Auth.keycloak.idTokenParsed.preferred_username;
+    }
+    this.username = getUsername();
+    $scope.$watch(getUsername, function( newValue ) {
+      self.username = newValue;
+    });
 
     this.logout = function() {
       Auth.logout();

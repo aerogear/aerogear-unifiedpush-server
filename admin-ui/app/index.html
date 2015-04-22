@@ -85,8 +85,8 @@
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">
     <ul class="nav navbar-nav navbar-utility">
-      <li class="dropdown">
-        <a href="#" data-toggle="dropdown">
+      <li class="dropdown" dropdown>
+        <a href dropdown-toggle>
           <span class="pficon pficon-info"></span>
           Warnings: <strong>2</strong>
         </a>
@@ -105,18 +105,18 @@
           <div class="footer"><a href="#">Clear Warnings</a></div>
         </div>
       </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <li class="dropdown" dropdown>
+        <a href class="dropdown-toggle" dropdown-toggle>
           <span class="pficon pficon-user"></span>
-          Brian Johnson <b class="caret"></b>
+          {{ app.username }} <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
           <li>
-            <a href="#">Accont management</a>
+            <a href ng-click="app.goToAccountManagement()">Accont management</a>
           </li>
           <li class="divider"></li>
           <li>
-            <a href="#">Logout</a>
+            <a href ng-click="app.logout()">Logout</a>
           </li>
         </ul>
       </li>
