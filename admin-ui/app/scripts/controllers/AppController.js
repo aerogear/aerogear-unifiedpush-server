@@ -17,17 +17,12 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('AppController',
-      function ( $rootScope, $scope, Auth, $http, $log, appConfig ) {
+  .controller('AppController', function ( $rootScope, $scope, Auth, $http, $interval, $timeout, $log, appConfig, dashboardEndpoint ) {
 
     var self = this;
 
     this.config = appConfig;
-
-    /**
-     * View loading status
-     */
-    this.isViewLoading = false;
+    this.warnings = [];
 
     //Retrieve the current logged in username
     function getUsername() {
@@ -54,10 +49,17 @@ angular.module('upsConsole')
       });
     };
 
-    $rootScope.$on('$routeChangeStart', function () {
-      self.isViewLoading = true;
-    });
-    $rootScope.$on('$routeChangeSuccess', function (event, routeData) {
-      self.isViewLoading = false;
+    // load warnings and update them periodically and when notification is sent
+    function updateWarnings() {
+      dashboardEndpoint.warnings().then(function( warnings ) {
+        self.warnings = warnings;
+      });
+    }
+    updateWarnings();
+    $interval(updateWarnings, 30000);
+    $scope.$on('upsNotificationSent', function() {
+      $timeout(updateWarnings, 1500);
+      $timeout(updateWarnings, 5000);
+      $timeout(updateWarnings, 10000);
     });
   });

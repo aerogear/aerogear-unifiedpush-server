@@ -21,7 +21,7 @@ angular.module('upsConsole')
           .then(function( data ) {
             self.stats = data;
           }),
-        dashboardEndpoint.topThree()
+        dashboardEndpoint.latestActiveApps()
           .then(function( data ) {
             self.topNotifications = data;
           })

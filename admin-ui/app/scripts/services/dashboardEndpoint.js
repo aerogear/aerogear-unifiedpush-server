@@ -14,7 +14,7 @@ upsServices.factory('dashboardEndpoint', function ($resource) {
         verb: 'warnings'
       }
     },
-    topThree: {
+    latestActiveApps: {
       method: 'GET',
       isArray: true,
       params: {

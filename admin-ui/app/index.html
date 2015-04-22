@@ -71,7 +71,7 @@
 
 
 
-<nav class="navbar navbar-default navbar-pf" role="navigation">
+<nav class="navbar navbar-default navbar-pf ng-cloak" role="navigation">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
       <span class="sr-only">Toggle navigation</span>
@@ -88,21 +88,20 @@
       <li class="dropdown" dropdown>
         <a href dropdown-toggle>
           <span class="pficon pficon-info"></span>
-          Warnings: <strong>2</strong>
+          Warnings: <strong>{{ app.warnings.length }}</strong>
         </a>
         <div class="dropdown-menu infotip bottom-right">
           <div class="arrow"></div>
           <ul class="list-group">
-            <li class="list-group-item">
-              <span class="i pficon pficon-info"></span>
-              Added Datasources TestDS
-            </li>
-            <li class="list-group-item">
-              <span class="i pficon pficon-info"></span>
-              Modified Datasources ExampleDS
+            <li class="list-group-item" ng-repeat="warning in app.warnings">
+              <span class="i pficon-layered">
+                  <span class="pficon pficon-warning-triangle"></span>
+                  <span class="pficon pficon-warning-exclamation"></span>
+              </span>
+              <a href ng-link="appDetail({app: warning.applicationID, tab: 'activity'})"><strong>Push failed:</strong> {{ warning.applicationName }}</a>
             </li>
           </ul>
-          <div class="footer"><a href="#">Clear Warnings</a></div>
+          <!--<div class="footer"><a href="#">Clear Warnings</a></div>-->
         </div>
       </li>
       <li class="dropdown" dropdown>
