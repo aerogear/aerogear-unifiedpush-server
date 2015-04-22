@@ -34,6 +34,10 @@ angular.module('upsConsole')
 
     this.onPageChange = function ( page ) {
       fetchMetricsPage( page );
-    }
+    };
+
+    $scope.$on('upsNotificationSent', function( pushData, app ) {
+      fetchMetricsPage( self.currentPage );
+    });
 
   });
