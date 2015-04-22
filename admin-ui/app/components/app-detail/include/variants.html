@@ -54,7 +54,7 @@
           <dt>Google API Key:</dt>
           <dd>
             {{ variant.googleKey }}<br />
-            <button href="#" class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
         <dl class="dl-horizontal" ng-show="variant.type == 'windows_wns'">
@@ -63,14 +63,14 @@
           <dt>Client Secret:</dt>
           <dd>
             {{ variant.clientSecret }}<br />
-            <a href="#" class="btn btn-sm btn-primary"><span class="pficon pficon-refresh"></span> Change network options</a>
+            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
         <dl class="dl-horizontal" ng-show="variant.production != undefined">
           <dt>Type:</dt>
           <dd>
             {{ variant.production ? 'Production' : 'Development' }}<br />
-            <a href="#" class="btn btn-sm btn-primary"><span class="pficon pficon-refresh"></span> Change network options</a>
+            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
         <dl class="dl-horizontal" ng-show="variant.type == 'chrome'">
@@ -81,7 +81,7 @@
           <dt>Refresh Token:</dt>
           <dd>
             {{ variant.refreshToken }}<br />
-            <a href="#" class="btn btn-sm btn-primary"><span class="pficon pficon-refresh"></span> Change network options</a>
+            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
         <dl class="dl-horizontal" ng-show="variant.type == 'adm'">
@@ -90,7 +90,7 @@
           <dt>Client Secret:</dt>
           <dd>
             {{ variant.clientSecret }}<br />
-            <a href="#" class="btn btn-sm btn-primary"><span class="pficon pficon-refresh"></span> Change network options</a>
+            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
 

@@ -12,10 +12,14 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           $scope.variant.certificates = []; // initialize file list for upload
 
           $scope.confirm = function () {
-            variantsEndpoint.create({
+            var variantData = extractValidVariantData($scope.variant);
+
+            var createFunction = (variantData instanceof FormData) ? variantsEndpoint.createWithFormData : variantsEndpoint.create;
+
+            createFunction({
               appId: app.pushApplicationID,
-              variantType: $scope.variant.type
-            }, extractValidVariantData($scope.variant))
+              variantType: extractVariantType($scope.variant)
+            }, variantData)
               .then(function (variant) {
                 $modalInstance.close(variant);
               })
@@ -51,7 +55,7 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
           $scope.confirm = function () {
             var endpointParams = {
               appId: app.pushApplicationID,
-              variantType: $scope.variant.type,
+              variantType: extractVariantType($scope.variant),
               variantId: variant.variantID
             };
             var variantData = extractValidVariantData($scope.variant);
@@ -110,8 +114,11 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
       });
       return formData;
     case 'windows':
-      variant.type = variant.type + '_' + variant.protocolType;
-      properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
+      if (variant.protocolType === 'wns') {
+        properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
+      } else {
+        properties = properties.concat(['protocolType']);
+      }
       break;
     case 'windows_wns':
       result.protocolType = 'wns';
@@ -131,6 +138,15 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
       result[property] = variant[property];
     });
     return result;
+  }
+
+  function extractVariantType( variant ) {
+    switch(variant.type) {
+    case 'windows':
+      return 'windows_' + variant.protocolType;
+    default:
+      return variant.type;
+    }
   }
 
   return service;
