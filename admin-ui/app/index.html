@@ -37,6 +37,11 @@
 </head>
 <body class="app-dashboard" ng-controller="AppController as app">
 
+<div class="idlebox ng-cloak" ng-controller="IdleController as idle"
+     ng-hide="idle.idleCountdown > idle.config.idleWarningDuration">
+  You will be logged off in {{ idle.idleCountdown }}&nbsp;seconds due to inactivity.
+</div>
+
 <!--<div class="ups-main-warning">-->
   <!--<div class="alert alert-warning alert-dismissable">-->
     <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">-->
@@ -121,6 +126,7 @@
 
 <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/ng-idle/angular-idle.js"></script>
 <!-- endbuild -->
 
 <script src="/auth/js/keycloak.js"></script>
@@ -129,6 +135,7 @@
 <script src="scripts/app.js"></script>
 <script src="scripts/decorators/$resourceDecorator.js"></script>
 <script src="scripts/router.js"></script>
+<script src="scripts/idleService.js"></script>
 
 <script src="components/home/home.js"></script>
 <script src="components/app-detail/app-detail.js"></script>

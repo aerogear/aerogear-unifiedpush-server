@@ -649,3 +649,26 @@ li.L9 {
 
 
 
+/* Idle box */
+
+.idlebox {
+  background:#CC5100;
+  border:3px solid #FF6500;
+  color:#fff;
+  font-family:arial, sans-serif;
+  text-align:center;
+  font-size:12px;
+  padding:10px;
+
+  position:absolute;
+  z-index:100000;
+  left:0;
+  right:0;
+
+  top:0px;
+  transition: top linear 0.1s;
+
+  &.ng-hide {
+    top: -38px;
+  }
+}
