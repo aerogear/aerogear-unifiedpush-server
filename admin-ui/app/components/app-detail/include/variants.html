@@ -57,7 +57,13 @@
             <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
+        <dl class="dl-horizontal" ng-show="variant.type == 'windows_mpns'">
+          <dt>Type:</dt>
+          <dd>Microsoft Push Notification Service</dd>
+        </dl>
         <dl class="dl-horizontal" ng-show="variant.type == 'windows_wns'">
+          <dt>Type:</dt>
+          <dd>Windows Push Network</dd>
           <dt>Package SID:</dt>
           <dd>{{ variant.sid }}</dd>
           <dt>Client Secret:</dt>

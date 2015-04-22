@@ -19,4 +19,8 @@
   <!-- use both ng-if and ng-show prevents screen flickering caused by reinsertion of DOM parts, ng-if turns the invalid sample off to avoid DOM pollution -->
   <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('android') !== -1" ng-show="state.activeSnippet == 'android'"><ng-include src="'snippets/register-device/android.java'"></ng-include></pre>
   <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('cordova') !== -1" ng-show="state.activeSnippet == 'cordova'"><ng-include src="'snippets/register-device/cordova.js'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios-objc') !== -1" ng-show="state.activeSnippet == 'ios-objc'"><ng-include src="'snippets/register-device/ios.objc'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios-swift') !== -1" ng-show="state.activeSnippet == 'ios-swift'"><ng-include src="'snippets/register-device/ios.swift'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'mpns'"><ng-include src="'snippets/register-device/mpns.cs'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'wns'"><ng-include src="'snippets/register-device/wns.cs'"></ng-include></pre>
 </div>

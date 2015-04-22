@@ -72,8 +72,9 @@ angular.module('ups.directives', ['upsConsole.services'])
       controller: function( $scope, ContextProvider ) {
         $scope.typeEnum = {
           android:      { name: 'Android',    snippets: ['android', 'cordova'] },
-          ios:          { name: 'iOS',        snippets: ['objc', 'swift']},
-          windows:      { name: 'Windows',    snippets: ['wns', 'mpns', 'cordova'] },
+          ios:          { name: 'iOS',        snippets: ['ios-objc', 'ios-swift', 'cordova']},
+          windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
+          windows_wns:  { name: 'Windows',    snippets: ['wns', 'cordova'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
           adm:          { name: 'ADM',        snippets: ['cordova'] }
         };
