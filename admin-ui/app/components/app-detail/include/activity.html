@@ -1,5 +1,6 @@
 <h3>Notification activity</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
+
+<p>Explore push messages that you have sent to the registered devices.</p>
 
 
 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
@@ -8,7 +9,7 @@
       <label><input type="search" class="" aria-controls="DataTables_Table_0"></label>
     </div>
     <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-      Showing <b>1</b> to <b>4</b> of <b>100</b> Messages
+      Showing <b>{{ activity.currentStart }}</b> to <b>{{ activity.currentEnd }}</b> of <b>{{ activity.totalCount }}</b> Messages
     </div>
   </div>
 
@@ -58,13 +59,14 @@
   <div class="dataTables_footer">
     <div class="dataTables_paginate paging_bootstrap_input">
       <pagination direction-links="true" boundary-links="false"
-                  total-items="100"
+                  total-items="activity.totalCount"
                   ng-model="activity.currentPage"
                   previous-text="&lsaquo;" next-text="&rsaquo;"
                   class="pull-right ups-pagination"
-                  max-size="5"
-                  ng-change="activity.pageChanged()"
-                  rotate="false">
+                  max-size="10"
+                  ng-change="activity.onPageChange( activity.currentPage )"
+                  rotate="false"
+                  ng-if="activity.totalCount / activity.perPage > 1">
       </pagination>
     </div>
   </div>
