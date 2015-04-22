@@ -32,9 +32,10 @@ upsServices.factory('metricsEndpoint', function ($resource, $q) {
       });
       return deferred.promise;
     },
-    fetchApplicationMetrics: function(applicationId, pageNo) {
+    fetchApplicationMetrics: function(applicationId, pageNo, perPage) {
+      perPage = perPage || 10;
       var deferred = $q.defer();
-      this.application({id: applicationId, page: pageNo - 1, per_page: 10, sort:'desc'}, function (data, responseHeaders) {
+      this.application({id: applicationId, page: pageNo - 1, per_page: perPage, sort:'desc'}, function (data, responseHeaders) {
         angular.forEach(data, function (metric) {
           angular.forEach(metric.variantInformations, function (variant) {
             if (!variant.deliveryStatus) {
