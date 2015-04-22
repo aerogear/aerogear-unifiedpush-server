@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('AppDetailController', function( $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider ) {
+  .controller('AppDetailController', function( $rootScope, $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider ) {
 
     var self = this;
 
@@ -62,6 +62,7 @@ angular.module('upsConsole')
                 self.app.$messageCount += 1;
                 self.notifications.unshift({ submitDate: new Date().getTime() });
                 $modalInstance.close();
+                $rootScope.$broadcast('upsNotificationSent', $scope.pushData, $scope.app);
               });
           };
 
