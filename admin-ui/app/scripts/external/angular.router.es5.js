@@ -309,6 +309,9 @@ function anchorLinkDirective($router) {
       // If the linked element is not an anchor tag anymore, do nothing
       if (element[0].nodeName.toLowerCase() !== 'a') return;
 
+      // do not enhance anchors unless they have ng-link attribute
+      if (!$(element[0]).attr('ng-link')) return;
+
       // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
       var hrefAttrName = toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
         'xlink:href' : 'href';
