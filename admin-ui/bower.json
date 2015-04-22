@@ -14,7 +14,7 @@
     "patternfly": "~1.1",
     "angular-patternfly": "lfryc/angular-patternfly#aerogear-ups",
     "font-awesome": "4.1.0",
-    "ng-idle": "0.3.5",
+    "ng-idle": "1.0.4",
     "angular-router": "angular/router#0.5.0"
   },
   "devDependencies": {
