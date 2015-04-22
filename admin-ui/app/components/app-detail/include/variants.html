@@ -66,7 +66,7 @@
             <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
           </dd>
         </dl>
-        <dl class="dl-horizontal" ng-show="variant.production != undefined">
+        <dl class="dl-horizontal" ng-show="variant.type == 'ios'">
           <dt>Type:</dt>
           <dd>
             {{ variant.production ? 'Production' : 'Development' }}<br />

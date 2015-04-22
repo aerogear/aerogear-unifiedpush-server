@@ -113,7 +113,7 @@
           <label class="col-sm-3 control-label">Push Network</label>
           <div class="col-sm-7">
             <p><em>Apple Push Notification Service</em> certificate:</p>
-            <strong><input type="file" ups-files="variant.certificates" ng-required="variant.type == 'ios'" /></strong>
+            <strong><input type="file" ups-files="variant.certificates" /></strong>
             <div class="form-horizontal">
               <div class="form-group">
                 <div class="row">
@@ -141,7 +141,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
                 <div class="col-sm-9">
-                  <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-required="variant.type == 'ios' && isNew">
+                  <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-disabled="!isNew && variant.certificates.length == 0">
                 </div>
               </div>
             </div>
