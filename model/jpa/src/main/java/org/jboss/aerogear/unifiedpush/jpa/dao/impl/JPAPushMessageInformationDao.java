@@ -17,13 +17,13 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
+import java.util.Date;
+import java.util.List;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-
-import java.util.Date;
-import java.util.List;
 
 
 public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
@@ -38,6 +38,18 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
         return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
                 .setParameter("pushApplicationId", pushApplicationId).getResultList();
+    }
+
+    @Override
+    public long getNumberOfPushMessagesForPushApplication(String pushApplicationId) {
+        return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
+                .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
+    }
+
+    @Override
+    public long getNumberOfPushMessagesForVariant(String variantId) {
+        return createQuery("select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantId", Long.class)
+                .setParameter("variantId", variantId).getSingleResult();
     }
 
     @Override
@@ -66,7 +78,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public long getNumberOfPushMessagesForApplications(String loginName) {
+    public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
                 "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
@@ -82,12 +94,12 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public List<PushMessageInformation> findLastThreeActivity(String loginName) {
+    public List<PushMessageInformation> findLatestActivity(String loginName, int maxResults) {
         return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
                 " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
-                .setMaxResults(3)
+                .setMaxResults(maxResults)
                 .getResultList();
     }
 
@@ -115,11 +127,11 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public List<PushMessageInformation> findLastThreeActivity() {
+    public List<PushMessageInformation> findLatestActivity(int maxResults) {
         return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
                 " IN (select p.pushApplicationID from PushApplication p)" +
                 " ORDER BY pmi.submitDate " + DESC)
-                .setMaxResults(3)
+                .setMaxResults(maxResults)
                 .getResultList();
     }
 

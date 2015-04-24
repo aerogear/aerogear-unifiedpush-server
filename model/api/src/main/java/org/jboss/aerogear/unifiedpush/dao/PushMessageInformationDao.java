@@ -16,17 +16,27 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-
 import java.util.Date;
 import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
     /**
      * Does a count for all the push message that have been submitted for the given PushApplication.
      */
-    long getNumberOfPushMessagesForApplications(String loginName);
+    long getNumberOfPushMessagesForLoginName(String loginName);
+
+    /**
+     * Counts push messages for given push application ID
+     */
+    long getNumberOfPushMessagesForPushApplication(String pushApplicationId);
+
+    /**
+     * Counts push messages for given variant ID
+     */
+    long getNumberOfPushMessagesForVariant(String variantId);
 
     /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
@@ -59,7 +69,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Filters the three most recent PushMessageInformation objects
      */
-    List<PushMessageInformation> findLastThreeActivity(String loginName);
+    List<PushMessageInformation> findLatestActivity(String loginName, int maxResults);
 
     /**
      * Delete all Push Message Information entries that are older than the given date
@@ -68,8 +78,6 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
 
     //Admin queries
     List<String> findVariantIDsWithWarnings();
-
-    List<PushMessageInformation> findLastThreeActivity();
-
+    List<PushMessageInformation> findLatestActivity(int maxResults);
     long getNumberOfPushMessagesForApplications();
 }

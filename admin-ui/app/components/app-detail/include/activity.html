@@ -1,0 +1,73 @@
+<h3>Notification activity</h3>
+
+<p>Explore push messages that you have sent to the registered devices.</p>
+
+
+<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+  <div class="dataTables_header">
+    <div id="DataTables_Table_0_filter" class="dataTables_filter">
+      <label><input type="search" class="" aria-controls="DataTables_Table_0"></label>
+    </div>
+    <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+      Showing <b>{{ activity.currentStart }}</b> to <b>{{ activity.currentEnd }}</b> of <b>{{ activity.totalCount }}</b> Messages
+    </div>
+  </div>
+
+  <div class="table-responsive">
+
+<table class="datatable table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th></th>
+    <th>Message</th>
+    <th>IP Address</th>
+    <th>Receivers</th>
+    <th>Status</th>
+    <th>Timestamp</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat-start="metric in activity.metrics">
+    <td>
+      <a ng-click="metric.$toggled = !metric.$toggled">
+        <i class="fa fa-plus-square-o" ng-class="{ 'fa-plus-square-o': !metric.$toggled, 'fa-minus-square-o': metric.$toggled }"></i>
+      </a>
+    </td>
+    <td>{{ metric.$message.alert | limitTo : 50 }}{{ metric.$message.alert.length > 50 ? '...' : '' }}</td>
+    <td>{{ metric.$message.ipAddress }}</td>
+    <td>{{ metric.totalReceivers }} installations</td>
+    <td ng-if="metric.deliveryFailed != true" class="success"><i class="fa fa-check"></i> Succeeded</td>
+    <td ng-if="metric.deliveryFailed == true" class="danger">
+        <span class="pficon-layered">
+          <span class="pficon pficon-error-octagon"></span>
+          <span class="pficon pficon-error-exclamation"></span>
+        </span>
+      Failed
+    </td>
+    <td>{{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}</td>
+  </tr>
+  <tr ng-repeat-end ng-if="metric.$toggled">
+    <td colspan="6">
+      <pre>{{ metric.$message | json  }}</pre>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+  </div>
+
+  <div class="dataTables_footer">
+    <div class="dataTables_paginate paging_bootstrap_input">
+      <pagination direction-links="true" boundary-links="false"
+                  total-items="activity.totalCount"
+                  ng-model="activity.currentPage"
+                  previous-text="&lsaquo;" next-text="&rsaquo;"
+                  class="pull-right ups-pagination"
+                  max-size="10"
+                  ng-change="activity.onPageChange( activity.currentPage )"
+                  rotate="false"
+                  ng-if="activity.totalCount / activity.perPage > 1">
+      </pagination>
+    </div>
+  </div>
+</div>

@@ -16,7 +16,24 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+
+import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -25,9 +42,8 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.api.AdmVariant;
-import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
@@ -40,21 +56,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class InstallationDaoTest {
@@ -89,8 +90,14 @@ public class InstallationDaoTest {
     }
 
     @Test
-    public void countDevicesForVariants() {
-        assertThat(installationDao.getNumberOfDevicesForVariantIDs("me")).isEqualTo(6);
+    public void countDevicesForLoginName() {
+        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(6);
+    }
+
+    @Test
+    public void getNumberOfDevicesForVariantID() {
+        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(3);
+        assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
     }
 
     @Test

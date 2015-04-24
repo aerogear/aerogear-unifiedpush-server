@@ -1,0 +1,60 @@
+<form name="form" class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel">Send push to Application One</h4>
+  </div>
+  <div class="modal-body form-horizontal">
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Message</label>
+      <div class="col-sm-9">
+        <textarea class="form-control" rows="3" placeholder="Write the notification" ng-model="pushData.message.alert" ng-required="true"></textarea>
+      </div>
+    </div>
+
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Variants</label>
+      <div class="col-sm-9">
+        <select class="selectpicker" multiple ng-model="selectedVariants" ng-options="variant.variantID as variant.name for variant in app.variants"></select>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Aliases</label>
+      <div class="col-sm-9">
+        <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="aliases">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Device Types</label>
+      <div class="col-sm-9">
+        <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="deviceTypes">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="textInput-modal-markup">Categories</label>
+      <div class="col-sm-9">
+        <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="categories">
+      </div>
+    </div>
+
+
+    <span id="helpBlock" class="help-block">You can provide multiple values at a time by separating them by commas.</span>
+
+
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid">Send Push Notification</button>
+  </div>
+</form>

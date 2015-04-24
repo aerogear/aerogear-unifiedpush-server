@@ -1,7 +1,7 @@
 'use strict';
 
 var upsServices = angular.module('upsConsole.services');
-  
+
 upsServices.factory('dashboardEndpoint', function ($resource) {
   return $resource('rest/metrics/dashboard/:verb', {}, {
     totals: {
@@ -14,11 +14,12 @@ upsServices.factory('dashboardEndpoint', function ($resource) {
         verb: 'warnings'
       }
     },
-    topThree: {
+    latestActiveApps: {
       method: 'GET',
       isArray: true,
       params: {
-        verb: 'active'
+        verb: 'active',
+        count: 4
       }
     }
   });

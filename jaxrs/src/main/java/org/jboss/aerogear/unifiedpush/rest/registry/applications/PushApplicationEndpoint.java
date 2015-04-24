@@ -16,15 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -37,8 +36,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import java.util.Map;
-import java.util.UUID;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
@@ -47,6 +52,12 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushApplicationService pushAppService;
+
+    @Inject
+    private PushMessageMetricsService metricsService;
+
+    @Inject
+    private InstallationDao installationDao;
 
     // CREATE
     @POST
@@ -75,7 +86,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllPushApplications(@QueryParam("page") Integer page,
-                                            @QueryParam("per_page") Integer pageSize) {
+                                            @QueryParam("per_page") Integer pageSize,
+                                            @QueryParam("includeDeviceCount") @DefaultValue("false") boolean includeDeviceCount,
+                                            @QueryParam("includeActivity")    @DefaultValue("false") boolean includeActivity) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -87,20 +100,58 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
 
         final PageResult<PushApplication> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
-        return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
+        ResponseBuilder response = Response.ok(pageResult.getResultList());
+        response.header("total", pageResult.getCount());
+        for (PushApplication app : pageResult.getResultList()) {
+            if (includeActivity) {
+                putActivityIntoResponseHeaders(app, response);
+            }
+            if (includeDeviceCount) {
+                putDeviceCountIntoResponseHeaders(app, response);
+            }
+        }
+        return response.build();
     }
 
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findById(@PathParam("pushAppID") String pushApplicationID) {
+    public Response findById(
+            @PathParam("pushAppID") String pushApplicationID,
+            @QueryParam("includeDeviceCount") @DefaultValue("false") boolean includeDeviceCount,
+            @QueryParam("includeActivity")    @DefaultValue("false") boolean includeActivity) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
         if (pushApp != null) {
-            return Response.ok(pushApp).build();
+            ResponseBuilder response = Response.ok(pushApp);
+            if (includeActivity) {
+                putActivityIntoResponseHeaders(pushApp, response);
+            }
+            if (includeDeviceCount) {
+                putDeviceCountIntoResponseHeaders(pushApp, response);
+            }
+            return response.build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+    }
+
+    private void putActivityIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
+        response.header("activity_app_" + app.getPushApplicationID(), metricsService.countMessagesForPushApplication(app.getPushApplicationID()));
+        for (Variant variant : app.getVariants()) {
+            response.header("activity_variant_" + variant.getVariantID(), metricsService.countMessagesForPushApplication(variant.getVariantID()));
+        }
+    }
+
+    private void putDeviceCountIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
+        long appCount = 0;
+        for (Variant variant : app.getVariants()) {
+            long variantCount = installationDao.getNumberOfDevicesForVariantID(variant.getVariantID());
+            appCount += variantCount;
+            response.header("deviceCount_variant_" + variant.getVariantID(), variantCount);
+        }
+        response.header("deviceCount_app_" + app.getPushApplicationID(), appCount);
     }
 
     // UPDATE

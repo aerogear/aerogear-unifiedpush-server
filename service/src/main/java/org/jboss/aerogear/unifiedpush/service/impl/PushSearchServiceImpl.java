@@ -16,6 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
@@ -29,11 +35,6 @@ import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Implementation of the <code>PushSearchService</code> internally used for 'admin' role,
@@ -111,8 +112,8 @@ public class PushSearchServiceImpl implements PushSearchService {
      * Loads all the Variant objects with the most received messages
      */
     @Override
-    public List<Application> getTopThreeLastActivity() {
-        return wrapApplication(pushMessageInformationDao.findLastThreeActivity());
+    public List<Application> getLatestActivity(int maxResults) {
+        return wrapApplication(pushMessageInformationDao.findLatestActivity(maxResults));
     }
 
     private long totalMessages() {
@@ -120,7 +121,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     private long totalDeviceNumber() {
-        return installationDao.getNumberOfDevicesForVariantIDs();
+        return installationDao.getTotalNumberOfDevices();
     }
 
     private long totalApplicationNumber() {

@@ -71,6 +71,9 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/snippets/**',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/components/{,*/}*.{html,js}',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/components/**/*.{html,js}',
           '{<%= yeoman.app %>,<%= yeoman.tmp %>}/styles/{,*/}*.css',
           '{<%= yeoman.app %>,<%= yeoman.tmp %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
@@ -108,14 +111,11 @@ module.exports = function (grunt) {
         options: {
           'force': true
         },
-        files: [
-          {
-            src: [
-              '<%= local.jbossweb %>/*',
-              '!<%= local.jbossweb %>/WEB-INF',
-              '!<%= local.jbossweb %>/META-INF'
-            ]
-          }
+        src: [
+          '<%= local.jbossweb %>/*',
+          '!<%= local.jbossweb %>/config',
+          '!<%= local.jbossweb %>/WEB-INF',
+          '!<%= local.jbossweb %>/META-INF'
         ]
       },
       server: '.tmp'
@@ -213,6 +213,10 @@ module.exports = function (grunt) {
             cwd: '<%= yeoman.app %>',
             dest: '<%= yeoman.dist %>',
             src: [
+              'directives/**',
+              'components/**',
+              'views/**',
+              'snippets/**',
               '*.{ico,txt}',
               '.htaccess',
               'keycloak.json',
@@ -297,6 +301,7 @@ module.exports = function (grunt) {
     ngtemplates:  {
       upsConsole: {
         src: [
+          'components/**.html',
           'directives/**.html',
           'views/**.html',
           'views/dialogs/**.html',

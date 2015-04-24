@@ -16,7 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
@@ -31,14 +41,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
 public class PushMessageInformationDaoTest {
@@ -135,11 +137,11 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void countMessagesPerApplicationID() {
+    public void countMessagesPerLoginName() {
 
         final String loginName = "admin";
 
-        long number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
+        long number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
         assertThat(number).isEqualTo(3);
 
         for (int i = 0; i < 100; i++) {
@@ -150,7 +152,7 @@ public class PushMessageInformationDaoTest {
             pushMessageInformationDao.create(pmi);
         }
 
-        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
+        number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
         assertThat(number).isEqualTo(103);
 
         // a few more for different PushApplication...
@@ -162,8 +164,20 @@ public class PushMessageInformationDaoTest {
             pushMessageInformationDao.create(pmi);
         }
 
-        number = pushMessageInformationDao.getNumberOfPushMessagesForApplications(loginName);
+        number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
         assertThat(number).isEqualTo(203);
+    }
+
+    @Test
+    public void countMessagesPerApplication() {
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForPushApplication("231231231")).isEqualTo(2);
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForPushApplication("231231232")).isEqualTo(1);
+    }
+
+    @Test
+    public void countMessagePerVariant() {
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432432")).isEqualTo(2);
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("23154343243333")).isEqualTo(1);
     }
 
     @Test
@@ -174,7 +188,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void findMostBusyVariants() {
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLastThreeActivity("admin");
+        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
     }
 
@@ -182,7 +196,7 @@ public class PushMessageInformationDaoTest {
     public void findMostBusyVariantsForOnlyTwo() {
         final PushMessageInformation pushMessageInformation = pushMessageInformationDao.find("3");
         entityManager.remove(pushMessageInformation);
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLastThreeActivity("admin");
+        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(2);
 
     }
