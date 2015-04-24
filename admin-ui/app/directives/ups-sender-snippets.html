@@ -1,0 +1,41 @@
+<ul class="nav nav-tabs nav-tabs-pf">
+  <li ng-class="{ active: sender.activeSnippet == 'java' || !sender.activeSnippet }"><a ng-click="sender.activeSnippet = 'java'">Java Sender API</a></li>
+  <li ng-class="{ active: sender.activeSnippet == 'nodejs' }"><a ng-click="sender.activeSnippet = 'nodejs'">Node.js Sender API</a></li>
+  <li ng-class="{ active: sender.activeSnippet == 'curl' }"><a ng-click="sender.activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
+</ul>
+
+
+<div ng-if="sender.activeSnippet == 'java' || !sender.activeSnippet">
+  <h3>Set up Java UPS Sender API</h3>
+  <p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a href="https://aerogear.org/getstarted/downloads/#push">dependency to your Java project</a>.</p>
+  <p>Then let's use following snippet in your Java code to enable push notification sending.</p>
+</div>
+<div ng-if="sender.activeSnippet == 'nodejs'">
+  <h3>Set up Node.js Sender API</h3>
+  <p>First you need to download add <code>unifiedpush-node-sender</code> as a <a href="https://aerogear.org/getstarted/downloads/#push">dependency to your project</a>.</p>
+  <p>Then let's use following snippet in your Node.js code to enable push notification sending.</p>
+</div>
+<div ng-if="sender.activeSnippet == 'curl'">
+  <h3>Use UPS REST Sender API (with CURL)</h3>
+  <p>If none from the official client libs doesn't suit you or you just want to simply try out the notification sending, you can use REST API directly.</p>
+  <p>Run following <code>curl</code> command in the shell to send notification to UPS server.</p>
+</div>
+
+
+<div class="ups-snippet">
+  <a href="#" data-toggle="tooltip" data-placement="left" title="Copy to clipboard">Copy</a>
+  <pre class="pre-scrollable prettyprint" ng-if="sender.activeSnippet == 'java' || !sender.activeSnippet"><ng-include src="'snippets/senders/sender.java'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="sender.activeSnippet == 'nodejs'"><ng-include src="'snippets/senders/sender-nodejs.js'"></ng-include></pre>
+  <pre class="pre-scrollable prettyprint" ng-if="sender.activeSnippet == 'curl'"><ng-include src="'snippets/senders/sender-curl.sh'"></ng-include></pre>
+</div>
+
+
+<div ng-if="sender.activeSnippet == 'java' || !sender.activeSnippet">
+  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-java-client/">Java UPS Sender API in documentation</a>.</p>
+</div>
+<div ng-if="sender.activeSnippet == 'nodejs'">
+  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-nodejs-client/">Node.js UPS Sender API in documentation</a>.</p>
+</div>
+<div ng-if="sender.activeSnippet == 'curl'">
+  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-rest/overview-index.html">UPS REST Sender API in documentation</a>.</p>
+</div>

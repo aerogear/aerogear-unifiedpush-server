@@ -2,27 +2,25 @@
   "name": "ups-admin-ui",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "1.2.26",
-    "angular-bootstrap": "0.11.0",
-    "angular-animate": "1.2.26",
+    "angular": "1.4.0-beta.6",
+    "angular-resource": "1.4.0-beta.6",
+    "angular-animate": "1.4.0-beta.6",
+    "angular-bootstrap": "0.12.1",
     "json3": "3.2.6",
     "jquery": "2.1.1",
     "bootstrap": "3.1.1",
     "bootstrap-select": "1.5.4",
     "es5-shim": "2.0.12",
-    "angular-resource": "1.2.26",
-    "angular-route": "1.2.26",
-    "angular-cookies": "1.2.26",
-    "angular-sanitize": "1.2.26",
-    "patternfly": "1.0.3",
-    "angular-patternfly": "patternfly/angular-patternfly#dff8b97a129b845317d12df1ac9a02b050bec884",
-    "highlightjs": "8.0.0",
-    "angular-highlightjs": "0.3.0",
+    "patternfly": "1.1.4",
+    "angular-patternfly": "lfryc/angular-patternfly#aerogear-ups",
     "font-awesome": "4.1.0",
-    "ng-idle": "0.3.5"
+    "ng-idle": "1.0.4"
   },
   "devDependencies": {
-    "angular-mocks": "1.2.26",
-    "angular-scenario": "1.2.26"
+    "angular-mocks": "1.4.0-beta.6",
+    "angular-scenario": "1.4.0-beta.6"
+  },
+  "resolutions": {
+    "angular": "1.4.0-beta.6"
   }
 }

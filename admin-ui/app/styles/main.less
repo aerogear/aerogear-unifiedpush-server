@@ -1,10 +1,672 @@
-@import "reset";
-@import "patternfly/less/patternfly";
-@import "console";
-@import "ups";
-@import "fonts/exo2/exo2";
+/*!
+ * Based on Bootstrap v3.3.1
+ */
 
+// Core
+
+@import "patternfly/less/patternfly.less";
 @font-path:      "../fonts";
 @fa-font-path:   "../fonts";
 @icon-font-path: "../fonts";
 @ups-font-path:  "../fonts/";
+
+//@import "../bower_components/highlightjs/styles/default.css";
+
+
+.muted{
+  color: @gray-light;
+  margin: 0;
+  h3 &{
+    font-size: @font-size-base;
+  }
+}
+
+.success{     color: @brand-success!important}
+.warning{     color:@brand-warning!important}
+.danger{      color:@brand-danger!important}
+
+
+//navbar changes to make it heigher ==========================================================
+
+.navbar-header{
+  padding: 5px 0;
+}
+
+.navbar-pf .navbar-utility  > li > a {
+  padding: 12px 10px;}
+
+.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user{
+  top: 12px;
+}
+
+//keycloack ==========================================================
+
+.ups-keycloack-custom-url{
+  display: none;
+}
+
+//main warning ==========================================================
+
+.ups-main-warning{
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 20px;
+  z-index: 9999;
+  .alert{
+    margin: 5px 20%;
+    text-align: left;
+  }
+}
+
+
+//snippet ==========================================================
+
+.ups-snippet{
+  position: relative;
+  a{
+    background: #fff;
+    border-bottom: 1px solid @pre-border-color;
+    border-left: 1px solid @pre-border-color;
+    border-radius: 0 0 0 @border-radius-base;
+    color: @gray-light;
+    position: absolute;
+    padding: 4px 8px;
+    right: 1px;
+    top: 1px;
+    &:hover{
+      background: @brand-primary;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+//statistics ==========================================================
+.ups-statistics{
+  color: @gray-light;
+  margin: 0;
+  .clearfix();
+
+  span.count {
+    display: block;
+    font-size: @font-size-h1;
+    line-height: normal;
+  }
+
+  li{
+    float: left;
+    margin: 0;
+    width: 33%;
+  }
+}
+
+
+//master secret ==========================================================
+
+.dl-horizontal{
+}
+
+//blank-slate ==========================================================
+
+.ups-blank-slate{
+  margin: 20px 0;
+  padding: 100px 160px;
+  text-align: center;
+
+  .sidebar-pf &{
+    color: @gray-light;
+    padding: 20px;
+  }
+
+  form{
+    margin: 20px 0;
+    input[type="text"]{width: 280px;}
+  }
+}
+
+//wizard ==========================================================
+
+
+.ups-wizard-actions{
+  margin: 0;
+  a{
+    margin-bottom: 40px;
+  }
+}
+
+.ups-wizard{
+  text-align: center;
+  .btn{
+    width: 30%;
+  }
+
+
+  .well{
+    margin-top: 20px;
+    padding-top: 34px;
+    position: relative;
+    &:before{
+      color: @gray-light;
+      content: @fa-var-angle-right;
+      font-family: @icon-font-name-fa;
+      font-size: @font-size-base * 2;
+      left: -25px;
+      position: absolute;
+    }
+    &#box1:before{
+      display: none;
+    }
+    .ups-number{
+      display: block;
+      left: 0px;
+      position: absolute;
+      top: -17px;
+      width: 100%;
+      span{
+        background: @gray-dark;
+        border-radius: 17px;
+        box-shadow: 0 2px 3px rgba(0,0,0,.2);
+        color: @gray-lighter;
+        display: inline-block;
+        font-weight: bold;
+        line-height: 34px;
+        width: 34px;
+      }
+    }
+  }
+}
+
+//Steps ==========================================================
+
+
+.ups-steps{
+  li{
+    margin-bottom: 5px;
+    line-height: 30px;
+    strong{
+      background: @gray-lighter;
+      border-radius: 15px;
+      color: @gray-light;
+      display: inline-block;
+      margin-right: 5px;
+      text-align: center;
+      width: 30px;
+    }
+    &.done{
+      color: @gray-light;
+      strong{
+        background-color: @brand-success;
+        color: #fff;
+        text-decoration: none;
+      }
+    }
+    &.active{
+      background: @gray-lighter;
+      border-radius: 15px;
+      font-weight: bold;
+    }
+  }//li
+}//step
+
+
+h2 span{
+  color: @brand-success;
+}
+
+
+
+// ups-add-variable
+
+.ups-add-variable{
+
+  .radio{
+    label{
+      input{
+        margin-top: 13px;
+        vertical-align: middle;
+      }
+
+      span{
+        display: inline-block;
+        width: 100%;
+      }
+
+      strong{
+        line-height: normal;
+      }
+    }
+  }
+}
+
+// ==========================================================
+// List of apps
+// ==========================================================
+
+.ups-sub-header{
+  .clearfix();
+  margin-bottom: 20px;
+}
+
+
+// MEDIA Updates Bootstrap ======================================
+
+
+.media {
+  // Proper spacing between instances of .media
+  margin-top: 15px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.media-right,
+.media > .pull-right {
+  padding-left: 10px;
+}
+
+.media-left,
+.media > .pull-left {
+  padding-right: 20px;
+}
+
+.media-left,
+.media-right,
+.media-body {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.media-middle {
+  vertical-align: middle;
+}
+
+.media-bottom {
+  vertical-align: bottom;
+}
+
+// Reset margins on headings for tighter default spacing
+.media-heading {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+// Media list variation
+//
+// Undo default ul/ol styles
+.media-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+
+// media custom =====================================================
+
+.ups-app-stream{
+
+  .actions{
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 10px;
+  }
+
+  .media{
+    border-bottom: 1px solid @gray-lighter;
+    display: block;
+    margin: 0;
+    padding: 10px 0;
+    position: relative;
+    &:last-child{
+      border: none;
+      padding-bottom: 0;
+    }
+    &:first-child{
+      padding-top: 0;
+    }
+    &:hover{
+      .actions{display: block;}
+    }
+    a{
+      &:hover{
+        text-decoration: none;
+        .app-icon{
+          background-color: @link-hover-color;
+        }
+        .media-heading{
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .media-body{
+    color: @gray;
+    padding-top: 1px;
+    li{
+      color: @gray-light;
+    }
+  }
+
+  .app-icon{
+    background-color: @brand-primary;
+    color: rgba(255,255,255,.9);
+    font-size: @font-size-base * 2.5;
+    font-weight: lighter;
+    line-height: 50px;
+    text-align: center;
+    width: 50px;
+    text-transform: capitalize;
+  }
+
+  .list-inline {
+    span.count {
+      font-weight: bold;
+    }
+  }
+}// ups media stream
+
+
+// table =====================================================
+.dataTables_footer{
+  padding: 5px;
+}
+.datatable{
+  width: 100%!important;
+ td[colspan="6"]{
+   padding: 11px 10px 1px 10px;
+ }
+}
+
+//app options ============================================================
+
+.actions{
+  position: relative;
+}
+
+.ups-create-app {
+  left: -55px;
+  max-width:  none;
+  top: 30px;
+  width: 250px;
+}
+
+.actions{
+  li{
+    &.danger a{
+      color: @brand-danger;
+    }
+    a{
+      text-decoration: none;
+      &:hover{
+        color: @link-hover-color;
+      }
+    }
+  }
+}
+
+// Variants ===============================================
+.ups-variant{
+  border-bottom: 1px solid @gray-lighter;
+  &:last-child{border: none;}
+  &:hover{
+    .actions{
+      display: block;
+    }
+  }
+}
+.ups-variant-header{
+  cursor:pointer;
+  padding: 10px 0;
+  .actions{
+    display: none;
+  }
+
+  h3, h4{
+    color: @brand-primary;
+    display: inline-block;
+    margin: 0;
+    margin-right: 10px;
+  }
+  ul{
+    color: @gray-light;
+    display: inline-block;
+    margin: 0;
+  }
+}
+
+.ups-is-disabled{
+  .ups-variant-header h4{
+    color: @gray-light;
+  }
+}
+
+.ups-variant-body{
+  padding: 10px 0;
+  position: relative;
+  width: 100%;
+}
+
+.ups-panel{
+  margin: 10px 0;
+  clear: both;
+
+  .panel-heading{
+    .clearfix();
+
+    ul{
+      color: @gray-light;
+      display: inline-block;
+      line-height: 40px;
+      margin: 0;
+    }
+  }
+
+  .panel-title{
+    display: inline-block;
+    line-height: 40px;
+    margin-right: 10px;
+  }
+}
+
+.ups-main-action{
+  margin: 10px 0;
+}
+
+// Snippet Nav Tabs =====================================================
+
+.ups-snippet-nav.nav-justified > li > a{
+  border-bottom: none;
+}
+
+
+// Form send notification ===========================================
+
+.ups-more-variables{
+  background-size: cover;
+  display: none;
+}
+
+.ups-variant-name-header{
+  .clearfix();
+  line-height: 40px;
+}
+
+.ups-has-icon{
+  &:before{
+    background-image:  url(../img/variants-logo-sprite.png);
+    background-repeat: no-repeat;
+    background-size: 40px auto;
+    content: "icon";
+    display: inline-block;
+    vertical-align: top;
+    height: 40px;
+    width: 40px;
+    float: left;
+    text-indent: -999999px;
+    margin-right: 10px;
+  }
+}
+
+.ups-variant-android:before{background-position:                                             center 0 }
+.ups-variant-ios:before, .ups-variant-ios span:before{background-position:                   center -40px}
+.ups-variant-chrome:before, .ups-variant-chrome span:before{background-position:             center -80px}
+.ups-variant-windows:before, .ups-variant-windows span:before{background-position:           center -120px}
+.ups-variant-windows_mpns:before, .ups-variant-windows_mpns span:before{background-position:           center -120px}
+.ups-variant-windows_wns:before, .ups-variant-windows_wns span:before{background-position:           center -120px}
+.ups-variant-simplePush:before, .ups-variant-simplePush span:before{background-position:             center -160px}
+.ups-variant-adm:before, .ups-variant-adm span:before{background-position:             center -200px}
+
+
+// Login ===========================================
+
+@login-bg-color: #080808;
+@img-path:      "../img";
+@img-bg-login:  "bg-login-2.jpg";
+
+.login-pf{
+  .container{
+    background: rgba(0,0,0,.2);
+  }
+}
+
+// Code snippet ===========================================
+
+.pre-scrollable{
+  max-height: 290px;
+}
+
+//
+// Based on  http://jmblog.github.io/color-themes-for-google-code-prettify/github/
+// --------------------------------------------------
+
+/* Patternfly Theme */
+.prettyprint {
+  background: #fff;
+  //  border: 1px solid @gray-light;
+  font-family: @font-family-monospace;
+  font-size: @font-size-base;
+  line-height: 1.5;
+  padding: @padding-large-horizontal;
+}
+
+.pln {
+  color: @gray-dark;
+}
+
+
+@media screen {
+  .str {
+    color: @btn-danger-bg;
+  }
+
+  .kwd {
+    color: @gray-dark;
+  }
+
+  .com {
+    color: @brand-success;
+  }
+
+  .typ {
+    color: @brand-info;
+  }
+
+  .lit {
+    color: @brand-info;
+  }
+
+  .pun {
+    color: @gray-dark;
+  }
+
+  .opn {
+    color: @gray-dark;
+  }
+
+  .clo {
+    color: @gray-dark;
+  }
+
+  .tag {
+    color: navy;
+  }
+
+  .atn {
+    color: teal;
+  }
+
+  .atv {
+    color: @btn-danger-bg;
+  }
+
+  .dec {
+    color: @gray-dark;
+  }
+
+  .var {
+    color: teal;
+  }
+
+  .fun {
+    color: @brand-success;
+  }
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* IE indents via margin-left */
+li.L0,
+li.L1,
+li.L2,
+li.L3,
+li.L4,
+li.L5,
+li.L6,
+li.L7,
+li.L8,
+li.L9 {
+  /* */
+}
+
+/* Alternate shading for lines */
+li.L1,
+li.L3,
+li.L5,
+li.L7,
+li.L9 {
+  /* */
+}
+
+
+
+
+/* Idle box */
+
+.idlebox {
+  background:#CC5100;
+  border:3px solid #FF6500;
+  color:#fff;
+  font-family:arial, sans-serif;
+  text-align:center;
+  font-size:12px;
+  padding:10px;
+
+  position:absolute;
+  z-index:100000;
+  left:0;
+  right:0;
+
+  top:0px;
+  transition: top linear 0.1s;
+
+  &.ng-hide {
+    top: -38px;
+  }
+}

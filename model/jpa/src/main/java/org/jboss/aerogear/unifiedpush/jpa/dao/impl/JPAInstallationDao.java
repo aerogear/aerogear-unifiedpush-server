@@ -36,9 +36,9 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
@@ -181,7 +181,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     }
 
     @Override
-    public long getNumberOfDevicesForVariantIDs(String loginName) {
+    public long getNumberOfDevicesForLoginName(String loginName) {
         return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
     }
@@ -193,8 +193,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     //Admin query
     @Override
-    public long getNumberOfDevicesForVariantIDs() {
+    public long getTotalNumberOfDevices() {
         return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ", Long.class)
+                .getSingleResult();
+    }
+
+    @Override
+    public long getNumberOfDevicesForVariantID(String variantId) {
+        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID = :variantId ", Long.class)
+                .setParameter("variantId", variantId)
                 .getSingleResult();
     }
 

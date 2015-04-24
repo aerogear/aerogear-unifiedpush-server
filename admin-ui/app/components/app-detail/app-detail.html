@@ -1,0 +1,54 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+      <ol class="breadcrumb">
+        <li><a ng-link="href">Applications</a></li>
+        <li><strong>{{ appDetail.app.name }}:</strong> Variants</li>
+      </ol>
+
+      <div class="ups-app-header">
+        <div class="actions pull-right">
+          <button class="btn btn-default" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length"><i class="fa fa-paper-plane"></i> Send Notification to this app</button>
+        </div>
+        <h1>{{ appDetail.app.name }}</h1>
+      </div><!-- app header -->
+
+      <ul class="nav nav-tabs">
+        <li ng-class="{ active: appDetail.tab == 'variants' }"><a ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})">Variants</a></li>
+        <li ng-class="{ active: appDetail.tab == 'sender' }" ng-if="appDetail.app.variants.length"><a ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'sender'})">Sender API</a></li>
+        <li ng-class="{ active: appDetail.tab == 'activity' }"  ng-if="appDetail.app.variants.length"><a ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})">Activity log</a></li>
+      </ul>
+
+      <ng-include src="'components/app-detail/include/blank.html'" ng-if="appDetail.tab == 'variants' && !appDetail.app.variants.length" ng-controller="VariantsController as variants"></ng-include>
+      <ng-include src="'components/app-detail/include/variants.html'" ng-if="appDetail.tab == 'variants' && appDetail.app.variants.length" ng-controller="VariantsController as variants"></ng-include>
+      <ng-include src="'components/app-detail/include/sender.html'" ng-if="appDetail.tab == 'sender'" ng-controller="SenderController as sender"></ng-include>
+      <ng-include src="'components/app-detail/include/activity.html'" ng-if="appDetail.tab == 'activity'" ng-controller="ActivityController as activity"></ng-include>
+    </div><!-- /col -->
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <h2 class="h5">App Statistics</h2>
+      </div>
+      <ul class="list-unstyled ups-statistics">
+        <li><ups-pluralize noun="Variant" count="appDetail.app.variants.length"></ups-pluralize></li>
+        <li><span class="count">{{ appDetail.app.$messageCount }}</span>Delivered</li>
+        <li><ups-pluralize noun="Device" count="appDetail.app.$deviceCount"></ups-pluralize></li>
+      </ul>
+
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <h2 class="h5">App Notifications</h2>
+      </div>
+      <div class="list-group">
+        <a class="list-group-item" ng-repeat="notification in appDetail.notifications | limitTo:4">
+          <h3 class="list-group-item-heading">{{ appDetail.app.name }}</h3>
+          <p class="list-group-item-text">{{ notification.submitDate | date:'d MMM, H:mm:ss, yyyy' }}</p>
+        </a>
+      </div>
+      <p><a ng-hide="appDetail.tab == 'activity' || appDetail.app.$messageCount == 0" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})"><span class="pficon pficon-history"></span> See all notifications</a></p>
+    </div><!-- /col -->
+
+  </div><!-- /row -->
+</div><!-- /container -->

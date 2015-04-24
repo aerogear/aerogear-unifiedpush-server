@@ -1,0 +1,30 @@
+- (void)application:(UIApplication *)application
+ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+   NSLog(@"APNS Success");
+
+   AGDeviceRegistration *registration =
+     [[AGDeviceRegistration alloc] initWithServerURL:
+        [NSURL URLWithString:@"{{ contextPath }}"]];
+
+   [registration registerWithClientInfo:^(id clientInfo) {
+
+     // apply the token, to identify this device
+     [clientInfo setDeviceToken:deviceToken];
+
+     [clientInfo setVariantID:@"{{ variant.variantID }}"];
+     [clientInfo setVariantSecret:@"{{ variant.secret }}"];
+
+     // --optional config--
+     // set some 'useful' hardware information params
+     UIDevice *currentDevice = [UIDevice currentDevice];
+     [clientInfo setOperatingSystem:[currentDevice systemName]];
+     [clientInfo setOsVersion:[currentDevice systemVersion]];
+     [clientInfo setDeviceType: [currentDevice model]];
+
+     } success:^() {
+       NSLog(@"UPS registration worked");
+
+     } failure:^(NSError *error) {
+       NSLog(@"UPS registration Error: %@", error);
+   }];
+ }
