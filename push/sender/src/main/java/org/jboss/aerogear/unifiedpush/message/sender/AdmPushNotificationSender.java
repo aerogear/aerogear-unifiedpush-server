@@ -34,7 +34,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(AdmPushNotificationSender.class);
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         final AdmService admService = ADM.newService();
 
         final PayloadBuilder builder = ADM.newPayload();
@@ -59,6 +59,9 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         for (String key : keys) {
             builder.dataField(key, pushMessage.getMessage().getUserData().get(key));
         }
+
+        //add the aerogear-push-id
+        builder.dataField(AEROGEAR_PUSH_ID, pushMessageInformationId);
 
         final AdmVariant admVariant = (AdmVariant) variant;
         for(String token : clientIdentifiers) {

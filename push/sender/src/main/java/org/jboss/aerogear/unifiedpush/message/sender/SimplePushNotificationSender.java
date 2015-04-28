@@ -40,7 +40,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      * Sends SimplePush notifications to all connected clients, that are represented by
      * the {@link Collection} of channelIDs, for the given SimplePush network.
      */
-    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, NotificationSenderCallback callback) {
+    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
         if (tokens.isEmpty()) {

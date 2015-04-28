@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -126,9 +127,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //let's do update the analytics
 
-        String pushIdentifier = extractPushIdentifier(request);
-        if(pushIdentifier != null) {
-            metricsService.updateAnalytics(pushIdentifier, variant.getVariantID());
+        String aerogearPushId = HttpRequestUtil.extractPushIdentifier(request);
+        if(aerogearPushId!= null) {
+            metricsService.updateAnalytics(aerogearPushId, variant.getVariantID());
         }
         // async:
         clientInstallationService.addInstallation(variant, entity);
@@ -297,9 +298,5 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         // unauthorized...
         return null;
-    }
-
-    private String extractPushIdentifier(HttpServletRequest request) {
-        return request.getHeader("push-identifier");
     }
 }
