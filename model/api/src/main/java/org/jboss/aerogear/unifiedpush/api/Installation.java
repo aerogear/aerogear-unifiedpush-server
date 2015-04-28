@@ -84,9 +84,11 @@ public class Installation extends BaseModel {
     /**
      * The device type of the device or the user agent.
      *
+     * <ul>
      * <li> For SimplePush this will be <code>Web</code>
      * <li> For iOS that could be <code>iPod</code>, <code>iPad</code> or <code>iPhone</code>
      * <li> For Android that could be <code>Phone</code> or <code>Tablet</code>
+     * </ul>
      *
      * @param deviceType the type of the registered device
      */

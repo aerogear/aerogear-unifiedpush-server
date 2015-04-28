@@ -30,7 +30,8 @@ public final class ConfigurationUtils {
     /**
      * Try to retrieve a system property and returns null if SecurityManager blocks it.
      *
-     * @param key
+     * @param key Name of the system property to get the string for.
+     *
      * @return the value of the System property
      */
     public static String tryGetProperty(String key) {

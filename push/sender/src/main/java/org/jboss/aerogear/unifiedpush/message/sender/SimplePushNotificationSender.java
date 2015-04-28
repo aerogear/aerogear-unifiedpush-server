@@ -36,7 +36,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(SimplePushNotificationSender.class);
 
-    /**
+    /*
      * Sends SimplePush notifications to all connected clients, that are represented by
      * the {@link Collection} of channelIDs, for the given SimplePush network.
      */
@@ -88,7 +88,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
        }
     }
 
-    /**
+    /*
      * Returns HttpURLConnection that 'puts' the given body to the given URL.
      */
     protected HttpURLConnection put(String url, String body) throws IOException {
@@ -121,7 +121,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
         return conn;
     }
 
-    /**
+    /*
      * Convenience method to open/establish a HttpURLConnection.
      */
     protected HttpURLConnection getConnection(String url) throws IOException {

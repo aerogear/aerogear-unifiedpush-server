@@ -59,6 +59,8 @@ public class NotificationDispatcher {
      * the push notifications are submitted to.
      *
      * Once the sending process finishes, generates message for {@link MetricsCollector} with information how much devices was the notification submitted to.
+     *
+     * @param msg object containing details about the payload and the related device tokens
      */
     public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();

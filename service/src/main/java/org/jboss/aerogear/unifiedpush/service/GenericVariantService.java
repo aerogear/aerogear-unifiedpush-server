@@ -25,21 +25,31 @@ public interface GenericVariantService {
 
     /**
      * Store a new Variant object on the database.
+     *
+     * @param variant the variant
      */
     void addVariant(Variant variant);
 
     /**
      * Performs an update/merge on the given entity.
+     *
+     * @param variant the variant
      */
     void updateVariant(Variant variant);
 
     /**
      * Returns the Variant entity, matching the given variantID.
+     *
+     * @param variantID the id
+     *
+     * @return the variant
      */
     Variant findByVariantID(String variantID);
 
     /**
      * Removes the given variant entity.
+     *
+     * @param variant the variant
      */
     void removeVariant(Variant variant);
 

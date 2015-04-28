@@ -33,6 +33,10 @@ public class ExportEndpoint extends AbstractBaseEndpoint {
     /**
      * Endpoint for exporting as JSON file device installations for a given variant.
      * Only Keycloak authenticated can access it
+     *
+     * @param variantId  the variant ID
+     *
+     * @return JSON response
      */
     @GET
     @Path("/{variantId}/installations/")

@@ -36,6 +36,8 @@ public class MetricsCollector {
 
     /**
      * Receives metrics and update the push message information in database.
+     *
+     * @param variantMetricInformation the variant metrics info object
      */
     public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
         PushMessageInformation pushMessageInformation = variantMetricInformation.getPushMessageInformation();

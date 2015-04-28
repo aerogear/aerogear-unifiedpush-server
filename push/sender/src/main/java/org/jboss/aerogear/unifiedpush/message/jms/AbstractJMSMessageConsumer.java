@@ -29,7 +29,7 @@ import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
- * Abstract base for message driven beans that receives a {@link ObjectMessage} from a queue, validates its type, cast it to a generic type T and pass for processing to abstract method {@link #onMessage(T)}
+ * Abstract base for message driven beans that receives a {@link javax.jms.ObjectMessage} from a queue, validates its type, cast it to a generic type T and pass for processing to abstract method {@link #onMessage(Object)}
  */
 abstract class AbstractJMSMessageConsumer<T> implements MessageListener {
 

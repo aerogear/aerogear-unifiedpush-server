@@ -49,6 +49,8 @@ public class iOSVariant extends Variant {
      * If the method returns <code>false</code> a connection to
      * Apple's Sandbox/Development APNs server will be established
      * for this iOS variant.
+     *
+     * @return production state
      */
     public boolean isProduction() {
         return production;
@@ -61,6 +63,8 @@ public class iOSVariant extends Variant {
     /**
      * The APNs passphrase that is needed to establish a connection to any
      * of Apple's APNs Push Servers.
+     *
+     * @return the passphrase
      */
     @JsonIgnore
     public String getPassphrase() {
@@ -75,6 +79,8 @@ public class iOSVariant extends Variant {
     /**
      * The APNs certificate that is needed to establish a connection to any
      * of Apple's APNs Push Servers.
+     *
+     * @return the certificate
      */
     @JsonIgnore
     public byte[] getCertificate() {

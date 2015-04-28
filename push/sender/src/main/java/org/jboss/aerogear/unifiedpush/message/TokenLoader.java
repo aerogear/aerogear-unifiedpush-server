@@ -68,6 +68,8 @@ public class TokenLoader {
      * Device tokens are loaded in stream and split to batches of {@link #BATCH_SIZE}.
      * Once the pre-configured {@link #NUMBER_OF_BATCHES} is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
+     *
+     * @param msg holder object containing the payload and info about the effected variants
      */
     public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
