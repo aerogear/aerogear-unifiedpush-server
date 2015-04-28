@@ -36,7 +36,7 @@ import static org.jboss.aerogear.unifiedpush.message.sender.WNSPushNotificationS
 public class MPNSPushNotificationSender implements PushNotificationSender {
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         // no need to send empty list
         if (clientIdentifiers.isEmpty()) {
             return;
@@ -50,7 +50,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
             switch (message.getWindows().getType()) {
                 case toast:
                     ToastNotification.Builder builder = MPNS.newNotification().toast()
-                            .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()))
+                            .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData(), pushMessageInformationId))
                             .title(message.getAlert());
                     if (!message.getWindows().getTextFields().isEmpty()) {
                         builder.subtitle(message.getWindows().getTextFields().get(0));
@@ -93,7 +93,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
             }
         } else {
             notification = MPNS.newNotification().toast()
-                    .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()))
+                    .parameter(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData(), pushMessageInformationId))
                     .title(message.getAlert()).build();
         }
 

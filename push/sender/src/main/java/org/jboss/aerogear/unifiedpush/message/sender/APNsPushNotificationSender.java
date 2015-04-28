@@ -65,7 +65,7 @@ public class APNsPushNotificationSender  implements PushNotificationSender {
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
      */
-    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final NotificationSenderCallback callback) {
+    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
@@ -97,6 +97,9 @@ public class APNsPushNotificationSender  implements PushNotificationSender {
         }
 
         builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
+
+        //add aerogear-push-id
+        builder = builder.customField(AEROGEAR_PUSH_ID, pushMessageInformationId);
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {

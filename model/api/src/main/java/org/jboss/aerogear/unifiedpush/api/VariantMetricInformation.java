@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Contains metadata about a variant, of the push message request, such as successful delivery to the push network
@@ -31,7 +32,7 @@ public class VariantMetricInformation extends BaseModel {
     private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
-    private long variantOpenCounter;
+    private AtomicLong variantOpenCounter = new AtomicLong(0);
 
     @JsonIgnore
     private PushMessageInformation pushMessageInformation;
@@ -103,11 +104,15 @@ public class VariantMetricInformation extends BaseModel {
      * To track how many time this variant has been opened after a Push Notification
      *
      */
-    public long getVariantOpenCounter() {
+    public AtomicLong getVariantOpenCounter() {
         return variantOpenCounter;
     }
 
-    public void setVariantOpenCounter(long variantOpenCounter) {
+    public void setVariantOpenCounter(AtomicLong variantOpenCounter) {
         this.variantOpenCounter = variantOpenCounter;
+    }
+
+    public void incrementVariantOpenCounter() {
+        this.getVariantOpenCounter().incrementAndGet();
     }
 }
