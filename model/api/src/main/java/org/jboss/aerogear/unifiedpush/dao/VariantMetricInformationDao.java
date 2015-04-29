@@ -26,7 +26,7 @@ public interface VariantMetricInformationDao extends GenericBaseDao<VariantMetri
      * @param variantID that is associated with the VariantMetricInformation instance
      * @return a VariantMetricInformation instance
      */
-    VariantMetricInformation findVariantMetricInformationByVariantID(String variantID);
+    VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId);
 
 }
 

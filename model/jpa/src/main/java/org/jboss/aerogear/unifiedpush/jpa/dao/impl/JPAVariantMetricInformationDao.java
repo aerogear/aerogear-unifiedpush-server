@@ -24,10 +24,11 @@ import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 public class JPAVariantMetricInformationDao extends JPABaseDao<VariantMetricInformation, String> implements VariantMetricInformationDao {
 
     @Override
-    public VariantMetricInformation findVariantMetricInformationByVariantID(String variantID){
+    public VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId){
         return getSingleResultForQuery(createQuery(
-                "select vmi from VariantMetricInformation vmi where vmi.variantID = :variantId")
-                .setParameter("variantId", variantID));
+                "select vmi from VariantMetricInformation vmi where vmi.variantID = :variantId and vmi.pushMessageInformation.id = :pushmessageinformationId")
+                .setParameter("variantId", variantID)
+                .setParameter("pushmessageinformationId",pushmessageinformationId));
 
     }
 

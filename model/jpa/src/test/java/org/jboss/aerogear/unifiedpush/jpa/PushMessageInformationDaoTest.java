@@ -272,7 +272,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void findVariantMetricByVariantId() {
-        VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213");
+        VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213","1");
         assertThat(variantMetricInformation).isNotNull();
     }
 }
