@@ -78,7 +78,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * <pre>
      * curl -u "variantID:secret"
-     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
      *   -X POST
      *   -d '{
      *     "deviceToken" : "someTokenString",
