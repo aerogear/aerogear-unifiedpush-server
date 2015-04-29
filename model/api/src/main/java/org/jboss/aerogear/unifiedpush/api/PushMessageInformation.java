@@ -20,7 +20,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Metadata object that contains various informations around a submitted push message request
@@ -37,7 +36,7 @@ public class PushMessageInformation extends BaseModel {
     private Date submitDate = new Date();
     private long totalReceivers;
 
-    private AtomicLong appOpenCounter = new AtomicLong(0);
+    private long appOpenCounter;
     private Date firstOpenDate;
     private Date lastOpenDate;
 
@@ -135,16 +134,19 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return the number of time this Push Application was opened after a Push Notification
      */
-    public AtomicLong getAppOpenCounter() {
+    public long getAppOpenCounter() {
         return appOpenCounter;
     }
 
-    public void setAppOpenCounter(AtomicLong appOpenCounter) {
+    public void setAppOpenCounter(long appOpenCounter) {
         this.appOpenCounter = appOpenCounter;
     }
 
+    /**
+     * Increment the AppOpenCounter
+     */
     public void incrementAppOpenCounter() {
-         this.getAppOpenCounter().incrementAndGet();
+         this.setAppOpenCounter(this.getAppOpenCounter() +1);
     }
 
     /**
