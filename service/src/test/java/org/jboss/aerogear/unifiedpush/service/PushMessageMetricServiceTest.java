@@ -57,13 +57,13 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
         PushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation.getAppOpenCounter()).isEqualTo(1);
-        VariantMetricInformation updatedVariantMetric = variantMetricInformationDao.findVariantMetricInformationByVariantID("321");
+        VariantMetricInformation updatedVariantMetric = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
         assertThat(updatedVariantMetric.getVariantOpenCounter()).isEqualTo(1);
 
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
         PushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
-        VariantMetricInformation updatedVariantMetric1 = variantMetricInformationDao.findVariantMetricInformationByVariantID("321");
+        VariantMetricInformation updatedVariantMetric1 = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
         assertThat(updatedVariantMetric1.getVariantOpenCounter()).isEqualTo(2);
 
     }

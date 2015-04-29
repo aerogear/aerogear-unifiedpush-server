@@ -159,7 +159,7 @@ public class PushMessageMetricsService {
             pushMessageInformation.incrementAppOpenCounter();
 
             //update the variant counter
-            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID);
+            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
             variantMetricInformation.incrementVariantOpenCounter();
             variantMetricInformationDao.update(variantMetricInformation);
 
