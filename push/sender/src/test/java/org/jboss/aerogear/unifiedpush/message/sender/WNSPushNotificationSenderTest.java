@@ -7,6 +7,7 @@ import org.jboss.aerogear.unifiedpush.message.windows.TileType;
 import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
 import org.jboss.aerogear.unifiedpush.message.windows.Type;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -23,6 +24,11 @@ public class WNSPushNotificationSenderTest {
     private static final String QUERY = "?ke2=value2&key=value";
     private WNSPushNotificationSender sender = new WNSPushNotificationSender();
 
+    @Before
+    public void setUp() {
+        sender.setPushMessageInformationId("123");
+    }
+
     @Test
     public void shouldWorkWithEmptyNullUserData() {
         //given
@@ -33,7 +39,7 @@ public class WNSPushNotificationSenderTest {
         WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
-        assertThat(toastMessage.launch).isEqualTo("/Root.xaml");
+        assertThat(toastMessage.launch).isEqualTo("/Root.xaml?aerogear-push-id=123");
     }
 
     @Test
@@ -46,7 +52,7 @@ public class WNSPushNotificationSenderTest {
         WnsToast toastMessage = sender.createSimpleToastMessage(message);
 
         //then
-        assertThat(toastMessage.launch).isEqualTo("/Root.xaml" + QUERY + "&message=My+message");
+        assertThat(toastMessage.launch).isEqualTo("/Root.xaml" + QUERY + "&message=My+message&aerogear-push-id=123");
     }
 
     @Test
@@ -58,7 +64,7 @@ public class WNSPushNotificationSenderTest {
         final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
 
         //then
-        assertThat(toast.launch).isEqualTo("/Root.xaml" + QUERY);
+        assertThat(toast.launch).isEqualTo("/Root.xaml" + QUERY + "&aerogear-push-id=123");
     }
 
     @Test
@@ -71,7 +77,7 @@ public class WNSPushNotificationSenderTest {
         final WnsToast toast = sender.createSimpleToastMessage(pushMessage);
 
         //then
-        assertThat(toast.launch).isEqualTo(WNSPushNotificationSender.CORDOVA_PAGE + QUERY);
+        assertThat(toast.launch).isEqualTo(WNSPushNotificationSender.CORDOVA_PAGE + QUERY + "&aerogear-push-id=123");
     }
 
     @Test

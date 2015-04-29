@@ -49,7 +49,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
-        this.pushMessageInformationId = pushMessageInformationId;
+        setPushMessageInformationId(pushMessageInformationId);
 
         // no need to send empty list
         if (clientIdentifiers.isEmpty()) {
@@ -110,7 +110,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             builder.duration(windows.getDuration().toString());
         }
         builder.audioSrc(message.getSound());
-        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData(), pushMessageInformationId));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData(), getPushMessageInformationId()));
         createMessage(message, windows.getToastType().toString(), builder);
         return builder.build();
     }
@@ -171,8 +171,16 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     WnsToast createSimpleToastMessage(Message message) {
         final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(message.getAlert());
         final Map<String, Object> data = message.getUserData();
-        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), data, pushMessageInformationId));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), data, getPushMessageInformationId()));
         return builder.build();
+    }
+
+    public String getPushMessageInformationId() {
+        return pushMessageInformationId;
+    }
+
+    public void setPushMessageInformationId(String pushMessageInformationId) {
+        this.pushMessageInformationId = pushMessageInformationId;
     }
 
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
