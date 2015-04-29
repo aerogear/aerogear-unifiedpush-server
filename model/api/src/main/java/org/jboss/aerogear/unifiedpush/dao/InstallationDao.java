@@ -25,11 +25,21 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
     /**
      * Loads a specific installation for the given Variant, specified by the device token.
+     *
+     * @param variantID the variantID for the filter
+     * @param deviceToken the deviceToken for the filter
+     *
+     * @return intallation object or null.
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
-     * Loads all installations matching the <code>Set</code> of deviceTokens, for the given Variant
+     * Loads all installations matching the <code>Set</code> of deviceTokens, for the given Variant.
+     *
+     * @param variantID the variantID for the filter
+     * @param deviceTokens the deviceTokens for the filter
+     *
+     * @return list of intallation objects.
      */
     List<Installation> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
@@ -37,6 +47,15 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * Sender API for installations:
      *
      * Query all tokens for the given variant, by respecting a few criteria arguments (categories, aliases and deviceTypes)
+     *
+     * @param variantID the variantID for the filter
+     * @param categories applied categories for the filter
+     * @param aliases applied aliases for the filter
+     * @param deviceTypes applied deviceTypes for the filter
+     * @param maxResults number of maxResults for the filter
+     * @param lastTokenFromPreviousBatch identifier of the last fetched token
+     *
+     * @return list of device tokens that matches this filter
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
@@ -48,6 +67,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param developer the developer
      * @param page the page number
      * @param pageSize the size of the pages
+     *
      * @return all installations found or empty list + the total count of results
      */
     PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize);
@@ -57,6 +77,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param variantID the id of the variant to find the installations for
      * @param page the page number
      * @param pageSize the size of the pages
+     *
      * @return all installations found or empty list + the total count of results
      */
     PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize);
@@ -64,17 +85,27 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
     /**
      * Counts the total number of registered devices/clients for the give List of variantIDs
+     *
+     * @param loginName name of the current user
+     *
+     * @return number of devices for user
      */
     long getNumberOfDevicesForLoginName(String loginName);
 
     //Admin query
     /**
      * Counts the total number of all registered devices/clients
+     *
+     * @return number of devices for admin
      */
     long getTotalNumberOfDevices();
 
     /**
      * Counts the number of registered devices/clients for the given variant ID
+     *
+     * @param variantId the variant ID
+     *
+     * @return number of devices for given variant
      */
     long getNumberOfDevicesForVariantID(String variantId);
 }

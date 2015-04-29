@@ -27,6 +27,10 @@ public final class DateUtils {
 
     /**
      * Returns date in history: Today - the given number of days
+     *
+     * @param days number of days
+     *
+     * @return date object that lives n days in the past
      */
     public static Date calculatePastDate(int days) {
         final Calendar cal = Calendar.getInstance();

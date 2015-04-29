@@ -28,6 +28,8 @@ public class ImporterForm {
 
     /**
      * Reads the uploaded JSON file from the multipart importer request.
+     *
+     * @param jsonFile the json file content
      */
     @FormParam("file")
     public void setJsonFile(byte[] jsonFile) {

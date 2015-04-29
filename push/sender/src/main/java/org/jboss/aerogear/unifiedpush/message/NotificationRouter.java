@@ -67,6 +67,9 @@ public class NotificationRouter {
      * Receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in one transaction.
      *
      * Once this method returns, message is recorded and will be eventually delivered in the future.
+     *
+     * @param pushApplication the push application
+     * @param message the message
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, UnifiedPushMessage message) {

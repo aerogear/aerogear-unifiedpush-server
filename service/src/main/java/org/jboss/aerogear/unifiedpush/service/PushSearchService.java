@@ -32,41 +32,64 @@ public interface PushSearchService {
 
     /**
      * Finder that returns all pushApplication object for the given owner/developer.
+     *
+     * @param page the actual page for the pagination
+     * @param pageSize number of push applications per page
+     *
+     * @return list of push applications
      */
     PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize);
 
     /**
      * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
+     *
+     * @param pushApplicationID the push application id
+     *
+     * @return push application entity
      */
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID);
 
     /**
      * See that variant exists for loggedin developer
+     *
+     * @param variantID the variant ID
+     *
+     * @return does the variant exist for the logged in user?
      */
     boolean existsVariantIDForDeveloper(String variantID);
 
     /**
      * Receives the dashboard data for the given user
+     *
+     * @return object containing the dashboard data
      */
     DashboardData loadDashboardData();
 
     /**
      * Loads all the Variant objects where we did notice some failures on sending
-     * for the given user
+     * for the given user.
+     *
+     * @return list of application variant combinations
      */
     List<ApplicationVariant> getVariantsWithWarnings();
 
     /**
      * Loads all the Variant objects with the most recent received messages
+     *
+     * @param maxResults number of max results on the result
+     *
+     * @return list of applications
      */
     List<Application> getLatestActivity(int maxResults);
 
 
     /**
      * Find all installations for the variant specified.
+     *
      * @param variantID the id of the variant to find the installations for
      * @param page the page number
      * @param pageSize the size of the pages
+     *
      * @return page result containing the list plus a total number of rows
      */
     PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize);

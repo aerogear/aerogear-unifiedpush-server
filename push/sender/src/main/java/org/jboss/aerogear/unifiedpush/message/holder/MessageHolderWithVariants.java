@@ -42,6 +42,11 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
      * Constructs holder that denotes first request for processing.
      *
      * Does not specify {@link #lastTokenFromPreviousBatch} as first request will start from first device token in database.
+     *
+     * @param pushMessageInformation the push message info object
+     * @param unifiedPushMessage the push message
+     * @param variantType variant type info
+     * @param variants list of effected variants
      */
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
         this(pushMessageInformation, unifiedPushMessage, variantType, variants, null);
@@ -49,6 +54,12 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
 
     /**
      * Constructs holder that denotes subsequent request for processing given push message, continuing from {@link #lastTokenFromPreviousBatch} where the previous request ended.
+     *
+     * @param pushMessageInformation the push message info object
+     * @param unifiedPushMessage the push message
+     * @param variantType variant type info
+     * @param variants list of effected variants
+     * @param lastTokenFromPreviousBatch last token from previous stream
      */
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, String lastTokenFromPreviousBatch) {
         super(pushMessageInformation, unifiedPushMessage);

@@ -86,6 +86,8 @@ public abstract class AbstractBaseEndpoint {
 
     /**
      * offers PushSearchService to subclasses
+     *
+     * @return the push search service
      */
     protected PushSearchService getSearch(){
         return searchManager.getSearchService();

@@ -62,6 +62,8 @@ public enum VariantType {
 
     /**
      * Returns the actual type name of the variant type
+     *
+     * @return name of the type
      */
     @JsonValue
     public String getTypeName() {

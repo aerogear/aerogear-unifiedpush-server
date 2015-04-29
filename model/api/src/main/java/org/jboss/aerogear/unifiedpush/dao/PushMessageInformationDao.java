@@ -25,16 +25,28 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
 
     /**
      * Does a count for all the push message that have been submitted for the given PushApplication.
+     *
+     * @param loginName the username
+     *
+     * @return number of push messages
      */
     long getNumberOfPushMessagesForLoginName(String loginName);
 
     /**
      * Counts push messages for given push application ID
+     *
+     * @param pushApplicationId the push application ID
+     *
+     * @return number of push messages
      */
     long getNumberOfPushMessagesForPushApplication(String pushApplicationId);
 
     /**
      * Counts push messages for given variant ID
+     *
+     * @param variantId the variant ID
+     *
+     * @return number of push messages
      */
     long getNumberOfPushMessagesForVariant(String variantId);
 
@@ -43,6 +55,8 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @param pushApplicationId ID of the PushApplication
      * @param ascending boolean to define if ASC ordering (by date) or DESC ordering should be executed.
+     *
+     * @return list of push message info objects
      */
     List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending);
 
@@ -53,26 +67,46 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      * @param ascending boolean to define if ASC ordering (by date) or DESC ordering should be executed.
      * @param page The number of the page.
      * @param pageSize the number of elements in the result.
+     *
+     * @return list of push message info objects
      */
     PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads all push message metadata objects for the given Variant, but offers a way to order (asc/desc) by date.
+     *
+     * @param variantID the variant ID
+     * @param ascending pass in true for ascending ordering
+     * @param page the actual page for the pagination
+     * @param pageSize number of objects on the page
+     *
+     * @return list of push message info objects
      */
-    PageResult<PushMessageInformation> findAllForVariant(String id, boolean ascending, Integer page, Integer pageSize);
+    PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends
+     *
+     * @param loginName the username
+     *
+     * @return list of variant ids
      */
     List<String> findVariantIDsWithWarnings(String loginName);
 
     /**
      * Filters the three most recent PushMessageInformation objects
+     *
+     * @param loginName the username
+     * @param maxResults number of max items in the returned list
+     *
+     * @return list of push message info objects
      */
     List<PushMessageInformation> findLatestActivity(String loginName, int maxResults);
 
     /**
      * Delete all Push Message Information entries that are older than the given date
+     *
+     * @param oldest the point in time to go back to
      */
     void deletePushInformationOlderThan(Date oldest);
 

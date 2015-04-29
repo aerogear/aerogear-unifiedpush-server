@@ -33,6 +33,8 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
 
     /**
      * Hook to manually inject an EntityManager.
+     *
+     * @param entityManager the EntityManager for this DAO class
      */
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;

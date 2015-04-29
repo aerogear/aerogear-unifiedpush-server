@@ -23,12 +23,16 @@ public interface ResultsStream<T> {
 
     /**
      * Advance to the next result
+     *
+     * @throws org.jboss.aerogear.unifiedpush.dao.ResultStreamException for any exception while processing
      * @return <tt>true</tt> if there is another result
      */
     boolean next() throws ResultStreamException;
 
     /**
      * Get the current row of the result as an object
+     *
+     * @throws org.jboss.aerogear.unifiedpush.dao.ResultStreamException for any exception while processing
      * @return an object constructed from current row
      */
     T get() throws ResultStreamException;
@@ -40,11 +44,17 @@ public interface ResultsStream<T> {
 
         /**
          * Set a fetch size for the underlying JDBC query. See org.hibernate.Query.setFetchSize(int).
+         *
+         * @param fetchSize number of items to fetch
+         *
+         * @return builder
          */
         QueryBuilder<T> fetchSize(int fetchSize);
 
         /**
          * Builds the query and constructs the {@link ResultsStream} from underlying org.hibernate.ScrollableResults object.
+         *
+         * @return scrollable result
          */
         ResultsStream<T> executeQuery();
 

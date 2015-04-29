@@ -64,6 +64,8 @@ public class PushMessageMetricsService {
 
     /**
      * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
+     *
+     * @param pushMessageInformation the push message info object
      */
     public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
         pushMessageInformationDao.update(pushMessageInformation);
@@ -71,6 +73,13 @@ public class PushMessageMetricsService {
 
     /**
      * Returns a list of metadata objects for the given Push Application
+     *
+     * @param pushApplicationID the push app ID
+     * @param sorting do we want sorting?
+     * @param page number of the actual page in the pagination
+     * @param pageSize number of items
+     *
+     * @return list of push message info objects
      */
     public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting, page, pageSize);
@@ -78,6 +87,13 @@ public class PushMessageMetricsService {
 
     /**
      * Returns a list of metadata objects for the given Variant
+     *
+     * @param variantID the variant ID
+     * @param sorting do we want sorting?
+     * @param page number of the actual page in the pagination
+     * @param pageSize number of items
+     *
+     * @return list of push message info objects
      */
     public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
@@ -85,6 +101,10 @@ public class PushMessageMetricsService {
 
     /**
      * Returns number of push messages for given push application ID
+     *
+     * @param pushApplicationId the push app ID
+     *
+     * @return the cumber of message for the given push application
      */
     public long countMessagesForPushApplication(String pushApplicationId) {
         return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
@@ -92,6 +112,10 @@ public class PushMessageMetricsService {
 
     /**
      * Returns number of push messages for given push variant ID
+     *
+     * @param variantId the variant ID
+     *
+     * @return the cumber of message for the given variant
      */
     long countMessagesForVariant(String variantId) {
         return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantId);

@@ -25,21 +25,40 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
 
     /**
      * Finder that returns all pushApplication object for the given owner/developer.
+     *
+     * @param loginName the username
+     * @param page number of the page for pagination
+     * @param pageSize the size of the page
+     *
+     * @return list of push applications
      */
     PageResult<PushApplication> findAllForDeveloper(String loginName, Integer page, Integer pageSize);
 
     /**
      * Finder that returns a list, containing all pushApplication ids for the given owner/developer.
+     *
+     * @param loginName the username
+     *
+     * @return list of push application ids
      */
     List<String> findAllPushApplicationIDsForDeveloper(String loginName);
 
     /**
      * Finder that returns an actual PushApplicationEntity, identified by its ID and its owner/developer.
+     *
+     * @param loginName the username
+     * @param pushApplicationID the push application id
+     *
+     * @return push application object or null
      */
     PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName);
 
     /**
      * Finder that returns an actual PushApplicationEntity, identified by its ID.
+     *
+     * @param pushApplicationID the push application id
+     *
+     * @return push application object or null
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
@@ -47,17 +66,29 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
 
     /**
      * Returns total number of PushApplications for given user
+     *
+     * @param name the username
+     *
+     * @return number of application for the given user
      */
     long getNumberOfPushApplicationsForDeveloper(String name);
 
     /**
-     * Return application name and id of all variants matching given ids
+     * Return push applications that are owning the given variants.
+     *
+     * @param variantIDs list of variant ids
+     *
+     * @return list of push applications
      */
     List<PushApplication> findByVariantIds(List<String> variantIDs);
 
     //Admin queries
     /**
      * Finder that returns an actual PushApplicationEntity, identified by its ID and its owner/developer.
+     *
+     * @param pushApplicationID the push application id
+     *
+     * @return push application or null
      */
     PushApplication findAllByPushApplicationID(String pushApplicationID);
 

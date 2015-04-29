@@ -40,6 +40,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * The ID of the involved variant
+     *
+     * @return variant ID
      */
     public String getVariantID() {
         return variantID;
@@ -50,7 +52,9 @@ public class VariantMetricInformation extends BaseModel {
     }
 
     /**
-     * Number of receives for this variant that were found for the submitted push request
+     * Number of receivers for this variant that were found for the submitted push request
+     *
+     * @return number of receivers
      */
     public long getReceivers() {
         return receivers;
@@ -62,6 +66,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * Indicator if the request to the actual push network, for the related variant, was successful or not.
+     *
+     * @return status of the delivery
      */
     public Boolean getDeliveryStatus() {
         return deliveryStatus;
@@ -73,6 +79,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * In case of an error (deliveryStatus:false), there is most likely a reason which may give some more insights.
+     *
+     * @return error details
      */
     public String getReason() {
         return reason;

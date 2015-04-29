@@ -40,6 +40,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The raw JSON payload of the push message request
+     *
+     * @return raw json
      */
     public String getRawJsonMessage() {
         return rawJsonMessage;
@@ -51,6 +53,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The IP from the submitter of the push message request
+     *
+     * @return the ip address
      */
     public String getIpAddress() {
         return ipAddress;
@@ -62,6 +66,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The date when the push message request has been processed on the UPS
+     *
+     * @return timestamp
      */
     public Date getSubmitDate() {
         return submitDate;
@@ -73,6 +79,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * Collection of specific infos around the related variants
+     *
+     * @return variant information
      */
     public Set<VariantMetricInformation> getVariantInformations() {
         return variantInformations;
@@ -84,6 +92,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The ID of the root push application, for which the push message request has been submitted
+     *
+     * @return containing application ID
      */
     public String getPushApplicationId() {
         return pushApplicationId;
@@ -95,6 +105,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The Client Identifier showing who triggered the Push Notification
+     *
+     * @return string identifying the sender
      */
     public String getClientIdentifier() { return clientIdentifier; }
 

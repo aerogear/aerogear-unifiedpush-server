@@ -36,6 +36,8 @@ public class AndroidVariant extends Variant {
      * The "Google Project Number" from the API Console is <i>not</i> needed for sending push messages, but it is a convenience to "see" it on
      * the Admin UI as well, since the Android applications require it (called Sender ID there). That way all informations are stored on the
      * same object.
+     *
+     * @return the Google project number string
      */
     public String getProjectNumber() {
         return projectNumber;
@@ -47,6 +49,8 @@ public class AndroidVariant extends Variant {
 
     /**
      * The Google API Key from the Google API project, which has been enabled for Android-based GCM.
+     *
+      @return the Google API key
      */
     public String getGoogleKey() {
         return this.googleKey;

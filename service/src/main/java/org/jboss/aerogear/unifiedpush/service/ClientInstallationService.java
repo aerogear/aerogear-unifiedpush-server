@@ -31,49 +31,71 @@ public interface ClientInstallationService {
 
     /**
      * Store a new Installation object on the database.
+     *
+     * @param variant the variant to store on
+     * @param installation the installation
      */
     void addInstallation(Variant variant, Installation installation);
 
     /**
      * Add new Installations objects, for importing devices on the database.
+     *
+     * @param variant the variant to store on
+     * @param installations list of installations
      */
     void addInstallations(Variant variant, List<Installation> installations);
 
     /**
      * Performs an update/merge on the given entity.
+     *
+     * @param installation the installation
      */
     void updateInstallation(Installation installation);
 
     /**
      * Updates the first argument with the values from the second, and returns the updated entity.
+     *
      * @param toUpdate entity to be updated
      * @param postedInstallation entity where we read the "updateable" values from.
-     * @return updated entity
      */
     void updateInstallation(Installation toUpdate, Installation postedInstallation);
 
     /**
      * Returns the Installation entity, matching the given primaryKey.
+     *
+     * @param primaryKey the PK for the installation
+     *
+     * @return the installation entity
      */
     Installation findById(String primaryKey);
 
     /**
      * Removes the given installation entity.
+     *
+     * @param installation the installation
      */
     void removeInstallation(Installation installation);
 
     /**
      * Removes all the installation entities in the {@link List}.
+     *
+     * @param installations list of installations
      */
     void removeInstallations(List<Installation> installations);
 
     /**
-     * Used for "feedback service": Collects the invalid Installations for a Variant, based on the identifier tokens:
+     * Used for "feedback service": Collects the invalid Installations for a Variant, based on the identifier tokens.
+     *
+     * @param variantID id of the variant
+     * @param deviceTokens list of tokens
      */
     void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
      * Used to remove single device token from UPS. Used for error handling of specific tokens
+     *
+     * @param variantID id of the variant
+     * @param deviceToken one tokens
      */
     void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
@@ -81,13 +103,27 @@ public interface ClientInstallationService {
      * Used for "Device Registration":
      *
      * Finder that returns the actual client installation, identified by its device-token, for the given variant.
+     *
+     * @param variantID id of the variant
+     * @param deviceToken one tokens
+     *
+     * @return the installation entity
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     // ===================   SENDER API   ===================
 
     /**
-     * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria
+     * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria.
+     *
+     * @param variantID the variantID for the filter
+     * @param categories applied categories for the filter
+     * @param aliases applied aliases for the filter
+     * @param deviceTypes applied deviceTypes for the filter
+     * @param maxResults number of maxResults for the filter
+     * @param lastTokenFromPreviousBatch identifier of the last fetched token
+     *
+     * @return list of device tokens that matches this filter
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
