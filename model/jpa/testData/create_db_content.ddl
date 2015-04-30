@@ -75,6 +75,8 @@ CREATE TABLE PushMessageInformation (
   submitDate        DATE          DEFAULT NULL,
   totalReceivers    BIGINT       NOT NULL,
   appOpenCounter    BIGINT      DEFAULT 0,
+  firstOpenDate     DATE          DEFAULT NULL,
+  lastOpenDate      DATE          DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
