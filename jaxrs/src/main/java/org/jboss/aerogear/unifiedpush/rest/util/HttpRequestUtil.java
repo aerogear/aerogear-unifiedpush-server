@@ -88,8 +88,8 @@ public final class HttpRequestUtil {
     /**
      * Extract the header that identifies the push message.
      *
-     * @param request
-     * @return
+     * @param request , the current @link{{HttpServletRequest}}
+     * @return value of header
      */
     public static String extractPushIdentifier(HttpServletRequest request) {
         return request.getHeader("aerogear-push-id");

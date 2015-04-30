@@ -44,7 +44,7 @@ import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.try
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
 
 @SenderType(iOSVariant.class)
-public class APNsPushNotificationSender  implements PushNotificationSender {
+public class APNsPushNotificationSender implements PushNotificationSender {
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
@@ -64,6 +64,12 @@ public class APNsPushNotificationSender  implements PushNotificationSender {
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
+     *
+     * @param variant contains details for the underlying push network, e.g. API Keys/Ids
+     * @param tokens contains the list of tokens that identifies the installation to which the message will be sent
+     * @param pushMessage payload to be send to the given clients
+     * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
+     * @param callback that will be invoked after the sending.
      */
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list

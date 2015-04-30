@@ -102,6 +102,7 @@ public class VariantMetricInformation extends BaseModel {
     /**
      * To track how many time this variant has been opened after a Push Notification
      *
+     * @return long , the times this variant has been opened after a Push Notification
      */
     public long getVariantOpenCounter() {
         return variantOpenCounter;
