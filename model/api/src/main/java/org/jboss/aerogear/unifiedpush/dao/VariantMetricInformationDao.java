@@ -24,9 +24,10 @@ public interface VariantMetricInformationDao extends GenericBaseDao<VariantMetri
      * Finds a VariantMetricInformation instance by the related variantID
      *
      * @param variantID that is associated with the VariantMetricInformation instance
+     * @param pushMessageinformationId of the @link{{org.jboss.aerogear.unifiedpush.api.PushMessageInformation}} that owns this instance
      * @return a VariantMetricInformation instance
      */
-    VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId);
+    VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushMessageinformationId);
 
 }
 
