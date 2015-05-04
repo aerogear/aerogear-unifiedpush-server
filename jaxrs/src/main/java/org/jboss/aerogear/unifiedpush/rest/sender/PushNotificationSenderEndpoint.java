@@ -104,7 +104,7 @@ public class PushNotificationSenderEndpoint {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response send(final UnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
@@ -126,8 +126,7 @@ public class PushNotificationSenderEndpoint {
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 
-        return Response.status(Status.ACCEPTED)
-                .entity("Job submitted").build();
+        return Response.status(Status.ACCEPTED).entity("{}").build();
     }
 
     /**
