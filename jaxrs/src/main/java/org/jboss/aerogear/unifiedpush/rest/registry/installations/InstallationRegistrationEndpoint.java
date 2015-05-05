@@ -215,6 +215,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @POST
     @Path("/importer")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response importDevice(
             @MultipartForm
             ImporterForm form,
@@ -244,8 +245,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         clientInstallationService.addInstallations(variant, devices);
 
         // return directly, the above is async and may take a bit :-)
-        return Response.status(Status.OK)
-                .entity("Job submitted for processing").build();
+        return Response.ok("{}").build();
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
