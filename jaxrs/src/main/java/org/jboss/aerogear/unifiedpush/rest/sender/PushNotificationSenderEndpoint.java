@@ -28,8 +28,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -105,7 +105,7 @@ public class PushNotificationSenderEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response send(final UnifiedPushMessage message, @Context HttpServletRequest request) {
+    public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {

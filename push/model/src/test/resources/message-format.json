@@ -1,6 +1,4 @@
 {
-  "ipAddress": null,
-  "clientIdentifier": null,
   "message": {
     "alert": "HELLO!",
     "sound": "default",
