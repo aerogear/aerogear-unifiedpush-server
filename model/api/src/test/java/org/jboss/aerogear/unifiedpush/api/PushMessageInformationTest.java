@@ -20,32 +20,44 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 public class PushMessageInformationTest {
 
     private PushMessageInformation pushMessageInformation;
+    private Date openAppDate = new Date();
+    private Date lastOpenDate = new Date();
 
     @Before
     public void setup() {
+
+
         // general job data
         pushMessageInformation = new PushMessageInformation();
         pushMessageInformation.setPushApplicationId("123");
         pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
         pushMessageInformation.setClientIdentifier("Java Sender Client");
+        pushMessageInformation.setAppOpenCounter(1);
+        pushMessageInformation.setFirstOpenDate(openAppDate);
+        pushMessageInformation.setLastOpenDate(lastOpenDate);
+
 
         // two involved variants:
         VariantMetricInformation variantInfo1 = new VariantMetricInformation();
         variantInfo1.setVariantID("345");
         variantInfo1.setReceivers(500);
         variantInfo1.setDeliveryStatus(Boolean.FALSE);
+        variantInfo1.setVariantOpenCounter(1);
 
         VariantMetricInformation variantInfo2 = new VariantMetricInformation();
         variantInfo2.setVariantID("678");
         variantInfo2.setReceivers(100);
         variantInfo2.setDeliveryStatus(Boolean.TRUE);
+        variantInfo1.setVariantOpenCounter(2);
 
         // add the variant metadata:
         pushMessageInformation.getVariantInformations().add(variantInfo1);
@@ -68,5 +80,8 @@ public class PushMessageInformationTest {
         assertThat(pushMessageInformation.getIpAddress()).isEqualTo("127.0.0.1");
         assertThat(pushMessageInformation.getPushApplicationId()).isEqualTo("123");
         assertThat(pushMessageInformation.getClientIdentifier()).isEqualTo("Java Sender Client");
+        assertThat(pushMessageInformation.getAppOpenCounter()).isEqualTo(1);
+        assertThat(pushMessageInformation.getFirstOpenDate()).isEqualTo(openAppDate);
+        assertThat(pushMessageInformation.getLastOpenDate()).isEqualTo(lastOpenDate);
     }
 }

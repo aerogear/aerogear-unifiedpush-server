@@ -181,4 +181,13 @@ public class HttpRequestHelperTest {
         assertThat(HttpRequestUtil.extractSortingQueryParamValue("foo")).isTrue();
         assertThat(HttpRequestUtil.extractSortingQueryParamValue("AsC")).isTrue();
     }
+
+    @Test
+    public void extractAeroGearsPushIdHeader() {
+        final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("aerogear-push-id")).thenReturn("123");
+        final String aerogearPushId = HttpRequestUtil.extractPushIdentifier(request);
+
+        assertThat(aerogearPushId).isEqualTo("123");
+    }
 }

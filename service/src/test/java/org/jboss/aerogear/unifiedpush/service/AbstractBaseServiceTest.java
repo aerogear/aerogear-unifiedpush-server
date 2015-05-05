@@ -21,17 +21,19 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.keycloak.KeycloakPrincipal;
@@ -117,11 +119,13 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(JPACategoryDao.class);
+        beans.addManagedClass(JPAVariantMetricInformationDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
+        beans.addManagedClass(PushMessageMetricsService.class);
 
         return beans;
     }

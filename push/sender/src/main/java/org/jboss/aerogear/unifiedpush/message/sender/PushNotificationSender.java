@@ -27,14 +27,17 @@ import java.util.Collection;
  */
 public interface PushNotificationSender {
 
+    String AEROGEAR_PUSH_ID = "aerogear-push-id";
+
     /**
      * Sends the {@link UnifiedPushMessage} to the given clients, identified by a collection of tokens, the underlying push network.
      *
      * @param variant contains details for the underlying push network, e.g. API Keys/Ids
      * @param clientIdentifiers platform specific collection of client identifiers
      * @param pushMessage payload to be send to the given clients
+     * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
      * @param senderCallback invoked after submitting the request to the underlying push network to indicate the status
      *                       of the request (<code>success</code> or <code>error</code>
      */
-    void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback);
+    void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback);
 }

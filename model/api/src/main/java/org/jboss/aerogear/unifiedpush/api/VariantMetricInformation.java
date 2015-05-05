@@ -31,6 +31,7 @@ public class VariantMetricInformation extends BaseModel {
     private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
+    private long variantOpenCounter;
 
     @JsonIgnore
     private PushMessageInformation pushMessageInformation;
@@ -96,5 +97,22 @@ public class VariantMetricInformation extends BaseModel {
 
     public void setPushMessageInformation(PushMessageInformation pushMessageInformation) {
         this.pushMessageInformation = pushMessageInformation;
+    }
+
+    /**
+     * To track how many time this variant has been opened after a Push Notification
+     *
+     * @return long , the times this variant has been opened after a Push Notification
+     */
+    public long getVariantOpenCounter() {
+        return variantOpenCounter;
+    }
+
+    public void setVariantOpenCounter(long variantOpenCounter) {
+        this.variantOpenCounter = variantOpenCounter;
+    }
+
+    public void incrementVariantOpenCounter() {
+        this.setVariantOpenCounter(this.getVariantOpenCounter() + 1);
     }
 }
