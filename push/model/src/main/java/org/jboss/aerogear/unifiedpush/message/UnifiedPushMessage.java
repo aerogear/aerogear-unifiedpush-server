@@ -80,9 +80,6 @@ public class UnifiedPushMessage implements Serializable {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private String ipAddress;
-    private String clientIdentifier;
-
     private Message message = new Message();
 
     private Criteria criteria = new Criteria();
@@ -115,29 +112,9 @@ public class UnifiedPushMessage implements Serializable {
         this.message = message;
     }
 
-    /**
-     * The IP address from the agent that did issue the push message request.
-     */
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    /**
-     * The Client Identifier showing who triggered the Push Notification
-     */
-    public String getClientIdentifier() { return clientIdentifier; }
-
-    public void setClientIdentifier(String clientIdentifier) { this.clientIdentifier = clientIdentifier; }
-
     public String toStrippedJsonString() {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
-            json.put("ipAddress", this.ipAddress);
-            json.put("clientIdentifier", this.clientIdentifier);
             json.put("alert", this.message.getAlert());
             json.put("criteria", this.criteria);
             json.put("config", this.config);

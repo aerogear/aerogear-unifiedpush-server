@@ -72,7 +72,7 @@ public class NotificationRouter {
      * @param message the message
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void submit(PushApplication pushApplication, UnifiedPushMessage message) {
+    public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");
 
         final PushMessageInformation pushMessageInformation =
