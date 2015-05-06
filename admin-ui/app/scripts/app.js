@@ -4,13 +4,11 @@
 (function() {
 
   var app = angular.module('upsConsole', [
-    'upsConsole.services',
     'ngResource',
     'ngNewRouter',
     'ngAnimate',
     'ngIdle',
     'ui.bootstrap',
-    'ups.directives',
     'patternfly.notification'
   ]);
 

@@ -1,27 +1,7 @@
 'use strict';
 
 /* Directives */
-angular.module('ups.directives', ['upsConsole.services'])
-
-  .directive('upsNavigation', function () {
-    return {
-      scope: {
-        current: '@'
-      },
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/ups-navigation.html'
-    };
-  })
-
-  .directive('upsBreadcrumb', function () {
-    return {
-      templateUrl: 'directives/ups-breadcrumb.html',
-      controller: function($scope, $compile, breadcrumbs) {
-        $scope.breadcrumbs = breadcrumbs;
-      }
-    };
-  })
+angular.module('upsConsole')
 
   .directive('upsFiles', function () {
     return {

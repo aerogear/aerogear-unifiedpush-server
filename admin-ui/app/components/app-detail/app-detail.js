@@ -28,7 +28,7 @@ angular.module('upsConsole')
 
     this.sendNotification = function() {
       $modal.open({
-        templateUrl: 'views/dialogs/send-push-notification.html',
+        templateUrl: 'dialogs/send-push-notification.html',
         controller: function( $scope, $modalInstance ) {
 
           $scope.app = self.app;

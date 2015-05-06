@@ -53,7 +53,7 @@ angular.module('upsConsole')
 
     this.delete = function( variant ) {
       $modal.open({
-        templateUrl: 'views/dialogs/remove-variant.html',
+        templateUrl: 'dialogs/remove-variant.html',
         controller: function( $modalInstance, $scope ) {
           $scope.variant = variant;
           $scope.confirm = function() {

@@ -1,6 +1,6 @@
 'use strict';
 
-var upsServices = angular.module('upsConsole.services');
+var upsServices = angular.module('upsConsole');
 
 upsServices.factory('applicationsEndpoint', function ($resource, $q) {
   return $resource('rest/applications/:appId/:verb', {

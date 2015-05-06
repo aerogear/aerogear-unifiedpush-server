@@ -147,11 +147,11 @@
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
-<script src="scripts/decorators/$resourceDecorator.js"></script>
-<script src="scripts/router.js"></script>
-<script src="scripts/idleService.js"></script>
+<script src="scripts/services/$resourceDecorator.js"></script>
+<script src="scripts/routes.js"></script>
 
 <script src="scripts/controllers/AppController.js"></script>
+<script src="scripts/controllers/IdleController.js"></script>
 
 <script src="components/home/home.js"></script>
 <script src="components/welcome/welcome.js"></script>
@@ -165,16 +165,17 @@
 <script src="components/wizard04-send-push-notification/wizard04-send-push-notification.js"></script>
 <script src="components/wizard05-setup-sender/wizard05-setup-sender.js"></script>
 
-<script src="scripts/services/upsConsole.services.module.js"></script>
 <script src="scripts/services/variantModal.js"></script>
-<script src="scripts/services/applicationsEndpoint.js"></script>
-<script src="scripts/services/variantsEndpoint.js"></script>
-<script src="scripts/services/messageSenderEndpoint.js"></script>
-<script src="scripts/services/metricsEndpoint.js"></script>
-<script src="scripts/services/dashboardEndpoint.js"></script>
 <script src="scripts/services/contextProvider.js"></script>
 <script src="scripts/services/errorReporting.js"></script>
+
 <script src="scripts/directives.js"></script>
+
+<script src="scripts/endpoints/applicationsEndpoint.js"></script>
+<script src="scripts/endpoints/variantsEndpoint.js"></script>
+<script src="scripts/endpoints/messageSenderEndpoint.js"></script>
+<script src="scripts/endpoints/metricsEndpoint.js"></script>
+<script src="scripts/endpoints/dashboardEndpoint.js"></script>
 <!-- endbuild -->
 
 <!-- build:js scripts/templates.js -->

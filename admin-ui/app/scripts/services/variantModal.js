@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('upsConsole.services').factory('variantModal', function ($modal, $q, variantsEndpoint) {
+angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint) {
   var service = {
     add: function (app) {
       return $modal.open({
-        templateUrl: 'views/dialogs/create-variant.html',
+        templateUrl: 'dialogs/create-variant.html',
         controller: function ($scope, $modalInstance) {
 
           $scope.isNew = true;
@@ -45,7 +45,7 @@ angular.module('upsConsole.services').factory('variantModal', function ($modal, 
 
     edit: function (app, variant) {
       return $modal.open({
-        templateUrl: 'views/dialogs/create-variant.html',
+        templateUrl: 'dialogs/create-variant.html',
         controller: function ($scope, $modalInstance) {
 
           $scope.isNew = false;
