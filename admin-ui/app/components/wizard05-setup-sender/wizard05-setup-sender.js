@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard05SetupSenderController', function( variantModal, $router, createAppWizard, ContextProvider ) {
+  .controller('Wizard05SetupSenderController', function( variantModal, $router, createAppWizard, ContextProvider, appModal ) {
 
     var self = this;
 
@@ -18,6 +18,14 @@ angular.module('upsConsole')
     this.app = createAppWizard.app;
     this.variant = createAppWizard.variant;
     this.contextPath = ContextProvider.contextPath();
+
+    this.editAppName = function() {
+      var appClone = angular.extend( {}, self.app );
+      appModal.editName( appClone )
+        .then(function( updatedApp ) {
+          angular.extend( self.app, updatedApp );
+        });
+    };
 
   });
 

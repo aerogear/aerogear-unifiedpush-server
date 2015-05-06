@@ -2,6 +2,27 @@
 
 angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint) {
   var service = {
+
+    editName: function(app, variant) {
+      return $modal.open({
+        templateUrl: 'dialogs/edit-variant-name.html',
+        controller: function($scope, $modalInstance) {
+          $scope.variant = variant;
+
+          $scope.confirm = function() {
+            updateVariant( app, $scope.variant )
+              .then(function ( updatedVariant ) {
+                $modalInstance.close( updatedVariant );
+              });
+          };
+
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      }).result;
+    },
+
     add: function (app) {
       return $modal.open({
         templateUrl: 'dialogs/create-variant.html',
@@ -53,30 +74,10 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
           $scope.variant.certificates = []; // initialize file list for upload
 
           $scope.confirm = function () {
-            var endpointParams = {
-              appId: app.pushApplicationID,
-              variantType: extractVariantType($scope.variant),
-              variantId: variant.variantID
-            };
-            var variantData = extractValidVariantData($scope.variant);
-            var promise;
-            if (variant.type !== 'ios') {
-              promise = variantsEndpoint.update(endpointParams, variantData);
-            } else {
-              if (variant.certificates.length > 0) {
-                promise = variantsEndpoint.updateWithFormData(endpointParams, variantData);
-              } else {
-                promise = variantsEndpoint.patch(endpointParams, {
-                  name: variant.name,
-                  description: variant.description,
-                  production: variant.production
-                });
-              }
-            }
-            promise.then(function (modifiedVariant) {
-              modifiedVariant.variantID = variant.variantID;
-              $modalInstance.close(modifiedVariant);
-            });
+            updateVariant( app, $scope.variant )
+              .then(function ( updatedVariant ) {
+                $modalInstance.close( updatedVariant );
+              });
           };
 
           $scope.dismiss = function () {
@@ -101,6 +102,28 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
       }).result;
     }
   };
+
+  function updateVariant ( app, variant ) {
+    var endpointParams = {
+      appId: app.pushApplicationID,
+      variantType: extractVariantType(variant),
+      variantId: variant.variantID
+    };
+    var variantData = extractValidVariantData(variant);
+    if (variant.type !== 'ios') {
+      return variantsEndpoint.update(endpointParams, variantData);
+    } else {
+      if (variant.certificates.length > 0) {
+        return variantsEndpoint.updateWithFormData(endpointParams, variantData);
+      } else {
+        return variantsEndpoint.patch(endpointParams, {
+          name: variant.name,
+          description: variant.description,
+          production: variant.production
+        });
+      }
+    }
+  }
 
   function extractValidVariantData(variant) {
     var properties = ['name'], result = {};

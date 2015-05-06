@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard04SendPushNotificationController', function( $router, createAppWizard, Notifications, $rootScope, messageSenderEndpoint ) {
+  .controller('Wizard04SendPushNotificationController', function( $router, createAppWizard, Notifications, $rootScope, messageSenderEndpoint, appModal ) {
 
     var self = this;
 
@@ -36,6 +36,14 @@ angular.module('upsConsole')
         })
         .catch(function() {
           Notifications.error('Failed to sent notification');
+        });
+    };
+
+    this.editAppName = function() {
+      var appClone = angular.extend( {}, self.app );
+      appModal.editName( appClone )
+        .then(function( updatedApp ) {
+          angular.extend( self.app, updatedApp );
         });
     };
 

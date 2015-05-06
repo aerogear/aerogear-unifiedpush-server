@@ -1,8 +1,7 @@
 angular.module('upsConsole')
-  .controller('Wizard02AddVariantController', function( variantModal, $router, createAppWizard, Notifications ) {
+  .controller('Wizard02AddVariantController', function( variantModal, $router, createAppWizard, Notifications, appModal ) {
 
     this.canActivate = function() {
-      console.log('canActivate');
       if ( createAppWizard.app ) {
         return true;
       } else {
@@ -10,6 +9,8 @@ angular.module('upsConsole')
         return false;
       }
     };
+
+    var self = this;
 
     this.app = createAppWizard.app;
 
@@ -24,6 +25,14 @@ angular.module('upsConsole')
           Notifications.error('Failed to create variant ' + variant.name);
         });
     };
+
+    this.editAppName = function() {
+      var appClone = angular.extend( {}, self.app );
+      appModal.editName( appClone )
+        .then(function( updatedApp ) {
+          angular.extend( self.app, updatedApp );
+        });
+    }
 
   });
 

@@ -8,7 +8,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href="#"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard02AddVariant.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
           </ul>
         </div>
 
@@ -38,7 +38,7 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a href="#"><a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a href="#"><a ng-link="appDetail({app: wizard02AddVariant.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
         </div>
         <h2 class="h5">Wizard steps</h2>
       </div>

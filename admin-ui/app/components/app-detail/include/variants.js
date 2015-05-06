@@ -37,17 +37,30 @@ angular.module('upsConsole')
     };
 
     this.edit = function( variant ) {
-      var variantEditableCopy = angular.extend({}, variant)
-      return variantModal.edit( this.app, variantEditableCopy )
-        .then(function( variant ) {
-          var variantToUpdate = self.app.variants.filter(function(v) {
-            return v.variantID === variant.variantID;
-          })[0];
-          angular.extend(variantToUpdate, variant);
+      var variantClone = angular.extend({}, variant);
+      return variantModal.edit( this.app, variantClone )
+        .then(function( updatedVariant ) {
+          angular.extend(variant, updatedVariant);
           Notifications.success('Variant ' + variant.name + ' was successfully modified');
         })
+        .catch(function( e ) {
+          if ( e != 'cancel' ) {
+            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+          }
+        });
+    };
+
+    this.editName = function( variant ) {
+      var variantClone = angular.extend({}, variant);
+      return variantModal.editName( self.app, variantClone )
+        .then(function( updatedVariant ) {
+          angular.extend(variant, updatedVariant);
+          Notifications.success('The name of ' + variant.name + ' variant was successfully changed');
+        })
         .catch(function() {
-          Notifications.error('Failed to create variant ' + variant.name);
+          if ( e != 'cancel' ) {
+            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+          }
         });
     };
 
