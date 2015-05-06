@@ -22,6 +22,7 @@ import ar.com.fernandospr.wns.model.*;
 import ar.com.fernandospr.wns.model.builders.*;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
@@ -193,7 +194,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 uriBuilder.queryParam("message", message);
             }
             //add aerogear-push-id
-            uriBuilder.queryParam(AEROGEAR_PUSH_ID, pushMessageInformationId);
+            uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
             final String query = uriBuilder.build().getQuery();
             return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
         }

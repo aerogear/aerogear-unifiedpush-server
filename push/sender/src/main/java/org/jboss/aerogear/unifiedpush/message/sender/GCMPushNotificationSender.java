@@ -24,6 +24,7 @@ import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -93,7 +94,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         }
 
         //add the aerogear-push-id
-        gcmBuilder.addData(AEROGEAR_PUSH_ID, pushMessageInformationId);
+        gcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         Message gcmMessage = gcmBuilder.build();
 

@@ -20,6 +20,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.adm.ADM;
@@ -61,7 +62,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         }
 
         //add the aerogear-push-id
-        builder.dataField(AEROGEAR_PUSH_ID, pushMessageInformationId);
+        builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         final AdmVariant admVariant = (AdmVariant) variant;
         for(String token : clientIdentifiers) {

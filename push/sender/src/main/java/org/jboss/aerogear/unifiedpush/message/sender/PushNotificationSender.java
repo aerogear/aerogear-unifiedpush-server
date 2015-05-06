@@ -27,8 +27,6 @@ import java.util.Collection;
  */
 public interface PushNotificationSender {
 
-    String AEROGEAR_PUSH_ID = "aerogear-push-id";
-
     /**
      * Sends the {@link UnifiedPushMessage} to the given clients, identified by a collection of tokens, the underlying push network.
      *

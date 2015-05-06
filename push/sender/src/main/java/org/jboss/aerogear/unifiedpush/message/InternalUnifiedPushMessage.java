@@ -27,6 +27,11 @@ package org.jboss.aerogear.unifiedpush.message;
  */
 public class InternalUnifiedPushMessage extends UnifiedPushMessage {
 
+    /**
+     * Constant for the "push payload id" key
+     */
+    public static final String PUSH_MESSAGE_ID = "aerogear-push-id";
+
     private String ipAddress;
     private String clientIdentifier;
 

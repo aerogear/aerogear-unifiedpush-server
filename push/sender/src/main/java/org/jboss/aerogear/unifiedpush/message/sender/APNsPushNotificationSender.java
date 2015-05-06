@@ -28,6 +28,7 @@ import com.notnoop.apns.internal.Utilities;
 import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
@@ -105,7 +106,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
 
         //add aerogear-push-id
-        builder = builder.customField(AEROGEAR_PUSH_ID, pushMessageInformationId);
+        builder = builder.customField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {
