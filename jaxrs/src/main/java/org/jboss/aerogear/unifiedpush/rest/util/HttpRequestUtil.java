@@ -86,16 +86,6 @@ public final class HttpRequestUtil {
     }
 
     /**
-     * Extract the header that identifies the push message.
-     *
-     * @param request , the current @link{{HttpServletRequest}}
-     * @return value of header
-     */
-    public static String extractPushIdentifier(HttpServletRequest request) {
-        return request.getHeader("aerogear-push-id");
-    }
-
-    /**
      * Simple validation, using java.net.InetAddress.getByName().
      *
      * @param ip the IP address string to check
