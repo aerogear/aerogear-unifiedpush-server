@@ -19,7 +19,7 @@ angular.module('upsConsole').factory('appModal', function ($modal, applicationsE
 
           $scope.dismiss = function () {
             $modalInstance.dismiss('cancel');
-          }
+          };
         }
       }).result;
     }

@@ -29,6 +29,43 @@ angular.module('upsConsole')
     };
   })
 
+  .directive('upsDoc', function ( docsLinks, $log ) {
+    return {
+      scope: {
+        'docId': '@',
+        'param': '='
+      },
+      restrict: 'A',
+      replace: false,
+      link: function ($scope, $element, attributes) {
+        $element.attr('target', '_blank');
+        attributes.$observe('upsDoc', function( upsDocValue ) {
+
+          function updateHref() {
+            var href = docsLinks[ upsDocValue ];
+            if (href) {
+              $element.attr('href', href);
+            } else if (Object.keys(docsLinks).length > 0) {
+              $log.warn('ups-doc: cannot resolve a link for id: ' + upsDocValue);
+              return true;
+            }
+            return !!href; // return true if we resolved the href
+          }
+
+          if (!updateHref()) {
+            var unwatch = $scope.$watch(function () {
+              return docsLinks[ upsDocValue ];
+            }, function () {
+              if (updateHref()) {
+                unwatch(); // if we finally resolve the href
+              }
+            });
+          }
+        });
+      }
+    };
+  })
+
   .directive('upsPluralize', function () {
     return {
       scope: {

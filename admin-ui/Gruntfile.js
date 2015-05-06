@@ -220,8 +220,7 @@ module.exports = function (grunt) {
               'components/**',
               'snippets/**',
               '*.{ico,txt}',
-              '.htaccess',
-              'keycloak.json',
+              '*.json',
               'img/{,*/}*.{webp,gif,png,jpg,svg}'
             ]
           },

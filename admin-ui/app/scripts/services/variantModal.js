@@ -18,7 +18,7 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
 
           $scope.dismiss = function() {
             $modalInstance.dismiss('cancel');
-          }
+          };
         }
       }).result;
     },

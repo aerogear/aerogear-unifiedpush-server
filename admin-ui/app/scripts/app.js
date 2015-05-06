@@ -101,5 +101,14 @@
     $logProvider.debugEnabled( appConfig.logDebugEnabled );
   });
 
+  app.factory('docsLinks', function( $http ) {
+    var result = {};
+    $http.get('docs-links.json')
+      .then(function( response ) {
+        angular.extend( result, response.data );
+      });
+    return result;
+  });
+
 
 })();
