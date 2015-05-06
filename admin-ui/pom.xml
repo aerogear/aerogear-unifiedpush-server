@@ -97,6 +97,7 @@
                             <includes>
                                 <include>dist/**</include>
                                 <include>.tmp/**</include>
+                                <include>.build-tmp/**</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
@@ -109,7 +110,7 @@
     <profiles>
         <profile>
             <!--
-                Clears all cached Node/NPM/Bower artifacts makes completely fresh build 
+                Clears all cached Node/NPM/Bower artifacts makes completely fresh build
 
                 usage: mvn clean install -Dfrontend.clean.force
             -->
@@ -131,10 +132,11 @@
                                     <includes>
                                         <include>dist/**</include>
                                         <include>.tmp/**</include>
+                                        <include>.build-tmp/**</include>
                                         <include>node/**</include>
                                         <include>node_modules/**</include>
+                                        <include>node_tmp/**</include>
                                         <include>app/bower_components/**</include>
-                                        <include>.build-tmp/**</include>
                                     </includes>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
