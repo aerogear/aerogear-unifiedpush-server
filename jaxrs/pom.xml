@@ -26,9 +26,7 @@
     <artifactId>unifiedpush-jaxrs</artifactId>
     <name>UnifiedPush RESTful Endpoint</name>
 
-
     <dependencies>
-
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -100,50 +98,60 @@
             <artifactId>json-patch</artifactId>
             <version>1.7</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.qmino</groupId>
+            <artifactId>miredot-annotations</artifactId>
+            <version>1.3.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>jaxrs-doclet</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>jax-rs-docs</id>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <doclet>com.lunatech.doclets.jax.jaxrs.JAXRSDoclet</doclet>
-                                    <docletArtifacts>
-                                        <docletArtifact>
-                                            <groupId>com.lunatech.jax-doclets</groupId>
-                                            <artifactId>doclets</artifactId>
-                                            <version>0.10.0</version>
-                                        </docletArtifact>
-                                    </docletArtifacts>
-                                    <detectOfflineLinks>false</detectOfflineLinks>
-                                    <offlineLinks>
-                                        <offlineLink>
-                                            <url>../javadocs</url>
-                                            <location>${project.basedir}/../target/site/apidocs</location>
-                                        </offlineLink>
-                                    </offlineLinks>
-                                    <additionalparam>-disablehttpexample -disablejavascriptexample</additionalparam>
-                                    <!-- only document the BASIC protected URIs for sender and (un)registration -->
-                                    <excludePackageNames>org.jboss.aerogear.unifiedpush.rest.metrics:org.jboss.aerogear.unifiedpush.rest.registry.applications:*.util.*</excludePackageNames>
-                                </configuration>
-                                <goals>
-                                    <goal>javadoc</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-	            </plugins>
-	        </build>
-		</profile>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.qmino</groupId>
+                <artifactId>miredot-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>restdoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <licence>
+                        cHJvamVjdHxvcmcuamJvc3MuYWVyb2dlYXIudW5pZmllZHB1c2gudW5pZmllZHB1c2gtamF4cnN8MjAxNy0wNS0wMXx0cnVlfC0xI01Dd0NGQitaa0VVRVlsaU9LQjljR2h5TWNSWm1VMTREQWhRbUlHOXY3MExCR0FoT2FubklFSER2SWl1OVZnPT0=
+                    </licence>
+                    <output>
+                        <html>
+                            <baseUrl>https://SERVER:PORT/CONTEXT/rest</baseUrl>
+                            <initialCollapseLevel>100</initialCollapseLevel>
+                            <hideIssuesTab>false</hideIssuesTab>
+                        </html>
+                    </output>
+                    <restModel>
+                        <httpStatusCodes>
+                            <httpStatusCode>
+                                <httpCode>200</httpCode>
+                                <document>get</document>
+                                <defaultMessage>The service call has completed successfully</defaultMessage>
+                            </httpStatusCode>
+                        </httpStatusCodes>
+                    </restModel>
+                    <analysis>
+                        <checks>
+                            <JAVADOC_MISSING_AUTHORS>ignore</JAVADOC_MISSING_AUTHORS>
+                            <JAVADOC_MISSING_SUMMARY>ignore</JAVADOC_MISSING_SUMMARY>
+                        </checks>
+                    </analysis>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
+    <profiles>
         <profile>
             <id>test</id>
             <activation>
@@ -177,5 +185,21 @@
             </dependencies>
         </profile>
     </profiles>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>miredot</id>
+            <name>MireDot Releases</name>
+            <url>http://nexus.qmino.com/content/repositories/miredot</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>miredot</id>
+            <name>MireDot Releases</name>
+            <url>http://nexus.qmino.com/content/repositories/miredot</url>
+        </repository>
+    </repositories>
 
 </project>

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -35,9 +36,21 @@ public class PushMetricsEndpoint {
     @Inject
     private PushMessageMetricsService metricsService;
 
+    /**
+     * GET info about submitted push messages for the given Push Application
+     *
+     * @param id        id of {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
+     * @param page      page number
+     * @param pageSize  number of items per page
+     * @param sorting   sorting order: {@code asc} (default) or {@code desc}
+     * @return          list of {@link PushMessageInformation}s
+     *
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @GET
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushMessageInformation>")
     public Response pushMessageInformationPerApplication(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,
@@ -61,9 +74,21 @@ public class PushMetricsEndpoint {
                 .header("total", pageResult.getCount()).build();
     }
 
+    /**
+     * GET info about submitted push messages for the given Variant
+     *
+     * @param id        id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
+     * @param page      page number
+     * @param pageSize  number of items per page
+     * @param sorting   sorting order: {@code asc} (default) or {@code desc}
+     * @return          list of {@link PushMessageInformation}s
+     *
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @GET
     @Path("/variant/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushMessageInformation>")
     public Response pushMessageInformationPerVariant(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,
