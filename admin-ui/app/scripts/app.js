@@ -9,7 +9,8 @@
     'ngAnimate',
     'ngIdle',
     'ui.bootstrap',
-    'patternfly.notification'
+    'patternfly.notification',
+    'ngClipboard'
   ]);
 
   /**
@@ -108,6 +109,10 @@
         angular.extend( result, response.data );
       });
     return result;
+  });
+
+  app.config(function(ngClipProvider) {
+    ngClipProvider.setPath('img/ZeroClipboard.swf');
   });
 
 })();
