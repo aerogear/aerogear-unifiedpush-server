@@ -104,8 +104,7 @@ public class NotificationDispatcher {
         this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receivers, deliveryStatus, null);
     }
 
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,
-            final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setPushMessageInformation(pushMessageInformation);
         variantMetricInformation.setVariantID(variantID);

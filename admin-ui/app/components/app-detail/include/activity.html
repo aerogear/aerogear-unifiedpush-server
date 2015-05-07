@@ -36,7 +36,7 @@
       </a>
     </td>
     <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
-    <td>{{ metric.$message.ipAddress }}</td>
+    <td>{{ metric.ipAddress }}</td>
     <td>{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened</td>
     <td ng-if="metric.deliveryFailed != true" class="success"><i class="fa fa-check"></i> Succeeded</td>
     <td ng-if="metric.deliveryFailed == true" class="danger">
