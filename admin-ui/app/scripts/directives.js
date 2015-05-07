@@ -83,25 +83,45 @@ angular.module('upsConsole')
   .directive('upsClientSnippets', function () {
     return {
       scope: {
-        variant: '=',
-        activeSnippet: '@'
+        variant: '='
       },
-      controller: function( $scope, ContextProvider ) {
+      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
+        $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
+        $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
           android:      { name: 'Android',    snippets: ['android', 'cordova'] },
-          ios:          { name: 'iOS',        snippets: ['ios-objc', 'ios-swift', 'cordova']},
+          ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova']},
           windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
           windows_wns:  { name: 'Windows',    snippets: ['wns', 'cordova'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
           adm:          { name: 'ADM',        snippets: ['cordova'] }
         };
-
-        $scope.contextPath = ContextProvider.contextPath();
-
         $scope.state = {
-          activeSnippet: $scope.activeSnippet
+          activeSnippet: $scope.typeEnum[$scope.variant.type].snippets[0]
         };
-
+        $scope.snippets = {
+          'android': { url: 'snippets/register-device/android.java' },
+          'cordova': { url: 'snippets/register-device/cordova.js' },
+          'ios_objc': { url: 'snippets/register-device/ios.objc' },
+          'ios_swift': { url: 'snippets/register-device/ios.swift' },
+          'mpns': { url: 'snippets/register-device/mpns.cs' },
+          'wns': { url: 'snippets/register-device/wns.cs' }
+        };
+        angular.forEach($scope.snippets, function(value, key) {
+          $http.get( value.url )
+            .then(function( response ) {
+              $scope.snippets[key].source = $interpolate(response.data)($scope);
+            });
+        });
+        $scope.copySnippet = function() {
+          return $scope.snippets[$scope.state.activeSnippet].source;
+        };
+        $scope.copied = function() {
+          $scope.clipText = 'Copied!';
+          $timeout(function() {
+            $scope.clipText = 'Copy to clipboard';
+          }, 1000);
+        };
         $scope.cordovaVariantType = (function() {
           switch ($scope.variant.type) {
           case 'windows_mpns':
@@ -110,7 +130,6 @@ angular.module('upsConsole')
             return $scope.variant.type;
           }
         })();
-
         $scope.senderID = $scope.variant.type === 'android' ? $scope.variant.projectNumber : null;
       },
       restrict: 'E',
@@ -124,8 +143,30 @@ angular.module('upsConsole')
         app: '=',
         activeSnippet: '@'
       },
-      controller: function( $scope, ContextProvider ) {
+      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
+        $scope.activeSnippet = $scope.activeSnippet || 'java';
+        $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
+        $scope.snippets = {
+          java: { url: 'snippets/senders/sender.java' },
+          nodejs: { url: 'snippets/senders/sender-nodejs.js' },
+          curl: { url: 'snippets/senders/sender-curl.sh' }
+        };
+        angular.forEach($scope.snippets, function(value, key) {
+          $http.get( value.url )
+            .then(function( response ) {
+              $scope.snippets[key].source = $interpolate(response.data)($scope);
+            });
+        });
+        $scope.copySnippet = function() {
+          return $scope.snippets[$scope.activeSnippet].source;
+        };
+        $scope.copied = function() {
+          $scope.clipText = 'Copied!';
+          $timeout(function() {
+            $scope.clipText = 'Copy to clipboard';
+          }, 1000);
+        };
       },
       restrict: 'E',
       templateUrl: 'directives/ups-sender-snippets.html'
@@ -174,12 +215,30 @@ angular.module('upsConsole')
     };
   })
 
-
   .directive('sidebarPf', function() {
     return {
       restrict: 'C',
       link: function () {
         sidebar();
+      }
+    };
+  })
+
+  .directive('prettyprint', function() {
+    return {
+      restrict: 'C',
+      link: function ($scope, $element) {
+        var unwatch = $scope.$watch(function() {
+          return $element.text();
+        }, function( text ) {
+          if (text) {
+            window.requestAnimationFrame(function() {
+              $scope.var = $element.html();
+              $element.html(prettyPrintOne($element.html(), '', false));
+            });
+            unwatch();
+          }
+        });
       }
     };
   });

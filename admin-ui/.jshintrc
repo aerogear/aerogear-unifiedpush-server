@@ -24,6 +24,7 @@
     "hljs": false,
     "Keycloak": false,
     "UPS": true,
+    "prettyPrintOne": false,
     "sidebar": false
   }
 }
