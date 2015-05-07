@@ -7,12 +7,12 @@
 
 <div ng-if="sender.activeSnippet == 'java' || !sender.activeSnippet">
   <h3>Set up Java UPS Sender API</h3>
-  <p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a href="https://aerogear.org/getstarted/downloads/#push">dependency to your Java project</a>.</p>
+  <p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>
   <p>Then let's use following snippet in your Java code to enable push notification sending.</p>
 </div>
 <div ng-if="sender.activeSnippet == 'nodejs'">
   <h3>Set up Node.js Sender API</h3>
-  <p>First you need to download add <code>unifiedpush-node-sender</code> as a <a href="https://aerogear.org/getstarted/downloads/#push">dependency to your project</a>.</p>
+  <p>First you need to download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>
   <p>Then let's use following snippet in your Node.js code to enable push notification sending.</p>
 </div>
 <div ng-if="sender.activeSnippet == 'curl'">
@@ -31,11 +31,12 @@
 
 
 <div ng-if="sender.activeSnippet == 'java' || !sender.activeSnippet">
-  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-java-client/">Java UPS Sender API in documentation</a>.</p>
+  <p>Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.</p>
+  <p>If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.</p>
 </div>
 <div ng-if="sender.activeSnippet == 'nodejs'">
-  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-nodejs-client/">Node.js UPS Sender API in documentation</a>.</p>
+  <p>Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.</p>
 </div>
 <div ng-if="sender.activeSnippet == 'curl'">
-  <p>Read more on the details of the <a href="https://aerogear.org/docs/specs/aerogear-unifiedpush-rest/overview-index.html">UPS REST Sender API in documentation</a>.</p>
+  <p>Read more on the details of the <a ups-doc="sender-api-rest">UPS REST Sender API in documentation</a>.</p>
 </div>

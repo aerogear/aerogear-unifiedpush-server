@@ -8,7 +8,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href="#"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard02AddVariant.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
           </ul>
         </div>
 
@@ -24,7 +24,7 @@
         <p><i class="fa fa-code-fork fa-5x muted"></i></p>
         <h1>Add a variant for {{ wizard02AddVariant.app.name }}.</h1>
         <p>The first step to set up your mobile device is to add a variants. That will generate the code necessary to register UPS on your device.</p>
-        <p>Learn more about variables <a href="#">on the documentation</a>.</p>
+        <p>Learn more about variants <a ups-doc="add-variant">in the documentation</a>.</p>
 
         <!--<p class="h3"><button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"><span class="pficon pficon-add"></span> Add a variant</button></p>-->
         <p class="h3"><button class="btn btn-primary btn-lg" ng-click="wizard02AddVariant.addVariant()"><span class="pficon pficon-add"></span> Add a variant</button></p>
@@ -38,7 +38,7 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a href="#"><a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a ng-link="appDetail({app: wizard02AddVariant.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
         </div>
         <h2 class="h5">Wizard steps</h2>
       </div>

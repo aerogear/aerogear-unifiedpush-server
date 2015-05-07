@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('HomeController', function( $q, $modal, $router, $rootScope, applicationsEndpoint, dashboardEndpoint ) {
+  .controller('HomeController', function( $q, $modal, $router, $rootScope, applicationsEndpoint, dashboardEndpoint, appModal, Notifications ) {
 
     var self = this;
 
@@ -36,9 +36,23 @@ angular.module('upsConsole')
         });
     };
 
+    this.changeName = function(app) {
+      var appClone = angular.extend({}, app);
+      appModal.editName( appClone )
+        .then(function( updatedApp ) {
+          angular.extend( app, updatedApp );
+          Notifications.success('The name of ' + app.name + ' application was successfully changed');
+        })
+        .catch(function() {
+          if ( e != 'cancel' ) {
+            Notifications.error('Failed to modify app ' + app.name + ': ' + e);
+          }
+        });
+    };
+
     this.deleteApp = function(app) {
       $modal.open({
-        templateUrl: 'views/dialogs/remove-app.html',
+        templateUrl: 'dialogs/remove-app.html',
         controller: function( $modalInstance, $scope ) {
           $scope.app = app;
           $scope.confirm = function() {

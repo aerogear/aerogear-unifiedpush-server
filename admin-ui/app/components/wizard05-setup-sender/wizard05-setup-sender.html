@@ -9,7 +9,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href="#"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard05SetupSender.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
           </ul>
         </div>
 
@@ -18,7 +18,7 @@
 
 
       <h2><strong>Backend:</strong> Set up sender API</h2>
-      <p><strong>Last step!</strong> Now that your mobile device is set up, lets make your backend server send notifications to this UnifiedPush Server using <a target="_blank" href="https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/">Aerogears Java sender API</a>:</p>
+      <p><strong>Last step!</strong> Now that your mobile device is set up, lets make your backend server send notifications to this UnifiedPush Server using <a ups-doc="sender-api">UPS Sender API</a>:</p>
       <dl class="dl-horizontal">
         <dt>Server URL</dt>
         <dd>{{ wizard05SetupSender.contextPath }}</dd>
@@ -29,9 +29,6 @@
       </dl>
 
       <ups-sender-snippets app="wizard05SetupSender.app"></ups-sender-snippets>
-
-      <p>If you have questions about this process, <a href="https://aerogear.org/docs/unifiedpush/ups_userguide/index/">visit the documentation for full step by step explanation</a>.</p>
-
 
       <div class="actions pull-right ups-wizard-actions">
         <a ng-link="wizard06Done" class="btn btn-primary btn-lg">Continue <i class="fa fa-angle-double-right"></i></a>
@@ -45,7 +42,7 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a href="#"><a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a href="#"><a ng-link="appDetail({app: wizard05SetupSender.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
         </div>
         <h2 class="h5">Wizard steps</h2>
       </div>
@@ -56,9 +53,6 @@
         <li class="done"><strong><i class="fa fa-check"></i></strong> Test! Send notification</li>
         <li class="active"><strong>5</strong> Backend: Set up sender API</li>
       </ol>
-
-
-
 
     </div><!-- /col -->
   </div><!-- /row -->

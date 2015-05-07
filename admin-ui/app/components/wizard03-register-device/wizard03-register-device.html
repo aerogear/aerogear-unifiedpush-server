@@ -7,7 +7,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href="#"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard03RegisterDevice.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
           </ul>
         </div>
 
@@ -17,7 +17,7 @@
 
       <div class="actions pull-right">
         <ul class="list-inline">
-          <li><a href="#"><span class="pficon pficon-edit"></span> Edit Variant</a></li>
+          <li><a href ng-click="wizard03RegisterDevice.editVariant()"><span class="pficon pficon-edit"></span> Edit Variant</a></li>
         </ul>
       </div>
 
@@ -26,7 +26,7 @@
         <span class="muted"><i class="fa fa-ban"></i> No installation yet</span>
       </h2>
 
-      <p><strong>We are half way there!</strong> Use the code snippet bellow to <a href="#">register your device</a> and allow it to receiving notifications through this UnifiedPush Server. If you don't know how to do this, <a href="#">go to the documentation for full sept by step explanation</a>.</p>
+      <p><strong>We are half way there!</strong> Use the code snippet bellow to <a ups-doc="register-device-{{ wizard03RegisterDevice.variant.type }}">register your device</a> and allow it to receiving notifications through this UnifiedPush Server. If you don't know how to do this, <a ups-doc="step-by-step-{{ wizard03RegisterDevice.variant.type }}">go to the documentation for full sept by step explanation</a>.</p>
 
       <ol>
         <li>Copy the code snippet and paste it on your device code.</li>
@@ -38,7 +38,7 @@
 
       <ups-client-snippets variant="wizard03RegisterDevice.variant"></ups-client-snippets>
 
-      <p>Next we are going to send a test notification. Make sure you <a href="#">build or deploy your app</a> after pasting the snnipet.</p>
+      <p>Next we are going to send a test notification. Make sure you <a ups-doc="build-and-deploy-{{ wizard03RegisterDevice.variant.type }}">build or deploy your app</a> after pasting the snippet.</p>
 
       <div class="actions pull-right ups-wizard-actions">
         <a ng-link="wizard04SendPushNotification" class="btn btn-primary btn-lg">Continue <i class="fa fa-angle-double-right"></i></a>
@@ -52,7 +52,7 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a href="#"><a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a href="#"><a ng-link="appDetail({app: wizard03RegisterDevice.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
         </div>
         <h2 class="h5">Wizard steps</h2>
       </div>

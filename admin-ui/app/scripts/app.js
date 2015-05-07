@@ -4,13 +4,11 @@
 (function() {
 
   var app = angular.module('upsConsole', [
-    'upsConsole.services',
     'ngResource',
     'ngNewRouter',
     'ngAnimate',
     'ngIdle',
     'ui.bootstrap',
-    'ups.directives',
     'patternfly.notification'
   ]);
 
@@ -101,6 +99,15 @@
   app.config(function ($logProvider, appConfigProvider) {
     var appConfig = appConfigProvider.$get();
     $logProvider.debugEnabled( appConfig.logDebugEnabled );
+  });
+
+  app.factory('docsLinks', function( $http ) {
+    var result = {};
+    $http.get('docs-links.json')
+      .then(function( response ) {
+        angular.extend( result, response.data );
+      });
+    return result;
   });
 
 

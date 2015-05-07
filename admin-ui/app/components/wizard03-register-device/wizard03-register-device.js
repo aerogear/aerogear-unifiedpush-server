@@ -1,8 +1,7 @@
 angular.module('upsConsole')
-  .controller('Wizard03RegisterDeviceController', function( variantModal, $router, createAppWizard ) {
+  .controller('Wizard03RegisterDeviceController', function( variantModal, $router, createAppWizard, appModal ) {
 
     this.canActivate = function() {
-      console.log('canActivate');
       if ( !createAppWizard.app ) {
         $router.root.navigate('/wizard/create-app');
         return false;
@@ -13,6 +12,8 @@ angular.module('upsConsole')
       }
       return true;
     };
+
+    var self = this;
 
     this.app = createAppWizard.app;
     this.variant = createAppWizard.variant;
@@ -29,6 +30,22 @@ angular.module('upsConsole')
           console.log('error');
         })
     };
+
+    this.editAppName = function() {
+      var appClone = angular.extend( {}, self.app );
+      appModal.editName( appClone )
+        .then(function( updatedApp ) {
+          angular.extend( self.app, updatedApp );
+        });
+    };
+
+    this.editVariant = function() {
+      var variantClone = angular.extend({}, self.variant);
+      return variantModal.edit( self.app, variantClone )
+        .then(function( updatedVariant ) {
+          angular.extend(self.variant, updatedVariant);
+        });
+    }
 
   });
 

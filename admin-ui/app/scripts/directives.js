@@ -1,27 +1,7 @@
 'use strict';
 
 /* Directives */
-angular.module('ups.directives', ['upsConsole.services'])
-
-  .directive('upsNavigation', function () {
-    return {
-      scope: {
-        current: '@'
-      },
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/ups-navigation.html'
-    };
-  })
-
-  .directive('upsBreadcrumb', function () {
-    return {
-      templateUrl: 'directives/ups-breadcrumb.html',
-      controller: function($scope, $compile, breadcrumbs) {
-        $scope.breadcrumbs = breadcrumbs;
-      }
-    };
-  })
+angular.module('upsConsole')
 
   .directive('upsFiles', function () {
     return {
@@ -44,6 +24,43 @@ angular.module('ups.directives', ['upsConsole.services'])
             }
             $scope.onChange();
           });
+        });
+      }
+    };
+  })
+
+  .directive('upsDoc', function ( docsLinks, $log ) {
+    return {
+      scope: {
+        'docId': '@',
+        'param': '='
+      },
+      restrict: 'A',
+      replace: false,
+      link: function ($scope, $element, attributes) {
+        $element.attr('target', '_blank');
+        attributes.$observe('upsDoc', function( upsDocValue ) {
+
+          function updateHref() {
+            var href = docsLinks[ upsDocValue ];
+            if (href) {
+              $element.attr('href', href);
+            } else if (Object.keys(docsLinks).length > 0) {
+              $log.warn('ups-doc: cannot resolve a link for id: ' + upsDocValue);
+              return true;
+            }
+            return !!href; // return true if we resolved the href
+          }
+
+          if (!updateHref()) {
+            var unwatch = $scope.$watch(function () {
+              return docsLinks[ upsDocValue ];
+            }, function () {
+              if (updateHref()) {
+                unwatch(); // if we finally resolve the href
+              }
+            });
+          }
         });
       }
     };

@@ -15,12 +15,12 @@
         -->
         <h1>Create your first application</h1>
         <p>We will hold your hand and guide you all the way. Sit back and enjoy the ride.</p>
-        <p>If you want to read about the process, <a href="#">go to the documentation</a>.</p>
+        <p>If you want to read about the process, <a ups-doc="create-app" param="'123'">go to the documentation</a>.</p>
 
         <form class="form-inline" name="form">
           <div class="form-group">
             <label class="sr-only" for="appname"></label>
-            <input type="text" class="form-control input-lg" placeholder="Application name" required ng-model="wizard01CreateApp.application.name">
+            <input type="text" id="appname" class="form-control input-lg" placeholder="Application name" required ng-model="wizard01CreateApp.application.name">
           </div>
 
           <button ng-click="wizard01CreateApp.createApp()"  class="btn btn-primary btn-lg" ng-disabled="form.$invalid">Create App</button>
@@ -38,7 +38,7 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right" ng-if="app.stats.applications > 0">
-          <a ng-link="home">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a ng-link="home">Cancel the wizard <i class="fa fa-angle-double-right"></i></a>
         </div>
         <h2 class="h5">Wizard steps</h2>
       </div>

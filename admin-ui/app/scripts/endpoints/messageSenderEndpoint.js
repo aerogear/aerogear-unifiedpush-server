@@ -1,6 +1,6 @@
 'use strict';
 
-var upsServices = angular.module('upsConsole.services');
+var upsServices = angular.module('upsConsole');
 
 upsServices.factory('messageSenderEndpoint', function ($resource) {
   return function ( applicationID, masterSecret ) {
