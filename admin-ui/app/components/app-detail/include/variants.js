@@ -57,8 +57,8 @@ angular.module('upsConsole')
           angular.extend(variant, updatedVariant);
           Notifications.success('The name of ' + variant.name + ' variant was successfully changed');
         })
-        .catch(function() {
-          if ( e != 'cancel' ) {
+        .catch(function(e) {
+          if ( e !== 'cancel' ) {
             Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
           }
         });

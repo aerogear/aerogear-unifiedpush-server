@@ -130,4 +130,56 @@ angular.module('upsConsole')
       restrict: 'E',
       templateUrl: 'directives/ups-sender-snippets.html'
     };
+  })
+
+  .directive('searchPf', function() {
+    return {
+      scope: {
+      },
+      restrict: 'C',
+      replace: false,
+      link: function ($scope, $element) {
+        $element.find('.has-clear .clear').each(function() {
+          if (!$(this).prev('.form-control').val()) {
+            $(this).hide();
+          }
+        });
+        // Show the clear button upon entering text in the search input
+        $element.find('.has-clear .form-control').keyup(function () {
+          var t = $(this);
+          t.next('button').toggle(Boolean(t.val()));
+        });
+        // Upon clicking the clear button, empty the entered text and hide the clear button
+        $element.find('.has-clear .clear').click(function () {
+          $(this).prev('.form-control').val('').focus();
+          $(this).hide();
+        });
+      }
+    };
+  })
+
+  .directive('upsWizard', function() {
+    return {
+      scope: {
+      },
+      restrict: 'A',
+      replace: false,
+      link: function ($scope, $element) {
+        var highestCol = 0;
+        $element.find('.well').each(function () {
+          highestCol = Math.max(highestCol, $(this).height());
+        });
+        $element.find('.well').height(highestCol);
+      }
+    };
+  })
+
+
+  .directive('sidebarPf', function() {
+    return {
+      restrict: 'C',
+      link: function () {
+        sidebar();
+      }
+    };
   });
