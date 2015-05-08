@@ -46,14 +46,19 @@ public class MetricsCollector {
 
         boolean updatedExisting = false;
         for (VariantMetricInformation existingMetric : pushMessageInformation.getVariantInformations()) {
+
             if (variantMetricInformation.getVariantID().equals(existingMetric.getVariantID())) {
                 updatedExisting = true;
                 updateExistingMetric(existingMetric, variantMetricInformation);
             }
         }
+
         if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
+
+        // apply number for given batch to the total count:
+        pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
         metricsService.updatePushMessageInformation(pushMessageInformation);
     }
