@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -51,6 +52,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private GenericVariantService genericVariantService;
 
+    @Inject
+    private PushMessageMetricsService metricsService;
+
 
     @OPTIONS
     @Path("{token: .*}")
@@ -73,7 +77,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * <pre>
      * curl -u "variantID:secret"
-     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
      *   -X POST
      *   -d '{
      *     "deviceToken" : "someTokenString",
@@ -103,11 +107,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
-            return appendAllowOriginHeader(
-                    Response.status(Status.UNAUTHORIZED)
-                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                            .entity("Unauthorized Request"),
-                    request);
+            return create401Response(request);
         }
 
         // Poor validation: We require the Token
@@ -124,6 +124,30 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         clientInstallationService.addInstallation(variant, entity);
 
         return appendAllowOriginHeader(Response.ok(entity), request);
+    }
+
+    /**
+     * DOC WILL BE DONE WITH MIREDOT!
+     */
+    @PUT
+    @Path("/pushMessage/{id: .*}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response increasePushMessageReadCounter( @PathParam("id") String pushMessageId,
+                           @Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+
+        //let's do update the analytics
+        if(pushMessageId!= null) {
+            metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+        }
+
+        return Response.ok("{}").build();
     }
 
     /**
@@ -150,11 +174,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
-            return appendAllowOriginHeader(
-                    Response.status(Status.UNAUTHORIZED)
-                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                            .entity("Unauthorized Request"),
-                    request);
+            return create401Response(request);
         }
 
         // look up all installations (with same token) for the given variant:
@@ -224,11 +244,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
-            return appendAllowOriginHeader(
-                    Response.status(Status.UNAUTHORIZED)
-                            .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                            .entity("Unauthorized Request"),
-                    request);
+            return create401Response(request);
         }
 
         List<Installation> devices;
@@ -266,6 +282,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
                  .build();
+    }
+
+    private Response create401Response(final HttpServletRequest request) {
+        return appendAllowOriginHeader(
+                Response.status(Status.UNAUTHORIZED)
+                        .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                        .entity("Unauthorized Request"),
+                request);
     }
 
     /**

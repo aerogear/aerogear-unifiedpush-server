@@ -21,9 +21,11 @@
     <th></th>
     <th>Message</th>
     <th>IP Address</th>
-    <th>Receivers</th>
+    <th>Installations</th>
     <th>Status</th>
-    <th>Timestamp</th>
+    <th>Sent</th>
+    <th>First time opened</th>
+    <th>Last time opened</th>
   </tr>
   </thead>
   <tbody>
@@ -33,9 +35,9 @@
         <i class="fa fa-plus-square-o" ng-class="{ 'fa-plus-square-o': !metric.$toggled, 'fa-minus-square-o': metric.$toggled }"></i>
       </a>
     </td>
-    <td>{{ metric.$message.alert | limitTo : 50 }}{{ metric.$message.alert.length > 50 ? '...' : '' }}</td>
-    <td>{{ metric.$message.ipAddress }}</td>
-    <td>{{ metric.totalReceivers }} installations</td>
+    <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
+    <td>{{ metric.ipAddress }}</td>
+    <td>{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened</td>
     <td ng-if="metric.deliveryFailed != true" class="success"><i class="fa fa-check"></i> Succeeded</td>
     <td ng-if="metric.deliveryFailed == true" class="danger">
         <span class="pficon-layered">
@@ -45,9 +47,15 @@
       Failed
     </td>
     <td>{{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}</td>
+    <td>
+      {{ metric.firstOpenDate | date : 'd MMM, HH:mm:ss, yyyy'}}
+    </td>
+    <td>
+      {{ metric.lastOpenDate | date : 'd MMM, HH:mm:ss, yyyy'}}
+    </td>
   </tr>
   <tr ng-repeat-end ng-if="metric.$toggled">
-    <td colspan="6">
+    <td colspan="8">
       <pre>{{ metric.$message | json  }}</pre>
     </td>
   </tr>

@@ -22,6 +22,7 @@ import ar.com.fernandospr.wns.model.*;
 import ar.com.fernandospr.wns.model.builders.*;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
@@ -42,12 +43,15 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/org.jboss.aerogear.cordova.push/P.xaml";
+    private String pushMessageInformationId;
 
     @Inject
     private ClientInstallationService clientInstallationService;
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
+        setPushMessageInformationId(pushMessageInformationId);
+
         // no need to send empty list
         if (clientIdentifiers.isEmpty()) {
             return;
@@ -107,7 +111,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             builder.duration(windows.getDuration().toString());
         }
         builder.audioSrc(message.getSound());
-        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData()));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), message.getUserData(), getPushMessageInformationId()));
         createMessage(message, windows.getToastType().toString(), builder);
         return builder.build();
     }
@@ -168,11 +172,19 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     WnsToast createSimpleToastMessage(Message message) {
         final WnsToastBuilder builder = new WnsToastBuilder().bindingTemplateToastText01(message.getAlert());
         final Map<String, Object> data = message.getUserData();
-        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), data));
+        builder.launch(createLaunchParam(message.getWindows().getPage(), message.getAlert(), data, getPushMessageInformationId()));
         return builder.build();
     }
 
-    static String createLaunchParam(String page, String message, Map<String, Object> data) {
+    public String getPushMessageInformationId() {
+        return pushMessageInformationId;
+    }
+
+    public void setPushMessageInformationId(String pushMessageInformationId) {
+        this.pushMessageInformationId = pushMessageInformationId;
+    }
+
+    static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
         if (page != null) {
             final UriBuilder uriBuilder = UriBuilder.fromPath("");
             for (Map.Entry<String, Object> entry : data.entrySet()) {
@@ -181,6 +193,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             if (message != null) {
                 uriBuilder.queryParam("message", message);
             }
+            //add aerogear-push-id
+            uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
             final String query = uriBuilder.build().getQuery();
             return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
         }

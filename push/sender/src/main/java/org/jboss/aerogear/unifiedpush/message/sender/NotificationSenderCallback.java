@@ -37,4 +37,5 @@ public interface NotificationSenderCallback {
      * @param reason details about the error
      */
     void onError(String reason);
+
 }

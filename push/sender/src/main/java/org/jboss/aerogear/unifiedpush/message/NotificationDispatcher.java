@@ -70,7 +70,7 @@ public class NotificationDispatcher {
         logger.fine("Received message from queue: " + msg.getUnifiedPushMessage().getMessage().getAlert());
 
         senders.select(new SenderTypeLiteral(variant.getClass())).get()
-                            .sendPushMessage(variant, deviceTokens, message, new SenderServiceCallback(variant, deviceTokens.size(), msg.getPushMessageInformation()));
+                            .sendPushMessage(variant, deviceTokens, message, msg.getPushMessageInformation().getId(), new SenderServiceCallback(variant, deviceTokens.size(), msg.getPushMessageInformation()));
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {
@@ -104,8 +104,7 @@ public class NotificationDispatcher {
         this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receivers, deliveryStatus, null);
     }
 
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation,
-            final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setPushMessageInformation(pushMessageInformation);
         variantMetricInformation.setVariantID(variantID);

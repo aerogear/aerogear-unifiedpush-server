@@ -20,6 +20,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.adm.ADM;
@@ -34,7 +35,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(AdmPushNotificationSender.class);
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         final AdmService admService = ADM.newService();
 
         final PayloadBuilder builder = ADM.newPayload();
@@ -59,6 +60,9 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         for (String key : keys) {
             builder.dataField(key, pushMessage.getMessage().getUserData().get(key));
         }
+
+        //add the aerogear-push-id
+        builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         final AdmVariant admVariant = (AdmVariant) variant;
         for(String token : clientIdentifiers) {
