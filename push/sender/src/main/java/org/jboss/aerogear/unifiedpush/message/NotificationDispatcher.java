@@ -111,6 +111,7 @@ public class NotificationDispatcher {
         variantMetricInformation.setReceivers(receivers);
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
+
         dispatchVariantMetricEvent.fire(variantMetricInformation);
     }
 }
