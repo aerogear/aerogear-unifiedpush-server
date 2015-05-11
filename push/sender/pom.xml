@@ -152,6 +152,18 @@
                     <artifactId>mockito-core</artifactId>
                     <scope>test</scope>
                 </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.arquillian.container</groupId>
+                    <artifactId>arquillian-container-chameleon</artifactId>
+                    <version>1.0.0.Final-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>
