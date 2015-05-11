@@ -25,7 +25,6 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 
 import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.message.TokenLoader;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
@@ -33,7 +32,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 abstract class AbstractJMSMessageConsumer<T> implements MessageListener {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(AbstractJMSMessageConsumer.class);
 
     public abstract void onMessage(T message);
 
