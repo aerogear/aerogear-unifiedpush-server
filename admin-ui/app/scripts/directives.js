@@ -92,7 +92,7 @@ angular.module('upsConsole')
           android:      { name: 'Android',    snippets: ['android', 'cordova'] },
           ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova']},
           windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
-          windows_wns:  { name: 'Windows',    snippets: ['wns', 'cordova'] },
+          windows_wns:  { name: 'Windows',    snippets: ['wns'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
           adm:          { name: 'ADM',        snippets: ['cordova'] }
         };
