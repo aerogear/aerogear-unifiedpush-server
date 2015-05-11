@@ -90,6 +90,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             return;
         }
 
+        // TODO - On a large scale database, we can't load entire device list.
         Set<String> existingTokens = new HashSet<String>(findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), null, null, null));
 
         // clear out:
