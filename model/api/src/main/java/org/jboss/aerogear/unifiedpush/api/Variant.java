@@ -38,7 +38,9 @@ public abstract class Variant extends BaseModel {
     private String developer;
 
     /**
-     * The type (Android, iOS or SimplePush) of the underlying variant.
+     * The @VariantType of the underlying variant.
+     *
+     * @return the variant type
      */
     public abstract VariantType getType();
 
@@ -51,6 +53,8 @@ public abstract class Variant extends BaseModel {
 
     /**
      * The name of the variant (e.g. the name of the matching App in the Appstore)
+     *
+     * @param name the name
      */
     public void setName(final String name) {
         this.name = name;
@@ -62,6 +66,8 @@ public abstract class Variant extends BaseModel {
 
     /**
      * Some description of the app.
+     *
+     * @param description the description
      */
     public void setDescription(final String description) {
         this.description = description;
@@ -73,6 +79,8 @@ public abstract class Variant extends BaseModel {
 
     /**
      * Identifier used to register an {@link Installation} with this Variant
+     *
+     * @param variantID the variant ID
      */
     public void setVariantID(String variantID) {
         this.variantID = variantID;

@@ -27,6 +27,8 @@ public class DashboardData {
 
     /**
      * Number of push applications of the current user.
+     *
+     * @return number of users
      */
     public long getApplications() {
         return applications;
@@ -38,6 +40,8 @@ public class DashboardData {
 
     /**
      * Number of registered devices for the push applications of the current user.
+     *
+     * @return number of devices
      */
     public long getDevices() {
         return devices;
@@ -49,6 +53,8 @@ public class DashboardData {
 
     /**
      * Number of sent messages from push applications of the current user.
+     *
+     * @return number of messages
      */
     public long getMessages() {
         return messages;

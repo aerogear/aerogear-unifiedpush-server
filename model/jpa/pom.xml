@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-model-parent</artifactId>
-        <version>1.1.0-alpha.2-SNAPSHOT</version>
+        <version>1.1.0-beta.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-model-jpa</artifactId>
     <name>UnifiedPush Server Model JPA implementation</name>
-    
+
     <dependencies>
 		
         <dependency>
@@ -43,6 +43,12 @@
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -81,10 +87,49 @@
                 </dependency>
         
                 <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>org.jboss.spec.javax.ejb</groupId>
+                    <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.inject</groupId>
+                    <artifactId>javax.inject</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+                    <version>1.0.0.CR3</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld</groupId>
+                    <artifactId>weld-core</artifactId>
+                    <version>1.1.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-nop</artifactId>
+                    <version>1.6.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.jakubholy.testing</groupId>
+                    <artifactId>dbunit-express</artifactId>
+                    <version>1.3.0</version>
                     <scope>test</scope>
                 </dependency>                
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <version>1.6.1</version>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>

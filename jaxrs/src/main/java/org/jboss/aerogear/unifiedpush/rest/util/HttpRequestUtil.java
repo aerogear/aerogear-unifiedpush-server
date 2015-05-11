@@ -31,6 +31,10 @@ public final class HttpRequestUtil {
 
     /**
      * Returns FALSE when sorting query value matches 'desc', otherwise it returns TRUE.
+     *
+     * @param sorting the sorting value from the http header
+     *
+     * @return false for 'desc; or true for 'asc'
      */
     public static Boolean extractSortingQueryParamValue(String sorting) {
 
@@ -43,6 +47,10 @@ public final class HttpRequestUtil {
 
     /**
      * Extracts the IP address from the given {@link javax.servlet.http.HttpServletRequest}.
+     *
+     * @param request to inspect
+     *
+     * @return the IP address from the given request
      */
     public static String extractIPAddress(final HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
@@ -63,6 +71,10 @@ public final class HttpRequestUtil {
     /**
      * Reads the "aerogear-sender" header to check if an AeroGear Sender client was used. If the header value is NULL
      * the value of the standard "user-agent" header is returned
+     *
+     * @param request to inspect
+     *
+     * @return value of header
      */
     public static String extractAeroGearSenderInformation(final HttpServletRequest request) {
         String client = request.getHeader("aerogear-sender");
@@ -75,6 +87,10 @@ public final class HttpRequestUtil {
 
     /**
      * Simple validation, using java.net.InetAddress.getByName().
+     *
+     * @param ip the IP address string to check
+     *
+     * @return true for a valid IP address
      */
     private static boolean isIPAdressValid(final String ip){
 

@@ -48,6 +48,8 @@ public class iOSApplicationUploadForm {
      *
      * The {@link iOSVariant} model differentiates between production and test
      * in order to establish connections to different APNs Servers.
+     *
+     * @param production flag if producution or not.
      */
     @FormParam("production")
     public void setProduction(Boolean production) {
@@ -60,6 +62,8 @@ public class iOSApplicationUploadForm {
 
     /**
      * Reads the name field from the multipart request.
+     *
+     * @param name the name value
      */
     @FormParam("name")
     public void setName(String name) {
@@ -72,6 +76,8 @@ public class iOSApplicationUploadForm {
 
     /**
      * Reads the description field from the multipart request.
+     *
+     * @param description the description value
      */
     @FormParam("description")
     public void setDescription(String description) {
@@ -84,6 +90,8 @@ public class iOSApplicationUploadForm {
 
     /**
      * Reads the passphrase field from the multipart request.
+     *
+     * @param passphrase the passphrase value
      */
     @FormParam("passphrase")
     public void setPassphrase(String passphrase) {
@@ -96,6 +104,8 @@ public class iOSApplicationUploadForm {
 
     /**
      * Reads the certificate file upload from the multipart request.
+
+     * @param data the cert value
      */
     @FormParam("certificate")
     @PartType("application/octet-stream")

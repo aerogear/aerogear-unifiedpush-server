@@ -39,7 +39,7 @@ public class APNsPushNotificationSenderTest {
         when(iosVariant.getCertificate()).thenReturn(readCertificate());
         when(iosVariant.getPassphrase()).thenReturn("123456");
 
-        sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), callback);
+        sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), "123", callback);
         
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }

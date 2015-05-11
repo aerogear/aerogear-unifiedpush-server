@@ -23,6 +23,8 @@
     "$": false,
     "hljs": false,
     "Keycloak": false,
-    "UPS": true
+    "UPS": true,
+    "prettyPrintOne": false,
+    "sidebar": false
   }
 }

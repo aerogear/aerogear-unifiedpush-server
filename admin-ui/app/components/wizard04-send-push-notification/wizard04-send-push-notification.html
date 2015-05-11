@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+
+
+
+      <div class="page-header page-header-bleed-right">
+
+        <div class="actions pull-right">
+          <ul class="list-inline">
+            <li><a href ng-click="wizard04SendPushNotification.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+          </ul>
+        </div>
+
+        <h1>{{ wizard04SendPushNotification.app.name }}</h1>
+      </div>
+
+
+      <h2 class="ups-variant-name-header ups-has-icon ups-variant-{{ wizard04SendPushNotification.variant.type }}">
+        <strong>{{ wizard04SendPushNotification.variant.name }}:</strong>
+        <span><i class="fa fa-check"></i> Successful installation</span>
+      </h2>
+
+      <p><strong>Excellent!</strong> Now lets test by sending a notification and see if everything adds up.</p>
+
+
+
+      <form>
+        <div class="form-group">
+          <label for="inputPassword3" class="control-label">Message</label>
+          <textarea class="form-control" rows="3" ng-model="wizard04SendPushNotification.pushData.message.alert"></textarea>
+        </div>
+
+        <div class="form-group pull-right">
+          <button class="btn btn-primary btn-lg" ng-click="wizard04SendPushNotification.sendNotification()">Send Push Notification and Continue <i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </form>
+
+
+
+
+
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <div class="actions pull-right">
+          <a href="#"><a ng-link="appDetail({app: wizard04SendPushNotification.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+        </div>
+        <h2 class="h5">Wizard steps</h2>
+      </div>
+      <ol class="list-unstyled ups-steps">
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Add a variant</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Mobile device: Set up variant</li>
+        <li class="active"><strong>4</strong> Test! Send notification</li>
+        <li><strong>5</strong> Backend: Set up sender API</li>
+      </ol>
+
+
+
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->

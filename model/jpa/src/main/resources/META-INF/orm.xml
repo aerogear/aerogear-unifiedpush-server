@@ -37,29 +37,6 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
     <entity class="AndroidVariant" access="FIELD">
         <discriminator-value>android</discriminator-value>
     </entity>
-    <entity class="Installation" access="FIELD">
-        <attributes>
-            <basic name="deviceToken">
-                <!-- "The max size for a registration_id is bounded by the max size for a cookie, which is 4K (4096 bytes)." -->
-                <column length="4096" />
-            </basic>
-            <many-to-one name="variant" fetch="LAZY">
-                <join-column name="variantID" referenced-column-name="variantID"/>
-            </many-to-one>
-            <many-to-many name="categories" fetch="EAGER">
-                <cascade>
-                    <cascade-persist/>
-                </cascade>
-            </many-to-many>
-        </attributes>
-    </entity>
-    <entity class="Category" access="FIELD">
-        <attributes>
-            <id name="id">
-                <generated-value strategy="SEQUENCE"/>
-            </id>
-        </attributes>
-    </entity>
     <entity class="iOSVariant" access="FIELD">
         <discriminator-value>ios</discriminator-value>
         <attributes>

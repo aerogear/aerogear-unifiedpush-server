@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <div class="row  ups-wizard" ups-wizard>
+
+    <div class="col-sm-12">
+
+      <div class="page-header">
+        <h1>Welcome to Unified Push Console</h1>
+        <p>This console will help you registering apps and variants to manage push notifications. Follow these steps to set up your application.</p>
+      </div>
+
+      <div class="row boxes">
+        <div class="col-sm-3">
+          <div class="well" id="box1">
+            <div class="ups-number"><span>1</span></div>
+            <p><i class="fa fa-rocket fa-4x muted"></i></p>
+            <h4>Create your Application</h4>
+            <p>Give a name to your application. Set up just one application for all your platforms and devices.</p>
+          </div><!-- well -->
+        </div>
+        <div class="col-sm-3">
+          <div class="well"  id="box2">
+            <div class="ups-number"><span>2</span></div>
+            <p><i class="fa fa-code-fork fa-4x muted"></i></p>
+            <h4>Add a variant</h4>
+            <p>A variant is a group of devices under a platform. Add your first variant for this application and set it up on your device code. Later on you will be able to add one variant for each platform.</p>
+          </div>
+        </div>
+        <div class="col-sm-3" id="box3">
+          <div class="well">
+            <div class="ups-number"><span>3</span></div>
+            <p><i class="fa fa-paper-plane fa-4x muted"></i></p>
+            <h4>Send a notification</h4>
+            <p>Test your setup. Send your first push notification!</p>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="well" id="box4">
+            <div class="ups-number"><span>4</span></div>
+            <p><i class="fa fa-desktop fa-4x muted"></i></p>
+            <h4>Set up sender API</h4>
+            <p>This is the backend code. We have sender API configuration for Java, Node.js or Curl that will help get everything up and running fast. You can do your own sender if you want.</p>
+          </div>
+        </div>
+      </div><!-- row -->
+      <p>
+        <a ng-link="wizard01CreateApp" class="btn btn-primary btn-lg">
+          START HERE
+        </a>
+      </p>
+      <p ng-if="app.stats.applications > 0">
+        <a ng-link="home">Cancel the wizard</a>
+      </p>
+    </div><!-- col -->
+
+
+  </div><!-- /row -->
+</div><!-- /container -->

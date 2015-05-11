@@ -16,45 +16,48 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import javax.persistence.*;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@RunWith(Arquillian.class)
 public class PersistentObjectTest {
 
+    @Inject
     private EntityManager entityManager;
+    @Inject
     private JPAVariantDao variantDao;
 
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return DaoDeployment.createDeployment();
+    }
+
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("AndroidVariant.xml");
 
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
-        // start the shindig
         entityManager.getTransaction().begin();
-
-        variantDao = new JPAVariantDao();
-        variantDao.setEntityManager(entityManager);
     }
 
     @After
     public void tearDown() {
-        EntityTransaction transaction = entityManager.getTransaction();
-
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
+        entityManager.getTransaction().rollback();
     }
 
     @Test
@@ -64,22 +67,6 @@ public class PersistentObjectTest {
         av.setDeveloper("admin");
 
         variantDao.create(av);
-    }
-
-    public void updateIdToNull() {
-
-        final AndroidVariant av = new AndroidVariant();
-        av.setGoogleKey("KEY");
-        av.setDeveloper("admin");
-
-        variantDao.create(av);
-
-        String id = av.getId();
-        av.setId(null);
-        variantDao.update(av);
-
-        assertThat(id).isEqualTo(av.getId());
-
     }
 
     @Test(expected = PersistenceException.class)

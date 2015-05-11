@@ -1,0 +1,26 @@
+<ul class="nav nav-tabs nav-justified ups-snippet-nav" ng-if="typeEnum[variant.type].snippets.length">
+  <li ng-repeat="snippet in typeEnum[variant.type].snippets"
+      ng-init="state.activeSnippet = typeEnum[variant.type].snippets[0]"
+      ng-class="{ active: snippet == state.activeSnippet }">
+    <a ng-click="state.activeSnippet = snippet">
+      <span ng-if="snippet == 'android'">Android</span>
+      <span ng-if="snippet == 'simplePush'">JavaScript</span>
+      <span ng-if="snippet == 'ios_objc'">ObjectiveC</span>
+      <span ng-if="snippet == 'ios_swift'">Swift</span>
+      <span ng-if="snippet == 'wns'">C#</span>
+      <span ng-if="snippet == 'mpns'">C#</span>
+      <span ng-if="snippet == 'cordova'">Cordova</span>
+    </a>
+  </li>
+</ul>
+
+<div class="ups-snippet" ng-if="typeEnum[variant.type].snippets.length">
+  <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()">Copy</a>
+  <!-- use both ng-if and ng-show prevents screen flickering caused by reinsertion of DOM parts, ng-if turns the invalid sample off to avoid DOM pollution -->
+  <pre ng-bind="snippets.android.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('android') !== -1" ng-show="state.activeSnippet == 'android'"></pre>
+  <pre ng-bind="snippets.cordova.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('cordova') !== -1" ng-show="state.activeSnippet == 'cordova'"></pre>
+  <pre ng-bind="snippets.ios_objc.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_objc') !== -1" ng-show="state.activeSnippet == 'ios_objc'"></pre>
+  <pre ng-bind="snippets.ios_swift.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_swift') !== -1" ng-show="state.activeSnippet == 'ios_swift'"></pre>
+  <pre ng-bind="snippets.mpns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'mpns'"></pre>
+  <pre ng-bind="snippets.wns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'wns'"></pre>
+</div>

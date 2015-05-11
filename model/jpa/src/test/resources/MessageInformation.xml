@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<dataset>
+    <table name="SA.PUSHAPPLICATION">
+        <column>id</column>
+        <column>pushApplicationID</column>
+        <column>name</column>
+        <column>developer</column>
+        <row>
+            <value>1</value>
+            <value>231231231</value>
+            <value>app</value>
+            <value>admin</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>231231232</value>
+            <value>app</value>
+            <value>admin</value>
+        </row>
+    </table>
+    <table name="SA.PUSHMESSAGEINFORMATION">
+        <column>id</column>
+        <column>pushApplicationId</column>
+        <column>submitDate</column>
+        <column>totalReceivers</column>
+        <row>
+            <value>1</value>
+            <value>231231231</value>
+            <value>1980-02-01</value>
+            <value>0</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>231231231</value>
+            <value>1980-02-04</value>
+            <value>0</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>231231232</value>
+            <value>2015-01-22</value>
+            <value>0</value>
+        </row>
+    </table>
+    <table name="SA.VARIANTMETRICINFORMATION">
+        <column>id</column>
+        <column>deliveryStatus</column>
+        <column>receivers</column>
+        <column>variantID</column>
+        <column>variantInformations_id</column>
+        <column>pushmessageinformation_id</column>
+        <row>
+            <value>1</value>
+            <value>false</value>
+            <value>200</value>
+            <value>213</value>
+            <value>1</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>false</value>
+            <value>200</value>
+            <value>231543432432</value>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>false</value>
+            <value>300</value>
+            <value>23154343243333</value>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>false</value>
+            <value>1000</value>
+            <value>231543432434</value>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>5</value>
+            <value>true</value>
+            <value>2000</value>
+            <value>231543432432</value>
+            <value>3</value>
+            <value>3</value>
+        </row>
+    </table>
+
+    <table name="SA.VARIANT">
+        <column>id</column>
+        <column>VARIANT_TYPE</column>
+        <column>variantID</column>
+        <column>type</column>
+        <column>developer</column>
+        <row>
+            <value>1</value>
+            <value>android</value>
+            <value>231543432432</value>
+            <value>0</value>
+            <value>admin</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>android</value>
+            <value>23154343243333</value>
+            <value>0</value>
+            <value>admin</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>android</value>
+            <value>231543432434</value>
+            <value>0</value>
+            <value>admin</value>
+        </row>
+    </table>
+    <table name="SA.ANDROIDVARIANT">
+        <column>id</column>
+        <column>googleKey</column>
+        <row>
+            <value>1</value>
+            <value>123</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>123</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>123</value>
+        </row>
+    </table>
+    <table name="SA.IOSVARIANT"/>
+    <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.INSTALLATION"/>
+    <table name="SA.INSTALLATION_CATEGORY"/>
+</dataset>

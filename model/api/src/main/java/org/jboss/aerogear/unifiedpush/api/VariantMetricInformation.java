@@ -31,6 +31,7 @@ public class VariantMetricInformation extends BaseModel {
     private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
+    private long variantOpenCounter;
 
     @JsonIgnore
     private PushMessageInformation pushMessageInformation;
@@ -40,6 +41,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * The ID of the involved variant
+     *
+     * @return variant ID
      */
     public String getVariantID() {
         return variantID;
@@ -50,7 +53,9 @@ public class VariantMetricInformation extends BaseModel {
     }
 
     /**
-     * Number of receives for this variant that were found for the submitted push request
+     * Number of receivers for this variant that were found for the submitted push request
+     *
+     * @return number of receivers
      */
     public long getReceivers() {
         return receivers;
@@ -62,6 +67,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * Indicator if the request to the actual push network, for the related variant, was successful or not.
+     *
+     * @return status of the delivery
      */
     public Boolean getDeliveryStatus() {
         return deliveryStatus;
@@ -73,6 +80,8 @@ public class VariantMetricInformation extends BaseModel {
 
     /**
      * In case of an error (deliveryStatus:false), there is most likely a reason which may give some more insights.
+     *
+     * @return error details
      */
     public String getReason() {
         return reason;
@@ -88,5 +97,22 @@ public class VariantMetricInformation extends BaseModel {
 
     public void setPushMessageInformation(PushMessageInformation pushMessageInformation) {
         this.pushMessageInformation = pushMessageInformation;
+    }
+
+    /**
+     * To track how many time this variant has been opened after a Push Notification
+     *
+     * @return long , the times this variant has been opened after a Push Notification
+     */
+    public long getVariantOpenCounter() {
+        return variantOpenCounter;
+    }
+
+    public void setVariantOpenCounter(long variantOpenCounter) {
+        this.variantOpenCounter = variantOpenCounter;
+    }
+
+    public void incrementVariantOpenCounter() {
+        this.setVariantOpenCounter(this.getVariantOpenCounter() + 1);
     }
 }

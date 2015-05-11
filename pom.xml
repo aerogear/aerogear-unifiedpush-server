@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.13</version>
+        <version>0.2.14</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unifiedpush-parent</artifactId>
-    <version>1.1.0-alpha.2-SNAPSHOT</version>
+    <version>1.1.0-beta.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>AeroGear UnifiedPush Server</name>
@@ -87,6 +87,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>4.2.15.Final</version>
+            </dependency>
 
             <!-- AeroGear Dependencies BOM Imports -->
             <dependency>
@@ -119,26 +124,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-tools</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireJavaVersion>
-                                    <!-- Enforce java 1.7 for compiling -->
-                                    <!-- This is needed because jax-doclet is broken on jdk8 -->
-                                    <version>(,1.8)</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -275,6 +260,40 @@
                 <module>dist</module>
             </modules>
         </profile>
+
+        <!--
+            Profile for JAX-RS doclet generation. This is only working on JDK7, due to the usage of outdated tools
+
+            Usage:
+               - mvn clean install -Pjaxrs-doclet,test
+        -->
+        <profile>
+            <id>jaxrs-doclet</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-tools</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <!-- Enforce java 1.7 for compiling -->
+                                            <!-- This is needed because jax-doclet is broken on jdk8 -->
+                                            <version>(,1.8)</version>
+                                        </requireJavaVersion>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+	            </plugins>
+	        </build>
+		</profile>
 
         <profile>
             <id>code-coverage</id>

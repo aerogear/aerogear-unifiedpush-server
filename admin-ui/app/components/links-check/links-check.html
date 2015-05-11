@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-sm-8 col-md-9 form-horizontal">
+
+      <h1>Links Check</h1>
+
+      <div class="form-group" ng-repeat="(name, link) in linksCheck.links">
+        <label class="col-sm-3 control-label">{{ name }}</label>
+        <div class="col-sm-9">
+          <a href="{{ link }}" target="_blank">{{link}}</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</div><!-- /container -->

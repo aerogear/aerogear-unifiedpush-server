@@ -33,6 +33,9 @@ public interface NotificationSenderCallback {
     /**
      * Simple indicator which will be called on any type of error that occurred while sending the payload to the
      * underlying push network.
+     *
+     * @param reason details about the error
      */
     void onError(String reason);
+
 }

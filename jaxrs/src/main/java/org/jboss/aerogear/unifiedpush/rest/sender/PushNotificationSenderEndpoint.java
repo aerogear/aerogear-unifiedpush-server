@@ -16,23 +16,24 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.message.SenderService;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
@@ -41,7 +42,7 @@ public class PushNotificationSenderEndpoint {
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
-    private SenderService senderService;
+    private NotificationRouter notificationRouter;
 
     /**
      * RESTful API for sending Push Notifications.
@@ -103,7 +104,8 @@ public class PushNotificationSenderEndpoint {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response send(final UnifiedPushMessage message, @Context HttpServletRequest request) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
@@ -119,13 +121,12 @@ public class PushNotificationSenderEndpoint {
         // add the client identifier
         message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
 
-        // submitted to @Async EJB:
-        senderService.send(pushApplication, message);
+        // submitted to EJB:
+        notificationRouter.submit(pushApplication, message);
         logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
         logger.info("Message submitted to PushNetworks for further processing");
 
-        return Response.status(Status.ACCEPTED)
-                .entity("Job submitted").build();
+        return Response.status(Status.ACCEPTED).entity("{}").build();
     }
 
     /**

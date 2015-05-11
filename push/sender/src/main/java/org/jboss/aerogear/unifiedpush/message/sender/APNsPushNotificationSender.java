@@ -28,6 +28,7 @@ import com.notnoop.apns.internal.Utilities;
 import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
@@ -46,8 +47,8 @@ import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.try
 @SenderType(iOSVariant.class)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
-    private static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
-    private static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
+    public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
+    public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST = "custom.aerogear.apns.feedback.host";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
     
@@ -64,13 +65,18 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link Collection} of tokens for the given {@link iOSVariant}.
+     *
+     * @param variant contains details for the underlying push network, e.g. API Keys/Ids
+     * @param tokens contains the list of tokens that identifies the installation to which the message will be sent
+     * @param pushMessage payload to be send to the given clients
+     * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
+     * @param callback that will be invoked after the sending.
      */
-    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final NotificationSenderCallback callback) {
+    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
         }
-
         final iOSVariant iOSVariant = (iOSVariant) variant;
 
         Message message = pushMessage.getMessage();
@@ -98,6 +104,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         }
 
         builder = builder.customFields(message.getUserData()); // adding other (submitted) fields
+
+        //add aerogear-push-id
+        builder = builder.customField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         // we are done with adding values here, before building let's check if the msg is too long
         if (builder.isTooLong()) {

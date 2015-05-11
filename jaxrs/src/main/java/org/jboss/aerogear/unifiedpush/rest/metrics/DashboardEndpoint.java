@@ -16,20 +16,23 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
@@ -57,9 +60,9 @@ public class DashboardEndpoint {
     @GET
     @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTopThreeLastActivity(@Context HttpServletRequest request) {
-        final List<Application> topThreeLastActivity = service.getSearchService().getTopThreeLastActivity();
+    public Response getLatestActivity(@QueryParam("count") @DefaultValue("3") int count, @Context HttpServletRequest request) {
+        final List<Application> latestActivity = service.getSearchService().getLatestActivity(count);
 
-        return Response.ok(topThreeLastActivity).build();
+        return Response.ok(latestActivity).build();
     }
 }

@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+
+
+
+      <div class="page-header page-header-bleed-right">
+
+        <div class="actions pull-right">
+          <ul class="list-inline">
+            <li><a href ng-click="wizard05SetupSender.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+          </ul>
+        </div>
+
+        <h1>{{ wizard05SetupSender.app.name }}</h1>
+      </div>
+
+
+      <h2><strong>Backend:</strong> Set up sender API</h2>
+      <p><strong>Last step!</strong> Now that your mobile device is set up, lets make your backend server send notifications to this UnifiedPush Server using <a ups-doc="sender-api">UPS Sender API</a>:</p>
+      <dl class="dl-horizontal">
+        <dt>Server URL</dt>
+        <dd>{{ wizard05SetupSender.contextPath }}</dd>
+        <dt>Application ID</dt>
+        <dd>{{ wizard05SetupSender.app.pushApplicationID }}</dd>
+        <dt>Master Secret</dt>
+        <dd>{{ wizard05SetupSender.app.masterSecret }}</dd>
+      </dl>
+
+      <ups-sender-snippets app="wizard05SetupSender.app"></ups-sender-snippets>
+
+      <div class="actions pull-right ups-wizard-actions">
+        <a ng-link="wizard06Done" class="btn btn-primary btn-lg">Continue <i class="fa fa-angle-double-right"></i></a>
+      </div>
+
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <div class="actions pull-right">
+          <a href="#"><a ng-link="appDetail({app: wizard05SetupSender.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+        </div>
+        <h2 class="h5">Wizard steps</h2>
+      </div>
+      <ol class="list-unstyled ups-steps">
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Add a variant</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Mobile device: Set up variant</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Test! Send notification</li>
+        <li class="active"><strong>5</strong> Backend: Set up sender API</li>
+      </ol>
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->

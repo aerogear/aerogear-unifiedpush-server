@@ -1,8 +1,9 @@
 language: java
 
 jdk:
-  - oraclejdk7
   - openjdk7
+  - oraclejdk7
+  - oraclejdk8
 
 notifications:
   irc: "irc.freenode.org#aerogear"

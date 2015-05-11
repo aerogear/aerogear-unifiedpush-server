@@ -16,77 +16,59 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Arquillian.class)
 public class PushApplicationDaoTest {
 
+    @Inject
     private EntityManager entityManager;
-    private JPAPushApplicationDao pushApplicationDao;
-    private JPAVariantDao variantDao;
-    private JPAInstallationDao installationDao;
+    @Inject
+    private PushApplicationDao pushApplicationDao;
+
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return DaoDeployment.createDeployment();
+    }
 
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-        entityManager = emf.createEntityManager();
-
         // start the shindig
         entityManager.getTransaction().begin();
-
-        pushApplicationDao = new JPAPushApplicationDao();
-        pushApplicationDao.setEntityManager(entityManager);
-        variantDao = new JPAVariantDao();
-        variantDao.setEntityManager(entityManager);
-        installationDao = new JPAInstallationDao();
-        installationDao.setEntityManager(entityManager);
     }
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().commit();
-
-        entityManager.close();
+        entityManager.getTransaction().rollback();
     }
 
+    @Rule
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");
 
     @Test
-    public void findAllForDeveloper() {
-
-        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(0);
-
-        final PushApplication pushApplication1 = new PushApplication();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        pushApplicationDao.create(pushApplication1);
-
-        final PushApplication pushApplication2 = new PushApplication();
-        pushApplication2.setName("Push App 2");
-        pushApplication2.setDeveloper("Admin");
-        pushApplicationDao.create(pushApplication2);
-
-        final PushApplication pushApplication3 = new PushApplication();
-        pushApplication3.setName("Push App 3");
-        pushApplication3.setDeveloper("Dave The Drummer");
-        pushApplicationDao.create(pushApplication3);
-
+    public void findAllForDeveloper() throws Exception {
         assertThat(pushApplicationDao.findAllForDeveloper("Admin", 0, 10).getResultList()).hasSize(2);
         assertThat(pushApplicationDao.findAllForDeveloper("Dave The Drummer", 0, 10).getResultList()).hasSize(1);
         assertThat(pushApplicationDao.findAllForDeveloper("Dave The Drummer", 0, 10).getResultList()).extracting("name").containsOnly("Push App 3");
@@ -100,31 +82,11 @@ public class PushApplicationDaoTest {
         assertThat(pushApplicationDao.findAll(0, 10).getCount()).isEqualTo(3);
 
         // check exact:
-        assertThat(pushApplicationDao.findAllByPushApplicationID(pushApplication2.getPushApplicationID()).getName()).isEqualTo("Push App 2");
-        assertThat(pushApplicationDao.findAllByPushApplicationID(pushApplication2.getPushApplicationID()).getName()).isNotEqualTo("Push App 3");
-
+        assertThat(pushApplicationDao.findAllByPushApplicationID("123").getName()).isEqualTo("Push App 2");
     }
 
     @Test
     public void findAllIDsForDeveloper() {
-
-        assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper("Admin")).isEqualTo(0);
-
-        final PushApplication pushApplication1 = new PushApplication();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        pushApplicationDao.create(pushApplication1);
-
-        final PushApplication pushApplication2 = new PushApplication();
-        pushApplication2.setName("Push App 2");
-        pushApplication2.setDeveloper("Admin");
-        pushApplicationDao.create(pushApplication2);
-
-        final PushApplication pushApplication3 = new PushApplication();
-        pushApplication3.setName("Push App 3");
-        pushApplication3.setDeveloper("Dave The Drummer");
-        pushApplicationDao.create(pushApplication3);
-
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin")).hasSize(2);
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Dave The Drummer")).hasSize(1);
         assertThat(pushApplicationDao.findAllPushApplicationIDsForDeveloper("Admin The Drummer")).isEmpty();
@@ -136,16 +98,11 @@ public class PushApplicationDaoTest {
 
     @Test
     public void findByPushApplicationIDForDeveloper() {
-
-        final PushApplication pushApplication1 = new PushApplication ();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
-        pushApplicationDao.create(pushApplication1);
+        final String pushApplicationID1 = "888";
 
         assertThat(pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID1, "Admin")).isNotNull();
 
-        assertThat(pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID1, "Admin").getName()).isEqualTo(pushApplication1.getName());
+        assertThat(pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID1, "Admin").getName()).isEqualTo("Push App 1");
 
         assertThat(pushApplicationDao.findByPushApplicationIDForDeveloper("1234", "Admin")).isNull();
         assertThat(pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID1, "FooBar")).isNull();
@@ -154,12 +111,7 @@ public class PushApplicationDaoTest {
 
     @Test
     public void findByPushApplicationID() {
-
-        final PushApplication pushApplication1 = new PushApplication ();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
-        pushApplicationDao.create(pushApplication1);
+        final String pushApplicationID1 = "888";
 
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1)).isNotNull();
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1).getName()).isEqualTo("Push App 1");
@@ -168,14 +120,11 @@ public class PushApplicationDaoTest {
 
     @Test
     public void updatePushApplication() {
-        final PushApplication pushApplication1 = new PushApplication ();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
-        pushApplicationDao.create(pushApplication1);
+        final String pushApplicationID1 = "888";
 
-        assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1)).isNotNull();
-        assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1).getName()).isEqualTo("Push App 1");
+        final PushApplication pushApplication1 = pushApplicationDao.findByPushApplicationID(pushApplicationID1);
+        assertThat(pushApplication1).isNotNull();
+        assertThat(pushApplication1.getName()).isEqualTo("Push App 1");
 
         pushApplication1.setName("Cool Push App 1");
         pushApplicationDao.update(pushApplication1);
@@ -186,16 +135,13 @@ public class PushApplicationDaoTest {
 
     @Test
     public void updateAndDeletePushApplication() {
-        final PushApplication pushApplication1 = new PushApplication ();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
-        pushApplicationDao.create(pushApplication1);
+        final String pushApplicationID1 = "888";
 
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1)).isNotNull();
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1).getName()).isEqualTo("Push App 1");
 
 
+        final PushApplication pushApplication1 = pushApplicationDao.findByPushApplicationID(pushApplicationID1);
         pushApplication1.setName("Cool Push App 1");
         pushApplicationDao.update(pushApplication1);
 
@@ -208,16 +154,13 @@ public class PushApplicationDaoTest {
 
     @Test
     public void pushApplicationIDUnmodifiedAfterUpdate() {
-        final PushApplication pushApplication1 = new PushApplication();
-        pushApplication1.setName("Push App 1");
-        pushApplication1.setDeveloper("Admin");
-        final String pushApplicationID1 = pushApplication1.getPushApplicationID();
-        pushApplicationDao.create(pushApplication1);
+        final String pushApplicationID1 = "888";
 
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1)).isNotNull();
         assertThat(pushApplicationDao.findByPushApplicationID(pushApplicationID1).getName()).isEqualTo("Push App 1");
 
 
+        final PushApplication pushApplication1 = pushApplicationDao.findByPushApplicationID(pushApplicationID1);
         pushApplication1.setName("Cool Push App 1");
         pushApplicationDao.update(pushApplication1);
 
@@ -227,21 +170,12 @@ public class PushApplicationDaoTest {
 
     @Test
     public void primaryKeyUnmodifiedAfterUpdate() {
-        PushApplication pushApplication1 = new PushApplication ();
-        pushApplication1.setName("Push App 1");
-        final String id = pushApplication1.getId();
-        pushApplicationDao.create(pushApplication1);
-
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
-
+        final String id = "1";
         PushApplication pa = pushApplicationDao.find(id);
 
         assertThat(pa.getId()).isEqualTo(id);
 
+        final PushApplication pushApplication1 = pushApplicationDao.findByPushApplicationID(pa.getPushApplicationID());
         pushApplication1.setName("Cool Push App 1");
         pushApplicationDao.update(pushApplication1);
 
@@ -255,35 +189,9 @@ public class PushApplicationDaoTest {
 
     @Test
     public void deletePushApplicationIncludingVariantAndInstallations() {
-        PushApplication pushApplication1 = new PushApplication();
-        pushApplication1.setName("Push App 1");
-        final String id = pushApplication1.getId();
-        pushApplicationDao.create(pushApplication1);
+        final String id = "888";
 
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
-        PushApplication pa = pushApplicationDao.find(id);
-        assertThat(pa.getId()).isEqualTo(id);
-
-        AndroidVariant av = new AndroidVariant();
-        av.setName("Android Variant");
-        av.setGoogleKey("KEY...");
-        variantDao.create(av);
-
-        Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("1234543212232312345432122323123454321223231234543212232312345432122323123454321223231234543212232312345432122323");
-        installationDao.create(androidInstallation1);
-
-        androidInstallation1.setVariant(av);
-        variantDao.update(av);
-
-        pa.getVariants().add(av);
-        pushApplicationDao.update(pa);
-
-        assertThat(installationDao.find(androidInstallation1.getId())).isNotNull();
+        final PushApplication pa = pushApplicationDao.findByPushApplicationID(id);
 
         pushApplicationDao.delete(pa);
         // flush to be sure that it's in the database
@@ -292,11 +200,10 @@ public class PushApplicationDaoTest {
         entityManager.clear();
 
         // Installation should be gone:
-        assertThat(installationDao.find(androidInstallation1.getId())).isNull();
-
+        assertThat(entityManager.find(Installation.class, "1")).isNull();
 
         // Variant should be gone:
-        assertThat(variantDao.find(av.getId())).isNull();
+        assertThat(entityManager.find(AndroidVariant.class, "1")).isNull();
 
         // PushApp should be gone:
         assertThat(pushApplicationDao.find(id)).isNull();
@@ -304,105 +211,28 @@ public class PushApplicationDaoTest {
 
     @Test
     public void shouldCountInstallations() {
-        PushApplication pushApplication1 = new PushApplication();
-        pushApplication1.setName("Push App 1");
-        final String id = pushApplication1.getId();
-        pushApplicationDao.create(pushApplication1);
+        final Map<String, Long> result = pushApplicationDao.countInstallationsByType("888");
 
-        PushApplication pa = pushApplicationDao.find(id);
-
-        AndroidVariant av = new AndroidVariant();
-        av.setName("Android Variant");
-        av.setGoogleKey("KEY...");
-        variantDao.create(av);
-
-        iOSVariant ios = new iOSVariant();
-        ios.setName("spelling is hard");
-        ios.setPassphrase("123");
-        ios.setCertificate("12".getBytes());
-        variantDao.create(ios);
-
-        Installation androidInstallation1 = new Installation();
-        androidInstallation1.setDeviceToken("CSPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf");
-        installationDao.create(androidInstallation1);
-
-        Installation androidInstallation2 = new Installation();
-        androidInstallation2.setDeviceToken("ASPA91bGDWDdlxW3EmSs2bH7Qlo5AOfbCJtmyOukYxVHq8KKUqpPLBLUjettGYoN2nahBbAe3GgmxKPcZnqEIFFxHw3brKOSmeXjZQuEVehSJTUdJuXUCmR3XweZ2MM455fYMcvkUse1DIp1wjxnik2uHYSNl87wrJzLddoC7tPpgch3eJAf");
-        installationDao.create(androidInstallation2);
-
-        Installation iosInstallation1 = new Installation();
-        iosInstallation1.setDeviceToken("33ee51dad49a77ca7b45924074bcc4f19aea20308f5feda202fbba3baed7073d7");
-        installationDao.create(iosInstallation1);
-
-        androidInstallation1.setVariant(av);
-        androidInstallation2.setVariant(av);
-        iosInstallation1.setVariant(ios);
-        variantDao.update(av);
-        variantDao.update(ios);
-
-        pa.getVariants().add(av);
-        pa.getVariants().add(ios);
-        pushApplicationDao.update(pa);
-
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
-        final Map<String, Long> result = pushApplicationDao.countInstallationsByType(pushApplication1.getPushApplicationID());
-
-        System.out.println("result = " + result);
         assertThat(result).isNotEmpty();
-        assertThat(result.get(av.getVariantID())).isEqualTo(2L);
-        assertThat(result.get(ios.getVariantID())).isEqualTo(1L);
+        assertThat(result.get("1")).isEqualTo(2L);
+        assertThat(result.get("3")).isEqualTo(1L);
+        assertThat(result.get(VariantType.ANDROID.getTypeName())).isEqualTo(2L);
     }
 
     @Test
-    public void shouldFindPushApplicationNameAndIDbasedOnVariantID() {
-        //given
-        PushApplication pushApplication1 = new PushApplication();
-        final String appName = "Push App 1";
-        pushApplication1.setName(appName);
-        final String id = pushApplication1.getId();
-        pushApplicationDao.create(pushApplication1);
-
-        PushApplication pa = pushApplicationDao.find(id);
-
-        AndroidVariant av = new AndroidVariant();
-        av.setName("Android Variant");
-        av.setGoogleKey("KEY...");
-        variantDao.create(av);
-
-        AndroidVariant ignored = new AndroidVariant();
-        ignored.setName("ignored");
-        ignored.setGoogleKey("123");
-        variantDao.create(ignored);
-
-        iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setName("ignored");
-        iOSVariant.setCertificate(new byte[1]);
-        iOSVariant.setPassphrase("123");
-        variantDao.create(iOSVariant);
-
-        pa.getVariants().add(av);
-        pa.getVariants().add(ignored);
-        pa.getVariants().add(iOSVariant);
-        pushApplicationDao.update(pa);
-
-        entityManager.flush();
-        entityManager.clear();
+    public void shouldFindPushApplicationNameAndIDBasedOnVariantID() {
 
         //when
-        final List<PushApplication> applications = pushApplicationDao.findByVariantIds(Arrays.asList(av.getVariantID()));
+        final List<PushApplication> applications = pushApplicationDao.findByVariantIds(Arrays.asList("1"));
 
         //then
         assertThat(applications).isNotEmpty();
         assertThat(applications.size()).isEqualTo(1);
 
         final PushApplication application = applications.iterator().next();
-        assertThat(application.getName()).isEqualTo(appName);
+        assertThat(application.getName()).isEqualTo("Push App 1");
         assertThat(application.getVariants()).isNotEmpty();
         assertThat(application.getVariants().size()).isEqualTo(1);
-        assertThat(application.getVariants().iterator().next().getId()).isEqualTo(av.getId());
+        assertThat(application.getVariants().iterator().next().getId()).isEqualTo("1");
     }
 }

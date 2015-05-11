@@ -16,18 +16,25 @@
  */
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+import java.util.Date;
 
 import javax.inject.Inject;
-import java.util.Date;
+
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+
+
+import javax.ejb.Stateless;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
  * on the Admin UI.
  */
+@Stateless
 public class PushMessageMetricsService {
 
     // that's what we currently use as the maximum days the message information objects are stored
@@ -36,6 +43,9 @@ public class PushMessageMetricsService {
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
+
+    @Inject
+    private VariantMetricInformationDao variantMetricInformationDao;
 
     /**
      * Starts the capturing of metadata around a push message request.
@@ -63,6 +73,8 @@ public class PushMessageMetricsService {
 
     /**
      * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
+     *
+     * @param pushMessageInformation the push message info object
      */
     public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
         pushMessageInformationDao.update(pushMessageInformation);
@@ -70,6 +82,13 @@ public class PushMessageMetricsService {
 
     /**
      * Returns a list of metadata objects for the given Push Application
+     *
+     * @param pushApplicationID the push app ID
+     * @param sorting do we want sorting?
+     * @param page number of the actual page in the pagination
+     * @param pageSize number of items
+     *
+     * @return list of push message info objects
      */
     public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting, page, pageSize);
@@ -77,9 +96,38 @@ public class PushMessageMetricsService {
 
     /**
      * Returns a list of metadata objects for the given Variant
+     *
+     * @param variantID the variant ID
+     * @param sorting do we want sorting?
+     * @param page number of the actual page in the pagination
+     * @param pageSize number of items
+     *
+     * @return list of push message info objects
      */
     public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
+    }
+
+    /**
+     * Returns number of push messages for given push application ID
+     *
+     * @param pushApplicationId the push app ID
+     *
+     * @return the cumber of message for the given push application
+     */
+    public long countMessagesForPushApplication(String pushApplicationId) {
+        return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
+    }
+
+    /**
+     * Returns number of push messages for given push variant ID
+     *
+     * @param variantId the variant ID
+     *
+     * @return the cumber of message for the given variant
+     */
+    long countMessagesForVariant(String variantId) {
+        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantId);
     }
 
     /**
@@ -89,5 +137,34 @@ public class PushMessageMetricsService {
     public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
+    }
+
+    public PushMessageInformation getPushMessageInformation(String id) {
+        return pushMessageInformationDao.getPushMessageInformation(id);
+    }
+
+    public void updateAnalytics(String aerogearPushId, String variantID) {
+        PushMessageInformation pushMessageInformation = this.getPushMessageInformation(aerogearPushId);
+
+        if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message
+
+            //if the firstOpenDate is not null that means it's no the first one, let's update the lastDateOpen
+            if (pushMessageInformation.getFirstOpenDate() != null) {
+                pushMessageInformation.setLastOpenDate(new Date());
+            } else {
+                pushMessageInformation.setFirstOpenDate(new Date());
+                pushMessageInformation.setLastOpenDate(new Date());
+            }
+            //update the general counter
+            pushMessageInformation.incrementAppOpenCounter();
+
+            //update the variant counter
+            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
+            variantMetricInformation.incrementVariantOpenCounter();
+            variantMetricInformationDao.update(variantMetricInformation);
+
+            this.updatePushMessageInformation(pushMessageInformation);
+        }
+
     }
 }

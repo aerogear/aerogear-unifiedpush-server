@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<dataset>
+    <table name="SA.PUSHAPPLICATION">
+        <column>id</column>
+        <column>pushApplicationID</column>
+        <column>description</column>
+        <column>name</column>
+        <column>developer</column>
+        <row>
+            <value>1</value>
+            <value>888</value>
+            <value>hahaha</value>
+            <value>Push App 1</value>
+            <value>Admin</value>
+        </row>
+    </table>
+    <table name="SA.VARIANT">
+        <column>id</column>
+        <column>VARIANT_TYPE</column>
+        <column>name</column>
+        <column>variantID</column>
+        <column>variants_id</column>
+        <column>type</column>
+        <column>developer</column>
+        <row>
+            <value>1</value>
+            <value>android</value>
+            <value>Android</value>
+            <value>1</value>
+            <value>1</value>
+            <value>0</value>
+            <value>me</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>simplePush</value>
+            <value>SimplePush</value>
+            <value>2</value>
+            <value>1</value>
+            <value>2</value>
+            <value>me</value>
+        </row>
+    </table>
+    <table name="SA.ANDROIDVARIANT">
+        <column>id</column>
+        <column>googleKey</column>
+        <row>
+            <value>1</value>
+            <value>Key</value>
+        </row>
+    </table>
+
+    <table name="SA.SIMPLEPUSHVARIANT">
+        <column>id</column>
+        <row>
+            <value>2</value>
+        </row>
+    </table>
+
+    <table name="SA.IOSVARIANT"/>
+
+    <table name="SA.INSTALLATION">
+        <column>id</column>
+        <column>enabled</column>
+        <column>deviceToken</column>
+        <column>variantID</column>
+        <column>alias</column>
+        <column>deviceType</column>
+        <row>
+            <value>1</value>
+            <value>true</value>
+            <value>1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>foo@bar.org</value>
+            <value>Android Phone</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>true</value>
+            <value>67890167890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>foo@bar.org</value>
+            <value>Android Tablet</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>false</value>
+            <value>543234234890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>foo@bar.org</value>
+            <value>Android Tablet</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>true</value>
+            <value>http://server:8080/update/f5bf44a4-a21f-11e4-89d3-123b93f75cba</value>
+            <value>2</value>
+            <value>foo@bar.org</value>
+            <value/>
+        </row>
+        <row>
+            <value>5</value>
+            <value>true</value>
+            <value>http://server:8080/update/5cc15dd6-a220-11e4-89d3-123b93f75cba</value>
+            <value>2</value>
+            <value>foo@bar.org</value>
+            <value/>
+        </row>
+        <row>
+            <value>6</value>
+            <value>true</value>
+            <value>http://server:8080/update/80a951f4-a220-11e4-89d3-123b93f75cba</value>
+            <value>2</value>
+            <value>foo@bar.org</value>
+            <value>JavaFX Monitor</value>
+        </row>
+    </table>
+
+    <table name="SA.CATEGORY">
+        <column>id</column>
+        <column>name</column>
+        <row>
+            <value>101</value>
+            <value>soccer</value>
+        </row>
+        <row>
+            <value>102</value>
+            <value>news</value>
+        </row>
+    </table>
+
+    <table name="SA.INSTALLATION_CATEGORY">
+        <column>Installation_id</column>
+        <column>categories_id</column>
+        <row>
+            <value>1</value>
+            <value>101</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>102</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>101</value>
+        </row>
+        <row>
+            <value>5</value>
+            <value>102</value>
+        </row>
+        <row>
+            <value>6</value>
+            <value>102</value>
+        </row>
+    </table>
+</dataset>

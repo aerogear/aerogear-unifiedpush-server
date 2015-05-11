@@ -33,8 +33,9 @@ public interface PushNotificationSender {
      * @param variant contains details for the underlying push network, e.g. API Keys/Ids
      * @param clientIdentifiers platform specific collection of client identifiers
      * @param pushMessage payload to be send to the given clients
+     * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
      * @param senderCallback invoked after submitting the request to the underlying push network to indicate the status
      *                       of the request (<code>success</code> or <code>error</code>
      */
-    void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, NotificationSenderCallback senderCallback);
+    void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback);
 }

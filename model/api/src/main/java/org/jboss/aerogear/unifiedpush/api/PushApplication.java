@@ -45,6 +45,8 @@ public class PushApplication extends BaseModel {
 
     /**
      * The name of the application.
+     *
+     * @param name the name
      */
     public void setName(final String name) {
         this.name = name;
@@ -56,6 +58,8 @@ public class PushApplication extends BaseModel {
 
     /**
      * The description of the app.
+     *
+     * @param description the description
      */
     public void setDescription(final String description) {
         this.description = description;
@@ -67,6 +71,8 @@ public class PushApplication extends BaseModel {
 
     /**
      * Identifier used to register variants with this PushApplication
+     *
+     * @param pushApplicationID the pushApplicationID
      */
     public void setPushApplicationID(String pushApplicationID) {
         this.pushApplicationID = pushApplicationID;
@@ -78,6 +84,8 @@ public class PushApplication extends BaseModel {
 
     /**
      * The master password, used for sending message to a {@link PushApplication} or its {@link Variant}s.
+     *
+     * @param masterSecret the masterSecret
      */
     public void setMasterSecret(String masterSecret) {
         this.masterSecret = masterSecret;
@@ -98,6 +106,8 @@ public class PushApplication extends BaseModel {
 
     /**
      * The developer which created the app.
+     *
+     * @return the owning developer
      */
     public String getDeveloper() {
         return developer;

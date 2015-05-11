@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+
+
+      <div class="page-header page-header-bleed-right">
+
+        <div class="actions pull-right">
+          <ul class="list-inline">
+            <li><a href ng-click="wizard02AddVariant.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+          </ul>
+        </div>
+
+
+        <h1>{{ wizard02AddVariant.app.name }}</h1>
+
+      </div>
+
+
+
+      <div class="well ups-blank-slate">
+
+        <p><i class="fa fa-code-fork fa-5x muted"></i></p>
+        <h1>Add a variant for {{ wizard02AddVariant.app.name }}.</h1>
+        <p>The first step to set up your mobile device is to add a variants. That will generate the code necessary to register UPS on your device.</p>
+        <p>Learn more about variants <a ups-doc="add-variant">in the documentation</a>.</p>
+
+        <!--<p class="h3"><button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"><span class="pficon pficon-add"></span> Add a variant</button></p>-->
+        <p class="h3"><button class="btn btn-primary btn-lg" ng-click="wizard02AddVariant.addVariant()"><span class="pficon pficon-add"></span> Add a variant</button></p>
+      </div><!--well-->
+
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <div class="actions pull-right">
+          <a ng-link="appDetail({app: wizard02AddVariant.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+        </div>
+        <h2 class="h5">Wizard steps</h2>
+      </div>
+      <ol class="list-unstyled ups-steps">
+        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
+        <li class="active"><strong>2</strong> Add a variant</li>
+        <li><strong>3</strong> Mobile device: Set up variant</li>
+        <li><strong>4</strong> Test! Send notification</li>
+        <li><strong>5</strong> Backend: Set up sender API</li>
+      </ol>
+
+
+
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->

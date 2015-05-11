@@ -36,10 +36,16 @@ public class PushMessageInformation extends BaseModel {
     private Date submitDate = new Date();
     private long totalReceivers;
 
+    private long appOpenCounter;
+    private Date firstOpenDate;
+    private Date lastOpenDate;
+
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
     /**
      * The raw JSON payload of the push message request
+     *
+     * @return raw json
      */
     public String getRawJsonMessage() {
         return rawJsonMessage;
@@ -51,6 +57,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The IP from the submitter of the push message request
+     *
+     * @return the ip address
      */
     public String getIpAddress() {
         return ipAddress;
@@ -62,6 +70,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The date when the push message request has been processed on the UPS
+     *
+     * @return timestamp
      */
     public Date getSubmitDate() {
         return submitDate;
@@ -73,6 +83,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * Collection of specific infos around the related variants
+     *
+     * @return variant information
      */
     public Set<VariantMetricInformation> getVariantInformations() {
         return variantInformations;
@@ -84,6 +96,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The ID of the root push application, for which the push message request has been submitted
+     *
+     * @return containing application ID
      */
     public String getPushApplicationId() {
         return pushApplicationId;
@@ -95,6 +109,8 @@ public class PushMessageInformation extends BaseModel {
 
     /**
      * The Client Identifier showing who triggered the Push Notification
+     *
+     * @return string identifying the sender
      */
     public String getClientIdentifier() { return clientIdentifier; }
 
@@ -111,6 +127,52 @@ public class PushMessageInformation extends BaseModel {
 
     public void setTotalReceivers(long totalReceivers) {
         this.totalReceivers = totalReceivers;
+    }
+
+    /**
+     * The number of time this Push Application was opened after a Push Notification
+     *
+     * @return the number of time this Push Application was opened after a Push Notification
+     */
+    public long getAppOpenCounter() {
+        return appOpenCounter;
+    }
+
+    public void setAppOpenCounter(long appOpenCounter) {
+        this.appOpenCounter = appOpenCounter;
+    }
+
+    /**
+     * Increment the AppOpenCounter
+     */
+    public void incrementAppOpenCounter() {
+         this.setAppOpenCounter(this.getAppOpenCounter() +1);
+    }
+
+    /**
+     * The date of the first time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the first time this Push Application was opened after a Push Notification
+     */
+    public Date getFirstOpenDate() {
+        return firstOpenDate;
+    }
+
+    public void setFirstOpenDate(Date firstOpenDate) {
+        this.firstOpenDate = firstOpenDate;
+    }
+
+    /**
+     * The date of the last time this Push Application was opened after a Push Notification
+     *
+     * @return the date of the last time this Push Application was opened after a Push Notification
+     */
+    public Date getLastOpenDate() {
+        return lastOpenDate;
+    }
+
+    public void setLastOpenDate(Date lastOpenDate) {
+        this.lastOpenDate = lastOpenDate;
     }
 
     public void addVariantInformations(VariantMetricInformation variantMetricInformation) {

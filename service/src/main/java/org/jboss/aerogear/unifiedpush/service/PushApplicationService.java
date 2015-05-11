@@ -26,26 +26,39 @@ public interface PushApplicationService {
 
     /**
      * Store a new PushApplication object on the database.
+     *
+     * @param pushApp the push application object
      */
     void addPushApplication(PushApplication pushApp);
 
     /**
      * Performs an update/merge on the given entity.
+     *
+     * @param pushApp the push application object
      */
     void updatePushApplication(PushApplication pushApp);
 
     /**
      * Returns the PushApplication entity, matching the given ID.
+     *
+     * @param pushApplicationID push application ID
+     *
+     * @return push application entity
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
     /**
      * Removes the given PushApplication entity.
+     *
+     * @param pushApp the push application object
      */
     void removePushApplication(PushApplication pushApp);
 
     /**
      * Registers the given Variant object with the given PushApplication.
+     *
+     * @param pushApp the push application object
+     * @param variant the variant
      */
     void addVariant(PushApplication pushApp, Variant variant);
 

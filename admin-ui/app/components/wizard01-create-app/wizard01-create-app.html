@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-md-9">
+
+      <div class="page-header page-header-bleed-right">
+        <h1>Welcome to Unified Push Console</h1>
+      </div>
+
+
+      <div class="well ups-blank-slate">
+
+        <p><i class="fa fa-rocket fa-5x muted"></i></p>
+        <!--
+                      <h1>There are no applications installed yet.</h1>
+        -->
+        <h1>Create your first application</h1>
+        <p>We will hold your hand and guide you all the way. Sit back and enjoy the ride.</p>
+        <p>If you want to read about the process, <a ups-doc="create-app" param="'123'">go to the documentation</a>.</p>
+
+        <form class="form-inline" name="form">
+          <div class="form-group">
+            <label class="sr-only" for="appname"></label>
+            <input type="text" id="appname" class="form-control input-lg" placeholder="Application name" required ng-model="wizard01CreateApp.application.name">
+          </div>
+
+          <button ng-click="wizard01CreateApp.createApp()"  class="btn btn-primary btn-lg" ng-disabled="form.$invalid">Create App</button>
+        </form>
+
+
+      </div><!--well-->
+
+
+
+    </div><!-- /col -->
+
+
+    <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
+
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+        <div class="actions pull-right" ng-if="app.stats.applications > 0">
+          <a ng-link="home">Cancel the wizard <i class="fa fa-angle-double-right"></i></a>
+        </div>
+        <h2 class="h5">Wizard steps</h2>
+      </div>
+      <ol class="list-unstyled ups-steps">
+        <li class="active"><strong>1</strong> Create your first Application</li>
+        <li><strong>2</strong> Add a variant</li>
+        <li><strong>3</strong> Mobile device: Set up variant</li>
+        <li><strong>4</strong> Test! Send notification</li>
+        <li><strong>5</strong> Backend: Set up sender API</li>
+      </ol>
+
+
+
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->

@@ -71,6 +71,9 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/snippets/**',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/components/{,*/}*.{html,js}',
+          '{<%= yeoman.app %>,<%= yeoman.tmp %>}/components/**/*.{html,js}',
           '{<%= yeoman.app %>,<%= yeoman.tmp %>}/styles/{,*/}*.css',
           '{<%= yeoman.app %>,<%= yeoman.tmp %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
@@ -108,14 +111,11 @@ module.exports = function (grunt) {
         options: {
           'force': true
         },
-        files: [
-          {
-            src: [
-              '<%= local.jbossweb %>/*',
-              '!<%= local.jbossweb %>/WEB-INF',
-              '!<%= local.jbossweb %>/META-INF'
-            ]
-          }
+        src: [
+          '<%= local.jbossweb %>/*',
+          '!<%= local.jbossweb %>/config',
+          '!<%= local.jbossweb %>/WEB-INF',
+          '!<%= local.jbossweb %>/META-INF'
         ]
       },
       server: '.tmp'
@@ -170,7 +170,11 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
-            src: ['*.html', 'views/*.html'],
+            src: [
+              '*.html',
+              'dialogs/*.html',
+              'directives/*.html'
+            ],
             dest: '<%= yeoman.dist %>'
           }
         ]
@@ -205,6 +209,17 @@ module.exports = function (grunt) {
           }
         ]
       },
+      misc: {
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.lib %>/zeroclipboard/dist/',
+            dest: '<%= yeoman.tmp %>/img/',
+            src: [ 'ZeroClipboard.swf' ]
+          }
+        ]
+      },
       dist: {
         files: [
           {
@@ -213,9 +228,10 @@ module.exports = function (grunt) {
             cwd: '<%= yeoman.app %>',
             dest: '<%= yeoman.dist %>',
             src: [
+              'components/**',
+              'snippets/**',
               '*.{ico,txt}',
-              '.htaccess',
-              'keycloak.json',
+              '*.json',
               'img/{,*/}*.{webp,gif,png,jpg,svg}'
             ]
           },
@@ -297,6 +313,7 @@ module.exports = function (grunt) {
     ngtemplates:  {
       upsConsole: {
         src: [
+          'components/**.html',
           'directives/**.html',
           'views/**.html',
           'views/dialogs/**.html',
@@ -329,6 +346,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'less',
       'copy:fonts',
+      'copy:misc',
       'copy:jbossweb',
       'autoprefixer',
       'watch'
@@ -345,6 +363,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'less',
     'copy:fonts',
+    'copy:misc',
     'useminPrepare',
     'ngtemplates',
     'htmlmin',

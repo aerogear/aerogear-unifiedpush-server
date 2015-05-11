@@ -24,24 +24,38 @@ public interface VariantDao extends GenericBaseDao<Variant, String> {
 
     /**
      * Returns the Variant entity, matching the given variantID.
+     *
+     * @param variantID the variant id
+     *
+     * @return variant object or null
      */
     Variant findByVariantID(String variantID);
 
     /**
      * Loads list of all variantIDs for given user.
+     *
+     * @param loginName the name of the owner/developer to use
+     *
+     * @return list of variant IDs
      */
-    List<String> findVariantIDsForDeveloper(String principalName);
+    List<String> findVariantIDsForDeveloper(String loginName);
 
     /**
      * Checks if variant exists for this developer
+     *
      * @param variantID the variant to find
      * @param loginName the name of the owner/developer to use
+     *
      * @return true if the variant exists for the specified developer.
      */
     boolean existsVariantIDForDeveloper(String variantID, String loginName);
 
     /**
      * Loads list of all variants, where IDs are given.
+     *
+     * @param variantIDs list of variant ids
+     *
+     * @return list of variant objects, represented by given IDs
      */
     List<Variant> findAllVariantsByIDs(List<String> variantIDs);
 

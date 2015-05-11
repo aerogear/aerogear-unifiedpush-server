@@ -21,6 +21,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import java.util.Map;
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
-public class Message {
+public class Message implements Serializable {
 
     private String alert;
     private String sound;
