@@ -37,23 +37,27 @@
     <table name="SA.PUSHMESSAGEINFORMATION">
         <column>id</column>
         <column>pushApplicationId</column>
+        <column>rawJsonMessage</column>
         <column>submitDate</column>
         <column>totalReceivers</column>
         <row>
             <value>1</value>
             <value>231231231</value>
+            <value>{ "message": { "alert": "foo" } }</value>
             <value>1980-02-01</value>
             <value>0</value>
         </row>
         <row>
             <value>2</value>
             <value>231231231</value>
+            <value>{ "message": { "alert": "bar" } }</value>
             <value>1980-02-04</value>
             <value>0</value>
         </row>
         <row>
             <value>3</value>
             <value>231231232</value>
+            <value>{ "message": { "alert": "foo" } }</value>
             <value>2015-01-22</value>
             <value>0</value>
         </row>

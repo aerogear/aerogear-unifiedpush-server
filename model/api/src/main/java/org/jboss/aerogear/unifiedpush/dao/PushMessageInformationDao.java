@@ -70,7 +70,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending, Integer page, Integer pageSize);
+    PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads all push message metadata objects for the given Variant, but offers a way to order (asc/desc) by date.

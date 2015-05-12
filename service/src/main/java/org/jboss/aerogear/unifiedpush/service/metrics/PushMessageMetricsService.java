@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
@@ -26,9 +27,6 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
-
-
-import javax.ejb.Stateless;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
@@ -90,8 +88,8 @@ public class PushMessageMetricsService {
      *
      * @return list of push message info objects
      */
-    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting, Integer page, Integer pageSize) {
-        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting, page, pageSize);
+    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
     }
 
     /**
