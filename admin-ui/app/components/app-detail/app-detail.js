@@ -18,7 +18,7 @@ angular.module('upsConsole')
               self.tab = 'variants';
             }
           }),
-        metricsEndpoint.fetchApplicationMetrics($routeParams.app, 1)
+        metricsEndpoint.fetchApplicationMetrics($routeParams.app, null, 1)
           .then(function( data ) {
             self.notifications = data.pushMetrics;
           })

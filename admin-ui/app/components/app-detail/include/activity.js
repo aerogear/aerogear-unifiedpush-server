@@ -10,9 +10,10 @@ angular.module('upsConsole')
     this.currentStart = 0;
     this.currentEnd = 0;
     this.perPage = 10;
+    this.searchString = '';
 
-    function fetchMetricsPage( page ) {
-      metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, page, self.perPage)
+    function fetchMetrics( page, searchString ) {
+      metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
         .then(function( data ) {
           self.metrics = data.pushMetrics;
           self.totalCount = data.totalItems;
@@ -30,14 +31,19 @@ angular.module('upsConsole')
     }
 
     // initial page
-    fetchMetricsPage( 1 );
+    fetchMetrics( 1, null );
 
     this.onPageChange = function ( page ) {
-      fetchMetricsPage( page );
+      fetchMetrics( page, self.searchString );
     };
 
     $scope.$on('upsNotificationSent', function( pushData, app ) {
-      fetchMetricsPage( self.currentPage );
+      fetchMetrics( self.currentPage, self.searchString );
+    });
+
+    $scope.$watch(function() { return self.searchString }, function( searchString ) {
+      self.currentPage = 1;
+      fetchMetrics( self.currentPage, self.searchString );
     });
 
   });

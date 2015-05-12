@@ -139,7 +139,7 @@ public class PushMessageInformationDaoTest {
     public void findByPushApplicationID() {
         int page = 0;
         int pageSize = 20;
-        PageResult<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE, page, pageSize);
+        PageResult<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
         assertThat(messageInformations.getResultList()).isNotEmpty();
         assertThat(messageInformations.getResultList()).hasSize(2);
     }
@@ -222,7 +222,7 @@ public class PushMessageInformationDaoTest {
     public void ascendingDateOrdering() {
 
         PageResult<PushMessageInformation> messageInformations =
-                pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE, 0, 25);
+                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, 0, 25);
         final List<PushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
 
@@ -232,11 +232,19 @@ public class PushMessageInformationDaoTest {
     @Test
     public void descendingDateOrdering() {
         PageResult<PushMessageInformation> messageInformations =
-                pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.FALSE, 0, 25);
+                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.FALSE, 0, 25);
         final List<PushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
 
         assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
+    }
+
+    @Test
+    public void testSearchString() {
+        PageResult<PushMessageInformation> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", "foo", Boolean.TRUE, 0, 25);
+        final List<PushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(1);
     }
 
     @Test
