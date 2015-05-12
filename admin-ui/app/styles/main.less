@@ -670,3 +670,23 @@ li.L9 {
     top: -38px;
   }
 }
+
+
+.dropdown-menu {
+  li {
+    .glyphicon {
+      display: none;
+    }
+  }
+  li.selected {
+    .glyphicon {
+      .fa;
+      float: right;
+      margin-top: 4px;
+      margin-right: 2px;
+    }
+    .glyphicon-ok:before {
+      content: @fa-var-check;
+    }
+  }
+}
