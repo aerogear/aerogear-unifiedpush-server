@@ -9,7 +9,7 @@
     "json3": "3.2.6",
     "jquery": "2.1.1",
     "bootstrap": "3.1.1",
-    "bootstrap-select": "1.5.4",
+    "bootstrap-select": "1.6.5",
     "es5-shim": "2.0.12",
     "patternfly": "1.1.4",
     "angular-patternfly": "lfryc/angular-patternfly#aerogear-ups",

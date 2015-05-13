@@ -7,7 +7,6 @@ angular.module('upsConsole')
     this.notifications = null; // is retrieved in canActivate
     this.tab = $routeParams.tab;
 
-
     this.contextPath = ContextProvider.contextPath();
 
     this.canActivate = function() {

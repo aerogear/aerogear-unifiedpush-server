@@ -10,6 +10,7 @@
     'ngIdle',
     'ui.bootstrap',
     'patternfly.notification',
+    'patternfly.select',
     'ngClipboard'
   ]);
 
