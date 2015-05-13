@@ -65,6 +65,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @param pushApplicationId ID of the PushApplication
      * @param ascending boolean to define if ASC ordering (by date) or DESC ordering should be executed.
+     * @param search the value of the alert of a push notification
      * @param page The number of the page.
      * @param pageSize the number of elements in the result.
      *
