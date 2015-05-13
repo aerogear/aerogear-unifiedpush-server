@@ -158,7 +158,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                         method.invoke(builder, param.toArray(new String[param.size()]));
                     } else {
                         throw new IllegalArgumentException("this template needs " + methodArgs
-                                + " fields, but you specified " + param.size() + " : " + param);
+                                + " fields, but you specified " + param.size());
                     }
                 }
             }
