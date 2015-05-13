@@ -38,13 +38,11 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,29 +54,14 @@ public class TestNotificationRouter {
 
     @Deployment
     public static WebArchive archive() {
-
-        String[] libs = new String[] {
-                "org.mockito:mockito-core",
-                "org.codehaus.jackson:jackson-mapper-asl"
-        };
-
         return ShrinkWrap
-                .create(WebArchive.class)
-                .addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve(libs).withTransitivity().as(JavaArchive.class))
-                .addClasses(NotificationRouter.class, PushNotificationSender.class)
-                .addClasses(MockProviders.class)
-                .addClasses(MessageHolderWithVariants.class, DispatchToQueue.class, GenericVariantService.class, PushMessageMetricsService.class)
-                .addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class)
-                .addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
-                .addAsWebInfResource("hornetq-jms.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .create(UnifiedPushArchive.class)
+                .withMessaging()
+                    .addClasses(NotificationRouter.class, PushNotificationSender.class)
+                    .addClasses(PushMessageMetricsService.class)
+                .withMockito()
+                    .addClasses(MockProviders.class)
+                .as(WebArchive.class);
     }
 
     @Inject
