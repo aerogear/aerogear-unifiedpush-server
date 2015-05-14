@@ -20,6 +20,8 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.TypedQuery;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
@@ -53,10 +55,30 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending, Integer page, Integer pageSize) {
-        final String query = "select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
-        final String countQuery = "select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
-        return executePagedQuery(pushApplicationId, "pushApplicationId", page, pageSize, query, countQuery);
+    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+
+        String baseQuery = "from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+        if (search != null) {
+            baseQuery += " AND pmi.rawJsonMessage LIKE :search";
+        }
+        final String query = "select pmi " + baseQuery + " ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
+        final String countQuery = "select count(*) " + baseQuery;
+
+        TypedQuery<PushMessageInformation> typedQuery = createQuery(query)
+                .setParameter("pushApplicationId", pushApplicationId);
+        if (search != null) {
+            typedQuery.setParameter("search", "%" + search + "%");
+        }
+        typedQuery.setFirstResult(page * pageSize).setMaxResults(pageSize);
+        List<PushMessageInformation> pushMessageInformationList = typedQuery.getResultList();
+
+        TypedQuery<Long> typedCountQuery = createQuery(countQuery, Long.class).setParameter("pushApplicationId", pushApplicationId);
+        if (search != null) {
+            typedCountQuery.setParameter("search", "%" + search + "%");
+        }
+        Long count = typedCountQuery.getSingleResult();
+
+        return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
     }
 
     @Override

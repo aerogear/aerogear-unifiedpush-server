@@ -16,16 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -42,7 +46,8 @@ public class PushMetricsEndpoint {
             @PathParam("id") String id,
             @QueryParam("page") Integer page,
             @QueryParam("per_page") Integer pageSize,
-            @QueryParam("sort") String sorting) {
+            @QueryParam("sort") String sorting,
+            @QueryParam("search") String search) {
 
         pageSize = parsePageSize(pageSize);
 
@@ -55,7 +60,7 @@ public class PushMetricsEndpoint {
         }
 
         PageResult<PushMessageInformation> pageResult =
-                metricsService.findAllForPushApplication(id, extractSortingQueryParamValue(sorting), page, pageSize);
+                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getCount()).build();
