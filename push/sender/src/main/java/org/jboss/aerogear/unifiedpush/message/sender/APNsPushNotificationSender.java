@@ -138,7 +138,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant, new ServiceConstructor<ApnsService>() {
+        ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
             @Override
             public ApnsService construct() {
                 ApnsService service = buildApnsService(iOSVariant, callback);
@@ -175,14 +175,14 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
             }
-            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant, service);
+            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
             callback.onSuccess();
         } catch (Exception e) {
             try {
                 service.stop();
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
-                apnsServiceCache.freeUpSlot(pushMessageInformationId, iOSVariant);
+                apnsServiceCache.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
             }
         }
     }

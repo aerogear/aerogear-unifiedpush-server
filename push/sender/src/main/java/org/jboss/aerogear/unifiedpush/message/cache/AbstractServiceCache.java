@@ -20,8 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
-
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
  *
@@ -61,10 +59,24 @@ public abstract class AbstractServiceCache<T> {
      * @param constructor the service constructor
      * @return the service instance; or null in case too much services were created and no services are queued for reuse
      */
-    public T dequeueOrCreateNewService(final String pushMessageInformationId, final Variant variant, ServiceConstructor<T> constructor) {
-        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variant));
+    public T dequeueOrCreateNewService(final String pushMessageInformationId, final String variantID, ServiceConstructor<T> constructor) {
+        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variantID));
         T service = holder.dequeueOrCreateBlocking(constructor, timeout);
         return service;
+    }
+
+    /**
+     * Dequeues the service instance if there is one available, otherwise returns null
+     * @param pushMessageInformationId the push message id
+     * @param variant the variant
+     * @return the service instance or null if no instance is queued
+     */
+    public T dequeue(final String pushMessageInformationId, final String variantID) {
+        Holder holder = getHolder(new InstanceKey(pushMessageInformationId, variantID));
+        if (holder == null) {
+            return null;
+        }
+        return holder.dequeue();
     }
 
     /**
@@ -74,8 +86,8 @@ public abstract class AbstractServiceCache<T> {
      * @param variant the variant
      * @param service the used and freed up service
      */
-    public void queueFreedUpService(final String pushMessageInformationId, final Variant variant, T service) {
-        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variant));
+    public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service) {
+        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variantID));
         holder.queue(service);
     }
 
@@ -87,8 +99,8 @@ public abstract class AbstractServiceCache<T> {
      * @param pushMessageInformationId the push message
      * @param variant the variant
      */
-    public void freeUpSlot(final String pushMessageInformationId, final Variant variant) {
-        InstanceKey instanceKey = new InstanceKey(pushMessageInformationId, variant);
+    public void freeUpSlot(final String pushMessageInformationId, final String variantID) {
+        InstanceKey instanceKey = new InstanceKey(pushMessageInformationId, variantID);
         Holder holder = getOrCreateHolder(instanceKey);
         int newInstanceCount = holder.decrementCounter();
         if (newInstanceCount == 0) {
@@ -96,6 +108,10 @@ public abstract class AbstractServiceCache<T> {
         } else if (newInstanceCount < 0) {
             throw new IllegalStateException("Instance counter cant be less than zero");
         }
+    }
+
+    private Holder getHolder(InstanceKey key) {
+        return holderMap.get(key);
     }
 
     private Holder getOrCreateHolder(InstanceKey key) {
@@ -138,6 +154,10 @@ public abstract class AbstractServiceCache<T> {
             queue.add(service);
         }
 
+        public T dequeue() {
+            return queue.poll();
+        }
+
         public int decrementCounter() {
             return counter.decrementAndGet();
         }
@@ -172,15 +192,15 @@ public abstract class AbstractServiceCache<T> {
         private String pushMessageInformationId;
         private String variantId;
 
-        InstanceKey (String pushMessageInformationId, Variant variant) {
+        InstanceKey (String pushMessageInformationId, String variantID) {
             if (pushMessageInformationId == null) {
                 throw new NullPointerException("pushMessageInformationId");
             }
-            if (variant == null || variant.getVariantID() == null) {
-                throw new IllegalArgumentException("variant or its variantID cant be null");
+            if (variantID == null) {
+                throw new NullPointerException("variant or its variantID cant be null");
             }
             this.pushMessageInformationId = pushMessageInformationId;
-            this.variantId = variant.getVariantID();
+            this.variantId = variantID;
         }
 
         @Override
