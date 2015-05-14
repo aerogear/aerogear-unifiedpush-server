@@ -18,18 +18,25 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Consumes {@link MessageHolderWithTokens} from queue and pass them as a CDI event for further processing.
  *
  * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
  */
+@TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MessageHolderWithTokensConsumer extends AbstractJMSMessageConsumer<MessageHolderWithTokens> {
+
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(MessageHolderWithTokensConsumer.class);
 
     @Inject
     @Dequeue
@@ -37,6 +44,12 @@ public class MessageHolderWithTokensConsumer extends AbstractJMSMessageConsumer<
 
     @Override
     public void onMessage(MessageHolderWithTokens message) {
-        dequeueEvent.fire(message);
+        try {
+            dequeueEvent.fire(message);
+        } catch (DispatchInitiationException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.severe("NotificationDispatcher or PushNotificationSender unexpectedly failed, the message won't be redelivered", e);
+        }
     }
 }

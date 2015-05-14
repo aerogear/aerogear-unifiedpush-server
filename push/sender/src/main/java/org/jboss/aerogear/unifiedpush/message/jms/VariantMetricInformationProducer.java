@@ -27,7 +27,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 
 /**
  * Receives CDI event with {@link VariantMetricInformation} payload and dispatches this payload to JMS queue.

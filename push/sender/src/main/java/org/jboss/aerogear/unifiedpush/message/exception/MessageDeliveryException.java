@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.exception;
 
 /**
  * Thrown when messaging subsystem fails to queue the notification for processing, so that the push notification couldn't be delivered

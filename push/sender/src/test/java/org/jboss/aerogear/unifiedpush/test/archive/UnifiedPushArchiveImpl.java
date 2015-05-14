@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
@@ -56,8 +55,8 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .withDAOs()
             .withServices()
             .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
+            .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
             .addClasses(DispatchToQueue.class, Dequeue.class)
-            .addClasses(MessageDeliveryException.class)
             .addAsWebInfResource("hornetq-jms.xml");
     }
 

@@ -27,7 +27,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 
 /**

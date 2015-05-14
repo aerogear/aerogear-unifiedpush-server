@@ -24,7 +24,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
