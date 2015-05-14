@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
@@ -36,10 +37,21 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/adm")
 public class AdmVariantEndpoint extends AbstractVariantEndpoint {
 
-
+    /**
+     * Add ADM Variant
+     *
+     * @param admVariant        new {@link AdmVariant}
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  created {@link AdmVariant}
+     *
+     * @statuscode 201 The ADM Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.AdmVariant")
     public Response registerAdmVariant(
             AdmVariant admVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -71,19 +83,36 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(admVariant.getVariantID())).build()).entity(admVariant).build();
     }
 
-    // READ
+    /**
+     * List ADM Variants for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  list of {@link AdmVariant}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.AdmVariant>")
     public Response listAllAdmVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, AdmVariant.class)).build();
     }
 
-    // UPDATE
+    /**
+     * Update ADM Variant
+     *
+     * @param id                    id of {@link PushApplication}
+     * @param androidID             id of {@link AdmVariant}
+     * @param updatedAdmApplication new info of {@link AdmVariant}
+     *
+     * @statuscode 204 The ADM Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested ADM Variant resource does not exist
+     */
     @PUT
     @Path("/{admID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateAndroidVariation(
             @PathParam("pushAppID") String id,
             @PathParam("admID") String androidID,

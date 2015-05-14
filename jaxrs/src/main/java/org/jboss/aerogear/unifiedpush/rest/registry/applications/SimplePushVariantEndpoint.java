@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 
@@ -37,10 +38,21 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/simplePush")
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
-    // new SimplePush
+    /**
+     * Add SimplePush Variant
+     *
+     * @param simplePushVariant new {@link SimplePushVariant}
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  created {@link SimplePushVariant}
+     *
+     * @statuscode 201 The SimplePush Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.SimplePushVariant")
     public Response registerSimplePushVariant(
             SimplePushVariant simplePushVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -72,20 +84,37 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(simplePushVariant.getVariantID())).build()).entity(simplePushVariant).build();
     }
 
-    // READ
+    /**
+     * List SimplePush Variants for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  list of {@link SimplePushVariant}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.SimplePushVariant>")
     public Response listAllSimplePushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
 
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, SimplePushVariant.class)).build();
     }
 
-    // UPDATE
+    /**
+     * Update SimplePush Variant
+     *
+     * @param id                            id of {@link PushApplication}
+     * @param simplePushID                  id of {@link SimplePushVariant}
+     * @param updatedSimplePushApplication  new info of {@link SimplePushVariant}
+     *
+     * @statuscode 204 The SimplePush Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested SimplePush Variant resource does not exist
+     */
     @PUT
     @Path("/{simplePushID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateSimplePushVariation(
             @PathParam("pushAppID") String id,
             @PathParam("simplePushID") String simplePushID,

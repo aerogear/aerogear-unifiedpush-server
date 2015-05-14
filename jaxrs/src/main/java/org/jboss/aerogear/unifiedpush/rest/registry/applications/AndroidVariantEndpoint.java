@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
@@ -37,10 +38,21 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/android")
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
-    // new Android
+    /**
+     * Add Android Variant
+     *
+     * @param androidVariant    new {@link AndroidVariant}
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  created {@link AndroidVariant}
+     *
+     * @statuscode 201 The Android Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.AndroidVariant")
     public Response registerAndroidVariant(
             AndroidVariant androidVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -72,19 +84,36 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
     }
 
-    // READ
+    /**
+     * List Android Variants for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  list of {@link AndroidVariant}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.AndroidVariant>")
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, AndroidVariant.class)).build();
     }
 
-    // UPDATE
+    /**
+     * Update Android Variant
+     *
+     * @param id                        id of {@link PushApplication}
+     * @param androidID                 id of {@link AndroidVariant}
+     * @param updatedAndroidApplication new info of {@link AndroidVariant}
+     *
+     * @statuscode 204 The Android Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested Android Variant resource does not exist
+     */
     @PUT
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateAndroidVariation(
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
