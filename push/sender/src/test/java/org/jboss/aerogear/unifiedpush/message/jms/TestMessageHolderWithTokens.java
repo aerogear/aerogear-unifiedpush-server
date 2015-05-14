@@ -50,7 +50,7 @@ public class TestMessageHolderWithTokens {
         return ShrinkWrap
                 .create(UnifiedPushArchive.class)
                 .withMessaging()
-                    .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class, AbstractJMSMessageConsumer.class)
+                    .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class, AbstractJMSMessageListener.class)
                     .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
                 .withMockito()
                     .addClasses(MockProviders.class)

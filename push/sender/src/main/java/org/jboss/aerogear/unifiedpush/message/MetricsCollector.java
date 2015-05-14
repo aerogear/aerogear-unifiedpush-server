@@ -16,12 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.holder.PushMessageCompleted;
+import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
+import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
@@ -29,10 +35,22 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
  * Receives metrics from {@link NotificationDispatcher} and updates the database.
  */
 @Stateless
-public class MetricsCollector {
+public class MetricsCollector extends AbstractJMSMessageConsumer {
 
     @Inject
     private PushMessageMetricsService metricsService;
+
+    @Resource(mappedName = "java:/queue/BatchLoadedQueue")
+    private Queue batchLoadedQueue;
+
+    @Resource(mappedName = "java:/queue/AllBatchesLoadedQueue")
+    private Queue allBatchesLoaded;
+
+    @Inject
+    private Event<VariantCompleted> variantCompleted;
+
+    @Inject
+    private Event<PushMessageCompleted> pushMessageCompleted;
 
     /**
      * Receives metrics and update the push message information in database.
@@ -44,12 +62,21 @@ public class MetricsCollector {
 
         metricsService.updatePushMessageInformation(pushMessageInformation);
 
+        final String variantID = variantMetricInformation.getVariantID();
+
+        pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
+
+        int loadedBatches = countLoadedBatches(variantID);
+        variantMetricInformation.setServedBatches(1);
+        variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
+
         boolean updatedExisting = false;
         for (VariantMetricInformation existingMetric : pushMessageInformation.getVariantInformations()) {
-
             if (variantMetricInformation.getVariantID().equals(existingMetric.getVariantID())) {
                 updatedExisting = true;
                 updateExistingMetric(existingMetric, variantMetricInformation);
+                variantMetricInformation = existingMetric;
+                break;
             }
         }
 
@@ -57,14 +84,34 @@ public class MetricsCollector {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
 
-        // apply number for given batch to the total count:
-        pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
+        if (variantMetricInformation.getTotalBatches() == variantMetricInformation.getServedBatches()) {
+            if (areAllBatchesLoaded(variantID)) {
+                pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
+                variantCompleted.fire(new VariantCompleted(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
 
-        metricsService.updatePushMessageInformation(pushMessageInformation);
+                if (pushMessageInformation.getServedVariants() == pushMessageInformation.getTotalVariants()) {
+                    pushMessageCompleted.fire(new PushMessageCompleted(pushMessageInformation.getId()));
+                }
+            }
+        }
+    }
+
+    private int countLoadedBatches(String variantID) {
+        int loadedBatches = 0;
+        while (receiveNoWait(batchLoadedQueue, "variantID", variantID) != null) {
+            loadedBatches += 1;
+        }
+        return loadedBatches;
+    }
+
+    private boolean areAllBatchesLoaded(String variantID) {
+        return receiveNoWait(allBatchesLoaded, "variantID", variantID) != null;
     }
 
     private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
         existing.setReceivers(existing.getReceivers() + update.getReceivers());
+        existing.setServedBatches(existing.getServedBatches() + update.getServedBatches());
+        existing.setTotalBatches(existing.getTotalBatches() + update.getTotalBatches());
         if (existing.getDeliveryStatus() == null) {
             existing.setDeliveryStatus(update.getDeliveryStatus());
         }

@@ -21,54 +21,44 @@ import java.io.Serializable;
 import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
-import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 
 /**
- * Allows its implementations to simply receive messages from JMS queues in non-blocking way
+ * Simplifies sending of messages to destination
  */
-public abstract class AbstractJMSMessageConsumer {
+public abstract class AbstractJMSMessageProducer {
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
     /**
-     * Allows to receive message from queue in non-blocking way
-     *
-     * @return message from given queue or null if there is no message in the given queue
+     * Sends message to destination
      */
-    protected <T extends Serializable> T receiveNoWait(Queue queue) {
-        return receiveNoWait(queue, null, null);
+    protected void send(Destination destination, Serializable message) {
+        send(destination, message, null, null);
     }
 
     /**
-     * Allows to receive selected message from queue in non-blocking way. Message is selected by given JMS message property name and value.
-     *
-     * @return message from given queue or null if there is no message in the given queue for given property name and value
+     * Sends message to destination with given JMS message property name and value
      */
-    protected <T extends Serializable> T receiveNoWait(Queue queue, String propertyName, String propertyValue) {
+    protected void send(Destination destination, Serializable message, String propertyName, String propertValue) {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageConsumer messageConsumer;
-            if (propertyName != null) {
-                messageConsumer = session.createConsumer(queue, String.format("%s = '%s'", propertyName, propertyValue));
-            } else {
-                messageConsumer = session.createConsumer(queue);
-            }
+            MessageProducer messageProducer = session.createProducer(destination);
             connection.start();
-            ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receiveNoWait();
-            if (objectMessage != null) {
-                return (T) objectMessage.getObject();
-            } else {
-                return null;
+            ObjectMessage objectMessage = session.createObjectMessage(message);
+            if (propertyName != null) {
+                objectMessage.setStringProperty(propertyName, propertValue);
             }
+            messageProducer.send(objectMessage);
         } catch (JMSException e) {
             throw new MessageDeliveryException("Failed to queue push message for further processing", e);
         } finally {
@@ -81,5 +71,4 @@ public abstract class AbstractJMSMessageConsumer {
             }
         }
     }
-
 }

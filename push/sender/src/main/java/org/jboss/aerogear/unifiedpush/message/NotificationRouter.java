@@ -75,14 +75,6 @@ public class NotificationRouter {
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
         logger.info("Processing send request with '" + message.toString() + "' payload");
 
-        final PushMessageInformation pushMessageInformation =
-                metricsService.storeNewRequestFrom(
-                        pushApplication.getPushApplicationID(),
-                        message.toStrippedJsonString(),
-                        message.getIpAddress(),
-                        message.getClientIdentifier()
-                        );
-
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();
 
@@ -106,6 +98,14 @@ public class NotificationRouter {
             variants.addAll(pushApplication.getVariants());
         }
 
+        final PushMessageInformation pushMessageInformation =
+                metricsService.storeNewRequestFrom(
+                        pushApplication.getPushApplicationID(),
+                        message.toStrippedJsonString(),
+                        message.getIpAddress(),
+                        message.getClientIdentifier(),
+                        variants.getVariantCount()
+                        );
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
@@ -133,6 +133,13 @@ public class NotificationRouter {
             for (Variant variant : variants) {
                 this.add(variant);
             }
+        }
+        int getVariantCount() {
+            int count = 0;
+            for (Collection<Variant> variants : values()) {
+                count += variants.size();
+            }
+            return count;
         }
     }
 }

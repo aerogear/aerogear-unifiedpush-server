@@ -56,13 +56,15 @@ public class PushMessageMetricsService {
      *
      * @return the metadata object for the started push message request job
      */
-    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
+    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier, int totalVariantCount) {
         final PushMessageInformation information = new PushMessageInformation();
 
         information.setRawJsonMessage(json);
         information.setIpAddress(ipAddress);
         information.setPushApplicationId(pushAppId);
         information.setClientIdentifier(clientIdentifier);
+        information.setServedVariants(0);
+        information.setTotalVariants(totalVariantCount);
 
         pushMessageInformationDao.create(information);
 

@@ -26,6 +26,8 @@ import java.util.Set;
  */
 public class PushMessageInformation extends BaseModel {
 
+    private static final long serialVersionUID = -3855047068913784279L;
+
     @NotNull
     private String pushApplicationId;
 
@@ -39,6 +41,9 @@ public class PushMessageInformation extends BaseModel {
     private long appOpenCounter;
     private Date firstOpenDate;
     private Date lastOpenDate;
+
+    private int servedVariants;
+    private int totalVariants;
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
@@ -173,6 +178,22 @@ public class PushMessageInformation extends BaseModel {
 
     public void setLastOpenDate(Date lastOpenDate) {
         this.lastOpenDate = lastOpenDate;
+    }
+
+    public int getServedVariants() {
+        return servedVariants;
+    }
+
+    public void setServedVariants(int servedVariants) {
+        this.servedVariants = servedVariants;
+    }
+
+    public int getTotalVariants() {
+        return totalVariants;
+    }
+
+    public void setTotalVariants(int totalVariants) {
+        this.totalVariants = totalVariants;
     }
 
     public void addVariantInformations(VariantMetricInformation variantMetricInformation) {

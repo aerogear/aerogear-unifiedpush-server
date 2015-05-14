@@ -16,11 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
+import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
+import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.shrinkwrap.api.Archive;
@@ -56,6 +60,8 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .withServices()
             .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
+            .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
+            .addClasses(AbstractJMSTest.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
             .addAsWebInfResource("hornetq-jms.xml");
     }

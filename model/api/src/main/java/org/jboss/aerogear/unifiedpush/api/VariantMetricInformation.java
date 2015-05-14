@@ -26,12 +26,16 @@ import javax.validation.constraints.NotNull;
  */
 public class VariantMetricInformation extends BaseModel {
 
+    private static final long serialVersionUID = 8704836533294404718L;
+
     @NotNull
     private String variantID;
     private long receivers;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
     private long variantOpenCounter;
+    private int servedBatches = 0;
+    private int totalBatches = 0;
 
     @JsonIgnore
     private PushMessageInformation pushMessageInformation;
@@ -114,5 +118,21 @@ public class VariantMetricInformation extends BaseModel {
 
     public void incrementVariantOpenCounter() {
         this.setVariantOpenCounter(this.getVariantOpenCounter() + 1);
+    }
+
+    public int getServedBatches() {
+        return servedBatches;
+    }
+
+    public void setServedBatches(int servedBatches) {
+        this.servedBatches = servedBatches;
+    }
+
+    public int getTotalBatches() {
+        return totalBatches;
+    }
+
+    public void setTotalBatches(int totalBatches) {
+        this.totalBatches = totalBatches;
     }
 }

@@ -34,7 +34,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class MessageHolderWithTokensConsumer extends AbstractJMSMessageConsumer<MessageHolderWithTokens> {
+public class MessageHolderWithTokensConsumer extends AbstractJMSMessageListener<MessageHolderWithTokens> {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(MessageHolderWithTokensConsumer.class);
 

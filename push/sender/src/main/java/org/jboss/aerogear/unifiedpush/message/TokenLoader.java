@@ -29,6 +29,8 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.message.holder.AllBatchesLoaded;
+import org.jboss.aerogear.unifiedpush.message.holder.BatchLoaded;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
@@ -61,6 +63,14 @@ public class TokenLoader {
     @Inject
     @DispatchToQueue
     private Event<MessageHolderWithVariants> nextBatchEvent;
+
+    @Inject
+    @DispatchToQueue
+    private Event<BatchLoaded> batchLoaded;
+
+    @Inject
+    @DispatchToQueue
+    private Event<AllBatchesLoaded> allBatchesLoaded;
 
     /**
      * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
@@ -99,10 +109,13 @@ public class TokenLoader {
                         tokensLoaded += 1;
                     }
                     dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
+                    batchLoaded.fire(new BatchLoaded(variant.getVariantID()));
                 }
                 // should we load next batch ?
                 if (tokensLoaded >= NUMBER_OF_BATCHES * BATCH_SIZE) {
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
+                } else {
+                    allBatchesLoaded.fire(new AllBatchesLoaded(variant.getVariantID()));
                 }
             } catch (ResultStreamException e) {
                 logger.severe("Failed to load batch of tokens", e);

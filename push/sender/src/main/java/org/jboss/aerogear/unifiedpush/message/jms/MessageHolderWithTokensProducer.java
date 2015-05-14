@@ -19,15 +19,9 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
 import javax.jms.Queue;
-import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 
 /**
@@ -36,10 +30,7 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
  * This bean serves as mediator for decoupling of JMS subsystem and services that triggers these messages.
  */
 @Stateless
-public class MessageHolderWithTokensProducer {
-
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
+public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer {
 
     @Resource(mappedName = "java:/queue/AdmTokenBatchQueue")
     private Queue admTokenBatchQueue;
@@ -60,25 +51,7 @@ public class MessageHolderWithTokensProducer {
     private Queue wnsTokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
-        Connection connection = null;
-        try {
-            connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue tokenBatchQueue = selectQueue(msg.getVariant().getType());
-            MessageProducer messageProducer = session.createProducer(tokenBatchQueue);
-            connection.start();
-            messageProducer.send(session.createObjectMessage(msg));
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        send(selectQueue(msg.getVariant().getType()), msg);
     }
 
     private Queue selectQueue(VariantType variantType) {
@@ -99,5 +72,4 @@ public class MessageHolderWithTokensProducer {
                 throw new IllegalStateException("Unknown variant type queue");
         }
     }
-
 }

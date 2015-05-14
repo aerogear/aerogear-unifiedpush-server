@@ -77,6 +77,8 @@ CREATE TABLE PushMessageInformation (
   appOpenCounter    BIGINT      DEFAULT 0,
   firstOpenDate     DATE          DEFAULT NULL,
   lastOpenDate      DATE          DEFAULT NULL,
+  servedVariants    BIGINT       DEFAULT 0,
+  totalVariants    BIGINT      DEFAULT 0,
   PRIMARY KEY (id)
 );
 
@@ -89,5 +91,7 @@ CREATE TABLE VariantMetricInformation (
   variantInformations_id VARCHAR(255) DEFAULT NULL,
   pushMessageInformation_id VARCHAR(255) DEFAULT NULL,
   variantOpenCounter    BIGINT  DEFAULT 0,
+  servedBatches    BIGINT       DEFAULT 0,
+  totalBatches    BIGINT      DEFAULT 0,
   PRIMARY KEY (id)
 );
