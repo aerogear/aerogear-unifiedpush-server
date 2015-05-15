@@ -1,0 +1,97 @@
+<div class="ups-app-header">
+
+  <div class="ups-date-range dropdown">
+    <i class="fa fa-calendar"></i>
+    <div class="ups-date-input" data-toggle="dropdown">
+      Last week <span class="ups-additional-info">(7 - 14 Feb, 2015)</span>
+    </div>
+
+    <div class="dropdown-menu ups-infotip bottom-right">
+      <div class="arrow"></div>
+      <div class="dropdown-menu-content">
+        <span class="label">Last</span>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default">1h</button>
+          <button type="button" class="btn btn-default">12h</button>
+          <button type="button" class="btn btn-default">Day</button>
+          <button type="button" class="btn btn-default active">Week</button>
+          <button type="button" class="btn btn-default">Month</button>
+          <button type="button" class="btn btn-default">Year</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <h3>App Analytics</h3>
+
+</div><!-- app header -->
+
+<div class="row analytics">
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Push Notifications</h3>
+      </div>
+      <div class="panel-body">
+        <h2>23,822,325</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Number of installations">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Push Opens</h3>
+      </div>
+      <div class="panel-body">
+        <h2>6,432,825</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Opened due to a push">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Average Open Rate</h3>
+      </div>
+      <div class="panel-body">
+        <h2>3.56 %</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Sent / Opens">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- row -->
+
+
+
+<div class="row">
+  <div class="col-sm-8">
+
+    <h3>Performance</h3>
+
+    <!--
+        <div id="chart1"></div>
+        -->
+
+    <c3-chart id="chart" config="analyticsCtrl.config"></c3-chart>
+
+  </div><!-- col -->
+
+  <div class="col-sm-4">
+    <h3>Push Networks</h3>
+    <c3-chart id="chart2" config="analyticsCtrl.config2"></c3-chart>
+  </div><!-- col -->
+
+</div><!-- row -->

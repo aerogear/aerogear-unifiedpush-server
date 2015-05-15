@@ -11,18 +11,20 @@
     "bootstrap": "3.1.1",
     "bootstrap-select": "1.6.5",
     "es5-shim": "2.0.12",
-    "patternfly": "1.1.4",
+    "patternfly": "patternfly/patternfly#082a9d8717222bca2c0b237967556470c3dc0a01",
     "angular-patternfly": "lfryc/angular-patternfly#aerogear-ups",
     "font-awesome": "4.1.0",
     "ng-idle": "1.0.4",
     "google-code-prettify": "1.0.4",
-    "ng-clip": "0.2.6"
+    "ng-clip": "0.2.6",
+    "angular-c3": "0.0.7"
   },
   "devDependencies": {
     "angular-mocks": "1.4.0-beta.6",
     "angular-scenario": "1.4.0-beta.6"
   },
   "resolutions": {
-    "angular": "1.4.0-beta.6"
+    "angular": "1.4.0-beta.6",
+    "patternfly": "082a9d8717222bca2c0b237967556470c3dc0a01"
   }
 }
