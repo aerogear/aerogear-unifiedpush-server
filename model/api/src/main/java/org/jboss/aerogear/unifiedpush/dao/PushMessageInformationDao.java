@@ -115,7 +115,4 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     List<String> findVariantIDsWithWarnings();
     List<PushMessageInformation> findLatestActivity(int maxResults);
     long getNumberOfPushMessagesForApplications();
-
-    PushMessageInformation getPushMessageInformation(String id);
-
 }

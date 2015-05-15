@@ -163,14 +163,6 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
                 "IN (select p.pushApplicationID from PushApplication p)", Long.class).getSingleResult();
     }
 
-    @Override
-    public PushMessageInformation getPushMessageInformation(String id) {
-        return getSingleResultForQuery(createQuery(
-                "select pmi from PushMessageInformation pmi where pmi.id = :id")
-                .setParameter("id", id));
-
-    }
-
     /**
      * Helper that returns 'ASC' when true and 'DESC' when false.
      */
