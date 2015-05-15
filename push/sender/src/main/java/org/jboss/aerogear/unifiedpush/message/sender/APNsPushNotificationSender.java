@@ -22,8 +22,6 @@ import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.try
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -164,23 +162,23 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             logger.fine("Sending transformed APNs payload: " + apnsMessage);
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
+
             logger.info("One batch to APNs has been submitted");
-
-            // after sending, let's ask for the inactive tokens:
-            final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
-            // transform the tokens to be all lower-case:
-            final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
-
-            // trigger asynchronous deletion:
-            if (! transformedTokens.isEmpty()) {
-                logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
-                clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
-            }
             apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
-            callback.onSuccess();
+            try {
+                service = null; // we don't want a failure in onSuccess stop the APNs service
+                callback.onSuccess();
+            } catch (Exception e) {
+                logger.severe("Failed to call onSuccess after successful push", e);
+            }
         } catch (Exception e) {
             try {
-                service.stop();
+                logger.warning("APNs service died in the middle of sending, stopping it");
+                try {
+                    service.stop();
+                } catch (Exception ex) {
+                    logger.severe("Failed to stop the APNs service after failure", ex);
+                }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
                 apnsServiceCache.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
@@ -201,18 +199,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             // apply the given TTL to the current time
             return new Date(System.currentTimeMillis() + ttl);
         }
-    }
-
-    /**
-     * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
-     * LOWER CASE format. This helper method performs a transformation
-     */
-    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
-        final Set<String> lowerCaseTokens = new HashSet<String>();
-        for (String token : inactiveTokens) {
-            lowerCaseTokens.add(token.toLowerCase());
-        }
-        return lowerCaseTokens;
     }
 
     /**

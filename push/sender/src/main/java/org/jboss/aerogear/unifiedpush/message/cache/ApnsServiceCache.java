@@ -16,10 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import com.notnoop.apns.ApnsService;
@@ -44,6 +49,9 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     public static final int INSTANCE_LIMIT = 15;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
 
+    @Inject
+    private ClientInstallationService clientInstallationService;
+
     public ApnsServiceCache() {
         super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT);
     }
@@ -55,12 +63,40 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
         ApnsService service;
         while ((service = this.dequeue(pushMessageInformationId, variantID)) != null) {
             try {
+                try {
+                    // after sending, let's ask for the inactive tokens:
+                    final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
+                    // transform the tokens to be all lower-case:
+                    final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
+
+                    // trigger asynchronous deletion:
+                    if (! transformedTokens.isEmpty()) {
+                        logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
+                        clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
+                    }
+                } catch (Exception e) {
+                    logger.severe("Unable to detect and delete inactive devices", e);
+                }
+                // kill the service
                 service.stop();
             } catch (Exception e) {
                 logger.severe("Unable to stop ApnsService", e);
             } finally {
+                // we will free up a slot anyway
                 this.freeUpSlot(pushMessageInformationId, variantID);
             }
         }
+    }
+
+    /**
+     * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
+     * LOWER CASE format. This helper method performs a transformation
+     */
+    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
+        final Set<String> lowerCaseTokens = new HashSet<String>();
+        for (String token : inactiveTokens) {
+            lowerCaseTokens.add(token.toLowerCase());
+        }
+        return lowerCaseTokens;
     }
 }
