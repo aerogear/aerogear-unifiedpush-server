@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -30,7 +30,7 @@ import org.jboss.aerogear.adm.PayloadBuilder;
 import java.util.Collection;
 import java.util.Set;
 
-@SenderType(AdmVariant.class)
+@SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(AdmPushNotificationSender.class);
 

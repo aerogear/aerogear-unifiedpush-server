@@ -16,18 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
-
 import javax.enterprise.util.AnnotationLiteral;
 
-public class SenderTypeLiteral extends AnnotationLiteral<SenderType> implements SenderType {
-    private final Class<? extends Variant> value;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 
-    public Class<? extends Variant> value() {
+public class SenderTypeLiteral extends AnnotationLiteral<SenderType> implements SenderType {
+    private final VariantType value;
+
+    public VariantType value() {
         return value;
     }
 
-    public SenderTypeLiteral(Class<? extends Variant> value) {
+    public SenderTypeLiteral(VariantType value) {
         this.value = value;
     }
 }

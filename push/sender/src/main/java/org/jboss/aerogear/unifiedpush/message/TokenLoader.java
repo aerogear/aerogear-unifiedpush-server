@@ -24,17 +24,22 @@ import java.util.TreeSet;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.holder.AllBatchesLoaded;
 import org.jboss.aerogear.unifiedpush.message.holder.BatchLoaded;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -47,9 +52,6 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 @Stateless
 public class TokenLoader {
-
-    private final static int NUMBER_OF_BATCHES = 10;
-    private final static int BATCH_SIZE = 1000;
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
 
@@ -72,6 +74,9 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<AllBatchesLoaded> allBatchesLoaded;
 
+    @Inject @Any
+    private Instance<SenderConfiguration> senderConfiguration;
+
     /**
      * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
      *
@@ -83,8 +88,11 @@ public class TokenLoader {
      */
     public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
+        final VariantType variantType = msg.getVariantType();
         final Collection<Variant> variants = msg.getVariants();
         final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
+        final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
+
         logger.fine("Received message from queue: " + message.getMessage().getAlert());
 
         final Criteria criteria = message.getCriteria();
@@ -94,16 +102,16 @@ public class TokenLoader {
 
         for (Variant variant : variants) {
             ResultsStream<String> tokenStream =
-                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, NUMBER_OF_BATCHES * BATCH_SIZE, lastTokenFromPreviousBatch)
-                                         .fetchSize(BATCH_SIZE)
+                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
+                                         .fetchSize(configuration.batchSize())
                                          .executeQuery();
 
             try {
                 String lastTokenInBatch = null;
                 int tokensLoaded = 0;
-                for (int batchNumber = 0; batchNumber < NUMBER_OF_BATCHES; batchNumber++) {
+                for (int batchNumber = 0; batchNumber < configuration.batchesToLoad(); batchNumber++) {
                     Set<String> tokens = new TreeSet<String>();
-                    for (int i = 0; i < BATCH_SIZE && tokenStream.next(); i++) {
+                    for (int i = 0; i < configuration.batchSize() && tokenStream.next(); i++) {
                         lastTokenInBatch = tokenStream.get();
                         tokens.add(lastTokenInBatch);
                         tokensLoaded += 1;
@@ -112,7 +120,7 @@ public class TokenLoader {
                     batchLoaded.fire(new BatchLoaded(variant.getVariantID()));
                 }
                 // should we load next batch ?
-                if (tokensLoaded >= NUMBER_OF_BATCHES * BATCH_SIZE) {
+                if (tokensLoaded >= configuration.tokensToLoad()) {
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
                 } else {
                     allBatchesLoaded.fire(new AllBatchesLoaded(variant.getVariantID()));
