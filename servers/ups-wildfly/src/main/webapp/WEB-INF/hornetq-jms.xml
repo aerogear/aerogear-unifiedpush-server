@@ -59,10 +59,18 @@
             <jms-queue name="WNSTokenBatchQueue">
                 <entry name="/queue/WNSTokenBatchQueue" />
             </jms-queue>
-            
+
             <!-- Metric Collection Queue -->
             <jms-queue name="MetricsQueue">
                 <entry name="/queue/MetricsQueue"/>
+            </jms-queue>
+
+            <!-- Batch Loaded Statuses Queues -->
+            <jms-queue name="BatchLoadedQueue">
+                <entry name="/queue/BatchLoadedQueue"/>
+            </jms-queue>
+            <jms-queue name="AllBatchesLoadedQueue">
+                <entry name="/queue/AllBatchesLoadedQueue"/>
             </jms-queue>
         </jms-destinations>
     </hornetq-server>
