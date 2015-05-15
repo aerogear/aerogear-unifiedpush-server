@@ -84,6 +84,8 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
 
+        metricsService.updatePushMessageInformation(pushMessageInformation);
+
         if (variantMetricInformation.getTotalBatches() == variantMetricInformation.getServedBatches()) {
             if (areAllBatchesLoaded(variantID)) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
