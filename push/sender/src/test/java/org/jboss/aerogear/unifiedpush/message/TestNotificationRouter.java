@@ -73,6 +73,7 @@ public class TestNotificationRouter {
                 .addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
+                .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())

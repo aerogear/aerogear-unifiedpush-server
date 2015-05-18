@@ -20,11 +20,13 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 
@@ -55,16 +57,16 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
 
         String baseQuery = "from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
         if (search != null) {
             baseQuery += " AND pmi.rawJsonMessage LIKE :search";
         }
-        final String query = "select pmi " + baseQuery + " ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
-        final String countQuery = "select count(*) " + baseQuery;
+        final String queryJPQL = "select pmi " + baseQuery + " ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
+        final String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(totalReceivers), sum(appOpenCounter)) " + baseQuery;
 
-        TypedQuery<PushMessageInformation> typedQuery = createQuery(query)
+        TypedQuery<PushMessageInformation> typedQuery = createQuery(queryJPQL)
                 .setParameter("pushApplicationId", pushApplicationId);
         if (search != null) {
             typedQuery.setParameter("search", "%" + search + "%");
@@ -72,31 +74,30 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         typedQuery.setFirstResult(page * pageSize).setMaxResults(pageSize);
         List<PushMessageInformation> pushMessageInformationList = typedQuery.getResultList();
 
-        TypedQuery<Long> typedCountQuery = createQuery(countQuery, Long.class).setParameter("pushApplicationId", pushApplicationId);
+        Query metricsQuery = createUntypedQuery(metricsJPQL).setParameter("pushApplicationId", pushApplicationId);
         if (search != null) {
-            typedCountQuery.setParameter("search", "%" + search + "%");
+            metricsQuery.setParameter("search", "%" + search + "%");
         }
-        Long count = typedCountQuery.getSingleResult();
+        MessageMetrics messageMetrics = (MessageMetrics) metricsQuery.getSingleResult();
 
-        return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
+        return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList, messageMetrics);
     }
 
     @Override
     //TODO sub optimal fetch join doesn't work well with min max all results will get fetched and min max will be in memory
-    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize) {
-        final String query = "select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
-        final String countQuery = "select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID";
-        return executePagedQuery(variantID, "variantID", page, pageSize, query, countQuery);
-    }
+    public PageResult<PushMessageInformation, MessageMetrics> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize) {
+        final String queryJPQL = "select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
+        final String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(pmi.totalReceivers), sum(pmi.appOpenCounter)) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID";
 
-    private PageResult<PushMessageInformation> executePagedQuery(String param, String paramName, Integer page, Integer pageSize, String query, String countQuery) {
-        List<PushMessageInformation> pushMessageInformationList = createQuery(query)
-                .setParameter(paramName, param)
-                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+        TypedQuery<PushMessageInformation> typedQuery = createQuery(queryJPQL)
+                .setParameter("variantID", variantID);
+        typedQuery.setFirstResult(page * pageSize).setMaxResults(pageSize);
+        List<PushMessageInformation> pushMessageInformationList = typedQuery.getResultList();
 
-        Long count = createQuery(countQuery, Long.class).setParameter(paramName, param).getSingleResult();
+        Query metricsQuery = createUntypedQuery(metricsJPQL).setParameter("variantID", variantID);
+        MessageMetrics messageMetrics = (MessageMetrics) metricsQuery.getSingleResult();
 
-        return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
+        return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList, messageMetrics);
     }
 
     @Override

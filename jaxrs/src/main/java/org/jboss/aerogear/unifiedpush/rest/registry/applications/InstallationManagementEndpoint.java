@@ -17,13 +17,6 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.spi.Link;
-import org.jboss.resteasy.spi.LinkHeader;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,6 +30,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.resteasy.spi.Link;
+import org.jboss.resteasy.spi.LinkHeader;
 
 
 @Path("/applications/{variantID}/installations/")
@@ -70,14 +71,14 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the installations using the variantID
-        PageResult<Installation> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize);
+        PageResult<Installation, Count> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize);
 
-        final long totalPages = pageResult.getCount() / pageSize;
+        final long totalPages = pageResult.getAggregate().getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);
 
         return Response.ok(pageResult.getResultList())
                 .header("Link", header.toString())
-                .header("total", pageResult.getCount())
+                .header("total", pageResult.getAggregate().getCount())
                 .build();
     }
 

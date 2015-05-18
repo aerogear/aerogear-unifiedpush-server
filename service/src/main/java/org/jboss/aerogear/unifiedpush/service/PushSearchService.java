@@ -21,6 +21,7 @@ import java.util.List;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
@@ -38,7 +39,7 @@ public interface PushSearchService {
      *
      * @return list of push applications
      */
-    PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize);
+    PageResult<PushApplication, Count> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize);
 
     /**
      * Finder that returns an actual PushApplication, identified by its ID and its owner/developer.
@@ -92,7 +93,7 @@ public interface PushSearchService {
      *
      * @return page result containing the list plus a total number of rows
      */
-    PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize);
 
 
 }
