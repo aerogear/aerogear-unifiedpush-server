@@ -26,7 +26,9 @@ upsServices.factory('metricsEndpoint', function ($resource, $q) {
           metric.deliveryFailed = !metric.variantInformations[0].deliveryStatus;
         });
         deferred.resolve({
-          totalItems: responseHeaders('total'),
+          totalItems: parseInt(responseHeaders('total'), 10),
+          receivers: parseInt(responseHeaders('receivers'), 10),
+          appOpenedCounter: parseInt(responseHeaders('appOpenedCounter'), 10),
           pushMetrics: data
         });
       });
@@ -45,7 +47,9 @@ upsServices.factory('metricsEndpoint', function ($resource, $q) {
           });
         });
         deferred.resolve({
-          totalItems: responseHeaders('total'),
+          totalItems: parseInt(responseHeaders('total'), 10),
+          receivers: parseInt(responseHeaders('receivers'), 10),
+          appOpenedCounter: parseInt(responseHeaders('appOpenedCounter'), 10),
           pushMetrics: data
         });
       });
