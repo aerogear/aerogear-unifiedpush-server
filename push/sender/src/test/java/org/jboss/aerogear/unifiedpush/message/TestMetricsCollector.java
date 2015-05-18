@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -87,6 +88,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         VariantMetricInformation variant2Metric1 = new VariantMetricInformation();
         variant2Metric1.setPushMessageInformation(pushMetric);
         variant2Metric1.setVariantID(variantID2);
+        when(pushMessageInformationDao.refresh(pushMetric)).thenReturn(pushMetric);
 
         // when
         send(batchLoadedQueue, new BatchLoaded(variantID1), variantID1);

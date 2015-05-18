@@ -30,12 +30,15 @@ import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Receives metrics from {@link NotificationDispatcher} and updates the database.
  */
 @Stateless
 public class MetricsCollector extends AbstractJMSMessageConsumer {
+
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricsCollector.class);
 
     @Inject
     private PushMessageMetricsService metricsService;
@@ -58,9 +61,8 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
      * @param variantMetricInformation the variant metrics info object
      */
     public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
-        PushMessageInformation pushMessageInformation = variantMetricInformation.getPushMessageInformation();
-
-        metricsService.updatePushMessageInformation(pushMessageInformation);
+        PushMessageInformation pushMessageInformation = metricsService.refreshPushMessageInformation(variantMetricInformation.getPushMessageInformation());
+        metricsService.lock(pushMessageInformation);
 
         final String variantID = variantMetricInformation.getVariantID();
 
@@ -89,9 +91,11 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         if (variantMetricInformation.getTotalBatches() == variantMetricInformation.getServedBatches()) {
             if (areAllBatchesLoaded(variantID)) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
+                logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
                 variantCompleted.fire(new VariantCompleted(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
 
                 if (pushMessageInformation.getServedVariants() == pushMessageInformation.getTotalVariants()) {
+                    logger.fine(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
                     pushMessageCompleted.fire(new PushMessageCompleted(pushMessageInformation.getId()));
                 }
             }

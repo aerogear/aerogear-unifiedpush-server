@@ -82,6 +82,23 @@ public class PushMessageMetricsService {
     }
 
     /**
+     * Refreshes state of push message information from the database, returning current state as a result.
+     * @param pushMessageInformation push message information to update
+     * @return current database state for the entity
+     */
+    public PushMessageInformation refreshPushMessageInformation(PushMessageInformation pushMessageInformation) {
+        return pushMessageInformationDao.refresh(pushMessageInformation);
+    }
+
+    /**
+     * Locks the push message information for updates so that there will be no updates concurrently
+     * @param pushMessageInformation push message information to lock
+     */
+    public void lock(PushMessageInformation pushMessageInformation) {
+        pushMessageInformationDao.lock(pushMessageInformation);
+    }
+
+    /**
      * Returns a list of metadata objects for the given Push Application
      *
      * @param pushApplicationID the push app ID

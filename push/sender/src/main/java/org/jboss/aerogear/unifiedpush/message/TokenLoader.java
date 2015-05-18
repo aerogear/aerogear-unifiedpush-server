@@ -116,13 +116,20 @@ public class TokenLoader {
                         tokens.add(lastTokenInBatch);
                         tokensLoaded += 1;
                     }
-                    dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
-                    batchLoaded.fire(new BatchLoaded(variant.getVariantID()));
+                    if (tokens.size() > 0) {
+                        dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
+                        logger.fine(String.format("Loaded batch for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                        batchLoaded.fire(new BatchLoaded(variant.getVariantID()));
+                    } else {
+                        break;
+                    }
                 }
                 // should we load next batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
+                    logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
                 } else {
+                    logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
                     allBatchesLoaded.fire(new AllBatchesLoaded(variant.getVariantID()));
                 }
             } catch (ResultStreamException e) {
