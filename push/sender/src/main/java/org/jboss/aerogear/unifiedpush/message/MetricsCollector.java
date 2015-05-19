@@ -104,14 +104,14 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
     private int countLoadedBatches(String variantID) {
         int loadedBatches = 0;
-        while (receiveNoWait(batchLoadedQueue, "variantID", variantID) != null) {
+        while (receiveInTransactionNoWait(batchLoadedQueue, "variantID", variantID) != null) {
             loadedBatches += 1;
         }
         return loadedBatches;
     }
 
     private boolean areAllBatchesLoaded(String variantID) {
-        return receiveNoWait(allBatchesLoaded, "variantID", variantID) != null;
+        return receiveInTransactionNoWait(allBatchesLoaded, "variantID", variantID) != null;
     }
 
     private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {

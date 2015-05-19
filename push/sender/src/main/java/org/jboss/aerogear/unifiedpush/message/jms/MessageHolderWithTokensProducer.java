@@ -51,7 +51,7 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     private Queue wnsTokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
-        sendNonTransacted(selectQueue(msg.getVariant().getType()), msg);
+        sendTransacted(selectQueue(msg.getVariant().getType()), msg);
     }
 
     private Queue selectQueue(VariantType variantType) {

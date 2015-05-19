@@ -34,16 +34,16 @@ import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException
  */
 public abstract class AbstractJMSMessageConsumer {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
+    @Resource(mappedName = "java:/JmsXA")
+    private ConnectionFactory xaConnectionFactory;
 
     /**
      * Allows to receive message from queue in non-blocking way
      *
      * @return message from given queue or null if there is no message in the given queue
      */
-    protected <T extends Serializable> T receiveNoWait(Queue queue) {
-        return receiveNoWait(queue, null, null);
+    protected <T extends Serializable> T receiveInTransactionNoWait(Queue queue) {
+        return receiveInTransactionNoWait(queue, null, null);
     }
 
     /**
@@ -51,10 +51,10 @@ public abstract class AbstractJMSMessageConsumer {
      *
      * @return message from given queue or null if there is no message in the given queue for given property name and value
      */
-    protected <T extends Serializable> T receiveNoWait(Queue queue, String propertyName, String propertyValue) {
+    protected <T extends Serializable> T receiveInTransactionNoWait(Queue queue, String propertyName, String propertyValue) {
         Connection connection = null;
         try {
-            connection = connectionFactory.createConnection();
+            connection = xaConnectionFactory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageConsumer messageConsumer;
             if (propertyName != null) {
