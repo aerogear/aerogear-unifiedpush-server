@@ -158,33 +158,4 @@ public abstract class UnifiedPushArchiveBase extends WebContainerBase<UnifiedPus
     protected ArchivePath getServiceProvidersPath() {
         return PATH_SERVICE_PROVIDERS;
     }
-
-    public UnifiedPushArchive withMockito() {
-        return null;
-    }
-
-    public UnifiedPushArchive withServices() {
-        return null;
-    }
-
-    public UnifiedPushArchive withDAOs() {
-        return null;
-    }
-
-    public UnifiedPushArchive withMessageModel() {
-        return null;
-    }
-
-    public UnifiedPushArchive withUtils() {
-        return null;
-    }
-
-    public UnifiedPushArchive withApi() {
-        return null;
-    }
-
-    public UnifiedPushArchive withMessaging() {
-        return null;
-    }
-
 }

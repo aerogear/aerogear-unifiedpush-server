@@ -30,8 +30,8 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import com.notnoop.apns.ApnsService;
 
 /**
- * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 15 created instances
- * per given push message and variant.
+ * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
+ * per given push message and variant. This allows for 10 concurrent connections to the APNs push network.
  *
  * Cache allows to return freed up services to the queue or free a slot for creating new services up to the limit.
  *
@@ -46,7 +46,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceCache.class);
 
-    public static final int INSTANCE_LIMIT = 15;
+    public static final int INSTANCE_LIMIT = 10;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
 
     @Inject

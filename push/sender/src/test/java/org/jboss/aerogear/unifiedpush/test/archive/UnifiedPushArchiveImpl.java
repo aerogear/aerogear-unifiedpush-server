@@ -27,6 +27,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -73,7 +74,8 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     @Override
     public UnifiedPushArchive withUtils() {
-        return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage());
+        return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage())
+                .addClasses(ConfigurationUtils.class);
     }
 
     @Override

@@ -19,7 +19,12 @@ package org.jboss.aerogear.unifiedpush.message.holder;
 import java.io.Serializable;
 
 /**
- * Event fired when all batches for given variant are loaded and dispatched for further processing
+ * Event fired when all batches for given variant were loaded and queued.
+ *
+ * Note: this does not mean all batches are processed, see {@link VariantCompleted}.
+ *
+ * @see BatchLoaded
+ * @see VariantCompleted
  */
 public class AllBatchesLoaded implements Serializable {
 

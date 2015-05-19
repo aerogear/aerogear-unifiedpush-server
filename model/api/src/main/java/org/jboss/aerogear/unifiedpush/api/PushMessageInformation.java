@@ -180,6 +180,13 @@ public class PushMessageInformation extends BaseModel {
         this.lastOpenDate = lastOpenDate;
     }
 
+    /**
+     * The number of variants that were fully processed (all batches were served).
+     *
+     * When {@link #getServedVariants()} is equal to {@link #getTotalVariants()}, the push message was fully processed.
+     *
+     * @return number of variants that were fully processed (all batches were served)
+     */
     public int getServedVariants() {
         return servedVariants;
     }
@@ -188,6 +195,13 @@ public class PushMessageInformation extends BaseModel {
         this.servedVariants = servedVariants;
     }
 
+    /**
+     * The total number of variants to be served for the given push message.
+     *
+     * When {@link #getTotalVariants()} is equal to {@link #getServedVariants()}, the push message was fully processed.
+     *
+     * @return total number of variants to be served for the given push message.
+     */
     public int getTotalVariants() {
         return totalVariants;
     }

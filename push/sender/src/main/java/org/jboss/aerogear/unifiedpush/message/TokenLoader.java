@@ -80,9 +80,12 @@ public class TokenLoader {
     /**
      * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
      *
-     * Device tokens are loaded in stream and split to batches of {@link #BATCH_SIZE}.
-     * Once the pre-configured {@link #NUMBER_OF_BATCHES} is reached, this method resends message to the same queue it took the request from,
+     * Device tokens are loaded in a stream and split to batches of configured size (see {@link SenderConfiguration#batchSize()}).
+     * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
+     *
+     * Additionally it fires {@link BatchLoaded} as CDI event (that is translated to JMS event) that helps {@link MetricsCollector} to track how many batches were loaded.
+     * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoaded}.
      *
      * @param msg holder object containing the payload and info about the effected variants
      */

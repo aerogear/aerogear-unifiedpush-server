@@ -37,13 +37,19 @@ public class SenderConfiguration {
     public SenderConfiguration() {
     }
 
+    /**
+     * Creates a new configuration with the configuration values provided
+     *
+     * @param batchesToLoad specifies how many batches should be loaded in one transaction (see {@link #batchesToLoad()}
+     * @param batchSize specifies how many devices will be loaded and delivered in one batch (see {@link #batchSize()}
+     */
     public SenderConfiguration(int batchesToLoad, int batchSize) {
         this.batchesToLoad = batchesToLoad;
         this.batchSize = batchSize;
     }
 
     /**
-     * Specifies how many batches should be loaded in one transaction.
+     * Specifies how many batches should be loaded in one token-loading transaction.
      *
      * UPS splits device tokens loaded from database into batches and loads at most {@link #batchesToLoad()} in one transaction.
      *
@@ -71,6 +77,8 @@ public class SenderConfiguration {
 
     /**
      * This is a derived property, computed as a product of {@link #batchesToLoad()} and {@link #batchSize()}.
+     *
+     * It configures how many tokens will be loaded in one token-loading transaction.
      */
     public int tokensToLoad() {
         return batchesToLoad * batchSize;

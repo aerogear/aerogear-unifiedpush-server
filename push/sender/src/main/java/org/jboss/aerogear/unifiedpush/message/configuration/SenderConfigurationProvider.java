@@ -21,6 +21,7 @@ import javax.enterprise.inject.Produces;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
+import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -77,13 +78,13 @@ public class SenderConfigurationProvider {
             );
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T getProperty(VariantType type, String property, T defaultValue, Class<T> expectedType) {
         String systemPropertyName = String.format("aerogear.%s.%s", type.getTypeName(), property);
-        String value = System.getProperty(systemPropertyName, defaultValue.toString());
         if (expectedType == String.class) {
-            return (T) value;
+            return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
         } else if (expectedType == Integer.class) {
-            return (T) Integer.valueOf(value);
+            return (T) ConfigurationUtils.tryGetIntegerProperty(systemPropertyName, (Integer) defaultValue);
         } else {
             throw new IllegalStateException("Unexpected type: " + expectedType);
         }

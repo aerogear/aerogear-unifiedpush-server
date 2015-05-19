@@ -40,9 +40,10 @@ public class TestSenderConfigurationProducer {
     public static WebArchive archive() {
         return ShrinkWrap
                 .create(UnifiedPushArchive.class)
-                .withApi()
-                .addPackage(SenderConfiguration.class.getPackage())
-                .addClasses(SenderType.class, SenderTypeLiteral.class)
+                    .withApi()
+                    .withUtils()
+                    .addPackage(SenderConfiguration.class.getPackage())
+                    .addClasses(SenderType.class, SenderTypeLiteral.class)
                 .as(WebArchive.class);
     }
 

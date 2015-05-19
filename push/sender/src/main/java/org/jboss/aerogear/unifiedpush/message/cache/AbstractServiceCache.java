@@ -31,7 +31,7 @@ public abstract class AbstractServiceCache<T> {
 
     private static final long QUEUE_POLLING_INTERVAL_IN_MILLIS = 100;
 
-    private final ConcurrentHashMap<InstanceKey, Holder> holderMap = new ConcurrentHashMap<InstanceKey, Holder>();
+    private final ConcurrentHashMap<Key, Holder> holderMap = new ConcurrentHashMap<Key, Holder>();
 
     private final AeroGearLogger logger;
     private final int instanceLimit;
@@ -64,7 +64,7 @@ public abstract class AbstractServiceCache<T> {
      * @return the service instance; or null in case too much services were created and no services are queued for reuse
      */
     public T dequeueOrCreateNewService(final String pushMessageInformationId, final String variantID, ServiceConstructor<T> constructor) {
-        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variantID));
+        Holder holder = getOrCreateHolder(new Key(pushMessageInformationId, variantID));
         T service = holder.dequeueOrCreateBlocking(constructor, timeout);
         return service;
     }
@@ -76,7 +76,7 @@ public abstract class AbstractServiceCache<T> {
      * @return the service instance or null if no instance is queued
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
-        Holder holder = getHolder(new InstanceKey(pushMessageInformationId, variantID));
+        Holder holder = getHolder(new Key(pushMessageInformationId, variantID));
         if (holder == null) {
             return null;
         }
@@ -91,7 +91,7 @@ public abstract class AbstractServiceCache<T> {
      * @param service the used and freed up service
      */
     public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service) {
-        Holder holder = getOrCreateHolder(new InstanceKey(pushMessageInformationId, variantID));
+        Holder holder = getOrCreateHolder(new Key(pushMessageInformationId, variantID));
         holder.queue(service);
         logger.fine("Freed up service returned to the queue");
     }
@@ -105,7 +105,7 @@ public abstract class AbstractServiceCache<T> {
      * @param variant the variant
      */
     public void freeUpSlot(final String pushMessageInformationId, final String variantID) {
-        InstanceKey instanceKey = new InstanceKey(pushMessageInformationId, variantID);
+        Key instanceKey = new Key(pushMessageInformationId, variantID);
         Holder holder = getOrCreateHolder(instanceKey);
         int newInstanceCount = holder.decrementCounter();
         if (newInstanceCount == 0) {
@@ -116,11 +116,11 @@ public abstract class AbstractServiceCache<T> {
         logger.fine("Freed up a slot so that new services can be created within the limits");
     }
 
-    private Holder getHolder(InstanceKey key) {
+    private Holder getHolder(Key key) {
         return holderMap.get(key);
     }
 
-    private Holder getOrCreateHolder(InstanceKey key) {
+    private Holder getOrCreateHolder(Key key) {
         Holder holder = holderMap.get(key);
         if (holder == null) {
             holder = holderMap.putIfAbsent(key, new Holder());
@@ -129,7 +129,7 @@ public abstract class AbstractServiceCache<T> {
         return holder;
     }
 
-    private void freeUpHolder(InstanceKey key, Holder holder) {
+    private void freeUpHolder(Key key, Holder holder) {
         holderMap.remove(key, holder);
     }
 
@@ -137,6 +137,9 @@ public abstract class AbstractServiceCache<T> {
         T construct();
     }
 
+    /**
+     * Holds non-blocking queue of unused services and a counter with total number of instantiated services.
+     */
     private class Holder {
         private ConcurrentLinkedQueue<T> queue = new ConcurrentLinkedQueue<T>();
         private AtomicInteger counter = new AtomicInteger(0);
@@ -198,12 +201,15 @@ public abstract class AbstractServiceCache<T> {
         }
     }
 
-    private static class InstanceKey {
+    /**
+     * The key that is used to store a {@link Holder} in the map.
+     */
+    private static class Key {
 
         private String pushMessageInformationId;
         private String variantId;
 
-        InstanceKey (String pushMessageInformationId, String variantID) {
+        Key (String pushMessageInformationId, String variantID) {
             if (pushMessageInformationId == null) {
                 throw new NullPointerException("pushMessageInformationId");
             }
@@ -231,7 +237,7 @@ public abstract class AbstractServiceCache<T> {
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            InstanceKey other = (InstanceKey) obj;
+            Key other = (Key) obj;
             if (pushMessageInformationId == null) {
                 if (other.pushMessageInformationId != null)
                     return false;

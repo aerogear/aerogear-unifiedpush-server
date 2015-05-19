@@ -120,6 +120,13 @@ public class VariantMetricInformation extends BaseModel {
         this.setVariantOpenCounter(this.getVariantOpenCounter() + 1);
     }
 
+    /**
+     * The number of device token batches that were fully NotificationDispatcher.
+     *
+     * Note: The value is updated asynchronously in MetricsCollector.
+     *
+     * @return number of device token batches that were fully processed.
+     */
     public int getServedBatches() {
         return servedBatches;
     }
@@ -128,6 +135,13 @@ public class VariantMetricInformation extends BaseModel {
         this.servedBatches = servedBatches;
     }
 
+    /**
+     * The total number of device token batches that were loaded by the TokenLoader.
+     *
+     * Note: The value is updated asynchronously in MetricsCollector.
+     *
+     * @return total number of device token batches that were loaded by the TokenLoader.
+     */
     public int getTotalBatches() {
         return totalBatches;
     }

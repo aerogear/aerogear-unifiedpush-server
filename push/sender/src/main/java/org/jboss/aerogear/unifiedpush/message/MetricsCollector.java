@@ -56,7 +56,13 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
     private Event<PushMessageCompleted> pushMessageCompleted;
 
     /**
-     * Receives metrics and update the push message information in database.
+     * Receives variant metrics and update the push message information in a database.
+     *
+     * Counts number of loaded device token batches and detects when all batches were loaded and fully served - i.e. the variant was completed.
+     * When a variant was completed, fires {@link VariantCompleted} CDI event.
+     *
+     * Additionally when a variant was completed and there are no more variants to be completed for this variant,
+     * the {@link PushMessageCompleted} CDI event is fired.
      *
      * @param variantMetricInformation the variant metrics info object
      */
