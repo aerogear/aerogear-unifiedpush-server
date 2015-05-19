@@ -67,6 +67,7 @@ public class PushMessageMetricsService {
         information.setTotalVariants(totalVariantCount);
 
         pushMessageInformationDao.create(information);
+        pushMessageInformationDao.flushAndClear();
 
         return information;
     }
