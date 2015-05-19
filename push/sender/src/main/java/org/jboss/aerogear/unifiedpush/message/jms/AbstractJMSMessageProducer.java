@@ -30,28 +30,61 @@ import javax.jms.Session;
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 
 /**
- * Simplifies sending of messages to destination
+ * Simplifies sending of messages to a destination
  */
 public abstract class AbstractJMSMessageProducer {
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
+    @Resource(mappedName = "java:/JmsXA")
+    private ConnectionFactory xaConnectionFactory;
+
     /**
-     * Sends message to destination
+     * Sends message to the destination in non-transactional manner.
+     *
+     * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
-    protected void send(Destination destination, Serializable message) {
-        send(destination, message, null, null);
+    protected void sendNonTransacted(Destination destination, Serializable message) {
+        send(destination, message, null, null, false);
     }
 
     /**
-     * Sends message to destination with given JMS message property name and value
+     * Sends message to the destination in transactional manner.
+     *
+     * Since transacted session is used, the message won't be committed until whole enclosing transaction ends
      */
-    protected void send(Destination destination, Serializable message, String propertyName, String propertValue) {
+    protected void sendTransacted(Destination destination, Serializable message) {
+        send(destination, message, null, null, true);
+    }
+
+    /**
+     * Sends message to destination with given JMS message property name and value in non-transactional manner.
+     *
+     * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
+     */
+    protected void sendNonTransacted(Destination destination, Serializable message, String propertyName, String propertValue) {
+        send(destination, message, propertyName, propertValue, false);
+    }
+
+    /**
+     * Sends message to destination with given JMS message property name and value in transactional manner.
+     *
+     * Since transacted session is used, the message won't be committed until whole enclosing transaction ends.
+     */
+    protected void sendTransacted(Destination destination, Serializable message, String propertyName, String propertValue) {
+        send(destination, message, propertyName, propertValue, true);
+    }
+
+    private void send(Destination destination, Serializable message, String propertyName, String propertValue, boolean transacted) {
         Connection connection = null;
         try {
-            connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            if (transacted) {
+                connection = xaConnectionFactory.createConnection();
+            } else {
+                connection = connectionFactory.createConnection();
+            }
+            Session session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(destination);
             connection.start();
             ObjectMessage objectMessage = session.createObjectMessage(message);

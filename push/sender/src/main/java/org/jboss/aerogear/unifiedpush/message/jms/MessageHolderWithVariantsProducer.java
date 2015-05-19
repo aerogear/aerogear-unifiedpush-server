@@ -55,7 +55,7 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
     private Queue wnsPushMessageQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
-        send(selectQueue(msg.getVariantType()), msg);
+        sendTransacted(selectQueue(msg.getVariantType()), msg);
     }
 
     private Queue selectQueue(VariantType variantType) {

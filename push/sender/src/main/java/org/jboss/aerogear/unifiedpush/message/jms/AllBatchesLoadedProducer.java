@@ -33,6 +33,6 @@ public class AllBatchesLoadedProducer extends AbstractJMSMessageProducer {
     private Queue allBatchesLoaded;
 
     public void queueMessage(@Observes @DispatchToQueue AllBatchesLoaded msg) {
-        send(allBatchesLoaded, msg, "variantID", msg.getVariantID());
+        sendNonTransacted(allBatchesLoaded, msg, "variantID", msg.getVariantID());
     }
 }
