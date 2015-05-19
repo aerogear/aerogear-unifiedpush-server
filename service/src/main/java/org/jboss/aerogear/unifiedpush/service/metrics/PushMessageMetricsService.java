@@ -125,7 +125,7 @@ public class PushMessageMetricsService {
     }
 
     public PushMessageInformation getPushMessageInformation(String id) {
-        return pushMessageInformationDao.getPushMessageInformation(id);
+        return pushMessageInformationDao.find(id);
     }
 
     public void updateAnalytics(String aerogearPushId, String variantID) {
