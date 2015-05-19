@@ -1,7 +1,9 @@
 angular.module('upsConsole')
-  .controller('Wizard04SendPushNotificationController', function( $router, createAppWizard, Notifications, $rootScope, messageSenderEndpoint, appModal ) {
+  .controller('Wizard04SendPushNotificationController', function( $router, $interval, $timeout, createAppWizard, Notifications, $rootScope, messageSenderEndpoint, appModal, applicationsEndpoint) {
 
     var self = this;
+
+    var intervalForUpdateDeviceCount;
 
     this.canActivate = function() {
       if ( !createAppWizard.app ) {
@@ -17,6 +19,7 @@ angular.module('upsConsole')
 
     this.app = createAppWizard.app;
     this.variant = createAppWizard.variant;
+    this.deviceCount = 0;
 
     this.pushData = {
       'message': {
@@ -26,6 +29,8 @@ angular.module('upsConsole')
       },
       'criteria' : {}
     };
+
+
 
     this.sendNotification = function() {
       messageSenderEndpoint( self.app.pushApplicationID, self.app.masterSecret ).send({}, self.pushData)
@@ -45,6 +50,33 @@ angular.module('upsConsole')
         .then(function( updatedApp ) {
           angular.extend( self.app, updatedApp );
         });
+    };
+
+    function updateDeviceCount() {
+      applicationsEndpoint.getWithMetrics({appId: createAppWizard.app.pushApplicationID})
+        .then(function(data) {
+          self.deviceCount = data.$deviceCount;
+        });
+    }
+
+    this.activate = function() {
+      updateDeviceCount();
+
+      $timeout(function() { // timeout is a workaround for bug in the router - canDeactivate is called right after activate
+        intervalForUpdateDeviceCount = $interval(function () {
+          updateDeviceCount();
+          if (self.deviceCount > 0) {
+            $interval.cancel(intervalForUpdateDeviceCount);
+          }
+        }, 1500);
+      }, 1500);
+    };
+
+    this.canDeactivate = function() {
+      if (intervalForUpdateDeviceCount) {
+        $interval.cancel(intervalForUpdateDeviceCount);
+      }
+      return true;
     };
 
   });
