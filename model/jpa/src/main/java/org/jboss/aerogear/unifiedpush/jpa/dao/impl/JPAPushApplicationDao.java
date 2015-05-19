@@ -16,16 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.TypedQuery;
+
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-
-import javax.persistence.TypedQuery;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
 
@@ -41,7 +43,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     }
 
     @Override
-    public PageResult<PushApplication> findAllForDeveloper(String loginName, Integer page, Integer pageSize) {
+    public PageResult<PushApplication, Count> findAllForDeveloper(String loginName, Integer page, Integer pageSize) {
         String select = "from PushApplication pa where pa.developer = :developer";
 
         Long count = entityManager.createQuery("select count(*) " + select, Long.class)
@@ -50,7 +52,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 .setFirstResult(page * pageSize).setMaxResults(pageSize)
                 .setParameter("developer", loginName).getResultList();
 
-        return new PageResult<PushApplication>(entities, count);
+        return new PageResult<PushApplication, Count>(entities, new Count(count));
     }
 
 
@@ -118,7 +120,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     //Specific queries to the Admin
     @Override
-    public PageResult<PushApplication> findAll(Integer page, Integer pageSize) {
+    public PageResult<PushApplication, Count> findAll(Integer page, Integer pageSize) {
 
         String select = "from PushApplication pa";
 
@@ -127,7 +129,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
         List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
 
-        return new PageResult<PushApplication>(entities, count);
+        return new PageResult<PushApplication, Count>(entities, new Count(count));
     }
 
     @Override

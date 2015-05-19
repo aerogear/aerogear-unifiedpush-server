@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
@@ -70,7 +71,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * @return all installations found or empty list + the total count of results
      */
-    PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize);
 
     /**
      * Find all installations for the variant specified (used for admin role)
@@ -80,7 +81,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * @return all installations found or empty list + the total count of results
      */
-    PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize);
 
 
     /**

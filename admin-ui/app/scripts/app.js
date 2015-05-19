@@ -11,6 +11,7 @@
     'ui.bootstrap',
     'patternfly.notification',
     'patternfly.select',
+    'angular-c3',
     'ngClipboard'
   ]);
 

@@ -31,6 +31,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
@@ -55,7 +56,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     private PushMessageInformationDao pushMessageInformationDao;
 
     @Override
-    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
+    public PageResult<PushApplication, Count> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
         return pushApplicationDao.findAll(page, pageSize);
     }
 
@@ -70,7 +71,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     @Override
-    public PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
+    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
         return installationDao.findInstallationsByVariant(variantID, page, pageSize);
     }
 

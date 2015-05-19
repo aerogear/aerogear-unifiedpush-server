@@ -40,6 +40,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -48,7 +49,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
 
-    public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
+    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
         Root<Installation> v = query.from(Installation.class);
@@ -64,10 +65,10 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         countQuery.where(getPredicates(variantID, developer, builder, join1));
         final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
 
-        return new PageResult<Installation>(result, count);
+        return new PageResult<Installation, Count>(result, new Count(count));
     }
 
-    public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
+    public PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
         return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize);
     }
 

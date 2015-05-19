@@ -1,0 +1,64 @@
+<div class="ups-app-header">
+  <h3>App Analytics</h3>
+</div><!-- app header -->
+
+<div class="row analytics">
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Push Notifications</h3>
+      </div>
+      <div class="panel-body">
+        <h2>{{ analyticsCtrl.receivers | number:0 }}</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Number of installations">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Push Opens</h3>
+      </div>
+      <div class="panel-body">
+        <h2>{{ analyticsCtrl.appOpenedCounter | number:0 }}</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Opened due to a push">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Average Open Rate</h3>
+      </div>
+      <div class="panel-body">
+        <h2>{{ analyticsCtrl.appOpenedRate | number:2 }} %</h2>
+        <div class="analytics-help" data-toggle="tooltip" data-placement="left" title="Sent / Opens">
+          <span class="pficon pficon-help"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- row -->
+
+<div class="row">
+  <div class="col-sm-8" ng-if="analyticsCtrl.app.$deviceCount > 0 && analyticsCtrl.performance[0].length > 1">
+    <h3>Performance</h3>
+    <c3-chart id="performance" config="analyticsCtrl.performanceChartConfig"></c3-chart>
+  </div><!-- col -->
+
+  <div class="col-sm-4" ng-if="analyticsCtrl.app.$deviceCount > 0">
+    <h3>Push Networks</h3>
+    <c3-chart id="pushNetworks" config="analyticsCtrl.pushNetworksChartConfig"></c3-chart>
+  </div><!-- col -->
+
+</div><!-- row -->

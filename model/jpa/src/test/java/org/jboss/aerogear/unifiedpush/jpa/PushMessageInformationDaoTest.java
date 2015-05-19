@@ -31,6 +31,7 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
@@ -139,7 +140,7 @@ public class PushMessageInformationDaoTest {
     public void findByPushApplicationID() {
         int page = 0;
         int pageSize = 20;
-        PageResult<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
+        PageResult<PushMessageInformation, MessageMetrics> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
         assertThat(messageInformations.getResultList()).isNotEmpty();
         assertThat(messageInformations.getResultList()).hasSize(2);
     }
@@ -189,12 +190,6 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void findPushMessageInformationsPerVariant() {
-        assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE, 0, 25).getResultList()).hasSize(2);
-        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE, 0, 25).getResultList()).hasSize(1);
-    }
-
-    @Test
     public void findMostBusyVariants() {
         List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
@@ -221,7 +216,7 @@ public class PushMessageInformationDaoTest {
     @Test
     public void ascendingDateOrdering() {
 
-        PageResult<PushMessageInformation> messageInformations =
+        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, 0, 25);
         final List<PushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
@@ -231,7 +226,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void descendingDateOrdering() {
-        PageResult<PushMessageInformation> messageInformations =
+        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.FALSE, 0, 25);
         final List<PushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
@@ -241,7 +236,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void testSearchString() {
-        PageResult<PushMessageInformation> messageInformations =
+        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", "foo", Boolean.TRUE, 0, 25);
         final List<PushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(1);

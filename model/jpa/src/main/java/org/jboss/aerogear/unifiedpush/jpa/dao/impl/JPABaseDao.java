@@ -20,9 +20,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.aerogear.unifiedpush.dao.GenericBaseDao;
 
@@ -45,11 +45,15 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
         return entityManager.createQuery(jpql, getType());
     }
 
+    protected Query createUntypedQuery(String jpql) {
+        return entityManager.createQuery(jpql);
+    }
+
     protected <O> TypedQuery<O> createQuery(String jpql, Class<O> type) {
         return entityManager.createQuery(jpql, type);
     }
 
-    protected Query createHibernateQuery(String hql) {
+    protected org.hibernate.Query createHibernateQuery(String hql) {
         Session session = (Session) entityManager.getDelegate();
         return session.createQuery(hql);
     }

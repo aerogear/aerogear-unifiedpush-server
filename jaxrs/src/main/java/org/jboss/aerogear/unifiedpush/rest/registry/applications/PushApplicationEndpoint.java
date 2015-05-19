@@ -41,6 +41,7 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -99,9 +100,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             page = 0;
         }
 
-        final PageResult<PushApplication> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
+        final PageResult<PushApplication, Count> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
         ResponseBuilder response = Response.ok(pageResult.getResultList());
-        response.header("total", pageResult.getCount());
+        response.header("total", pageResult.getAggregate().getCount());
         for (PushApplication app : pageResult.getResultList()) {
             if (includeActivity) {
                 putActivityIntoResponseHeaders(app, response);

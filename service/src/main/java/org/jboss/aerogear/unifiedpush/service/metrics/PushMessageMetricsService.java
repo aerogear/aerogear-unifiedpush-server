@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 
 /**
@@ -88,22 +89,8 @@ public class PushMessageMetricsService {
      *
      * @return list of push message info objects
      */
-    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
+    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
-    }
-
-    /**
-     * Returns a list of metadata objects for the given Variant
-     *
-     * @param variantID the variant ID
-     * @param sorting do we want sorting?
-     * @param page number of the actual page in the pagination
-     * @param pageSize number of items
-     *
-     * @return list of push message info objects
-     */
-    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean sorting, Integer page, Integer pageSize) {
-        return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
     }
 
     /**

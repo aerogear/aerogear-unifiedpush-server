@@ -45,6 +45,7 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -500,23 +501,23 @@ public class InstallationDaoTest {
         String developer = "me";
 
         //when
-        final PageResult pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1);
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1);
 
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getCount()).isEqualTo(3);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(3);
     }
 
     @Test
     public void shouldSelectInstallationsByVariant() {
         //when
-        final PageResult pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1);
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1);
 
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getCount()).isEqualTo(3);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(3);
     }
 
     @Test(expected = PersistenceException.class)

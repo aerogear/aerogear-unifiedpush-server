@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
@@ -71,19 +72,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
-
-    /**
-     * Loads all push message metadata objects for the given Variant, but offers a way to order (asc/desc) by date.
-     *
-     * @param variantID the variant ID
-     * @param ascending pass in true for ascending ordering
-     * @param page the actual page for the pagination
-     * @param pageSize number of objects on the page
-     *
-     * @return list of push message info objects
-     */
-    PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize);
+    PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends

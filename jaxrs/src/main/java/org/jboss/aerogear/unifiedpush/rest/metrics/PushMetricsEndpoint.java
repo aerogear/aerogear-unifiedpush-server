@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Path("/metrics/messages")
@@ -59,37 +60,14 @@ public class PushMetricsEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        PageResult<PushMessageInformation> pageResult =
+        PageResult<PushMessageInformation, MessageMetrics> pageResult =
                 metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
-                .header("total", pageResult.getCount()).build();
-    }
-
-    @GET
-    @Path("/variant/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response pushMessageInformationPerVariant(
-            @PathParam("id") String id,
-            @QueryParam("page") Integer page,
-            @QueryParam("per_page") Integer pageSize,
-            @QueryParam("sort") String sorting) {
-
-        pageSize = parsePageSize(pageSize);
-
-        if (page == null) {
-            page = 0;
-        }
-
-        if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
-        }
-
-        PageResult<PushMessageInformation> pageResult =
-                metricsService.findAllForVariant(id, extractSortingQueryParamValue(sorting), page, pageSize);
-
-        return Response.ok(pageResult.getResultList())
-                .header("total", pageResult.getCount()).build();
+                .header("total", pageResult.getAggregate().getCount())
+                .header("receivers", pageResult.getAggregate().getReceivers())
+                .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
+                .build();
     }
 
     private Integer parsePageSize(Integer pageSize) {
