@@ -190,12 +190,6 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void findPushMessageInformationsPerVariant() {
-        assertThat(pushMessageInformationDao.findAllForVariant("231543432432", Boolean.TRUE, 0, 25).getResultList()).hasSize(2);
-        assertThat(pushMessageInformationDao.findAllForVariant("23154343243333", Boolean.TRUE, 0, 25).getResultList()).hasSize(1);
-    }
-
-    @Test
     public void findMostBusyVariants() {
         List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);

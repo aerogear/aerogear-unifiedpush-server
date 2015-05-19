@@ -84,23 +84,6 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    //TODO sub optimal fetch join doesn't work well with min max all results will get fetched and min max will be in memory
-    public PageResult<PushMessageInformation, MessageMetrics> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize) {
-        final String queryJPQL = "select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
-        final String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(pmi.totalReceivers), sum(pmi.appOpenCounter)) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID";
-
-        TypedQuery<PushMessageInformation> typedQuery = createQuery(queryJPQL)
-                .setParameter("variantID", variantID);
-        typedQuery.setFirstResult(page * pageSize).setMaxResults(pageSize);
-        List<PushMessageInformation> pushMessageInformationList = typedQuery.getResultList();
-
-        Query metricsQuery = createUntypedQuery(metricsJPQL).setParameter("variantID", variantID);
-        MessageMetrics messageMetrics = (MessageMetrics) metricsQuery.getSingleResult();
-
-        return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList, messageMetrics);
-    }
-
-    @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
                 "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
