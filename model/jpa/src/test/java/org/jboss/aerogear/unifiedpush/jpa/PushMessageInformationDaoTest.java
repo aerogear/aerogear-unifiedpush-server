@@ -184,12 +184,6 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void countMessagePerVariant() {
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432432")).isEqualTo(2);
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("23154343243333")).isEqualTo(1);
-    }
-
-    @Test
     public void findMostBusyVariants() {
         List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
