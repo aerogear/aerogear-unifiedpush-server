@@ -33,8 +33,8 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
-import org.jboss.aerogear.unifiedpush.message.holder.AllBatchesLoaded;
-import org.jboss.aerogear.unifiedpush.message.holder.BatchLoaded;
+import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
@@ -68,11 +68,11 @@ public class TokenLoader {
 
     @Inject
     @DispatchToQueue
-    private Event<BatchLoaded> batchLoaded;
+    private Event<BatchLoadedEvent> batchLoaded;
 
     @Inject
     @DispatchToQueue
-    private Event<AllBatchesLoaded> allBatchesLoaded;
+    private Event<AllBatchesLoadedEvent> allBatchesLoaded;
 
     @Inject @Any
     private Instance<SenderConfiguration> senderConfiguration;
@@ -84,8 +84,8 @@ public class TokenLoader {
      * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
      *
-     * Additionally it fires {@link BatchLoaded} as CDI event (that is translated to JMS event) that helps {@link MetricsCollector} to track how many batches were loaded.
-     * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoaded}.
+     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event) that helps {@link MetricsCollector} to track how many batches were loaded.
+     * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
      */
@@ -122,7 +122,7 @@ public class TokenLoader {
                     if (tokens.size() > 0) {
                         dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
                         logger.fine(String.format("Loaded batch for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
-                        batchLoaded.fire(new BatchLoaded(variant.getVariantID()));
+                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()));
                     } else {
                         break;
                     }
@@ -133,7 +133,7 @@ public class TokenLoader {
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
                 } else {
                     logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
-                    allBatchesLoaded.fire(new AllBatchesLoaded(variant.getVariantID()));
+                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()));
                 }
             } catch (ResultStreamException e) {
                 logger.severe("Failed to load batch of tokens", e);

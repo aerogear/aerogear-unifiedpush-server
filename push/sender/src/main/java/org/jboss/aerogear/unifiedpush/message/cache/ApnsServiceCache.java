@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -35,7 +35,7 @@ import com.notnoop.apns.ApnsService;
  *
  * Cache allows to return freed up services to the queue or free a slot for creating new services up to the limit.
  *
- * This cache also listens for {@link VariantCompleted} event and stops all instantiated {@link ApnsService}s and frees the cache.
+ * This cache also listens for {@link VariantCompletedEvent} event and stops all instantiated {@link ApnsService}s and frees the cache.
  *
  * @see AbstractServiceCache#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor)
  * @see AbstractServiceCache#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
@@ -56,7 +56,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
         super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT);
     }
 
-    public void freeUpAvailableServices(@Observes VariantCompleted variantCompleted) {
+    public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) {
         final String pushMessageInformationId = variantCompleted.getPushMessageInformationId();
         String variantID = variantCompleted.getVariantID();
 

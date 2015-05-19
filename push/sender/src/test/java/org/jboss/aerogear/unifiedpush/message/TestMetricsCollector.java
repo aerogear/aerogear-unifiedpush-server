@@ -32,10 +32,10 @@ import javax.jms.Queue;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.message.holder.AllBatchesLoaded;
-import org.jboss.aerogear.unifiedpush.message.holder.BatchLoaded;
-import org.jboss.aerogear.unifiedpush.message.holder.PushMessageCompleted;
-import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
+import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -88,14 +88,14 @@ public class TestMetricsCollector extends AbstractJMSTest {
         VariantMetricInformation variant2Metric1 = new VariantMetricInformation();
         variant2Metric1.setPushMessageInformation(pushMetric);
         variant2Metric1.setVariantID(variantID2);
-        when(pushMessageInformationDao.getPushMessageInformation(pushMetric.getId())).thenReturn(pushMetric);
+        when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
 
         // when
-        send(batchLoadedQueue, new BatchLoaded(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoaded(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoaded(variantID2), variantID2);
-        send(allBatchesLoaded, new AllBatchesLoaded(variantID1), variantID1);
-        send(allBatchesLoaded, new AllBatchesLoaded(variantID2), variantID2);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID2), variantID2);
+        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID1), variantID1);
+        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID2), variantID2);
 
         metricsCollector.collectMetrics(variant1Metric1);
         metricsCollector.collectMetrics(variant1Metric2);
@@ -116,11 +116,11 @@ public class TestMetricsCollector extends AbstractJMSTest {
         assertNull(receive(allBatchesLoaded, variantID2));
     }
 
-    public void observeVariantCompleted(@Observes VariantCompleted variantCompleted) {
+    public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {
         variantsCompleted.countDown();
     }
 
-    public void observePushMessageCompleted(@Observes PushMessageCompleted pushMessageCompleted) {
+    public void observePushMessageCompleted(@Observes PushMessageCompletedEvent pushMessageCompleted) {
         pushMessagesCompleted.countDown();
     }
 

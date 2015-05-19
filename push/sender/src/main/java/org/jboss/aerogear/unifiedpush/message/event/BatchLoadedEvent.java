@@ -14,22 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.holder;
+package org.jboss.aerogear.unifiedpush.message.event;
 
-import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
+import java.io.Serializable;
 
 /**
- * Event fired by {@link MetricsCollector} when push message with given ID was completely processed (all batches are completed and metrics are collected)
+ * Event fired when one batch for given variant was loaded and queued.
+ *
+ * @see AllBatchesLoadedEvent
  */
-public class PushMessageCompleted {
+public class BatchLoadedEvent implements Serializable {
 
-    private String pushMessageInformationId;
+    private static final long serialVersionUID = 1897563219239181838L;
 
-    public PushMessageCompleted(String pushMessageInformationId) {
-        this.pushMessageInformationId = pushMessageInformationId;
+    private String variantID;
+
+    public BatchLoadedEvent(String variantID) {
+        this.variantID = variantID;
     }
 
-    public String getPushMessageInformationId() {
-        return pushMessageInformationId;
+    public String getVariantID() {
+        return variantID;
     }
 }

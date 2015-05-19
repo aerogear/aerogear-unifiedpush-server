@@ -20,19 +20,25 @@ import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.TokenLoader;
-import org.jboss.aerogear.unifiedpush.message.holder.BatchLoaded;
+import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 
 /**
- * Receives message from {@link TokenLoader} and queues it under the variantID as a JMS message property in order to allow
- * consumers simply receiving the message for given variant
+ * A CDI-to-JMS bridge takes some selected CDI events and passes them to JMS messaging system so that they can be handled asynchronously.
  */
-public class BatchLoadedProducer extends AbstractJMSMessageProducer {
+public class CdiJmsBridge extends AbstractJMSMessageProducer {
+
+    @Resource(mappedName = "java:/queue/AllBatchesLoadedQueue")
+    private Queue allBatchesLoaded;
 
     @Resource(mappedName = "java:/queue/BatchLoadedQueue")
     private Queue batchLoadedQueue;
 
-    public void queueMessage(@Observes @DispatchToQueue BatchLoaded msg) {
+    public void queueMessage(@Observes @DispatchToQueue AllBatchesLoadedEvent msg) {
+        sendTransacted(allBatchesLoaded, msg, "variantID", msg.getVariantID());
+    }
+
+    public void queueMessage(@Observes @DispatchToQueue BatchLoadedEvent msg) {
         sendTransacted(batchLoadedQueue, msg, "variantID", msg.getVariantID());
     }
 }

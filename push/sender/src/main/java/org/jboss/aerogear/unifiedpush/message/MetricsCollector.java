@@ -25,8 +25,8 @@ import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.holder.PushMessageCompleted;
-import org.jboss.aerogear.unifiedpush.message.holder.VariantCompleted;
+import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -50,19 +50,19 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
     private Queue allBatchesLoaded;
 
     @Inject
-    private Event<VariantCompleted> variantCompleted;
+    private Event<VariantCompletedEvent> variantCompleted;
 
     @Inject
-    private Event<PushMessageCompleted> pushMessageCompleted;
+    private Event<PushMessageCompletedEvent> pushMessageCompleted;
 
     /**
      * Receives variant metrics and update the push message information in a database.
      *
      * Counts number of loaded device token batches and detects when all batches were loaded and fully served - i.e. the variant was completed.
-     * When a variant was completed, fires {@link VariantCompleted} CDI event.
+     * When a variant was completed, fires {@link VariantCompletedEvent} CDI event.
      *
      * Additionally when a variant was completed and there are no more variants to be completed for this variant,
-     * the {@link PushMessageCompleted} CDI event is fired.
+     * the {@link PushMessageCompletedEvent} CDI event is fired.
      *
      * @param variantMetricInformation the variant metrics info object
      */
@@ -98,11 +98,11 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
             if (areAllBatchesLoaded(variantID)) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
                 logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
-                variantCompleted.fire(new VariantCompleted(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
+                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
 
                 if (pushMessageInformation.getServedVariants() == pushMessageInformation.getTotalVariants()) {
                     logger.fine(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
-                    pushMessageCompleted.fire(new PushMessageCompleted(pushMessageInformation.getId()));
+                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
                 }
             }
         }
