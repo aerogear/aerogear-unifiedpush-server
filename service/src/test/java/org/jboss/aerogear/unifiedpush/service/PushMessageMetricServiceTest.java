@@ -43,7 +43,8 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
                         "123",
                         "hello",
                         "127.0.01",
-                        "testcase"
+                        "testcase",
+                        1
                 );
 
         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();

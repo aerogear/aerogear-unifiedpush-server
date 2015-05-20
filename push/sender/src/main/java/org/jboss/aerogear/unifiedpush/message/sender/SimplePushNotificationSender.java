@@ -16,12 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -29,7 +23,14 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-@SenderType(SimplePushVariant.class)
+import javax.ws.rs.core.Response.Status;
+
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+@SenderType(VariantType.SIMPLE_PUSH)
 public class SimplePushNotificationSender implements PushNotificationSender {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");

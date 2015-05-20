@@ -35,7 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class VariantMetricInformationConsumer extends AbstractJMSMessageConsumer<VariantMetricInformation> {
+public class VariantMetricInformationConsumer extends AbstractJMSMessageListener<VariantMetricInformation> {
 
     @Inject
     @Dequeue
@@ -45,7 +45,4 @@ public class VariantMetricInformationConsumer extends AbstractJMSMessageConsumer
     public void onMessage(VariantMetricInformation message) {
         dequeueEvent.fire(message);
     }
-
-
-
 }

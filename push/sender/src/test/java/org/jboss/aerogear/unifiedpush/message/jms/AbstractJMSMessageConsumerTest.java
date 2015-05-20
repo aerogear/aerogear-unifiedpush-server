@@ -66,7 +66,7 @@ public class AbstractJMSMessageConsumerTest {
         consumer.onMessage(jmsMessage);
     }
 
-    public static class MockMessageConsumer extends AbstractJMSMessageConsumer<AtomicBoolean> {
+    public static class MockMessageConsumer extends AbstractJMSMessageListener<AtomicBoolean> {
 
         @Override
         public void onMessage(AtomicBoolean message) {

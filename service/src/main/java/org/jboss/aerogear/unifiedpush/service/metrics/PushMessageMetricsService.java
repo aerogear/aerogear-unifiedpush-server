@@ -56,15 +56,18 @@ public class PushMessageMetricsService {
      *
      * @return the metadata object for the started push message request job
      */
-    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
+    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier, int totalVariantCount) {
         final PushMessageInformation information = new PushMessageInformation();
 
         information.setRawJsonMessage(json);
         information.setIpAddress(ipAddress);
         information.setPushApplicationId(pushAppId);
         information.setClientIdentifier(clientIdentifier);
+        information.setServedVariants(0);
+        information.setTotalVariants(totalVariantCount);
 
         pushMessageInformationDao.create(information);
+        pushMessageInformationDao.flushAndClear();
 
         return information;
     }
@@ -77,6 +80,23 @@ public class PushMessageMetricsService {
      */
     public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
         pushMessageInformationDao.update(pushMessageInformation);
+    }
+
+    /**
+     * Refreshes state of push message information from the database, returning current state as a result.
+     * @param pushMessageInformation push message information to update
+     * @return current database state for the entity
+     */
+    public PushMessageInformation refreshPushMessageInformation(PushMessageInformation pushMessageInformation) {
+        return pushMessageInformationDao.refresh(pushMessageInformation);
+    }
+
+    /**
+     * Locks the push message information for updates so that there will be no updates concurrently
+     * @param pushMessageInformation push message information to lock
+     */
+    public void lock(PushMessageInformation pushMessageInformation) {
+        pushMessageInformationDao.lock(pushMessageInformation);
     }
 
     /**

@@ -16,58 +16,69 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.jms.Destination;
+import java.io.Serializable;
+
+import javax.annotation.Resource;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import javax.jms.MessageConsumer;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
-import javax.jms.Topic;
+import javax.jms.Session;
 
-import org.jboss.aerogear.unifiedpush.message.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 
 /**
- * Abstract base for message driven beans that receives a {@link javax.jms.ObjectMessage} from a queue, validates its type, cast it to a generic type T and pass for processing to abstract method {@link #onMessage(Object)}
+ * Allows its implementations to simply receive messages from JMS queues in non-blocking way
  */
-abstract class AbstractJMSMessageConsumer<T> implements MessageListener {
+public abstract class AbstractJMSMessageConsumer {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(AbstractJMSMessageConsumer.class);
+    @Resource(mappedName = "java:/JmsXA")
+    private ConnectionFactory xaConnectionFactory;
 
-    public abstract void onMessage(T message);
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onMessage(Message jmsMessage) {
-        try {
-            if (jmsMessage instanceof ObjectMessage) {
-                Object messageObject = ((ObjectMessage) jmsMessage).getObject();
-                try {
-                    T message = (T) messageObject;
-                    onMessage(message);
-                } catch (ClassCastException e) {
-                    throw new IllegalStateException("Received message of wrong payload type " + messageObject.getClass() + " to destination " + getDestinationName(jmsMessage));
-                }
-            } else {
-                logger.warning("Received message of wrong type " + jmsMessage.getClass().getName() + " to destination " + getDestinationName(jmsMessage));
-            }
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to handle message from destination " + getDestinationName(jmsMessage), e);
-        }
+    /**
+     * Allows to receive message from queue in non-blocking way
+     *
+     * @return message from given queue or null if there is no message in the given queue
+     */
+    protected <T extends Serializable> T receiveInTransactionNoWait(Queue queue) {
+        return receiveInTransactionNoWait(queue, null, null);
     }
 
-    private String getDestinationName(Message message) {
+    /**
+     * Allows to receive selected message from queue in non-blocking way. Message is selected by given JMS message property name and value.
+     *
+     * @return message from given queue or null if there is no message in the given queue for given property name and value
+     */
+    protected <T extends Serializable> T receiveInTransactionNoWait(Queue queue, String propertyName, String propertyValue) {
+        Connection connection = null;
         try {
-            Destination destination = message.getJMSDestination();
-            if (destination instanceof Queue) {
-                return ((Queue) destination).getQueueName();
-            } else if (destination instanceof Topic) {
-                return ((Topic) destination).getTopicName();
+            connection = xaConnectionFactory.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageConsumer messageConsumer;
+            if (propertyName != null) {
+                messageConsumer = session.createConsumer(queue, String.format("%s = '%s'", propertyName, propertyValue));
             } else {
-                throw new IllegalStateException("Can't recognize destination type for " + destination.getClass());
+                messageConsumer = session.createConsumer(queue);
+            }
+            connection.start();
+            ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receiveNoWait();
+            if (objectMessage != null) {
+                return (T) objectMessage.getObject();
+            } else {
+                return null;
             }
         } catch (JMSException e) {
-            throw new IllegalStateException("Can't extract destination name from JMS message: " + message, e);
+            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
