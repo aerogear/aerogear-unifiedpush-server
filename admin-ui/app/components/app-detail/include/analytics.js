@@ -22,7 +22,6 @@ angular.module('upsConsole')
     function updateAnalytics() {
       metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, null, 1, 6)
         .then(function (data) {
-          console.log(data);
           self.metrics = data.pushMetrics.reverse();
           self.totalCount = data.totalItems;
           self.receivers = data.receivers;
@@ -81,24 +80,7 @@ angular.module('upsConsole')
           tick: {
             outer: false
           },
-          type: 'category'
-        },
-        y: {
-          tick: {
-            outer: false
-          }
-        }
-      },
-      bindto: '#chart6',
-      color: {
-        pattern: ['#006e9c','#00a8e1', '#3f9c35', '#ec7a08', '#cc0000']
-      },
-      data: {
-        columns: this.performance,
-        type: 'bar'
-      },
-      axis: {
-        x: {
+          type: 'category',
           tick: {
             format: function (d) {
               var pushMessage = self.metrics[d];
@@ -116,6 +98,7 @@ angular.module('upsConsole')
         },
         y: {
           tick: {
+            outer: false,
             format: function (x) {
               if (x != Math.floor(x)) {
                 var tick = d3.selectAll('.c3-axis-y g.tick').filter(function () {
@@ -128,6 +111,13 @@ angular.module('upsConsole')
             }
           }
         }
+      },
+      color: {
+        pattern: ['#006e9c','#00a8e1', '#3f9c35', '#ec7a08', '#cc0000']
+      },
+      data: {
+        columns: this.performance,
+        type: 'bar'
       },
       grid: {
         y: {
