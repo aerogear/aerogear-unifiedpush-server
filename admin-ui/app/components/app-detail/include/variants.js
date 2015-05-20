@@ -89,4 +89,10 @@ angular.module('upsConsole')
       });
     };
 
+    this.getWarningsForVariant = function( warnings, variant ) {
+      return warnings.filter(function( warning ) {
+        return warning.variant.variantID == variant.variantID;
+      });
+    }
+
   });

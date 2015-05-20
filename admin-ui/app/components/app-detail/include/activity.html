@@ -54,7 +54,16 @@
     </td>
   </tr>
   <tr ng-repeat-end ng-if="metric.$toggled">
-    <td colspan="8">
+    <td colspan="8" class="ups-pushmessage-detail">
+      <div class="alert alert-warning" ng-repeat="variantInformation in metric.variantInformations | filter: { deliveryStatus: false} ">
+        <span class="pficon-layered">
+          <span class="pficon pficon-warning-triangle"></span>
+          <span class="pficon pficon-warning-exclamation"></span>
+        </span>
+
+
+        <strong>Variant <a href ng-link="appDetail({app: activity.app.pushApplicationID, tab: 'variants'})">{{ variantInformation.$variant.name }}</a> has failed:</strong> {{ variantInformation.reason }}
+      </div>
       <pre>{{ metric.$message | json  }}</pre>
     </td>
   </tr>

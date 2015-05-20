@@ -26,6 +26,13 @@
 
         <h4 ng-click="variant.$toggled = !variant.$toggled"><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
         <ul class="list-inline">
+          <li class="warning" ng-repeat="warning in variants.getWarningsForVariant( app.warnings, variant ) | limitTo: 1">
+              <span class="pficon-layered">
+                <span class="pficon pficon-warning-triangle"></span>
+                <span class="pficon pficon-warning-exclamation"></span>
+              </span>
+            Warning
+          </li>
           <li ng-if="variant.$deviceCount == 0"><i class="fa fa-ban"></i> No installation yet</li>
           <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <strong>{{ variant.$messageCount }}</strong> Delivered</li>
           <li ng-if="variant.$deviceCount > 0"><i class="fa fa-mobile"></i> <strong>{{ variant.$deviceCount }}</strong> Devices</li>
@@ -108,7 +115,3 @@
 
   </div><!-- panel body -->
 </div><!-- panel -->
-
-<!--<pre>{{ variants.byType |json}}</pre>-->
-
-<!--<pre>{{ appDetail.app |json }}</pre>-->
