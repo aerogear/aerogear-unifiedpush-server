@@ -76,12 +76,10 @@ angular.module('upsConsole')
       axis: {
         rotated: false,
         x: {
+          type: 'category',
           categories: ['Message 01', 'Message 02', 'Message 03', 'Message 04', 'Message 05', 'Message 06'],
           tick: {
-            outer: false
-          },
-          type: 'category',
-          tick: {
+            outer: false,
             format: function (d) {
               var pushMessage = self.metrics[d];
               if (pushMessage) {
