@@ -44,9 +44,6 @@ import java.util.Set;
 @SenderType(VariantType.ANDROID)
 public class GCMPushNotificationSender implements PushNotificationSender {
 
-    // allowed tokens per HTTP request (Google policy)
-    private static final int GCM_PAGE = 1000;
-
     // collection of error codes we check for in the GCM response
     // in order to clean-up invalid or incorrect device tokens
     private static final Set<String> GCM_ERROR_CODES =
@@ -107,22 +104,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
-            // GCM does only allow a 1000 device IDs
-            while (! registrationIDs.isEmpty()) {
+            // send out a message to a batch of devices...
+            processGCM(androidVariant, registrationIDs, gcmMessage, sender);
 
-                int toIndex = GCM_PAGE;
-
-                if (registrationIDs.size() < GCM_PAGE) {
-                    toIndex = registrationIDs.size();
-                }
-                List<String> sublist = registrationIDs.subList(0, toIndex);
-
-                // send out a message to a few devices...
-                processGCM(androidVariant, sublist, gcmMessage, sender);
-                registrationIDs.removeAll(sublist);
-            }
-
-            logger.info("Message to GCM has been submitted");
+            logger.info("Message batch to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
