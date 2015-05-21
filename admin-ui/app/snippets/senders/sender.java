@@ -13,12 +13,7 @@ final UnifiedMessage unifiedMessage = UnifiedMessage.
 sender.send(unifiedMessage, new MessageResponseCallback() {
 
     @Override
-    public void onComplete(int statusCode) {
+    public void onComplete() {
         //do cool stuff
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-      //bring out the bad news
     }
 });
