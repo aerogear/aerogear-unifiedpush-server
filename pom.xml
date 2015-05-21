@@ -173,7 +173,7 @@
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
         <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.13</aerogear.bom.version>
+        <aerogear.bom.version>0.2.14</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
