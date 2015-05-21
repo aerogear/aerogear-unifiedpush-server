@@ -26,6 +26,9 @@ angular.module('upsConsole')
               console.log('failed to parse metric')
               metric.$message = {};
             }
+            metric.variantInformations.forEach(function( variantInformation ) {
+              variantInformation.$variant = getVariantByID( variantInformation.variantID );
+            });
           });
         });
     }
@@ -36,6 +39,12 @@ angular.module('upsConsole')
     this.onPageChange = function ( page ) {
       fetchMetrics( page, self.searchString );
     };
+
+    function getVariantByID ( variantID ) {
+      return self.app.variants.filter(function( variant ) {
+        return variant.variantID == variantID;
+      })[0];
+    }
 
     $scope.$on('upsNotificationSent', function( pushData, app ) {
       fetchMetrics( self.currentPage, self.searchString );
