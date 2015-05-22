@@ -28,8 +28,20 @@
             <div class="navbar-collapse navbar-collapse-1">
                 <div class="container">
                     <ul class="nav navbar-nav navbar-utility">
-                        <#if referrer?has_content && referrer.url?has_content><li><a href="${referrer.url}" id="referrer">Back to Console</a></li></#if>
-                        <li><a href="${url.logoutUrl}">Sign Out</a></li>
+                        <#if realm.internationalizationEnabled>
+                            <li>
+                                <div class="kc-dropdown" id="kc-locale-dropdown">
+                                    <a href="#" id="kc-current-locale-link">${locale.current}</a>
+                                    <ul>
+                                        <#list locale.supported as l>
+                                            <li class="kc-dropdown-item"><a href="${l.url}">${l.label}</a></li>
+                                        </#list>
+                                    </ul>
+                                </div>
+                            <li>
+                        </#if>
+                        <#if referrer?has_content && referrer.url?has_content><li><a href="${referrer.url}" id="referrer">${msg("backTo",referrer.name)}</a></li></#if>
+                        <li><a href="${url.logoutUrl}">${msg("doSignOut")}</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,12 +51,13 @@
     <div class="container">
         <div class="bs-sidebar col-sm-3  ng-scope">
             <ul>
-                <li class="<#if active=='account'>active</#if>"><a href="${url.accountUrl}">Account</a></li>
-                <#if features.passwordUpdateSupported><li class="<#if active=='password'>active</#if>"><a href="${url.passwordUrl}">Password</a></li></#if>
-                <li class="<#if active=='totp'>active</#if>"><a href="${url.totpUrl}">Authenticator</a></li>
-                <#if features.social><li class="<#if active=='social'>active</#if>"><a href="${url.socialUrl}">Social</a></li></#if>
-                <li class="<#if active=='sessions'>active</#if>"><a href="${url.sessionsUrl}">Sessions</a></li>
-                <#if features.log><li class="<#if active=='log'>active</#if>"><a href="${url.logUrl}">Log</a></li></#if>
+                <li class="<#if active=='account'>active</#if>"><a href="${url.accountUrl}">${msg("account")}</a></li>
+                <#if features.passwordUpdateSupported><li class="<#if active=='password'>active</#if>"><a href="${url.passwordUrl}">${msg("password")}</a></li></#if>
+                <li class="<#if active=='totp'>active</#if>"><a href="${url.totpUrl}">${msg("authenticator")}</a></li>
+                <#if features.identityFederation><li class="<#if active=='social'>active</#if>"><a href="${url.socialUrl}">${msg("federatedIdentity")}</a></li></#if>
+                <li class="<#if active=='sessions'>active</#if>"><a href="${url.sessionsUrl}">${msg("sessions")}</a></li>
+                <li class="<#if active=='applications'>active</#if>"><a href="${url.applicationsUrl}">${msg("applications")}</a></li>
+                <#if features.log><li class="<#if active=='log'>active</#if>"><a href="${url.logUrl}">${msg("log")}</a></li></#if>
             </ul>
         </div>
 
