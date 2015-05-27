@@ -43,15 +43,6 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     long getNumberOfPushMessagesForPushApplication(String pushApplicationId);
 
     /**
-     * Counts push messages for given variant ID
-     *
-     * @param variantId the variant ID
-     *
-     * @return number of push messages
-     */
-    long getNumberOfPushMessagesForVariant(String variantId);
-
-    /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
      *
      * @param pushApplicationId ID of the PushApplication
