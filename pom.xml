@@ -20,6 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
+        <!-- NOTE: if updated for Keycloak version, please update the 'aerogear.bom.version' as well -->
         <version>0.2.14</version>
     </parent>
 
