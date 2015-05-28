@@ -28,16 +28,36 @@
 
 //navbar changes to make it heigher ==========================================================
 
-.navbar-header{
-  padding: 5px 0;
+// .navbar-header{
+//   padding: 5px 0;
+// }
+// 
+// .navbar-pf .navbar-utility  > li > a {
+//   padding: 12px 10px;}
+// 
+// .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user{
+//   top: 12px;
+// }
+
+
+.navbar{
+  .navbar-brand {
+    padding: 12px 0;
+  }  
+  .navbar-utility {
+    > li > a {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    li.dropdown > .dropdown-toggle {
+      .pficon-user {
+        top: 12px;
+      }
+    }    
+  }  
 }
 
-.navbar-pf .navbar-utility  > li > a {
-  padding: 12px 10px;}
 
-.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user{
-  top: 12px;
-}
 
 //keycloack ==========================================================
 
