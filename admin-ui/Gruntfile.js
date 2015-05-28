@@ -133,7 +133,7 @@ module.exports = function (grunt) {
       dist: {
         src: [
           '<%= yeoman.dist %>/scripts/{,*/}*.js',
-          '<%= yeoman.dist %>/styles/dist.css',
+          '<%= yeoman.dist %>/styles/{,*/}*.css',
           '<%= yeoman.dist %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -243,6 +243,25 @@ module.exports = function (grunt) {
               '**',
               '!styles/compiled-less.css'
             ]
+          }
+        ]
+      },
+      nofilerev: {
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.dist %>/styles',
+            dest: '<%= yeoman.dist %>/styles/',
+            src: [
+              'account.*.css',
+              'login.*.css'
+            ],
+            rename: function(dest, src) {
+              var renamed = dest + src.replace(/\..+\.css$/,'.css');
+              console.log(renamed);
+              return renamed;
+            }
           }
         ]
       },
@@ -373,6 +392,7 @@ module.exports = function (grunt) {
     'uglify',
     'copy:dist',
     'filerev',
+    'copy:nofilerev',
     'usemin'
   ]);
 
