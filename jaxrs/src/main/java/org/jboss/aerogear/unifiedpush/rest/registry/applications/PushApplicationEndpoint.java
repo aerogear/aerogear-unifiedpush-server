@@ -37,7 +37,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -46,6 +45,8 @@ import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
@@ -182,7 +183,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private void putActivityIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
         response.header("activity_app_" + app.getPushApplicationID(), metricsService.countMessagesForPushApplication(app.getPushApplicationID()));
         for (Variant variant : app.getVariants()) {
-            response.header("activity_variant_" + variant.getVariantID(), metricsService.countMessagesForPushApplication(variant.getVariantID()));
+            response.header("activity_variant_" + variant.getVariantID(), metricsService.countMessagesForVariant(variant.getVariantID()));
         }
     }
 
