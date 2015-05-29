@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications ) {
+  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications, ErrorReporter ) {
 
     var self = this;
 
@@ -31,8 +31,8 @@ angular.module('upsConsole')
           self.byType = splitByType( self.app.variants );
           Notifications.success('Variant ' + variant.name + ' successfully created');
         })
-        .catch(function() {
-          Notifications.error('Failed to create variant ' + variant.name);
+        .catch(function(e) {
+          ErrorReporter.error(e, 'Failed to create variant ' + variant.name);
         });
     };
 
@@ -45,7 +45,7 @@ angular.module('upsConsole')
         })
         .catch(function( e ) {
           if ( e != 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };
@@ -59,7 +59,7 @@ angular.module('upsConsole')
         })
         .catch(function(e) {
           if ( e !== 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };

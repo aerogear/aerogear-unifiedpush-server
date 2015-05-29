@@ -61,7 +61,7 @@
       <strong>{{notification.header}}</strong> {{notification.message}}
     </div>
   </div>
-  
+
   <div ng-show="app.havePendingRequests()">
     <div class="alert alert-info">
       <span class="pficon spinner spinner-sm spinner-inline"></span>
@@ -86,7 +86,7 @@
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">
     <ul class="nav navbar-nav navbar-utility">
-      <li class="dropdown" dropdown>
+      <li class="dropdown" dropdown ng-if="app.warnings.length">
         <a href dropdown-toggle>
           <span class="pficon pficon-info"></span>
           Warnings: <strong>{{ app.warnings.length }}</strong>

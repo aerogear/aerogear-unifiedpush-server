@@ -46,10 +46,11 @@
       </ul>
 
 
-      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right"
+           ng-if="appDetail.app.$messageCount">
         <h2 class="h5">App Notifications</h2>
       </div>
-      <div class="list-group">
+      <div class="list-group" ng-if="appDetail.app.$messageCount">
         <a class="list-group-item" ng-repeat="notification in appDetail.notifications | limitTo:4">
           <h3 class="list-group-item-heading">{{ appDetail.app.name }}</h3>
           <p class="list-group-item-text">{{ notification.submitDate | date:'d MMM, H:mm:ss, yyyy' }}</p>
