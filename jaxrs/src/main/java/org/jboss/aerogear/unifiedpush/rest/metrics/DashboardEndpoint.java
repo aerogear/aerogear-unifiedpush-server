@@ -29,6 +29,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
@@ -40,26 +41,45 @@ public class DashboardEndpoint {
     @Inject
     private SearchManager service;
 
+    /**
+     * GET dashboard data
+     *
+     * @return  {@link DashboardData} for the given user
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData")
     public Response totalApplications(@Context HttpServletRequest request) {
         final DashboardData dataForUser =  service.getSearchService().loadDashboardData();
 
         return Response.ok(dataForUser).build();
     }
 
+    /**
+     * GET application variants
+     *
+     * @return  list of {@link ApplicationVariant}s
+     */
     @GET
     @Path("/warnings")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant>")
     public Response getVariantsWithWarnings(@Context HttpServletRequest request) {
         final List<ApplicationVariant> variantsWithWarnings = service.getSearchService().getVariantsWithWarnings();
 
         return Response.ok(variantsWithWarnings).build();
     }
 
+    /**
+     * GET active applications
+     *
+     * @param count number of active applications, default value = 3
+     * @return      list of active {@link Application}s
+     */
     @GET
     @Path("/active")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.service.dashboard.Application>")
     public Response getLatestActivity(@QueryParam("count") @DefaultValue("3") int count, @Context HttpServletRequest request) {
         final List<Application> latestActivity = service.getSearchService().getLatestActivity(count);
 
