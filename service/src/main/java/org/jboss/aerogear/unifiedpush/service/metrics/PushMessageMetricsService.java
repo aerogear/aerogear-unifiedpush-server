@@ -118,10 +118,21 @@ public class PushMessageMetricsService {
      *
      * @param pushApplicationId the push app ID
      *
-     * @return the cumber of message for the given push application
+     * @return the number of message for the given push application
      */
     public long countMessagesForPushApplication(String pushApplicationId) {
         return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
+    }
+
+    /**
+     * Returns number of push messages for given variant ID
+     *
+     * @param variantID the variant ID
+     *
+     * @return the number of message for the given variant
+     */
+    public long countMessagesForVariant(String variantID) {
+        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantID);
     }
 
     /**

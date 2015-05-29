@@ -51,6 +51,12 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
+    public long getNumberOfPushMessagesForVariant(String variantID) {
+        return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
+                .setParameter("variantID", variantID).getSingleResult();
+    }
+
+    @Override
     public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
 
         String baseQuery = "from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
