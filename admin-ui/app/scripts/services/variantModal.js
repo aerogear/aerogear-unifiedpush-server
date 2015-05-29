@@ -13,6 +13,9 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
             updateVariant( app, $scope.variant )
               .then(function ( updatedVariant ) {
                 $modalInstance.close( updatedVariant );
+              })
+              .catch(function(err) {
+                $modalInstance.dismiss(err);
               });
           };
 

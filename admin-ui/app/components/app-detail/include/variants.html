@@ -16,15 +16,15 @@
 
     <div class="ups-variant" ng-repeat="variant in variantList">
 
-      <div class="ups-variant-header">
+      <div class="ups-variant-header" ng-click="variant.$toggled = !variant.$toggled">
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a ng-click="variants.editName( variant )"><span class="pficon pficon-edit"></span> Change name</a></li>
-            <li class="danger"><a ng-click="variants.delete( variant )"><span class="pficon pficon-delete"></span> Delete</a></li>
+            <li><a ng-click="variants.editName( variant ); $event.stopPropagation();"><span class="pficon pficon-edit"></span> Change name</a></li>
+            <li class="danger"><a ng-click="variants.delete( variant ); $event.stopPropagation();"><span class="pficon pficon-delete"></span> Delete</a></li>
           </ul>
         </div>
 
-        <h4 ng-click="variant.$toggled = !variant.$toggled"><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
+        <h4><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
         <ul class="list-inline">
           <li class="warning" ng-repeat="warning in variants.getWarningsForVariant( app.warnings, variant ) | limitTo: 1">
               <span class="pficon-layered">
