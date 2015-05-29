@@ -38,11 +38,15 @@ angular.module('upsConsole')
             self.performance[1].push(pushMessage.appOpenCounter);
           });
 
-          c3Factory.get('performance').then(function (chart) {
-            chart.load({
-              columns: self.performance
-            })
-          });
+          if (self.totalCount) {
+            c3Factory.get('performance').then(function (chart) {
+              if (chart) {
+                chart.load({
+                  columns: self.performance
+                });
+              }
+            });
+          }
         });
     }
 
