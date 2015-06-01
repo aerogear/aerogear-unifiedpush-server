@@ -25,5 +25,12 @@
   "sender-api-rest": "https://aerogear.org/docs/specs/aerogear-unifiedpush-rest/overview-index.html",
   "sender-downloads-java": "https://aerogear.org/getstarted/downloads/#push",
   "sender-downloads-nodejs": "https://aerogear.org/getstarted/downloads/#push",
-  "sender-step-by-step-java": "https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/"
+  "sender-step-by-step-java": "https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/",
+  "docs-push-ios": "http://aerogear.org/docs/unifiedpush/aerogear-push-ios/",
+  "docs-push-cordova": "http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/",
+  "docs-push-android": "http://aerogear.org/docs/unifiedpush/aerogear-push-android/",
+  "docs-push-chrome": "http://aerogear.org/docs/unifiedpush/aerogear-push-chrome/",
+  "docs-push-adm": "http://aerogear.org/docs/unifiedpush/aerogear-push-adm/",
+  "simplepush-protocol": "https://wiki.mozilla.org/WebAPI/SimplePush/Protocol",
+  "simplepush-quickstart": "https://github.com/aerogear/aerogear-simplepush-quickstart"
 }
