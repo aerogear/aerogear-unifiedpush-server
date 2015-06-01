@@ -14,25 +14,7 @@
       
         <h1>No Analytics yet</h1>
         
-       
-       
-        
-        <!-- Lukas: if no variables, please show THIS: -->
-        <p>The first step to send notifications is to add a variants.</p>
-      
-        <div class="blank-slate-pf-main-action">
-          <a ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" class="btn btn-primary btn-lg">
-            <i class="fa fa-code-fork"></i>
-            Go To Variants
-          </a>
-        </div>
-        <!-- -->
-        
-
-
-
-        <!-- Lukas: Else if no notifications, please show THIS: -->
-        <p>You haven't send push notifications yet.</p>
+         <p>You haven't send push notifications yet.</p>
       
         <div class="blank-slate-pf-main-action">
           <button class="btn btn-primary btn-lg" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length">
@@ -40,8 +22,6 @@
             Send Notification to this app
           </button>
         </div>
-        <!-- -->
-
        
       </div>
 
