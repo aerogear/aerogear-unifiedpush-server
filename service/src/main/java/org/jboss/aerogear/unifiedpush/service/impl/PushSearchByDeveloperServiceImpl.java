@@ -119,8 +119,8 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     @Override
-    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
-        return installationDao.findInstallationsByVariantForDeveloper(variantID,loginName.get(), page, pageSize);
+    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize, String search) {
+        return installationDao.findInstallationsByVariantForDeveloper(variantID,loginName.get(), page, pageSize, search);
     }
 
     private long totalMessages() {

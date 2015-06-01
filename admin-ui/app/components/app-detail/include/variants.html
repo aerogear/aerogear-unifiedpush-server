@@ -39,77 +39,11 @@
         </ul>
 
       </div><!-- vaiant header -->
-      <div class="ups-variant-body" ng-show="variant.$toggled">
 
-        <p ng-show="variant.type == 'ios'">Apple's Push Network (APNs) will be used.
-          To learn more about APNs, visit our <a ups-doc="docs-push-ios">iOS</a>
-          or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
-        </p>
-        <p ng-show="variant.type == 'android'">Google's Cloud Messaging Network (GCM) will be used.
-          To learn more about GCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
-        </p>
-        <p ng-show="variant.type == 'simplePush'">A Server implementing the <em>SimplePush</em> protocol will be used.
-          More information can be found in <a ups-doc="simplepush-protocol">SimplePush Protocol Draft</a>.
-          The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
-        </p>
-        <p ng-show="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
-          To learn more about, visit our <a ups-doc="docs-push-adm">adm</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
-        </p>
-        <dl class="dl-horizontal" ng-if="variant.type == 'android'">
-          <dt>Project Number:</dt>
-          <dd>{{ variant.projectNumber }}</dd>
-          <dt>Google API Key:</dt>
-          <dd>
-            {{ variant.googleKey }}<br />
-            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
-          </dd>
-        </dl>
-        <dl class="dl-horizontal" ng-show="variant.type == 'windows_mpns'">
-          <dt>Type:</dt>
-          <dd>Microsoft Push Notification Service</dd>
-        </dl>
-        <dl class="dl-horizontal" ng-show="variant.type == 'windows_wns'">
-          <dt>Type:</dt>
-          <dd>Windows Push Network</dd>
-          <dt>Package SID:</dt>
-          <dd>{{ variant.sid }}</dd>
-          <dt>Client Secret:</dt>
-          <dd>
-            {{ variant.clientSecret }}<br />
-            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
-          </dd>
-        </dl>
-        <dl class="dl-horizontal" ng-show="variant.type == 'ios'">
-          <dt>Type:</dt>
-          <dd>
-            {{ variant.production ? 'Production' : 'Development' }}<br />
-            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
-          </dd>
-        </dl>
-        <dl class="dl-horizontal" ng-show="variant.type == 'chrome'">
-          <dt>Client Id:</dt>
-          <dd>{{ variant.clientId }}</dd>
-          <dt>Client Secret:</dt>
-          <dd>{{ variant.clientSecret }}</dd>
-          <dt>Refresh Token:</dt>
-          <dd>
-            {{ variant.refreshToken }}<br />
-            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
-          </dd>
-        </dl>
-        <dl class="dl-horizontal" ng-show="variant.type == 'adm'">
-          <dt>Client Id:</dt>
-          <dd>{{ variant.clientId }}</dd>
-          <dt>Client Secret:</dt>
-          <dd>
-            {{ variant.clientSecret }}<br />
-            <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
-          </dd>
-        </dl>
-
-        <ups-client-snippets variant="variant"></ups-client-snippets>
-
+      <div class="ups-variant-body" ng-if="variant.$toggled">
+        <ng-include src="'components/app-detail/include/variantDetail.html'" ng-controller="VariantDetailController as variantDetail"></ng-include>
       </div><!-- variant content -->
+
     </div><!-- variant -->
 
 

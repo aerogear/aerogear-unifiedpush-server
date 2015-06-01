@@ -92,12 +92,12 @@ public class InstallationDaoTest {
 
     @Test
     public void countDevicesForLoginName() {
-        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(6);
+        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(7);
     }
 
     @Test
     public void getNumberOfDevicesForVariantID() {
-        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(3);
+        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(4);
         assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
     }
 
@@ -501,23 +501,47 @@ public class InstallationDaoTest {
         String developer = "me";
 
         //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1);
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1, null);
 
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(3);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(4);
     }
 
     @Test
     public void shouldSelectInstallationsByVariant() {
         //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1);
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1, null);
 
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(3);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(4);
+    }
+
+    @Test
+    public void shouldSelectInstallationsByDeviceTokenSearch() {
+        //when
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "67890167890");
+        //then
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+    }
+
+    @Test
+    public void shouldSelectInstallationsByDeviceTypeSearch() {
+        //when
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "Tablet");
+        //then
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(2);
+    }
+
+    @Test
+    public void shouldSelectInstallationsByAliasSearch() {
+        //when
+        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "baz@");
+        //then
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
     }
 
     @Test(expected = PersistenceException.class)

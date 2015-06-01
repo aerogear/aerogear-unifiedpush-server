@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
@@ -38,6 +37,8 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 
 @Path("/applications/{variantID}/installations/")
@@ -67,8 +68,11 @@ public class InstallationManagementEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
-    public Response findInstallations(@PathParam("variantID") String variantId, @QueryParam("page") Integer page,
-                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri) {
+    public Response findInstallations(@PathParam("variantID") String variantId,
+                                      @QueryParam("page") Integer page,
+                                      @QueryParam("per_page") Integer pageSize,
+                                      @QueryParam("search") String search,
+                                      @Context UriInfo uri) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -79,13 +83,17 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
+        if (search == null || search.isEmpty()) {
+            search = null;
+        }
+
         //Find the variant using the variantID
         if (!searchManager.getSearchService().existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
         //Find the installations using the variantID
-        PageResult<Installation, Count> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize);
+        PageResult<Installation, Count> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize, search);
 
         final long totalPages = pageResult.getAggregate().getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);

@@ -130,6 +130,14 @@
             <value>foo@bar.org</value>
             <value>JavaFX Monitor</value>
         </row>
+        <row>
+            <value>7</value>
+            <value>false</value>
+            <value>809543234234890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>baz@bar.org</value>
+            <value></value>
+        </row>
     </table>
 
     <table name="SA.CATEGORY">

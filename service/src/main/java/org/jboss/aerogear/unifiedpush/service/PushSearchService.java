@@ -93,7 +93,7 @@ public interface PushSearchService {
      *
      * @return page result containing the list plus a total number of rows
      */
-    PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize, String search);
 
 
 }
