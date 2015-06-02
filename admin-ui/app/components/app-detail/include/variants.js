@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications, ErrorReporter ) {
+  .controller('VariantsController', function ( $rootScope, $modal, variantModal, $scope, variantsEndpoint, Notifications, ErrorReporter ) {
 
     var self = this;
 
@@ -80,6 +80,29 @@ angular.module('upsConsole')
                 });
                 self.byType = splitByType( self.app.variants );
                 $modalInstance.close();
+              });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      });
+    };
+
+    this.renewVariantSecret = function ( variant ) {
+      $modal.open({
+        templateUrl: 'dialogs/renew-variant-secret.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.confirm = function() {
+            variantsEndpoint.reset({
+                appId: self.app.pushApplicationID,
+                variantType: variant.type,
+                variantId: variant.variantID })
+              .then(function (receivedVariant) {
+                variant.secret  = receivedVariant.secret;
+                $modalInstance.close( variant );
+                //$rootScope.$digest();
               });
           };
           $scope.dismiss = function() {

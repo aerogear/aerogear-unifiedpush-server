@@ -1,15 +1,18 @@
-<p ng-show="variant.type == 'ios'">Apple's Push Network (APNs) will be used.
+<p ng-if="variant.type == 'ios'">
+  Apple's Push Network (APNs) will be used.
   To learn more about APNs, visit our <a ups-doc="docs-push-ios">iOS</a>
   or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
-<p ng-show="variant.type == 'android'">Google's Cloud Messaging Network (GCM) will be used.
+<p ng-if="variant.type == 'android'">
+  Google's Cloud Messaging Network (GCM) will be used.
   To learn more about GCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
-<p ng-show="variant.type == 'simplePush'">A Server implementing the <em>SimplePush</em> protocol will be used.
+<p ng-if="variant.type == 'simplePush'">
+  A Server implementing the <em>SimplePush</em> protocol will be used.
   More information can be found in <a ups-doc="simplepush-protocol">SimplePush Protocol Draft</a>.
-  The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
+  The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.<br/>
 </p>
-<p ng-show="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
+<p ng-if="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
   To learn more about, visit our <a ups-doc="docs-push-adm">adm</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
 <dl class="dl-horizontal" ng-if="variant.type == 'android'">
@@ -18,14 +21,18 @@
   <dt>Google API Key:</dt>
   <dd>
     {{ variant.googleKey }}<br />
-    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
-<dl class="dl-horizontal" ng-show="variant.type == 'windows_mpns'">
+<dl class="dl-horizontal" ng-if="variant.type == 'windows_mpns'">
   <dt>Type:</dt>
-  <dd>Microsoft Push Notification Service</dd>
+  <dd>
+    Microsoft Push Notification Service<br />
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
 </dl>
-<dl class="dl-horizontal" ng-show="variant.type == 'windows_wns'">
+<dl class="dl-horizontal" ng-if="variant.type == 'windows_wns'">
   <dt>Type:</dt>
   <dd>Windows Push Network</dd>
   <dt>Package SID:</dt>
@@ -33,17 +40,19 @@
   <dt>Client Secret:</dt>
   <dd>
     {{ variant.clientSecret }}<br />
-    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
-<dl class="dl-horizontal" ng-show="variant.type == 'ios'">
+<dl class="dl-horizontal" ng-if="variant.type == 'ios'">
   <dt>Type:</dt>
   <dd>
     {{ variant.production ? 'Production' : 'Development' }}<br />
-    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
-<dl class="dl-horizontal" ng-show="variant.type == 'chrome'">
+<dl class="dl-horizontal" ng-if="variant.type == 'chrome'">
   <dt>Client Id:</dt>
   <dd>{{ variant.clientId }}</dd>
   <dt>Client Secret:</dt>
@@ -51,16 +60,25 @@
   <dt>Refresh Token:</dt>
   <dd>
     {{ variant.refreshToken }}<br />
-    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
-<dl class="dl-horizontal" ng-show="variant.type == 'adm'">
+<dl class="dl-horizontal" ng-if="variant.type == 'adm'">
   <dt>Client Id:</dt>
   <dd>{{ variant.clientId }}</dd>
   <dt>Client Secret:</dt>
   <dd>
     {{ variant.clientSecret }}<br />
-    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="pficon pficon-refresh"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Change network options</button>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'simplePush'">
+  <dt>Network Type:</dt>
+  <dd>
+    SimplePush<br/>
+    <button class="btn btn-sm btn-primary" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
 
