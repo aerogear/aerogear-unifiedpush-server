@@ -12,18 +12,18 @@
 
       <div class="ups-sub-header">
 
-        <form role="form" class="search-pf has-button">
-          <div class="form-group has-clear">
-            <div class="search-pf-input-group">
-              <label for="search1" class="sr-only">Search</label>
-              <input id="search1" type="search" class="form-control" placeholder="Search">
-              <button type="button" class="clear" aria-hidden="true"><span class="pficon pficon-close"></span></button>
-            </div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
-          </div>
-        </form>
+        <!--<form role="form" class="search-pf has-button">-->
+          <!--<div class="form-group has-clear">-->
+            <!--<div class="search-pf-input-group">-->
+              <!--<label for="search1" class="sr-only">Search</label>-->
+              <!--<input id="search1" type="search" class="form-control" placeholder="Search">-->
+              <!--<button type="button" class="clear" aria-hidden="true"><span class="pficon pficon-close"></span></button>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="form-group">-->
+            <!--<button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>-->
+          <!--</div>-->
+        <!--</form>-->
       </div><!-- subheader -->
 
 
@@ -85,10 +85,11 @@
         <li><ups-pluralize noun="Device" count="app.stats.devices"></ups-pluralize></li>
       </ul>
 
-      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right"
+           ng-if="app.stats.messages">
         <h2 class="h5">Latest Notifications</h2>
       </div>
-      <div class="list-group">
+      <div class="list-group" ng-if="app.stats.messages">
         <a ng-link="appDetail({app: notification.id, tab: 'variants'})" class="list-group-item" ng-repeat="notification in home.topNotifications | limitTo:4">
           <h3 class="list-group-item-heading">{{ notification.name }}</h3>
           <p class="list-group-item-text">{{ notification.submittedDate | date:'d MMM, H:mm:ss, yyyy' }}</p>

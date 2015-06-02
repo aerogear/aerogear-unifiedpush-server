@@ -30,7 +30,7 @@
   <tbody>
   <tr ng-repeat-start="metric in activity.metrics">
     <td>
-      <a ng-click="metric.$toggled = !metric.$toggled">
+      <a href ng-click="metric.$toggled = !metric.$toggled">
         <i class="fa fa-plus-square-o" ng-class="{ 'fa-plus-square-o': !metric.$toggled, 'fa-minus-square-o': metric.$toggled }"></i>
       </a>
     </td>

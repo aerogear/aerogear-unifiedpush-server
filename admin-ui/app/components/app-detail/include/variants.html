@@ -16,15 +16,15 @@
 
     <div class="ups-variant" ng-repeat="variant in variantList">
 
-      <div class="ups-variant-header">
+      <div class="ups-variant-header" ng-click="variant.$toggled = !variant.$toggled">
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a ng-click="variants.editName( variant )"><span class="pficon pficon-edit"></span> Change name</a></li>
-            <li class="danger"><a ng-click="variants.delete( variant )"><span class="pficon pficon-delete"></span> Delete</a></li>
+            <li><a ng-click="variants.editName( variant ); $event.stopPropagation();"><span class="pficon pficon-edit"></span> Change name</a></li>
+            <li class="danger"><a ng-click="variants.delete( variant ); $event.stopPropagation();"><span class="pficon pficon-delete"></span> Delete</a></li>
           </ul>
         </div>
 
-        <h4 ng-click="variant.$toggled = !variant.$toggled"><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
+        <h4><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
         <ul class="list-inline">
           <li class="warning" ng-repeat="warning in variants.getWarningsForVariant( app.warnings, variant ) | limitTo: 1">
               <span class="pficon-layered">
@@ -42,18 +42,18 @@
       <div class="ups-variant-body" ng-show="variant.$toggled">
 
         <p ng-show="variant.type == 'ios'">Apple's Push Network (APNs) will be used.
-          To learn more about APNs, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-ios/">iOS</a>
-          or <a href="http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/">Apache Cordova</a> guides for push.
+          To learn more about APNs, visit our <a ups-doc="docs-push-ios">iOS</a>
+          or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
         </p>
         <p ng-show="variant.type == 'android'">Google's Cloud Messaging Network (GCM) will be used.
-          To learn more about GCM, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-android/">Android</a>, <a href='http://aerogear.org/docs/unifiedpush/aerogear-push-chrome/'>Chrome</a> or <a href="http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/">Apache Cordova</a> guides for push.
+          To learn more about GCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
         </p>
         <p ng-show="variant.type == 'simplePush'">A Server implementing the <em>SimplePush</em> protocol will be used.
-          More information can be found in <a href="https://wiki.mozilla.org/WebAPI/SimplePush/Protocol">SimplePush Protocol Draft</a>.
-          The <a href="https://github.com/aerogear/aerogear-simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
+          More information can be found in <a ups-doc="simplepush-protocol">SimplePush Protocol Draft</a>.
+          The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.
         </p>
         <p ng-show="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
-          To learn more about, visit our <a href="http://aerogear.org/docs/unifiedpush/aerogear-push-adm/">adm</a> or <a href="http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/">Apache Cordova</a> guides for push.
+          To learn more about, visit our <a ups-doc="docs-push-adm">adm</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
         </p>
         <dl class="dl-horizontal" ng-if="variant.type == 'android'">
           <dt>Project Number:</dt>

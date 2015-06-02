@@ -43,7 +43,7 @@ angular.module('upsConsole')
           };
 
           $scope.send = function() {
-            if ($scope.selectedVariants) {
+            if ($scope.selectedVariants && $scope.selectedVariants.length > 0) {
               $scope.pushData.criteria.variants = $scope.selectedVariants;
             }
             if($scope.aliases) {
