@@ -13,7 +13,6 @@
       Send Notification to this app
     </button>
   </div>
-
 </div>
 
 <div ng-if="appDetail.app.$messageCount > 0">
@@ -82,6 +81,27 @@
     </div>
 
   </div> <!-- row -->
+
+
+<!-- Lukas, I think that a full blank slate works well here -->
+
+<div class="blank-slate-pf"><!-- ng-if="appDetail.app.$messageCount == 10" -->
+  <div class="blank-slate-pf-icon">
+    <i class="fa fa-bar-chart"></i>
+  </div>
+
+  <h1>No Charts yet</h1>
+
+   <p>There are no registered device for this application. Follow the instructions to register a device on <a href="#">the documentation</a>.</p>
+
+  <div class="blank-slate-pf-main-action">
+    <button class="btn btn-primary btn-lg" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length">
+      <i class="fa fa-paper-plane"></i>
+      Register a device
+    </button>
+  </div>
+</div>
+
 
   <div class="row">
     <div class="col-sm-8" ng-if="analyticsCtrl.app.$deviceCount > 0 && analyticsCtrl.performance[0].length > 1">
