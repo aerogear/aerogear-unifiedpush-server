@@ -22,6 +22,7 @@ import javax.enterprise.inject.Produces;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -40,6 +41,8 @@ import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
  * @see SenderConfiguration
  */
 public class SenderConfigurationProvider {
+
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(SenderConfigurationProvider.class);
 
     @Produces @ApplicationScoped @SenderType(VariantType.ANDROID)
     public SenderConfiguration produceAndroidConfiguration() {
@@ -72,15 +75,34 @@ public class SenderConfigurationProvider {
     }
 
     private SenderConfiguration loadConfigurationFor(VariantType type, SenderConfiguration defaultConfiguration) {
-        return new SenderConfiguration(
-                getProperty(type, "batchesToLoad", defaultConfiguration.batchesToLoad(), Integer.class),
-                getProperty(type, "batchSize", defaultConfiguration.batchSize(), Integer.class)
-            );
+        return validateAndSanitizeConfiguration(type, new SenderConfiguration(
+                getProperty(type, ConfigurationProperty.batchesToLoad, defaultConfiguration.batchesToLoad(), Integer.class),
+                getProperty(type, ConfigurationProperty.batchSize, defaultConfiguration.batchSize(), Integer.class)
+            ));
+    }
+
+    /**
+     * Validates that configuration is correct with regards to push networks limitations or implementation, etc.
+     */
+    private SenderConfiguration validateAndSanitizeConfiguration(VariantType type, SenderConfiguration configuration) {
+        switch (type) {
+            case ANDROID:
+                if (configuration.batchSize() > 1000) {
+                    logger.warning(String
+                            .format("Sender configuration -D%s=%s is invalid: at most 1000 tokens can be submitted to GCM in one batch",
+                                    getSystemPropertyName(type, ConfigurationProperty.batchSize), configuration.batchSize()));
+                    configuration.setBatchSize(1000);
+                }
+                break;
+            default:
+                break;
+        }
+        return configuration;
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T getProperty(VariantType type, String property, T defaultValue, Class<T> expectedType) {
-        String systemPropertyName = String.format("aerogear.%s.%s", type.getTypeName(), property);
+    private <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue, Class<T> expectedType) {
+        String systemPropertyName = getSystemPropertyName(type, property);
         if (expectedType == String.class) {
             return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
         } else if (expectedType == Integer.class) {
@@ -88,5 +110,18 @@ public class SenderConfigurationProvider {
         } else {
             throw new IllegalStateException("Unexpected type: " + expectedType);
         }
+    }
+
+    private String getSystemPropertyName(VariantType type, ConfigurationProperty property) {
+        return String.format("aerogear.%s.%s", type.getTypeName(), property.toString());
+    }
+
+    /**
+     * Configuration properties are matching the properties of {@link SenderConfiguration} fields / accessors.
+     * The enum members intentionally use camel-case to avoid need for name conversion.
+     */
+    private static enum ConfigurationProperty {
+        batchesToLoad,
+        batchSize;
     }
 }
