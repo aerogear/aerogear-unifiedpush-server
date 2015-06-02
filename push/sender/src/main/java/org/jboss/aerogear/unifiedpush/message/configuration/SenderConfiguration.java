@@ -59,6 +59,10 @@ public class SenderConfiguration {
         return batchesToLoad;
     }
 
+    void setBatchesToLoad(int batchesToLoad) {
+        this.batchesToLoad = batchesToLoad;
+    }
+
     /**
      * Batch size specifies how many devices will be loaded and delivered in one batch.
      *
@@ -73,6 +77,10 @@ public class SenderConfiguration {
      */
     public int batchSize() {
         return batchSize;
+    }
+
+    void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
     }
 
     /**
