@@ -22,17 +22,26 @@ angular.module('upsConsole')
     }
     this.byType = splitByType( this.app.variants );
 
+    if (Object.keys(this.byType).length == 1) {
+      angular.forEach(this.byType, function(variants, type) {
+        if (variants.length == 1) {
+          variants[0].$toggled = true;
+        }
+      });
+    }
+
     this.add = function() {
       return variantModal.add( this.app )
         .then(function( variant ) {
           variant.$deviceCount = 0;
           variant.$messageCount = 0;
           self.app.variants.push( variant );
+          variant.$toggled = true;
           self.byType = splitByType( self.app.variants );
           Notifications.success('Variant ' + variant.name + ' successfully created');
         })
         .catch(function(e) {
-          ErrorReporter.error(e, 'Failed to create variant ' + variant.name);
+          ErrorReporter.error(e, 'Failed to create variant');
         });
     };
 

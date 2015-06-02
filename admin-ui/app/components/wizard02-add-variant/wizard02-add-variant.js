@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard02AddVariantController', function( variantModal, $router, createAppWizard, Notifications, appModal ) {
+  .controller('Wizard02AddVariantController', function( variantModal, $router, createAppWizard, Notifications, ErrorReporter, appModal ) {
 
     this.canActivate = function() {
       if ( createAppWizard.app ) {
@@ -21,8 +21,8 @@ angular.module('upsConsole')
           Notifications.success('Variant ' + variant.name + ' successfully created');
           $router.root.navigate('/wizard/register-device');
         })
-        .catch(function() {
-          Notifications.error('Failed to create variant ' + variant.name);
+        .catch(function(e) {
+          ErrorReporter.error(e, 'Failed to create variant ');
         });
     };
 

@@ -64,13 +64,13 @@ angular.module('upsConsole')
     this.activate = function() {
       $timeout(function() { // timeout is a workaround for bug in the router - canDeactivate is called right after activate
         intervalForDetectInstallations = $interval(function () {
-          detectInstallations().then(function( installationDetected ) {
-            if ( installationDetected ) {
+          detectInstallations().then(function (installationDetected) {
+            if (installationDetected) {
               $interval.cancel(intervalForDetectInstallations);
             }
           });
         }, 1500);
-      }, 1500);
+      }, 500);
     };
 
     this.canDeactivate = function() {
