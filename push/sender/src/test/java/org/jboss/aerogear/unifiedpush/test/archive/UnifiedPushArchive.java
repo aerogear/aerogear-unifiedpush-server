@@ -17,18 +17,28 @@
 package org.jboss.aerogear.unifiedpush.test.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
+import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 
 /**
  * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
-public interface UnifiedPushArchive extends Archive<UnifiedPushArchive>, LibraryContainer<UnifiedPushArchive>,
+public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArchive> implements Archive<UnifiedPushArchive>, LibraryContainer<UnifiedPushArchive>,
         WebContainer<UnifiedPushArchive>, ResourceContainer<UnifiedPushArchive>, ServiceProviderContainer<UnifiedPushArchive> {
 
-    UnifiedPushArchive addMavenDependencies(String... deps);
+    public UnifiedPushArchive(final Archive<?> delegate) {
+        super(UnifiedPushArchive.class, delegate);
+    }
+
+    public static UnifiedPushArchive forTestClass(Class<?> clazz) {
+        return ShrinkWrap.create(UnifiedPushArchive.class, String.format("%s.war", clazz.getSimpleName()));
+    }
+
+    public abstract UnifiedPushArchive addMavenDependencies(String... deps);
 
     public abstract UnifiedPushArchive withMockito();
 
