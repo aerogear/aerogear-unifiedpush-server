@@ -31,6 +31,9 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 For more details about the current release, please consult [our documentation](https://aerogear.org/getstarted/guides/#push).
 
+#### Generate REST Documentation
+
+Up to date generated REST endpoint documentation can be found in `jaxrs/target/miredot/index.html`. It is generated with every `jaxrs` module build.
 
 ## Who is using it?
 
