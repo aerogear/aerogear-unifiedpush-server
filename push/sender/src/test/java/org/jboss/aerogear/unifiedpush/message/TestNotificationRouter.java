@@ -41,21 +41,18 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-
 @RunWith(Arquillian.class)
 public class TestNotificationRouter {
 
     @Deployment
     public static WebArchive archive() {
-        return ShrinkWrap
-                .create(UnifiedPushArchive.class)
+        return UnifiedPushArchive.forTestClass(TestNotificationRouter.class)
                 .withMessaging()
                     .addClasses(NotificationRouter.class, PushNotificationSender.class)
                     .addClasses(PushMessageMetricsService.class)

@@ -40,7 +40,6 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,8 +49,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
 
     @Deployment
     public static WebArchive archive() {
-        return ShrinkWrap
-                .create(UnifiedPushArchive.class)
+        return UnifiedPushArchive.forTestClass(TestMetricsCollector.class)
                 .withMessaging()
                     .addClasses(MetricsCollector.class)
                     .addClasses(PushMessageMetricsService.class)
