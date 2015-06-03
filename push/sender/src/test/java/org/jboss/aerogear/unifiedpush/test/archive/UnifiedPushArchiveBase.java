@@ -21,9 +21,8 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 
-public abstract class UnifiedPushArchiveBase extends WebContainerBase<UnifiedPushArchive> implements UnifiedPushArchive {
+public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
 
  // -------------------------------------------------------------------------------------||
     // Class Members ----------------------------------------------------------------------||
@@ -82,7 +81,7 @@ public abstract class UnifiedPushArchiveBase extends WebContainerBase<UnifiedPus
      *            The storage backing.
      */
     public UnifiedPushArchiveBase(final Archive<?> delegate) {
-        super(UnifiedPushArchive.class, delegate);
+        super(delegate);
     }
 
     // -------------------------------------------------------------------------------------||
