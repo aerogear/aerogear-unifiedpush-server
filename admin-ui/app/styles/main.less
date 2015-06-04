@@ -26,6 +26,10 @@
 .danger{      color:@brand-danger!important}
 
 
+.btn{
+  text-transform: capitalize;
+}
+
 //navbar changes to make it heigher ==========================================================
 
 // .navbar-header{
@@ -429,7 +433,8 @@ h2 span{
   cursor:pointer;
   padding: 10px 0;
   .actions{
-    display: none;
+//    display: none;
+//    ANDO
   }
 
   h3, h4{
@@ -470,24 +475,48 @@ h2 span{
       line-height: 40px;
       margin: 0;
     }
-    .actions{
-      display: none;
-    }
-    &:hover .actions{
-      display: block;
-    }
-  }
 
-  .panel-title{
-    display: inline-block;
-    line-height: 40px;
-    margin-right: 10px;
+    .panel-title{
+      display: inline-block;
+      line-height: 40px;
+      margin-right: 10px;
+    }
   }
 }
 
 .ups-main-action{
   margin: 10px 0;
 }
+
+.ups-drop{
+  position: relative;
+  ul{
+    background: #fff;
+    border: 1px solid @gray-lighter;
+    border-bottom: none;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 200; 
+    li a{
+      border-bottom: 1px solid @gray-lighter;
+      display: block;
+      padding: 2px 5px;
+      width: 100px;
+    }
+  }
+  &:hover{
+    ul{
+      display: block;
+      li{
+        color: @gray-dark;
+      }
+    }
+  }
+}
+
 
 // Snippet Nav Tabs =====================================================
 
