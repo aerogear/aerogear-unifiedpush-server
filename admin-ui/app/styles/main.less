@@ -407,6 +407,7 @@ h2 span{
     }
     a{
       text-decoration: none;
+      cursor: pointer;
       &:hover{
         color: @link-hover-color;
       }
@@ -468,6 +469,12 @@ h2 span{
       display: inline-block;
       line-height: 40px;
       margin: 0;
+    }
+    .actions{
+      display: none;
+    }
+    &:hover .actions{
+      display: block;
     }
   }
 

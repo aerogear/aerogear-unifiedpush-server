@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $rootScope, $modal, variantModal, $scope, variantsEndpoint, Notifications, ErrorReporter ) {
+  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter ) {
 
     var self = this;
 
@@ -117,6 +117,77 @@ angular.module('upsConsole')
           $scope.dismiss = function() {
             $modalInstance.dismiss('cancel');
           }
+        }
+      });
+    };
+
+    this.exportInstallations = function ( variant ) {
+      $modal.open({
+        templateUrl: 'dialogs/export-installations.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.confirm = function() {
+            var params = {
+              variantId: variant.variantID
+            };
+            exporterEndpoint.export(params, function (content) {
+              var hiddenElement = document.createElement('a');
+
+              hiddenElement.href = 'data:attachment/json,' + encodeURI(JSON.stringify(content));
+              hiddenElement.target = '_blank';
+              hiddenElement.download = variant.variantID + '.json';
+              hiddenElement.click();
+
+              $modalInstance.close();
+              Notifications.success('Successfully exported installations');
+            });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      });
+    };
+
+    this.importInstallations = function (variant) {
+      $modal.open({
+        templateUrl: 'dialogs/import-installations.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.installations = [];
+          $scope.confirm = function() {
+            var fd = new FormData();
+            fd.append('file', $scope.installations[0]);
+            $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
+                ':' + variant.secret);
+            importerEndpoint.import(null, fd, function(){
+              Notifications.success('Import processing has started');
+              $modalInstance.close();
+              //updateCounts();
+            });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          };
+          $scope.previewImport = function() {
+            if (window.File && window.FileList && window.FileReader) {
+              var importFiles = $scope.installations[0];
+              var fileReader = new FileReader();
+              fileReader.readAsText(importFiles);
+              fileReader.onload = function(e) {
+                $scope.$apply(function() {
+                  try {
+                    $scope.importPreview = JSON.parse(e.target.result).length;
+                    $scope.incorrectFormat = false;
+                  }
+                  catch(e) {
+                    $scope.importPreview = null;
+                    $scope.incorrectFormat = true;
+                  }
+                });
+              };
+            }
+          };
         }
       });
     };

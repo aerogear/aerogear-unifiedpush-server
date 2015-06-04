@@ -5,22 +5,29 @@
 <h3>You have {{ appDetail.app.variants.length }} Variants</h3>
 
 <div class="panel panel-default ups-panel" ng-repeat="(variantType, variantList) in variants.byType">
+
   <div class="panel-heading ups-has-icon ups-variant-{{ variantType }}">
     <h3 class="panel-title">{{ variants.typeEnum[variantType].name }} Variants</h3>
     <ul class="list-inline">
       <li><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Messages</li>
       <li><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
     </ul>
+
   </div>
+
   <div class="panel-body">
-
     <div class="ups-variant" ng-repeat="variant in variantList">
-
       <div class="ups-variant-header" ng-click="variant.$toggled = !variant.$toggled">
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a ng-click="variants.editName( variant ); $event.stopPropagation();"><span class="pficon pficon-edit"></span> Change name</a></li>
-            <li class="danger"><a ng-click="variants.delete( variant ); $event.stopPropagation();"><span class="pficon pficon-delete"></span> Delete</a></li>
+            <li><a ng-click="$event.stopPropagation(); variants.editName( variant );"><span class="pficon pficon-edit"></span> Change name</a></li>
+            <li class="danger"><a ng-click="$event.stopPropagation(); variants.delete( variant );"><span class="pficon pficon-delete"></span> Delete</a></li>
+          </ul>
+        </div>
+        <div class="actions pull-right">
+          <ul class="list-inline">
+            <li><a ng-click="$event.stopPropagation(); variants.importInstallations( variant )"><span class="pficon pficon-import"></span> Import</a></li>
+            <li><a ng-click="$event.stopPropagation(); variants.exportInstallations( variant )"><span class="pficon pficon-export"></span> Export</a></li>
           </ul>
         </div>
 
