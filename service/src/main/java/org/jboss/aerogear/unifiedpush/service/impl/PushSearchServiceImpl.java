@@ -71,8 +71,8 @@ public class PushSearchServiceImpl implements PushSearchService {
     }
 
     @Override
-    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
-        return installationDao.findInstallationsByVariant(variantID, page, pageSize);
+    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize, String search) {
+        return installationDao.findInstallationsByVariant(variantID, page, pageSize, search);
     }
 
 

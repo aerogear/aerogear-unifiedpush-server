@@ -27,42 +27,50 @@ import java.util.logging.Logger;
  */
 public class AeroGearLogger {
 
-    private static Logger logger;
+    private Logger logger;
 
-    private AeroGearLogger() {
-    }
-
-    private final static class SingletonHolder {
-        private final static AeroGearLogger instance = new AeroGearLogger();
+    private AeroGearLogger(Logger logger) {
+        this.logger = logger;
     }
 
     public static AeroGearLogger getInstance(Class clazz) {
-        AeroGearLogger.logger = Logger.getLogger(clazz.getSimpleName());
-        return SingletonHolder.instance;
+        if (clazz == null) {
+            throw new IllegalArgumentException("Class required");
+        }
+        final String name = clazz.getSimpleName();
+        return getInstance(name);
+    }
+
+    private static AeroGearLogger getInstance(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name required");
+        }
+        Logger log = Logger.getLogger(name);
+        return new AeroGearLogger(log);
     }
 
     public void info(String message){
-        AeroGearLogger.logger.info(format(message));
+        logger.info(format(message));
     }
 
     public void warning(String message){
-        AeroGearLogger.logger.log(Level.WARNING, format(message));
+        logger.log(Level.WARNING, format(message));
     }
 
     public void severe(String message){
-        AeroGearLogger.logger.log(Level.SEVERE, format(message));
+        logger.log(Level.SEVERE, format(message));
     }
 
     public void severe(String message, Throwable t){
-        AeroGearLogger.logger.log(Level.SEVERE, format(message), t);
+        logger.log(Level.SEVERE, format(message), t);
     }
 
     public void fine(String message){
-        AeroGearLogger.logger.log(Level.FINE, format(message));
+        logger.log(Level.FINE, format(message));
     }
 
     public void finest(String message){
-        AeroGearLogger.logger.log(Level.FINEST, format(message));
+        logger.log(Level.FINEST, format(message));
     }
 
     /**

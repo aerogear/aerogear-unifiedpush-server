@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications ) {
+  .controller('VariantsController', function ( $rootScope, $modal, variantModal, $scope, variantsEndpoint, Notifications, ErrorReporter ) {
 
     var self = this;
 
@@ -22,17 +22,26 @@ angular.module('upsConsole')
     }
     this.byType = splitByType( this.app.variants );
 
+    if (Object.keys(this.byType).length == 1) {
+      angular.forEach(this.byType, function(variants, type) {
+        if (variants.length == 1) {
+          variants[0].$toggled = true;
+        }
+      });
+    }
+
     this.add = function() {
       return variantModal.add( this.app )
         .then(function( variant ) {
           variant.$deviceCount = 0;
           variant.$messageCount = 0;
           self.app.variants.push( variant );
+          variant.$toggled = true;
           self.byType = splitByType( self.app.variants );
           Notifications.success('Variant ' + variant.name + ' successfully created');
         })
-        .catch(function() {
-          Notifications.error('Failed to create variant ' + variant.name);
+        .catch(function(e) {
+          ErrorReporter.error(e, 'Failed to create variant');
         });
     };
 
@@ -45,7 +54,7 @@ angular.module('upsConsole')
         })
         .catch(function( e ) {
           if ( e != 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };
@@ -59,7 +68,7 @@ angular.module('upsConsole')
         })
         .catch(function(e) {
           if ( e !== 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };
@@ -80,6 +89,29 @@ angular.module('upsConsole')
                 });
                 self.byType = splitByType( self.app.variants );
                 $modalInstance.close();
+              });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      });
+    };
+
+    this.renewVariantSecret = function ( variant ) {
+      $modal.open({
+        templateUrl: 'dialogs/renew-variant-secret.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.confirm = function() {
+            variantsEndpoint.reset({
+                appId: self.app.pushApplicationID,
+                variantType: variant.type,
+                variantId: variant.variantID })
+              .then(function (receivedVariant) {
+                variant.secret  = receivedVariant.secret;
+                $modalInstance.close( variant );
+                //$rootScope.$digest();
               });
           };
           $scope.dismiss = function() {

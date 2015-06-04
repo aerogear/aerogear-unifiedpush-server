@@ -2,7 +2,7 @@
 
 The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms. The initial version of the server supports [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9), [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html) and [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
-<img src="http://people.apache.org/~matzew/UPS_UI.png" height="303px" width="510px" />
+<img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
 ## Project Info
 
@@ -31,6 +31,9 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 For more details about the current release, please consult [our documentation](https://aerogear.org/getstarted/guides/#push).
 
+#### Generate REST Documentation
+
+Up to date generated REST endpoint documentation can be found in `jaxrs/target/miredot/index.html`. It is generated with every `jaxrs` module build.
 
 ## Who is using it?
 

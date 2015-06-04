@@ -5,7 +5,7 @@ angular.module('upsConsole')
 
     this.app = $scope.$parent.$parent.appDetail.app;
     this.metrics = [];
-    this.totalCount = 0;
+    this.totalCount;
     this.currentPage = 1;
     this.currentStart = 0;
     this.currentEnd = 0;

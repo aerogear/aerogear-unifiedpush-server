@@ -16,16 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.resteasy.annotations.GZIP;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.resteasy.annotations.GZIP;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/export")
 public class ExportEndpoint extends AbstractBaseEndpoint {
@@ -43,7 +44,7 @@ public class ExportEndpoint extends AbstractBaseEndpoint {
     @GZIP
     @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
     public Response exportInstallations(@PathParam("variantId") String variantId) {
-        return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE).getResultList()).build();
+        return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE, null).getResultList()).build();
     }
 
 }

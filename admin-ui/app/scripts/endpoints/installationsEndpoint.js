@@ -15,11 +15,11 @@ upsServices.factory('installationsEndpoint', function ($resource, $q) {
       method: 'PUT'
     }
   });
-  installationsService.fetchInstallations = function(variantId, pageNo) {
+  installationsService.fetchInstallations = function(variantId, searchString, pageNo, perPage) {
     var deferred = $q.defer();
-    this.get({variantId: variantId, page: pageNo - 1, per_page: 10}, function (data, responseHeaders) {
+    this.get({variantId: variantId, search: searchString, page: pageNo - 1, per_page: perPage}, function (data, responseHeaders) {
       deferred.resolve({
-        page: data,
+        installations: data,
         total: responseHeaders('total')
       });
     });

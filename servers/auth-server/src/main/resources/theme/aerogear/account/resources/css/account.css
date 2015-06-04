@@ -1,5 +1,5 @@
 @import url("/ag-push/styles/account.css");
-@import url("../../patternfly/css/account.css");
+@import url("../../keycloak/css/account.css");
 
 .navbar-title {
     background-image: none;

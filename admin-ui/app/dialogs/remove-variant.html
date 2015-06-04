@@ -7,9 +7,17 @@
   </div>
   <div class="modal-body">
     <p>Do you really want to delete the variant <strong>"{{ variant.name }}"</strong>?</p>
+    <p>Please type in the name of the variant to confirm.</p>
+    <p>
+      <input class="form-control" ng-model="confirmVariantName" />
+    </p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
-    <button type="submit" class="btn btn-danger text-left" ng-click="confirm()">Delete</button>
+    <button type="button" class="btn btn-default" ng-click="dismiss()">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-danger text-left" ng-click="confirm()" ng-disabled="variant.name !== confirmVariantName">
+      Delete
+    </button>
   </div>
 </form>

@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -67,11 +68,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // new device/client ?
         if (installation == null) {
             logger.finest("Performing new device/client registration");
-            // store the installation:
-            entity.setVariant(variant);
-            mergeCategories(entity);
 
-            installationDao.create(entity);
+            // store the installation:
+            storeInstallationAndSetReferences(variant, entity);
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
@@ -106,11 +105,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
                 logger.finest("Importing device with token: " + current.getDeviceToken());
 
-                // set reference
-                current.setVariant(variant);
-
-                mergeCategories(current);
-                installationDao.create(current);
+                storeInstallationAndSetReferences(variant, current);
 
                 // and add a reference to the existing tokens set, to ensure the JSON file contains no duplicates:
                 existingTokens.add(current.getDeviceToken());
@@ -233,5 +228,22 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             result.add(category.getName());
         }
         return result;
+    }
+
+    /*
+     * Helper to set references and perform the actual storage
+     */
+    private void storeInstallationAndSetReferences(Variant variant, Installation entity) {
+
+        // ensure lower case for iOS
+        if (variant.getType().equals(VariantType.IOS)) {
+            entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
+        }
+        // set reference
+        entity.setVariant(variant);
+        // update attached categories
+        mergeCategories(entity);
+        // store Installation entity
+        installationDao.create(entity);
     }
 }

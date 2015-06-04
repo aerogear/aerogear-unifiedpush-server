@@ -15,8 +15,8 @@ angular.module('upsConsole')
     this.platformArray = [];
 
     this.performance = [
-      ['Targeted Devices'],
-      ['Push Open']
+      ['Notifications Dispatched'],
+      ['Notifications Opened']
     ];
 
     function updateAnalytics() {
@@ -29,8 +29,8 @@ angular.module('upsConsole')
           self.appOpenedRate = ((data.appOpenedCounter * 100) / (data.receivers)) || 0;
 
           self.performance = [
-            ['Targeted Devices'],
-            ['Push Open']
+            ['Notifications Dispatched'],
+            ['Notifications Opened']
           ];
           angular.forEach(self.metrics, function (pushMessage) {
             pushMessage.message = JSON.parse(pushMessage.rawJsonMessage);
@@ -38,11 +38,15 @@ angular.module('upsConsole')
             self.performance[1].push(pushMessage.appOpenCounter);
           });
 
-          c3Factory.get('performance').then(function (chart) {
-            chart.load({
-              columns: self.performance
-            })
-          });
+          if (self.totalCount) {
+            c3Factory.get('performance').then(function (chart) {
+              if (chart) {
+                chart.load({
+                  columns: self.performance
+                });
+              }
+            });
+          }
         });
     }
 

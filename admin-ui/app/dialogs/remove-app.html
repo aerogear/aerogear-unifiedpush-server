@@ -7,10 +7,16 @@
   </div>
   <div class="modal-body">
     <p>Do you really want to delete the application <strong>"{{ app.name }}"</strong>?</p>
+    <p>Please type in the name of the variant to confirm.</p>
+    <p>
+      <input class="form-control" ng-model="confirmAppName" />
+    </p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
-    <button type="submit" class="btn btn-danger text-left" ng-click="confirm()">
+    <button type="button" class="btn btn-default" ng-click="dismiss()">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-danger text-left" ng-click="confirm()" ng-disabled="app.name !== confirmAppName">
       Delete
     </button>
   </div>

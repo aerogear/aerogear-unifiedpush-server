@@ -71,7 +71,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * @return all installations found or empty list + the total count of results
      */
-    PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search);
 
     /**
      * Find all installations for the variant specified (used for admin role)
@@ -81,7 +81,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * @return all installations found or empty list + the total count of results
      */
-    PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize);
+    PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize, String search);
 
 
     /**
