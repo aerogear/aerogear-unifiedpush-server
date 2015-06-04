@@ -22,12 +22,14 @@
           <ul class="list-inline">
             <li><a ng-click="$event.stopPropagation(); variants.editName( variant );"><span class="pficon pficon-edit"></span> Change name</a></li>
             <li class="danger"><a ng-click="$event.stopPropagation(); variants.delete( variant );"><span class="pficon pficon-delete"></span> Delete</a></li>
-          </ul>
-        </div>
-        <div class="actions pull-right">
-          <ul class="list-inline">
-            <li><a ng-click="$event.stopPropagation(); variants.importInstallations( variant )"><span class="pficon pficon-import"></span> Import</a></li>
-            <li><a ng-click="$event.stopPropagation(); variants.exportInstallations( variant )"><span class="pficon pficon-export"></span> Export</a></li>
+            <li class="ups-drop" onclick="event.stopPropagation()">
+              More
+              <i class="fa fa-angle-down"></i>
+              <ul class="list-unstyled">
+                <li><a ng-click="$event.stopPropagation(); variants.importInstallations( variant )"><span class="pficon pficon-import"></span> Import</a></li>
+                <li><a ng-click="$event.stopPropagation(); variants.exportInstallations( variant )" ng-if="variant.$deviceCount > 0"><span class="pficon pficon-export"></span> Export</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
 
