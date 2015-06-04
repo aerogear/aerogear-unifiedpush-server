@@ -15,8 +15,8 @@ angular.module('upsConsole')
     this.platformArray = [];
 
     this.performance = [
-      ['Targeted Devices'],
-      ['Push Open']
+      ['Notifications Dispatched'],
+      ['Notifications Opened']
     ];
 
     function updateAnalytics() {
@@ -29,8 +29,8 @@ angular.module('upsConsole')
           self.appOpenedRate = ((data.appOpenedCounter * 100) / (data.receivers)) || 0;
 
           self.performance = [
-            ['Targeted Devices'],
-            ['Push Open']
+            ['Notifications Dispatched'],
+            ['Notifications Opened']
           ];
           angular.forEach(self.metrics, function (pushMessage) {
             pushMessage.message = JSON.parse(pushMessage.rawJsonMessage);

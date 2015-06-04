@@ -8,7 +8,7 @@
   <div class="panel-heading ups-has-icon ups-variant-{{ variantType }}">
     <h3 class="panel-title">{{ variants.typeEnum[variantType].name }} Variants</h3>
     <ul class="list-inline">
-      <li><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Delivered</li>
+      <li><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Messages</li>
       <li><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
     </ul>
   </div>
@@ -34,7 +34,7 @@
             Warning
           </li>
           <li ng-if="variant.$deviceCount == 0"><i class="fa fa-ban"></i> No installation yet</li>
-          <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <strong>{{ variant.$messageCount }}</strong> Delivered</li>
+          <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <strong>{{ variant.$messageCount }}</strong> Messages</li>
           <li ng-if="variant.$deviceCount > 0"><i class="fa fa-mobile"></i> <strong>{{ variant.$deviceCount }}</strong> Devices</li>
         </ul>
 

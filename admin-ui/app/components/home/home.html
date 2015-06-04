@@ -50,7 +50,7 @@
               <ul class="list-inline">
                 <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
                 <li><i class="fa fa-code-fork"></i> <ups-pluralize noun="variant" count="app.variants.length"></ups-pluralize></li>
-                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="notification" count="app.$messageCount"></ups-pluralize> delivered</li>
+                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="message" count="app.$messageCount"></ups-pluralize> sent</li>
                 <li><i class="fa fa-mobile"></i> <ups-pluralize noun="device" count="app.$deviceCount"></ups-pluralize> registered</li>
               </ul>
 
@@ -81,7 +81,7 @@
       </div>
       <ul class="list-unstyled ups-statistics">
         <li><ups-pluralize noun="App" count="app.stats.applications"></ups-pluralize></li>
-        <li><span class="count">{{ app.stats.messages }}</span>Delivered</li>
+        <li><span class="count">{{ app.stats.messages }}</span>Messages</li>
         <li><ups-pluralize noun="Device" count="app.stats.devices"></ups-pluralize></li>
       </ul>
 
