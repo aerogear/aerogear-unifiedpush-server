@@ -36,7 +36,7 @@
 
         <div ng-if="wizard04SendPushNotification.deviceCount == 0" class="form-group pull-right">
           <a ng-link="wizard03RegisterDevice()" class="btn btn-primary btn-lg"><i class="fa fa-angle-left"></i> Back to variant set up </a>
-          <a ng-link="wizard05SetupSender()" class="btn btn-primary btn-lg">Skip this step <i class="fa fa-angle-right"></i></a>
+          <a ng-link="wizard05SetupSender()" class="btn btn-default btn-lg">Skip this step <i class="fa fa-angle-right"></i></a>
         </div>
         <div ng-if="wizard04SendPushNotification.deviceCount > 0" class="form-group pull-right">
           <button class="btn btn-primary btn-lg" ng-click="wizard04SendPushNotification.sendNotification()">Send Push Notification and Continue <i class="fa fa-angle-double-right"></i></button>

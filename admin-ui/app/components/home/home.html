@@ -27,14 +27,12 @@
       </div><!-- subheader -->
 
 
-
-
       <ul class="media-list ups-app-stream">
 
         <li class="media" ng-repeat="app in home.apps">
           <div class="actions">
             <ul class="list-inline">
-              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> Change name</a></li>
+              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> Edit name</a></li>
               <li class="danger"><a href="#" ng-click="home.deleteApp( app )"><span class="pficon pficon-delete"></span> Delete</a></li>
             </ul>
           </div>
