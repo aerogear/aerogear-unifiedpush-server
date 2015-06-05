@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>AeroGear UnifiedPush Server Account Management</title>
+    <title>AeroGear Unified Push Server Account Management</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico">
     <#if properties.styles?has_content>
         <#list properties.styles?split(' ') as style>
@@ -22,7 +22,7 @@
         <nav class="navbar" role="navigation">
             <div class="navbar-header">
                 <a class="navbar-brand">
-                    <h1>AeroGear UnifiedPush Server</h1>
+                    <h1>AeroGear Unified Push Server</h1>
                 </a>
             </div>
             <div class="navbar-collapse navbar-collapse-1">

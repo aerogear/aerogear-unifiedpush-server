@@ -1,9 +1,9 @@
 <#import "template.ftl" as layout>
 <@layout.registrationLayout displayInfo=social.displayInfo; section>
     <#if section = "title">
-        ${msg("loginTitle", "UnifiedPush Server")}
+        ${msg("loginTitle", "Unified Push Server")}
     <#elseif section = "header">
-        ${msg("loginTitle", "UnifiedPush Server")}
+        ${msg("loginTitle", "Unified Push Server")}
     <#elseif section = "form">
         <#if realm.password>
             <form id="kc-form-login" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
@@ -50,7 +50,6 @@
                     <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
                         <div class="${properties.kcFormButtonsWrapperClass!}">
                             <input class="btn btn-primary btn-lg" name="login" id="kc-login" type="submit" value="${msg("doLogIn")}"/>
-                            <input class="btn btn-default btn-lg" name="cancel" id="kc-cancel" type="submit" value="${msg("doCancel")}"/>
                         </div>
                      </div>
                 </div>
