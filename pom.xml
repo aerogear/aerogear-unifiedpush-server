@@ -26,7 +26,7 @@
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unifiedpush-parent</artifactId>
-    <version>1.1.0-beta.2-SNAPSHOT</version>
+    <version>1.1.0-beta.2</version>
     <packaging>pom</packaging>
 
     <name>AeroGear UnifiedPush Server</name>
@@ -36,7 +36,7 @@
         <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
         <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
-        <tag>HEAD</tag>
+        <tag>1.1.0-beta.2</tag>
     </scm>
 
     <issueManagement>
