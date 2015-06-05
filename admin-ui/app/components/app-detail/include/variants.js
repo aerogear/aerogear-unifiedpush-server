@@ -174,10 +174,10 @@ angular.module('upsConsole')
               var importFiles = $scope.installations[0];
               var fileReader = new FileReader();
               fileReader.readAsText(importFiles);
-              fileReader.onload = function(e) {
+              fileReader.onload = function(event) {
                 $scope.$apply(function() {
                   try {
-                    $scope.importPreview = JSON.parse(e.target.result).length;
+                    $scope.importPreview = JSON.parse(event.target.result).length;
                     $scope.incorrectFormat = false;
                   }
                   catch(e) {
