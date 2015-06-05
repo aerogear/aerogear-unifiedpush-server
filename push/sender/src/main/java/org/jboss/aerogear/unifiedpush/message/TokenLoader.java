@@ -29,6 +29,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -73,6 +74,10 @@ public class TokenLoader {
     @Inject
     @DispatchToQueue
     private Event<AllBatchesLoadedEvent> allBatchesLoaded;
+
+    @Inject
+    @DispatchToQueue
+    private Event<VariantMetricInformation> dispatchVariantMetricEvent;
 
     @Inject @Any
     private Instance<SenderConfiguration> senderConfiguration;
@@ -134,6 +139,15 @@ public class TokenLoader {
                 } else {
                     logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
                     allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()));
+
+                    if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
+                        // no tokens were loaded at all!
+                        VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
+                        variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
+                        variantMetricInformation.setVariantID(variant.getVariantID());
+                        variantMetricInformation.setDeliveryStatus(Boolean.TRUE);
+                        dispatchVariantMetricEvent.fire(variantMetricInformation);
+                    }
                 }
             } catch (ResultStreamException e) {
                 logger.severe("Failed to load batch of tokens", e);

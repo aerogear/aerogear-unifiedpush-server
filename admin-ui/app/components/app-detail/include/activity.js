@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('ActivityController', function ( $modal, variantModal, $scope, metricsEndpoint ) {
+  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
 
     var self = this;
 
@@ -12,8 +12,10 @@ angular.module('upsConsole')
     this.perPage = 10;
     this.searchString = '';
 
+    var refreshInterval;
+
     function fetchMetrics( page, searchString ) {
-      metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
+      return metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
         .then(function( data ) {
           self.metrics = data.pushMetrics;
           self.totalCount = data.totalItems;
@@ -23,7 +25,7 @@ angular.module('upsConsole')
             try {
               metric.$message = JSON.parse(metric.rawJsonMessage);
             } catch (err) {
-              console.log('failed to parse metric')
+              console.log('failed to parse metric');
               metric.$message = {};
             }
             metric.variantInformations.forEach(function( variantInformation ) {
@@ -32,9 +34,6 @@ angular.module('upsConsole')
           });
         });
     }
-
-    // initial page
-    fetchMetrics( 1, null );
 
     this.onPageChange = function ( page ) {
       fetchMetrics( page, self.searchString );
@@ -46,8 +45,34 @@ angular.module('upsConsole')
       })[0];
     }
 
-    $scope.$on('upsNotificationSent', function( pushData, app ) {
-      fetchMetrics( self.currentPage, self.searchString );
+    function refreshUntilAllServed() {
+      fetchMetrics( self.currentPage, self.searchString )
+        .then(function() {
+          $log.debug('refreshed');
+          var isPending = self.metrics.some(function(metric) {
+            return metric.servedVariants < metric.totalVariants;
+          });
+          if (isPending) {
+            if (!refreshInterval) {
+              $log.debug('scheduling refresh');
+              refreshInterval = $interval(refreshUntilAllServed, 1000);
+            }
+          } else {
+            $log.debug('clearing refresh');
+            $interval.cancel(refreshInterval);
+            refreshInterval = null;
+          }
+        });
+    }
+
+    // initial load
+    refreshUntilAllServed();
+
+    $scope.$on('upsNotificationSent', refreshUntilAllServed);
+    $scope.$on('$destroy', function () {
+      if (refreshInterval) {
+        $interval.cancel(refreshInterval);
+      }
     });
 
     $scope.$watch(function() { return self.searchString }, function( searchString ) {

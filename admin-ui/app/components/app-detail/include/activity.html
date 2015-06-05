@@ -38,8 +38,12 @@
       <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
       <td>{{ metric.ipAddress }}</td>
       <td>{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened</td>
-      <td ng-if="metric.deliveryFailed != true" class="success"><i class="fa fa-check"></i> Succeeded</td>
-      <td ng-if="metric.deliveryFailed == true" class="danger">
+      <td ng-if="metric.servedVariants < metric.totalVariants">
+        <!--<i class="pficon-running"></i>-->
+        <span class="pficon spinner spinner-sm spinner-inline"></span>
+        Pending...</td>
+      <td ng-if="metric.servedVariants == metric.totalVariants && metric.deliveryFailed != true" class="success"><i class="fa fa-check"></i> Succeeded</td>
+      <td ng-if="metric.servedVariants == metric.totalVariants && metric.deliveryFailed == true" class="danger">
           <span class="pficon-layered">
             <span class="pficon pficon-error-octagon"></span>
             <span class="pficon pficon-error-exclamation"></span>

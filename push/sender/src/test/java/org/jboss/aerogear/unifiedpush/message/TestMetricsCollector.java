@@ -80,12 +80,15 @@ public class TestMetricsCollector extends AbstractJMSTest {
         VariantMetricInformation variant1Metric1 = new VariantMetricInformation();
         variant1Metric1.setPushMessageInformation(pushMetric);
         variant1Metric1.setVariantID(variantID1);
+        variant1Metric1.setServedBatches(1);
         VariantMetricInformation variant1Metric2 = new VariantMetricInformation();
         variant1Metric2.setPushMessageInformation(pushMetric);
         variant1Metric2.setVariantID(variantID1);
+        variant1Metric2.setServedBatches(1);
         VariantMetricInformation variant2Metric1 = new VariantMetricInformation();
         variant2Metric1.setPushMessageInformation(pushMetric);
         variant2Metric1.setVariantID(variantID2);
+        variant2Metric1.setServedBatches(1);
         when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
 
         // when

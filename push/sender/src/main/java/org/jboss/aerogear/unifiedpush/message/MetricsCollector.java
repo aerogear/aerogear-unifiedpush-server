@@ -75,7 +75,6 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
         int loadedBatches = countLoadedBatches(variantID);
-        variantMetricInformation.setServedBatches(1);
         variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
 
         boolean updatedExisting = false;

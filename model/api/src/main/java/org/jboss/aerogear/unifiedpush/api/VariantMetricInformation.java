@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.validation.constraints.NotNull;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * Contains metadata about a variant, of the push message request, such as successful delivery to the push network
