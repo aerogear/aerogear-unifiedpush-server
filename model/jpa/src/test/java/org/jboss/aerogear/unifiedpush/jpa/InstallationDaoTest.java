@@ -444,6 +444,22 @@ public class InstallationDaoTest {
         deviceTokenTest(installation, variant);
     }
 
+    @Test
+    public void shouldSaveWhenValidateDeviceIdFromAndroidEmulator() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("eHlfnI0__dI:APA91bEhtHefML2lr_sBQ-bdXIyEn5owzkZg_p_y7SRyNKRMZ3Xu" +
+                "zZhBpTOYIh46tqRYQIc-7RTADk4nM5H-ONgPDWHodQDS24O5GuKP8EZ" +
+                "EKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-");
+
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
+
+        // when
+        deviceTokenTest(installation, variant);
+    }
+
     private void deviceTokenTest(Installation installation, Variant variant) {
         entityManager.persist(variant);
         installation.setVariant(variant);
