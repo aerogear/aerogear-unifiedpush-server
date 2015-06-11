@@ -6,7 +6,8 @@
     <h4 class="modal-title" id="myModalLabel">{{ isNew ? 'Add' : 'Edit' }} Variant</h4>
   </div>
   <div class="modal-body form-horizontal">
-    <div class="form-group">
+    
+    <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label" for="textInput-modal-markup">Name</label>
       <div class="col-sm-9">
         <input type="text" id="textInput-modal-markup" class="form-control" placeholder="eg. Demo" ng-model="variant.name" required="required">
