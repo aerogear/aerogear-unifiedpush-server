@@ -109,10 +109,10 @@
 
     <build>
         <plugins>
-            <!--plugin>
+            <plugin>
                 <groupId>com.qmino</groupId>
                 <artifactId>miredot-plugin</artifactId>
-                <version>1.6.1-20150520.193742-6</version>
+                <version>1.6.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -157,7 +157,7 @@
                         </checks>
                     </analysis>
                 </configuration>
-            </plugin-->
+            </plugin>
         </plugins>
     </build>
 
