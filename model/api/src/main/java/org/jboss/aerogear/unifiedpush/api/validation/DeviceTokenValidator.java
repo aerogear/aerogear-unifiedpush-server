@@ -37,7 +37,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      * Pattern for android is harder to define that is why we kept it lenient it is at least 100 characters long and can
      * consist of digits, alphas, - and _ all have one of these separators
      */
-    private static final Pattern ANDROID_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_]{100,}");
+    private static final Pattern ANDROID_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_:]{100,}");
     /**
      * Pattern for windows is a uri that can be 1024 characters long
      * @see <a href="http://blogs.windows.com/windows_phone/b/wpdev/archive/2013/10/22/recommended-practices-for-using-microsoft-push-notification-service-mpns.aspx?Redirected=true">Windows developer blog</a>
