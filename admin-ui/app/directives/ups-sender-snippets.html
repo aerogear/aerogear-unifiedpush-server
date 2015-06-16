@@ -1,11 +1,11 @@
 <ul class="nav nav-tabs nav-tabs-pf">
-  <li ng-class="{ active: activeSnippet == 'java' || !activeSnippet }"><a ng-click="activeSnippet = 'java'">Java Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'nodejs' }"><a ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'curl' }"><a ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
+  <li ng-class="{ active: activeSnippet == 'java' || !activeSnippet }"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
+  <li ng-class="{ active: activeSnippet == 'nodejs' }"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
+  <li ng-class="{ active: activeSnippet == 'curl' }"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
 </ul>
 
 
-<div ng-if="activeSnippet == 'java' || !sender.activeSnippet">
+<div ng-if="activeSnippet == 'java' || !activeSnippet">
   <h3>Set up Java UPS Sender API</h3>
   <p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>
   <p>Then let's use following snippet in your Java code to enable push notification sending.</p>

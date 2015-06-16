@@ -26,11 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
@@ -40,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -48,39 +44,49 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
 
-    public PageResult<Installation> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize) {
-        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Installation> query = builder.createQuery(Installation.class);
-        Root<Installation> v = query.from(Installation.class);
-        final Join join = v.join("variant");
-        final Predicate[] predicates = getPredicates(variantID, developer, builder, join);
-        query.where(predicates);
+    private static final String FIND_INSTALLATIONS = "FROM Installation installation"
+                    + " JOIN installation.variant v"
+                    + " WHERE v.variantID = :variantID";
 
-        List<Installation> result = entityManager.createQuery(query)
-                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
 
-        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-        final Join<Object, Object> join1 = countQuery.from(Installation.class).join("variant");
-        countQuery.where(getPredicates(variantID, developer, builder, join1));
-        final Long count = entityManager.createQuery(countQuery.select(builder.count(join1))).getSingleResult();
 
-        return new PageResult<Installation>(result, count);
+        final StringBuilder jpqlBase = new StringBuilder(FIND_INSTALLATIONS);
+        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("variantID", variantID);
+        if (developer != null) {
+            jpqlBase.append(" AND v.developer = :developer");
+            parameters.put("developer", developer);
+        }
+        if (search != null) {
+            jpqlBase.append(" AND ( deviceToken LIKE :search"
+                    + " OR deviceType LIKE :search"
+                    + " OR platform LIKE :search"
+                    + " OR operatingSystem LIKE :search"
+                    + " OR osVersion LIKE :search"
+                    + " OR alias LIKE :search )");
+            parameters.put("search", "%" + search + "%");
+        }
+
+
+        TypedQuery<Long> countQuery = createQuery("SELECT COUNT(installation) " + jpqlBase.toString(), Long.class);
+        TypedQuery<Installation> query = createQuery("SELECT installation " + jpqlBase.toString() + " ORDER BY installation.id").setFirstResult(page * pageSize).setMaxResults(pageSize);
+
+        List<Installation> resultList = setParameters(query, parameters).getResultList();
+        Long count = setParameters(countQuery, parameters).getSingleResult();
+
+        return new PageResult<Installation, Count>(resultList, new Count(count));
     }
 
-    public PageResult<Installation> findInstallationsByVariant(String variantID, Integer page, Integer pageSize) {
-        return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize);
+    private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
+        for (Entry<String, Object> entry : parameters.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query;
     }
 
-    private Predicate[] getPredicates(String variantID, String developer, CriteriaBuilder builder, Join join) {
-        Predicate[] predicates;
-        if(developer!=null) {
-            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID),
-                    builder.and(builder.equal(join.get("developer"), developer))};
-        }
-        else {
-            predicates = new Predicate[]{builder.equal(join.get("variantID"), variantID)};
-        }
-        return predicates;
+    public PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize, String search) {
+        return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize, search);
     }
 
 

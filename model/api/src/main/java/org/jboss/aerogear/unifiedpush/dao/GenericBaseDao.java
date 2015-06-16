@@ -13,9 +13,11 @@ public interface GenericBaseDao<O, K> {
 
     void update(O o);
 
+    O refresh(O o);
+
     void delete(O o);
 
     void flushAndClear();
 
-
+    void lock(O entity);
 }

@@ -19,12 +19,16 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
 
 import javax.inject.Inject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,10 +59,29 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    public void testLowerCaseForIOS() throws IOException {
+        iOSVariant iOSVariant = new iOSVariant();
+        byte[] certificate= toByteArray(getClass().getResourceAsStream("/cert/certificate.p12"));
+        iOSVariant.setCertificate(certificate);
+        iOSVariant.setPassphrase("12345678");
+        variantService.addVariant(iOSVariant);
+
+        Installation device = new Installation();
+        device.setAlias("SomeAlias");
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+
+        clientInstallationService.addInstallation(iOSVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), deviceToken)).isNull();
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), deviceToken.toLowerCase())).isNotNull();
+    }
+
+    @Test
     public void registerDevices() {
 
         Installation device = new Installation();
-        String deviceToken = generateFakedDeviceTokenString();
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
         device.setDeviceToken(deviceToken);
         clientInstallationService.addInstallation(androidVariant, device);
 
@@ -348,6 +371,18 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         } catch (ResultStreamException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    // simple util, borrowed from AG Crypto
+    private byte[] toByteArray(InputStream file) throws IOException {
+        int n;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+
+        while (-1 != (n = file.read(buffer))) {
+            bos.write(buffer, 0, n);
+        }
+        return bos.toByteArray();
     }
 
 }

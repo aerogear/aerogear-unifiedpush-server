@@ -26,18 +26,42 @@
 .danger{      color:@brand-danger!important}
 
 
+.btn{
+  text-transform: capitalize;
+}
+
 //navbar changes to make it heigher ==========================================================
 
-.navbar-header{
-  padding: 5px 0;
+// .navbar-header{
+//   padding: 5px 0;
+// }
+//
+// .navbar-pf .navbar-utility  > li > a {
+//   padding: 12px 10px;}
+//
+// .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user{
+//   top: 12px;
+// }
+
+
+.navbar{
+  .navbar-brand {
+    padding: 12px 0;
+  }
+  .navbar-utility {
+    > li > a {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    li.dropdown > .dropdown-toggle {
+      .pficon-user {
+        top: 12px;
+      }
+    }
+  }
 }
 
-.navbar-pf .navbar-utility  > li > a {
-  padding: 12px 10px;}
 
-.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user{
-  top: 12px;
-}
 
 //keycloack ==========================================================
 
@@ -48,14 +72,14 @@
 //main warning ==========================================================
 
 .ups-main-warning{
-  left: 0;
+  left: 20%;
   position: absolute;
-  right: 0;
+  right: 20%;
   text-align: center;
   top: 20px;
   z-index: 9999;
   .alert{
-    margin: 5px 20%;
+    margin: 5px 0;
     text-align: left;
   }
 }
@@ -110,20 +134,8 @@
 
 //blank-slate ==========================================================
 
-.ups-blank-slate{
+.blank-slate-pf{
   margin: 20px 0;
-  padding: 100px 160px;
-  text-align: center;
-
-  .sidebar-pf &{
-    color: @gray-light;
-    padding: 20px;
-  }
-
-  form{
-    margin: 20px 0;
-    input[type="text"]{width: 280px;}
-  }
 }
 
 //wizard ==========================================================
@@ -220,7 +232,6 @@ h2 span{
 // ups-add-variable
 
 .ups-add-variable{
-
   .radio{
     label{
       input{
@@ -229,8 +240,8 @@ h2 span{
       }
 
       span{
-        display: inline-block;
-        width: 100%;
+        display: block;
+        width: 380px;
       }
 
       strong{
@@ -375,7 +386,7 @@ h2 span{
 }
 .datatable{
   width: 100%!important;
- td[colspan="6"]{
+  td.ups-pushmessage-detail{
    padding: 11px 10px 1px 10px;
  }
 }
@@ -400,6 +411,7 @@ h2 span{
     }
     a{
       text-decoration: none;
+      cursor: pointer;
       &:hover{
         color: @link-hover-color;
       }
@@ -462,18 +474,48 @@ h2 span{
       line-height: 40px;
       margin: 0;
     }
-  }
 
-  .panel-title{
-    display: inline-block;
-    line-height: 40px;
-    margin-right: 10px;
+    .panel-title{
+      display: inline-block;
+      line-height: 40px;
+      margin-right: 10px;
+    }
   }
 }
 
 .ups-main-action{
   margin: 10px 0;
 }
+
+.ups-drop{
+  position: relative;
+  ul{
+    background: #fff;
+    border: 1px solid @gray-lighter;
+    border-bottom: none;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 200;
+    li a{
+      border-bottom: 1px solid @gray-lighter;
+      display: block;
+      padding: 2px 5px;
+      width: 100px;
+    }
+  }
+  &:hover{
+    ul{
+      display: block;
+      li{
+        color: @gray-dark;
+      }
+    }
+  }
+}
+
 
 // Snippet Nav Tabs =====================================================
 
@@ -668,5 +710,72 @@ li.L9 {
 
   &.ng-hide {
     top: -38px;
+  }
+}
+
+
+.dropdown-menu {
+  li {
+    .glyphicon {
+      display: none;
+    }
+  }
+  li.selected {
+    .glyphicon {
+      .fa;
+      float: right;
+      margin-top: 4px;
+      margin-right: 2px;
+    }
+    .glyphicon-ok:before {
+      content: @fa-var-check;
+    }
+  }
+}
+
+// Analytic ===========================================
+.analytics{
+  .panel-body{
+    position: relative;
+  }
+  .panel{
+    text-align: center;
+    h2{
+      margin: 20px 0;
+    }
+    h3 {
+      font-size: 1.1em;
+    }
+  }
+  .tooltip {
+    width: 20em;
+  }
+}
+
+.analytics-help{
+  color: @gray-light;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  font-size: @font-size-base*1.2;
+}
+
+// ups-date-range ===========================================
+
+.ups-date-range{
+  .pull-right;
+  .ups-date-input{
+    display: inline;
+    border-bottom: 1px solid @gray-lighter ;
+    margin-left: 5px;
+    &:hover{
+      border-bottom-color: @brand-primary;
+    }
+  }
+  .ups-infotip{
+    width: 290px;
+    .label{
+      color: @gray-dark;
+    }
   }
 }

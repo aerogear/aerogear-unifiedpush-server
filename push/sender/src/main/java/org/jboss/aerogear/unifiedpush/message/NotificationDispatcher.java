@@ -69,7 +69,7 @@ public class NotificationDispatcher {
 
         logger.fine("Received message from queue: " + msg.getUnifiedPushMessage().getMessage().getAlert());
 
-        senders.select(new SenderTypeLiteral(variant.getClass())).get()
+        senders.select(new SenderTypeLiteral(variant.getType())).get()
                             .sendPushMessage(variant, deviceTokens, message, msg.getPushMessageInformation().getId(), new SenderServiceCallback(variant, deviceTokens.size(), msg.getPushMessageInformation()));
     }
 
@@ -111,6 +111,8 @@ public class NotificationDispatcher {
         variantMetricInformation.setReceivers(receivers);
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
+        variantMetricInformation.setServedBatches(1);
+
         dispatchVariantMetricEvent.fire(variantMetricInformation);
     }
 }

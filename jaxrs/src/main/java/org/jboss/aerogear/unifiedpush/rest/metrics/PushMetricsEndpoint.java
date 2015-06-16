@@ -16,16 +16,25 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -35,14 +44,32 @@ public class PushMetricsEndpoint {
     @Inject
     private PushMessageMetricsService metricsService;
 
+    /**
+     * GET info about submitted push messages for the given Push Application
+     *
+     * @param id        id of {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
+     * @param page      page number
+     * @param pageSize  number of items per page
+     * @param sorting   sorting order: {@code asc} (default) or {@code desc}
+     * @param search    search query
+     * @return          list of {@link PushMessageInformation}s
+     *
+     * @responseheader total            Total count of items
+     * @responseheader receivers        Receivers
+     * @responseheader appOpenedCounter App Opened Counter
+     *
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @GET
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushMessageInformation>")
     public Response pushMessageInformationPerApplication(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,
             @QueryParam("per_page") Integer pageSize,
-            @QueryParam("sort") String sorting) {
+            @QueryParam("sort") String sorting,
+            @QueryParam("search") String search) {
 
         pageSize = parsePageSize(pageSize);
 
@@ -54,37 +81,14 @@ public class PushMetricsEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        PageResult<PushMessageInformation> pageResult =
-                metricsService.findAllForPushApplication(id, extractSortingQueryParamValue(sorting), page, pageSize);
+        PageResult<PushMessageInformation, MessageMetrics> pageResult =
+                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
-                .header("total", pageResult.getCount()).build();
-    }
-
-    @GET
-    @Path("/variant/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response pushMessageInformationPerVariant(
-            @PathParam("id") String id,
-            @QueryParam("page") Integer page,
-            @QueryParam("per_page") Integer pageSize,
-            @QueryParam("sort") String sorting) {
-
-        pageSize = parsePageSize(pageSize);
-
-        if (page == null) {
-            page = 0;
-        }
-
-        if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
-        }
-
-        PageResult<PushMessageInformation> pageResult =
-                metricsService.findAllForVariant(id, extractSortingQueryParamValue(sorting), page, pageSize);
-
-        return Response.ok(pageResult.getResultList())
-                .header("total", pageResult.getCount()).build();
+                .header("total", pageResult.getAggregate().getCount())
+                .header("receivers", pageResult.getAggregate().getReceivers())
+                .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
+                .build();
     }
 
     private Integer parsePageSize(Integer pageSize) {

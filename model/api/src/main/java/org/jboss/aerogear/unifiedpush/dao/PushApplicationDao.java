@@ -16,10 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public interface PushApplicationDao extends GenericBaseDao<PushApplication, String> {
 
@@ -32,7 +33,7 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      *
      * @return list of push applications
      */
-    PageResult<PushApplication> findAllForDeveloper(String loginName, Integer page, Integer pageSize);
+    PageResult<PushApplication, Count> findAllForDeveloper(String loginName, Integer page, Integer pageSize);
 
     /**
      * Finder that returns a list, containing all pushApplication ids for the given owner/developer.
@@ -92,7 +93,7 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      */
     PushApplication findAllByPushApplicationID(String pushApplicationID);
 
-    PageResult<PushApplication> findAll(Integer page, Integer pageSize);
+    PageResult<PushApplication, Count> findAll(Integer page, Integer pageSize);
 
     long getNumberOfPushApplicationsForDeveloper();
 }

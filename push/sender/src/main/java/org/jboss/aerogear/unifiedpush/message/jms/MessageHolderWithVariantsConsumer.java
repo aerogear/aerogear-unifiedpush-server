@@ -29,7 +29,7 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
  * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
  */
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class MessageHolderWithVariantsConsumer extends AbstractJMSMessageConsumer<MessageHolderWithVariants> {
+public class MessageHolderWithVariantsConsumer extends AbstractJMSMessageListener<MessageHolderWithVariants> {
 
     @Inject
     @Dequeue

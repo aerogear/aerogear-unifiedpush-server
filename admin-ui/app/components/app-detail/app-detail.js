@@ -7,7 +7,6 @@ angular.module('upsConsole')
     this.notifications = null; // is retrieved in canActivate
     this.tab = $routeParams.tab;
 
-
     this.contextPath = ContextProvider.contextPath();
 
     this.canActivate = function() {
@@ -19,7 +18,7 @@ angular.module('upsConsole')
               self.tab = 'variants';
             }
           }),
-        metricsEndpoint.fetchApplicationMetrics($routeParams.app, 1)
+        metricsEndpoint.fetchApplicationMetrics($routeParams.app, null, 1)
           .then(function( data ) {
             self.notifications = data.pushMetrics;
           })
@@ -44,7 +43,7 @@ angular.module('upsConsole')
           };
 
           $scope.send = function() {
-            if ($scope.selectedVariants) {
+            if ($scope.selectedVariants && $scope.selectedVariants.length > 0) {
               $scope.pushData.criteria.variants = $scope.selectedVariants;
             }
             if($scope.aliases) {

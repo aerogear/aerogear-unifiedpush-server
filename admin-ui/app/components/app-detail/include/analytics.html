@@ -1,0 +1,114 @@
+<div ng-if="appDetail.app.$messageCount > 0">
+  <div class="ups-app-header">
+    <h3>App Analytics</h3>
+  </div><!-- app header -->
+
+  <div class="row analytics">
+
+    <div class="col-sm-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Push Messages</h3>
+        </div>
+        <div class="panel-body">
+          <h2>{{ appDetail.app.$messageCount | number:0 }}</h2>
+          <div class="analytics-help" tooltip-placement="bottom"
+               tooltip="Number of push messages sent to UnifiedPush Server for dispatching to registered devices">
+            <span class="pficon pficon-help"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Notifications Dispatched</h3>
+        </div>
+        <div class="panel-body">
+          <h2>{{ analyticsCtrl.receivers | number:0 }}</h2>
+          <div class="analytics-help" tooltip-placement="bottom"
+               tooltip="Number of notifications dispatched via Push Networks to registered device">
+            <span class="pficon pficon-help"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-sm-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Notifications Opened</h3>
+        </div>
+        <div class="panel-body">
+          <h2>{{ analyticsCtrl.appOpenedCounter | number:0 }}</h2>
+          <div class="analytics-help" tooltip-placement="bottom"
+               tooltip="Number of notifications that were delivered to registered device and opened by a user">
+            <span class="pficon pficon-help"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-sm-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Average Open Rate</h3>
+        </div>
+        <div class="panel-body">
+          <h2>{{ analyticsCtrl.appOpenedRate | number:2 }} %</h2>
+          <div class="analytics-help" tooltip-placement="bottom"
+               tooltip="Notifications Opened / Notifications Dispatched">
+            <span class="pficon pficon-help"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- row -->
+
+
+  <div class="row" ng-if="analyticsCtrl.app.$deviceCount > 0 && analyticsCtrl.receivers > 0">
+    <div class="col-sm-8" ng-if="analyticsCtrl.app.$deviceCount > 0 && analyticsCtrl.performance[0].length > 1">
+      <h3>Performance</h3>
+      <c3-chart id="performance" config="analyticsCtrl.performanceChartConfig"></c3-chart>
+    </div><!-- col -->
+
+    <div class="col-sm-4" ng-if="analyticsCtrl.app.$deviceCount > 0">
+      <h3>Push Networks</h3>
+      <c3-chart id="pushNetworks" config="analyticsCtrl.pushNetworksChartConfig"></c3-chart>
+    </div><!-- col -->
+
+  </div><!-- row -->
+</div><!-- ng-if -->
+
+<div class="blank-slate-pf" ng-if="appDetail.app.$messageCount == 0 || appDetail.app.$deviceCount == 0 || analyticsCtrl.receivers == 0">
+  <div class="blank-slate-pf-icon">
+    <i class="fa fa-bar-chart"></i>
+  </div>
+
+  <h1 ng-if="appDetail.app.$messageCount == 0">No Analytics yet</h1>
+  <h1 ng-if="appDetail.app.$messageCount != 0">No Charts yet</h1>
+
+  <div ng-if="appDetail.app.$deviceCount == 0">
+    <p>There are no registered device for this application. Follow the instructions to register a device on <a href="#">the documentation</a>.</p>
+    <div class="blank-slate-pf-main-action">
+      <a href class="btn btn-primary btn-lg" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" ng-disabled="!appDetail.app.variants.length">
+        </i><i class="fa fa-mobile"></i>
+        Register a device
+      </a>
+    </div>
+  </div>
+
+  <div ng-if="appDetail.app.$deviceCount != 0">
+    <p>You haven't send push notifications to the device yet.</p>
+    <div class="blank-slate-pf-main-action">
+      <button class="btn btn-primary btn-lg" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length">
+        <i class="fa fa-paper-plane"></i>
+        Send Notification to this app
+      </button>
+    </div>
+  </div>
+</div>

@@ -35,8 +35,20 @@ public final class ConfigurationUtils {
      * @return the value of the System property
      */
     public static String tryGetProperty(String key) {
+        return tryGetProperty(key, null);
+    }
+
+    /**
+     * Try to retrieve a system property and returns the defaultValue if SecurityManager blocks it.
+     *
+     * @param key Name of the system property to get the string for.
+     * @param defaultValue Value to be returned on unsuccessful operation or if the propety is not set.
+     *
+     * @return the value of the System property
+     */
+    public static String tryGetProperty(String key, String defaultValue) {
         try {
-            return System.getProperty(key);
+            return System.getProperty(key, defaultValue);
         } catch (SecurityException e) {
             logger.severe("Could not get value of property " + key + " due to SecurityManager. Using null value.");
             return null;

@@ -42,6 +42,14 @@ public class HealthCheck {
     @Inject
     private HealthNetworkService healthNetworkService;
 
+    /**
+     * Get health status
+     *
+     * @return {@link HealthStatus} with details
+     *
+     * @throws ExecutionException   The computation of health status threw an exception
+     * @throws InterruptedException The thread, which compute health status, was interrupted
+     */
     @GET
     @Path("/health")
     @Produces(MediaType.APPLICATION_JSON)

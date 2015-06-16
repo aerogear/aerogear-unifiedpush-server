@@ -1,18 +1,19 @@
-JavaSender defaultJavaSender = new SenderClient.Builder("{{ contextPath }}").build();
-UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+final PushSender sender =
+    DefaultPushSender.withRootServerURL("{{ contextPath }}")
         .pushApplicationId("{{ app.pushApplicationID }}")
         .masterSecret("{{ app.masterSecret }}")
+    .build();
+
+final UnifiedMessage unifiedMessage = UnifiedMessage.
+    withMessage()
         .alert("Hello from Java Sender API!")
-        .build();
-defaultJavaSender.send(unifiedMessage, new MessageResponseCallback() {
+    .build();
+
+
+sender.send(unifiedMessage, new MessageResponseCallback() {
 
     @Override
-    public void onComplete(int statusCode) {
+    public void onComplete() {
         //do cool stuff
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-        //bring out the bad news
     }
 });

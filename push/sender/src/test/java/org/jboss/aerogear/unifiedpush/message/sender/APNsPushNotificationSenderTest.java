@@ -17,30 +17,35 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.junit.Test;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.UUID;
+
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
+import org.junit.Test;
+
 public class APNsPushNotificationSenderTest {
-    
+
     @Test
     public void callbackOnError() throws Exception {
-        final APNsPushNotificationSender sender = new APNsPushNotificationSender();
+        final APNsPushNotificationSender sender = new APNsPushNotificationSender(new ApnsServiceCache());
         final NotificationSenderCallback callback = mock(NotificationSenderCallback.class);
-        
+
         final iOSVariant iosVariant = mock(iOSVariant.class);
+        when(iosVariant.getVariantID()).thenReturn(UUID.randomUUID().toString());
         when(iosVariant.getCertificate()).thenReturn(readCertificate());
         when(iosVariant.getPassphrase()).thenReturn("123456");
 
         sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), "123", callback);
-        
+
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }
 

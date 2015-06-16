@@ -20,9 +20,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.aerogear.unifiedpush.dao.GenericBaseDao;
 
@@ -45,11 +46,15 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
         return entityManager.createQuery(jpql, getType());
     }
 
+    protected Query createUntypedQuery(String jpql) {
+        return entityManager.createQuery(jpql);
+    }
+
     protected <O> TypedQuery<O> createQuery(String jpql, Class<O> type) {
         return entityManager.createQuery(jpql, type);
     }
 
-    protected Query createHibernateQuery(String hql) {
+    protected org.hibernate.Query createHibernateQuery(String hql) {
         Session session = (Session) entityManager.getDelegate();
         return session.createQuery(hql);
     }
@@ -68,6 +73,26 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     public void update(T entity) {
         entityManager.merge(entity);
         entityManager.flush();
+    }
+
+    /**
+     * Refreshes state of the entity from the database.
+     *
+     * If the entity is not managed by current {@link EntityManager}, it is merged first before refreshing and the merge entity is returned as a result.
+     */
+    public T refresh(T entity) {
+        if (!entityManager.contains(entity)) {
+            entity = entityManager.merge(entity);
+        }
+        entityManager.refresh(entity);
+        return entity;
+    }
+
+    /**
+     * Pessimistic write lock on entity
+     */
+    public void lock(T entity) {
+        entityManager.lock(entity, LockModeType.PESSIMISTIC_WRITE);
     }
 
     public void delete(T entity) {

@@ -12,21 +12,19 @@
 
       <div class="ups-sub-header">
 
-        <form role="form" class="search-pf has-button">
-          <div class="form-group has-clear">
-            <div class="search-pf-input-group">
-              <label for="search1" class="sr-only">Search</label>
-              <input id="search1" type="search" class="form-control" placeholder="Search">
-              <button type="button" class="clear" aria-hidden="true"><span class="pficon pficon-close"></span></button>
-            </div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
-          </div>
-        </form>
+        <!--<form role="form" class="search-pf has-button">-->
+          <!--<div class="form-group has-clear">-->
+            <!--<div class="search-pf-input-group">-->
+              <!--<label for="search1" class="sr-only">Search</label>-->
+              <!--<input id="search1" type="search" class="form-control" placeholder="Search">-->
+              <!--<button type="button" class="clear" aria-hidden="true"><span class="pficon pficon-close"></span></button>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="form-group">-->
+            <!--<button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>-->
+          <!--</div>-->
+        <!--</form>-->
       </div><!-- subheader -->
-
-
 
 
       <ul class="media-list ups-app-stream">
@@ -34,7 +32,7 @@
         <li class="media" ng-repeat="app in home.apps">
           <div class="actions">
             <ul class="list-inline">
-              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> Change name</a></li>
+              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> Edit name</a></li>
               <li class="danger"><a href="#" ng-click="home.deleteApp( app )"><span class="pficon pficon-delete"></span> Delete</a></li>
             </ul>
           </div>
@@ -50,7 +48,7 @@
               <ul class="list-inline">
                 <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
                 <li><i class="fa fa-code-fork"></i> <ups-pluralize noun="variant" count="app.variants.length"></ups-pluralize></li>
-                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="notification" count="app.$messageCount"></ups-pluralize> delivered</li>
+                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="message" count="app.$messageCount"></ups-pluralize> sent</li>
                 <li><i class="fa fa-mobile"></i> <ups-pluralize noun="device" count="app.$deviceCount"></ups-pluralize> registered</li>
               </ul>
 
@@ -81,14 +79,15 @@
       </div>
       <ul class="list-unstyled ups-statistics">
         <li><ups-pluralize noun="App" count="app.stats.applications"></ups-pluralize></li>
-        <li><span class="count">{{ app.stats.messages }}</span>Delivered</li>
+        <li><span class="count">{{ app.stats.messages }}</span>Messages</li>
         <li><ups-pluralize noun="Device" count="app.stats.devices"></ups-pluralize></li>
       </ul>
 
-      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
+      <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right"
+           ng-if="app.stats.messages">
         <h2 class="h5">Latest Notifications</h2>
       </div>
-      <div class="list-group">
+      <div class="list-group" ng-if="app.stats.messages">
         <a ng-link="appDetail({app: notification.id, tab: 'variants'})" class="list-group-item" ng-repeat="notification in home.topNotifications | limitTo:4">
           <h3 class="list-group-item-heading">{{ notification.name }}</h3>
           <p class="list-group-item-text">{{ notification.submittedDate | date:'d MMM, H:mm:ss, yyyy' }}</p>

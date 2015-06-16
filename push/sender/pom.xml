@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-push-parent</artifactId>
-        <version>1.1.0-beta.1-SNAPSHOT</version>
+        <version>1.1.0.Final-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-push-sender</artifactId>
@@ -144,6 +144,18 @@
                 <dependency>
                     <groupId>org.mockito</groupId>
                     <artifactId>mockito-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.arquillian.container</groupId>
+                    <artifactId>arquillian-container-chameleon</artifactId>
+                    <version>1.0.0.Alpha1</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

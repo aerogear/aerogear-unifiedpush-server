@@ -16,8 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import static org.jboss.aerogear.unifiedpush.message.sender.WNSPushNotificationSender.createLaunchParam;
+
+import java.util.Collection;
+import java.util.List;
+
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
@@ -27,12 +32,7 @@ import org.jboss.aerogear.windows.mpns.MpnsService;
 import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 
-import java.util.Collection;
-import java.util.List;
-
-import static org.jboss.aerogear.unifiedpush.message.sender.WNSPushNotificationSender.createLaunchParam;
-
-@SenderType(WindowsMPNSVariant.class)
+@SenderType(VariantType.WINDOWS_MPNS)
 public class MPNSPushNotificationSender implements PushNotificationSender {
 
     @Override

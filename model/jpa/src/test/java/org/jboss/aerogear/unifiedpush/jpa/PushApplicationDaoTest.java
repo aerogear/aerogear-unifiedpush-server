@@ -16,7 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -31,14 +41,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class PushApplicationDaoTest {
@@ -79,7 +81,7 @@ public class PushApplicationDaoTest {
 
         // check all:
         assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper()).isEqualTo(3);
-        assertThat(pushApplicationDao.findAll(0, 10).getCount()).isEqualTo(3);
+        assertThat(pushApplicationDao.findAll(0, 10).getAggregate().getCount()).isEqualTo(3);
 
         // check exact:
         assertThat(pushApplicationDao.findAllByPushApplicationID("123").getName()).isEqualTo("Push App 2");
@@ -93,7 +95,7 @@ public class PushApplicationDaoTest {
 
         // check all:
         assertThat(pushApplicationDao.getNumberOfPushApplicationsForDeveloper()).isEqualTo(3);
-        assertThat(pushApplicationDao.findAll(0, 10).getCount()).isEqualTo(3);
+        assertThat(pushApplicationDao.findAll(0, 10).getAggregate().getCount()).isEqualTo(3);
     }
 
     @Test

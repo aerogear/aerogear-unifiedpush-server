@@ -16,6 +16,29 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
+
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
+import java.util.Date;
+
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Message;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
+import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
+import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsDelegateAdapter;
 import com.notnoop.apns.ApnsNotification;
@@ -26,32 +49,15 @@ import com.notnoop.apns.EnhancedApnsNotification;
 import com.notnoop.apns.PayloadBuilder;
 import com.notnoop.apns.internal.Utilities;
 import com.notnoop.exceptions.ApnsDeliveryErrorException;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.Message;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
-
-@SenderType(iOSVariant.class)
+@SenderType(VariantType.IOS)
 public class APNsPushNotificationSender implements PushNotificationSender {
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST = "custom.aerogear.apns.feedback.host";
     private static final String CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT = "custom.aerogear.apns.feedback.port";
-    
+
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
     private static final String customAerogearApnsFeedbackHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST);
@@ -61,6 +67,19 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+
+    @Inject
+    private ApnsServiceCache apnsServiceCache;
+
+    public APNsPushNotificationSender() {
+    }
+
+    /**
+     * Constructor used for test purposes
+     */
+    APNsPushNotificationSender(ApnsServiceCache apnsServiceCache) {
+        this.apnsServiceCache = apnsServiceCache;
+    }
 
     /**
      * Sends APNs notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
@@ -118,37 +137,52 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        ApnsService service = buildApnsService(iOSVariant, callback);
-
-        if (service != null) {
-            try {
-                logger.fine("Sending transformed APNs payload: " + apnsMessage);
-                // send:
-                service.start();
-
-                Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
-                service.push(tokens, apnsMessage, expireDate);
-                logger.info("Message to APNs has been submitted");
-
-                // after sending, let's ask for the inactive tokens:
-                final Set<String> inactiveTokens = service.getInactiveDevices().keySet();
-                // transform the tokens to be all lower-case:
-                final Set<String> transformedTokens = lowerCaseAllTokens(inactiveTokens);
-
-                // trigger asynchronous deletion:
-                if (! transformedTokens.isEmpty()) {
-                    logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
-                    clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), transformedTokens);
+        ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
+            @Override
+            public ApnsService construct() {
+                ApnsService service = buildApnsService(iOSVariant, callback);
+                if (service == null) {
+                    callback.onError("No certificate was found. Could not send messages to APNs");
+                    throw new IllegalStateException("No certificate was found. Could not send messages to APNs");
+                } else {
+                    logger.fine("Starting APNs service");
+                    try {
+                        service.start();
+                    } catch (Exception e) {
+                        throw new PushNetworkUnreachableException(e);
+                    }
+                    return service;
                 }
+            }
+        });
+        if (service == null) {
+            throw new SenderResourceNotAvailableException("Unable to obtain a ApnsService instance");
+        }
+        try {
+            logger.fine("Sending transformed APNs payload: " + apnsMessage);
+            Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
+            service.push(tokens, apnsMessage, expireDate);
+
+            logger.info("One batch to APNs has been submitted");
+            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
+            try {
+                service = null; // we don't want a failure in onSuccess stop the APNs service
                 callback.onSuccess();
             } catch (Exception e) {
+                logger.severe("Failed to call onSuccess after successful push", e);
+            }
+        } catch (Exception e) {
+            try {
+                logger.warning("APNs service died in the middle of sending, stopping it");
+                try {
+                    service.stop();
+                } catch (Exception ex) {
+                    logger.severe("Failed to stop the APNs service after failure", ex);
+                }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
-                // tear down and release resources:
-                service.stop();
+                apnsServiceCache.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
             }
-        } else {
-            callback.onError("No certificate was found. Could not send messages to APNs");
         }
     }
 
@@ -165,18 +199,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             // apply the given TTL to the current time
             return new Date(System.currentTimeMillis() + ttl);
         }
-    }
-
-    /**
-     * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
-     * LOWER CASE format. This helper method performs a transformation
-     */
-    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
-        final Set<String> lowerCaseTokens = new HashSet<String>();
-        for (String token : inactiveTokens) {
-            lowerCaseTokens.add(token.toLowerCase());
-        }
-        return lowerCaseTokens;
     }
 
     /**

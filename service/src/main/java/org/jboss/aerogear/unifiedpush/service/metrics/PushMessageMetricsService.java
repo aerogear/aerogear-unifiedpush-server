@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
@@ -25,10 +26,8 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
-
-
-import javax.ejb.Stateless;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
@@ -57,15 +56,18 @@ public class PushMessageMetricsService {
      *
      * @return the metadata object for the started push message request job
      */
-    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
+    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier, int totalVariantCount) {
         final PushMessageInformation information = new PushMessageInformation();
 
         information.setRawJsonMessage(json);
         information.setIpAddress(ipAddress);
         information.setPushApplicationId(pushAppId);
         information.setClientIdentifier(clientIdentifier);
+        information.setServedVariants(0);
+        information.setTotalVariants(totalVariantCount);
 
         pushMessageInformationDao.create(information);
+        pushMessageInformationDao.flushAndClear();
 
         return information;
     }
@@ -81,6 +83,23 @@ public class PushMessageMetricsService {
     }
 
     /**
+     * Refreshes state of push message information from the database, returning current state as a result.
+     * @param pushMessageInformation push message information to update
+     * @return current database state for the entity
+     */
+    public PushMessageInformation refreshPushMessageInformation(PushMessageInformation pushMessageInformation) {
+        return pushMessageInformationDao.refresh(pushMessageInformation);
+    }
+
+    /**
+     * Locks the push message information for updates so that there will be no updates concurrently
+     * @param pushMessageInformation push message information to lock
+     */
+    public void lock(PushMessageInformation pushMessageInformation) {
+        pushMessageInformationDao.lock(pushMessageInformation);
+    }
+
+    /**
      * Returns a list of metadata objects for the given Push Application
      *
      * @param pushApplicationID the push app ID
@@ -90,22 +109,8 @@ public class PushMessageMetricsService {
      *
      * @return list of push message info objects
      */
-    public PageResult<PushMessageInformation> findAllForPushApplication(String pushApplicationID, boolean sorting, Integer page, Integer pageSize) {
-        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, sorting, page, pageSize);
-    }
-
-    /**
-     * Returns a list of metadata objects for the given Variant
-     *
-     * @param variantID the variant ID
-     * @param sorting do we want sorting?
-     * @param page number of the actual page in the pagination
-     * @param pageSize number of items
-     *
-     * @return list of push message info objects
-     */
-    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean sorting, Integer page, Integer pageSize) {
-        return pushMessageInformationDao.findAllForVariant(variantID, sorting, page, pageSize);
+    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
     }
 
     /**
@@ -113,21 +118,21 @@ public class PushMessageMetricsService {
      *
      * @param pushApplicationId the push app ID
      *
-     * @return the cumber of message for the given push application
+     * @return the number of message for the given push application
      */
     public long countMessagesForPushApplication(String pushApplicationId) {
         return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
     }
 
     /**
-     * Returns number of push messages for given push variant ID
+     * Returns number of push messages for given variant ID
      *
-     * @param variantId the variant ID
+     * @param variantID the variant ID
      *
-     * @return the cumber of message for the given variant
+     * @return the number of message for the given variant
      */
-    long countMessagesForVariant(String variantId) {
-        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantId);
+    public long countMessagesForVariant(String variantID) {
+        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantID);
     }
 
     /**
@@ -140,7 +145,7 @@ public class PushMessageMetricsService {
     }
 
     public PushMessageInformation getPushMessageInformation(String id) {
-        return pushMessageInformationDao.getPushMessageInformation(id);
+        return pushMessageInformationDao.find(id);
     }
 
     public void updateAnalytics(String aerogearPushId, String variantID) {

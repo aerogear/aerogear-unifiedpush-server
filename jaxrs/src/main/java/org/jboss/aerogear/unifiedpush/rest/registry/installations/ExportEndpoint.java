@@ -16,16 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.resteasy.annotations.GZIP;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.resteasy.annotations.GZIP;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/export")
 public class ExportEndpoint extends AbstractBaseEndpoint {
@@ -34,16 +35,16 @@ public class ExportEndpoint extends AbstractBaseEndpoint {
      * Endpoint for exporting as JSON file device installations for a given variant.
      * Only Keycloak authenticated can access it
      *
-     * @param variantId  the variant ID
-     *
-     * @return JSON response
+     * @param variantId the variant ID
+     * @return          list of {@link org.jboss.aerogear.unifiedpush.api.Installation}s
      */
     @GET
     @Path("/{variantId}/installations/")
     @Produces(MediaType.APPLICATION_JSON)
     @GZIP
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
     public Response exportInstallations(@PathParam("variantId") String variantId) {
-        return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE).getResultList()).build();
+        return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE, null).getResultList()).build();
     }
 
 }

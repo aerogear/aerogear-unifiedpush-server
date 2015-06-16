@@ -1,5 +1,5 @@
 <h3>Sending push notifications</h3>
-<p>Make your backend server send push notifications through this UnifiedPush Server using <a target="_blank" href="https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/">Aerogears Java sender API</a>:</p>
+<p>Make your backend server send push notifications through this UnifiedPush Server using supported sender APIs.</p>
 <dl class="dl-horizontal">
   <dt>Server URL</dt>
   <dd>{{ appDetail.contextPath }}</dd>
@@ -7,13 +7,13 @@
   <dd>{{ appDetail.app.pushApplicationID }}</dd>
   <dt>Master Secret</dt>
   <dd>{{ appDetail.app.masterSecret }}
-    <br /><button class="btn btn-sm btn-primary" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
+    <br /><button class="btn btn-sm btn-default" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
   </dd>
 </dl>
 
 <div class="alert alert-info">
   <span class="pficon pficon-info"></span>
-  <strong>Keep this info secure!</strong> Never publish your Master Secret or Application ID. <a href="#" class="alert-link">Read more info about this</a>.
+  <strong>Keep this info secure!</strong> Never expose your Master Secret or Application ID publicly.
 </div>
 
 <ups-sender-snippets app="appDetail.app"></ups-sender-snippets>
@@ -26,13 +26,20 @@
     <h4 class="modal-title" id="myModalLabel">Renew Master Secret</h4>
   </div>
   <div class="modal-body">
-    <h4>You are about to change the master secret!</h4>
+    <h4>You are about to change the master secret for application <strong>"{{app.name}}"</strong>!</h4>
     <p>Be aware that this cannot be undone and you'll have to change your sender in order to continue sending push notifications.</p>
-    <p>Are you sure you want to proceed?</p>
+    <p>Please type in the name of the app to confirm.</p>
+    <p>
+      <input class="form-control" ng-model="confirmAppName" />
+    </p>
 
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="dismiss()">No, cancel</button>
-    <button class="btn btn-danger" ng-click="confirm()">Yes, Renew Master Secret</button>
+    <button class="btn btn-default" ng-click="dismiss()">
+      Cancel
+    </button>
+    <button class="btn btn-danger" ng-click="confirm()" ng-disabled="app.name !== confirmAppName">
+      Renew Master Secret
+    </button>
   </div>
 </script>

@@ -32,6 +32,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
@@ -61,7 +62,7 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     private Instance<String> loginName;
 
     @Override
-    public PageResult<PushApplication> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
+    public PageResult<PushApplication, Count> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
         return pushApplicationDao.findAllForDeveloper(loginName.get(), page, pageSize);
     }
 
@@ -118,8 +119,8 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
     }
 
     @Override
-    public PageResult<Installation> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize) {
-        return installationDao.findInstallationsByVariantForDeveloper(variantID,loginName.get(), page, pageSize);
+    public PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize, String search) {
+        return installationDao.findInstallationsByVariantForDeveloper(variantID,loginName.get(), page, pageSize, search);
     }
 
     private long totalMessages() {

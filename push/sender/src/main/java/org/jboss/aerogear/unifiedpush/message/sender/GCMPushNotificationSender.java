@@ -22,14 +22,17 @@ import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
+
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +41,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SenderType(AndroidVariant.class)
+@SenderType(VariantType.ANDROID)
 public class GCMPushNotificationSender implements PushNotificationSender {
-
-    // allowed tokens per HTTP request (Google policy)
-    private static final int GCM_PAGE = 1000;
 
     // collection of error codes we check for in the GCM response
     // in order to clean-up invalid or incorrect device tokens
@@ -58,7 +58,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMPushNotificationSender.class);
 
     /**
-     * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by 
+     * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      */
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
@@ -104,22 +104,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
-            // GCM does only allow a 1000 device IDs
-            while (! registrationIDs.isEmpty()) {
+            // send out a message to a batch of devices...
+            processGCM(androidVariant, registrationIDs, gcmMessage, sender);
 
-                int toIndex = GCM_PAGE;
-
-                if (registrationIDs.size() < GCM_PAGE) {
-                    toIndex = registrationIDs.size();
-                }
-                List<String> sublist = registrationIDs.subList(0, toIndex);
-
-                // send out a message to a few devices...
-                processGCM(androidVariant, sublist, gcmMessage, sender);
-                registrationIDs.removeAll(sublist);
-            }
-
-            logger.info("Message to GCM has been submitted");
+            logger.info("Message batch to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
@@ -145,11 +133,11 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     /**
      * <p>Walks over the {@code MulticastResult} from the GCM call and identifies the <code>index</code> of all {@code Result} objects that
      * indicate an <code>InvalidRegistration</code> error.
-     * 
+     *
      * <p>This <code>index</code> is used to find the matching <code>registration ID</code> in the List of all used <code>registrationIDs</code>.
-     * 
+     *
      * <p>Afterwards all 'invalid' registration IDs for the given <code>variantID</code> are being deleted from our database.
-     * 
+     *
      * @param variantID id of the actual {@code AndroidVariantEntity}.
      * @param multicastResult the results from the HTTP request to the Google Cloud.
      * @param registrationIDs list of all tokens that we submitted to GCM.

@@ -2,7 +2,7 @@
   <li ng-repeat="snippet in typeEnum[variant.type].snippets"
       ng-init="state.activeSnippet = typeEnum[variant.type].snippets[0]"
       ng-class="{ active: snippet == state.activeSnippet }">
-    <a ng-click="state.activeSnippet = snippet">
+    <a href ng-click="state.activeSnippet = snippet">
       <span ng-if="snippet == 'android'">Android</span>
       <span ng-if="snippet == 'simplePush'">JavaScript</span>
       <span ng-if="snippet == 'ios_objc'">ObjectiveC</span>

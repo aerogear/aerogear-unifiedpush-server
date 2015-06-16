@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard03RegisterDeviceController', function( variantModal, $router, createAppWizard, appModal ) {
+  .controller('Wizard03RegisterDeviceController', function( variantModal, $router, createAppWizard, appModal, $timeout, $interval, applicationsEndpoint ) {
 
     this.canActivate = function() {
       if ( !createAppWizard.app ) {
@@ -45,7 +45,40 @@ angular.module('upsConsole')
         .then(function( updatedVariant ) {
           angular.extend(self.variant, updatedVariant);
         });
+    };
+
+    function detectInstallations() {
+      return applicationsEndpoint.getWithMetrics({appId: createAppWizard.app.pushApplicationID})
+        .then(function( data ) {
+          return data.$deviceCount > 0;
+        })
+        .then(function( installationDetected ) {
+          if ( installationDetected ) {
+            $router.root.navigate('/wizard/send-push-notification');
+          }
+        });
     }
+
+    var intervalForDetectInstallations;
+
+    this.activate = function() {
+      $timeout(function() { // timeout is a workaround for bug in the router - canDeactivate is called right after activate
+        intervalForDetectInstallations = $interval(function () {
+          detectInstallations().then(function (installationDetected) {
+            if (installationDetected) {
+              $interval.cancel(intervalForDetectInstallations);
+            }
+          });
+        }, 1500);
+      }, 500);
+    };
+
+    this.canDeactivate = function() {
+      if (intervalForDetectInstallations) {
+        $interval.cancel(intervalForDetectInstallations);
+      }
+      return true;
+    };
 
   });
 

@@ -1,0 +1,139 @@
+<p ng-if="variant.type == 'ios'">
+  Apple's Push Network (APNs) will be used.
+  To learn more about APNs, visit our <a ups-doc="docs-push-ios">iOS</a>
+  or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
+</p>
+<p ng-if="variant.type == 'android'">
+  Google's Cloud Messaging Network (GCM) will be used.
+  To learn more about GCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
+</p>
+<p ng-if="variant.type == 'simplePush'">
+  A Server implementing the <em>SimplePush</em> protocol will be used.
+  More information can be found in <a ups-doc="simplepush-protocol">SimplePush Protocol Draft</a>.
+  The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.<br/>
+</p>
+<p ng-if="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
+  To learn more about, visit our <a ups-doc="docs-push-adm">adm</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
+</p>
+<dl class="dl-horizontal" ng-if="variant.type == 'android'">
+  <dt>Project Number:</dt>
+  <dd>{{ variant.projectNumber }}</dd>
+  <dt>Google API Key:</dt>
+  <dd>
+    {{ variant.googleKey }}<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'windows_mpns'">
+  <dt>Type:</dt>
+  <dd>
+    Microsoft Push Notification Service<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'windows_wns'">
+  <dt>Type:</dt>
+  <dd>Windows Push Network</dd>
+  <dt>Package SID:</dt>
+  <dd>{{ variant.sid }}</dd>
+  <dt>Client Secret:</dt>
+  <dd>
+    {{ variant.clientSecret }}<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'ios'">
+  <dt>Type:</dt>
+  <dd>
+    {{ variant.production ? 'Production' : 'Development' }}<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'chrome'">
+  <dt>Client Id:</dt>
+  <dd>{{ variant.clientId }}</dd>
+  <dt>Client Secret:</dt>
+  <dd>{{ variant.clientSecret }}</dd>
+  <dt>Refresh Token:</dt>
+  <dd>
+    {{ variant.refreshToken }}<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'adm'">
+  <dt>Client Id:</dt>
+  <dd>{{ variant.clientId }}</dd>
+  <dt>Client Secret:</dt>
+  <dd>
+    {{ variant.clientSecret }}<br />
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'simplePush'">
+  <dt>Network Type:</dt>
+  <dd>
+    SimplePush<br/>
+    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+  </dd>
+</dl>
+
+<ups-client-snippets variant="variant" ng-if="variant.$deviceCount == 0 || variantDetail.forceShowSnippets"></ups-client-snippets>
+
+<p ng-if="variant.$deviceCount > 0">
+  This is a list of devices using this variable.
+  <a href ng-click="variantDetail.forceShowSnippets = true" ng-if="!variantDetail.forceShowSnippets">To see installation instructions and code snippet click here</a>
+</p>
+
+<div class="dataTables_wrapper no-footer" ng-if="variant.$deviceCount > 0">
+  <div class="dataTables_header">
+    <div class="dataTables_filter">
+      <label><input type="search" ng-model="variantDetail.searchString" ng-model-options="{debounce: 300}"></label>
+    </div>
+    <div class="dataTables_info" role="status" aria-live="polite">
+      Showing <b>{{ variantDetail.currentStart }}</b> to <b>{{ variantDetail.currentEnd }}</b> of <b>{{ variantDetail.totalCount }}</b> Devices
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="datatable table table-striped table-bordered" pf-datatable>
+      <thead>
+      <tr>
+        <th>Device token</th>
+        <th>Device type</th>
+        <th>Categories</th>
+        <th>Alias</th>
+        <th>Receiving</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="installation in variantDetail.installations">
+        <td title="{{ installation.deviceToken }}">{{ installation.deviceToken | limitTo : 25 }}{{ installation.deviceToken.length > 25 ? '&hellip;' : '' }}</td>
+        <td>{{ installation.deviceType }}</td>
+        <td><span ng-repeat="cat in installation.categories">{{cat.name}}{{$last ? '' : ', '}}</span></td>
+        <td title="{{ installation.alias }}">{{ installation.alias  | limitTo : 15 }}{{ installation.alias.length > 15 ? '&hellip;' : '' }}</td>
+        <td><input type="checkbox" ng-checked="installation.enabled" ng-click="variantDetail.enableInstallation(variant, installation, !installation.enabled)"></td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div class="dataTables_footer" ng-if="variantDetail.totalCount / variantDetail.perPage > 1">
+    <div class="dataTables_paginate paging_bootstrap_input">
+      <pagination direction-links="true" boundary-links="false"
+                  total-items="variantDetail.totalCount"
+                  ng-model="variantDetail.currentPage"
+                  previous-text="&lsaquo;" next-text="&rsaquo;"
+                  class="pull-right ups-pagination"
+                  max-size="10"
+                  ng-change="variantDetail.onPageChange( variantDetail.currentPage )"
+                  rotate="false">
+      </pagination>
+    </div>
+  </div>
+</div>

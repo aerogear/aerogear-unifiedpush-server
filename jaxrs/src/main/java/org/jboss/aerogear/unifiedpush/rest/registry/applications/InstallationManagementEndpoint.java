@@ -16,14 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.spi.Link;
-import org.jboss.resteasy.spi.LinkHeader;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,6 +30,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.resteasy.spi.Link;
+import org.jboss.resteasy.spi.LinkHeader;
+
+import com.qmino.miredot.annotations.ReturnType;
+
 
 @Path("/applications/{variantID}/installations/")
 public class InstallationManagementEndpoint {
@@ -50,10 +52,27 @@ public class InstallationManagementEndpoint {
     @Inject
     private ClientInstallationService clientInstallationService;
 
+    /**
+     * List Installations of specified Variant
+     *
+     * @param variantId id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
+     * @param page      page number
+     * @param pageSize  number of items per page
+     * @return          list of {@link Installation}s
+     *
+     * @responseheader Link     Links to "prev", "first", "next" and "last" pages
+     * @responseheader total    Total count of items
+     *
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findInstallations(@PathParam("variantID") String variantId, @QueryParam("page") Integer page,
-                                      @QueryParam("per_page") Integer pageSize, @Context UriInfo uri) {
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
+    public Response findInstallations(@PathParam("variantID") String variantId,
+                                      @QueryParam("page") Integer page,
+                                      @QueryParam("per_page") Integer pageSize,
+                                      @QueryParam("search") String search,
+                                      @Context UriInfo uri) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {
@@ -64,20 +83,24 @@ public class InstallationManagementEndpoint {
             page = 0;
         }
 
+        if (search == null || search.isEmpty()) {
+            search = null;
+        }
+
         //Find the variant using the variantID
         if (!searchManager.getSearchService().existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
         //Find the installations using the variantID
-        PageResult<Installation> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize);
+        PageResult<Installation, Count> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize, search);
 
-        final long totalPages = pageResult.getCount() / pageSize;
+        final long totalPages = pageResult.getAggregate().getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);
 
         return Response.ok(pageResult.getResultList())
                 .header("Link", header.toString())
-                .header("total", pageResult.getCount())
+                .header("total", pageResult.getAggregate().getCount())
                 .build();
     }
 
@@ -103,9 +126,19 @@ public class InstallationManagementEndpoint {
         return link;
     }
 
+    /**
+     * Get Installation of specified Variant
+     *
+     * @param variantId         id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
+     * @param installationId    id of {@link Installation}
+     * @return                  requested {@link Installation}
+     *
+     * @statuscode 404 The requested Installation resource does not exist
+     */
     @GET
     @Path("/{installationID}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
     public Response findInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         Installation installation = clientInstallationService.findById(installationId);
@@ -117,10 +150,21 @@ public class InstallationManagementEndpoint {
         return Response.ok(installation).build();
     }
 
+    /**
+     * Update Installation of specified Variant
+     *
+     * @param entity            new info of {@link Installation}
+     * @param variantId         id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
+     * @param installationId    id of {@link Installation}
+     *
+     * @statuscode 204 The Installation updated successfully
+     * @statuscode 404 The requested Installation resource does not exist
+     */
     @PUT
     @Path("/{installationID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateInstallation(Installation entity, @PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         Installation installation = clientInstallationService.findById(installationId);
@@ -135,9 +179,19 @@ public class InstallationManagementEndpoint {
 
     }
 
+    /**
+     * Delete Installation of specified Variant
+     *
+     * @param variantId         id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
+     * @param installationId    id of {@link Installation}
+     *
+     * @statuscode 204 The Installation successfully deleted
+     * @statuscode 404 The requested Installation resource does not exist
+     */
     @DELETE
     @Path("/{installationID}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response removeInstallation(@PathParam("variantID") String variantId, @PathParam("installationID") String installationId) {
 
         Installation installation = clientInstallationService.findById(installationId);

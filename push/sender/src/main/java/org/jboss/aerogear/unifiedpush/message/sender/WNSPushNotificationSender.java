@@ -20,7 +20,9 @@ import ar.com.fernandospr.wns.WnsService;
 import ar.com.fernandospr.wns.exceptions.WnsException;
 import ar.com.fernandospr.wns.model.*;
 import ar.com.fernandospr.wns.model.builders.*;
+
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
@@ -32,11 +34,12 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriBuilder;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-@SenderType(WindowsWNSVariant.class)
+@SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
@@ -158,7 +161,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                         method.invoke(builder, param.toArray(new String[param.size()]));
                     } else {
                         throw new IllegalArgumentException("this template needs " + methodArgs
-                                + " fields, but you specified " + param.size() + " : " + param);
+                                + " fields, but you specified " + param.size());
                     }
                 }
             }

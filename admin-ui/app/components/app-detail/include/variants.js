@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $modal, variantModal, $scope, variantsEndpoint, Notifications ) {
+  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter ) {
 
     var self = this;
 
@@ -22,17 +22,26 @@ angular.module('upsConsole')
     }
     this.byType = splitByType( this.app.variants );
 
+    if (Object.keys(this.byType).length == 1) {
+      angular.forEach(this.byType, function(variants, type) {
+        if (variants.length == 1) {
+          variants[0].$toggled = true;
+        }
+      });
+    }
+
     this.add = function() {
       return variantModal.add( this.app )
         .then(function( variant ) {
           variant.$deviceCount = 0;
           variant.$messageCount = 0;
           self.app.variants.push( variant );
+          variant.$toggled = true;
           self.byType = splitByType( self.app.variants );
           Notifications.success('Variant ' + variant.name + ' successfully created');
         })
-        .catch(function() {
-          Notifications.error('Failed to create variant ' + variant.name);
+        .catch(function(e) {
+          ErrorReporter.error(e, 'Failed to create variant');
         });
     };
 
@@ -45,7 +54,7 @@ angular.module('upsConsole')
         })
         .catch(function( e ) {
           if ( e != 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };
@@ -59,7 +68,7 @@ angular.module('upsConsole')
         })
         .catch(function(e) {
           if ( e !== 'cancel' ) {
-            Notifications.error('Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
           }
         });
     };
@@ -88,5 +97,105 @@ angular.module('upsConsole')
         }
       });
     };
+
+    this.renewVariantSecret = function ( variant ) {
+      $modal.open({
+        templateUrl: 'dialogs/renew-variant-secret.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.confirm = function() {
+            variantsEndpoint.reset({
+                appId: self.app.pushApplicationID,
+                variantType: variant.type,
+                variantId: variant.variantID })
+              .then(function (receivedVariant) {
+                variant.secret  = receivedVariant.secret;
+                $modalInstance.close( variant );
+                //$rootScope.$digest();
+              });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      });
+    };
+
+    this.exportInstallations = function ( variant ) {
+      $modal.open({
+        templateUrl: 'dialogs/export-installations.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.confirm = function() {
+            var params = {
+              variantId: variant.variantID
+            };
+            exporterEndpoint.export(params, function (content) {
+              var hiddenElement = document.createElement('a');
+
+              hiddenElement.href = 'data:attachment/json,' + encodeURI(JSON.stringify(content));
+              hiddenElement.target = '_blank';
+              hiddenElement.download = variant.variantID + '.json';
+              hiddenElement.click();
+
+              $modalInstance.close();
+              Notifications.success('Successfully exported installations');
+            });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          }
+        }
+      });
+    };
+
+    this.importInstallations = function (variant) {
+      $modal.open({
+        templateUrl: 'dialogs/import-installations.html',
+        controller: function( $scope, $modalInstance ) {
+          $scope.variant = variant;
+          $scope.installations = [];
+          $scope.confirm = function() {
+            var fd = new FormData();
+            fd.append('file', $scope.installations[0]);
+            $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
+                ':' + variant.secret);
+            importerEndpoint.import(null, fd, function(){
+              Notifications.success('Import processing has started');
+              $modalInstance.close();
+              //updateCounts();
+            });
+          };
+          $scope.dismiss = function() {
+            $modalInstance.dismiss('cancel');
+          };
+          $scope.previewImport = function() {
+            if (window.File && window.FileList && window.FileReader) {
+              var importFiles = $scope.installations[0];
+              var fileReader = new FileReader();
+              fileReader.readAsText(importFiles);
+              fileReader.onload = function(event) {
+                $scope.$apply(function() {
+                  try {
+                    $scope.importPreview = JSON.parse(event.target.result).length;
+                    $scope.incorrectFormat = false;
+                  }
+                  catch(e) {
+                    $scope.importPreview = null;
+                    $scope.incorrectFormat = true;
+                  }
+                });
+              };
+            }
+          };
+        }
+      });
+    };
+
+    this.getWarningsForVariant = function( warnings, variant ) {
+      return warnings.filter(function( warning ) {
+        return warning.variant.variantID == variant.variantID;
+      });
+    }
 
   });

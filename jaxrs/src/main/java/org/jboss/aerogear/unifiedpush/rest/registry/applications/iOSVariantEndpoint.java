@@ -16,6 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
+import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,19 +39,25 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-
 @Path("/applications/{pushAppID}/ios")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
-    // new iOS
+    /**
+     * Add iOS Variant
+     *
+     * @param form              new iOS Variant
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  created {@link iOSVariant}
+     *
+     * @statuscode 201 The iOS Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @BodyType("org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm")
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.iOSVariant")
     public Response registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
@@ -92,18 +106,35 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(iOSVariant.getVariantID())).build()).entity(iOSVariant).build();
     }
 
-    // READ
+    /**
+     * List iOS Variants for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  list of {@link iOSVariant}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.iOSVariant>")
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
     }
 
+    /**
+     * Update iOS Variant
+     *
+     * @param pushApplicationId id of {@link PushApplication}
+     * @param iOSID             id of {@link iOSVariant}
+     * @param updatediOSVariant updated version of {@link iOSVariant}
+     *
+     * @statuscode 204 The iOS Variant updated successfully
+     * @statuscode 404 The requested Variant resource does not exist
+     */
     @PATCH
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updateiOSVariant(
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID,
@@ -124,11 +155,23 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    // UPDATE
+    /**
+     * Update ADM Variant
+     *
+     * @param pushApplicationId     id of {@link PushApplication}
+     * @param iOSID                 id of {@link iOSVariant}
+     * @param updatedForm           new info of {@link iOSVariant}
+     *
+     * @statuscode 204 The iOS Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested iOS Variant resource does not exist
+     */
     @PUT
     @Path("/{iOSID}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @BodyType("org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm")
+    @ReturnType("java.lang.Void")
     public Response updateiOSVariant(
             @MultipartForm iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
