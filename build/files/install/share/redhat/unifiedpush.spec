@@ -25,8 +25,8 @@ License:	Apache License, Version 2.0
 Group:		Applications/Servers
 Source:		unifiedpush-server-${project.version}.tar.gz
 Packager:	Yaniv Marom-Nachumi
-Vendor:		
-URL:		
+Vendor:		Unifiedpush
+URL:		Unifiedpush
 BuildRoot:	%{buildroot}
 BuildArch:	noarch
 Requires:   logrotate, crontabs, java-1.7.0-openjdk, httpd >= 2.2, postgresql-server >= 9.3
