@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jboss.aerogear.unifiedpush</groupId>
+		<artifactId>unifiedpush-parent</artifactId>
+		<version>1.1.0.Final-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>unifiedpush-build</artifactId>
+	<name>UnifiedPush Server Build Package</name>
+
+	<properties>
+		<resources.home>${project.build.outputDirectory}</resources.home>
+		<!-- RPM version should not contain '-' character -->
+		<rpm.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</rpm.version>
+		<!-- Default build number for non jenkins builds -->
+		<buildNumber>0</buildNumber>
+		<revisionNumber>0</revisionNumber>
+		<releaseDate>0</releaseDate>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>unifiedpush-auth-server</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>unifiedpush-server-as7</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>unifiedpush-server-wildfly</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>unifiedpush-model-jpa</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>unifiedpush-server-${project.version}</finalName>
+		<plugins>
+			<!-- Assembly plugin -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+					<tarLongFileMode>gnu</tarLongFileMode>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- append to the install phase. -->
+						<goals>
+							<goal>single</goal> <!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.9.1</version>
+				<executions>
+					<execution>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/files</directory>
+				<filtering>true</filtering>
+			</resource>
+
+			<resource>
+				<directory>${basedir}/files-unscaned</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>
