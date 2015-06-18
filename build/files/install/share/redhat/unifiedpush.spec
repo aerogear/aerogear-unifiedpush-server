@@ -18,7 +18,7 @@
 %define _binaries_in_noarch_packages_terminate_build   0
 
 Summary:	Unifiedpush Server. 
-Name:		unifiedpush
+Name:		unifiedpush-server
 Version:	${rpm.version}
 Release:	${buildNumber}
 License:	Apache License, Version 2.0
@@ -37,7 +37,7 @@ such as Android, iOS, Windows or Firefox OS/SimplePush.
  
 %prep
 rm -rf "${RPM_BUILD_ROOT}"
-%setup -n unifiedpush-${project.version}
+%setup -n unifiedpush-server-${project.version}
 
 %install
 rm -fr "${RPM_BUILD_ROOT}"
