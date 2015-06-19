@@ -6,7 +6,7 @@
     <h4 class="modal-title" id="myModalLabel">{{ isNew ? 'Add' : 'Edit' }} Variant</h4>
   </div>
   <div class="modal-body form-horizontal">
-    
+
     <div class="form-group" ng-if="isNew">
       <label class="col-sm-3 control-label" for="textInput-modal-markup">Name</label>
       <div class="col-sm-9">
@@ -77,13 +77,13 @@
     </div>
 
     <div class="form-group" ng-if="isNew">
-      <label class="col-sm-3 control-label sr-only" for="optionsAdm">SimplePush</label>
+      <label class="col-sm-3 control-label sr-only" for="optionsAdm">ADM</label>
       <div class="col-sm-9">
         <div class="radio">
           <label>
             <input type="radio" name="variantType" id="optionsAdm" value="adm" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-adm">
-                  <strong>ADM</strong><br>
+                  <strong>ADM (experimental)</strong><br>
                   using Amazon Push Network
                 </span>
           </label>
