@@ -76,19 +76,6 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     }
 
     /**
-     * Refreshes state of the entity from the database.
-     *
-     * If the entity is not managed by current {@link EntityManager}, it is merged first before refreshing and the merge entity is returned as a result.
-     */
-    public T refresh(T entity) {
-        if (!entityManager.contains(entity)) {
-            entity = entityManager.merge(entity);
-        }
-        entityManager.refresh(entity);
-        return entity;
-    }
-
-    /**
      * Pessimistic write lock on entity
      */
     public void lock(T entity) {
