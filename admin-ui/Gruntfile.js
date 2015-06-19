@@ -332,11 +332,9 @@ module.exports = function (grunt) {
     ngtemplates:  {
       upsConsole: {
         src: [
-          'components/**.html',
+          'components/**/**.html',
           'directives/**.html',
-          'views/**.html',
-          'views/dialogs/**.html',
-          'views/include/**.html'
+          'dialogs/**.html'
         ],
         cwd: '<%= yeoman.app %>',
         dest: '<%= yeoman.tmp %>/ngtemplates/templates.js',
