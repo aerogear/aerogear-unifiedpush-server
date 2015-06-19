@@ -175,6 +175,9 @@ public class PushMessageInformationDaoTest {
 
         number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
         assertThat(number).isEqualTo(203);
+
+        // check for all
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForApplications()).isEqualTo(203);
     }
 
     @Test
@@ -202,6 +205,8 @@ public class PushMessageInformationDaoTest {
         List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(2);
 
+        lastActivity = pushMessageInformationDao.findLatestActivity(3);
+        assertThat(lastActivity).hasSize(2);
     }
 
     @Test
@@ -209,8 +214,8 @@ public class PushMessageInformationDaoTest {
         // all warnings:
         final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings();
 
-        assertThat(variantIDsWithWarnings).hasSize(3);
-        assertThat(variantIDsWithWarnings).contains("231543432432", "23154343243333", "231543432434");
+        assertThat(variantIDsWithWarnings).hasSize(4);
+        assertThat(variantIDsWithWarnings).contains("213", "231543432432", "23154343243333", "231543432434");
     }
 
     @Test
