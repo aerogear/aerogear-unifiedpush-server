@@ -19,7 +19,7 @@
     <div class="form-group">
       <label class="col-sm-3 control-label" for="textInput-modal-markup">Variants</label>
       <div class="col-sm-9">
-        <select pf-select multiple ng-model="selectedVariants" ng-options="variant.variantID as variant.name for variant in app.variants"></select>
+        <select pf-select="{ noneSelectedText: 'All Variants' }" multiple ng-model="selectedVariants" ng-options="variant.variantID as variant.name for variant in app.variants"></select>
       </div>
     </div>
 
