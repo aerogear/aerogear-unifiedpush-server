@@ -24,9 +24,9 @@
 
 		<dependencySet>
 			<outputDirectory>/unifiedpush/webapps</outputDirectory>
-			<outputFileNameMapping>unifiedpush-auth-server.war</outputFileNameMapping>
+			<outputFileNameMapping>unifiedpush-server-as7.war</outputFileNameMapping>
 			<includes>
-				<include>org.jboss.aerogear.unifiedpush:unifiedpush-auth-server</include>
+				<include>org.jboss.aerogear.unifiedpush:unifiedpush-server-as7</include>
 			</includes>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<fileMode>0755</fileMode>
@@ -34,9 +34,9 @@
 
 		<dependencySet>
 			<outputDirectory>/unifiedpush/webapps</outputDirectory>
-			<outputFileNameMapping>unifiedpush-auth-server.war</outputFileNameMapping>
+			<outputFileNameMapping>unifiedpush-server-wildfly.war</outputFileNameMapping>
 			<includes>
-				<include>org.jboss.aerogear.unifiedpush:unifiedpush-auth-server</include>
+				<include>org.jboss.aerogear.unifiedpush:unifiedpush-server-wildfly</include>
 			</includes>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<fileMode>0755</fileMode>
@@ -45,9 +45,15 @@
 		<!-- Create common lib's folder -->
 		<dependencySet>
 			<outputDirectory>/unifiedpush/lib</outputDirectory>
+
 			<includes>
 				<include>org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa</include>
+				<include>org.jboss.aerogear.unifiedpush:unifiedpush-model-api</include>
+				<include>org.hibernate.javax.persistence:hibernate-jpa-2.1-api</include>
+				<include>javax.enterprise:cdi-api</include>
+				<include>org.hibernate:hibernate-core</include>
 			</includes>
+
 			<useTransitiveFiltering>true</useTransitiveFiltering>
 		</dependencySet>
 
