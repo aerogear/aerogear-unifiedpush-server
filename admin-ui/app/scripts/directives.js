@@ -87,7 +87,8 @@ angular.module('upsConsole')
       'ios_objc': { url: 'snippets/register-device/ios.objc' },
       'ios_swift': { url: 'snippets/register-device/ios.swift' },
       'mpns': { url: 'snippets/register-device/mpns.cs' },
-      'wns': { url: 'snippets/register-device/wns.cs' }
+      'wns': { url: 'snippets/register-device/wns.cs' },
+      'adm': { url: 'snippets/register-device/adm.txt' }
     };
     var promises = {};
     angular.forEach(snippets, function (value, key) {
@@ -130,7 +131,7 @@ angular.module('upsConsole')
           windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
           windows_wns:  { name: 'Windows',    snippets: ['wns'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
-          adm:          { name: 'ADM',        snippets: ['cordova'] }
+          adm:          { name: 'ADM',        snippets: ['adm'] }
         };
         $scope.state = {
           activeSnippet: $scope.typeEnum[$scope.variant.type].snippets[0]
