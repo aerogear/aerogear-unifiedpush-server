@@ -4,7 +4,7 @@ It will log in as admin, retrieve an auth token and then create a Push Applicati
 in the UnifiedPush Server.
 
 Before running this test make sure to add a new client in keycloak called 'ups-client',
-all the defaults are good and nothing need to be configured for this client
+for this client make sure to enable "Direct Grants Only" and for "Access Type" chose "public".
 */
 
 
