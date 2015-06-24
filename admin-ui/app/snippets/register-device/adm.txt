@@ -1,0 +1,14 @@
+/**
+ *
+ * The ADM (Amazon Device Messaging) support is still experimental in the UnifiedPush Server.
+ * ADM Push Network connection is implemented on the server side but the client SDK is not yet there.
+ * You can find more information about ADM on the client side here :
+ * https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/04-integrating-your-app-with-adm
+ * To register "manually" to the UnifiedPush Service you will need these values :
+ * - pushServerURL: "{{ contextPath }}"
+ * - variantID: "{{ variant.variantID }}",
+ * - variantSecret: "{{ variant.secret }}"
+ * The endpoint to register is documented here :
+ * https://aerogear.org/docs/specs/aerogear-unifiedpush-rest/registry/device/index.html
+ *
+ */
