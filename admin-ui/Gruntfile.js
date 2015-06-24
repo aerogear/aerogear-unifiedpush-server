@@ -333,6 +333,7 @@ module.exports = function (grunt) {
       upsConsole: {
         src: [
           'components/**/**.html',
+          'snippets/**/**.*',
           'directives/**.html',
           'dialogs/**.html'
         ],
