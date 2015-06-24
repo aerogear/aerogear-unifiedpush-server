@@ -80,7 +80,22 @@ angular.module('upsConsole')
     };
   })
 
-  .factory('SnippetService', function($http, $q) {
+  .factory('SnippetRetriever', function($http, $templateCache, $q) {
+    return {
+      get: function( snippetUrl ) {
+        var cacheResult = $templateCache.get( snippetUrl );
+        if ( cacheResult ) {
+          return $q.when( { data: cacheResult } );
+        }
+        $http.get( snippetUrl )
+          .then(function( response ) {
+            $templateCache.put( snippetUrl, response.data );
+          });
+      }
+    };
+  })
+
+  .factory('SnippetService', function(SnippetRetriever, $q) {
     var snippets = {
       'android': { url: 'snippets/register-device/android.java' },
       'cordova': { url: 'snippets/register-device/cordova.js' },
@@ -91,7 +106,7 @@ angular.module('upsConsole')
     };
     var promises = {};
     angular.forEach(snippets, function (value, key) {
-      promises[key] = $http.get(value.url)
+      promises[key] = SnippetRetriever.get(value.url)
         .then(function(response){
           snippets[key].template = response.data;
         });
@@ -121,7 +136,7 @@ angular.module('upsConsole')
         variant: '='
       },
       restrict: 'E',
-      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout ) {
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
@@ -175,7 +190,7 @@ angular.module('upsConsole')
         app: '=',
         activeSnippet: '@'
       },
-      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout ) {
         $scope.activeSnippet = $scope.activeSnippet || 'java';
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
@@ -185,7 +200,7 @@ angular.module('upsConsole')
           curl: { url: 'snippets/senders/sender-curl.sh' }
         };
         angular.forEach($scope.snippets, function(value, key) {
-          $http.get( value.url )
+          SnippetRetriever.get( value.url )
             .then(function( response ) {
               $scope.snippets[key].source = $interpolate(response.data)($scope);
             });
