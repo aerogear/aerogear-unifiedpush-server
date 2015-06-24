@@ -2,13 +2,7 @@
 This script test keycloak's direct grant feature. 
 It will log in as admin, retrieve an auth token and then create a Push Application
 in the UnifiedPush Server.
-
-Before running this test make sure to add a new client in keycloak called 'ups-client',
-all the defaults are good and nothing need to be configured for this client
 */
-
-
-
 
 var http = require('http'); // replace with require('https') for ssl support
 
