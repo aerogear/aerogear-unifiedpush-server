@@ -10,6 +10,7 @@
       <span ng-if="snippet == 'wns'">C#</span>
       <span ng-if="snippet == 'mpns'">C#</span>
       <span ng-if="snippet == 'cordova'">Cordova</span>
+      <span ng-if="snippet == 'adm'">ADM</span>
     </a>
   </li>
 </ul>
@@ -23,4 +24,5 @@
   <pre ng-bind="snippets.ios_swift.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_swift') !== -1" ng-show="state.activeSnippet == 'ios_swift'"></pre>
   <pre ng-bind="snippets.mpns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'mpns'"></pre>
   <pre ng-bind="snippets.wns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'wns'"></pre>
+  <pre ng-bind="snippets.adm.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('adm') !== -1" ng-show="state.activeSnippet == 'adm'"></pre>
 </div>
