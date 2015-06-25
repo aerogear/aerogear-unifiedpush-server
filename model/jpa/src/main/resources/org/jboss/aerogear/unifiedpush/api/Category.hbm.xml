@@ -5,7 +5,9 @@
     <class name="org.jboss.aerogear.unifiedpush.api.Category" table="Category">
         <id name="id" type="java.lang.Long">
             <column name="id" />
-            <generator class="enhanced-sequence" />
+            <generator class="sequence" >
+                <param name="sequence">category_seq</param>
+            </generator>
         </id>
         <property name="name" type="java.lang.String">
             <column name="name" />
