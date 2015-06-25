@@ -41,29 +41,29 @@ CREATE TABLE Variant (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE Installation (
+CREATE TABLE installation (
   id              VARCHAR(255) NOT NULL,
   alias           VARCHAR(255)  DEFAULT NULL,
-  deviceToken     VARCHAR(4096) DEFAULT NULL,
-  deviceType      VARCHAR(255)  DEFAULT NULL,
+  device_token     VARCHAR(4096) DEFAULT NULL,
+  device_type      VARCHAR(255)  DEFAULT NULL,
   enabled         BOOLEAN      NOT NULL,
-  operatingSystem VARCHAR(255)  DEFAULT NULL,
-  osVersion       VARCHAR(255)  DEFAULT NULL,
+  operating_system VARCHAR(255)  DEFAULT NULL,
+  os_version       VARCHAR(255)  DEFAULT NULL,
   platform        VARCHAR(255)  DEFAULT NULL,
-  variantID       VARCHAR(255)  DEFAULT NULL,
+  variant_id       VARCHAR(255)  DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE Category (
+CREATE TABLE category (
   id   BIGINT NOT NULL,
   name VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE Installation_Category (
-  Installation_id VARCHAR(255) NOT NULL,
-  categories_id   BIGINT       NOT NULL,
-  PRIMARY KEY (Installation_id, categories_id)
+CREATE TABLE installation_category (
+  installation_id VARCHAR(255) NOT NULL,
+  category_id   BIGINT       NOT NULL,
+  PRIMARY KEY (installation_id, category_id)
 );
 
 CREATE TABLE PushMessageInformation (
