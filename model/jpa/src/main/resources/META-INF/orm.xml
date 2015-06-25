@@ -61,7 +61,16 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <discriminator-value>simplePush</discriminator-value>
     </entity>
     <entity class="AdmVariant" access="FIELD">
+        <table name="adm_variant"/>
         <discriminator-value>admVariant</discriminator-value>
+        <attributes>
+            <basic name="clientId">
+                <column name="client_id" nullable="false" length="255"/>
+            </basic>
+            <basic name="clientSecret">
+                <column name="client_secret" length="255"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
         <discriminator-value>windows_wns</discriminator-value>
