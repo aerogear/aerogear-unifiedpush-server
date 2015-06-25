@@ -61,7 +61,10 @@ upsCallback = function(response) {
     });
 }
 
+// this is just a test/demo
+var badHabbit = "GIVE_ME_SOMETHING_SO_THAT_THE_TEST_WORKS";
+
 var req = http.request(options, callback);
 //This is the data we are posting, it needs to be a string or a buffer
-req.write("username=admin&password=123&client_id=ups-client");
+req.write("username=admin&password=" + badHabbit + "&client_id=ups-client");
 req.end();
