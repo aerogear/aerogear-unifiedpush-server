@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jun 25, 2015 1:58:31 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" table="VariantMetricInformation">
         <id name="id" type="java.lang.String">
             <column name="id" />
             <generator class="assigned" />
         </id>
-        <property name="variantID" type="java.lang.String">
+        <property name="variantID" type="java.lang.String" index="variantID">
             <column name="variantID" />
         </property>
         <property name="receivers" type="long">
