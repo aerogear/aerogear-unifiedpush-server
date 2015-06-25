@@ -72,6 +72,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
 
     <entity class="PushMessageInformation" access="FIELD">
         <attributes>
+            <id name="id"/>
             <basic name="submitDate">
                 <temporal>TIMESTAMP</temporal>
             </basic>
@@ -89,6 +90,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
 
     <entity class="VariantMetricInformation" access="FIELD">
         <attributes>
+            <id name="id"/>
             <many-to-one name="pushMessageInformation"/>
         </attributes>
     </entity>

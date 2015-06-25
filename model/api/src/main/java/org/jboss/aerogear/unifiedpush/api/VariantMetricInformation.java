@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -24,9 +27,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * Contains metadata about a variant, of the push message request, such as successful delivery to the push network
  * or involved client devices.
  */
-public class VariantMetricInformation extends BaseModel {
+public class VariantMetricInformation implements Serializable {
 
     private static final long serialVersionUID = 8704836533294404718L;
+
+    private String id = UUID.randomUUID().toString();
 
     @NotNull
     private String variantID;
@@ -41,6 +46,18 @@ public class VariantMetricInformation extends BaseModel {
     private PushMessageInformation pushMessageInformation;
 
     public VariantMetricInformation() {
+    }
+    
+    /**
+     * Key identifying the model object in the underlying database (primary key)
+     *
+     * @param id value of the primary key
+     */
+    public void setId(final String id) {
+        this.id = id;
+    }
+    public String getId() {
+        return this.id;
     }
 
     /**
