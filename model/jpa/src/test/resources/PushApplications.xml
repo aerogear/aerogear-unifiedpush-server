@@ -106,8 +106,8 @@
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>
-        <column>deviceToken</column>
-        <column>variantID</column>
+        <column>device_token</column>
+        <column>variant_id</column>
         <row>
             <value>1</value>
             <value>true</value>

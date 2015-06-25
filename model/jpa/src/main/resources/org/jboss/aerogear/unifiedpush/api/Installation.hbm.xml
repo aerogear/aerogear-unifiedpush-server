@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.jboss.aerogear.unifiedpush.api.Installation" table="Installation">
+    <class name="org.jboss.aerogear.unifiedpush.api.Installation" table="installation">
         <id name="id" type="java.lang.String">
             <column name="id" />
             <generator class="assigned" />
@@ -10,33 +10,33 @@
         <property name="alias" type="java.lang.String">
             <column name="alias" />
         </property>
-        <property name="deviceToken" type="java.lang.String" index="deviceTokenIndex">
-            <column name="deviceToken" length="4096" />
+        <property name="deviceToken" type="java.lang.String" index="device_token_index">
+            <column name="device_token" length="4096" />
         </property>
         <property name="deviceType" type="java.lang.String">
-            <column name="deviceType" />
+            <column name="device_type" />
         </property>
         <property name="enabled" type="boolean" not-null="true">
             <column name="enabled" not-null="true" />
         </property>
         <property name="operatingSystem" type="java.lang.String">
-            <column name="operatingSystem" />
+            <column name="operating_system" />
         </property>
         <property name="osVersion" type="java.lang.String">
-            <column name="osVersion" />
+            <column name="os_version" />
         </property>
         <property name="platform" type="java.lang.String">
             <column name="platform" />
         </property>
         <many-to-one name="variant" class="org.jboss.aerogear.unifiedpush.api.Variant" fetch="join" lazy="proxy">
-            <column name="variantID" />
+            <column name="variant_id" />
         </many-to-one>
-        <set name="categories" table="Installation_Category" inverse="false" lazy="false" cascade="persist, merge">
+        <set name="categories" table="installation_category" inverse="false" lazy="false" cascade="persist, merge">
             <key>
-                <column name="Installation_id" />
+                <column name="installation_id" />
             </key>
             <many-to-many class="org.jboss.aerogear.unifiedpush.api.Category">
-                <column name="categories_id" not-null="true" />
+                <column name="category_id" not-null="true" />
             </many-to-many>
         </set>
     </class>
