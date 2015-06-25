@@ -18,21 +18,17 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import javax.validation.constraints.NotNull;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Metadata object that contains various informations around a submitted push message request
  */
-public class PushMessageInformation implements Serializable {
+public class PushMessageInformation extends BaseModel {
 
     private static final long serialVersionUID = -3855047068913784279L;
 
-    private String id = UUID.randomUUID().toString();
-    
     @NotNull
     private String pushApplicationId;
 
@@ -52,18 +48,6 @@ public class PushMessageInformation implements Serializable {
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
-    /**
-     * Key identifying the model object in the underlying database (primary key)
-     *
-     * @param id value of the primary key
-     */
-    public void setId(final String id) {
-        this.id = id;
-    }
-    public String getId() {
-        return this.id;
-    }
-    
     /**
      * The raw JSON payload of the push message request
      *
