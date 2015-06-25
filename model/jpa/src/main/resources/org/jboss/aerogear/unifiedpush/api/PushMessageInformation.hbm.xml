@@ -42,7 +42,7 @@
         </property>
         <set name="variantInformations" table="variantInformations" inverse="false" lazy="false" cascade="all">
             <key>
-                <column name="id" />
+                <column name="id" not-null="true" />
             </key>
             <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" />
         </set>
