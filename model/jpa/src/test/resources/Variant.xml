@@ -53,7 +53,7 @@
             <value>123</value>
         </row>
     </table>
-    <table name="SA.IOSVARIANT"/>
+    <table name="SA.IOS_VARIANT"/>
     <table name="SA.SIMPLEPUSHVARIANT"/>
 
     <table name="SA.INSTALLATION">

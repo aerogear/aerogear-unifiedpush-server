@@ -73,7 +73,7 @@
         </row>
     </table>
 
-    <table name="SA.IOSVARIANT"/>
+    <table name="SA.IOS_VARIANT"/>
 
     <table name="SA.INSTALLATION">
         <column>id</column>

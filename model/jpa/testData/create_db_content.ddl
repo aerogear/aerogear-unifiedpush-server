@@ -15,7 +15,7 @@ CREATE TABLE AndroidVariant (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE iOSVariant (
+CREATE TABLE ios_variant (
   cert_data  VARCHAR(1000) NOT NULL,
   passphrase VARCHAR(255)  NOT NULL,
   production BOOLEAN       NOT NULL,
