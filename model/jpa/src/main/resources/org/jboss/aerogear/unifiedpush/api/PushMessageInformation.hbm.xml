@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 25, 2015 1:58:31 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.PushMessageInformation" table="PushMessageInformation">
+        <id name="id" type="java.lang.String">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="pushApplicationId" type="java.lang.String">
+            <column name="pushApplicationId" />
+        </property>
+        <property name="rawJsonMessage" type="java.lang.String">
+            <column name="rawJsonMessage" />
+        </property>
+        <property name="ipAddress" type="java.lang.String">
+            <column name="ipAddress" />
+        </property>
+        <property name="clientIdentifier" type="java.lang.String">
+            <column name="clientIdentifier" />
+        </property>
+        <property name="submitDate" type="java.util.Date">
+            <column name="submitDate" />
+        </property>
+        <property name="totalReceivers" type="long">
+            <column name="totalReceivers" />
+        </property>
+        <property name="appOpenCounter" type="long">
+            <column name="appOpenCounter" />
+        </property>
+        <property name="firstOpenDate" type="java.util.Date">
+            <column name="firstOpenDate" />
+        </property>
+        <property name="lastOpenDate" type="java.util.Date">
+            <column name="lastOpenDate" />
+        </property>
+        <property name="servedVariants" type="int">
+            <column name="servedVariants" />
+        </property>
+        <property name="totalVariants" type="int">
+            <column name="totalVariants" />
+        </property>
+        <set name="variantInformations" table="variantInformations" inverse="false" lazy="false">
+            <key>
+                <column name="id" />
+            </key>
+            <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" />
+        </set>
+    </class>
+</hibernate-mapping>

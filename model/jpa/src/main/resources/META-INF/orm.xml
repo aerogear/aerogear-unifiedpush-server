@@ -69,30 +69,4 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <discriminator-value>windows_mpns</discriminator-value>
     </entity>
 
-
-    <entity class="PushMessageInformation" access="FIELD">
-        <attributes>
-            <id name="id"/>
-            <basic name="submitDate">
-                <temporal>TIMESTAMP</temporal>
-            </basic>
-            <basic name="rawJsonMessage">
-                <column length="4500" />
-            </basic>
-            <one-to-many name="variantInformations" fetch="EAGER">
-                <join-column />
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
-        </attributes>
-    </entity>
-
-    <entity class="VariantMetricInformation" access="FIELD">
-        <attributes>
-            <id name="id"/>
-            <many-to-one name="pushMessageInformation"/>
-        </attributes>
-    </entity>
-
 </entity-mappings>
