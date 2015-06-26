@@ -59,6 +59,11 @@
             <jms-queue name="WNSTokenBatchQueue">
                 <entry name="/queue/WNSTokenBatchQueue" />
             </jms-queue>
+            
+            <!-- Badge Leading Queue -->
+            <jms-queue name="APNsBadgeLeaseQueue">
+                <entry name="/queue/APNsBadgeLeaseQueue"/>
+            </jms-queue>
 
             <!-- Metric Collection Queue -->
             <jms-queue name="MetricsQueue">

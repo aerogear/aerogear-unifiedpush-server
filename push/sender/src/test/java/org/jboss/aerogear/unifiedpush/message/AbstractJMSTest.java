@@ -29,24 +29,98 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 
 public abstract class AbstractJMSTest {
+
+    private static final long DEFAULT_WAIT_TIME = AbstractJMSMessageConsumer.DEFAULT_MESSAGE_WAIT;
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    protected void send(Queue pushMessageQueue, Serializable msg, String variantID) {
+    @Resource(mappedName = "java:/JmsXA")
+    private ConnectionFactory xaConnectionFactory;
+
+    protected void send(final Queue pushMessageQueue, final Serializable msg) {
+        connectAndRun(connectionFactory, new Runnable<Void>() {
+            @Override
+            public Void run(Session session) throws JMSException {
+                MessageProducer messageProducer = session.createProducer(pushMessageQueue);
+                ObjectMessage objectMessage = session.createObjectMessage(msg);
+                messageProducer.send(objectMessage);
+                return null;
+            }
+        });
+    }
+
+    protected void send(final Queue pushMessageQueue, final Serializable msg, final String messageProperty) {
+        final String[] messageProperties = messageProperty.split("=");
+        connectAndRun(connectionFactory, new Runnable<Void>() {
+            @Override
+            public Void run(Session session) throws JMSException {
+                MessageProducer messageProducer = session.createProducer(pushMessageQueue);
+                ObjectMessage objectMessage = session.createObjectMessage(msg);
+                objectMessage.setStringProperty(messageProperties[0], messageProperties[1]);
+                messageProducer.send(objectMessage);
+                return null;
+            }
+        });
+    }
+
+    protected <T extends Serializable> T receiveNoWait(final Queue queue, final String messageSelector) {
+        return connectAndRun(connectionFactory, new Runnable<T>() {
+            @Override
+            public T run(Session session) throws JMSException {
+                MessageConsumer messageConsumer = session.createConsumer(queue, messageSelector);
+                ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receiveNoWait();
+                if (objectMessage != null) {
+                    return (T) objectMessage.getObject();
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+
+    protected <T extends Serializable> T receive(final Queue queue) {
+        return connectAndRun(connectionFactory, new Runnable<T>() {
+            @Override
+            public T run(Session session) throws JMSException {
+                MessageConsumer messageConsumer = session.createConsumer(queue);
+                ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receive(DEFAULT_WAIT_TIME);
+                if (objectMessage != null) {
+                    return (T) objectMessage.getObject();
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+
+    protected <T extends Serializable> T receive(final Queue queue, final String messageSelector) {
+        return connectAndRun(connectionFactory, new Runnable<T>() {
+            @Override
+            public T run(Session session) throws JMSException {
+                MessageConsumer messageConsumer = session.createConsumer(queue, messageSelector);
+                ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receive(DEFAULT_WAIT_TIME);
+                if (objectMessage != null) {
+                    return (T) objectMessage.getObject();
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+
+    private <T> T connectAndRun(ConnectionFactory connectionFactory, Runnable<T> runnable) {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(pushMessageQueue);
             connection.start();
-            ObjectMessage objectMessage = session.createObjectMessage(msg);
-            objectMessage.setStringProperty("variantID", variantID);
-            messageProducer.send(objectMessage);
+            return runnable.run(session);
         } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
+            throw new MessageDeliveryException("Failed to execute", e);
         } finally {
             if (connection != null) {
                 try {
@@ -58,30 +132,8 @@ public abstract class AbstractJMSTest {
         }
     }
 
-    protected <T extends Serializable> T receive(Queue queue, String variantID) {
-        Connection connection = null;
-        try {
-            connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageConsumer messageConsumer = session.createConsumer(queue, String.format("variantID = '%s'", variantID));
-            connection.start();
-            ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receiveNoWait();
-            if (objectMessage != null) {
-                return (T) objectMessage.getObject();
-            } else {
-                return null;
-            }
-        } catch (JMSException e) {
-            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    private static interface Runnable<T> {
+        T run(Session session) throws JMSException;
     }
 
 }

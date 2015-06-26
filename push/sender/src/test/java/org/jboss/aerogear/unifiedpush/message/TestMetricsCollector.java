@@ -92,11 +92,11 @@ public class TestMetricsCollector extends AbstractJMSTest {
         when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
 
         // when
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID2), variantID2);
-        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID1), variantID1);
-        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID2), variantID2);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), "variantID=" + variantID1);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), "variantID=" + variantID1);
+        send(batchLoadedQueue, new BatchLoadedEvent(variantID2), "variantID=" + variantID2);
+        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID1), "variantID=" + variantID1);
+        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID2), "variantID=" + variantID2);
 
         metricsCollector.collectMetrics(variant1Metric1);
         metricsCollector.collectMetrics(variant1Metric2);
@@ -111,10 +111,10 @@ public class TestMetricsCollector extends AbstractJMSTest {
         assertEquals(2, variant1Metric1.getTotalBatches());
         assertEquals(1, variant2Metric1.getServedBatches());
         assertEquals(1, variant2Metric1.getTotalBatches());
-        assertNull(receive(batchLoadedQueue, variantID1));
-        assertNull(receive(allBatchesLoaded, variantID1));
-        assertNull(receive(batchLoadedQueue, variantID2));
-        assertNull(receive(allBatchesLoaded, variantID2));
+        assertNull(receiveNoWait(batchLoadedQueue, String.format("variantID = '%s'", variantID1)));
+        assertNull(receiveNoWait(allBatchesLoaded, String.format("variantID = '%s'", variantID1)));
+        assertNull(receiveNoWait(batchLoadedQueue, String.format("variantID = '%s'", variantID2)));
+        assertNull(receiveNoWait(allBatchesLoaded, String.format("variantID = '%s'", variantID2)));
     }
 
     public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {
