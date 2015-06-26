@@ -29,7 +29,7 @@
             <column name="totalBatches" />
         </property>
         <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.PushMessageInformation" fetch="join">
-            <column name="pushMessageInformation" />
+            <column name="pushMessageInformation_id" />
         </many-to-one>
     </class>
 </hibernate-mapping>

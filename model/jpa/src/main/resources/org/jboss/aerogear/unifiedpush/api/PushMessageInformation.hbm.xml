@@ -40,9 +40,9 @@
         <property name="totalVariants" type="int">
             <column name="totalVariants" />
         </property>
-        <set name="variantInformations" table="variantInformations" inverse="false" lazy="false" cascade="all">
+        <set name="variantInformations" table="VariantMetricInformation" inverse="true" lazy="false" cascade="all">
             <key>
-                <column name="id" not-null="true" />
+                <column name="pushMessageInformation_id" not-null="true" />
             </key>
             <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" />
         </set>
