@@ -88,7 +88,6 @@ CREATE TABLE VariantMetricInformation (
   reason                 VARCHAR(255) DEFAULT NULL,
   receivers              BIGINT       NOT NULL,
   variantID              VARCHAR(255) NOT NULL,
-  variantInformations_id VARCHAR(255) DEFAULT NULL,
   pushMessageInformation_id VARCHAR(255) DEFAULT NULL,
   variantOpenCounter    BIGINT  DEFAULT 0,
   servedBatches    BIGINT       DEFAULT 0,

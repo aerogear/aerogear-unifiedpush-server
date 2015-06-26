@@ -42,7 +42,7 @@ public class VariantMetricInformation extends BaseModel {
 
     public VariantMetricInformation() {
     }
-
+    
     /**
      * The ID of the involved variant
      *

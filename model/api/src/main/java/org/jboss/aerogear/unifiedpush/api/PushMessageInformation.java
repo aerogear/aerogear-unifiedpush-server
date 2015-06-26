@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 import javax.validation.constraints.NotNull;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
