@@ -18,20 +18,15 @@ package org.jboss.aerogear.unifiedpush.message.cache;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
 
-import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
@@ -40,20 +35,23 @@ import com.google.common.cache.RemovalNotification;
  */
 public abstract class AbstractServiceCache<T> {
 
-    private LoadingCache<String, ConcurrentLinkedQueue<ServiceHolder>> cache = CacheBuilder.newBuilder()
-            .build(
-                new CacheLoader<String, ConcurrentLinkedQueue<ServiceHolder>>() {
-                  @Override
-                    public ConcurrentLinkedQueue<ServiceHolder> load(String key) throws Exception {
-                        return new ConcurrentLinkedQueue<ServiceHolder>();
-                    }
-                });
+    private LoadingCache<String, ConcurrentLinkedQueue<DisposableReference<T>>> cache = CacheBuilder.newBuilder()
+            .build(new CacheLoader<String, ConcurrentLinkedQueue<DisposableReference<T>>>() {
+                @Override
+                public ConcurrentLinkedQueue<DisposableReference<T>> load(String key) throws Exception {
+                    return new ConcurrentLinkedQueue<DisposableReference<T>>();
+                }
+            });
 
     private final int instanceLimit;
-    private final long timeout;
+    private final long instanceAcquiringTimeoutInMillis;
+    private final long serviceDisposalDelayInMillis;
 
     @Inject
     private JMSExecutor jmsExecutor;
+
+    @Inject
+    private ServiceDisposalScheduler serviceDisposalScheduler;
 
     /**
      * Creates new cache
@@ -61,9 +59,10 @@ public abstract class AbstractServiceCache<T> {
      * @param instanceLimit how many instances can be created
      * @param instanceAcquiringTimeoutInMillis what is a timeout before the cache can return null
      */
-    public AbstractServiceCache(int instanceLimit, long instanceAcquiringTimeoutInMillis) {
+    public AbstractServiceCache(int instanceLimit, long instanceAcquiringTimeoutInMillis, long serviceDisposalDelayInMillis) {
         this.instanceLimit = instanceLimit;
-        this.timeout = instanceAcquiringTimeoutInMillis;
+        this.instanceAcquiringTimeoutInMillis = instanceAcquiringTimeoutInMillis;
+        this.serviceDisposalDelayInMillis = serviceDisposalDelayInMillis;
     }
 
     public abstract Queue getBadgeQueue();
@@ -87,7 +86,7 @@ public abstract class AbstractServiceCache<T> {
      *
      * Number of created or queued services is limited up to configured {@link #instanceLimit}.
      *
-     * The service blocks until a service is available or configured {@link #timeout}.
+     * The service blocks until a service is available or configured {@link #instanceAcquiringTimeoutInMillis}.
      *
      * In case the service is not available when times out, cache returns null.
      *
@@ -118,8 +117,8 @@ public abstract class AbstractServiceCache<T> {
      * @throws ExecutionException
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
-        ConcurrentLinkedQueue<ServiceHolder> concurrentLinkedQueue = getCache(pushMessageInformationId);
-        ServiceHolder serviceHolder;
+        ConcurrentLinkedQueue<DisposableReference<T>> concurrentLinkedQueue = getCache(pushMessageInformationId);
+        DisposableReference<T> serviceHolder;
         // poll queue for new instance
         while ((serviceHolder = concurrentLinkedQueue.poll()) != null) {
             T serviceInstance = serviceHolder.get();
@@ -139,8 +138,17 @@ public abstract class AbstractServiceCache<T> {
      * @param service the used and freed up service
      * @throws ExecutionException
      */
-    public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service, ServiceDestroyer<T> destroyer) {
-        getCache(pushMessageInformationId).add(new ServiceHolder(pushMessageInformationId, service, destroyer));
+    public void queueFreedUpService(final String pushMessageInformationId, final String variantID, final T service, final ServiceDestroyer<T> destroyer) {
+        ServiceDestroyer<T> destroyAndReturnBadge = new ServiceDestroyer<T>() {
+            @Override
+            public void destroy(T instance) {
+                destroyer.destroy(instance);
+                returnBadge(pushMessageInformationId);
+            };
+        };
+        DisposableReference<T> disposableReference = new DisposableReference<T>(service, destroyAndReturnBadge);
+        serviceDisposalScheduler.scheduleForDisposal(disposableReference, serviceDisposalDelayInMillis);
+        getCache(pushMessageInformationId).add(disposableReference);
     }
 
     /**
@@ -155,57 +163,15 @@ public abstract class AbstractServiceCache<T> {
         returnBadge(pushMessageInformationId);
     }
 
-    public static interface ServiceConstructor<T> {
-        T construct();
-    }
-
-    public static interface ServiceDestroyer<T> {
-        void destroy(T instance);
-    }
-
-    private class ServiceHolder {
-
-        private LoadingCache<Class<Void>, T> holder;
-
-        public ServiceHolder(final String pushMessageInformationId, T instance, final ServiceDestroyer<T> destroyer) {
-            final AtomicReference<T> reference = new AtomicReference<T>(instance);
-            holder = CacheBuilder.newBuilder()
-                    .initialCapacity(1).maximumSize(1)
-                    .expireAfterWrite(5000, TimeUnit.MILLISECONDS)
-                    .removalListener(new RemovalListener<Class<Void>, T>() {
-                        @Override
-                        public void onRemoval(RemovalNotification<Class<Void>, T> notification) {
-                            T instance = reference.getAndSet(null);
-                            destroyer.destroy(instance);
-                            returnBadge(pushMessageInformationId);
-                        }
-                    })
-                    .build(CacheLoader.from(new Supplier() {
-                        @Override
-                        public Object get() {
-                            return reference.get();
-                        }
-                    }));
-        }
-
-        public T get() {
-            try {
-                return this.holder.get(Void.class);
-            } catch (ExecutionException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    }
-
     protected Object leaseBadge(String pushMessageInformationId) {
-        return jmsExecutor.receive(getBadgeQueue(), String.format("pushMessageInformationId = '%s'", pushMessageInformationId), timeout);
+        return jmsExecutor.receive(getBadgeQueue(), String.format("pushMessageInformationId = '%s'", pushMessageInformationId), instanceAcquiringTimeoutInMillis);
     }
 
     protected void returnBadge(String pushMessageInformationId) {
         jmsExecutor.send(getBadgeQueue(), pushMessageInformationId, String.format("pushMessageInformationId=%s", pushMessageInformationId));
     }
 
-    private ConcurrentLinkedQueue<ServiceHolder> getCache(String pushMessageInformationId) {
+    private ConcurrentLinkedQueue<DisposableReference<T>> getCache(String pushMessageInformationId) {
         try {
             return cache.get(pushMessageInformationId);
         } catch (ExecutionException e) {

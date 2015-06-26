@@ -51,6 +51,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
 
     public static final int INSTANCE_LIMIT = 10;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
+    public static final long DISPOSING_DELAY = 7500;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -59,7 +60,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     private Queue apnsBadgeLeaseQueue;
 
     public ApnsServiceCache() {
-        super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT);
+        super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT, DISPOSING_DELAY);
     }
 
     @Override

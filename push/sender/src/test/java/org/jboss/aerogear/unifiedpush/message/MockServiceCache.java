@@ -15,6 +15,7 @@ public class MockServiceCache extends AbstractServiceCache<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 200;
+    private static final long DISPOSAL_DELAY = 1000;
 
     private AtomicInteger counter = new AtomicInteger(0);
 
@@ -24,7 +25,7 @@ public class MockServiceCache extends AbstractServiceCache<Integer> {
     private Queue queue;
 
     public MockServiceCache() {
-        super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT);
+        super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT, DISPOSAL_DELAY);
     }
 
     @Override

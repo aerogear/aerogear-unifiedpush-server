@@ -30,7 +30,7 @@ import java.util.UUID;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;

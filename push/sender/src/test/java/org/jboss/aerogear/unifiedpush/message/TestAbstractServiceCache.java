@@ -31,9 +31,9 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache;
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
+import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.cache.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -56,7 +56,9 @@ public class TestAbstractServiceCache {
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestBadgeLeasing.class)
                 .withMessaging()
-                    .addClasses(AbstractServiceCache.class, MockServiceCache.class)
+                    .addPackage(org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.class.getPackage())
+                    .deleteClass(ApnsServiceCache.class)
+                    .addClasses(MockServiceCache.class)
                 .withMockito()
                 .as(WebArchive.class);
     }
