@@ -112,7 +112,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         } catch (Exception e) {
             // GCM exceptions:
-            logger.severe("Error sending payload to GCM server", e);
+            logger.severe("Error sending payload to GCM server");
             callback.onError("Error sending payload to GCM server");
         }
     }
