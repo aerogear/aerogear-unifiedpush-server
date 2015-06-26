@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
-import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
@@ -62,9 +61,10 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addPackage(org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent.class.getPackage())
             .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
+            .addPackage(org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor.class.getPackage())
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
-            .addClasses(AbstractJMSTest.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
+            .addMavenDependencies("com.google.guava:guava")
             .addAsWebInfResource("hornetq-jms.xml");
     }
 

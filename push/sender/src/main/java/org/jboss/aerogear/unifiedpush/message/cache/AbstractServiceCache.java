@@ -16,11 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import javax.inject.Inject;
+import javax.jms.Queue;
+
+import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
+
+import com.google.common.base.Supplier;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
@@ -29,13 +40,20 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 public abstract class AbstractServiceCache<T> {
 
-    private static final long QUEUE_POLLING_INTERVAL_IN_MILLIS = 100;
+    private LoadingCache<String, ConcurrentLinkedQueue<ServiceHolder>> cache = CacheBuilder.newBuilder()
+            .build(
+                new CacheLoader<String, ConcurrentLinkedQueue<ServiceHolder>>() {
+                  @Override
+                    public ConcurrentLinkedQueue<ServiceHolder> load(String key) throws Exception {
+                        return new ConcurrentLinkedQueue<ServiceHolder>();
+                    }
+                });
 
-    private final ConcurrentHashMap<Key, Holder> holderMap = new ConcurrentHashMap<Key, Holder>();
-
-    private final AeroGearLogger logger;
     private final int instanceLimit;
     private final long timeout;
+
+    @Inject
+    private JMSExecutor jmsExecutor;
 
     /**
      * Creates new cache
@@ -44,9 +62,24 @@ public abstract class AbstractServiceCache<T> {
      * @param instanceAcquiringTimeoutInMillis what is a timeout before the cache can return null
      */
     public AbstractServiceCache(int instanceLimit, long instanceAcquiringTimeoutInMillis) {
-        this.logger = AeroGearLogger.getInstance(this.getClass());
         this.instanceLimit = instanceLimit;
         this.timeout = instanceAcquiringTimeoutInMillis;
+    }
+
+    public abstract Queue getBadgeQueue();
+
+    public void initialize(final String pushMessageInformationId, final String variantID) {
+        for (int i = 0; i < instanceLimit; i++) {
+            returnBadge(pushMessageInformationId);
+        }
+    }
+
+    public void destroy(final String pushMessageInformationId, final String variantID) {
+        for (int i = 0; i < instanceLimit; i++) {
+            if (leaseBadge(pushMessageInformationId) == null) {
+                return;
+            }
+        }
     }
 
     /**
@@ -62,11 +95,19 @@ public abstract class AbstractServiceCache<T> {
      * @param variant the variant
      * @param constructor the service constructor
      * @return the service instance; or null in case too much services were created and no services are queued for reuse
+     * @throws ExecutionException
      */
     public T dequeueOrCreateNewService(final String pushMessageInformationId, final String variantID, ServiceConstructor<T> constructor) {
-        Holder holder = getOrCreateHolder(new Key(pushMessageInformationId, variantID));
-        T service = holder.dequeueOrCreateBlocking(constructor, timeout);
-        return service;
+        T instance = dequeue(pushMessageInformationId, variantID);
+        if (instance != null) {
+            return instance;
+        }
+        // there is no cached instance, try to establish one
+        if (leaseBadge(pushMessageInformationId) != null) {
+            // we have leased a badge, we can create new instance
+            return constructor.construct();
+        }
+        return null;
     }
 
     /**
@@ -74,13 +115,20 @@ public abstract class AbstractServiceCache<T> {
      * @param pushMessageInformationId the push message id
      * @param variant the variant
      * @return the service instance or null if no instance is queued
+     * @throws ExecutionException
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
-        Holder holder = getHolder(new Key(pushMessageInformationId, variantID));
-        if (holder == null) {
-            return null;
+        ConcurrentLinkedQueue<ServiceHolder> concurrentLinkedQueue = getCache(pushMessageInformationId);
+        ServiceHolder serviceHolder;
+        // poll queue for new instance
+        while ((serviceHolder = concurrentLinkedQueue.poll()) != null) {
+            T serviceInstance = serviceHolder.get();
+            // holder may hold expired instance
+            if (serviceInstance != null) {
+                return serviceInstance;
+            }
         }
-        return holder.dequeue();
+        return null;
     }
 
     /**
@@ -89,11 +137,10 @@ public abstract class AbstractServiceCache<T> {
      * @param pushMessageInformationId the push message
      * @param variant the variant
      * @param service the used and freed up service
+     * @throws ExecutionException
      */
-    public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service) {
-        Holder holder = getOrCreateHolder(new Key(pushMessageInformationId, variantID));
-        holder.queue(service);
-        logger.fine("Freed up service returned to the queue");
+    public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service, ServiceDestroyer<T> destroyer) {
+        getCache(pushMessageInformationId).add(new ServiceHolder(pushMessageInformationId, service, destroyer));
     }
 
     /**
@@ -105,150 +152,64 @@ public abstract class AbstractServiceCache<T> {
      * @param variant the variant
      */
     public void freeUpSlot(final String pushMessageInformationId, final String variantID) {
-        Key instanceKey = new Key(pushMessageInformationId, variantID);
-        Holder holder = getOrCreateHolder(instanceKey);
-        int newInstanceCount = holder.decrementCounter();
-        if (newInstanceCount == 0) {
-            freeUpHolder(instanceKey, holder);
-        } else if (newInstanceCount < 0) {
-            throw new IllegalStateException("Instance counter cant be less than zero");
-        }
-        logger.fine("Freed up a slot so that new services can be created within the limits");
-    }
-
-    private Holder getHolder(Key key) {
-        return holderMap.get(key);
-    }
-
-    private Holder getOrCreateHolder(Key key) {
-        Holder holder = holderMap.get(key);
-        if (holder == null) {
-            holder = holderMap.putIfAbsent(key, new Holder());
-            holder = holderMap.get(key);
-        }
-        return holder;
-    }
-
-    private void freeUpHolder(Key key, Holder holder) {
-        holderMap.remove(key, holder);
+        returnBadge(pushMessageInformationId);
     }
 
     public static interface ServiceConstructor<T> {
         T construct();
     }
 
-    /**
-     * Holds non-blocking queue of unused services and a counter with total number of instantiated services.
-     */
-    private class Holder {
-        private ConcurrentLinkedQueue<T> queue = new ConcurrentLinkedQueue<T>();
-        private AtomicInteger counter = new AtomicInteger(0);
+    public static interface ServiceDestroyer<T> {
+        void destroy(T instance);
+    }
 
-        public T dequeueOrCreateBlocking(ServiceConstructor<T> constructor, long timeoutInMillis) {
-            for (long start = System.currentTimeMillis(); start + timeoutInMillis > System.currentTimeMillis(); ) {
-                T service = dequeueOrCreate(constructor);
-                if (service != null) {
-                    return service;
-                }
-                try {
-                    Thread.sleep(QUEUE_POLLING_INTERVAL_IN_MILLIS);
-                } catch (InterruptedException e) {
-                    return null;
-                }
-            }
-            return null;
-        }
+    private class ServiceHolder {
 
-        public void queue(T service) {
-            queue.add(service);
-        }
+        private LoadingCache<Class<Void>, T> holder;
 
-        public T dequeue() {
-            return queue.poll();
-        }
-
-        public int decrementCounter() {
-            return counter.decrementAndGet();
-        }
-
-        private T dequeueOrCreate(ServiceConstructor<T> constructor) {
-            // try to use existing queued instance
-            if (!queue.isEmpty()) {
-                logger.fine("Service available in a queue, taking it from there");
-                return queue.poll();
-            }
-            int count = counter.get();
-            // create new instance
-            if (count < instanceLimit) {
-                if (counter.compareAndSet(count, count + 1)) {
-                    logger.fine("No existing service available, creating new one");
-                    T service = null;
-                    try {
-                        service = constructor.construct();
-                    } finally {
-                        if (service == null) {
-                            logger.warning("Failed to create service, will try later");
-                            // service construction failed, we need to free up a slot
-                            counter.decrementAndGet();
+        public ServiceHolder(final String pushMessageInformationId, T instance, final ServiceDestroyer<T> destroyer) {
+            final AtomicReference<T> reference = new AtomicReference<T>(instance);
+            holder = CacheBuilder.newBuilder()
+                    .initialCapacity(1).maximumSize(1)
+                    .expireAfterWrite(5000, TimeUnit.MILLISECONDS)
+                    .removalListener(new RemovalListener<Class<Void>, T>() {
+                        @Override
+                        public void onRemoval(RemovalNotification<Class<Void>, T> notification) {
+                            T instance = reference.getAndSet(null);
+                            destroyer.destroy(instance);
+                            returnBadge(pushMessageInformationId);
                         }
-                    }
-                    return service;
-                } else {
-                    logger.fine("No existing service available and ran out of limit, waiting for services to free up");
-                }
+                    })
+                    .build(CacheLoader.from(new Supplier() {
+                        @Override
+                        public Object get() {
+                            return reference.get();
+                        }
+                    }));
+        }
+
+        public T get() {
+            try {
+                return this.holder.get(Void.class);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException(e);
             }
-            return null;
         }
     }
 
-    /**
-     * The key that is used to store a {@link Holder} in the map.
-     */
-    private static class Key {
+    protected Object leaseBadge(String pushMessageInformationId) {
+        return jmsExecutor.receive(getBadgeQueue(), String.format("pushMessageInformationId = '%s'", pushMessageInformationId), timeout);
+    }
 
-        private String pushMessageInformationId;
-        private String variantId;
+    protected void returnBadge(String pushMessageInformationId) {
+        jmsExecutor.send(getBadgeQueue(), pushMessageInformationId, String.format("pushMessageInformationId=%s", pushMessageInformationId));
+    }
 
-        Key (String pushMessageInformationId, String variantID) {
-            if (pushMessageInformationId == null) {
-                throw new NullPointerException("pushMessageInformationId");
-            }
-            if (variantID == null) {
-                throw new NullPointerException("variant or its variantID cant be null");
-            }
-            this.pushMessageInformationId = pushMessageInformationId;
-            this.variantId = variantID;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((pushMessageInformationId == null) ? 0 : pushMessageInformationId.hashCode());
-            result = prime * result + ((variantId == null) ? 0 : variantId.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Key other = (Key) obj;
-            if (pushMessageInformationId == null) {
-                if (other.pushMessageInformationId != null)
-                    return false;
-            } else if (!pushMessageInformationId.equals(other.pushMessageInformationId))
-                return false;
-            if (variantId == null) {
-                if (other.variantId != null)
-                    return false;
-            } else if (!variantId.equals(other.variantId))
-                return false;
-            return true;
+    private ConcurrentLinkedQueue<ServiceHolder> getCache(String pushMessageInformationId) {
+        try {
+            return cache.get(pushMessageInformationId);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException(e);
         }
     }
 }

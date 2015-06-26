@@ -29,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -48,6 +49,9 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
     @Resource(mappedName = "java:/queue/AllBatchesLoadedQueue")
     private Queue allBatchesLoaded;
+
+    @Inject
+    private JMSExecutor jmsExecutor;
 
     @Inject
     private Event<VariantCompletedEvent> variantCompleted;

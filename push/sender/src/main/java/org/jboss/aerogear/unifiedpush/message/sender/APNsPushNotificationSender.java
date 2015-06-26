@@ -33,6 +33,7 @@ import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
@@ -137,7 +138,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
+        final ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
             @Override
             public ApnsService construct() {
                 ApnsService service = buildApnsService(iOSVariant, callback);
@@ -164,9 +165,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             service.push(tokens, apnsMessage, expireDate);
 
             logger.info("One batch to APNs has been submitted");
-            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
+            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {
+                @Override
+                public void destroy(ApnsService instance) {
+                    service.stop();
+                }
+            });
             try {
-                service = null; // we don't want a failure in onSuccess stop the APNs service
                 callback.onSuccess();
             } catch (Exception e) {
                 logger.severe("Failed to call onSuccess after successful push", e);

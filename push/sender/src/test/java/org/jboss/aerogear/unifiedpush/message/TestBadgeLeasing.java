@@ -19,8 +19,10 @@ package org.jboss.aerogear.unifiedpush.message;
 import static org.junit.Assert.assertEquals;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.jms.Queue;
 
+import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -32,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class TestBadgeLeasing extends AbstractJMSTest {
+public class TestBadgeLeasing {
 
     private final static String PAYLOAD = "hello there";
 
@@ -49,13 +51,16 @@ public class TestBadgeLeasing extends AbstractJMSTest {
         return archive();
     }
 
+    @Inject
+    private JMSExecutor jmsExecutor;
+
     @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
     private Queue apnsBadgeLeaseQueue;
 
     @Test @OperateOnDeployment("war-1") @InSequence(1)
     public void testSendTenAndReceiveFive() throws InterruptedException {
         for (int i = 0; i < 10; i++) {
-            send(apnsBadgeLeaseQueue, PAYLOAD);
+            jmsExecutor.send(apnsBadgeLeaseQueue, PAYLOAD);
         }
         testReceiveFive();
     }
@@ -63,7 +68,7 @@ public class TestBadgeLeasing extends AbstractJMSTest {
     @Test @OperateOnDeployment("war-2") @InSequence(2)
     public void testReceiveFive() throws InterruptedException {
         for (int i = 0; i < 5; i++) {
-            assertEquals(PAYLOAD, receive(apnsBadgeLeaseQueue));
+            assertEquals(PAYLOAD, jmsExecutor.receive(apnsBadgeLeaseQueue));
         }
     }
 

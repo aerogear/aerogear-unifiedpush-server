@@ -18,10 +18,13 @@ package org.jboss.aerogear.unifiedpush.message.cache;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -52,11 +55,19 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     @Inject
     private ClientInstallationService clientInstallationService;
 
+    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    private Queue apnsBadgeLeaseQueue;
+
     public ApnsServiceCache() {
         super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT);
     }
 
-    public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) {
+    @Override
+    public Queue getBadgeQueue() {
+        return apnsBadgeLeaseQueue;
+    }
+
+    public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) throws ExecutionException {
         final String pushMessageInformationId = variantCompleted.getPushMessageInformationId();
         String variantID = variantCompleted.getVariantID();
 

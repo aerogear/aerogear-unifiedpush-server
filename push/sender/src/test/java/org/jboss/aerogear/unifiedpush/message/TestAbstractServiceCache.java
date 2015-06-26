@@ -23,14 +23,27 @@ import static org.junit.Assert.fail;
 
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.jms.Queue;
+
 import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache;
 import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(Arquillian.class)
 public class TestAbstractServiceCache {
 
     private static final int INSTANCE_LIMIT = 5;
@@ -39,53 +52,80 @@ public class TestAbstractServiceCache {
     private static final String PUSH_MESSAGE_ID = UUID.randomUUID().toString();
     private static final String VARIANT_ID = UUID.randomUUID().toString();
 
+    @Deployment
+    public static WebArchive archive() {
+        return UnifiedPushArchive.forTestClass(TestBadgeLeasing.class)
+                .withMessaging()
+                    .addClasses(AbstractServiceCache.class, MockServiceCache.class)
+                .withMockito()
+                .as(WebArchive.class);
+    }
+
     private ServiceConstructor<Integer> mockConstructor;
+    private ServiceDestroyer<Integer> mockDestroyed;
     private AtomicInteger instanceCounter = new AtomicInteger();
+
+    @Inject
+    private MockServiceCache cache;
+
+    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    private Queue queue;
 
     @Before
     public void setUp() {
+        cache.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
         mockConstructor = new ServiceConstructor<Integer>() {
             @Override
             public Integer construct() {
                 return instanceCounter.incrementAndGet();
             }
         };
+        mockDestroyed = new ServiceDestroyer<Integer>() {
+            @Override
+            public void destroy(Integer instance) {
+            }
+        };
+    }
+
+    @After
+    public void tearDown() {
+        cache.destroy(PUSH_MESSAGE_ID, VARIANT_ID);
     }
 
     @Test
-    public void allows_to_free_up_slots() {
-        MockServiceCache cache = new MockServiceCache();
+    public void allows_to_free_up_slots() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
+            // create first service
             assertNotNull(cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            // create second service
             assertEquals(new Integer(i * 2), cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            // simulate that second service has died
             cache.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
         }
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
+            // simulate that services died
             cache.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
         }
-        try {
-            cache.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
-            fail("should throw an exception when slot counter is lesser than zero");
-        } catch (IllegalStateException e) {
-            // expected
+        for (Integer i = 1; i <= INSTANCE_LIMIT; i++) {
+            // since all previous services died, we can now create up to 5 services again
+            assertNotNull(cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
         }
+        assertNull("No more services should be created", cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
     }
 
     @Test
-    public void allows_to_return_freed_up_services_to_queue() {
-        MockServiceCache cache = new MockServiceCache();
+    public void allows_to_return_freed_up_services_to_queue() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
             Integer service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
             assertEquals(i, service);
-            cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service);
+            cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
             service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
             assertEquals(i, service);
         }
     }
 
     @Test
-    public void returns_null_when_no_slots_available() {
-        MockServiceCache cache = new MockServiceCache();
+    public void returns_null_when_no_slots_available() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT; i++) {
             assertEquals(i, cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
         }
@@ -95,21 +135,23 @@ public class TestAbstractServiceCache {
     @Test
     public void cache_is_blocking_until_service_is_available() throws InterruptedException {
         final int threadCount = 4;
-        final MockServiceCache cache = new MockServiceCache();
         final CountDownLatch latch = new CountDownLatch(threadCount * INSTANCE_LIMIT);
         for (int i = 0; i < threadCount ; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < INSTANCE_LIMIT; i++) {
-                        Integer service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
-                        System.out.println(Thread.currentThread().getName() + ": #" + service);
-                        sleep(INSTANTIATION_TIMEOUT / (threadCount * 2));
-                        cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service);
-                        if (service != null) {
-                            latch.countDown();
+                    try {
+                        for (int i = 0; i < INSTANCE_LIMIT; i++) {
+                            Integer service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
+                            sleep(INSTANTIATION_TIMEOUT / (threadCount * 2));
+                            cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
+                            if (service != null) {
+                                latch.countDown();
+                            }
+                            sleep(INSTANTIATION_TIMEOUT / (threadCount * 2));
                         }
-                        sleep(INSTANTIATION_TIMEOUT / (threadCount * 2));
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
                     }
                 }
             }).start();
@@ -120,8 +162,7 @@ public class TestAbstractServiceCache {
     }
 
     @Test
-    public void allows_to_call_dequeue_when_no_instance_was_created() {
-        final MockServiceCache cache = new MockServiceCache();
+    public void allows_to_call_dequeue_when_no_instance_was_created() throws ExecutionException {
         assertNull(cache.dequeue("non-existent", "non-existent"));
     }
 
@@ -129,17 +170,7 @@ public class TestAbstractServiceCache {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
-    }
-
-    private static class MockServiceCache extends AbstractServiceCache<Integer> {
-
-
-
-        public MockServiceCache() {
-            super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT);
-        }
-
     }
 }
