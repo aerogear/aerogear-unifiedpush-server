@@ -23,7 +23,9 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 ## Getting started
 
-The following steps are needed to get going!
+<a href="https://openshift.redhat.com/app/console/application_type/quickstart!31"><img src="http://launch-shifter.rhcloud.com/launch/light/LAUNCH ON.svg" /></a>
+
+Or for the on-premise version, execute the following steps to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
