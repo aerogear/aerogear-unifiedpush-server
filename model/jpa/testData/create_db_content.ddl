@@ -66,31 +66,31 @@ CREATE TABLE installation_category (
   PRIMARY KEY (installation_id, category_id)
 );
 
-CREATE TABLE PushMessageInformation (
+CREATE TABLE push_message_info (
   id                VARCHAR(255) NOT NULL,
-  clientIdentifier  VARCHAR(255)  DEFAULT NULL,
-  ipAddress         VARCHAR(255)  DEFAULT NULL,
-  pushApplicationId VARCHAR(255) NOT NULL,
-  rawJsonMessage    VARCHAR(4500) DEFAULT NULL,
-  submitDate        DATE          DEFAULT NULL,
-  totalReceivers    BIGINT       NOT NULL,
-  appOpenCounter    BIGINT      DEFAULT 0,
-  firstOpenDate     DATE          DEFAULT NULL,
-  lastOpenDate      DATE          DEFAULT NULL,
-  servedVariants    BIGINT       DEFAULT 0,
-  totalVariants    BIGINT      DEFAULT 0,
+  client_identifier  VARCHAR(255)  DEFAULT NULL,
+  ip_address         VARCHAR(255)  DEFAULT NULL,
+  push_application_id VARCHAR(255) NOT NULL,
+  raw_json_message    VARCHAR(4500) DEFAULT NULL,
+  submit_date        DATE          DEFAULT NULL,
+  total_receivers    BIGINT       NOT NULL,
+  app_open_counter    BIGINT      DEFAULT 0,
+  first_open_date     DATE          DEFAULT NULL,
+  last_open_date      DATE          DEFAULT NULL,
+  served_variants    BIGINT       DEFAULT 0,
+  total_variants    BIGINT      DEFAULT 0,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE VariantMetricInformation (
+CREATE TABLE variant_metric_info (
   id                     VARCHAR(255) NOT NULL,
-  deliveryStatus         BOOLEAN      DEFAULT NULL,
+  delivery_status         BOOLEAN      DEFAULT NULL,
   reason                 VARCHAR(255) DEFAULT NULL,
   receivers              BIGINT       NOT NULL,
-  variantID              VARCHAR(255) NOT NULL,
-  pushMessageInformation_id VARCHAR(255) DEFAULT NULL,
-  variantOpenCounter    BIGINT  DEFAULT 0,
-  servedBatches    BIGINT       DEFAULT 0,
-  totalBatches    BIGINT      DEFAULT 0,
+  variant_id              VARCHAR(255) NOT NULL,
+  push_message_info_id VARCHAR(255) DEFAULT NULL,
+  variant_open_counter    BIGINT  DEFAULT 0,
+  served_batches    BIGINT       DEFAULT 0,
+  total_batches    BIGINT      DEFAULT 0,
   PRIMARY KEY (id)
 );

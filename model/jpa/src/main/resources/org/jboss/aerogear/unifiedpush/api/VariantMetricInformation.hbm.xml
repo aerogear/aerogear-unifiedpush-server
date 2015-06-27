@@ -2,34 +2,34 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" table="VariantMetricInformation">
+    <class name="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" table="variant_metric_info">
         <id name="id" type="java.lang.String">
             <column name="id" />
             <generator class="assigned" />
         </id>
         <property name="variantID" type="java.lang.String" index="variantID">
-            <column name="variantID" />
+            <column name="variant_id" />
         </property>
         <property name="receivers" type="long">
             <column name="receivers" />
         </property>
         <property name="deliveryStatus" type="java.lang.Boolean">
-            <column name="deliveryStatus" />
+            <column name="delivery_status" />
         </property>
         <property name="reason" type="java.lang.String">
             <column name="reason" />
         </property>
         <property name="variantOpenCounter" type="long">
-            <column name="variantOpenCounter" />
+            <column name="variant_open_counter" />
         </property>
         <property name="servedBatches" type="int">
-            <column name="servedBatches" />
+            <column name="served_batches" />
         </property>
         <property name="totalBatches" type="int">
-            <column name="totalBatches" />
+            <column name="total_batches" />
         </property>
         <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.PushMessageInformation" fetch="join">
-            <column name="pushMessageInformation_id" />
+            <column name="push_message_info_id" />
         </many-to-one>
     </class>
 </hibernate-mapping>
