@@ -59,12 +59,12 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("developer", developer);
         }
         if (search != null) {
-            jpqlBase.append(" AND ( deviceToken LIKE :search"
-                    + " OR deviceType LIKE :search"
-                    + " OR platform LIKE :search"
-                    + " OR operatingSystem LIKE :search"
-                    + " OR osVersion LIKE :search"
-                    + " OR alias LIKE :search )");
+            jpqlBase.append(" AND ( installation.deviceToken LIKE :search"
+                    + " OR installation.deviceType LIKE :search"
+                    + " OR installation.platform LIKE :search"
+                    + " OR installation.operatingSystem LIKE :search"
+                    + " OR installation.osVersion LIKE :search"
+                    + " OR installation.alias LIKE :search )");
             parameters.put("search", "%" + search + "%");
         }
 
