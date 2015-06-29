@@ -54,11 +54,11 @@ public class TestAbstractServiceCache {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestBadgeLeasing.class)
+        return UnifiedPushArchive.forTestClass(TestAbstractServiceCache.class)
                 .withMessaging()
                     .addPackage(org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.class.getPackage())
                     .deleteClass(ApnsServiceCache.class)
-                    .addClasses(MockServiceCache.class)
+                    .addClasses(MockServiceCacheForSingleNode.class)
                 .withMockito()
                 .as(WebArchive.class);
     }
@@ -68,7 +68,7 @@ public class TestAbstractServiceCache {
     private AtomicInteger instanceCounter = new AtomicInteger();
 
     @Inject
-    private MockServiceCache cache;
+    private MockServiceCacheForSingleNode cache;
 
     @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
     private Queue queue;

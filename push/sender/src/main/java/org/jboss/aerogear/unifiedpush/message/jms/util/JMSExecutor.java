@@ -83,6 +83,21 @@ public class JMSExecutor {
         });
     }
 
+    public <T extends Serializable> T receive(final Queue queue, final long waitTime) {
+        return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
+            @Override
+            public T execute(Session session) throws JMSException {
+                MessageConsumer messageConsumer = session.createConsumer(queue);
+                ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receive(waitTime);
+                if (objectMessage != null) {
+                    return (T) objectMessage.getObject();
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+
     public <T extends Serializable> T receive(final Queue queue, final String messageSelector) {
         return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
             @Override

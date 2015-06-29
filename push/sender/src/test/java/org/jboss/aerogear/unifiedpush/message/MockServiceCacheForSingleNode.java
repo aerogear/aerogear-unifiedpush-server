@@ -11,7 +11,7 @@ import javax.jms.Queue;
 import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class MockServiceCache extends AbstractServiceCache<Integer> {
+public class MockServiceCacheForSingleNode extends AbstractServiceCache<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 200;
@@ -19,12 +19,12 @@ public class MockServiceCache extends AbstractServiceCache<Integer> {
 
     private AtomicInteger counter = new AtomicInteger(0);
 
-    private AeroGearLogger log = AeroGearLogger.getInstance(MockServiceCache.class);
+    private AeroGearLogger log = AeroGearLogger.getInstance(MockServiceCacheForSingleNode.class);
 
     @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
     private Queue queue;
 
-    public MockServiceCache() {
+    public MockServiceCacheForSingleNode() {
         super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT, DISPOSAL_DELAY);
     }
 
