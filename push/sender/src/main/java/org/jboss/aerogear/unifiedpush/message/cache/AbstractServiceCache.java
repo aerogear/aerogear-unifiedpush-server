@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
@@ -24,24 +25,16 @@ import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
+ *
+ * The limit is enforced across entire cluster of servers by maintaining a queue as a counter of available slots.
  *
  * Cache allows to return freed up services to the queue or free a slot for creating new services up to a limit.
  */
 public abstract class AbstractServiceCache<T> {
 
-    private LoadingCache<String, ConcurrentLinkedQueue<DisposableReference<T>>> cache = CacheBuilder.newBuilder()
-            .build(new CacheLoader<String, ConcurrentLinkedQueue<DisposableReference<T>>>() {
-                @Override
-                public ConcurrentLinkedQueue<DisposableReference<T>> load(String key) throws Exception {
-                    return new ConcurrentLinkedQueue<DisposableReference<T>>();
-                }
-            });
+    private final ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>>();
 
     private final int instanceLimit;
     private final long instanceAcquiringTimeoutInMillis;
@@ -117,7 +110,7 @@ public abstract class AbstractServiceCache<T> {
      * @throws ExecutionException
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
-        ConcurrentLinkedQueue<DisposableReference<T>> concurrentLinkedQueue = getCache(pushMessageInformationId);
+        ConcurrentLinkedQueue<DisposableReference<T>> concurrentLinkedQueue = getCache(pushMessageInformationId, variantID);
         DisposableReference<T> serviceHolder;
         // poll queue for new instance
         while ((serviceHolder = concurrentLinkedQueue.poll()) != null) {
@@ -148,7 +141,7 @@ public abstract class AbstractServiceCache<T> {
         };
         DisposableReference<T> disposableReference = new DisposableReference<T>(service, destroyAndReturnBadge);
         serviceDisposalScheduler.scheduleForDisposal(disposableReference, serviceDisposalDelayInMillis);
-        getCache(pushMessageInformationId).add(disposableReference);
+        getCache(pushMessageInformationId, variantID).add(disposableReference);
     }
 
     /**
@@ -164,18 +157,74 @@ public abstract class AbstractServiceCache<T> {
     }
 
     protected Object leaseBadge(String pushMessageInformationId) {
-        return jmsExecutor.receive(getBadgeQueue(), String.format("pushMessageInformationId = '%s'", pushMessageInformationId), instanceAcquiringTimeoutInMillis);
+        return jmsExecutor.receiveWithSelectorAndWait(getBadgeQueue(), String.format("pushMessageInformationId = '%s'", pushMessageInformationId), instanceAcquiringTimeoutInMillis);
     }
 
     protected void returnBadge(String pushMessageInformationId) {
-        jmsExecutor.send(getBadgeQueue(), pushMessageInformationId, String.format("pushMessageInformationId=%s", pushMessageInformationId));
+        jmsExecutor.sendWithProperty(getBadgeQueue(), pushMessageInformationId, String.format("pushMessageInformationId=%s", pushMessageInformationId));
     }
 
-    private ConcurrentLinkedQueue<DisposableReference<T>> getCache(String pushMessageInformationId) {
-        try {
-            return cache.get(pushMessageInformationId);
-        } catch (ExecutionException e) {
-            throw new IllegalStateException(e);
+    private ConcurrentLinkedQueue<DisposableReference<T>> getCache(String pushMessageInformationId, String variantID) {
+        return getOrCreateQueue(new Key(pushMessageInformationId, variantID));
+    }
+
+    private ConcurrentLinkedQueue<DisposableReference<T>> getOrCreateQueue(Key key) {
+        ConcurrentLinkedQueue<DisposableReference<T>> queue = queueMap.get(key);
+        if (queue == null) {
+            queue = queueMap.putIfAbsent(key, new ConcurrentLinkedQueue<DisposableReference<T>>());
+            queue = queueMap.get(key);
+        }
+        return queue;
+    }
+
+    /**
+     * The key that is used to store a queue instance in the map.
+     */
+    private static class Key {
+
+        private String pushMessageInformationId;
+        private String variantId;
+
+        Key (String pushMessageInformationId, String variantID) {
+            if (pushMessageInformationId == null) {
+                throw new NullPointerException("pushMessageInformationId");
+            }
+            if (variantID == null) {
+                throw new NullPointerException("variant or its variantID cant be null");
+            }
+            this.pushMessageInformationId = pushMessageInformationId;
+            this.variantId = variantID;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((pushMessageInformationId == null) ? 0 : pushMessageInformationId.hashCode());
+            result = prime * result + ((variantId == null) ? 0 : variantId.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Key other = (Key) obj;
+            if (pushMessageInformationId == null) {
+                if (other.pushMessageInformationId != null)
+                    return false;
+            } else if (!pushMessageInformationId.equals(other.pushMessageInformationId))
+                return false;
+            if (variantId == null) {
+                if (other.variantId != null)
+                    return false;
+            } else if (!variantId.equals(other.variantId))
+                return false;
+            return true;
         }
     }
 }
