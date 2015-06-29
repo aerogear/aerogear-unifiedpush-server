@@ -26,7 +26,10 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -50,8 +53,8 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceCache.class);
 
     public static final int INSTANCE_LIMIT = 10;
-    public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
-    public static final long DISPOSING_DELAY = 7500;
+    public static final long INSTANCE_ACQUIRING_TIMEOUT = 7500;
+    public static final long DISPOSING_DELAY = 5000;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -66,6 +69,14 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     @Override
     public Queue getBadgeQueue() {
         return apnsBadgeLeaseQueue;
+    }
+
+    public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {
+        if (msg.getVariantType() == VariantType.IOS) {
+            for (Variant variant : msg.getVariants()) {
+                this.initialize(msg.getPushMessageInformation().getId(), variant.getVariantID());
+            }
+        }
     }
 
     public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) throws ExecutionException {
@@ -98,6 +109,8 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
                 this.freeUpSlot(pushMessageInformationId, variantID);
             }
         }
+
+        this.destroy(pushMessageInformationId, variantID);
     }
 
     /**

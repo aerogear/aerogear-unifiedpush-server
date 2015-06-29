@@ -101,7 +101,7 @@ public class TestAbstractServiceCacheClustered {
         cache.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
         // remove all numbers from counting queue so that we start test with blank slate (in case of previous errors)
         for (int i = 1; i <= TOTAL_COUNT; i++) {
-            if (jmsExecutor.receive(countingQueue, 1500L) == null) {
+            if (jmsExecutor.receiveWithWait(countingQueue, 1500L) == null) {
                 break;
             }
         }
@@ -136,8 +136,8 @@ public class TestAbstractServiceCacheClustered {
     public void testReturnAndLease() throws InterruptedException {
         returnService(5);
         Set<Integer> leased = new HashSet<Integer>(Arrays.asList(leaseService(), leaseService()));
-        assertTrue(leased.contains(1));
-        assertTrue(leased.contains(5));
+        assertTrue("leased tokens should contain 1", leased.contains(1));
+        assertTrue("leased tokens should contain 5", leased.contains(5));
         assertEquals("the lease operation should fail when no badges are available", 0, leaseService());
     }
 

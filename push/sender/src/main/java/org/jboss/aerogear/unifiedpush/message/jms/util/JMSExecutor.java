@@ -14,6 +14,9 @@ import javax.jms.Session;
 
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 
+/**
+ * Exposes basic JMS operations for simple consumption from the services.
+ */
 public class JMSExecutor {
 
     private static final long DEFAULT_WAIT_TIME = AbstractJMSMessageConsumer.DEFAULT_MESSAGE_WAIT;
@@ -24,9 +27,9 @@ public class JMSExecutor {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "java:/JmsXA")
-    private ConnectionFactory xaConnectionFactory;
-
+    /**
+     * Sends a message to the queue
+     */
     public void send(final Queue pushMessageQueue, final Serializable msg) {
         jmsOperationExecutor.run(connectionFactory, new JMSOperation<Void>() {
             @Override
@@ -39,7 +42,14 @@ public class JMSExecutor {
         });
     }
 
-    public void send(final Queue pushMessageQueue, final Serializable msg, final String messageProperty) {
+    /**
+     * Sends a message to the queue by providing a property (such as "property=value") that receiver can filter messages on using message selector (such as "property='value'").
+     *
+     * @see #receiveNoWaitWithSelector(Queue, String)
+     * @see #receiveOrWaitWithSelector(Queue, String)
+     * @see #receiveWithSelectorAndWait(Queue, String, long)
+     */
+    public void sendWithProperty(final Queue pushMessageQueue, final Serializable msg, final String messageProperty) {
         final String[] messageProperties = messageProperty.split("=");
         jmsOperationExecutor.run(connectionFactory, new JMSOperation<Void>() {
             @Override
@@ -53,7 +63,10 @@ public class JMSExecutor {
         });
     }
 
-    public <T extends Serializable> T receiveNoWait(final Queue queue, final String messageSelector) {
+    /**
+     * Sends a message to the queue by providing a property (such as "property=value") that receiver can filter messages on using message selector (such as "property='value'")
+     */
+    public <T extends Serializable> T receiveNoWaitWithSelector(final Queue queue, final String messageSelector) {
         return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
             @Override
             public T execute(Session session) throws JMSException {
@@ -83,7 +96,7 @@ public class JMSExecutor {
         });
     }
 
-    public <T extends Serializable> T receive(final Queue queue, final long waitTime) {
+    public <T extends Serializable> T receiveWithWait(final Queue queue, final long waitTime) {
         return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
             @Override
             public T execute(Session session) throws JMSException {
@@ -98,7 +111,7 @@ public class JMSExecutor {
         });
     }
 
-    public <T extends Serializable> T receive(final Queue queue, final String messageSelector) {
+    public <T extends Serializable> T receiveWithSelector(final Queue queue, final String messageSelector) {
         return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
             @Override
             public T execute(Session session) throws JMSException {
@@ -113,7 +126,7 @@ public class JMSExecutor {
         });
     }
 
-    public <T extends Serializable> T receive(final Queue queue, final String messageSelector, final long waitTime) {
+    public <T extends Serializable> T receiveWithSelectorAndWait(final Queue queue, final String messageSelector, final long waitTime) {
         return jmsOperationExecutor.run(connectionFactory, new JMSOperation<T>() {
             @Override
             public T execute(Session session) throws JMSException {
