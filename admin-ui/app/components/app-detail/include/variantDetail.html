@@ -28,10 +28,10 @@
   <dt>Server URL:</dt>
   <dd>htpp://aerogear-pushee.rhcloud.com/ag-push/</dd>
   <dt>Variant ID:</dt>
-  <dd>89726262-8262762-782872hg2-9872b262</dd>
+  <dd>{{ variant.variantID }}</dd>
   <dt>Variant Secret:</dt>
   <dd>
-    89726262-8262762-782872hg2-9872b262<br />
+    {{ variant.secret }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
