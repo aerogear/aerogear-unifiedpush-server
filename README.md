@@ -35,6 +35,18 @@ Or for the on-premise version, execute the following steps to get going!
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
+### Getting Started with Clustered Servers
+
+In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100
+
+And in a second terminal:
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200
+
+    
+
 ## Documentation
 
 For more details about the current release, please consult [our documentation](https://aerogear.org/getstarted/guides/#push).
