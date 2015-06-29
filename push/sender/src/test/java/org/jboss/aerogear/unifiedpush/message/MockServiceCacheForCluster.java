@@ -3,9 +3,9 @@ package org.jboss.aerogear.unifiedpush.message;
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder;
 
-public class MockServiceCacheForCluster extends AbstractServiceCache<Integer> {
+public class MockServiceCacheForCluster extends AbstractServiceHolder<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 7500;

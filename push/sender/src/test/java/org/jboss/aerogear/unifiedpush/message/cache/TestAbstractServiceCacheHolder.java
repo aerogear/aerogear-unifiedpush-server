@@ -7,6 +7,9 @@ import static org.mockito.Mockito.mock;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jboss.aerogear.unifiedpush.message.serviceLease.DisposableReference;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDisposalScheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

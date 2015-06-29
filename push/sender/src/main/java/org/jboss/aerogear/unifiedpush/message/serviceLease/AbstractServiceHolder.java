@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.cache;
+package org.jboss.aerogear.unifiedpush.message.serviceLease;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -32,7 +32,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.util.JMSExecutor;
  *
  * Cache allows to return freed up services to the queue or free a slot for creating new services up to a limit.
  */
-public abstract class AbstractServiceCache<T> {
+public abstract class AbstractServiceHolder<T> {
 
     private final ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>>();
 
@@ -52,7 +52,7 @@ public abstract class AbstractServiceCache<T> {
      * @param instanceLimit how many instances can be created
      * @param instanceAcquiringTimeoutInMillis what is a timeout before the cache can return null
      */
-    public AbstractServiceCache(int instanceLimit, long instanceAcquiringTimeoutInMillis, long serviceDisposalDelayInMillis) {
+    public AbstractServiceHolder(int instanceLimit, long instanceAcquiringTimeoutInMillis, long serviceDisposalDelayInMillis) {
         this.instanceLimit = instanceLimit;
         this.instanceAcquiringTimeoutInMillis = instanceAcquiringTimeoutInMillis;
         this.serviceDisposalDelayInMillis = serviceDisposalDelayInMillis;

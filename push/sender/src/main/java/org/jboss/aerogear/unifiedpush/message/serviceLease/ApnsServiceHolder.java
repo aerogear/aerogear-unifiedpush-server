@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.cache;
+package org.jboss.aerogear.unifiedpush.message.serviceLease;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,14 +43,14 @@ import com.notnoop.apns.ApnsService;
  *
  * This cache also listens for {@link VariantCompletedEvent} event and stops all instantiated {@link ApnsService}s and frees the cache.
  *
- * @see AbstractServiceCache#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor)
- * @see AbstractServiceCache#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
- * @see AbstractServiceCache#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
+ * @see AbstractServiceHolder#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceHolder.ServiceConstructor)
+ * @see AbstractServiceHolder#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
+ * @see AbstractServiceHolder#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
  */
 @ApplicationScoped
-public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
+public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceCache.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceHolder.class);
 
     public static final int INSTANCE_LIMIT = 10;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 7500;
@@ -62,7 +62,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
     @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
     private Queue apnsBadgeLeaseQueue;
 
-    public ApnsServiceCache() {
+    public ApnsServiceHolder() {
         super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT, DISPOSING_DELAY);
     }
 

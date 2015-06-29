@@ -32,11 +32,11 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
-import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.cache.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -70,7 +70,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     @Inject
-    private ApnsServiceCache apnsServiceCache;
+    private ApnsServiceHolder apnsServiceCache;
 
     public APNsPushNotificationSender() {
     }
@@ -78,7 +78,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     /**
      * Constructor used for test purposes
      */
-    APNsPushNotificationSender(ApnsServiceCache apnsServiceCache) {
+    APNsPushNotificationSender(ApnsServiceHolder apnsServiceCache) {
         this.apnsServiceCache = apnsServiceCache;
     }
 

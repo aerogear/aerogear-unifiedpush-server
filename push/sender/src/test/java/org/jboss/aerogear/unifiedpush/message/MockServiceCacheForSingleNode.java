@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class MockServiceCacheForSingleNode extends AbstractServiceCache<Integer> {
+public class MockServiceCacheForSingleNode extends AbstractServiceHolder<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 200;
