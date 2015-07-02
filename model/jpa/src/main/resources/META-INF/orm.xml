@@ -83,9 +83,19 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
+        <table name="windows_wns_variant"/>
         <discriminator-value>windows_wns</discriminator-value>
+        <attributes>
+            <basic name="sid">
+                <column name="sid" length="255" nullable="false"/>
+            </basic>
+            <basic name="clientSecret">
+                <column name="client_secret" length="255" nullable="false"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant" access="FIELD">
+        <table name="windows_mpns_variant"/>
         <discriminator-value>windows_mpns</discriminator-value>
     </entity>
 
