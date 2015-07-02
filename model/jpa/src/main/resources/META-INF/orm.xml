@@ -67,6 +67,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="SimplePushVariant" access="FIELD">
+        <table name="simple_push_variant"/>
         <discriminator-value>simplePush</discriminator-value>
     </entity>
     <entity class="AdmVariant" access="FIELD">

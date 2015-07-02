@@ -101,7 +101,7 @@
         </row>
     </table>
 
-    <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.SIMPLE_PUSH_VARIANT"/>
 
     <table name="SA.INSTALLATION">
         <column>id</column>
