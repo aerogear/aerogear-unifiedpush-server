@@ -35,7 +35,16 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <discriminator-column name="VARIANT_TYPE" discriminator-type="STRING"/>
     </entity>
     <entity class="AndroidVariant" access="FIELD">
+        <table name="android_variant"/>
         <discriminator-value>android</discriminator-value>
+        <attributes>
+            <basic name="googleKey">
+                <column name="google_key" length="255" nullable="false"/>
+            </basic>
+            <basic name="projectNumber">
+                <column name="project_number" length="255"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">
         <table name="ios_variant"/>

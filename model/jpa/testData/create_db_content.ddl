@@ -8,9 +8,9 @@ CREATE TABLE PushApplication (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE AndroidVariant (
-  googleKey     VARCHAR(255) NOT NULL,
-  projectNumber VARCHAR(255) DEFAULT NULL,
+CREATE TABLE android_variant (
+  google_key     VARCHAR(255) NOT NULL,
+  project_number VARCHAR(255) DEFAULT NULL,
   id            VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );

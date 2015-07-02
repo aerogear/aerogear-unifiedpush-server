@@ -76,9 +76,9 @@
             <value>1</value>
         </row>
     </table>
-    <table name="SA.ANDROIDVARIANT">
+    <table name="SA.ANDROID_VARIANT">
         <column>id</column>
-        <column>googleKey</column>
+        <column>google_key</column>
         <row>
             <value>1</value>
             <value>KEY...</value>
