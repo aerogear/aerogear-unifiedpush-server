@@ -5,8 +5,8 @@
     <class name="org.jboss.aerogear.unifiedpush.api.Category" table="category">
         <id name="id" type="java.lang.Long">
             <column name="id" />
-            <generator class="sequence" >
-                <param name="sequence">category_seq</param>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">category_seq</param>
             </generator>
         </id>
         <property name="name" type="java.lang.String">
