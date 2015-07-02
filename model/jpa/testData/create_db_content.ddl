@@ -23,7 +23,7 @@ CREATE TABLE ios_variant (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE SimplePushVariant (
+CREATE TABLE simple_push_variant (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
