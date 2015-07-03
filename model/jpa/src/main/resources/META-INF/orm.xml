@@ -31,8 +31,26 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </mapped-superclass>
     <entity class="Variant" access="PROPERTY">
+        <table name="variant"/>
         <inheritance strategy="JOINED"/>
         <discriminator-column name="VARIANT_TYPE" discriminator-type="STRING"/>
+        <attributes>
+            <basic name="name">
+                <column name="name" length="255"/>
+            </basic>
+            <basic name="description">
+                <column name="description" length="255"/>
+            </basic>
+            <basic name="variantID">
+                <column name="variant_id"/>
+            </basic>
+            <basic name="secret">
+                <column name="secret"/>
+            </basic>
+            <basic name="developer">
+                <column name="developer"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="AndroidVariant" access="FIELD">
         <table name="android_variant"/>

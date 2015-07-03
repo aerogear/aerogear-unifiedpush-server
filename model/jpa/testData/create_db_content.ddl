@@ -28,7 +28,7 @@ CREATE TABLE simple_push_variant (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE Variant (
+CREATE TABLE variant (
   VARIANT_TYPE VARCHAR(31)  NOT NULL,
   id           VARCHAR(255) NOT NULL,
   description  VARCHAR(255) DEFAULT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE Variant (
   name         VARCHAR(255) DEFAULT NULL,
   secret       VARCHAR(255) DEFAULT NULL,
   type         INT          DEFAULT NULL,
-  variantID    VARCHAR(255) DEFAULT NULL,
+  variant_id    VARCHAR(255) DEFAULT NULL,
   push_application_id  VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
