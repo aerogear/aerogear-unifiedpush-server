@@ -49,7 +49,7 @@
         <column>VARIANT_TYPE</column>
         <column>name</column>
         <column>variantID</column>
-        <column>variants_id</column>
+        <column>push_application_id</column>
         <column>type</column>
         <row>
             <value>1</value>

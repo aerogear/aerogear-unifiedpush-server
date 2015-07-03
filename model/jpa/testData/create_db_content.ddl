@@ -37,7 +37,7 @@ CREATE TABLE Variant (
   secret       VARCHAR(255) DEFAULT NULL,
   type         INT          DEFAULT NULL,
   variantID    VARCHAR(255) DEFAULT NULL,
-  variants_id  VARCHAR(255) DEFAULT NULL,
+  push_application_id  VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
