@@ -75,7 +75,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </basic>
             <one-to-many name="variants" fetch="EAGER">
                 <order-by>type asc</order-by>
-                <join-column/>
+                <join-column name="push_application_id"/>
                 <cascade>
                     <cascade-remove/>
                 </cascade>
