@@ -4,7 +4,7 @@ CREATE TABLE push_application (
   developer         VARCHAR(255),
   master_secret      VARCHAR(255),
   name              VARCHAR(255) NOT NULL,
-  push_application_id VARCHAR(255),
+  api_key VARCHAR(255),
   PRIMARY KEY (id)
 );
 
@@ -36,7 +36,7 @@ CREATE TABLE variant (
   name         VARCHAR(255) DEFAULT NULL,
   secret       VARCHAR(255) DEFAULT NULL,
   type         INT          DEFAULT NULL,
-  variant_id    VARCHAR(255) DEFAULT NULL,
+  api_key    VARCHAR(255) DEFAULT NULL,
   push_application_id  VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
