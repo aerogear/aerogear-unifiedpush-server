@@ -42,7 +42,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="description" length="255"/>
             </basic>
             <basic name="variantID">
-                <column name="variant_id"/>
+                <column name="api_key"/>
             </basic>
             <basic name="secret">
                 <column name="secret"/>
@@ -83,7 +83,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="description" length="255"/>
             </basic>
             <basic name="pushApplicationID">
-                <column name="push_application_id"/>
+                <column name="api_key"/>
             </basic>
             <basic name="masterSecret">
                 <column name="master_secret" />

@@ -18,7 +18,7 @@
 <dataset>
     <table name="SA.PUSH_APPLICATION">
         <column>id</column>
-        <column>push_application_id</column>
+        <column>api_key</column>
         <column>description</column>
         <column>name</column>
         <column>developer</column>
@@ -34,7 +34,7 @@
         <column>id</column>
         <column>VARIANT_TYPE</column>
         <column>name</column>
-        <column>variant_id</column>
+        <column>api_key</column>
         <column>push_application_id</column>
         <column>type</column>
         <column>developer</column>
