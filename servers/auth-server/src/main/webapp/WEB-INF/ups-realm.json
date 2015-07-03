@@ -14,6 +14,7 @@
     "loginTheme": "aerogear",
     "updateProfileOnInitialSocialLogin": false,
     "requiredCredentials": [ "password" ],
+    "defaultRoles": [ "developer" ],
     "users" : [
         {
             "username" : "admin",
