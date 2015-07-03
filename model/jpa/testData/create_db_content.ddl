@@ -1,10 +1,10 @@
-CREATE TABLE PushApplication (
+CREATE TABLE push_application (
   id                VARCHAR(255) NOT NULL,
   description       VARCHAR(255),
   developer         VARCHAR(255),
-  masterSecret      VARCHAR(255),
+  master_secret      VARCHAR(255),
   name              VARCHAR(255) NOT NULL,
-  pushApplicationID VARCHAR(255),
+  push_application_id VARCHAR(255),
   PRIMARY KEY (id)
 );
 

@@ -16,9 +16,9 @@
   limitations under the License.
 -->
 <dataset>
-    <table name="SA.PUSHAPPLICATION">
+    <table name="SA.PUSH_APPLICATION">
         <column>id</column>
-        <column>pushApplicationID</column>
+        <column>push_application_id</column>
         <column>name</column>
         <column>developer</column>
         <row>
