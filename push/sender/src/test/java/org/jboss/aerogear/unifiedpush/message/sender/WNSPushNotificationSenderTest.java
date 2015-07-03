@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,19 +82,6 @@ public class WNSPushNotificationSenderTest {
     }
 
     @Test
-    public void shouldNoPage() {
-        //given
-        Message message = getUnifiedPushMessage();
-        message.getWindows().setPage(null);
-
-        //when
-        final WnsToast toast = sender.createSimpleToastMessage(message);
-
-        //then
-        assertThat(toast.launch).isNull();
-    }
-
-    @Test
     public void shouldCreateRightToastTemplate() {
         //given
         Message message = new Message();
@@ -102,7 +90,7 @@ public class WNSPushNotificationSenderTest {
         windows.setToastType(ToastType.ToastImageAndText04);
         windows.setTextFields(Arrays.asList("item1", "item2"));
         message.setAlert("title");
-        windows.setImages(Arrays.asList("image1.jpg"));
+        windows.setImages(Collections.singletonList("image1.jpg"));
 
         //when
         WnsToast toastMessage = sender.createToastMessage(message);
