@@ -20,7 +20,7 @@
         <column>id</column>
         <column>VARIANT_TYPE</column>
         <column>name</column>
-        <column>variantID</column>
+        <column>variant_id</column>
         <column>type</column>
         <column>developer</column>
         <row>
