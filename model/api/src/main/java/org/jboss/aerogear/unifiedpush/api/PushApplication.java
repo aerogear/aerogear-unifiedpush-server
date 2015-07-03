@@ -35,6 +35,12 @@ public class PushApplication extends BaseModel {
     @Size(min = 1, max = 255)
     private String description;
 
+    /**
+     * why having this if we already have an id?
+     *
+     * look at it like an API key, which is subject to change
+     * TODO: improve naming?
+     */
     private String pushApplicationID = UUID.randomUUID().toString();
     private String masterSecret = UUID.randomUUID().toString();
 
