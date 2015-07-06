@@ -14,16 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.cache;
+package org.jboss.aerogear.unifiedpush.message.serviceLease;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.Queue;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -37,26 +43,43 @@ import com.notnoop.apns.ApnsService;
  *
  * This cache also listens for {@link VariantCompletedEvent} event and stops all instantiated {@link ApnsService}s and frees the cache.
  *
- * @see AbstractServiceCache#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor)
- * @see AbstractServiceCache#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
- * @see AbstractServiceCache#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
+ * @see AbstractServiceHolder#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceHolder.ServiceConstructor)
+ * @see AbstractServiceHolder#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
+ * @see AbstractServiceHolder#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
  */
 @ApplicationScoped
-public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
+public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceCache.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceHolder.class);
 
     public static final int INSTANCE_LIMIT = 10;
-    public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
+    public static final long INSTANCE_ACQUIRING_TIMEOUT = 7500;
+    public static final long DISPOSING_DELAY = 5000;
 
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    public ApnsServiceCache() {
-        super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT);
+    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    private Queue apnsBadgeLeaseQueue;
+
+    public ApnsServiceHolder() {
+        super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT, DISPOSING_DELAY);
     }
 
-    public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) {
+    @Override
+    public Queue getBadgeQueue() {
+        return apnsBadgeLeaseQueue;
+    }
+
+    public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {
+        if (msg.getVariantType() == VariantType.IOS) {
+            for (Variant variant : msg.getVariants()) {
+                this.initialize(msg.getPushMessageInformation().getId(), variant.getVariantID());
+            }
+        }
+    }
+
+    public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) throws ExecutionException {
         final String pushMessageInformationId = variantCompleted.getPushMessageInformationId();
         String variantID = variantCompleted.getVariantID();
 
@@ -86,6 +109,8 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
                 this.freeUpSlot(pushMessageInformationId, variantID);
             }
         }
+
+        this.destroy(pushMessageInformationId, variantID);
     }
 
     /**

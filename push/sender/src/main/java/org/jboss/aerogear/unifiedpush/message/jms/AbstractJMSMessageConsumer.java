@@ -34,6 +34,8 @@ import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException
  */
 public abstract class AbstractJMSMessageConsumer {
 
+    public static final long DEFAULT_MESSAGE_WAIT = 5000L;
+
     @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory xaConnectionFactory;
 

@@ -29,14 +29,20 @@ import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import com.notnoop.apns.ApnsService;
 
 public class APNsPushNotificationSenderTest {
 
     @Test
     public void callbackOnError() throws Exception {
-        final APNsPushNotificationSender sender = new APNsPushNotificationSender(new ApnsServiceCache());
+        final APNsPushNotificationSender sender = new APNsPushNotificationSender(createMockApnsServiceCache());
         final NotificationSenderCallback callback = mock(NotificationSenderCallback.class);
 
         final iOSVariant iosVariant = mock(iOSVariant.class);
@@ -48,8 +54,6 @@ public class APNsPushNotificationSenderTest {
 
         verify(callback).onError("Error sending payload to APNs server: Invalid hex character: t");
     }
-
-
 
     /**
      * The store read by this method was copied from
@@ -69,4 +73,15 @@ public class APNsPushNotificationSenderTest {
         return baos.toByteArray();
     }
 
+    private ApnsServiceHolder createMockApnsServiceCache() {
+        ApnsServiceHolder apnsServiceCache = mock(ApnsServiceHolder.class);
+        when(apnsServiceCache.dequeueOrCreateNewService(Mockito.anyString(), Mockito.anyString(), Mockito.any(ServiceConstructor.class))).thenAnswer(new Answer<ApnsService>() {
+            @Override
+            public ApnsService answer(InvocationOnMock invocation) throws Throwable {
+                ServiceConstructor<ApnsService> constructor = (ServiceConstructor<ApnsService>) invocation.getArguments()[2];
+                return constructor.construct();
+            }
+        });
+        return apnsServiceCache;
+    }
 }

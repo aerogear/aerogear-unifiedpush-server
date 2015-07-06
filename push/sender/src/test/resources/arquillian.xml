@@ -24,21 +24,38 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
         
     <defaultProtocol type="Servlet 3.0"></defaultProtocol>
-
-    <container qualifier="chameleon" default="true">
-        <configuration>
-            <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->>
-            <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
-            <property name="target">wildfly:8.0.0.Final:managed</property>
-            
-            <!-- use Full EE profile for a JMS support -->
-            <property name="serverConfig">standalone-full.xml</property>
-
-            <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
-            <!-- both http and management ports are offset  -->
-            <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4321</property>
-            <!--  tell Arquillian where he will find the running container -->
-            <property name="managementPort">14311</property>
-        </configuration>
-    </container>
+    
+    
+    <group qualifier="chameleon-cluster" default="true">
+        <container qualifier="container-1" default="true">
+            <configuration>
+                <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->>
+                <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
+                <property name="chameleonTarget">wildfly:8.2.0.Final:managed</property>
+                
+                <!-- use Full EE profile for a JMS support -->
+                <property name="serverConfig">standalone-full-ha.xml</property>
+    
+                <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
+                <!-- both http and management ports are offset  -->
+                <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4321 -Djboss.messaging.cluster.password=hellothere -Xms800m -Xmx800m -XX:MaxPermSize=500m</property>
+                <!-- tell Arquillian where he will find the running container -->
+                <property name="managementPort">14311</property>
+                <!-- dedicate a separate folder for each server -->
+                <property name="chameleonDistributionDownloadFolder">target/cluster/server-1</property>
+                <!-- during test development, we allow to connect to running wildfly instance and so that speed up development turnaround -->
+                <property name="allowConnectingToRunningServer">true</property>
+            </configuration>
+        </container>
+        <container qualifier="container-2">
+            <configuration>
+                <property name="chameleonTarget">wildfly:8.2.0.Final:managed</property>
+                <property name="serverConfig">standalone-full-ha.xml</property>
+                <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4322 -Djboss.messaging.cluster.password=hellothere -Xms800m -Xmx800m -XX:MaxPermSize=500m</property>
+                <property name="managementPort">14312</property>
+                <property name="chameleonDistributionDownloadFolder">target/cluster/server-2</property>
+                <property name="allowConnectingToRunningServer">true</property>
+            </configuration>
+        </container>
+    </group>
 </arquillian>
