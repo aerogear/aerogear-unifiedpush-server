@@ -194,19 +194,16 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     }
 
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
-        if (page != null) {
-            final UriBuilder uriBuilder = UriBuilder.fromPath("");
-            for (Map.Entry<String, Object> entry : data.entrySet()) {
-                uriBuilder.queryParam(entry.getKey(), entry.getValue());
-            }
-            if (message != null) {
-                uriBuilder.queryParam("message", message);
-            }
-            //add aerogear-push-id
-            uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
-            final String query = uriBuilder.build().getQuery();
-            return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
+        final UriBuilder uriBuilder = UriBuilder.fromPath("");
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            uriBuilder.queryParam(entry.getKey(), entry.getValue());
         }
-        return null;
+        if (message != null) {
+            uriBuilder.queryParam("message", message);
+        }
+        //add aerogear-push-id
+        uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
+        final String query = uriBuilder.build().getQuery();
+        return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
     }
 }
