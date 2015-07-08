@@ -21,7 +21,28 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <include file="2015-07-08-normalize-android-variant.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-normalize-simplepush-variant.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-add-adm-variant-entity.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="adm_variant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="adm_variant">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_secret" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="adm_variant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="adm_variant_pkey" tableName="adm_variant"/>
+    </changeSet>
 </databaseChangeLog>
