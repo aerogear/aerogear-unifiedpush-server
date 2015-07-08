@@ -21,6 +21,16 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <include file="2015-07-08-normalize-android-variant.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-normalize-simplepush-variant.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SimplePushVariant"/>
+        </preConditions>
+        <renameTable oldTableName="SimplePushVariant" newTableName="simple_push_variant"/>
+    </changeSet>
+    <changeSet id="2" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="simplepushvariant"/>
+        </preConditions>
+        <renameTable oldTableName="simplepushvariant" newTableName="simple_push_variant"/>
+    </changeSet>
 </databaseChangeLog>
