@@ -1,0 +1,15 @@
+# $WILDFLY_HOME/bin/jboss-cli.sh --file=/path/to/this/file.
+connect
+batch
+
+## Add Mysql driver
+/profile=full-ha/subsystem=datasources/jdbc-driver=mysqlup:add(driver-name=mysqlup,driver-module-name=com.mysql.jdbc,driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
+
+## Add UnifiedPush Datasource
+data-source add --profile=full-ha --name=UnifiedPushDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:mysql://192.168.59.104:6306/unifiedpush?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+
+## Add Keycloak Datasource
+data-source add --profile=full-ha --name=KeycloakDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/KeycloakDS --connection-url="jdbc:mysql://192.168.59.104:6406/keycloak?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+
+run-batch
+#:reload

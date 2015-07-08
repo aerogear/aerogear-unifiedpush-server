@@ -1,0 +1,18 @@
+unifiedpush:
+  image: mysql:5.5
+  environment:
+   - MYSQL_USER=unifiedpush
+   - MYSQL_PASSWORD=unifiedpush
+   - MYSQL_DATABASE=unifiedpush
+   - MYSQL_ROOT_PASSWORD=supersecret
+  ports:
+  - 6306:3306
+keycloak:
+  image: mysql:5.5
+  environment:
+   - MYSQL_USER=unifiedpush
+   - MYSQL_PASSWORD=unifiedpush
+   - MYSQL_DATABASE=keycloak
+   - MYSQL_ROOT_PASSWORD=supersecret
+  ports:
+  - 6406:3306
