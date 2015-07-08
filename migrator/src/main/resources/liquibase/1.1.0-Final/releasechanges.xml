@@ -25,4 +25,5 @@
     <include file="2015-07-08-normalize-simplepush-variant.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-add-adm-variant-entity.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-normalize-variant.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-normalize-push-application.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
