@@ -17,12 +17,9 @@
 
 -->
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <include file="1.0.0.Final/releasechanges.xml" relativeToChangelogFile="true"/>
-    <include file="1.0.2/releasechanges.xml" relativeToChangelogFile="true"/>
-    <include file="1.0.3/releasechanges.xml" relativeToChangelogFile="true"/>
-    <include file="1.1.0-Final/releasechanges.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-normalize-android-variant.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
