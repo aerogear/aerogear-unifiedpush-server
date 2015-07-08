@@ -24,6 +24,9 @@
     <changeSet id="001" author="qmx" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="Installation"/>
+            <not>
+                <tableExists tableName="installation"/>
+            </not>
         </preConditions>
         <renameTable oldTableName="Installation" newTableName="installation"/>
     </changeSet>
