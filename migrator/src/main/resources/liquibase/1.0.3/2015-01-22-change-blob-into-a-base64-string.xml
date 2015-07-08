@@ -24,12 +24,28 @@
     <property name="text_type" value="LONGTEXT" dbms="mysql"/>
     <property name="text_type" value="TEXT" dbms="postgresql"/>
     <changeSet id="001m" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ios_variant"/>
+            </not>
+        </preConditions>
         <renameTable oldTableName="iOSVariant" newTableName="ios_variant"/>
     </changeSet>
     <changeSet id="001p" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="iosvariant"/>
+            <not>
+                <tableExists tableName="ios_variant"/>
+            </not>
+        </preConditions>
         <renameTable oldTableName="iosvariant" newTableName="ios_variant"/>
     </changeSet>
     <changeSet id="002" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="ios_variant" columnName="cert_data"/>
+            </not>
+        </preConditions>
         <addColumn tableName="ios_variant">
             <column name="cert_data" type="${text_type}"/>
         </addColumn>
@@ -39,6 +55,9 @@
         <addNotNullConstraint tableName="ios_variant" columnName="cert_data" columnDataType="${text_type}"/>
     </changeSet>
     <changeSet id="004" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ios_variant" columnName="certificate"/>
+        </preConditions>
         <dropColumn tableName="ios_variant" columnName="certificate"/>
     </changeSet>
     <changeSet id="005" author="qmx">
