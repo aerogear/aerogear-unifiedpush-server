@@ -1,0 +1,6 @@
+#!/bin/sh
+mvn clean package \
+	&& cd target && unzip unifiedpush-migrator-1.1.0.Final-SNAPSHOT-dist.zip \
+	&& cd unifiedpush-migrator-1.1.0.Final-SNAPSHOT/ \
+	&& cp ../../liquibase-pgsql-comparison.properties liquibase.properties \
+	&& mkdir liquibase && bin/ups-migrator --logLevel=INFO update
