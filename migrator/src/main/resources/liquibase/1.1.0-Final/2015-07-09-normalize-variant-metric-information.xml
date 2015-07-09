@@ -99,4 +99,20 @@
             <column name="variant_open_counter" type="BIGINT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="12" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="variant_metric_info" columnNames="variant_id" indexName="variant_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="variant_idx" tableName="variant_metric_info" unique="false">
+            <column name="variant_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="13" author="qmx">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="variant_id" tableName="variant_metric_info"/>
+    </changeSet>
+    <changeSet id="14" author="qmx">
+        <dropNotNullConstraint columnDataType="BIGINT" columnName="receivers" tableName="variant_metric_info"/>
+    </changeSet>
 </databaseChangeLog>
