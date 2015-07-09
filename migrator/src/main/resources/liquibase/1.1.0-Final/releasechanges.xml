@@ -27,4 +27,5 @@
     <include file="2015-07-08-normalize-variant.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-normalize-push-application.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-add-windows-variant-entities.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-normalize-installation.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
