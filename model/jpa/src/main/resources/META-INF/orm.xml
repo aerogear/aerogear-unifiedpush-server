@@ -71,6 +71,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <basic name="certificateData">
                 <column name="cert_data" length="100000"/>
             </basic>
+            <basic name="production">
+                <column name="production" nullable="false" />
+            </basic>
         </attributes>
     </entity>
     <entity class="PushApplication" access="FIELD">

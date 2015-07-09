@@ -8,7 +8,7 @@
             <generator class="assigned" />
         </id>
         <property name="variantID" type="java.lang.String" index="variant_idx">
-            <column name="variant_id" />
+            <column name="variant_id" not-null="true"/>
         </property>
         <property name="receivers" type="long">
             <column name="receivers" />

@@ -161,4 +161,52 @@
             <column name="total_variants" type="INT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="20" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="app_open_counter"
+                             indexName="app_open_counter_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="app_open_counter_idx" tableName="push_message_info" unique="false">
+            <column name="app_open_counter"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="21" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="push_application_id"
+                             indexName="push_application_id_index"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="push_application_id_index" tableName="push_message_info" unique="false">
+            <column name="push_application_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="22" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="submit_date"
+                             indexName="submit_date_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="submit_date_idx" tableName="push_message_info" unique="false">
+            <column name="submit_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="23" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="total_receivers"
+                             indexName="total_receivers_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="total_receivers_idx" tableName="push_message_info" unique="false">
+            <column name="total_receivers"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="24" author="qmx">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="push_application_id"
+                              tableName="push_message_info"/>
+    </changeSet>
 </databaseChangeLog>

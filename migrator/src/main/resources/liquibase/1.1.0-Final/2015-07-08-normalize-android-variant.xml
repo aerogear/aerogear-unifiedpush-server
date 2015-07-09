@@ -57,4 +57,7 @@
         </preConditions>
         <renameColumn tableName="android_variant" oldColumnName="projectnumber" newColumnName="project_number" columnDataType="VARCHAR(255)"/>
     </changeSet>
+    <changeSet id="7" author="qmx">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="google_key" tableName="android_variant"/>
+    </changeSet>
 </databaseChangeLog>
