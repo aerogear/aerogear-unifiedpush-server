@@ -31,4 +31,5 @@
     <include file="2015-07-08-normalize-push-message-information.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-09-drop-chromepackagedapp-variant.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-09-normalize-variant-metric-information.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-09-cleanups.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
