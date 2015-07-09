@@ -45,4 +45,16 @@
         </preConditions>
         <addPrimaryKey columnNames="id" constraintName="adm_variant_pkey" tableName="adm_variant"/>
     </changeSet>
+    <changeSet id="3" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="adm_variant"
+                                            foreignKeyName="fk_ajv3xb38jdgfme5l27o7obvnt"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="adm_variant"
+                                 constraintName="fk_ajv3xb38jdgfme5l27o7obvnt" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
 </databaseChangeLog>

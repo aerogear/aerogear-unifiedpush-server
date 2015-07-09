@@ -53,4 +53,28 @@
         </createTable>
         <addPrimaryKey columnNames="id" constraintName="windows_wns_variant_pkey" tableName="windows_wns_variant"/>
     </changeSet>
+    <changeSet id="3" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="windows_mpns_variant"
+                                            foreignKeyName="fk_649wp2ys69m1jxb33tl3trjig"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="windows_mpns_variant"
+                                 constraintName="fk_649wp2ys69m1jxb33tl3trjig" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet id="4" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="windows_wns_variant"
+                                            foreignKeyName="fk_omslx9kb1rm4p2s8t5qvf4wrp"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="windows_wns_variant"
+                                 constraintName="fk_omslx9kb1rm4p2s8t5qvf4wrp" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
 </databaseChangeLog>
