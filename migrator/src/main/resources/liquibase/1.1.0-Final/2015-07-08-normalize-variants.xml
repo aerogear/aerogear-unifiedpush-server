@@ -21,43 +21,85 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="1" author="qmx" dbms="mysql">
+    <changeSet id="01" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Variant"/>
+            <not>
+                <tableExists tableName="variant"/>
+            </not>
+        </preConditions>
+        <renameTable oldTableName="Variant" newTableName="variant"/>
+    </changeSet>
+    <changeSet id="02" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="variant" columnName="variants_id"/>
+        </preConditions>
+        <renameColumn tableName="variant" oldColumnName="variants_id" newColumnName="push_application_id"
+                      columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="03" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="variant" columnName="variantID"/>
+        </preConditions>
+        <renameColumn tableName="variant" oldColumnName="variantID" newColumnName="api_key"
+                      columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="04" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="variant" columnName="variantid"/>
+        </preConditions>
+        <renameColumn tableName="variant" oldColumnName="variantid" newColumnName="api_key"
+                      columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="05" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SimplePushVariant"/>
+        </preConditions>
+        <renameTable oldTableName="SimplePushVariant" newTableName="simple_push_variant"/>
+    </changeSet>
+    <changeSet id="06" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="simplepushvariant"/>
+        </preConditions>
+        <renameTable oldTableName="simplepushvariant" newTableName="simple_push_variant"/>
+    </changeSet>
+    <changeSet id="07" author="qmx" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="AndroidVariant"/>
         </preConditions>
         <renameTable oldTableName="AndroidVariant" newTableName="android_variant"/>
     </changeSet>
-    <changeSet id="2" author="qmx" dbms="postgresql">
+    <changeSet id="08" author="qmx" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="androidvariant"/>
         </preConditions>
         <renameTable oldTableName="androidvariant" newTableName="android_variant"/>
     </changeSet>
-    <changeSet id="3" author="qmx" dbms="mysql">
+    <changeSet id="09" author="qmx" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="android_variant" columnName="googleKey"/>
         </preConditions>
         <renameColumn tableName="android_variant" oldColumnName="googleKey" newColumnName="google_key" columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="4" author="qmx" dbms="postgresql">
+    <changeSet id="10" author="qmx" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="android_variant" columnName="googlekey"/>
         </preConditions>
         <renameColumn tableName="android_variant" oldColumnName="googlekey" newColumnName="google_key" columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="5" author="qmx" dbms="mysql">
+    <changeSet id="11" author="qmx" dbms="mysql">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="android_variant" columnName="projectNumber"/>
         </preConditions>
         <renameColumn tableName="android_variant" oldColumnName="projectNumber" newColumnName="project_number" columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="6" author="qmx" dbms="postgresql">
+    <changeSet id="12" author="qmx" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="android_variant" columnName="projectnumber"/>
         </preConditions>
         <renameColumn tableName="android_variant" oldColumnName="projectnumber" newColumnName="project_number" columnDataType="VARCHAR(255)"/>
     </changeSet>
-    <changeSet id="7" author="qmx">
+    <changeSet id="13" author="qmx">
         <addNotNullConstraint columnDataType="varchar(255)" columnName="google_key" tableName="android_variant"/>
     </changeSet>
 </databaseChangeLog>
