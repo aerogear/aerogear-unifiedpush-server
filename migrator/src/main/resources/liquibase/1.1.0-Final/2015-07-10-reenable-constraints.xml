@@ -78,8 +78,8 @@
     </changeSet>
     <changeSet author="qmx (generated)" id="1436957323846-10">
         <addForeignKeyConstraint baseColumnNames="variant_id" baseTableName="installation"
-                                 constraintName="fk_q1c2n4kjui158w3t1llg99koq" deferrable="false"
+                                 constraintName="fk_6f7ri85e1orhrcn7ccexnkwxx" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="variant"/>
+                                 referencedColumnNames="api_key" referencedTableName="variant"/>
     </changeSet>
 </databaseChangeLog>
