@@ -1,0 +1,178 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="qmx" id="02" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="ios_variant"
+                                        foreignKeyName="FK_a7ndfcxa9m4wt4m2x2mxajr56"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="ios_variant" constraintName="FK_a7ndfcxa9m4wt4m2x2mxajr56"/>
+    </changeSet>
+    <changeSet author="qmx" id="02p" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="ios_variant"
+                                        foreignKeyName="fk_a7ndfcxa9m4wt4m2x2mxajr56"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="ios_variant" constraintName="fk_a7ndfcxa9m4wt4m2x2mxajr56"/>
+    </changeSet>
+    <changeSet author="qmx" id="05" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                        foreignKeyName="FK_dttushnsf13kdwywyba8njqv7"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation_category" constraintName="FK_dttushnsf13kdwywyba8njqv7"/>
+    </changeSet>
+    <changeSet author="qmx" id="05p" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                        foreignKeyName="fk_dttushnsf13kdwywyba8njqv7"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation_category" constraintName="fk_dttushnsf13kdwywyba8njqv7"/>
+    </changeSet>
+    <changeSet author="qmx" id="07" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                        foreignKeyName="FK_ox56uwmry1x6kfoi3dkw1to8o"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation_category" constraintName="FK_ox56uwmry1x6kfoi3dkw1to8o"/>
+    </changeSet>
+    <changeSet author="qmx" id="07p" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation_category"
+                                        foreignKeyName="fk_ox56uwmry1x6kfoi3dkw1to8o"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation_category" constraintName="fk_ox56uwmry1x6kfoi3dkw1to8o"/>
+    </changeSet>
+    <changeSet author="qmx" id="08">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="windows_mpns_variant"
+                                        foreignKeyName="fk_649wp2ys69m1jxb33tl3trjig"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="windows_mpns_variant" constraintName="fk_649wp2ys69m1jxb33tl3trjig"/>
+    </changeSet>
+    <changeSet author="qmx" id="09">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="adm_variant"
+                                        foreignKeyName="fk_ajv3xb38jdgfme5l27o7obvnt"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="adm_variant" constraintName="fk_ajv3xb38jdgfme5l27o7obvnt"/>
+    </changeSet>
+    <changeSet author="qmx" id="10">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="windows_wns_variant"
+                                        foreignKeyName="fk_omslx9kb1rm4p2s8t5qvf4wrp"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="windows_wns_variant" constraintName="fk_omslx9kb1rm4p2s8t5qvf4wrp"/>
+    </changeSet>
+    <changeSet author="qmx" id="11">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="fk_q1c2n4kjui158w3t1llg99koq"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="fk_q1c2n4kjui158w3t1llg99koq"/>
+    </changeSet>
+    <changeSet author="qmx" id="12" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="Variant"
+                                        foreignKeyName="FK_7vjqh1lbqvlh4ni98qnh8hxkr"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="Variant" constraintName="FK_7vjqh1lbqvlh4ni98qnh8hxkr"/>
+    </changeSet>
+    <changeSet author="qmx" id="13" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="variant"
+                                        foreignKeyName="fk_7vjqh1lbqvlh4ni98qnh8hxkr"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="variant" constraintName="fk_7vjqh1lbqvlh4ni98qnh8hxkr"/>
+    </changeSet>
+    <changeSet author="qmx" id="14" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="AndroidVariant"
+                                        foreignKeyName="FK_abna7p5c0p8ju2pf4ucqv5cby"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AndroidVariant" constraintName="FK_abna7p5c0p8ju2pf4ucqv5cby"/>
+    </changeSet>
+    <changeSet author="qmx" id="15" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="androidvariant"
+                                        foreignKeyName="fk_abna7p5c0p8ju2pf4ucqv5cby"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="androidvariant" constraintName="fk_abna7p5c0p8ju2pf4ucqv5cby"/>
+    </changeSet>
+    <changeSet author="qmx" id="16" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="VariantMetricInformation"
+                                        foreignKeyName="FK_ci9sa3eevtel9l172w9b0musj"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="VariantMetricInformation" constraintName="FK_ci9sa3eevtel9l172w9b0musj"/>
+    </changeSet>
+    <changeSet author="qmx" id="17" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="variantmetricinformation"
+                                        foreignKeyName="fk_ci9sa3eevtel9l172w9b0musj"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="variantmetricinformation" constraintName="fk_ci9sa3eevtel9l172w9b0musj"/>
+    </changeSet>
+    <changeSet author="qmx" id="18" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="ChromePackagedAppVariant"
+                                        foreignKeyName="FK_craam2a14eghbd6ohlnbbe7bq"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="ChromePackagedAppVariant" constraintName="FK_craam2a14eghbd6ohlnbbe7bq"/>
+    </changeSet>
+    <changeSet author="qmx" id="19" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="chromepackagedappvariant"
+                                        foreignKeyName="fk_craam2a14eghbd6ohlnbbe7bq"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="chromepackagedappvariant" constraintName="fk_craam2a14eghbd6ohlnbbe7bq"/>
+    </changeSet>
+    <changeSet author="qmx" id="20" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="SimplePushVariant"
+                                        foreignKeyName="FK_hombuwogx5wv7hnup407gnwpg"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="SimplePushVariant" constraintName="FK_hombuwogx5wv7hnup407gnwpg"/>
+    </changeSet>
+    <changeSet author="qmx" id="21" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="simplepushvariant"
+                                        foreignKeyName="fk_hombuwogx5wv7hnup407gnwpg"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="simplepushvariant" constraintName="fk_hombuwogx5wv7hnup407gnwpg"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436899291492-6">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="fk_na86cvm4h3gytxsyqdugc2o74"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="fk_na86cvm4h3gytxsyqdugc2o74"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436899291492-7">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="Variant"
+                                        foreignKeyName="UK_jlpkx1qkcjaps25wqhp4nkfel"/>
+        </preConditions>
+        <dropUniqueConstraint constraintName="UK_jlpkx1qkcjaps25wqhp4nkfel" tableName="Variant"/>
+    </changeSet>
+</databaseChangeLog>

@@ -21,15 +21,14 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <include file="2015-07-08-normalize-android-variant.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-normalize-simplepush-variant.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-add-adm-variant-entity.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-normalize-variant.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-10-disable-constraints.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-normalize-variants.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-normalize-push-application.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-08-add-windows-variant-entities.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-normalize-installation.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-08-normalize-push-message-information.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-09-drop-chromepackagedapp-variant.xml" relativeToChangelogFile="true"/>
     <include file="2015-07-09-normalize-variant-metric-information.xml" relativeToChangelogFile="true"/>
-    <include file="2015-07-09-cleanups.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-add-adm-variant-entity.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-08-add-windows-variant-entities.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-09-drop-chromepackagedapp-variant.xml" relativeToChangelogFile="true"/>
+    <include file="2015-07-10-reenable-constraints.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
