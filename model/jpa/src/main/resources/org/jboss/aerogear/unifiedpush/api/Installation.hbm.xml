@@ -29,7 +29,7 @@
             <column name="platform" />
         </property>
         <many-to-one name="variant" class="org.jboss.aerogear.unifiedpush.api.Variant" fetch="join" lazy="proxy">
-            <column name="variant_id" />
+            <column name="api_key" />
         </many-to-one>
         <set name="categories" table="installation_category" inverse="false" lazy="false" cascade="persist, merge">
             <key>
