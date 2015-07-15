@@ -3,4 +3,4 @@ mvn clean package \
 	&& cd target && unzip unifiedpush-migrator-1.1.0.Final-SNAPSHOT-dist.zip \
 	&& cd unifiedpush-migrator-1.1.0.Final-SNAPSHOT/ \
 	&& cp ../../liquibase-mysql-comparison.properties liquibase.properties \
-	&& mkdir liquibase && bin/ups-migrator --logLevel=INFO update
+	&& mkdir liquibase && bin/ups-migrator --logLevel=DEBUG update
