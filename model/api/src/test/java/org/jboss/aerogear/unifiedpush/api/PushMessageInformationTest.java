@@ -49,13 +49,13 @@ public class PushMessageInformationTest {
         // two involved variants:
         VariantMetricInformation variantInfo1 = new VariantMetricInformation();
         variantInfo1.setVariantID("345");
-        variantInfo1.setReceivers(500);
+        variantInfo1.setReceivers(Long.valueOf(500));
         variantInfo1.setDeliveryStatus(Boolean.FALSE);
         variantInfo1.setVariantOpenCounter(1);
 
         VariantMetricInformation variantInfo2 = new VariantMetricInformation();
         variantInfo2.setVariantID("678");
-        variantInfo2.setReceivers(100);
+        variantInfo2.setReceivers(Long.valueOf(100));
         variantInfo2.setDeliveryStatus(Boolean.TRUE);
         variantInfo1.setVariantOpenCounter(2);
 

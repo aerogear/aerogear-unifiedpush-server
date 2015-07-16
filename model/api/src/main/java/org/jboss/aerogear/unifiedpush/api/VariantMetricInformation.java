@@ -30,7 +30,7 @@ public class VariantMetricInformation extends BaseModel {
 
     @NotNull
     private String variantID;
-    private long receivers;
+    private Long receivers = 0L;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
     private long variantOpenCounter;
@@ -61,11 +61,11 @@ public class VariantMetricInformation extends BaseModel {
      *
      * @return number of receivers
      */
-    public long getReceivers() {
+    public Long getReceivers() {
         return receivers;
     }
 
-    public void setReceivers(long receivers) {
+    public void setReceivers(Long receivers) {
         this.receivers = receivers;
     }
 

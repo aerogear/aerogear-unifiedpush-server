@@ -10,7 +10,7 @@
         <property name="variantID" type="java.lang.String" index="variant_idx">
             <column name="variant_id" not-null="true"/>
         </property>
-        <property name="receivers" type="long">
+        <property name="receivers" type="java.lang.Long">
             <column name="receivers" />
         </property>
         <property name="deliveryStatus" type="java.lang.Boolean">
