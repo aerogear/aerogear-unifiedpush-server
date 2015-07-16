@@ -88,4 +88,7 @@
     <changeSet author="danbev" id="1436957323846-12">
         <addNotNullConstraint tableName="push_message_info" columnName="served_variants" defaultNullValue="0"/>
     </changeSet>
+    <changeSet author="danbev" id="1436957323846-13">
+        <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter" defaultNullValue="0"/>
+    </changeSet>
 </databaseChangeLog>

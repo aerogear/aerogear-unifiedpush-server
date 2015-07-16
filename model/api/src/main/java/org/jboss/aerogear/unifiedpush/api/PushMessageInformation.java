@@ -39,7 +39,7 @@ public class PushMessageInformation extends BaseModel {
     private Date submitDate = new Date();
     private long totalReceivers;
 
-    private long appOpenCounter;
+    private Long appOpenCounter = 0L;
     private Date firstOpenDate;
     private Date lastOpenDate;
 
@@ -140,11 +140,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return the number of time this Push Application was opened after a Push Notification
      */
-    public long getAppOpenCounter() {
+    public Long getAppOpenCounter() {
         return appOpenCounter;
     }
 
-    public void setAppOpenCounter(long appOpenCounter) {
+    public void setAppOpenCounter(Long appOpenCounter) {
         this.appOpenCounter = appOpenCounter;
     }
 
