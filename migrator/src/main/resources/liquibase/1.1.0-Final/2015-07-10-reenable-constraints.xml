@@ -91,4 +91,7 @@
     <changeSet author="danbev" id="1436957323846-13">
         <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter" defaultNullValue="0"/>
     </changeSet>
+    <changeSet author="danbev" id="1436957323846-14">
+        <addNotNullConstraint tableName="variant_metric_info" columnName="receivers" defaultNullValue="0"/>
+    </changeSet>
 </databaseChangeLog>
