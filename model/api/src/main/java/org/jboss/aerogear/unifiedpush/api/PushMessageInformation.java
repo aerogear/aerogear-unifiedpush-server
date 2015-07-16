@@ -44,7 +44,7 @@ public class PushMessageInformation extends BaseModel {
     private Date lastOpenDate;
 
     private int servedVariants;
-    private int totalVariants;
+    private Integer totalVariants = 0;
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
@@ -203,11 +203,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return total number of variants to be served for the given push message.
      */
-    public int getTotalVariants() {
+    public Integer getTotalVariants() {
         return totalVariants;
     }
 
-    public void setTotalVariants(int totalVariants) {
+    public void setTotalVariants(Integer totalVariants) {
         this.totalVariants = totalVariants;
     }
 
