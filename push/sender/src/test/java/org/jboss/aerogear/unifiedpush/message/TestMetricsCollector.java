@@ -106,7 +106,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         variantsCompleted.await(1, TimeUnit.SECONDS);
 
         // then
-        assertEquals(2, pushMetric.getServedVariants());
+        assertEquals(2, pushMetric.getServedVariants().intValue());
         assertEquals(2, variant1Metric1.getServedBatches());
         assertEquals(2, variant1Metric1.getTotalBatches());
         assertEquals(1, variant2Metric1.getServedBatches());
