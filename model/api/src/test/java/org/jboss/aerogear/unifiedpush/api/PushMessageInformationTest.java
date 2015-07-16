@@ -41,7 +41,7 @@ public class PushMessageInformationTest {
         pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
         pushMessageInformation.setClientIdentifier("Java Sender Client");
-        pushMessageInformation.setAppOpenCounter(1);
+        pushMessageInformation.setAppOpenCounter(Long.valueOf(1));
         pushMessageInformation.setFirstOpenDate(openAppDate);
         pushMessageInformation.setLastOpenDate(lastOpenDate);
 
