@@ -35,7 +35,7 @@ public class VariantMetricInformation extends BaseModel {
     private String reason;
     private Long variantOpenCounter = 0L;
     private int servedBatches = 0;
-    private int totalBatches = 0;
+    private Integer totalBatches = 0;
 
     @JsonIgnore
     private PushMessageInformation pushMessageInformation;
@@ -142,11 +142,11 @@ public class VariantMetricInformation extends BaseModel {
      *
      * @return total number of device token batches that were loaded by the TokenLoader.
      */
-    public int getTotalBatches() {
+    public Integer getTotalBatches() {
         return totalBatches;
     }
 
-    public void setTotalBatches(int totalBatches) {
+    public void setTotalBatches(Integer totalBatches) {
         this.totalBatches = totalBatches;
     }
 }

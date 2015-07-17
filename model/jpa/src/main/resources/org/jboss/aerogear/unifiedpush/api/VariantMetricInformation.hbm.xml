@@ -25,7 +25,7 @@
         <property name="servedBatches" type="int">
             <column name="served_batches" />
         </property>
-        <property name="totalBatches" type="int">
+        <property name="totalBatches" type="java.lang.Integer">
             <column name="total_batches" />
         </property>
         <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.PushMessageInformation" fetch="join">
