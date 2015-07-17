@@ -19,7 +19,7 @@
         <property name="reason" type="java.lang.String">
             <column name="reason" />
         </property>
-        <property name="variantOpenCounter" type="long">
+        <property name="variantOpenCounter" type="java.lang.Long">
             <column name="variant_open_counter" />
         </property>
         <property name="servedBatches" type="int">

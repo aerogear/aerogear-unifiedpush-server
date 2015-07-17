@@ -33,7 +33,7 @@ public class VariantMetricInformation extends BaseModel {
     private Long receivers = 0L;
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
-    private long variantOpenCounter;
+    private Long variantOpenCounter = 0L;
     private int servedBatches = 0;
     private int totalBatches = 0;
 
@@ -108,11 +108,11 @@ public class VariantMetricInformation extends BaseModel {
      *
      * @return long , the times this variant has been opened after a Push Notification
      */
-    public long getVariantOpenCounter() {
+    public Long getVariantOpenCounter() {
         return variantOpenCounter;
     }
 
-    public void setVariantOpenCounter(long variantOpenCounter) {
+    public void setVariantOpenCounter(Long variantOpenCounter) {
         this.variantOpenCounter = variantOpenCounter;
     }
 
