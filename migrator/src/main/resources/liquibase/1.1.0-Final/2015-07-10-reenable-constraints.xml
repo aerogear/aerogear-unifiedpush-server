@@ -76,41 +76,44 @@
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="category"/>
     </changeSet>
-    <changeSet author="qmx (generated)" id="1436957323846-10">
+    <changeSet author="qmx" id="1436957323846-10">
+        <customChange class="org.jboss.aerogear.unifiedpush.migrator.GetRidOfApiKeysMigration"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-11">
         <addForeignKeyConstraint baseColumnNames="variant_id" baseTableName="installation"
                                  constraintName="fk_q1c2n4kjui158w3t1llg99koq" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="variant"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-11">
+    <changeSet author="danbev" id="1436957323846-12">
         <addNotNullConstraint tableName="push_message_info" columnName="total_variants"
                                 defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-12">
+    <changeSet author="danbev" id="1436957323846-13">
         <addNotNullConstraint tableName="push_message_info" columnName="served_variants"
                                 defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-13">
+    <changeSet author="danbev" id="1436957323846-14">
         <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter"
                               defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-14">
+    <changeSet author="danbev" id="1436957323846-15">
         <addNotNullConstraint tableName="push_message_info" columnName="total_receivers"
                               defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-15">
+    <changeSet author="danbev" id="1436957323846-16">
         <addNotNullConstraint tableName="variant_metric_info" columnName="receivers"
                               defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-16">
+    <changeSet author="danbev" id="1436957323846-17">
         <addNotNullConstraint tableName="variant_metric_info" columnName="variant_open_counter"
                               defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-17">
+    <changeSet author="danbev" id="1436957323846-18">
         <addNotNullConstraint tableName="variant_metric_info" columnName="total_batches"
                               defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
-    <changeSet author="danbev" id="1436957323846-18">
+    <changeSet author="danbev" id="1436957323846-19">
         <addNotNullConstraint tableName="variant_metric_info" columnName="served_batches"
                               defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
