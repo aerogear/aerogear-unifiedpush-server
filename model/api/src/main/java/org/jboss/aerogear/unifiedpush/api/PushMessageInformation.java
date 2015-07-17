@@ -37,7 +37,7 @@ public class PushMessageInformation extends BaseModel {
     private String clientIdentifier;
 
     private Date submitDate = new Date();
-    private long totalReceivers;
+    private Long totalReceivers = 0L;
 
     private Long appOpenCounter = 0L;
     private Date firstOpenDate;
@@ -127,11 +127,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return the total of active tokens that received this Push Message
      */
-    public long getTotalReceivers() {
+    public Long getTotalReceivers() {
         return totalReceivers;
     }
 
-    public void setTotalReceivers(long totalReceivers) {
+    public void setTotalReceivers(Long totalReceivers) {
         this.totalReceivers = totalReceivers;
     }
 
