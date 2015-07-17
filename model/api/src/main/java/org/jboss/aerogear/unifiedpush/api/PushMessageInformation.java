@@ -37,14 +37,14 @@ public class PushMessageInformation extends BaseModel {
     private String clientIdentifier;
 
     private Date submitDate = new Date();
-    private long totalReceivers;
+    private Long totalReceivers = 0L;
 
-    private long appOpenCounter;
+    private Long appOpenCounter = 0L;
     private Date firstOpenDate;
     private Date lastOpenDate;
 
-    private int servedVariants;
-    private int totalVariants;
+    private Integer servedVariants = 0;
+    private Integer totalVariants = 0;
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
@@ -127,11 +127,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return the total of active tokens that received this Push Message
      */
-    public long getTotalReceivers() {
+    public Long getTotalReceivers() {
         return totalReceivers;
     }
 
-    public void setTotalReceivers(long totalReceivers) {
+    public void setTotalReceivers(Long totalReceivers) {
         this.totalReceivers = totalReceivers;
     }
 
@@ -140,11 +140,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return the number of time this Push Application was opened after a Push Notification
      */
-    public long getAppOpenCounter() {
+    public Long getAppOpenCounter() {
         return appOpenCounter;
     }
 
-    public void setAppOpenCounter(long appOpenCounter) {
+    public void setAppOpenCounter(Long appOpenCounter) {
         this.appOpenCounter = appOpenCounter;
     }
 
@@ -188,11 +188,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return number of variants that were fully processed (all batches were served)
      */
-    public int getServedVariants() {
+    public Integer getServedVariants() {
         return servedVariants;
     }
 
-    public void setServedVariants(int servedVariants) {
+    public void setServedVariants(Integer servedVariants) {
         this.servedVariants = servedVariants;
     }
 
@@ -203,11 +203,11 @@ public class PushMessageInformation extends BaseModel {
      *
      * @return total number of variants to be served for the given push message.
      */
-    public int getTotalVariants() {
+    public Integer getTotalVariants() {
         return totalVariants;
     }
 
-    public void setTotalVariants(int totalVariants) {
+    public void setTotalVariants(Integer totalVariants) {
         this.totalVariants = totalVariants;
     }
 
