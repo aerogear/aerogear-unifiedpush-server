@@ -83,27 +83,35 @@
                                  referencedColumnNames="api_key" referencedTableName="variant"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-11">
-        <addNotNullConstraint tableName="push_message_info" columnName="total_variants" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="push_message_info" columnName="total_variants"
+                                defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-12">
-        <addNotNullConstraint tableName="push_message_info" columnName="served_variants" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="push_message_info" columnName="served_variants"
+                                defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-13">
-        <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-14">
-        <addNotNullConstraint tableName="push_message_info" columnName="total_receivers" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="push_message_info" columnName="total_receivers"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-15">
-        <addNotNullConstraint tableName="variant_metric_info" columnName="receivers" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="variant_metric_info" columnName="receivers"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-16">
-        <addNotNullConstraint tableName="variant_metric_info" columnName="variant_open_counter" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="variant_metric_info" columnName="variant_open_counter"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-17">
-        <addNotNullConstraint tableName="variant_metric_info" columnName="total_batches" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="variant_metric_info" columnName="total_batches"
+                              defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
     <changeSet author="danbev" id="1436957323846-18">
-        <addNotNullConstraint tableName="variant_metric_info" columnName="served_batches" defaultNullValue="0"/>
+        <addNotNullConstraint tableName="variant_metric_info" columnName="served_batches"
+                              defaultNullValue="0" columnDataType="INT"/>
     </changeSet>
 </databaseChangeLog>
