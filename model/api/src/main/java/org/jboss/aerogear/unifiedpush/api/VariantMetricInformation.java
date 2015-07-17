@@ -34,7 +34,7 @@ public class VariantMetricInformation extends BaseModel {
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
     private Long variantOpenCounter = 0L;
-    private int servedBatches = 0;
+    private Integer servedBatches = 0;
     private Integer totalBatches = 0;
 
     @JsonIgnore
@@ -127,11 +127,11 @@ public class VariantMetricInformation extends BaseModel {
      *
      * @return number of device token batches that were fully processed.
      */
-    public int getServedBatches() {
+    public Integer getServedBatches() {
         return servedBatches;
     }
 
-    public void setServedBatches(int servedBatches) {
+    public void setServedBatches(Integer servedBatches) {
         this.servedBatches = servedBatches;
     }
 

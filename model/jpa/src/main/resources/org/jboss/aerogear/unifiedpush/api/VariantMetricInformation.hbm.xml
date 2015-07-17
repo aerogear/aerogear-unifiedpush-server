@@ -22,7 +22,7 @@
         <property name="variantOpenCounter" type="java.lang.Long">
             <column name="variant_open_counter" />
         </property>
-        <property name="servedBatches" type="int">
+        <property name="servedBatches" type="java.lang.Integer">
             <column name="served_batches" />
         </property>
         <property name="totalBatches" type="java.lang.Integer">
