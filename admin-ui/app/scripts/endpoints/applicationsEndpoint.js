@@ -38,6 +38,15 @@ upsServices.factory('applicationsEndpoint', function ($resource, $q) {
       method: 'PUT',
       params: {verb: 'reset'}
     },
+    bootstrap: {
+      method: 'POST',
+      headers: {'Content-Type': undefined},
+      withCredentials: true,
+      transformRequest: angular.identity,
+      params: {
+        appId: 'bootstrap'
+      }
+    },
     fetch: function(pageNo) {
       var deferred = $q.defer();
       this.list({page: pageNo - 1, per_page: 8}, function (apps, responseHeaders) {

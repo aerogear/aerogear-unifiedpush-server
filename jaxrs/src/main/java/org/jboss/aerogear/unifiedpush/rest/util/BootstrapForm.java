@@ -47,6 +47,14 @@ public class BootstrapForm {
     private String windowsVariantName;
     private String windowsSid;
     private String windowsClientSecret;
+    
+    // SimplePush details
+    private String simplePushVariantName;
+    
+    // ADM details
+    private String admVariantName;
+    private String admClientId;
+    private String admClientSecret;
 
 
     public BootstrapForm() {
@@ -93,7 +101,7 @@ public class BootstrapForm {
         return iOSVariantName;
     }
 
-    @FormParam("iOSVariantName")
+    @FormParam("iosVariantName")
     public void setiOSVariantName(String iOSVariantName) {
         this.iOSVariantName = iOSVariantName;
     }
@@ -102,7 +110,7 @@ public class BootstrapForm {
         return iOSProduction;
     }
 
-    @FormParam("iOSProduction")
+    @FormParam("iosProduction")
     public void setiOSProduction(Boolean iOSProduction) {
         this.iOSProduction = iOSProduction;
     }
@@ -111,7 +119,7 @@ public class BootstrapForm {
         return iOSPassphrase;
     }
 
-    @FormParam("iOSPassphrase")
+    @FormParam("iosPassphrase")
     public void setiOSPassphrase(String iOSPassphrase) {
         this.iOSPassphrase = iOSPassphrase;
     }
@@ -120,7 +128,7 @@ public class BootstrapForm {
         return iOSCertificate;
     }
 
-    @FormParam("iOSCertificate")
+    @FormParam("iosCertificate")
     @PartType("application/octet-stream")
     public void setiOSCertificate(byte[] iOSCertificate) {
         this.iOSCertificate = iOSCertificate;
@@ -162,7 +170,42 @@ public class BootstrapForm {
     public void setWindowsClientSecret(String windowsClientSecret) {
         this.windowsClientSecret = windowsClientSecret;
     }
+    
+    public String getSimplePushVariantName() {
+        return simplePushVariantName;
+    }
 
+    @FormParam("simplePushVariantName")
+    public void setSimplePushVariantName(String simplePushVariantName) {
+        this.simplePushVariantName = simplePushVariantName;
+    }
+    
+    public String getAdmVariantName() {
+        return admVariantName;
+    }
+
+    @FormParam("admVariantName")
+    public void setAdmVariantName(String admVariantName) {
+        this.admVariantName = admVariantName;
+    }
+    
+    public String getAdmClientId() {
+        return admClientId;
+    }
+
+    @FormParam("admClientId")
+    public void setAdmClientId(String admClientId) {
+        this.admClientId = admClientId;
+    }
+    
+    public String getAdmClientSecret() {
+        return admClientSecret;
+    }
+
+    @FormParam("admClientSecret")
+    public void setAdmClientSecret(String admClientSecret) {
+        this.admClientSecret = admClientSecret;
+    }
 
     /**
      * Basic validations for Android, when Android is present.
