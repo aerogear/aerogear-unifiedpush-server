@@ -18,8 +18,11 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+
+import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -86,6 +89,8 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
         AndroidVariant androidVariant;
         iOSVariant iOSVariant;
         WindowsVariant windowsVariant = null;
+        SimplePushVariant simplePushVariant;
+        AdmVariant admVariant;
 
         // Android around ?
         if (form.getAndroidVariantName() != null) {
@@ -112,7 +117,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             pushAppService.addVariant(pushApplication, iOSVariant);
         }
 
-        //Windows around?
+        // Windows around?
         if (form.getWindowsVariantName() != null) {
 
             final String windowsType = form.getWindowsType().toLowerCase();
@@ -141,7 +146,28 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             // store the model, add variant references and merge:
             variantService.addVariant(windowsVariant);
             pushAppService.addVariant(pushApplication, windowsVariant);
+        }
 
+        // SimplePush around ?
+        if (form.getSimplePushVariantName() != null) {
+            simplePushVariant = new SimplePushVariant();
+            simplePushVariant.setName(form.getSimplePushVariantName());
+
+            // store the model, add variant references and merge:
+            variantService.addVariant(simplePushVariant);
+            pushAppService.addVariant(pushApplication, simplePushVariant);
+        }
+
+        // Android around ?
+        if (form.getAdmVariantName() != null) {
+            admVariant = new AdmVariant();
+            admVariant.setName(form.getAdmVariantName());
+            admVariant.setClientId(form.getAdmClientId());
+            admVariant.setClientSecret(form.getAdmClientSecret());
+
+            // store the model, add variant references and merge:
+            variantService.addVariant(admVariant);
+            pushAppService.addVariant(pushApplication, admVariant);
         }
 
         return Response.created(
