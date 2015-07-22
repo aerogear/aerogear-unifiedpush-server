@@ -23,9 +23,6 @@
                 { "type" : "password",
                     "value" : "123" }
             ],
-            "requiredActions": [
-                "UPDATE_PASSWORD"
-            ],
             "realmRoles": [ "admin" ],
             "applicationRoles": {
                "realm-management": [ "realm-admin" ],
