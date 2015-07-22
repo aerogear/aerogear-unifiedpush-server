@@ -1,13 +1,12 @@
 package com.push.pushapplication;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.jboss.aerogear.android.unifiedpush.PushConfig;
-import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
-import org.jboss.aerogear.android.unifiedpush.Registrations;
-
+import android.util.Log;
 import android.app.Application;
+
+import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 
 public class PushApplication extends Application {
 
@@ -16,39 +15,29 @@ public class PushApplication extends Application {
     private final String GCM_SENDER_ID    = "{{ variant.projectNumber }}";
     private final String UNIFIED_PUSH_URL = "{{ contextPath }}";
 
-    private PushRegistrar registration;
-
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Registrations registrations = new Registrations();
+        RegistrarManager.config("register", AeroGearGCMPushConfiguration.class)
+                    .setPushServerURI(URI.create(UNIFIED_PUSH_URL))
+                    .setSenderIds(GCM_SENDER_ID)
+                    .setVariantID(VARIANT_ID)
+                    .setSecret(SECRET)
+                    .asRegistrar();
 
-        try {
-            PushConfig config = new PushConfig(new URI(UNIFIED_PUSH_URL), GCM_SENDER_ID);
-            config.setVariantID(VARIANT_ID);
-            config.setSecret(SECRET);
-            config.setAlias(MY_ALIAS);
+        PushRegistrar registrar = RegistrarManager.getRegistrar("register");
+        registrar.register(getApplicationContext(), new Callback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                Log.i(TAG, "Registration Succeeded!");
+            }
 
-            registration = registrations.push("unifiedpush", config);
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, exception.getMessage(), exception);
+            }
+        });
 
-            registration.register(getApplicationContext(), new Callback() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void onSuccess(Void ignore) {
-                     Toast.makeText(MainActivity.this, "Registration Succeeded!",
-                             Toast.LENGTH_LONG).show();
-               }
-
-               @Override
-               public void onFailure(Exception exception) {
-                     Log.e("MainActivity", exception.getMessage(), exception);
-               }
-            });
-
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
