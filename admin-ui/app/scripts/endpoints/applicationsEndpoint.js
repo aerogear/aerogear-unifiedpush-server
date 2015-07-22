@@ -2,8 +2,8 @@
 
 var upsServices = angular.module('upsConsole');
 
-upsServices.factory('applicationsEndpoint', function ($resource, $q) {
-  return $resource('rest/applications/:appId/:verb', {
+upsServices.factory('applicationsEndpoint', function ($resource, $q, apiPrefix) {
+  return $resource( apiPrefix + 'rest/applications/:appId/:verb', {
     appId: '@appId'
   }, {
     get: {
