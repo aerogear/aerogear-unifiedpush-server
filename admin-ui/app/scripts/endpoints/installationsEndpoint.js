@@ -2,8 +2,8 @@
 
 var upsServices = angular.module('upsConsole');
 
-upsServices.factory('installationsEndpoint', function ($resource, $q) {
-  var installationsService = $resource('rest/applications/:variantId/installations/:installationId', {
+upsServices.factory('installationsEndpoint', function ($resource, $q, apiPrefix) {
+  var installationsService = $resource( apiPrefix + 'rest/applications/:variantId/installations/:installationId', {
     variantId: '@variantId',
     installationId: '@installationId'
   }, {

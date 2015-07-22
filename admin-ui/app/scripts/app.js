@@ -40,6 +40,8 @@
     };
   });
 
+  app.value('apiPrefix', '');
+
   app.config(function ($logProvider, appConfigProvider) {
     var appConfig = appConfigProvider.$get();
     $logProvider.debugEnabled( appConfig.logDebugEnabled );
