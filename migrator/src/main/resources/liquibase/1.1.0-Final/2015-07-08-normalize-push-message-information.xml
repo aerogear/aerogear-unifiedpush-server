@@ -1,0 +1,212 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="01" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="PushMessageInformation"/>
+            <not>
+                <tableExists tableName="push_message_info"/>
+            </not>
+        </preConditions>
+        <renameTable oldTableName="PushMessageInformation" newTableName="push_message_info"/>
+    </changeSet>
+    <changeSet id="02" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="pushmessageinformation"/>
+            <not>
+                <tableExists tableName="push_message_info"/>
+            </not>
+        </preConditions>
+        <renameTable oldTableName="pushmessageinformation" newTableName="push_message_info"/>
+    </changeSet>
+    <changeSet id="03" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="rawJsonMessage"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="rawJsonMessage" newColumnName="raw_json_message" columnDataType="VARCHAR(4500)"/>
+    </changeSet>
+    <changeSet id="04" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="rawjsonmessage"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="rawjsonmessage" newColumnName="raw_json_message" columnDataType="VARCHAR(4500)"/>
+    </changeSet>
+    <changeSet id="05" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="ipAddress"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="ipAddress" newColumnName="ip_address" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="06" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="ipaddress"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="ipaddress" newColumnName="ip_address" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="07" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="submitDate"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="submitDate" newColumnName="submit_date" columnDataType="DATETIME"/>
+    </changeSet>
+    <changeSet id="08" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="submitdate"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="submitdate" newColumnName="submit_date" columnDataType="DATETIME"/>
+    </changeSet>
+    <changeSet id="09" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="totalReceivers"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="totalReceivers" newColumnName="total_receivers" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet id="10" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="totalreceivers"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="totalreceivers" newColumnName="total_receivers" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet id="11" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="clientIdentifier"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="clientIdentifier" newColumnName="client_identifier" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="12" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="clientidentifier"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="clientidentifier" newColumnName="client_identifier" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="13" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="pushApplicationId"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="pushApplicationId" newColumnName="push_application_id" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="14" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="push_message_info" columnName="pushapplicationid"/>
+        </preConditions>
+        <renameColumn tableName="push_message_info" oldColumnName="pushapplicationid" newColumnName="push_application_id" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="15" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="push_message_info" columnName="app_open_counter"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="push_message_info">
+            <column name="app_open_counter" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="16" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="push_message_info" columnName="first_open_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="push_message_info">
+            <column name="first_open_date" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="17" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="push_message_info" columnName="last_open_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="push_message_info">
+            <column name="last_open_date" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="18" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="push_message_info" columnName="served_variants"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="push_message_info">
+            <column name="served_variants" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="19" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="push_message_info" columnName="total_variants"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="push_message_info">
+            <column name="total_variants" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="20" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="app_open_counter"
+                             indexName="app_open_counter_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="app_open_counter_idx" tableName="push_message_info" unique="false">
+            <column name="app_open_counter"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="21" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="push_application_id"
+                             indexName="push_application_id_index"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="push_application_id_index" tableName="push_message_info" unique="false">
+            <column name="push_application_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="22" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="submit_date"
+                             indexName="submit_date_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="submit_date_idx" tableName="push_message_info" unique="false">
+            <column name="submit_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="23" author="qmx">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="push_message_info" columnNames="total_receivers"
+                             indexName="total_receivers_idx"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="total_receivers_idx" tableName="push_message_info" unique="false">
+            <column name="total_receivers"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="24" author="qmx">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="push_application_id"
+                              tableName="push_message_info"/>
+    </changeSet>
+</databaseChangeLog>

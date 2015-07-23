@@ -16,9 +16,9 @@
   limitations under the License.
 -->
 <dataset>
-    <table name="SA.PUSHAPPLICATION">
+    <table name="SA.PUSH_APPLICATION">
         <column>id</column>
-        <column>pushApplicationID</column>
+        <column>api_key</column>
         <column>name</column>
         <column>developer</column>
         <row>
@@ -34,12 +34,12 @@
             <value>admin</value>
         </row>
     </table>
-    <table name="SA.PUSHMESSAGEINFORMATION">
+    <table name="SA.PUSH_MESSAGE_INFO">
         <column>id</column>
-        <column>pushApplicationId</column>
-        <column>rawJsonMessage</column>
-        <column>submitDate</column>
-        <column>totalReceivers</column>
+        <column>push_application_id</column>
+        <column>raw_json_message</column>
+        <column>submit_date</column>
+        <column>total_receivers</column>
         <row>
             <value>1</value>
             <value>231231231</value>
@@ -62,12 +62,12 @@
             <value>0</value>
         </row>
     </table>
-    <table name="SA.VARIANTMETRICINFORMATION">
+    <table name="SA.VARIANT_METRIC_INFO">
         <column>id</column>
-        <column>deliveryStatus</column>
+        <column>delivery_status</column>
         <column>receivers</column>
-        <column>variantID</column>
-        <column>pushMessageInformation_id</column>
+        <column>variant_id</column>
+        <column>push_message_info_id</column>
         <row>
             <value>1</value>
             <value>false</value>
@@ -108,7 +108,7 @@
     <table name="SA.VARIANT">
         <column>id</column>
         <column>VARIANT_TYPE</column>
-        <column>variantID</column>
+        <column>api_key</column>
         <column>type</column>
         <column>developer</column>
         <row>
@@ -133,9 +133,9 @@
             <value>admin</value>
         </row>
     </table>
-    <table name="SA.ANDROIDVARIANT">
+    <table name="SA.ANDROID_VARIANT">
         <column>id</column>
-        <column>googleKey</column>
+        <column>google_key</column>
         <row>
             <value>1</value>
             <value>123</value>
@@ -149,8 +149,8 @@
             <value>123</value>
         </row>
     </table>
-    <table name="SA.IOSVARIANT"/>
-    <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.IOS_VARIANT"/>
+    <table name="SA.SIMPLE_PUSH_VARIANT"/>
     <table name="SA.INSTALLATION"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
 </dataset>

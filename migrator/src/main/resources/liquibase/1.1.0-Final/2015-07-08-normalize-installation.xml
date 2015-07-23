@@ -1,0 +1,84 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="01" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="deviceToken"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="deviceToken" newColumnName="device_token" columnDataType="VARCHAR(4096)"/>
+    </changeSet>
+    <changeSet id="02" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="devicetoken"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="devicetoken" newColumnName="device_token" columnDataType="VARCHAR(4096)"/>
+    </changeSet>
+    <changeSet id="03" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="deviceType"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="deviceType" newColumnName="device_type" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="04" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="devicetype"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="devicetype" newColumnName="device_type" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="05" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="operatingSystem"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="operatingSystem" newColumnName="operating_system" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="06" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="operatingsystem"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="operatingsystem" newColumnName="operating_system" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="07" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="osVersion"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="osVersion" newColumnName="os_version" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="08" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="osversion"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="osversion" newColumnName="os_version" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="09" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="variantID"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="variantID" newColumnName="variant_id" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="10" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="installation" columnName="variantid"/>
+        </preConditions>
+        <renameColumn tableName="installation" oldColumnName="variantid" newColumnName="variant_id" columnDataType="VARCHAR(255)"/>
+    </changeSet>
+</databaseChangeLog>

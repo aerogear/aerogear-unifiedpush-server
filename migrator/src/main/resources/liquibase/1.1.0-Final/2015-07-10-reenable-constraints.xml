@@ -1,0 +1,120 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="qmx" id="1436957323846-1">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="windows_mpns_variant"
+                                 constraintName="fk_649wp2ys69m1jxb33tl3trjig" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-2">
+        <addForeignKeyConstraint baseColumnNames="push_application_id" baseTableName="variant"
+                                 constraintName="fk_7vjqh1lbqvlh4ni98qnh8hxkr" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="push_application"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-3">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="ios_variant"
+                                 constraintName="fk_a7ndfcxa9m4wt4m2x2mxajr56" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-4">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="android_variant"
+                                 constraintName="fk_abna7p5c0p8ju2pf4ucqv5cby" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-5">
+        <addForeignKeyConstraint baseColumnNames="push_message_info_id" baseTableName="variant_metric_info"
+                                 constraintName="fk_ci9sa3eevtel9l172w9b0musj" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="push_message_info"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-6">
+        <addForeignKeyConstraint baseColumnNames="installation_id" baseTableName="installation_category"
+                                 constraintName="fk_dttushnsf13kdwywyba8njqv7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="installation"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-7">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="simple_push_variant"
+                                 constraintName="fk_hombuwogx5wv7hnup407gnwpg" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-8">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="windows_wns_variant"
+                                 constraintName="fk_omslx9kb1rm4p2s8t5qvf4wrp" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-9">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="installation_category"
+                                 constraintName="fk_ox56uwmry1x6kfoi3dkw1to8o" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="category"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-10">
+        <customChange class="org.jboss.aerogear.unifiedpush.migrator.GetRidOfApiKeysMigration"/>
+    </changeSet>
+    <changeSet author="qmx" id="1436957323846-11">
+        <addForeignKeyConstraint baseColumnNames="variant_id" baseTableName="installation"
+                                 constraintName="fk_q1c2n4kjui158w3t1llg99koq" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-12">
+        <addNotNullConstraint tableName="push_message_info" columnName="total_variants"
+                                defaultNullValue="0" columnDataType="INT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-13">
+        <addNotNullConstraint tableName="push_message_info" columnName="served_variants"
+                                defaultNullValue="0" columnDataType="INT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-14">
+        <addNotNullConstraint tableName="push_message_info" columnName="app_open_counter"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-15">
+        <addNotNullConstraint tableName="push_message_info" columnName="total_receivers"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-16">
+        <addNotNullConstraint tableName="variant_metric_info" columnName="receivers"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-17">
+        <addNotNullConstraint tableName="variant_metric_info" columnName="variant_open_counter"
+                              defaultNullValue="0" columnDataType="BIGINT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-18">
+        <addNotNullConstraint tableName="variant_metric_info" columnName="total_batches"
+                              defaultNullValue="0" columnDataType="INT"/>
+    </changeSet>
+    <changeSet author="danbev" id="1436957323846-19">
+        <addNotNullConstraint tableName="variant_metric_info" columnName="served_batches"
+                              defaultNullValue="0" columnDataType="INT"/>
+    </changeSet>
+</databaseChangeLog>
