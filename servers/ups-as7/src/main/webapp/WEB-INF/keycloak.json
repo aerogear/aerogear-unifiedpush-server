@@ -1,7 +1,7 @@
 {
   "realm" : "aerogear",
   "auth-server-url" : "/auth",
-  "ssl-required" : "external",
+  "ssl-required" : "none",
   "resource" : "unified-push-server",
   "bearer-only" : true,
   "disable-trust-manager" : true
