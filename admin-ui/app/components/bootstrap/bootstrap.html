@@ -1,7 +1,7 @@
 <form name="form" class="ups-add-variable form-horizontal">
 
-  <div class="form-group">
-    <label class="col-sm-3 control-label">Choose a platform</label>
+  <div class="form-group" ng-if="bootstrap.allowCreate('android')">
+    <label class="col-sm-3 control-label"></label>
     <div class="col-sm-9">
       <div class="checkbox">
         <label>
@@ -32,7 +32,7 @@
   </div>
 
 
-  <div class="form-group">
+  <div class="form-group" ng-if="bootstrap.allowCreate('ios')">
     <label class="col-sm-3 control-label sr-only">iOS</label>
     <div class="col-sm-9">
       <div class="checkbox">
@@ -93,7 +93,7 @@
   </div>
 
 
-  <div class="form-group">
+  <div class="form-group" ng-if="bootstrap.allowCreate('windows_wns')">
     <label class="col-sm-3 control-label sr-only">Windows WNS</label>
     <div class="col-sm-9">
       <div class="checkbox">
@@ -124,7 +124,7 @@
   </div>
 
 
-  <div class="form-group">
+  <div class="form-group" ng-if="bootstrap.allowCreate('windows_mpns')">
     <label class="col-sm-3 control-label sr-only">Windows MPNS</label>
     <div class="col-sm-9">
       <div class="checkbox">
@@ -139,7 +139,7 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" ng-if="bootstrap.allowCreate('simplePush')">
     <label class="col-sm-3 control-label sr-only">SimplePush</label>
     <div class="col-sm-9">
       <div class="checkbox">
@@ -154,7 +154,7 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" ng-if="bootstrap.allowCreate('adm')">
     <label class="col-sm-3 control-label sr-only">ADM</label>
     <div class="col-sm-9">
       <div class="checkbox">

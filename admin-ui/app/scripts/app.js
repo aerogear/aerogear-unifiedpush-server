@@ -1,6 +1,7 @@
 'use strict';
 
 /*jshint unused: false*/
+/*jshint bitwise: false*/
 (function() {
 
   var app = angular.module('upsConsole', [
@@ -40,8 +41,6 @@
     };
   });
 
-  app.value('apiPrefix', '');
-
   app.config(function ($logProvider, appConfigProvider) {
     var appConfig = appConfigProvider.$get();
     $logProvider.debugEnabled( appConfig.logDebugEnabled );
@@ -58,6 +57,21 @@
 
   app.config(function(ngClipProvider) {
     ngClipProvider.setPath('img/ZeroClipboard.swf');
+  });
+
+  app.value('apiPrefix', '');
+
+  app.value('bootstrapedAppName', function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  });
+
+  app.constant('allVariantTypes', ['android', 'ios', 'windows_mpns', 'windows_wns', 'simplePush', 'adm']);
+
+  app.value('allowCreateVariant', function( app, variantType ) {
+    return true;
   });
 
 })();
