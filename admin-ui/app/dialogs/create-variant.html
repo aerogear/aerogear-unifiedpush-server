@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-if="isNew">
+    <div class="form-group" ng-if="isNew && allowCreate('android')">
       <label class="col-sm-3 control-label" for="optionAndroid">Choose a platform</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -30,7 +30,7 @@
     </div>
 
 
-    <div class="form-group" ng-if="isNew">
+    <div class="form-group" ng-if="isNew && allowCreate('ios')">
       <label class="col-sm-3 control-label sr-only" for="optionIos">iOS</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -46,7 +46,7 @@
     </div>
 
 
-    <div class="form-group" ng-if="isNew">
+    <div class="form-group" ng-if="isNew && (allowCreate('windows_wns') ||  allowCreate('windows_mpns'))">
       <label class="col-sm-3 control-label sr-only" for="optionWindows">Windows</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-if="isNew">
+    <div class="form-group" ng-if="isNew && allowCreate('simplePush')">
       <label class="col-sm-3 control-label sr-only" for="optionSimplePush">SimplePush</label>
       <div class="col-sm-9">
         <div class="radio">
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-if="isNew">
+    <div class="form-group" ng-if="isNew && allowCreate('adm')">
       <label class="col-sm-3 control-label sr-only" for="optionsAdm">ADM</label>
       <div class="col-sm-9">
         <div class="radio">

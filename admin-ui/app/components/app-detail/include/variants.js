@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter ) {
+  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter, allowCreateVariant, allVariantTypes ) {
 
     var self = this;
 
@@ -163,7 +163,6 @@ angular.module('upsConsole')
             importerEndpoint.import(null, fd, function(){
               Notifications.success('Import processing has started');
               $modalInstance.close();
-              //updateCounts();
             });
           };
           $scope.dismiss = function() {
@@ -196,6 +195,12 @@ angular.module('upsConsole')
       return warnings.filter(function( warning ) {
         return warning.variant.variantID == variant.variantID;
       });
-    }
+    };
+
+    this.isAllowedToAddVariant = function() {
+      return allVariantTypes.some(function( variantType ) {
+        return allowCreateVariant( self.app, variantType );
+      });
+    };
 
   });

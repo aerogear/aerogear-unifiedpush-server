@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint) {
+angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint, allowCreateVariant) {
   var service = {
 
     editName: function(app, variant) {
@@ -62,6 +62,10 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
               return $scope.variant.certificates.length > 0;
             }
             return true;
+          };
+
+          $scope.allowCreate = function( variantType ) {
+            return allowCreateVariant( app, variantType );
           };
         }
       }).result;
