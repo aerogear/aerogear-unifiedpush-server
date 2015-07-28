@@ -52,6 +52,12 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                     Constants.ERROR_NOT_REGISTERED)        // The user has uninstalled the application or turned off notifications.
             );
 
+    /**
+     * The topics prefix is defined in Google's documentation here : 
+     * {@link https://developers.google.com/cloud-messaging/topic-messaging#sending_topic_messages_from_the_server}
+     */
+    private static final String GCM_TOPIC_PREFIX = "/topics/";
+    
     @Inject
     private ClientInstallationService clientInstallationService;
 
@@ -69,7 +75,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final List<String>  registrationIDs = new ArrayList<String>(tokens);
+        final List<String>  registrationIDs = findRegistrationIDs(tokens);
+        final List<String>  topics          = findTopics(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
@@ -173,5 +180,25 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         // trigger asynchronous deletion:
         logger.fine("Deleting '" + inactiveTokens.size() + "' invalid Android installations");
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+    }
+
+    private List<String> findRegistrationIDs(Collection<String> tokens) {
+        List<String> registrationIDs = new ArrayList<String>(tokens.size()); //Upperbounds
+        for (String token : tokens) {
+            if (!token.startsWith(GCM_TOPIC_PREFIX)) {
+                registrationIDs.add(token);
+            }
+        }
+        return registrationIDs;
+    }
+
+    private List<String> findTopics(Collection<String> tokens) {
+        List<String> topics = new ArrayList<String>(tokens.size()); //Upperbounds
+        for (String token : tokens) {
+            if (token.startsWith(GCM_TOPIC_PREFIX)) {
+                topics.add(token);
+            }
+        }
+        return topics;
     }
 }
