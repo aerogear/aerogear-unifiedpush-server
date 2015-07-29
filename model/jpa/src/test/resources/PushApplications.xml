@@ -16,9 +16,9 @@
   limitations under the License.
 -->
 <dataset>
-    <table name="SA.PUSHAPPLICATION">
+    <table name="SA.PUSH_APPLICATION">
         <column>id</column>
-        <column>pushApplicationID</column>
+        <column>api_key</column>
         <column>description</column>
         <column>name</column>
         <column>developer</column>
@@ -48,8 +48,8 @@
         <column>id</column>
         <column>VARIANT_TYPE</column>
         <column>name</column>
-        <column>variantID</column>
-        <column>variants_id</column>
+        <column>api_key</column>
+        <column>push_application_id</column>
         <column>type</column>
         <row>
             <value>1</value>
@@ -76,9 +76,9 @@
             <value>1</value>
         </row>
     </table>
-    <table name="SA.ANDROIDVARIANT">
+    <table name="SA.ANDROID_VARIANT">
         <column>id</column>
-        <column>googleKey</column>
+        <column>google_key</column>
         <row>
             <value>1</value>
             <value>KEY...</value>
@@ -88,7 +88,7 @@
             <value>123</value>
         </row>
     </table>
-    <table name="SA.IOSVARIANT">
+    <table name="SA.IOS_VARIANT">
         <column>id</column>
         <column>cert_data</column>
         <column>passphrase</column>
@@ -101,13 +101,13 @@
         </row>
     </table>
 
-    <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.SIMPLE_PUSH_VARIANT"/>
 
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>
-        <column>deviceToken</column>
-        <column>variantID</column>
+        <column>device_token</column>
+        <column>variant_id</column>
         <row>
             <value>1</value>
             <value>true</value>

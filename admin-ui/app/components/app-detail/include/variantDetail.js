@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantDetailController', function ( $modal, variantModal, $scope, installationsEndpoint ) {
+  .controller('VariantDetailController', function ( $modal, variantModal, $scope, installationsEndpoint, ContextProvider ) {
 
     var self = this;
 
@@ -12,6 +12,7 @@ angular.module('upsConsole')
     this.perPage = 10;
     this.searchString = '';
     this.forceShowSnippets = false;
+    this.contextPath = ContextProvider.contextPath();
 
     function fetchInstallations( page, searchString ) {
       installationsEndpoint.fetchInstallations(self.variant.variantID, searchString, page, self.perPage)

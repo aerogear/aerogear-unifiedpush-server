@@ -20,7 +20,7 @@
         <column>id</column>
         <column>VARIANT_TYPE</column>
         <column>name</column>
-        <column>variantID</column>
+        <column>api_key</column>
         <column>type</column>
         <column>developer</column>
         <row>
@@ -41,9 +41,9 @@
         </row>
     </table>
 
-    <table name="SA.ANDROIDVARIANT">
+    <table name="SA.ANDROID_VARIANT">
         <column>id</column>
-        <column>googleKey</column>
+        <column>google_key</column>
         <row>
             <value>1</value>
             <value>KEY</value>
@@ -53,14 +53,14 @@
             <value>123</value>
         </row>
     </table>
-    <table name="SA.IOSVARIANT"/>
-    <table name="SA.SIMPLEPUSHVARIANT"/>
+    <table name="SA.IOS_VARIANT"/>
+    <table name="SA.SIMPLE_PUSH_VARIANT"/>
 
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>
-        <column>deviceToken</column>
-        <column>variantID</column>
+        <column>device_token</column>
+        <column>variant_id</column>
         <row>
             <value>1</value>
             <value>true</value>

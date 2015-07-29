@@ -16,10 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import static org.jboss.aerogear.unifiedpush.message.sender.WNSPushNotificationSender.createLaunchParam;
-
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -102,5 +101,12 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
         }
 
         senderCallback.onSuccess();
+    }
+
+    static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
+        if (page != null) {
+            return WNSPushNotificationSender.createLaunchParam(page, message, data, pushMessageInformationId);
+        }
+        return null;
     }
 }

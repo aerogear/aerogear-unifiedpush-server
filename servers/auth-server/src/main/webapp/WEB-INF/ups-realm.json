@@ -6,7 +6,6 @@
     "accessCodeLifespanUserAction": 300,
     "ssoSessionIdleTimeout": 600,
     "ssoSessionMaxLifespan": 36000,
-    "passwordCredentialGrantAllowed": true,
     "sslRequired": "external",
     "registrationAllowed": false,
     "social": false,
@@ -15,6 +14,7 @@
     "loginTheme": "aerogear",
     "updateProfileOnInitialSocialLogin": false,
     "requiredCredentials": [ "password" ],
+    "defaultRoles": [ "developer" ],
     "users" : [
         {
             "username" : "admin",

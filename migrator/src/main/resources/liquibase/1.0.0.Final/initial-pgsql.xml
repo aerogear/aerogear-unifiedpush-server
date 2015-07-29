@@ -1,0 +1,397 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="001" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="androidvariant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="androidvariant">
+            <column name="googlekey" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="projectnumber" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="002" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="chromepackagedappvariant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="chromepackagedappvariant">
+            <column name="clientid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientsecret" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refreshtoken" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="003" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="installation"/>
+            </not>
+        </preConditions>
+        <createTable tableName="installation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="devicetoken" type="VARCHAR(4096)"/>
+            <column name="devicetype" type="VARCHAR(255)"/>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operatingsystem" type="VARCHAR(255)"/>
+            <column name="osversion" type="VARCHAR(255)"/>
+            <column name="platform" type="VARCHAR(255)"/>
+            <column name="variantid" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="004" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="installation_categories"/>
+            </not>
+        </preConditions>
+        <createTable tableName="installation_categories">
+            <column name="installation_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categories" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="005" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="pushapplication"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pushapplication">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="mastersecret" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pushapplicationid" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="006" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="pushmessageinformation"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pushmessageinformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clientidentifier" type="VARCHAR(255)"/>
+            <column name="ipaddress" type="VARCHAR(255)"/>
+            <column name="pushapplicationid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rawjsonmessage" type="VARCHAR(4500)"/>
+            <column name="submitdate" type="DATETIME"/>
+            <column name="totalreceivers" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="007" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="simplepushvariant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="simplepushvariant">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="008" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="variant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="variant">
+            <column name="VARIANT_TYPE" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="developer" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="secret" type="VARCHAR(255)"/>
+            <column name="type" type="INT"/>
+            <column name="variantid" type="VARCHAR(255)"/>
+            <column name="variants_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="009" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="variantmetricinformation"/>
+            </not>
+        </preConditions>
+        <createTable tableName="variantmetricinformation">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deliverystatus" type="BOOLEAN"/>
+            <column name="reason" type="VARCHAR(255)"/>
+            <column name="receivers" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="variantinformations_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="010" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="iosvariant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="iosvariant">
+            <column name="certificate" type="OID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passphrase" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="production" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="011" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="androidvariant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="androidvariant_pkey" tableName="androidvariant"/>
+    </changeSet>
+    <changeSet id="012" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="chromepackagedappvariant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="chromepackagedappvariant_pkey"
+                       tableName="chromepackagedappvariant"/>
+    </changeSet>
+    <changeSet id="013" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="installation"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="installation_pkey" tableName="installation"/>
+    </changeSet>
+    <changeSet id="014" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="PushApplication"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="pushapplication_pkey" tableName="pushapplication"/>
+    </changeSet>
+    <changeSet id="015" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="pushmessageinformation"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="pushmessageinformation_pkey"
+                       tableName="pushmessageinformation"/>
+    </changeSet>
+    <changeSet id="016" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="simplepushvariant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="simplepushvariant_pkey" tableName="simplepushvariant"/>
+    </changeSet>
+    <changeSet id="017" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="variant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="variant_pkey" tableName="variant"/>
+    </changeSet>
+    <changeSet id="018" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="variantmetricinformation"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="variantmetricinformation_pkey"
+                       tableName="variantmetricinformation"/>
+    </changeSet>
+    <changeSet id="019" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="iosvariant"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey columnNames="id" constraintName="iosvariant_pkey" tableName="iosvariant"/>
+    </changeSet>
+    <changeSet id="020" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="uk_jlpkx1qkcjaps25wqhp4nkfel" tableName="variant" columnNames="variantid"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint columnNames="variantid" constraintName="uk_jlpkx1qkcjaps25wqhp4nkfel" deferrable="false"
+                             disabled="false" initiallyDeferred="false" tableName="variant"/>
+    </changeSet>
+    <changeSet id="021" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation_categories"
+                                            foreignKeyName="fk_7jk4ols9cel7xo5bi10yk1gvl"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="installation_id" baseTableName="installation_categories"
+                                 constraintName="fk_7jk4ols9cel7xo5bi10yk1gvl" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="installation"/>
+    </changeSet>
+    <changeSet id="022" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="variant"
+                                            foreignKeyName="fk_7vjqh1lbqvlh4ni98qnh8hxkr"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="variants_id" baseTableName="variant"
+                                 constraintName="fk_7vjqh1lbqvlh4ni98qnh8hxkr" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="pushapplication"/>
+    </changeSet>
+    <changeSet id="023" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="iosvariant"
+                                            foreignKeyName="fk_a7ndfcxa9m4wt4m2x2mxajr56"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="iosvariant"
+                                 constraintName="fk_a7ndfcxa9m4wt4m2x2mxajr56" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet id="024" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="androidvariant"
+                                            foreignKeyName="fk_abna7p5c0p8ju2pf4ucqv5cby"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="androidvariant"
+                                 constraintName="fk_abna7p5c0p8ju2pf4ucqv5cby" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet id="025" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="variantmetricinformation"
+                                            foreignKeyName="fk_ci9sa3eevtel9l172w9b0musj"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="variantinformations_id" baseTableName="variantmetricinformation"
+                                 constraintName="fk_ci9sa3eevtel9l172w9b0musj" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="pushmessageinformation"/>
+    </changeSet>
+    <changeSet id="026" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="chromepackagedappvariant"
+                                            foreignKeyName="fk_craam2a14eghbd6ohlnbbe7bq"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="chromepackagedappvariant"
+                                 constraintName="fk_craam2a14eghbd6ohlnbbe7bq" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet id="027" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="simplepushvariant"
+                                            foreignKeyName="fk_hombuwogx5wv7hnup407gnwpg"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="simplepushvariant"
+                                 constraintName="fk_hombuwogx5wv7hnup407gnwpg" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="variant"/>
+    </changeSet>
+    <changeSet id="028" author="generated" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                            foreignKeyName="fk_se07q3nt9pb7v949p4ia77uvc"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="variantid" baseTableName="installation"
+                                 constraintName="fk_se07q3nt9pb7v949p4ia77uvc" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="variantid" referencedTableName="variant"/>
+    </changeSet>
+
+
+</databaseChangeLog>

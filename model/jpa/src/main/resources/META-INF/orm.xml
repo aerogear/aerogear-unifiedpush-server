@@ -31,25 +31,72 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </mapped-superclass>
     <entity class="Variant" access="PROPERTY">
+        <table name="variant"/>
         <inheritance strategy="JOINED"/>
         <discriminator-column name="VARIANT_TYPE" discriminator-type="STRING"/>
+        <attributes>
+            <basic name="name">
+                <column name="name" length="255"/>
+            </basic>
+            <basic name="description">
+                <column name="description" length="255"/>
+            </basic>
+            <basic name="variantID">
+                <column name="api_key"/>
+            </basic>
+            <basic name="secret">
+                <column name="secret"/>
+            </basic>
+            <basic name="developer">
+                <column name="developer"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="AndroidVariant" access="FIELD">
+        <table name="android_variant"/>
         <discriminator-value>android</discriminator-value>
+        <attributes>
+            <basic name="googleKey">
+                <column name="google_key" length="255" nullable="false"/>
+            </basic>
+            <basic name="projectNumber">
+                <column name="project_number" length="255"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">
+        <table name="ios_variant"/>
         <discriminator-value>ios</discriminator-value>
         <attributes>
             <basic name="certificateData">
                 <column name="cert_data" length="100000"/>
             </basic>
+            <basic name="production">
+                <column name="production" nullable="false" />
+            </basic>
         </attributes>
     </entity>
     <entity class="PushApplication" access="FIELD">
+        <table name="push_application"/>
         <attributes>
+            <basic name="name">
+                <column name="name" length="255" nullable="false"/>
+            </basic>
+            <basic name="description">
+                <column name="description" length="255"/>
+            </basic>
+            <basic name="pushApplicationID">
+                <column name="api_key"/>
+            </basic>
+            <basic name="masterSecret">
+                <column name="master_secret" />
+            </basic>
+            <basic name="developer">
+                <column name="developer" length="255"/>
+            </basic>
             <one-to-many name="variants" fetch="EAGER">
                 <order-by>type asc</order-by>
-                <join-column/>
+                <join-column name="push_application_id"/>
                 <cascade>
                     <cascade-remove/>
                 </cascade>
@@ -57,40 +104,36 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="SimplePushVariant" access="FIELD">
+        <table name="simple_push_variant"/>
         <discriminator-value>simplePush</discriminator-value>
     </entity>
     <entity class="AdmVariant" access="FIELD">
+        <table name="adm_variant"/>
         <discriminator-value>admVariant</discriminator-value>
+        <attributes>
+            <basic name="clientId">
+                <column name="client_id" nullable="false" length="255"/>
+            </basic>
+            <basic name="clientSecret">
+                <column name="client_secret" length="255"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
+        <table name="windows_wns_variant"/>
         <discriminator-value>windows_wns</discriminator-value>
+        <attributes>
+            <basic name="sid">
+                <column name="sid" length="255" nullable="false"/>
+            </basic>
+            <basic name="clientSecret">
+                <column name="client_secret" length="255" nullable="false"/>
+            </basic>
+        </attributes>
     </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant" access="FIELD">
+        <table name="windows_mpns_variant"/>
         <discriminator-value>windows_mpns</discriminator-value>
-    </entity>
-
-
-    <entity class="PushMessageInformation" access="FIELD">
-        <attributes>
-            <basic name="submitDate">
-                <temporal>TIMESTAMP</temporal>
-            </basic>
-            <basic name="rawJsonMessage">
-                <column length="4500" />
-            </basic>
-            <one-to-many name="variantInformations" fetch="EAGER">
-                <join-column />
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
-        </attributes>
-    </entity>
-
-    <entity class="VariantMetricInformation" access="FIELD">
-        <attributes>
-            <many-to-one name="pushMessageInformation"/>
-        </attributes>
     </entity>
 
 </entity-mappings>

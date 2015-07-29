@@ -5,6 +5,7 @@ angular.module('upsConsole')
     $router.config([
       {path: '/',                     component: 'home'},
       {path: '/welcome',              component: 'welcome'},
+      {path: '/bootstrap',              component: 'bootstrap'},
       {path: '/wizard/create-app',    component: 'wizard01CreateApp'},
       {path: '/wizard/add-variant',   component: 'wizard02AddVariant'},
       {path: '/wizard/register-device',  component: 'wizard03RegisterDevice'},

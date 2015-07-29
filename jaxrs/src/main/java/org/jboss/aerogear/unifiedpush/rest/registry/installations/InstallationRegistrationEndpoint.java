@@ -22,6 +22,7 @@ import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -161,8 +162,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
 
-        // Poor validation: We require the Token
-        if (entity.getDeviceToken() == null || entity.getDeviceToken().isEmpty()) {
+        // Poor up-front validation for required token
+        final String deviceToken = entity.getDeviceToken();
+        if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
+            logger.finest("Invalid device token was delivered: " + deviceToken);
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 

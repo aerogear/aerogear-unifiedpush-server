@@ -68,6 +68,18 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
         }
         final VariantType type = installation.getVariant().getType();
 
+        return isValidDeviceTokenForVariant(deviceToken, type);
+    }
+
+
+    /**
+     * Helper to run quick up-front validations.
+     *
+     * @param deviceToken the submitted device token
+     * @param type type of the variant
+     * @return true if the token is valid
+     */
+    public static boolean isValidDeviceTokenForVariant(final String deviceToken, final VariantType type) {
         switch (type) {
             case IOS:
                 return IOS_DEVICE_TOKEN.matcher(deviceToken).matches();
@@ -83,5 +95,4 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
         }
         return false;
     }
-
 }

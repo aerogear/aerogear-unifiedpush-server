@@ -127,15 +127,13 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public List<String> findVariantIDsWithWarnings() {
         return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.variantID IN (select t.variantID from Variant t)" +
-                " and vmi.deliveryStatus = false", String.class)
+                " where vmi.deliveryStatus = false", String.class)
                 .getResultList();
     }
 
     @Override
     public List<PushMessageInformation> findLatestActivity(int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
-                " IN (select p.pushApplicationID from PushApplication p)" +
+        return createQuery("select pmi from PushMessageInformation pmi" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setMaxResults(maxResults)
                 .getResultList();
@@ -143,8 +141,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForApplications() {
-        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
-                "IN (select p.pushApplicationID from PushApplication p)", Long.class).getSingleResult();
+        return createQuery("select count(pmi) from PushMessageInformation pmi", Long.class).getSingleResult();
     }
 
     /**

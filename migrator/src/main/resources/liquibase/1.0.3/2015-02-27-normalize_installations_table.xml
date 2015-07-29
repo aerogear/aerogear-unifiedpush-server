@@ -1,0 +1,73 @@
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="001" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Installation"/>
+            <not>
+                <tableExists tableName="installation"/>
+            </not>
+        </preConditions>
+        <renameTable oldTableName="Installation" newTableName="installation"/>
+    </changeSet>
+    <changeSet id="002m" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="FK_se07q3nt9pb7v949p4ia77uvc"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="FK_se07q3nt9pb7v949p4ia77uvc"/>
+    </changeSet>
+    <changeSet id="002p" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                        foreignKeyName="fk_se07q3nt9pb7v949p4ia77uvc"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="installation" constraintName="fk_se07q3nt9pb7v949p4ia77uvc"/>
+    </changeSet>
+    <changeSet id="003m" author="qmx" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                            foreignKeyName="fk_na86cvm4h3gytxsyqdugc2o74"/>
+
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="variantID" baseTableName="installation"
+                                 constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="variantID" referencedTableName="Variant"/>
+    </changeSet>
+    <changeSet id="003p" author="qmx" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="installation"
+                                            foreignKeyName="fk_na86cvm4h3gytxsyqdugc2o74"/>
+
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="variantid" baseTableName="installation"
+                                 constraintName="fk_na86cvm4h3gytxsyqdugc2o74" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="variantid" referencedTableName="variant"/>
+    </changeSet>
+</databaseChangeLog>

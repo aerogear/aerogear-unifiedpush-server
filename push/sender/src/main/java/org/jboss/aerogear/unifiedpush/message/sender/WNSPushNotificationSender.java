@@ -67,26 +67,32 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         ArrayList<String> channelUris = new ArrayList<String>(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
+        	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
+        	int ttl = pushMessage.getConfig().getTimeToLive();
+            if (ttl != -1) {
+                optional.ttl = String.valueOf(ttl);
+            }
+        	
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {
                 switch (message.getWindows().getType()) {
                     case toast:
-                        responses = wnsService.pushToast(channelUris, createToastMessage(message));
+                        responses = wnsService.pushToast(channelUris, optional, createToastMessage(message));
                         break;
                     case badge:
-                        responses = wnsService.pushBadge(channelUris, createBadgeMessage(message));
+                        responses = wnsService.pushBadge(channelUris, optional, createBadgeMessage(message));
                         break;
                     case raw:
-                        responses = wnsService.pushRaw(channelUris, createRawMessage(message));
+                        responses = wnsService.pushRaw(channelUris, optional, createRawMessage(message));
                         break;
                     case tile:
-                        responses = wnsService.pushTile(channelUris, createTileMessage(message));
+                        responses = wnsService.pushTile(channelUris, optional, createTileMessage(message));
                         break;
                     default:
                         throw new IllegalArgumentException("unknown type: " + message.getWindows().getType());
                 }
             } else {
-                responses = wnsService.pushToast(channelUris, createSimpleToastMessage(message));
+                responses = wnsService.pushToast(channelUris, optional, createSimpleToastMessage(message));
             }
 
             for (WnsNotificationResponse response : responses) {
@@ -188,19 +194,16 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     }
 
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
-        if (page != null) {
-            final UriBuilder uriBuilder = UriBuilder.fromPath("");
-            for (Map.Entry<String, Object> entry : data.entrySet()) {
-                uriBuilder.queryParam(entry.getKey(), entry.getValue());
-            }
-            if (message != null) {
-                uriBuilder.queryParam("message", message);
-            }
-            //add aerogear-push-id
-            uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
-            final String query = uriBuilder.build().getQuery();
-            return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
+        final UriBuilder uriBuilder = UriBuilder.fromPath("");
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            uriBuilder.queryParam(entry.getKey(), entry.getValue());
         }
-        return null;
+        if (message != null) {
+            uriBuilder.queryParam("message", message);
+        }
+        //add aerogear-push-id
+        uriBuilder.queryParam(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
+        final String query = uriBuilder.build().getQuery();
+        return (CORDOVA.equals(page) ? CORDOVA_PAGE : page) + (query != null ? ("?" + query) : "");
     }
 }

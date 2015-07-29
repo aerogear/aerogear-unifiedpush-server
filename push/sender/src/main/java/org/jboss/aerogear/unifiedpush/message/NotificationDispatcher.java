@@ -108,7 +108,7 @@ public class NotificationDispatcher {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setPushMessageInformation(pushMessageInformation);
         variantMetricInformation.setVariantID(variantID);
-        variantMetricInformation.setReceivers(receivers);
+        variantMetricInformation.setReceivers(Long.valueOf(receivers));
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
         variantMetricInformation.setServedBatches(1);

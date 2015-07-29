@@ -42,11 +42,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
                     + " from Installation installation"
                     + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
+                    + " join installation.variant abstractVariant where abstractVariant.id = :variantID AND installation.enabled = true";
 
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
                     + " JOIN installation.variant v"
-                    + " WHERE v.variantID = :variantID";
+                    + " WHERE v.id = :variantID";
 
     public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
 
@@ -59,12 +59,12 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("developer", developer);
         }
         if (search != null) {
-            jpqlBase.append(" AND ( deviceToken LIKE :search"
-                    + " OR deviceType LIKE :search"
-                    + " OR platform LIKE :search"
-                    + " OR operatingSystem LIKE :search"
-                    + " OR osVersion LIKE :search"
-                    + " OR alias LIKE :search )");
+            jpqlBase.append(" AND ( installation.deviceToken LIKE :search"
+                    + " OR installation.deviceType LIKE :search"
+                    + " OR installation.platform LIKE :search"
+                    + " OR installation.operatingSystem LIKE :search"
+                    + " OR installation.osVersion LIKE :search"
+                    + " OR installation.alias LIKE :search )");
             parameters.put("search", "%" + search + "%");
         }
 
@@ -95,7 +95,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         return getSingleResultForQuery(createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant" +
-                " where abstractVariant.variantID = :variantID" +
+                " where abstractVariant.id = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
@@ -111,7 +111,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         return createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant " +
-                " where abstractVariant.variantID = :variantID" +
+                " where abstractVariant.id = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)
