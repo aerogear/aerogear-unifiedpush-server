@@ -113,8 +113,9 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
-            processGCM(androidVariant, registrationIDs, gcmMessage, sender);
-
+            processDirectMessages(androidVariant, registrationIDs, gcmMessage, sender);
+            processTopicMessages(androidVariant, topics, gcmMessage, sender);
+            
             logger.info("Message batch to GCM has been submitted");
             callback.onSuccess();
 
@@ -126,16 +127,37 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.     *
+     * Process the HTTP POST to the GCM infrastructure for the given list of registrationIDs.     *
      */
-    private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
+    private void processDirectMessages(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
         logger.info("Sending payload for [" + registrationIDs.size() + "] devices to GCM");
 
-        MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+        MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, registrationIDs);
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
+    }
+    
+    /**
+     * Process the HTTP POST to the GCM infrastructure for the given list of topics.
+     */
+    private void processTopicMessages(AndroidVariant androidVariant, List<String> topics, Message gcmMessage, Sender sender) throws IOException {
+
+        logger.info("Sending payload for [" + topics.size() + "] topics to GCM");
+
+        for (String topic : topics) {
+            Result result = sender.sendNoRetry(gcmMessage, topic);
+            if (Constants.ERROR_TOPIC_TOO_MANY_SUBSCRIBERS.equals(result.getErrorCodeName())) {
+                logger.severe("Topic '" + topic + "' has more than one million subscribers and must be resent as individual messages.");
+                //TODO: Resend as individual messages
+            } else if(Constants.ERROR_TOPIC_INVALID_PARAMETERS.equals(result.getErrorCodeName())) {
+                logger.severe("Topic message to '" + topic + "' has invalid parameters.");
+                logger.severe(gcmMessage.toString());
+                //TODO: Handle bad topic name
+            }
+        }
+        
     }
 
     /**
