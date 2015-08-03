@@ -116,7 +116,7 @@ public interface ClientInstallationService {
     /**
      * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria.
      *
-     * @param variantID the variantID for the filter
+     * @param variantID the variantId for the filter
      * @param categories applied categories for the filter
      * @param aliases applied aliases for the filter
      * @param deviceTypes applied deviceTypes for the filter
@@ -126,5 +126,19 @@ public interface ClientInstallationService {
      * @return list of device tokens that matches this filter
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    
+    /**
+     * Used for (Android/iOS) Sender API. Queries the available device-tokens for a given variant, based on provided criteria.
+     *
+     * @param variant the variant for the filter
+     * @param categories applied categories for the filter
+     * @param aliases applied aliases for the filter
+     * @param deviceTypes applied deviceTypes for the filter
+     * @param maxResults number of maxResults for the filter
+     * @param lastTokenFromPreviousBatch identifier of the last fetched token
+     *
+     * @return list of device tokens that matches this filter
+     */
+    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(Variant variant, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
 }

@@ -113,15 +113,20 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
-            processDirectMessages(androidVariant, registrationIDs, gcmMessage, sender);
-            processTopicMessages(androidVariant, topics, gcmMessage, sender);
+            if (registrationIDs.size() > 0) {
+                processDirectMessages(androidVariant, registrationIDs, gcmMessage, sender);
+            }
+            
+            if (topics.size() > 0) {
+                processTopicMessages(androidVariant, topics, gcmMessage, sender);
+            }
             
             logger.info("Message batch to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
             // GCM exceptions:
-            logger.severe("Error sending payload to GCM server");
+            logger.severe("Error sending payload to GCM server", e);
             callback.onError("Error sending payload to GCM server");
         }
     }
