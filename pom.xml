@@ -52,6 +52,7 @@
     <modules>
         <module>model</module>
         <module>migrator</module>
+        <module>gcm</module>
         <module>push</module>
         <module>service</module>
         <module>jaxrs</module>
