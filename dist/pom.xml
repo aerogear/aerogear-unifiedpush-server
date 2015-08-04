@@ -26,6 +26,9 @@
     <artifactId>unifiedpush-dist</artifactId>
     <name>UnifiedPush Server Distribution Package</name>
     <packaging>pom</packaging>
+    <properties>
+        <finalName>aerogear-unifiedpush-server-${project.version}</finalName>
+    </properties>
 
     <build>
         <plugins>
@@ -142,7 +145,7 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
-                            <finalName>aerogear-unifiedpush-server-${project.version}</finalName>
+                            <finalName>${finalName}</finalName>
                         </configuration>
                     </execution>
                 </executions>
