@@ -45,6 +45,14 @@
                 <include>*.jar</include>
             </includes>
         </fileSet>
+        <!-- Bundle the migration distribution --> 
+        <fileSet>
+            <directory>${project.basedir}/../migrator/target</directory>
+            <outputDirectory>/migrator</outputDirectory>
+            <includes>
+                <include>*.zip</include>
+            </includes>
+        </fileSet>
         <!-- Include the README for the generated archives -->
         <fileSet>
             <directory></directory>
