@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.migrator;
 
+import static liquibase.util.SystemUtils.IS_OS_WINDOWS;
+import static org.junit.Assume.assumeTrue;
+
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -49,6 +52,8 @@ public class MigratorTest {
         String password = System.getProperty("jdbc.password", "unifiedpush");
 
         if (url == null) {
+            assumeTrue("Skip test on Windows, because mysql-connector-mxj has issue on new versions, see http://stackoverflow.com/questions/9520536/missingresourceexception-running-mxj-for-mysql for more details.", !IS_OS_WINDOWS);
+
             embeddedMysqlDatabase = new EmbeddedMysqlDatabase();
             embeddedMysqlDatabase.start("unifiedpush");
 
