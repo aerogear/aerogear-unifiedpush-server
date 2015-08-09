@@ -59,7 +59,7 @@
 
 		<!-- Add Wilffly tar.gz -->
 		<dependencySet>
-			<outputDirectory>/wildfly</outputDirectory>
+			<outputDirectory>/unifiedpush/embedded/wildfly</outputDirectory>
 			<unpack>true</unpack>
 			<includes>
 				<include>org.wildfly.wildfly-as:wildfly-as</include>

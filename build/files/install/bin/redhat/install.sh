@@ -17,8 +17,7 @@ install_files() {
 
 	export SOURCE_DIR="$(get_full_path $(dirname "$0"))"
 	
-	install_recursive "../../../unifiedpush" "${U_SERVER_SHARE}"	
-	install_recursive "../../../wildfly" "${U_SERVER_SHARE}"
+	install_recursive "../../../unifiedpush" "${U_SERVER_SHARE}"
 }
 
 main() {
@@ -48,7 +47,7 @@ install_recursive() {
 }
 
 U_UNIFIEDPUSH_SERVER_HOME="${U_UNIFIEDPUSH_SERVER_HOME:-server}"
-U_SERVER_SHARE="/usr/share/unifiedpush/${U_UNIFIEDPUSH_SERVER_HOME}"
+U_SERVER_SHARE="/opt/unifiedpush/${U_UNIFIEDPUSH_SERVER_HOME}"
 
 main
 
