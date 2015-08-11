@@ -103,13 +103,17 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
                 .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
-                .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
                 .alertTitle(apns.getTitle()) // The title of the notification in Safari and Apple Watch
                 .alertAction(apns.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
                 .urlArgs(apns.getUrlArgs())
                 .category(apns.getActionCategory()) // iOS8: User Action category
                 .localizedTitleKey(apns.getLocalizedTitleKey()); //iOS8 : Localized Title Key
+
+        // was a badge included?
+        if (message.getBadge() >= 0) {
+            builder.badge(message.getBadge()); // only set badge if needed
+        }
 
         //this kind of check should belong in java-apns
         if(apns.getLocalizedTitleArguments() != null) {
