@@ -46,9 +46,9 @@
     $logProvider.debugEnabled( appConfig.logDebugEnabled );
   });
 
-  app.factory('docsLinks', function( $http ) {
+  app.factory('docsLinks', function( $http, staticResourcePrefix ) {
     var result = {};
-    $http.get('docs-links.json')
+    $http.get( staticResourcePrefix + 'docs-links.json' )
       .then(function( response ) {
         angular.extend( result, response.data );
       });
@@ -56,10 +56,12 @@
   });
 
   app.config(function(ngClipProvider) {
-    ngClipProvider.setPath('img/ZeroClipboard.swf');
+    ngClipProvider.setPath( 'img/ZeroClipboard.swf' );
   });
 
   app.value('apiPrefix', '');
+
+  app.value('staticResourcePrefix', '');
 
   app.value('bootstrapedAppName', function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

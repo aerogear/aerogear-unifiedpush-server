@@ -358,20 +358,13 @@ module.exports = function (grunt) {
           mode: 'tgz'
         },
         files: [{
-          src: ['.tmp/concat/scripts/modules.js'],
-          dest: 'ups-admin-ui/js',
-          filter: 'isFile',
-          flatten: true,
-          expand: true
-        }, {
-          src: ['.tmp/concat/scripts/scripts.js'],
-          dest: 'ups-admin-ui/js',
-          filter: 'isFile',
-          flatten: true,
-          expand: true
-        }, {
-          src: ['.tmp/ngtemplates/templates.js'],
-          dest: 'ups-admin-ui/js',
+          src: [
+            '.tmp/concat/scripts/modules.js',
+            '.tmp/concat/scripts/scripts.js',
+            '.tmp/ngtemplates/templates.js',
+            'app/docs-links.json'
+          ],
+          dest: 'ups-admin-ui/public',
           filter: 'isFile',
           flatten: true,
           expand: true
