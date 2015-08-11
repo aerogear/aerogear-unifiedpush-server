@@ -46,15 +46,31 @@
     </div>
 
 
-    <div class="form-group" ng-if="isNew && (allowCreate('windows_wns') ||  allowCreate('windows_mpns'))">
-      <label class="col-sm-3 control-label sr-only" for="optionWindows">Windows</label>
+    <div class="form-group" ng-if="isNew && allowCreate('windows_wns')">
+      <label class="col-sm-3 control-label sr-only" for="optionWindowsWns">Windows</label>
       <div class="col-sm-9">
         <div class="radio">
           <label>
-            <input type="radio" name="variantType" id="optionWindows" value="windows" ng-model="variant.type" ng-required="true">
+            <input type="radio" name="variantType" id="optionWindowsWns" value="windows_wns" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-windows">
                   <strong>Windows</strong><br>
-                  using Windows Network Services
+                  using Windows Push Network Services
+                </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group" ng-if="isNew && allowCreate('windows_mpns')">
+      <label class="col-sm-3 control-label sr-only" for="optionWindowsMpns">Windows</label>
+      <div class="col-sm-9">
+        <div class="radio">
+          <label>
+            <input type="radio" name="variantType" id="optionWindowsMpns" value="windows_mpns" ng-model="variant.type" ng-required="true">
+                <span class="ups-has-icon ups-variant-windows">
+                  <strong>Windows</strong><br>
+                  using Microsoft Push Notification Service
                 </span>
           </label>
         </div>
@@ -150,49 +166,17 @@
         </div>
       </div>
 
-      <div ng-show="variant.type.indexOf('windows') == 0">
+      <div ng-show="variant.type == 'windows_wns'">
         <div class="form-group">
-          <label class="col-sm-3 control-label">Push Network</label>
-          <div class="col-sm-7">
-            <div class="form-horizontal" ng-show="isNew">
-              <div class="form-group">
-                <div class="row">
-                  <br><label class="col-sm-3 control-label">Type</label>
-                  <div class="col-sm-9">
-                    <div class="row">
-                      <div class="radio">
-                        <label for="wnstype">
-                          <input type="radio" name="protocolType" id="wnstype" ng-model="variant.protocolType" value="wns"  ng-required="variant.type == 'windows'" checked>
-                          Windows Push Network
-                        </label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="radio">
-                        <label for="mpnstype">
-                          <input type="radio" name="protocolType" id="mpnstype" ng-model="variant.protocolType" value="mpns"  ng-required="variant.type == 'windows'">
-                          Microsoft Push Notification Service
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <label class="col-sm-3 control-label" for="sid"></label>
+          <div class="col-sm-7"><em>Package SID</em><br>
+            <input type="text" placeholder="ms-app://s-1-15-2-3183935804-3637592178" id="sid" class="form-control" ng-model="variant.sid" ng-required="variant.protocolType == 'wns'">
           </div>
         </div>
-        <div ng-if="variant.protocolType == 'wns' || variant.type == 'windows_wns'">
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="sid"></label>
-            <div class="col-sm-7"><em>Package SID</em><br>
-              <input type="text" placeholder="ms-app://s-1-15-2-3183935804-3637592178" id="sid" class="form-control" ng-model="variant.sid" ng-required="variant.protocolType == 'wns'">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label" for="clientSecret"></label>
-            <div class="col-sm-7">Client Secret<br>
-              <input type="text" placeholder="e.g. 42" id="clientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.protocolType == 'wns'">
-            </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="clientSecret"></label>
+          <div class="col-sm-7">Client Secret<br>
+            <input type="text" placeholder="e.g. 42" id="clientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.protocolType == 'wns'">
           </div>
         </div>
       </div>
