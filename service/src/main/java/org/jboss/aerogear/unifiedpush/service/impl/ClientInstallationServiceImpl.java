@@ -33,8 +33,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
+import org.jboss.aerogear.unifiedpush.dao.ResultsStream.QueryBuilder;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -45,12 +48,19 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
 
+    /**
+     * GCM Supports 1 Million topic subscribers.  Attempting to send to a topic 
+     * with more subscribers than this will cause an error.  This number should 
+     * be set lower than that ceiling.  
+     */ 
+    private static final int MAX_SUPPORTED_GCM_TOPIC_SUBSCRIBERS = 500000;
+    
     @Inject
     private InstallationDao installationDao;
 
     @Inject
     private CategoryDao categoryDao;
-
+    
     @Inject
     @LoggedIn
     private Instance<String> developer;
@@ -195,10 +205,25 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android, iOS and SimplePush clients
      */
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
-        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch);
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(Variant variant, final List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+        if (categories == null || categories.isEmpty() || !VariantType.ANDROID.equals(variant.getType())) {
+            return this.findAllDeviceTokenForVariantIDByCriteria(variant.getId(), categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch);
+        } else {
+            long numberOfDeviceTokens = installationDao.getNumberOfDeviceTokensForVariantIDByCriteria(variant.getId(), categories, aliases, deviceTypes);
+            if (numberOfDeviceTokens > MAX_SUPPORTED_GCM_TOPIC_SUBSCRIBERS) {
+                return this.findAllDeviceTokenForVariantIDByCriteria(variant.getId(), categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch);
+            } else {
+                return buildTopicsQueryBuilder(categories);
+            }
+        }
     }
 
+    @Override
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantId, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantId, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch);
+    }
+
+    
     /**
      * A simple validation util that checks if a token is present
      */
@@ -246,4 +271,46 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
+
+    /**
+     * Create a query build which returns a {@link ResultsStream} which contains
+     * topics based on the provided categories.
+     * 
+     * @param categories categories to send topic messages to.
+     * @return a querybuilder which wraps the categories parameter.
+     */
+    private QueryBuilder<String> buildTopicsQueryBuilder(final List<String> categories) {
+        return new TopicsQueryBuilder(categories);
+    }
+    
+    private static final class TopicsQueryBuilder implements ResultsStream.QueryBuilder<String> {
+        private static final String GCM_TOPIC_PREFIX = "/topics/";
+        final List<String> categoriesCopy;
+                    
+        TopicsQueryBuilder(List<String> categories) {        
+            categoriesCopy = new ArrayList<String>(categories);
+        }
+        @Override
+        public QueryBuilder<String> fetchSize(int fetchSize) {
+            return this;
+        }
+
+        @Override
+        public ResultsStream<String> executeQuery() {
+            final Iterator<String> categoriesIterator = categoriesCopy.iterator();
+            return new ResultsStream<String>() {
+
+                @Override
+                public boolean next() throws ResultStreamException {
+                    return categoriesIterator.hasNext();
+                }
+
+                @Override
+                public String get() throws ResultStreamException {
+                    return GCM_TOPIC_PREFIX + categoriesIterator.next();
+                }
+            };
+        }
+    }
+    
 }

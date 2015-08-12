@@ -102,10 +102,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ganyo</groupId>
-            <artifactId>gcm-server</artifactId>
+            <groupId>org.jboss.aerogear.com.google.android.gcm</groupId>
+            <artifactId>server</artifactId>
+            <version>${project.version}</version>            
         </dependency>
-
+        
         <dependency>
             <groupId>com.github.fernandospr</groupId>
             <artifactId>java-wns</artifactId>

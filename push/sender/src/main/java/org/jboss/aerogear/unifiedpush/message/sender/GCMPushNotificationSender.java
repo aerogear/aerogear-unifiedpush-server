@@ -52,6 +52,12 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                     Constants.ERROR_NOT_REGISTERED)        // The user has uninstalled the application or turned off notifications.
             );
 
+    /**
+     * The topics prefix is defined in Google's documentation here : 
+     * {@link https://developers.google.com/cloud-messaging/topic-messaging#sending_topic_messages_from_the_server}
+     */
+    private static final String GCM_TOPIC_PREFIX = "/topics/";
+    
     @Inject
     private ClientInstallationService clientInstallationService;
 
@@ -61,6 +67,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      */
+    @Override
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
@@ -68,7 +75,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final List<String>  registrationIDs = new ArrayList<String>(tokens);
+        final List<String>  registrationIDs = findRegistrationIDs(tokens);
+        final List<String>  topics          = findTopics(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
@@ -105,29 +113,56 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
-            processGCM(androidVariant, registrationIDs, gcmMessage, sender);
-
+            if (registrationIDs.size() > 0) {
+                processDirectMessages(androidVariant, registrationIDs, gcmMessage, sender);
+            }
+            
+            if (topics.size() > 0) {
+                processTopicMessages(androidVariant, topics, gcmMessage, sender);
+            }
+            
             logger.info("Message batch to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
             // GCM exceptions:
-            logger.severe("Error sending payload to GCM server");
+            logger.severe("Error sending payload to GCM server", e);
             callback.onError("Error sending payload to GCM server");
         }
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.     *
+     * Process the HTTP POST to the GCM infrastructure for the given list of registrationIDs.     *
      */
-    private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
+    private void processDirectMessages(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
         logger.info("Sending payload for [" + registrationIDs.size() + "] devices to GCM");
 
-        MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+        MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, registrationIDs);
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
+    }
+    
+    /**
+     * Process the HTTP POST to the GCM infrastructure for the given list of topics.
+     */
+    private void processTopicMessages(AndroidVariant androidVariant, List<String> topics, Message gcmMessage, Sender sender) throws IOException {
+
+        logger.info("Sending payload for [" + topics.size() + "] topics to GCM");
+
+        for (String topic : topics) {
+            Result result = sender.sendNoRetry(gcmMessage, topic);
+            if (Constants.ERROR_TOPIC_TOO_MANY_SUBSCRIBERS.equals(result.getErrorCodeName())) {
+                logger.severe("Topic '" + topic + "' has more than one million subscribers and must be resent as individual messages.");
+                //TODO: Resend as individual messages
+            } else if(Constants.ERROR_TOPIC_INVALID_PARAMETERS.equals(result.getErrorCodeName())) {
+                logger.severe("Topic message to '" + topic + "' has invalid parameters.");
+                logger.severe(gcmMessage.toString());
+                //TODO: Handle bad topic name
+            }
+        }
+        
     }
 
     /**
@@ -172,5 +207,25 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         // trigger asynchronous deletion:
         logger.fine("Deleting '" + inactiveTokens.size() + "' invalid Android installations");
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+    }
+
+    private List<String> findRegistrationIDs(Collection<String> tokens) {
+        List<String> registrationIDs = new ArrayList<String>(tokens.size()); //Upperbounds
+        for (String token : tokens) {
+            if (!token.startsWith(GCM_TOPIC_PREFIX)) {
+                registrationIDs.add(token);
+            }
+        }
+        return registrationIDs;
+    }
+
+    private List<String> findTopics(Collection<String> tokens) {
+        List<String> topics = new ArrayList<String>(tokens.size()); //Upperbounds
+        for (String token : tokens) {
+            if (token.startsWith(GCM_TOPIC_PREFIX)) {
+                topics.add(token);
+            }
+        }
+        return topics;
     }
 }

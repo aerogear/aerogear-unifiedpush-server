@@ -44,6 +44,12 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.id = :variantID AND installation.enabled = true";
 
+    private static final String COUNT_ALL_DEVICES_FOR_VARIANT_QUERY = "select count(distinct installation.deviceToken)"
+                    + " from Installation installation"
+                    + " left join installation.categories c "
+                    + " join installation.variant abstractVariant where abstractVariant.id = :variantID AND installation.enabled = true";
+
+    
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
                     + " JOIN installation.variant v"
                     + " WHERE v.id = :variantID";
@@ -186,6 +192,36 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         };
     }
 
+    @Override
+    public long getNumberOfDeviceTokensForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        // the required part: Join + all tokens for variantID;
+
+        final StringBuilder jpqlString = new StringBuilder(COUNT_ALL_DEVICES_FOR_VARIANT_QUERY);
+        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("variantID", variantID);
+
+        // apend query conditions based on specified message parameters
+        appendDynamicQuery(jpqlString, parameters, categories, aliases, deviceTypes);
+
+        jpqlString.append(" GROUP BY installation.deviceToken");
+
+        Query hibernateQuery = createHibernateQuery(jpqlString.toString());
+                
+        for (Entry<String, Object> parameter : parameters.entrySet()) {
+            Object value = parameter.getValue();
+            if (value instanceof Collection<?>) {
+                hibernateQuery.setParameterList(parameter.getKey(), (Collection<?>) parameter.getValue());
+            } else {
+                hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
+            }
+
+        }
+        hibernateQuery.setReadOnly(true);
+
+        return (Long) hibernateQuery.uniqueResult();
+                
+    }
+    
     @Override
     public long getNumberOfDevicesForLoginName(String loginName) {
         return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
