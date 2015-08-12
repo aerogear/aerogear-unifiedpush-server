@@ -351,6 +351,39 @@ module.exports = function (grunt) {
           targetDir: 'app/bower-components/'
         }
       }
+    },
+    compress: {
+      main: {
+        options: {
+          archive: 'dist/npm-ups-admin-ui.tgz',
+          mode: 'tgz'
+        },
+        files: [{
+          src: ['.tmp/concat/scripts/modules.js'],
+          dest: 'ups-admin-ui/js',
+          filter: 'isFile',
+          flatten: true,
+          expand: true
+        }, {
+          src: ['.tmp/concat/scripts/scripts.js'],
+          dest: 'ups-admin-ui/js',
+          filter: 'isFile',
+          flatten: true,
+          expand: true
+        }, {
+          src: ['.tmp/ngtemplates/templates.js'],
+          dest: 'ups-admin-ui/js',
+          filter: 'isFile',
+          flatten: true,
+          expand: true
+        }, {
+          src: ['package.json'],
+          dest: 'ups-admin-ui/',
+          filter: 'isFile',
+          flatten: true,
+          expand: true
+        }]
+      }
     }
   });
 
@@ -393,7 +426,8 @@ module.exports = function (grunt) {
     'copy:dist',
     'filerev',
     'copy:nofilerev',
-    'usemin'
+    'usemin',
+    'compress'
   ]);
 
   grunt.registerTask('default', [
