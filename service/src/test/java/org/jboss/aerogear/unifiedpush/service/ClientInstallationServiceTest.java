@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
@@ -290,13 +291,12 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setCategories(categories);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getId(), Arrays.asList("soccer", "football"), null, null);
+        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant, Arrays.asList("soccer", "football"), null, null);
 
-        assertThat(queriedTokens).hasSize(3);
+        assertThat(queriedTokens).hasSize(2);
         assertThat(queriedTokens).contains(
-                device1.getDeviceToken(),
-                device2.getDeviceToken(),
-                device3.getDeviceToken()
+                "/topics/soccer",
+                "/topics/football"
         );
     }
 
@@ -362,6 +362,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
             ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            List<String> list = new ArrayList<String>();
+            while (tokenStream.next()) {
+                list.add(tokenStream.get());
+            }
+            return list;
+        } catch (ResultStreamException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    private List<String> findAllDeviceTokenForVariantIDByCriteria(Variant variant, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        try {
+            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
             List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());

@@ -73,6 +73,19 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
     PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search);
 
+
+    /**
+     * Count all tokens for the given variant, by respecting a few criteria arguments (categories, aliases and deviceTypes)
+     *
+     * @param variantID the variantID for the filter
+     * @param categories applied categories for the filter
+     * @param aliases applied aliases for the filter
+     * @param deviceTypes applied deviceTypes for the filter
+     *
+     * @return the number of devices which match the criteria
+     */
+    long getNumberOfDeviceTokensForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes);    
+    
     /**
      * Find all installations for the variant specified (used for admin role)
      * @param variantID the id of the variant to find the installations for
@@ -109,4 +122,5 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return number of devices for given variant
      */
     long getNumberOfDevicesForVariantID(String variantId);
+
 }
