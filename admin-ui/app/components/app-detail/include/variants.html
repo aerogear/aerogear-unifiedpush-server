@@ -33,7 +33,7 @@
           </ul>
         </div>
 
-        <h4><i class="fa" ng-class="{ 'fa-plus-square-o': !variant.$toggled, 'fa-minus-square-o': variant.$toggled }"></i> {{ variant.name }}</h4>
+        <h4><i class="fa" ng-class="{ 'fa-plus-square-o icon-plus-sign-alt': !variant.$toggled, 'fa-minus-square-o icon-minus-sign-alt': variant.$toggled }"></i> {{ variant.name }}</h4>
         <ul class="list-inline">
           <li class="warning" ng-repeat="warning in variants.getWarningsForVariant( app.warnings, variant ) | limitTo: 1">
               <span class="pficon-layered">

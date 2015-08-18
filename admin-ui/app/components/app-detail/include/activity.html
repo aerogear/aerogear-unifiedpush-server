@@ -32,7 +32,7 @@
     <tr ng-repeat-start="metric in activity.metrics">
       <td>
         <a href ng-click="metric.$toggled = !metric.$toggled">
-          <i class="fa fa-plus-square-o" ng-class="{ 'fa-plus-square-o': !metric.$toggled, 'fa-minus-square-o': metric.$toggled }"></i>
+          <i class="fa" ng-class="{ 'fa-plus-square-o icon-plus-sign-alt': !metric.$toggled, 'fa-minus-square-o icon-minus-sign-alt': metric.$toggled }"></i>
         </a>
       </td>
       <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
