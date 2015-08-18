@@ -17,6 +17,14 @@ angular.module('upsConsole')
     function fetchMetrics( page, searchString ) {
       return metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
         .then(function( data ) {
+          self.metrics.forEach(function( originalMetric ) {
+            data.pushMetrics.some(function ( newMetric ) {
+              if (originalMetric.id === newMetric.id && originalMetric.$toggled) {
+                newMetric.$toggled = true;
+                return true;
+              }
+            });
+          });
           self.metrics = data.pushMetrics;
           self.totalCount = data.totalItems;
           self.currentStart = self.perPage * (self.currentPage - 1) + 1;
