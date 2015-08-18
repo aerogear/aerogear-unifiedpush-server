@@ -42,11 +42,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
                     + " from Installation installation"
                     + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.id = :variantID AND installation.enabled = true";
+                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
 
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
                     + " JOIN installation.variant v"
-                    + " WHERE v.id = :variantID";
+                    + " WHERE v.variantID = :variantID";
 
     public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
 
@@ -95,7 +95,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         return getSingleResultForQuery(createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant" +
-                " where abstractVariant.id = :variantID" +
+                " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
@@ -111,7 +111,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         return createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant " +
-                " where abstractVariant.id = :variantID" +
+                " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)

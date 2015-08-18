@@ -59,7 +59,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public void addInstallation(Variant variant, Installation entity) {
 
         // does it already exist ?
-        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getId(), entity.getDeviceToken());
+        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
         entity.setPlatform(variant.getType().getTypeName());
@@ -90,7 +90,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
 
         // TODO - On a large scale database, we can't load entire device list.
-        Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getId());
+        Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getVariantID());
 
         // clear out:
         installationDao.flushAndClear();

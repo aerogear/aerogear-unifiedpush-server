@@ -110,7 +110,7 @@ public class TokenLoader {
 
         for (Variant variant : variants) {
             ResultsStream<String> tokenStream =
-                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getId(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
+                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                                          .fetchSize(configuration.batchSize())
                                          .executeQuery();
 
