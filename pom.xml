@@ -261,9 +261,9 @@
         <ant.contrib.version>20020829</ant.contrib.version>
         <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
 
-		<hibernate.version>4.3.7.Final</hibernate.version>
-		<postgresql.version>9.3-1103-jdbc41</postgresql.version>
-		<mysql.version>5.1.36</mysql.version>
+        <hibernate.version>4.2.15.Final</hibernate.version>
+        <postgresql.version>9.3-1103-jdbc41</postgresql.version>
+        <mysql.version>5.1.36</mysql.version>
     </properties>
 
     <profiles>
