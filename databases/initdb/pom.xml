@@ -98,6 +98,7 @@
 					</descriptors>
 					<tarLongFileMode>gnu</tarLongFileMode>
 					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>${project.artifactId}</finalName>
 				</configuration>
 				<executions>
 					<execution>
