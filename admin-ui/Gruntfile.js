@@ -32,7 +32,7 @@ module.exports = function (grunt) {
     local: {
       // default values used when local-config.json is not loaded
       home: './',
-      jbossweb: '../servers/ups-server/target/ag-push'
+      jbossweb: '../servers/ups-server/target/unifiedpush-server'
     },
     less: {
       main: {

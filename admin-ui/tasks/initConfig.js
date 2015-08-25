@@ -14,7 +14,7 @@ module.exports = function ( grunt ) {
             var parentDir = path.resolve(process.cwd(), '.');
             var sampleContent = {
                 home: parentDir,
-                jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/ag-push.war"
+                jbossweb: "<PATH TO YOUR JBOSS/WILDFLY DIRECTORY>/standalone/deployments/unifiedpush-server.war"
             }
             grunt.file.write('./local-config.json',JSON.stringify(sampleContent,null,'\t'));
             grunt.fatal('please update local-config.json with the path to your application server');

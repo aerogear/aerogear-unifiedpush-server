@@ -1,4 +1,4 @@
-@import url("/ag-push/styles/account.css");
+@import url("/unifiedpush-server/styles/account.css");
 @import url("../../keycloak/css/account.css");
 
 .navbar-title {

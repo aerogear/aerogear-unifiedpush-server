@@ -87,7 +87,7 @@
                 </excludes>
             </resource>
         </resources>
-        <finalName>ag-push</finalName>
+        <finalName>unifiedpush-server</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>

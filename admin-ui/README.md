@@ -24,7 +24,7 @@ Now you need to modify `admin-ui/local-config.json` file and fill in `jbossweb` 
 
     {
         "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
-        "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war",
+        "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/unifiedpush-server.war",
     };
     
 _note:  This is now required for all grunt steps bellow because of bug in assemble-less - once fixed, it will be required just for development_
