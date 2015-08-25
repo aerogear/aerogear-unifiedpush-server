@@ -23,6 +23,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -30,13 +31,15 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @PropertySource(value = { "classpath:db.properties", "file://${org.jboss.aerogear.unifiedpush.conf}/db.properties" }, ignoreResourceNotFound = true)
 public class PersistenceJPAConfig {
 	private static final Logger logger = LoggerFactory.getLogger(PersistenceJPAConfig.class);
-	private static String[] resources = new String[] { 
+	private static String[] RESOURCES = new String[] { 
 			"META-INF/orm.xml", 
 			"org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Category.hbm.xml", 
 			"org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml",
 			"org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml" 
 	};
+	
+	private static final String SYS_KEY_DB_NAME = "org.jboss.aerogear.unifiedpush.initdb.database";
 
 	@Autowired
 	private Environment env;
@@ -44,13 +47,23 @@ public class PersistenceJPAConfig {
 	@Bean
 	public DataSource dataSource() {
 		final ComboPooledDataSource dataSource = new ComboPooledDataSource();
-
+		String databaseName;
+		
 		try {
 			dataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
 		} catch (final PropertyVetoException e) {
 			logger.error("Error while loading datasource driver!", e);
 		}
-		dataSource.setJdbcUrl(env.getProperty("jdbc.url"));
+		
+		// Override databaseName from -D if exists
+		if (System.getProperties().contains(SYS_KEY_DB_NAME) && !StringUtils.isEmpty(System.getProperties().get(SYS_KEY_DB_NAME))){
+			databaseName = System.getProperties().getProperty(SYS_KEY_DB_NAME);
+		}else {
+			databaseName = env.getProperty("jdbc.database");
+		}
+		
+		
+		dataSource.setJdbcUrl(String.format(env.getProperty("jdbc.url"), databaseName));
 		dataSource.setUser(env.getProperty("jdbc.username"));
 
 		return dataSource;
@@ -60,7 +73,7 @@ public class PersistenceJPAConfig {
 	public EntityManagerFactory entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
-		em.setMappingResources(resources);
+		em.setMappingResources(RESOURCES);
 		
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		((AbstractJpaVendorAdapter) vendorAdapter).setGenerateDdl(true);
