@@ -14,9 +14,10 @@
 
 		<!-- Create common lib's folder -->
 		<dependencySet>
-			<outputDirectory>/unifiedpush-initdb/lib</outputDirectory>
+			<outputDirectory>/initdb/lib</outputDirectory>
 			<includes>
 				<include>org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa</include>
+				<include>org.jboss.aerogear.unifiedpush:unifiedpush-initdb</include>
 				<!-- for some reason when removing this dependency - maven assembly plugin 
 					ignore already exist transitive dependency -->
 				<include>org.slf4j:slf4j-api</include>
@@ -40,7 +41,7 @@
 		<!-- Copy installation Scripts -->
 		<fileSet>
 			<directory>${resources.home}/bin</directory>
-			<outputDirectory>/unifiedpush-initdb/bin</outputDirectory>
+			<outputDirectory>/initdb/bin</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
