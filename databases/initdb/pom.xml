@@ -50,16 +50,17 @@
 			<version>${springframework.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.7.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
+			<version>4.3.7.Final</version>
 		</dependency>
 
 		<dependency>
@@ -117,6 +118,10 @@
 				<directory>${basedir}/files</directory>
 				<filtering>true</filtering>
 			</resource>
+			<resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
 		</resources>
 	</build>
 </project>

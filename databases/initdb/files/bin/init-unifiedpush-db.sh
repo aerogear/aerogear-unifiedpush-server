@@ -16,7 +16,7 @@ database="$1"
 #export DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=1044,server=y,suspend=y"
 
 ${JAVA_HOME}/bin/java ${DEBUG_OPTS} \
+        -Dorg.jboss.aerogear.unifiedpush.initdb.database=${database} \
         -cp "../lib/*" \
-        -D org.jboss.aerogear.unifiedpush.initdb.database=${database} \
         org.jboss.aerogear.unifiedpush.DBMaintenance \
         "${database}"
