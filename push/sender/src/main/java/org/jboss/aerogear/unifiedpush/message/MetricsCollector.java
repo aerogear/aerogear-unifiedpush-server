@@ -93,13 +93,13 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
         metricsService.updatePushMessageInformation(pushMessageInformation);
 
-        if (variantMetricInformation.getTotalBatches() == variantMetricInformation.getServedBatches()) {
+        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
             if (areAllBatchesLoaded(variantID)) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
                 logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
                 variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
 
-                if (pushMessageInformation.getServedVariants() == pushMessageInformation.getTotalVariants()) {
+                if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
                     logger.fine(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
                     pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
                 }
@@ -132,5 +132,9 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         if (existing.getReason() == null && update.getReason() != null) {
             existing.setReason(update.getReason());
         }
+    }
+
+    private boolean areIntegersEqual(int i1, int i2) {
+        return i1 == i2;
     }
 }
