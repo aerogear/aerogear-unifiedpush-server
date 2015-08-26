@@ -17,9 +17,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.lookup.SingleDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -72,8 +75,7 @@ public class PersistenceJPAConfig {
 	@Bean
 	public EntityManagerFactory entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource());
-		em.setMappingResources(RESOURCES);
+		em.setPersistenceUnitManager(persistenceUnitManager());
 		
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		((AbstractJpaVendorAdapter) vendorAdapter).setGenerateDdl(true);
@@ -84,6 +86,19 @@ public class PersistenceJPAConfig {
 		return em.getObject();
 	}
 
+	@Bean
+	public PersistenceUnitManager persistenceUnitManager(){
+		DefaultPersistenceUnitManager pm = new DefaultPersistenceUnitManager();
+		DataSource dataSource = dataSource();
+		
+		pm.setDataSourceLookup(new SingleDataSourceLookup(dataSource()));
+		pm.setDefaultDataSource(dataSource);
+		pm.setMappingResources(RESOURCES);
+		pm.setDefaultPersistenceUnitRootLocation(null);
+		
+		return pm;
+	}
+	
 	@Bean
 	public PlatformTransactionManager transactionManager() {
 		return new JpaTransactionManager(entityManagerFactory());
