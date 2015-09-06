@@ -1,13 +1,15 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.service.impl.MockSMSService;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 //@RunWith(MockitoJUnitRunner.class)
 public class VerificyingClientInstallationServiceTest extends AbstractBaseServiceTest {
@@ -18,47 +20,68 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 	@Inject
 	private MockSMSService smsService;
 	
-	@Override
-	protected void specificSetup() {
-		// no op
-	}
+	@Inject
+    private GenericVariantService variantService;
 	
+	@Inject
+	private ClientInstallationService clientInstallationService;
+
+    private AndroidVariant androidVariant;
+
+    @Override
+    protected void specificSetup() {
+        // setup a variant:
+        androidVariant = new AndroidVariant();
+        androidVariant.setGoogleKey("Key");
+        androidVariant.setName("Android");
+        androidVariant.setDeveloper("me");
+        variantService.addVariant(androidVariant);
+    }
+   
 	@Test
 	public void testSendCorrectVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
-		device.setDeviceToken("mytoken");
+		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
+		clientInstallationService.addInstallation(androidVariant, device);
+
 		verificationService.initiateDeviceVerification(device);
-		String verificationCode = smsService.message;
+		String verificationCode = smsService.phoneToMessage.get("myalias");
+		
+		assertNotNull(verificationCode);
+		
 		VerificationResult result = verificationService.verifyDevice(device, verificationCode);
-		assertThat(result == VerificationResult.SUCCESS);
+		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
 	@Test
 	public void testSendCorrectVerificationCodeAndFakeDeviceToken() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
-		device.setDeviceToken("mytoken");
+		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		verificationService.initiateDeviceVerification(device);
-		String verificationCode = smsService.message;
+		String verificationCode = smsService.phoneToMessage.get("myalias");
+		
+		assertNotNull(verificationCode);
 		
 		Installation fakeDevice = new Installation();
 		fakeDevice.setAlias("myalias");
 		fakeDevice.setDeviceToken("fake device");
 		
-		VerificationResult result = verificationService.verifyDevice(device, verificationCode);
-		assertThat(result == VerificationResult.UNKNOWN);
+		VerificationResult result = verificationService.verifyDevice(fakeDevice, verificationCode);
+		assertEquals(VerificationResult.UNKNOWN, result);	
 	}
 	
 	@Test
 	public void testSendWrongVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
-		device.setDeviceToken("mytoken");
+		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		verificationService.initiateDeviceVerification(device);
-		String verificationCode = smsService.message;
+		String verificationCode = smsService.phoneToMessage.get("myalias");
+		assertNotNull(verificationCode);
 		VerificationResult result = verificationService.verifyDevice(device, verificationCode + "0");
-		assertThat(result == VerificationResult.FAIL);
+		assertEquals(VerificationResult.FAIL, result);
 	}
 	
 }

@@ -1,18 +1,20 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import javax.ejb.Stateless;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Singleton;
 
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 
-// TODO: decide on package placement
-@Stateless
+@Singleton
 public class MockSMSService implements SMSService {
 	
-	public String message;
+	public Map<String, String> phoneToMessage = new HashMap<>();
 
 	@Override
 	public void sendSMS(String phoneNumber, String message) {
-		this.message = message;
+		phoneToMessage.put(phoneNumber, message);
 	}
 	
 }
