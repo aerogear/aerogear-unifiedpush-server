@@ -29,10 +29,12 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.MockSMSService;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.service.impl.VerificationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -50,6 +52,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 
 import static org.mockito.Mockito.when;
@@ -126,6 +129,8 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
         beans.addManagedClass(PushMessageMetricsService.class);
+        beans.addManagedClass(VerificationServiceImpl.class);
+        beans.addManagedClass(MockSMSService.class);
 
         return beans;
     }
