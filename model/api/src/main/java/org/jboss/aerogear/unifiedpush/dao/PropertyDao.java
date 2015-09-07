@@ -16,13 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.Category;
-
 import java.util.List;
 
-public interface CategoryDao extends GenericBaseDao<Category,Integer> {
+import org.jboss.aerogear.unifiedpush.api.Property;
 
-    List<Category> findByNames(List<String> names);
+public interface PropertyDao extends GenericBaseDao<Property,Integer> {
 
-	List<Category> findByProperty(Long id);
+    List<Property> findByNames(List<String> names);
+
+	List<Property> findByName(String name);
 }

@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.dao;
 
+import java.util.List;
+
 /**
  * Generic base interface for different DAO layers
  * @param <O> Object type
@@ -9,6 +11,8 @@ public interface GenericBaseDao<O, K> {
 
     O find(K id);
 
+    List<O> findAll();
+    	
     void create(O o);
 
     void update(O o);

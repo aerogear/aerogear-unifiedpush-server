@@ -21,6 +21,7 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPropertyDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
@@ -50,6 +51,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 
 import static org.mockito.Mockito.when;
@@ -126,7 +128,7 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
         beans.addManagedClass(PushMessageMetricsService.class);
-
+        beans.addManagedClass(JPAPropertyDao.class);
         return beans;
     }
 

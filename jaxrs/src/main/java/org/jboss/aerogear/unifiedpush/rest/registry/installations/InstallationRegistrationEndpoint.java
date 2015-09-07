@@ -62,7 +62,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-
     @Inject
     private PushMessageMetricsService metricsService;
 
@@ -80,7 +79,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @responseheader Access-Control-Max-Age           604800
      *
      * @statuscode 200 Successful response for your request
-     */
+     *****/
     @OPTIONS
     @Path("{token: .*}")
     @ReturnType("java.lang.Void")
@@ -91,6 +90,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
+    
     /**
      * Cross Origin for Installations
      *
@@ -177,6 +177,30 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // async:
         clientInstallationService.addInstallation(variant, entity);
 
+        return appendAllowOriginHeader(Response.ok(entity), request);
+    }
+    
+    @POST
+    @Path("/associate/{id: .*}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
+    public Response associate(Installation entity,
+                           @Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request); //TODO
+        if (variant == null) {
+            return create401Response(request);
+        }
+        
+        Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+        if (installation == null) {
+            return create401Response(request);
+        }
+
+        clientInstallationService.associateInstallation(installation);
+ 
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
 

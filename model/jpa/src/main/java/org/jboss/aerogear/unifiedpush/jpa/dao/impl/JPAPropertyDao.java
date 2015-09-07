@@ -16,37 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.Category;
-import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
+import org.jboss.aerogear.unifiedpush.api.Property;
+import org.jboss.aerogear.unifiedpush.dao.PropertyDao;
+
+public class JPAPropertyDao extends JPABaseDao<Property, Integer> implements PropertyDao {
+
+	@Override	
+	public List<Property> findByName(String name) {
+		return findByNames(Arrays.asList(name));
+	}
 
 	@Override
-	public List<Category> findByNames(List<String> names) {
-		List<Category> categoryList = new ArrayList<Category>();
+	public List<Property> findByNames(List<String> names) {
+		List<Property> properties = new ArrayList<Property>();
 		if(!names.isEmpty()){
-			categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
+			properties = entityManager.createQuery("select c from Property c where c.name in :names", Property.class)
 					.setParameter("names", names).getResultList();
 		}
-		return categoryList;
+		return properties;
 	}
 
 	@Override
-	public Class<Category> getType() {
-		return Category.class;
+	public Class<Property> getType() {
+		return Property.class;
 	}
-
-	@Override
-	public List<Category> findByProperty(Long propertyId) {
-		List<Category> categoryList = new ArrayList<Category>();
-		categoryList =  entityManager.createQuery("select c from Category c" +
-				" join c.properties p" +
-				" where p.id = :propertyId", Category.class)
-				.setParameter("propertyId", propertyId).getResultList();
-		return categoryList;
-	}
-	
 }

@@ -127,4 +127,6 @@ public interface ClientInstallationService {
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
+	Installation associateInstallation(Installation installation);
+
 }
