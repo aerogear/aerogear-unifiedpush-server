@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Category;
@@ -17,6 +18,7 @@ import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.CategoryDeploymentService;
 
+@Stateless
 public class CategoryDeploymentServiceImpl implements CategoryDeploymentService {
 
 	@Inject
