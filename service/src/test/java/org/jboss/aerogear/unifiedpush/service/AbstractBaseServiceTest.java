@@ -28,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.service.impl.CategoryDeploymentServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
@@ -129,6 +130,7 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(SearchManager.class);
         beans.addManagedClass(PushMessageMetricsService.class);
         beans.addManagedClass(JPAPropertyDao.class);
+        beans.addManagedClass(CategoryDeploymentServiceImpl.class);
         return beans;
     }
 

@@ -26,5 +26,7 @@ public interface CategoryDao extends GenericBaseDao<Category,Integer> {
 
 	List<Category> findByProperty(Long id);
 	
-	int deleteByApplicationId(String applicationId);
+	int deleteByPushApplicationID(String pushApplicationID);
+	
+	List<Category> findByPushApplicationID(String pushApplicationID);
 }

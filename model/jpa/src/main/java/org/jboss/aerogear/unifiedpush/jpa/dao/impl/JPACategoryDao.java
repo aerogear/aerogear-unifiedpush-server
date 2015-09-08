@@ -50,10 +50,17 @@ public class JPACategoryDao extends JPABaseDao<Category, Integer> implements Cat
 	}
 	
 	@Override
-	public int deleteByApplicationId(String applicationId) {
+	public int deleteByPushApplicationID(String applicationId) {
 		return entityManager.createQuery("delete from Category c " + 
 				"where c.applicationId = :applicationId")
 				.setParameter("applicationId", applicationId).executeUpdate();
+	}
+
+	@Override
+	public List<Category> findByPushApplicationID(String pushApplicationID) {
+		return entityManager.createQuery("select c from Category c "
+				+ "where c.applicationId = :applicationId", Category.class)
+				.setParameter("applicationId", pushApplicationID).getResultList();
 	}
 	
 }

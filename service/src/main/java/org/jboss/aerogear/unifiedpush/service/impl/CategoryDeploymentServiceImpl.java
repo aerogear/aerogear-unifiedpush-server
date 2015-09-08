@@ -49,14 +49,14 @@ public class CategoryDeploymentServiceImpl implements CategoryDeploymentService 
 	}
 	
 	private List<Category> overwriteCategories(PushApplication application, Map<String, List<String>> categoryData) {
-		categoryDao.deleteByApplicationId(application.getId());
+		categoryDao.deleteByPushApplicationID(application.getPushApplicationID());
 		
 		List<Category> categories = new ArrayList<>(categoryData.size());
 		
 		for (Map.Entry<String, List<String>> entry : categoryData.entrySet()) {
 			final String name = entry.getKey();
 			Category category = new Category(name);
-			category.setApplicationId(application.getId());
+			category.setApplicationId(application.getPushApplicationID());
 			Set<Property> properties = new HashSet<>();
 					
 			for (String propertyName : entry.getValue()) {
