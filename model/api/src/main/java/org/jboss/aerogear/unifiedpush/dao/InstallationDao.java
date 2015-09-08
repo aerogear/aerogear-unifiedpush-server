@@ -43,6 +43,8 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return list of intallation objects.
      */
     List<Installation> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
+    
+    List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias);
 
     /**
      * Sender API for installations:
