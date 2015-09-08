@@ -11,10 +11,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.CategoryDeploymentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -25,38 +25,20 @@ public class DeploymentEndpoint {
 	@Inject
 	private PushApplicationService pushApplicationService;
 	
+	@Inject
+	private CategoryDeploymentService categoryDeploymentService;
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	public Response deployCategories(Map<String, List<String>> categoryData, @Context HttpServletRequest request) {
-		final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
+		final PushApplication pushApplication = HttpBasicHelper.loadPushApplicationWhenAuthorized(pushApplicationService, request);
         if (pushApplication == null) {
-        	// TODO: refactor into a common utility shared also by PushNotificationSenderEndpoint
-            return Response.status(Status.UNAUTHORIZED)
-                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity("Unauthorized Request")
-                    .build();
+            return HttpBasicHelper.createRequestIsUnauthorizedResponse();
         }
         
-        return null;
+        categoryDeploymentService.deployCategories(pushApplication, categoryData);
+        
+        return Response.ok().build();
 	}
-	
-	// TODO: refactor into a common utility shared also by PushNotificationSenderEndpoint
-	/**
-     * returns application if the masterSecret is valid for the request PushApplicationEntity
-     */
-    private PushApplication loadPushApplicationWhenAuthorized(HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String pushApplicationID = credentials[0];
-        String secret = credentials[1];
-
-        final PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
-        if (pushApplication != null && pushApplication.getMasterSecret().equals(secret)) {
-            return pushApplication;
-        }
-
-        // unauthorized...
-        return null;
-    }
 }

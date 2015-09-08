@@ -7,6 +7,11 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 public interface CategoryDeploymentService {
 	
+	/**
+	 * 
+	 * @param application
+	 * @param categoryData
+	 */
 	void deployCategories(PushApplication application, Map<String, List<String>> categoryData);
 
 }
