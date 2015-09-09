@@ -27,6 +27,9 @@ public class CategoryDeploymentServiceImpl implements CategoryDeploymentService 
 	@Inject
 	private InstallationDao installationDao;
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void deployCategories(PushApplication application, Map<String, List<String>> categoryData) {
 		List<Category> categories = overwriteCategories(application, categoryData);

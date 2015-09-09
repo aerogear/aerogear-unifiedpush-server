@@ -44,6 +44,14 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
     List<Installation> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
     
+    /**
+     * Loads all installations matching the alias, for the given list of variants.
+     * 
+     * @param variantIDs variant IDs by which to filter.
+     * @param alias alias by which to filter
+     * 
+     * @return list of matching installations.
+     */
     List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias);
 
     /**
