@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -43,6 +44,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.CategoryDeploymentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
@@ -61,6 +63,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private InstallationDao installationDao;
+    
+    @Inject
+    private CategoryDeploymentService categoryDeploymentService;
 
     /**
      * Create Push Application
@@ -308,5 +313,26 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
 
         return Response.ok(result).build();
+    }
+    
+    /**
+     * Overwrites existing categories and properties of the push application with the given data
+     * 
+     * @param pushApplicationID id of {@linkplain PushApplication} 
+     * @param categoryData	map from category name to its list of property names
+     */
+    @POST
+    @Path("/{pushAppID}/categories")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
+    public Response deployCategories(@PathParam("pushAppID") String pushApplicationID, Map<String, List<String>> categoryData) {
+    	PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (pushApp != null) {
+            categoryDeploymentService.deployCategories(pushApp, categoryData);
+            return Response.noContent().build();
+        }
+        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 }
