@@ -37,7 +37,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
-		String code = deviceToToken.get(buildKey(variantID, deviceToken));
+		String code = deviceToToken.remove(buildKey(variantID, deviceToken));
 		if (code == null) {
 			return VerificationResult.UNKNOWN;
 		} else if (code.equals(verificationAttempt)) {
