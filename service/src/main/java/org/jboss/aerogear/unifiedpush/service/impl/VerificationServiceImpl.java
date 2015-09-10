@@ -30,13 +30,14 @@ public class VerificationServiceImpl implements VerificationService {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 		smsService.sendSMS(installation.getAlias(), verificationCode);
-		deviceToToken.put(installation.getDeviceToken(), verificationCode);
+		String key = buildKey(installation.getVariant().getVariantID(), installation.getDeviceToken());
+		deviceToToken.put(key, verificationCode);
 		return verificationCode;
 	}
 
 	@Override
 	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
-		String code = deviceToToken.get(deviceToken);
+		String code = deviceToToken.get(buildKey(variantID, deviceToken));
 		if (code == null) {
 			return VerificationResult.UNKNOWN;
 		} else if (code.equals(verificationAttempt)) {
@@ -48,6 +49,10 @@ public class VerificationServiceImpl implements VerificationService {
 			return VerificationResult.SUCCESS;
 		}
 		return VerificationResult.FAIL;
+	}
+	
+	private String buildKey(String variantID, String deviceToken) {
+		return variantID + "_" + deviceToken;
 	}
 
 }
