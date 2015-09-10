@@ -420,7 +420,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         VerificationResult result = verificationService.verifyDevice(variantID, verificationAttempt.getDeviceToken(), 
         		verificationAttempt.getCode());
         
-        return Response.ok(result).build();
+        return appendAllowOriginHeader(Response.ok(result), request);
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
