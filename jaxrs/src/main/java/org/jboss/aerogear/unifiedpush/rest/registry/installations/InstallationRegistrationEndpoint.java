@@ -401,7 +401,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @statuscode 401 The request requires authentication
      */
     @POST
-    @Path("/enableByCode")
+    @Path("/enable")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult")
