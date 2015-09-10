@@ -38,11 +38,12 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
         variantService.addVariant(androidVariant);
     }
    
-	/*@Test
+	@Test
 	public void testSendCorrectVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
+		device.setVariant(androidVariant);
 		clientInstallationService.addInstallation(androidVariant, device);
 
 		verificationService.initiateDeviceVerification(device);
@@ -50,7 +51,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		
 		assertNotNull(verificationCode);
 		
-		VerificationResult result = verificationService.verifyDevice(device, verificationCode);
+		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
@@ -59,6 +60,9 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
+		device.setVariant(androidVariant);
+		clientInstallationService.addInstallation(androidVariant, device);
+		
 		verificationService.initiateDeviceVerification(device);
 		String verificationCode = smsService.phoneToMessage.get("myalias");
 		
@@ -68,7 +72,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		fakeDevice.setAlias("myalias");
 		fakeDevice.setDeviceToken("fake device");
 		
-		VerificationResult result = verificationService.verifyDevice(fakeDevice, verificationCode);
+		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), fakeDevice.getDeviceToken(), verificationCode);
 		assertEquals(VerificationResult.UNKNOWN, result);	
 	}
 	
@@ -77,11 +81,14 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
+		device.setVariant(androidVariant);
+		clientInstallationService.addInstallation(androidVariant, device);
+
 		verificationService.initiateDeviceVerification(device);
 		String verificationCode = smsService.phoneToMessage.get("myalias");
 		assertNotNull(verificationCode);
-		VerificationResult result = verificationService.verifyDevice(device, verificationCode + "0");
+		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");
 		assertEquals(VerificationResult.FAIL, result);
-	}*/
+	}
 	
 }
