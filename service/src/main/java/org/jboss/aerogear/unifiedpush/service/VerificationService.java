@@ -16,11 +16,12 @@ public interface VerificationService {
 	
 	/**
 	 * Attempts to verify the device (after a verification request has been issued prior to this point).
-	 * @param installation installation trying to verify itself
+	 * @param variantID variant ID of the installation
+	 * @param deviceToken device token of the installation trying to verify itself
 	 * @param verificationCode verification code sent back by the device
 	 * @return a {@link VerificationResult} signaling the outcome of the verification attempt.
 	 */
-	VerificationResult verifyDevice(Installation installation, String verificationCode);
+	VerificationResult verifyDevice(String variantID, String deviceToken, String verificationCode);
 	
 	public enum VerificationResult {
 		/**

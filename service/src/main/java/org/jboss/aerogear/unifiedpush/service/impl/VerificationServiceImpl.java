@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 
@@ -23,7 +23,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private SMSService smsService;
 	
 	@Inject
-    private InstallationDao installationDao;
+	private ClientInstallationService clientInstallationService;
 	
 	@Override
 	public String initiateDeviceVerification(Installation installation) {
@@ -35,15 +35,16 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public VerificationResult verifyDevice(Installation installation, String verificationAttempt) {
-		String code = deviceToToken.get(installation.getDeviceToken());
+	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
+		String code = deviceToToken.get(deviceToken);
 		if (code == null) {
 			return VerificationResult.UNKNOWN;
 		} else if (code.equals(verificationAttempt)) {
+			Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, deviceToken);
 			installation.setEnabled(true);
 			// TODO: there should be a "verifyDevice" like method in ClientInstallationService, which delegates here,
 			// so implementations of VerificationService will not have to update the installation themselves.
-			installationDao.update(installation);
+			clientInstallationService.updateInstallation(installation);
 			return VerificationResult.SUCCESS;
 		}
 		return VerificationResult.FAIL;

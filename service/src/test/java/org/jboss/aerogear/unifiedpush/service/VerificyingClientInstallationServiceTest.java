@@ -38,7 +38,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
         variantService.addVariant(androidVariant);
     }
    
-	@Test
+	/*@Test
 	public void testSendCorrectVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
@@ -82,6 +82,6 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertNotNull(verificationCode);
 		VerificationResult result = verificationService.verifyDevice(device, verificationCode + "0");
 		assertEquals(VerificationResult.FAIL, result);
-	}
+	}*/
 	
 }

@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -405,7 +406,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult")
-    public Response enableByCode(Installation entity, String verificationCode, @Context HttpServletRequest request) {
+    public Response enableByCode(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
@@ -413,7 +414,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
         
-        VerificationResult result = verificationService.verifyDevice(entity, verificationCode);
+        String[] authorization = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+        String variantID = authorization[0];
+        
+        VerificationResult result = verificationService.verifyDevice(variantID, verificationAttempt.getDeviceToken(), 
+        		verificationAttempt.getCode());
         
         return Response.ok(result).build();
     }
