@@ -4,12 +4,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.file.FileManager;
 import org.jboss.aerogear.unifiedpush.service.file.FileService;
 
+@Stateless
 public class FileServiceImpl implements FileService {
 
 	@Inject
