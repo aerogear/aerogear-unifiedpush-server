@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -18,7 +19,6 @@ public class Configuration {
 	
     private final AeroGearLogger logger = AeroGearLogger.getInstance(Configuration.class);
 
-	// todo: rename
 	private static final String PROPERTIES_FILE_KEY = "aerogear.config";
 	
 	private Properties properties;
@@ -30,11 +30,13 @@ public class Configuration {
 		
 		if (propertiesFilePath != null) {
 			File propertiesFile = new File(propertiesFilePath);
-			try (InputStream inp = new FileInputStream(propertiesFile)) {
-				properties.load(inp);
-			} catch (IOException e) {
-			    logger.severe("Cannot load configuration", e);
+			try {
+				loadPropertiesFromStream(new FileInputStream(propertiesFile));
+			} catch (FileNotFoundException e) {
+				logger.severe("cannot open file " + propertiesFilePath);
 			} 
+		} else {
+			loadDefaultProperties();
 		}
 	}
 	
@@ -44,6 +46,22 @@ public class Configuration {
 	
 	public Properties getProperties() {
 		return new PropertiesView(properties);
+	}
+	
+	private void loadDefaultProperties() {
+		InputStream inp = getClass().getClassLoader().getResourceAsStream("default.properties");
+		if (inp == null) {
+			logger.warning("default properties not found");
+		}
+		loadPropertiesFromStream(inp);
+	}
+	
+	private void loadPropertiesFromStream(InputStream inp) {
+		try (InputStream in = inp) {
+			properties.load(in);
+		} catch (IOException e) {
+		    logger.severe("Cannot load configuration", e);
+		} 
 	}
 	
 	@SuppressWarnings("serial")
