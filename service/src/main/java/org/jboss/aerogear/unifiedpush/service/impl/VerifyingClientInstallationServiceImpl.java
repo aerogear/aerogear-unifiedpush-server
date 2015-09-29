@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 
 /**
@@ -18,6 +19,11 @@ import org.jboss.aerogear.unifiedpush.service.VerificationService;
 @Alternative
 public class VerifyingClientInstallationServiceImpl extends ClientInstallationServiceImpl implements ClientInstallationService {
 	
+	private static final String ENABLE_VERIFICATION = "aerogear.config.enable_sms_verification";
+	
+	@Inject
+	private Configuration configuration;
+	
 	@Inject
 	private VerificationService verificationService;
 	
@@ -26,8 +32,15 @@ public class VerifyingClientInstallationServiceImpl extends ClientInstallationSe
 	@Override
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
-		entity.setEnabled(false);
-		super.addInstallation(variant, entity);
-		verificationService.initiateDeviceVerification(entity);
+		
+		boolean shouldVerifiy = configuration.getBooleanProperty(ENABLE_VERIFICATION, false);
+		
+		if (shouldVerifiy) {
+			entity.setEnabled(false);
+			super.addInstallation(variant, entity);
+			verificationService.initiateDeviceVerification(entity);
+		} else {
+			super.addInstallation(variant, entity);
+		}
 	}
 }
