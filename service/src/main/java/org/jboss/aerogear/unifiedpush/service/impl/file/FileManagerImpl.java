@@ -7,11 +7,14 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import org.jboss.aerogear.unifiedpush.service.file.FileManager;
 
 /**
  * A basic, non-synchronous and blocking implementation of FileManager.
  */
+@Stateless
 public class FileManagerImpl implements FileManager {
 
 	/**
