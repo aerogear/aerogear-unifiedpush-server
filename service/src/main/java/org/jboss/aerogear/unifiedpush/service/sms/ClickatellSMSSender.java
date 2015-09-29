@@ -20,10 +20,10 @@ public class ClickatellSMSSender implements SMSSender {
 	
 	private String ERROR_PREFIX = "ERR";
 
-	private final static String API_ID_KEY = "sms.sender.clickatell.api_id";
-	private final static String USERNAME_KEY = "sms.sender.clickatell.username";
-	private final static String PASSWORD_KEY = "sms.sender.clickatell.password";
-	private final static String ENCODING_KEY = "sms.sender.clickatell.encoding";
+	private final static String API_ID_KEY = "aerogear.config.sms.sender.clickatell.api_id";
+	private final static String USERNAME_KEY = "aerogear.config.sms.sender.clickatell.username";
+	private final static String PASSWORD_KEY = "aerogear.config.sms.sender.clickatell.password";
+	private final static String ENCODING_KEY = "aerogear.config.sms.sender.clickatell.encoding";
 	private final static String API_URL = "https://api.clickatell.com/http/sendmsg";
 	
 	@Override
