@@ -44,6 +44,14 @@ public class Configuration {
 		return properties.getProperty(key);
 	}
 	
+	public boolean getBooleanProperty(String key, boolean defaultValue) {
+		String value = getProperty(key);
+		if (value == null) {
+			return defaultValue;
+		}
+		return Boolean.valueOf(value);
+	}
+	
 	public Properties getProperties() {
 		return new PropertiesView(properties);
 	}
@@ -52,8 +60,9 @@ public class Configuration {
 		InputStream inp = getClass().getClassLoader().getResourceAsStream("default.properties");
 		if (inp == null) {
 			logger.warning("default properties not found");
+		} else {
+			loadPropertiesFromStream(inp);
 		}
-		loadPropertiesFromStream(inp);
 	}
 	
 	private void loadPropertiesFromStream(InputStream inp) {
