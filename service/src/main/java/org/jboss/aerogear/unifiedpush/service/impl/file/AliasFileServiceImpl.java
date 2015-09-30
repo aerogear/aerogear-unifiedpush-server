@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.file.FileManager;
-import org.jboss.aerogear.unifiedpush.service.file.FileService;
+import org.jboss.aerogear.unifiedpush.service.file.AliasFileService;
 
 @Stateless
-public class FileServiceImpl implements FileService {
+public class AliasFileServiceImpl implements AliasFileService {
 
 	@Inject
 	private FileManager fileManager;

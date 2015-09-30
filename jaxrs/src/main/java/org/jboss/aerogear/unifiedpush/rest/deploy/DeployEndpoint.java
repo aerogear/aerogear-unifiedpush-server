@@ -17,7 +17,7 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.ImporterForm;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.file.FileService;
+import org.jboss.aerogear.unifiedpush.service.file.AliasFileService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
@@ -29,7 +29,7 @@ public class DeployEndpoint {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(DeployEndpoint.class);
 	
 	@Inject
-	private FileService fileService;
+	private AliasFileService fileService;
 	
 	@Inject
 	private PushApplicationService pushApplicationService;

@@ -7,7 +7,7 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 /**
  *	A service for saving and retrieving files saved for an alias.
  */
-public interface FileService {
+public interface AliasFileService {
 	
 	/**
 	 * Saves a file for the given alias.
