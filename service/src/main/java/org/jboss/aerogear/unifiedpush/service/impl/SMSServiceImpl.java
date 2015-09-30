@@ -17,7 +17,7 @@ import org.jboss.aerogear.unifiedpush.service.SMSService;
 @Singleton
 public class SMSServiceImpl implements SMSService {
 
-	private final static String SMS_IMPL_KEY = "sms.impl";
+	private final static String SMS_IMPL_KEY = "aerogear.config.sms.impl.class";
 	
 	@Inject
 	private Configuration configuration;

@@ -18,9 +18,8 @@ import org.jboss.aerogear.unifiedpush.service.VerificationService;
 @Stateless
 @Alternative
 public class VerifyingClientInstallationServiceImpl extends ClientInstallationServiceImpl implements ClientInstallationService {
-	
-	private static final String ENABLE_VERIFICATION = "aerogear.config.enable_sms_verification";
-	
+	private static final String ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
+
 	@Inject
 	private Configuration configuration;
 	

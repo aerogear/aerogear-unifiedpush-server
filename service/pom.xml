@@ -64,6 +64,12 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <!-- Provided as we use the Infinispan provided by Wildfly -->
+        </dependency>
 
     </dependencies>
 

@@ -382,7 +382,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *     "alias" : "someUsername or email adress...",
      *     "categories" : ["football", "sport"]
      *   }'
-     *   https://SERVER:PORT/context/rest/registry/enableByCode
+     *   https://SERVER:PORT/context/rest/registry/enable
      * </pre>
      *
      *
@@ -406,7 +406,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult")
-    public Response enableByCode(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
+    public Response enable(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
