@@ -16,21 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -48,8 +35,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -62,9 +67,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-
     @Inject
     private PushMessageMetricsService metricsService;
+    @Inject
+    private VerificationService verificationService;
 
     /**
      * Cross Origin for Installations
@@ -357,6 +363,64 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         // return directly, the above is async and may take a bit :-)
         return Response.ok(EmptyJSON.STRING).build();
+    }
+    
+    // TODO: Fix documentation for curl usage
+    /**
+     * RESTful API for enabling a device (verifying it).
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X POST
+     *   -d '{
+     *     "deviceToken" : "someTokenString",
+     *     "deviceType" : "iPad",
+     *     "operatingSystem" : "iOS",
+     *     "osVersion" : "6.1.2",
+     *     "alias" : "someUsername or email adress...",
+     *     "categories" : ["football", "sport"]
+     *   }'
+     *   https://SERVER:PORT/context/rest/registry/enableByCode
+     * </pre>
+     *
+     *
+     * @HTTP 200 (OK) for any verification result
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     *
+     * @param entity    {@link Installation} the device verifying
+     * @param verificationCode the verification code
+     * @return          verification outcome {@link VerificationResult}
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
+     * @statuscode 401 The request requires authentication
+     */
+    @POST
+    @Path("/enable")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult")
+    public Response enableByCode(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+        
+        String[] authorization = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+        String variantID = authorization[0];
+        
+        VerificationResult result = verificationService.verifyDevice(variantID, verificationAttempt.getDeviceToken(), 
+        		verificationAttempt.getCode());
+        
+        return appendAllowOriginHeader(Response.ok(result), request);
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
