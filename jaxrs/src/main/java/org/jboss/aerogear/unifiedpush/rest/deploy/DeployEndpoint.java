@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.ImporterForm;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
@@ -34,6 +35,18 @@ public class DeployEndpoint {
 	@Inject
 	private PushApplicationService pushApplicationService;
 	
+	/**
+     * POST deploys a file and stores it for later retrieval by a client 
+     * of the push application.
+     *
+     * @param pushAppId id of {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
+     * @param alias     the alias of the client
+     * @param fileName  name of file to save
+     *
+     * @statuscode 401 if unauthorized for this push application
+     * @statuscode 500 if request failed
+     * @statuscode 200 upon success
+     */
 	@POST	
 	@Path("/application/{pushAppID}/alias/{alias}/doc/{fileName}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -55,7 +68,7 @@ public class DeployEndpoint {
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file", e);
-            return Response.status(Status.BAD_REQUEST).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
     
