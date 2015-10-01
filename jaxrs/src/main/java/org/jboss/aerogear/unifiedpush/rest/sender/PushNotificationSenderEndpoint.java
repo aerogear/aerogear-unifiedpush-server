@@ -27,16 +27,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
@@ -89,7 +90,7 @@ public class PushNotificationSenderEndpoint {
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
-        final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
+        final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushApplicationService);
         if (pushApplication == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
@@ -110,22 +111,5 @@ public class PushNotificationSenderEndpoint {
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }
-
-    /**
-     * returns application if the masterSecret is valid for the request PushApplicationEntity
-     */
-    private PushApplication loadPushApplicationWhenAuthorized(HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String pushApplicationID = credentials[0];
-        String secret = credentials[1];
-
-        final PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
-        if (pushApplication != null && pushApplication.getMasterSecret().equals(secret)) {
-            return pushApplication;
-        }
-
-        // unauthorized...
-        return null;
-    }
+   
 }

@@ -16,21 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -48,8 +35,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -62,7 +64,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-
     @Inject
     private PushMessageMetricsService metricsService;
 
@@ -80,7 +81,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @responseheader Access-Control-Max-Age           604800
      *
      * @statuscode 200 Successful response for your request
-     */
+     *****/
     @OPTIONS
     @Path("{token: .*}")
     @ReturnType("java.lang.Void")
@@ -91,6 +92,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
+    
     /**
      * Cross Origin for Installations
      *
@@ -157,7 +159,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -177,6 +179,30 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // async:
         clientInstallationService.addInstallation(variant, entity);
 
+        return appendAllowOriginHeader(Response.ok(entity), request);
+    }
+    
+    @POST
+    @Path("/associate/{id: .*}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
+    public Response associate(Installation entity,
+                           @Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+        
+        Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+        if (installation == null) {
+            return create401Response(request);
+        }
+
+        clientInstallationService.associateInstallation(installation);
+ 
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
 
@@ -211,7 +237,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
                            @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -257,7 +283,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -337,7 +363,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -385,26 +411,5 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
                         .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                         .entity("Unauthorized Request"),
                 request);
-    }
-
-    /**
-     * returns application if the masterSecret is valid for the request
-     * PushApplicationEntity
-     */
-    private Variant loadVariantWhenAuthorized(
-            HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic
-        // header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String variantID = credentials[0];
-        String secret = credentials[1];
-
-        final Variant variant = genericVariantService.findByVariantID(variantID);
-        if (variant != null && variant.getSecret().equals(secret)) {
-            return variant;
-        }
-
-        // unauthorized...
-        return null;
     }
 }

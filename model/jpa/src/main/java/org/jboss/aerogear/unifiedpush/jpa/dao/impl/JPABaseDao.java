@@ -65,6 +65,11 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     public T find(K id) {
         return entityManager.find(getType(), id);
     }
+    
+    @SuppressWarnings("unchecked")
+	public List<T> findAll() {
+        return entityManager.createQuery("Select t from " + getType().getSimpleName() + " t").getResultList();
+    }
 
     public void create(T entity) {
         entityManager.persist(entity);

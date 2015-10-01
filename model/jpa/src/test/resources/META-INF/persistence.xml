@@ -26,6 +26,7 @@
         <mapping-file>META-INF/orm.xml</mapping-file>
         <mapping-file>org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml</mapping-file>
         <mapping-file>org/jboss/aerogear/unifiedpush/api/Category.hbm.xml</mapping-file>
+        <mapping-file>org/jboss/aerogear/unifiedpush/api/Property.hbm.xml</mapping-file>
         <mapping-file>org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml</mapping-file>
         <mapping-file>org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml</mapping-file>
 
