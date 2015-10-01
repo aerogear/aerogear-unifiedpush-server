@@ -33,11 +33,11 @@ public class AeroGearLogger {
         this.logger = logger;
     }
 
-    public static AeroGearLogger getInstance(Class clazz) {
+    public static AeroGearLogger getInstance(Class<?> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("Class required");
         }
-        final String name = clazz.getSimpleName();
+        final String name = clazz.getName();
         return getInstance(name);
     }
 
