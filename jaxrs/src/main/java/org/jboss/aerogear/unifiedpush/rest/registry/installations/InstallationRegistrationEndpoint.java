@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -36,6 +37,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -48,6 +50,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -180,28 +183,31 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
     
-    @POST
-    @Path("/associate/{id: .*}")
+    @GET
+    @Path("/associate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
-    public Response associate(Installation entity,
-                           @Context HttpServletRequest request) {
+    public Response associate(@Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request); //TODO
+        final Variant variant = loadVariantWhenAuthorized(request);
         if (variant == null) {
             return create401Response(request);
         }
         
-        Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+        request.getHeader("deviceToken");
+        String deviceToken = null;
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
         if (installation == null) {
             return create401Response(request);
         }
 
+        // Associate the device - find the matching application and update the device to the right application 
         clientInstallationService.associateInstallation(installation);
+        Variant newVariant = installation.getVariant();
  
-        return appendAllowOriginHeader(Response.ok(entity), request);
+        return appendAllowOriginHeader(Response.ok(newVariant), request);
     }
 
     /**
