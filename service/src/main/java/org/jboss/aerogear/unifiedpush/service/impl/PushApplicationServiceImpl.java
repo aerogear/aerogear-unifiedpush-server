@@ -25,9 +25,6 @@ import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Stateless
@@ -75,11 +72,5 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public void removePushApplication(PushApplication pushApp) {
         pushApplicationDao.delete(pushApp);
     }
-
-	@Override
-	public PushApplication findByVariantID(String variantID) {
-		List<PushApplication> pushApps = pushApplicationDao.findByVariantIds(Collections.singletonList(variantID));
-		return pushApps.isEmpty() ? null : pushApps.get(0);
-	}
 
 }
