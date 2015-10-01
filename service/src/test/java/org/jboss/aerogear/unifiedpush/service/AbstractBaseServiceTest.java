@@ -31,10 +31,12 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDa
 import org.jboss.aerogear.unifiedpush.service.impl.CategoryDeploymentServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.MockSMSService;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.service.impl.VerificationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -131,6 +133,8 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(PushMessageMetricsService.class);
         beans.addManagedClass(JPAPropertyDao.class);
         beans.addManagedClass(CategoryDeploymentServiceImpl.class);
+        beans.addManagedClass(VerificationServiceImpl.class);
+        beans.addManagedClass(MockSMSService.class);
         return beans;
     }
 

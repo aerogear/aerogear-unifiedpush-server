@@ -29,6 +29,20 @@
 
 
     <dependencies>
+		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>compile</scope>
+		</dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -49,6 +63,12 @@
             <artifactId>unifiedpush-model-jpa</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <!-- Provided as we use the Infinispan provided by Wildfly -->
         </dependency>
 
     </dependencies>

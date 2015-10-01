@@ -78,17 +78,18 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
+            <!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill of Materials (BOM). A BOM specifies the versions
                 of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
                 Here we use
-                the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
-            <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-7.0</artifactId>
-                <version>${jboss-javaee-7.0.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+                the jboss-javaee-7.0 stack (you can read this as the JBoss stack of the Java EE 7 APIs) -->
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>jboss-javaee-7.0-with-infinispan</artifactId>
+				<version>${wildfly.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+		    </dependency>
+		    
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -230,8 +231,8 @@
     <properties>
     	<java.version>1.7</java.version>
 
-	<!-- Override Areogear BOM -->
-	<resteasy.version>3.0.10.Final</resteasy.version>
+	    <!-- Override Areogear BOM -->
+	    <resteasy.version>3.0.10.Final</resteasy.version>
     
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -264,6 +265,8 @@
         <hibernate.version>4.2.15.Final</hibernate.version>
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mysql.version>5.1.36</mysql.version>
+       
+        <wildfly.version>8.2.1.Final</wildfly.version>
     </properties>
 
     <profiles>
