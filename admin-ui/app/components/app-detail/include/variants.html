@@ -1,5 +1,5 @@
 <div class="actions pull-right ups-main-action" ng-if="variants.isAllowedToAddVariant()">
-  <button class="btn btn-primary" ng-click="variants.add()"><span class="pficon pficon-add"></span> Add a variant</button>
+  <button id="add-variant-btn" class="btn btn-primary" ng-click="variants.add()"><span class="pficon pficon-add"></span> Add a variant</button>
 </div>
 
 <h3>You have {{ appDetail.app.variants.length }} Variants</h3>
@@ -9,8 +9,8 @@
   <div class="panel-heading ups-has-icon ups-variant-{{ variantType }}">
     <h3 class="panel-title">{{ variants.typeEnum[variantType].name }} Variants</h3>
     <ul class="list-inline">
-      <li><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Messages</li>
-      <li><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
+      <li id="message-count-{{ variantType }}"><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Messages</li>
+      <li id="device-count-{{ variantType }}"><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
     </ul>
 
   </div>

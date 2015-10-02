@@ -11,7 +11,7 @@
           <h3 class="panel-title">Push Messages</h3>
         </div>
         <div class="panel-body">
-          <h2>{{ appDetail.app.$messageCount | number:0 }}</h2>
+          <h2 id="message-count">{{ appDetail.app.$messageCount | number:0 }}</h2>
           <div class="analytics-help" tooltip-placement="bottom"
                tooltip="Number of push messages sent to UnifiedPush Server for dispatching to registered devices">
             <span class="pficon pficon-help"></span>
@@ -26,7 +26,7 @@
           <h3 class="panel-title">Notifications Dispatched</h3>
         </div>
         <div class="panel-body">
-          <h2>{{ analyticsCtrl.receivers | number:0 }}</h2>
+          <h2 id="receiver-count">{{ analyticsCtrl.receivers | number:0 }}</h2>
           <div class="analytics-help" tooltip-placement="bottom"
                tooltip="Number of notifications dispatched via Push Networks to registered device">
             <span class="pficon pficon-help"></span>
@@ -42,7 +42,7 @@
           <h3 class="panel-title">Notifications Opened</h3>
         </div>
         <div class="panel-body">
-          <h2>{{ analyticsCtrl.appOpenedCounter | number:0 }}</h2>
+          <h2 id="opened-count">{{ analyticsCtrl.appOpenedCounter | number:0 }}</h2>
           <div class="analytics-help" tooltip-placement="bottom"
                tooltip="Number of notifications that were delivered to registered device and opened by a user">
             <span class="pficon pficon-help"></span>
@@ -58,7 +58,7 @@
           <h3 class="panel-title">Average Open Rate</h3>
         </div>
         <div class="panel-body">
-          <h2>{{ analyticsCtrl.appOpenedRate | number:2 }} %</h2>
+          <h2 id="opened-rate">{{ analyticsCtrl.appOpenedRate | number:2 }} %</h2>
           <div class="analytics-help" tooltip-placement="bottom"
                tooltip="Notifications Opened / Notifications Dispatched">
             <span class="pficon pficon-help"></span>

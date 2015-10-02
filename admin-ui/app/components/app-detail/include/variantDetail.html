@@ -26,13 +26,13 @@
 
 <dl class="dl-horizontal">
   <dt>Server URL:</dt>
-  <dd>{{ variantDetail.contextPath }}</dd>
+  <dd class="server-url">{{ variantDetail.contextPath }}</dd>
   <dt>Variant ID:</dt>
-  <dd>{{ variant.variantID }}</dd>
+  <dd class="variant-id">{{ variant.variantID }}</dd>
   <dt>Variant Secret:</dt>
-  <dd>
+  <dd class="variant-secret">
     {{ variant.secret }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+    <button class="renew-variant-secret btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
 
@@ -40,9 +40,9 @@
 
 <dl class="dl-horizontal" ng-if="variant.type == 'android'">
   <dt>Project Number:</dt>
-  <dd>{{ variant.projectNumber }}</dd>
+  <dd class="project-number">{{ variant.projectNumber }}</dd>
   <dt>Google API Key:</dt>
-  <dd>
+  <dd class="google-key">
     {{ variant.googleKey }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
   </dd>
@@ -57,9 +57,9 @@
   <dt>Type:</dt>
   <dd>Windows Push Network</dd>
   <dt>Package SID:</dt>
-  <dd>{{ variant.sid }}</dd>
+  <dd class="package-sid">{{ variant.sid }}</dd>
   <dt>Client Secret:</dt>
-  <dd>
+  <dd class="client-secret">
     {{ variant.clientSecret }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
   </dd>

@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs nav-tabs-pf">
-  <li ng-class="{ active: activeSnippet == 'java' }" ng-show=" snippets.java.show"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'nodejs' }"  ng-show=" snippets.nodejs.show"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'curl' }"  ng-show=" snippets.curl.show"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
+  <li id="java-snippet-tab" ng-class="{ active: activeSnippet == 'java' }" ng-show=" snippets.java.show"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
+  <li id="nodejs-snippet-tab" ng-class="{ active: activeSnippet == 'nodejs' }"  ng-show=" snippets.nodejs.show"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
+  <li id="curl-snippet-tab" ng-class="{ active: activeSnippet == 'curl' }"  ng-show=" snippets.curl.show"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
 </ul>
 
 
