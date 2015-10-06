@@ -68,6 +68,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public Installation associateInstallation(Installation installation) {
+		// Search standalone categories which matches to installation alias. 
 		String alias  = installation.getAlias();
 		List<Property> properties = propertyDao.findByName(alias);
 		if(properties.isEmpty())
@@ -77,15 +78,19 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		if(categories.isEmpty())
 			return installation;
 		
+		// Assign installation with new categories.
 		installation.setCategories(new HashSet<Category>(categories));
 		
 		String applicationId = categories.get(0).getApplicationId();
 		if(applicationId == null)
 			return installation;
+		
+		// Associate new variant to installation. 
 		PushApplication application = pushApplicationDao.find(applicationId);
 		List<Variant> variants = application.getVariants();
 		for (Variant variant : variants) {
-			if(variant.getType().equals(installation.getDeviceType())){
+			// Match variant type according to previous variant.
+			if(variant.getType().equals(installation.getVariant().getType())){
 				installation.setVariant(variant);
 				break;
 			}
