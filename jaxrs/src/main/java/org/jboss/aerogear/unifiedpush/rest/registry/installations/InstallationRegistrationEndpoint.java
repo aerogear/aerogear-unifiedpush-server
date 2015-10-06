@@ -16,28 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -51,8 +36,22 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import java.io.IOException;
-import java.util.List;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -181,33 +180,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         clientInstallationService.addInstallation(variant, entity);
 
         return appendAllowOriginHeader(Response.ok(entity), request);
-    }
-    
-    @GET
-    @Path("/associate")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
-    public Response associate(@Context HttpServletRequest request) {
-
-        // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
-        if (variant == null) {
-            return create401Response(request);
-        }
-        
-        request.getHeader("deviceToken");
-        String deviceToken = null;
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-        if (installation == null) {
-            return create401Response(request);
-        }
-
-        // Associate the device - find the matching application and update the device to the right application 
-        clientInstallationService.associateInstallation(installation);
-        Variant newVariant = installation.getVariant();
- 
-        return appendAllowOriginHeader(Response.ok(newVariant), request);
     }
 
     /**
