@@ -37,7 +37,7 @@ public class VerifyingClientInstallationServiceImpl extends ClientInstallationSe
 		if (shouldVerifiy) {
 			entity.setEnabled(false);
 			super.addInstallation(variant, entity);
-			verificationService.initiateDeviceVerification(entity);
+			verificationService.initiateDeviceVerification(entity, variant);
 		} else {
 			super.addInstallation(variant, entity);
 		}

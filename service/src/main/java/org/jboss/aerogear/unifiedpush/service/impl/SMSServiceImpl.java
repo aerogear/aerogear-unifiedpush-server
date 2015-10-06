@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Default implementation of {@link SMSService}. Note that this class does not implement the underlying
@@ -16,6 +17,8 @@ import org.jboss.aerogear.unifiedpush.service.SMSService;
  */
 @Singleton
 public class SMSServiceImpl implements SMSService {
+	
+	private final AeroGearLogger logger = AeroGearLogger.getInstance(SMSServiceImpl.class);
 
 	private final static String SMS_IMPL_KEY = "aerogear.config.sms.impl.class";
 	
@@ -32,7 +35,8 @@ public class SMSServiceImpl implements SMSService {
 	public void initializeSender() {
 		final String className = configuration.getProperty(SMS_IMPL_KEY);
 		if (className == null) {
-			throw new RuntimeException("cannot find sms sender implementation class");
+			logger.warning("cannot find sms sender implementation class");
+			return;
 		}
 		
 		try {

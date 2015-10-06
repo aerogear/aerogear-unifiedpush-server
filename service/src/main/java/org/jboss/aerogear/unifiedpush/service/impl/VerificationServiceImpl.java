@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
@@ -49,11 +50,11 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 	
 	@Override
-	public String initiateDeviceVerification(Installation installation) {
+	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 		smsService.sendSMS(installation.getAlias(), verificationCode);
-		String key = buildKey(installation.getVariant().getVariantID(), installation.getDeviceToken());
+		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		deviceToToken.put(key, verificationCode);
 		return verificationCode;
 	}

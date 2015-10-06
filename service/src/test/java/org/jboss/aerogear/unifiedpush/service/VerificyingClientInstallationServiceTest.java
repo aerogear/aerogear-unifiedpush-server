@@ -46,7 +46,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setVariant(androidVariant);
 		clientInstallationService.addInstallation(androidVariant, device);
 
-		verificationService.initiateDeviceVerification(device);
+		verificationService.initiateDeviceVerification(device, androidVariant);
 		String verificationCode = smsService.phoneToMessage.get("myalias");
 		
 		assertNotNull(verificationCode);
@@ -63,7 +63,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setVariant(androidVariant);
 		clientInstallationService.addInstallation(androidVariant, device);
 		
-		verificationService.initiateDeviceVerification(device);
+		verificationService.initiateDeviceVerification(device, androidVariant);
 		String verificationCode = smsService.phoneToMessage.get("myalias");
 		
 		assertNotNull(verificationCode);
@@ -84,7 +84,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setVariant(androidVariant);
 		clientInstallationService.addInstallation(androidVariant, device);
 
-		verificationService.initiateDeviceVerification(device);
+		verificationService.initiateDeviceVerification(device, androidVariant);
 		String verificationCode = smsService.phoneToMessage.get("myalias");
 		assertNotNull(verificationCode);
 		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");

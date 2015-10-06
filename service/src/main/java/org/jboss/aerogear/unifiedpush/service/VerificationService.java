@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 
 /**
  * Service used to manage installation verification cycle.
@@ -10,9 +11,10 @@ public interface VerificationService {
 	/**
 	 * Sends a verification request to the device represented by the installation.
 	 * @param installation device to verify
+	 * @param installation the installation's variant
 	 * @return the verification code issued to the installation.
 	 */
-	String initiateDeviceVerification(Installation installation);
+	String initiateDeviceVerification(Installation installation, Variant variant);
 	
 	/**
 	 * Attempts to verify the device (after a verification request has been issued prior to this point).
