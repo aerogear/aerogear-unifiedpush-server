@@ -1,12 +1,20 @@
 # AeroGear UnifiedPush Server [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server)
 
-The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms and has support for:
+The UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms and has support for:
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Google Cloud Messaging](http://developer.android.com/google/gcm/index.html)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
 * [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
 * [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/)
 * [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
+
+_UnifiedPush Server_ releases additional functionallety while maintaning _AeroGear_ API compatibility:
+* [Full-stack](https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
+* Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
+* Category Additinal Properties.
+* Centralized configuration management. 
+* Publish documents to clients. 
+* SSL Suuport, NGINX frontend, embeded postgresql.
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
@@ -17,7 +25,7 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 | License:        | Apache License, Version 2.0  |
 | Build:          | Maven  |
 | Documentation:  | https://aerogear.org/push/  |
-| Issue tracker:  | https://issues.jboss.org/browse/AGPUSH  |
+| Issue tracker:  | https://github.com/C-B4/unifiedpush-server/issues  |
 | Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-users))  |
 |                 | [aerogear-dev](http://aerogear-dev.1069024.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-dev))  |
 
@@ -25,14 +33,14 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 <a href="https://openshift.redhat.com/app/console/application_type/quickstart!31"><img src="http://launch-shifter.rhcloud.com/launch/light/LAUNCH ON.svg" /></a>
 
-Or for the on-premise version, execute the following steps to get going!
+For the on-premise version, execute the following steps to get going!
 
-* Get the [latest WAR files](http://aerogear.org/push/)
-* Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
-* Start the {Wildfly|EAP 6.3} server (e.g. ``$JBOSS/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0``)
-* Deploy the two `WAR` files to the [server](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#deploy)
+* Get the [latest DISTRO (rpm/deb) files](https://packagecloud.io/unifiedpush/unifiedpush-server)
+* Or follow the steps on the [install page](https://packagecloud.io/unifiedpush/unifiedpush-server/install)
+* Run ``sudo unifiedpush-server reconfigure``
+* Start the server ``sudo unifiedpush-server start``
 
-Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
+Now go to ``http://localhost/unifiedpush-server`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
 ## Documentation
