@@ -89,6 +89,10 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertNotNull(verificationCode);
 		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");
 		assertEquals(VerificationResult.FAIL, result);
+		
+		// now retry with the correct code.
+		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");
+		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
 }
