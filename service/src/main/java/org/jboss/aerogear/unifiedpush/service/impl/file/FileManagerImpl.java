@@ -1,9 +1,11 @@
 package org.jboss.aerogear.unifiedpush.service.impl.file;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class FileManagerImpl implements FileManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<String> list(Path path) {
+	public List<File> list(Path path, FileFilter filter) {
 		File directory = path.toFile();
 		if (!directory.exists()) {
 			throw new RuntimeException(path + " does not exist");
@@ -59,7 +61,7 @@ public class FileManagerImpl implements FileManager {
 			throw new RuntimeException(path + " is not a directory");
 		}
 		
-		return Arrays.asList(directory.list());
+		return Arrays.asList(directory.listFiles(filter));
 	}
 
 }

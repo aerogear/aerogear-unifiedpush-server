@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.file;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -23,9 +25,10 @@ public interface FileManager {
 	byte[] read(Path path);
 
 	/**
-	 * Returns the list of files under the directory denoted in the path.
+	 * Returns the list of files under the directory denoted in the path and match the given file filter.
 	 * @param path directory path
+	 * @param filter predicate for files
 	 * @return list of files 
 	 */
-	List<String> list(Path path);
+	List<File> list(Path path, FileFilter filter);
 }

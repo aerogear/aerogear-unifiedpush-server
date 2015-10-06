@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.rest.deploy;
+package org.jboss.aerogear.unifiedpush.rest.documents;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -12,32 +12,24 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.registry.installations.ImporterForm;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.file.AliasFileService;
-import org.jboss.aerogear.unifiedpush.service.file.PushApplicationFileService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import com.qmino.miredot.annotations.ReturnType;
 
-@Path("/deploy")
-public class DeployEndpoint {
+@Path("/documents")
+public class DocumentEndpoint {
 	
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(DeployEndpoint.class);
-	
-	@Inject
-	private AliasFileService fileService;
-	
-	@Inject
-	private PushApplicationFileService pushApplicationFileService;
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(DocumentEndpoint.class);
 	
 	@Inject
 	private PushApplicationService pushApplicationService;
@@ -47,6 +39,9 @@ public class DeployEndpoint {
 	
     @Inject
     private GenericVariantService genericVariantService;
+    
+    @Inject
+    private DocumentService documentService;
 	
 	/**
      * POST deploys a file and stores it for later retrieval by a client 
@@ -61,13 +56,11 @@ public class DeployEndpoint {
      * @statuscode 200 upon success
      */
 	@POST	
-	@Path("/application/{pushAppID}/alias/{alias}/doc/{fileName}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+	@Path("/alias/{alias}")
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, 
-    		@PathParam("alias") String alias, @PathParam("fileName") String fileName, 
-    		@MultipartForm ImporterForm form, @Context HttpServletRequest request) {
+    public Response deployDocumentsForAlias(@PathParam("alias") String alias, Document entity, @Context HttpServletRequest request) {
         final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushApplicationService);
         if (pushApplication == null) {
             return Response.status(Status.UNAUTHORIZED)	
@@ -77,7 +70,7 @@ public class DeployEndpoint {
         }
         
         try {
-        	fileService.writeForAlias(pushApplication, alias, fileName, form.getJsonFile());
+        	documentService.saveForAlias(pushApplication, alias, entity);
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for alias", e);
@@ -86,25 +79,14 @@ public class DeployEndpoint {
     }
     
 	/**
-     * POST deploys a file and stores it for later retrieval by a client 
-     * of the push application.
-     *
-     * @param pushAppId id of {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
-     * @param alias     the alias of the client
-     * @param fileName  name of file to save
-     *
-     * @statuscode 401 if unauthorized for this push application
-     * @statuscode 500 if request failed
-     * @statuscode 200 upon success
+     * POST deploys a file and stores it for later retrieval by the push application
+     * of the client.
      */
 	@POST	
-	@Path("/application/{pushAppID}/doc/{fileName}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID, 
-    		@PathParam("fileName") String fileName, 
-    		@MultipartForm ImporterForm form, @Context HttpServletRequest request) {
+    public Response deployDocumentsForPushApp(Document entity, @Context HttpServletRequest request) {
         
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService, clientInstallationService, request);
 		if (variant == null) {
@@ -114,7 +96,7 @@ public class DeployEndpoint {
 		}
         
         try {
-        	pushApplicationFileService.save(pushApplicationService.findByVariantID(variant.getVariantID()), fileName, form.getJsonFile());
+        	documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity);
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for push application", e);

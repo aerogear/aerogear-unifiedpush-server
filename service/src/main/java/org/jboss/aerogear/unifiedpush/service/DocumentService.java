@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public interface DocumentService {
 	
-	void saveForPushApplication(PushApplication pushApplication, Document document);
+	void saveForPushApplication(String deviceToken, Variant variant, Document document);
 	
 	List<Document> getPushApplicationDocuments(PushApplication pushApplication, Date afterDate);
 	

@@ -1,8 +1,5 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -10,57 +7,56 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Document;
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.service.file.FileManager;
-import org.jboss.aerogear.unifiedpush.service.file.PushApplicationFileService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 @Stateless
 public class DocumentServiceImpl implements DocumentService {
 
 	@Inject
-	private PushApplicationFileService pushApplicationFileService;
+	private DocumentDao documentDao;
 	
 	@Inject
-	private FileManager fileManager;
+	private PushApplicationService pushApplicationService;
 	
-	@Override
-	public void saveForPushApplication(PushApplication pushApplication,
-			Document document) {
-		
-	}
+	@Inject
+	private ClientInstallationService clientInstallationService;
 
 	@Override
-	public List<Document> getPushApplicationDocuments(
-			PushApplication pushApplication, Date afterDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public void saveForPushApplication(String deviceToken, Variant variant,
+			Document document) {
+		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+		documentDao.create(createMessage(document, clientInstallation.getAlias(), pushApplication.getPushApplicationID()));
+	}
+	
+	@Override
+	public List<Document> getPushApplicationDocuments(PushApplication pushApplication, Date afterDate) {
+		return documentDao.findPushDocumentsAfter(pushApplication, afterDate);
 	}
 
 	@Override
 	public void saveForAlias(PushApplication pushApplication, String alias,
 			Document document) {
-		// TODO Auto-generated method stub
-		
+		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias));
 	}
 
 	@Override
-	public List<Document> getAliasDocuments(PushApplication pushApplication,
-			String alias, Date afterDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	private byte[] serializeDocument(Document document) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(document);
-		return baos.toByteArray();
-	}
-	
-	private String getFileName(Document document) {
-		return new StringBuilder("doc_").append(document.getType())
-				.append(System.currentTimeMillis()).toString();
+	public List<Document> getAliasDocuments(PushApplication pushApplication, String alias, Date afterDate) {
+		return documentDao.findAliasDocumentsAfter(pushApplication, alias, null, afterDate);
 	}
 
+	private DocumentMessage createMessage(Document document, String source, String destination) {
+		DocumentMessage message = new DocumentMessage(); 
+		message.setSource(source);
+		message.setDestination(destination);
+		message.setDocument(document);
+		return message;
+	}
 }
