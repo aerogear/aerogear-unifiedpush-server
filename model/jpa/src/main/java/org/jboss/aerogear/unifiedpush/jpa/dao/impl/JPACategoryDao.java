@@ -24,18 +24,43 @@ import java.util.List;
 
 public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
 
-    @Override
-    public List<Category> findByNames(List<String> names) {
-        List<Category> categoryList = new ArrayList<Category>();
-        if(!names.isEmpty()){
-            categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
-                    .setParameter("names", names).getResultList();
-        }
-        return categoryList;
-    }
+	@Override
+	public List<Category> findByNames(List<String> names) {
+		List<Category> categoryList = new ArrayList<Category>();
+		if(!names.isEmpty()){
+			categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
+					.setParameter("names", names).getResultList();
+		}
+		return categoryList;
+	}
 
-    @Override
-    public Class<Category> getType() {
-        return Category.class;
-    }
+	@Override
+	public Class<Category> getType() {
+		return Category.class;
+	}
+
+	@Override
+	public List<Category> findByProperty(Long propertyId) {
+		List<Category> categoryList = new ArrayList<Category>();
+		categoryList =  entityManager.createQuery("select c from Category c" +
+				" join c.properties p" +
+				" where p.id = :propertyId", Category.class)
+				.setParameter("propertyId", propertyId).getResultList();
+		return categoryList;
+	}
+	
+	@Override
+	public int deleteByPushApplicationID(String applicationId) {
+		return entityManager.createQuery("delete from Category c " + 
+				"where c.applicationId = :applicationId")
+				.setParameter("applicationId", applicationId).executeUpdate();
+	}
+
+	@Override
+	public List<Category> findByPushApplicationID(String pushApplicationId) {
+		return entityManager.createQuery("select c from Category c "
+				+ "where c.applicationId = :applicationId", Category.class)
+				.setParameter("applicationId", pushApplicationId).getResultList();
+	}
+	
 }

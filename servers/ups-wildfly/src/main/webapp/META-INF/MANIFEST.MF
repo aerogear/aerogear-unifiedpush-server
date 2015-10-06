@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Dependencies: org.infinispan export
 Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-1.3.1.Final.ja
  r keycloak-adapter-core-1.3.1.Final.jar keycloak-jboss-adapter-core-1
  .3.1.Final.jar httpclient-4.3.6.jar httpcore-4.3.3.jar commons-loggin

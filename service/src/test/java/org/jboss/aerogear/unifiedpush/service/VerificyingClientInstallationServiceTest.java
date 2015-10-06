@@ -91,7 +91,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertEquals(VerificationResult.FAIL, result);
 		
 		// now retry with the correct code.
-		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");
+		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	

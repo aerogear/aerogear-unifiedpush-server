@@ -118,7 +118,16 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .getResultList();
     }
 
-
+    @Override
+	public List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias) {
+		return createQuery("select installation from Installation installation " +
+			" join installation.variant abstractVariant " +
+			" where abstractVariant.variantID IN :variantIDs " + 
+			" and installation.alias = :alias")
+			.setParameter("variantIDs", variantIDs)
+			.setParameter("alias", alias)
+			.getResultList();
+	}
 
     @Override
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
@@ -251,4 +260,5 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     private boolean isListEmpty(List list) {
         return (list != null && !list.isEmpty());
     }
+
 }

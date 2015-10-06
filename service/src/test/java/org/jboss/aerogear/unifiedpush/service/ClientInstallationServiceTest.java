@@ -32,7 +32,11 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Property;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
+import org.jboss.aerogear.unifiedpush.dao.PropertyDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
@@ -45,6 +49,13 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     @Inject
     private GenericVariantService variantService;
 
+    @Inject
+    private CategoryDao categoryDao;
+    @Inject
+    private PropertyDao propertyDao;
+    @Inject
+    private PushApplicationService applicationService;
+     
     private AndroidVariant androidVariant;
 
     @Override
@@ -347,6 +358,41 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         clientInstallationService.addInstallation(androidVariant, otherDevice);
 
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
+    } 
+    
+    @Test
+    public void findDeviceVariantByAlias() {
+    	
+     	AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("Key");
+        variant.setName("NewVaraint");
+        variant.setDeveloper("me");
+        variantService.addVariant(variant);
+        
+        PushApplication application = new PushApplication();
+        application.setName("NewApp");
+        applicationService.addPushApplication(application);
+        applicationService.addVariant(application, variant);
+        
+        String alias = "p1";
+        Property property = new Property(alias);
+        propertyDao.create(property);
+        
+        Category category = new Category("c1");
+        category.addProperty(property);
+        category.setApplicationId(application.getId());
+        categoryDao.create(category);
+   
+        Installation device = new Installation();
+        String deviceToken = TestUtils.generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        device.setAlias(alias);
+        clientInstallationService.addInstallation(androidVariant, device);
+        
+        device = clientInstallationService.associateInstallation(device);
+        String variantId = device.getVariant().getId();
+
+        assertThat(variantId.equals(variant.getId()));
     }
 
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {

@@ -16,25 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * A category of a specific installation.
  * @see Installation
  */
-public class Category {
+public class Property {
     private Long id;
     private String name;
-    private String applicationId;
-    private Set<Property> properties;
 
-    public Category() {
+    public Property() {
     }
 
-    public Category(String name) {
+    public Property(String name) {
         this.name = name;
     }
 
@@ -58,11 +53,11 @@ public class Category {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Category)) return false;
+        if (!(o instanceof Property)) return false;
 
-        Category category = (Category) o;
+        Property property = (Property) o;
 
-        return name.equals(category.name);
+        return name.equals(property.name);
     }
 
     @Override
@@ -72,31 +67,8 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "Property{" +
                 "name='" + name + '\'' +
                 '}';
     }
-
-	public Set<Property> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(Set<Property> properties) {
-		this.properties = properties;
-	}
-	
-	public void addProperty(Property property) {
-		if(properties == null){
-			properties = new HashSet<Property>();
-		}
-		properties.add(property);
-	}
-
-	public String getApplicationId() {
-		return applicationId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
 }
