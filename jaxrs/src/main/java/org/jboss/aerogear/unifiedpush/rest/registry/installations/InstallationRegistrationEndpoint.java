@@ -469,6 +469,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return variant;
         }
 
+        logger.warning("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
         // unauthorized...
         return null;
     }
