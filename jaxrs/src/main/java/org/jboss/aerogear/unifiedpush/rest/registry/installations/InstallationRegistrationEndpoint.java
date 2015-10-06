@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -422,6 +423,52 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         		verificationAttempt.getCode());
         
         return appendAllowOriginHeader(Response.ok(result), request);
+    }
+    
+    /**
+     * RESTful API for resending a verification code.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret" -H "deviceToken:<client device token>"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X GET
+     *   https://SERVER:PORT/context/rest/registry/resendVerificationCode
+     * </pre>
+     *
+     *
+     * @HTTP 200 (OK) if resend went through.
+     * @HTTP 400 (Bad Request) deviceToken header not sent.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 resend went through
+     * @statuscode 400 deviceToken header required.
+     * @statuscode 401 The request requires authentication
+     */
+    @GET
+    @Path("/resendVerificationCode")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resendVerificationCode(@Context HttpServletRequest request) {
+
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+        
+        // TODO: use ClientAuthHelper
+        String deviceToken = request.getHeader("deviceToken");     
+        if (deviceToken == null) {
+        	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+        			.entity("deviceToken header required"), request);
+        }
+        
+        verificationService.retryDeviceVerification(deviceToken, variant);
+        
+        return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
     }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
