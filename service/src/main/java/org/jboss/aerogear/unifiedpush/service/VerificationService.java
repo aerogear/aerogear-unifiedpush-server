@@ -16,6 +16,8 @@ public interface VerificationService {
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
 	
+	String retryDeviceVerification(String deviceToken, Variant variant);
+	
 	/**
 	 * Attempts to verify the device (after a verification request has been issued prior to this point).
 	 * @param variantID variant ID of the installation

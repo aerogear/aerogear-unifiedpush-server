@@ -50,6 +50,12 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 	
 	@Override
+	public String retryDeviceVerification(String deviceToken, Variant variant) {
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		return initiateDeviceVerification(installation, variant);
+	}
+	
+	@Override
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);

@@ -95,4 +95,29 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
+	@Test
+	public void testResendVerificationCode() {
+		final String deviceToken = TestUtils.generateFakedDeviceTokenString();
+		Installation device = new Installation();
+		device.setAlias("myalias");
+		device.setDeviceToken(deviceToken);
+		device.setVariant(androidVariant);
+		clientInstallationService.addInstallation(androidVariant, device);
+		
+		verificationService.initiateDeviceVerification(device, androidVariant);
+		String verificationCode = smsService.phoneToMessage.get("myalias");
+		assertNotNull(verificationCode);
+		
+		verificationService.retryDeviceVerification(deviceToken, androidVariant);
+		String newVerificationCode = smsService.phoneToMessage.get("myalias");
+		assertNotNull(newVerificationCode);
+		
+		// the first code should have been invalidated
+		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
+		assertEquals(VerificationResult.FAIL, result);
+
+		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), newVerificationCode);
+		assertEquals(VerificationResult.SUCCESS, result);
+	}
+	
 }
