@@ -10,11 +10,12 @@ The _UnifiedPush Server_ is a server that allows sending push notifications to d
 
 _UnifiedPush Server_ releases additional functionallety while maintaning _AeroGear_ API compatibility:
 * [Full-stack](https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
-* Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Category Additinal Properties.
-* Centralized configuration management. 
-* Publish documents to clients. 
 * SSL Suuport, NGINX frontend, embeded postgresql.
+* Centralized configuration/managment. 
+* Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
+* Extended Categories (register additional properties).
+* Store & forward documents.
+* Silent Push Notifications (Notification without payload) 
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
