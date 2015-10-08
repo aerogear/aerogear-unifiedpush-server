@@ -8,12 +8,12 @@ The _UnifiedPush Server_ is a server that allows sending push notifications to d
 * [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/)
 * [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
-_UnifiedPush Server_ releases additional functionallety while maintaning _AeroGear_ API compatibility:
+_UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
 * [Full-stack](https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
 * SSL Suuport, NGINX frontend, embeded postgresql.
 * Centralized configuration/managment. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Extended Categories (register additional properties).
+* Extended application scope
 * Store & forward documents.
 * Silent Push Notifications (Notification without payload) 
 

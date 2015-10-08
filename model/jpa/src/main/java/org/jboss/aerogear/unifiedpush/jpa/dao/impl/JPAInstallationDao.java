@@ -219,6 +219,17 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .setParameter("variantId", variantId)
                 .getSingleResult();
     }
+    
+    @Override
+	public List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
+    	return createQuery("select installation from Installation installation " +
+    			" join installation.variant abstractVariant " +
+    			" where abstractVariant.variantID IN :variantIDs " + 
+    			" and installation.alias NOT IN :aliases")
+    			.setParameter("variantIDs", variantIDs)
+    			.setParameter("aliases", aliases)
+    			.getResultList();
+	}
 
     /**
      *

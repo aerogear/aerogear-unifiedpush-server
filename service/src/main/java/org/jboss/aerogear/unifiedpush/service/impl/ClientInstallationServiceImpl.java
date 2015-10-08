@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,18 +25,19 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Property;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.dao.PropertyDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -57,10 +57,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private CategoryDao categoryDao;
     
     @Inject
-    private PropertyDao propertyDao;
+    private AliasDao aliasDao;
     
     @Inject
     private PushApplicationDao pushApplicationDao;
+    
+    @Inject
+    private GenericVariantService genericVariantService;
 
     @Inject
     @LoggedIn
@@ -68,25 +71,18 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public Installation associateInstallation(Installation installation) {
-		// Search standalone categories which matches to installation alias. 
-		String alias  = installation.getAlias();
-		List<Property> properties = propertyDao.findByName(alias);
-		if(properties.isEmpty())
-			return installation;
-					
-		List<Category> categories = categoryDao.findByProperty(properties.get(0).getId());
-		if(categories.isEmpty())
-			return installation;
 		
-		// Assign installation with new categories.
-		installation.setCategories(new HashSet<Category>(categories));
-		
-		String applicationId = categories.get(0).getApplicationId();
-		if(applicationId == null)
+		if (installation.getAlias() == null) {
 			return installation;
+		}
 		
-		// Associate new variant to installation. 
-		PushApplication application = pushApplicationDao.find(applicationId);
+		Alias alias = aliasDao.findByName(installation.getAlias());
+		
+		if (alias == null) {
+			return installation;
+		}
+		
+		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
 		List<Variant> variants = application.getVariants();
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
@@ -232,6 +228,15 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
+    
+    @Override
+	public void removeInstallationNotInAliasList(PushApplication application, List<String> aliases) {
+		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
+		for (Variant variant : application.getVariants()) {
+			variantIDs.add(variant.getVariantID());
+		}
+		removeInstallations(installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases));
+	}
 
     // =====================================================================
     // ======== Various finder services for the Sender REST API ============
@@ -292,6 +297,5 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
-
 
 }
