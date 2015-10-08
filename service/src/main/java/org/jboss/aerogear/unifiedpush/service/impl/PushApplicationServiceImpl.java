@@ -16,22 +16,35 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Stateless
 public class PushApplicationServiceImpl implements PushApplicationService {
-
+	
+	@Inject
+	private AliasDao aliasDao;
+	
     @Inject
     private PushApplicationDao pushApplicationDao;
+    
+    @Inject
+    private ClientInstallationService clientInstallationService;
 
     @Inject
     @LoggedIn
@@ -72,5 +85,18 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     public void removePushApplication(PushApplication pushApp) {
         pushApplicationDao.delete(pushApp);
     }
+
+	@Override
+	public void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases) {
+		aliasDao.deleteByPushApplicationID(pushApp.getPushApplicationID());
+		Set<String> aliasSet = new HashSet<>(aliases);
+		for (String name : aliasSet) {
+			Alias alias = new Alias();
+			alias.setName(name);
+			alias.setPushApplicationID(pushApp.getPushApplicationID());
+			aliasDao.create(alias);
+		}
+		clientInstallationService.removeInstallationNotInAliasList(pushApp, aliases);
+	}
 
 }

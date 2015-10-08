@@ -2,28 +2,15 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="org.jboss.aerogear.unifiedpush.api.Category" table="category">
-		<id name="id" type="java.lang.Long">
-			<column name="id" />
-			<generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
-				<param name="sequence_name">category_seq</param>
-			</generator>
-		</id>
-		<property name="name" type="java.lang.String">
-			<column name="name" />
-		</property>
-		<property name="applicationId" type="java.lang.String">
-			<column name="application_id"/>
-		</property>
-		<set name="properties" table="category_properties" inverse="false"
-			lazy="false" cascade="persist, merge">
-			<key>
-				<column name="category_id" />
-			</key>
-			<many-to-many class="org.jboss.aerogear.unifiedpush.api.Property">
-				<column name="property_id" />
-			</many-to-many>
-		</set>
-
-	</class>
+    <class name="org.jboss.aerogear.unifiedpush.api.Category" table="category">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">category_seq</param>
+            </generator>
+        </id>
+        <property name="name" type="java.lang.String">
+            <column name="name" />
+        </property>
+    </class>
 </hibernate-mapping>

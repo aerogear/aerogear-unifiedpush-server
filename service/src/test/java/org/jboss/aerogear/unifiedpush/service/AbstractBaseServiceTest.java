@@ -35,14 +35,13 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAAliasDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPropertyDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
-import org.jboss.aerogear.unifiedpush.service.impl.CategoryDeploymentServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.MockSMSService;
@@ -125,6 +124,7 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(JPACategoryDao.class);
         beans.addManagedClass(JPAVariantMetricInformationDao.class);
+        beans.addManagedClass(JPAAliasDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
@@ -134,10 +134,7 @@ public abstract class AbstractBaseServiceTest {
 
         beans.addManagedClass(VerificationServiceImpl.class);
         beans.addManagedClass(MockSMSService.class);
-
-        beans.addManagedClass(JPAPropertyDao.class);
-        beans.addManagedClass(CategoryDeploymentServiceImpl.class);
-
+        
         return beans;
     }
 

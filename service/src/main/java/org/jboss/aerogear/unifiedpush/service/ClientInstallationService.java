@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
@@ -128,5 +129,13 @@ public interface ClientInstallationService {
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
 	Installation associateInstallation(Installation installation);
+
+	/**
+	 * Removes installations that are installed under the supplied application, but whose alias
+	 * does not match any alias in the {@code aliases} list.
+	 * @param application the application the installations belong to
+	 * @param aliases aliases to match against
+	 */
+	void removeInstallationNotInAliasList(PushApplication application, List<String> aliases);
 
 }
