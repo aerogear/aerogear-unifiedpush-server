@@ -470,6 +470,32 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         
         return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
     }
+    
+    @GET
+    @Path("/associate")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
+    public Response associate(@Context HttpServletRequest request) {
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+        
+        String deviceToken = HttpBasicHelper.extractBasic(request.getHeader("deviceToken"));
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+        if (installation == null) {
+            return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
+        }
+
+        // Associate the device - find the matching application and update the device to the right application 
+        installation = clientInstallationService.associateInstallation(installation);
+        Variant newVariant = installation.getVariant();
+ 
+        return appendAllowOriginHeader(Response.ok(newVariant), request);
+    }
 
     private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
