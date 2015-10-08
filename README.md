@@ -13,7 +13,7 @@ _UnifiedPush Server_ releases additional functionallety while maintaning _AeroGe
 * SSL Suuport, NGINX frontend, embeded postgresql.
 * Centralized configuration/managment. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Extended Categories (register additional properties).
+* Extended application scope
 * Store & forward documents.
 * Silent Push Notifications (Notification without payload) 
 
