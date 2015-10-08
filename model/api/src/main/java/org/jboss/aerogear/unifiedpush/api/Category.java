@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -28,8 +25,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class Category {
     private Long id;
     private String name;
-    private String applicationId;
-    private Set<Property> properties;
 
     public Category() {
     }
@@ -76,27 +71,4 @@ public class Category {
                 "name='" + name + '\'' +
                 '}';
     }
-
-	public Set<Property> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(Set<Property> properties) {
-		this.properties = properties;
-	}
-	
-	public void addProperty(Property property) {
-		if(properties == null){
-			properties = new HashSet<Property>();
-		}
-		properties.add(property);
-	}
-
-	public String getApplicationId() {
-		return applicationId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
 }

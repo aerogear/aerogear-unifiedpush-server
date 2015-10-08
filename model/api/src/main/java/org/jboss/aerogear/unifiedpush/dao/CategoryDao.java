@@ -23,10 +23,4 @@ import java.util.List;
 public interface CategoryDao extends GenericBaseDao<Category,Integer> {
 
     List<Category> findByNames(List<String> names);
-
-	List<Category> findByProperty(Long id);
-	
-	int deleteByPushApplicationID(String pushApplicationID);
-	
-	List<Category> findByPushApplicationID(String pushApplicationID);
 }
