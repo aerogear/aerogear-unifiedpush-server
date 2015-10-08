@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.util;
 import net.iharder.Base64;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 
@@ -41,14 +42,7 @@ public final class HttpBasicHelper {
         String authorizationHeader = getAuthorizationHeader(request);
 
         if (authorizationHeader != null && isBasic(authorizationHeader)) {
-            String base64Token = authorizationHeader.substring(6);
-            String token = "";
-            try {
-                token = new String(Base64.decode(base64Token));
-            } catch (IOException e) {
-                //
-            }
-
+            String token = extractBasic(authorizationHeader);
             int delimiter = token.indexOf(':');
 
             if (delimiter != -1) {
@@ -57,5 +51,16 @@ public final class HttpBasicHelper {
             }
         }
         return new String[] { username, password };
+    }
+    
+    public static String extractBasic(String str) {
+    	String base64Token = str.substring(6);
+        String token = "";
+        try {
+            token = new String(Base64.decode(base64Token));
+            return token;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
