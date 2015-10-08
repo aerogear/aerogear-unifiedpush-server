@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import java.util.List;
+
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 
@@ -21,7 +23,15 @@ public class JPAAliasDao extends JPABaseDao<Alias, Long> implements AliasDao {
 
 	@Override
 	public Alias findByName(String alias) {
-		return entityManager.createQuery("select a from Alias a where a.name = :name", Alias.class).setParameter("name", alias).getSingleResult();
+		List<Alias> results = entityManager
+				.createQuery("select a from Alias a where a.name = :name", Alias.class)
+				.setParameter("name", alias).getResultList();
+		
+		if (results.isEmpty()) {
+			return null;
+		}
+		
+		return results.get(0);
 	}
 
 }
