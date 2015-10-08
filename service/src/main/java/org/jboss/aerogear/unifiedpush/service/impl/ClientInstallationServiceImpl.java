@@ -37,7 +37,6 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -62,9 +61,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private PushApplicationDao pushApplicationDao;
     
-    @Inject
-    private GenericVariantService genericVariantService;
-
     @Inject
     @LoggedIn
     private Instance<String> developer;
