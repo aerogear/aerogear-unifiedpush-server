@@ -1,6 +1,6 @@
 {
   "realm" : "aerogear",
-  "auth-server-url" : "/auth",
+  "auth-server-url" : "${keycloak.host}/auth",
   "ssl-required" : "none",
   "resource" : "unified-push-server",
   "bearer-only" : true,
