@@ -23,14 +23,11 @@
     },
 
     "realmCache": {
-        "provider": "mem"
+        "provider": "${keycloak.realm.cache.provider:none}"
     },
 
     "userCache": {
-        "provider": "mem",
-        "mem": {
-            "maxSize": 20000
-        }
+        "provider": "${keycloak.user.cache.provider:none}"
     },
 
     "timer": {
