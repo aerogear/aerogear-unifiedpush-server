@@ -9,7 +9,7 @@ The _UnifiedPush Server_ is a server that allows sending push notifications to d
 * [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
 _UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
-* [Full-stack](https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
+* [Full-stack] standalone rpm/deb (https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
 * SSL Suuport, NGINX frontend, embeded postgresql.
 * Centralized configuration/managment. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
