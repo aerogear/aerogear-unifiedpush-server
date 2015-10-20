@@ -302,6 +302,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      */
     @GET
     @Path("/{pushAppID}/count")
+    @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("java.util.Map<java.lang.String, java.lang.Long>")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
 
