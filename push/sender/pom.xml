@@ -152,13 +152,16 @@
                     <artifactId>arquillian-junit-container</artifactId>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>
-                    <version>1.0.0.Alpha1</version>
+                    <version>1.0.0.Alpha5</version>
                     <scope>test</scope>
                 </dependency>
+                
             </dependencies>
+            
         </profile>
     </profiles>
 
