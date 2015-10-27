@@ -11,7 +11,7 @@ public interface DocumentDao {
 	
 	void create(DocumentMessage document);
 	
-	List<Document> findPushDocumentsAfter(PushApplication pushApplication, Date date);
+	List<Document> findPushDocumentsAfter(PushApplication pushApplication, String type, Date date);
 	
 	List<Document> findAliasDocumentsAfter(PushApplication pushApplication, String alias, String qualifier, Date date);
 	

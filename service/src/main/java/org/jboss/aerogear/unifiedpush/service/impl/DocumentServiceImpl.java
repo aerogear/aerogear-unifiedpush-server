@@ -37,8 +37,8 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 	
 	@Override
-	public List<Document> getPushApplicationDocuments(PushApplication pushApplication, Date afterDate) {
-		return documentDao.findPushDocumentsAfter(pushApplication, afterDate);
+	public List<Document> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate) {
+		return documentDao.findPushDocumentsAfter(pushApplication, type, afterDate);
 	}
 
 	@Override
@@ -48,8 +48,9 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public List<Document> getAliasDocuments(PushApplication pushApplication, String alias, Date afterDate) {
-		return documentDao.findAliasDocumentsAfter(pushApplication, alias, null, afterDate);
+	public List<Document> getAliasDocuments(Variant variant, String alias, String type, Date afterDate) {
+		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+		return documentDao.findAliasDocumentsAfter(pushApplication, alias, type, afterDate);
 	}
 
 	private DocumentMessage createMessage(Document document, String source, String destination) {

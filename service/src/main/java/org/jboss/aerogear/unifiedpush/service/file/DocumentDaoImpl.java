@@ -57,7 +57,7 @@ public class DocumentDaoImpl implements DocumentDao {
 	
 	@Override
 	public List<Document> findPushDocumentsAfter(
-			PushApplication pushApplication, Date date) {
+			PushApplication pushApplication, String type, Date date) {
 		return getAfter(getPushApplicationDocumentDirectoryPath(pushApplication.getPushApplicationID()), date, null);
 	}
 	

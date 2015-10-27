@@ -11,9 +11,9 @@ public interface DocumentService {
 	
 	void saveForPushApplication(String deviceToken, Variant variant, Document document);
 	
-	List<Document> getPushApplicationDocuments(PushApplication pushApplication, Date afterDate);
+	List<Document> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate);
 	
 	void saveForAlias(PushApplication pushApplication, String alias, Document document);
 	
-	List<Document> getAliasDocuments(PushApplication pushApplication, String alias, Date afterDate);
+	List<Document> getAliasDocuments(Variant variant, String alias, String type, Date afterDate);
 }
