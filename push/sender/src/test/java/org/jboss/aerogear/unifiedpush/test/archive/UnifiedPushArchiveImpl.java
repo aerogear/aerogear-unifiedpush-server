@@ -16,9 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import java.util.Map;
+
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
+import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -29,7 +32,11 @@ import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
@@ -102,4 +109,38 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
     public UnifiedPushArchive withMockito() {
         return addMavenDependencies("org.mockito:mockito-core");
     }
+    
+    public UnifiedPushArchive addAsLibrary(String mavenDependency, String findR, String replaceE) {
+    	JavaArchive[] archives = resolver.resolve(mavenDependency).withoutTransitivity().as(JavaArchive.class);
+    
+    	JavaArchive p = null;
+    	for (JavaArchive jar : archives) {
+    		p = jar;
+    		break;
+    	}
+    	
+    	if (p == null)
+    		throw new IllegalStateException("Could not resolve desired artifact");
+
+    	// Replace production persistence.xml with test context version
+    	p.delete(findR);
+    	p.add(new ClassLoaderAsset(replaceE), findR);
+
+    	Map<ArchivePath, Node> nodes = getArchive().getContent();
+    	
+    	// Remove old library according to maven dependency name groupId:artifactId
+    	for (ArchivePath path: nodes.keySet()){
+    		if (path.get().contains(mavenDependency.split(":")[1])){
+    			delete(path);
+    		}
+    	}
+    	
+    	// Add the manipulated dependency to the test archive
+    	return addAsLibrary(p);
+    }
+    
+	@Override
+	public UnifiedPushArchive withAllServices() {
+		return addPackages(true, HealthNetworkService.class.getPackage()); 
+	}
 }

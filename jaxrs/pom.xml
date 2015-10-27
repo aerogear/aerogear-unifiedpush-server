@@ -48,21 +48,18 @@
        <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-service</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-push-model</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-push-sender</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -205,6 +202,12 @@
 
             <dependencies>
                 <dependency>
+                    <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                    <artifactId>unifiedpush-push-sender</artifactId>
+                    <type>test-jar</type>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                     <scope>test</scope>
@@ -227,6 +230,34 @@
                     <artifactId>hibernate-validator</artifactId>
                     <version>4.2.0.Final</version>
                 </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.arquillian.container</groupId>
+                    <artifactId>arquillian-container-chameleon</artifactId>
+                    <version>1.0.0.Alpha5</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-client</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jackson-provider</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>test</scope>
+                </dependency>
+        
             </dependencies>
         </profile>
     </profiles>

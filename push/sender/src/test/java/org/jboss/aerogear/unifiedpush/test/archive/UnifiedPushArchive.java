@@ -39,10 +39,18 @@ public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArc
     }
 
     public abstract UnifiedPushArchive addMavenDependencies(String... deps);
-
+    
+    /**
+     * Add maven Dependency Library, include transitive dependencies.
+     * Find resource (findR) is replaced eith new resource.
+     */
+    public abstract UnifiedPushArchive addAsLibrary(String mavenDependency, String findR, String replaceE);
+    
     public abstract UnifiedPushArchive withMockito();
 
     public abstract UnifiedPushArchive withServices();
+    
+    public abstract UnifiedPushArchive withAllServices();
 
     public abstract UnifiedPushArchive withDAOs();
 

@@ -82,14 +82,13 @@
                 of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
                 Here we use
                 the jboss-javaee-7.0 stack (you can read this as the JBoss stack of the Java EE 7 APIs) -->
-	    <dependency>
-		<groupId>org.wildfly.bom</groupId>
-		<artifactId>jboss-javaee-7.0-with-infinispan</artifactId>
-		<version>${wildfly.version}</version>
-		<type>pom</type>
-		<scope>import</scope>
-	    </dependency>
-
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>jboss-javaee-7.0-with-infinispan</artifactId>
+                <version>${wildfly.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -122,23 +121,23 @@
                 <scope>import</scope>
             </dependency>
 
-	    <dependency>
-	        <groupId>org.apache.httpcomponents</groupId>
-	        <artifactId>httpclient</artifactId>
-	        <version>4.3.6</version>
-	    </dependency>
-	
-	    <dependency>
-	        <groupId>org.apache.httpcomponents</groupId>
-	        <artifactId>httpcore</artifactId>
-	        <version>4.3.3</version>
-	    </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.3.6</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.3.3</version>
+            </dependency>
 
-	    <!-- Override resteasy version -->
-	    <dependency>
-              <groupId>org.jboss.resteasy</groupId>
-              <artifactId>resteasy-jaxrs</artifactId>
-              <version>${resteasy.version}</version>
+            <!-- Override resteasy version -->
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${resteasy.version}</version>
             </dependency>
 
             <dependency>
@@ -171,6 +170,37 @@
                 <version>${resteasy.version}</version>
             </dependency>
 	        
+            <!-- Internal dependency managment -->
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-model-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-push-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-push-sender</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-push-sender</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
