@@ -23,7 +23,6 @@
             <description>Matches a few special URLs, not protected by Keycloak</description>
             <url-pattern>/rest/registry/device/*</url-pattern>
             <url-pattern>/rest/sender/*</url-pattern>
-            <url-pattern>/rest/deploy/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
 

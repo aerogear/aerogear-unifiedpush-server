@@ -2,15 +2,18 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.jboss.aerogear.unifiedpush.api.Property" table="property">
+    <class name="org.jboss.aerogear.unifiedpush.api.Alias" table="alias">
         <id name="id" type="java.lang.Long">
             <column name="id" />
             <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
-                <param name="sequence_name">property_seq</param>
+                <param name="sequence_name">alias_seq</param>
             </generator>
         </id>
         <property name="name" type="java.lang.String">
             <column name="name" />
+        </property>
+        <property name="pushApplicationID" type="java.lang.String">
+            <column name="push_application_id"/>
         </property>
     </class>
 </hibernate-mapping>

@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,18 +28,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Property;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
-import org.jboss.aerogear.unifiedpush.dao.PropertyDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
@@ -51,12 +49,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     private GenericVariantService variantService;
 
     @Inject
-    private CategoryDao categoryDao;
-    @Inject
-    private PropertyDao propertyDao;
-    @Inject
     private PushApplicationService applicationService;
-     
+    
     private AndroidVariant androidVariant;
 
     @Override
@@ -359,8 +353,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         clientInstallationService.addInstallation(androidVariant, otherDevice);
 
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
-    }
-
+    } 
+    
     @Test
     public void findDeviceVariantByAlias() {
     	
@@ -375,19 +369,17 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         applicationService.addPushApplication(application);
         applicationService.addVariant(application, variant);
         
-        String alias = "p1";
-        Property property = new Property(alias);
-        propertyDao.create(property);
+        String installationAlias = "p1";
         
-        Category category = new Category("c1");
-        category.addProperty(property);
-        category.setApplicationId(application.getId());
-        categoryDao.create(category);
+        List<String> aliases = Arrays.asList("a", "b", "p1");
+        
+        pushApplicationService.updateAliasesAndInstallations(application, aliases);
    
         Installation device = new Installation();
-        String deviceToken = generateFakedDeviceTokenString();
+        String deviceToken = TestUtils.generateFakedDeviceTokenString();
         device.setDeviceToken(deviceToken);
-        device.setAlias(alias);
+        device.setAlias(installationAlias);
+        
         clientInstallationService.addInstallation(androidVariant, device);
         
         device = clientInstallationService.associateInstallation(device);
@@ -395,14 +387,40 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         assertThat(variantId.equals(variant.getId()));
     }
+    
+    @Test
+    public void testUpdateAliasesAndInstallation() {
+    	AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("Key");
+        variant.setName("NewVaraint");
+        variant.setDeveloper("me");
+        variantService.addVariant(variant);
+        
+        PushApplication application = new PushApplication();
+        application.setName("NewApp");
+        applicationService.addPushApplication(application);
+        applicationService.addVariant(application, variant);
+        
+        String installationAlias = "p1";
+        
+        List<String> aliases = Arrays.asList("a", "b", installationAlias);
+   
+        Installation device = new Installation();
+        String deviceToken = TestUtils.generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        device.setAlias(installationAlias);
+        
+        clientInstallationService.addInstallation(variant, device);
+        
+        pushApplicationService.updateAliasesAndInstallations(application, aliases);
 
-
-    private String generateFakedDeviceTokenString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(UUID.randomUUID().toString());
-        sb.append(UUID.randomUUID().toString());
-        sb.append(UUID.randomUUID().toString());
-        return sb.toString();
+        Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+        assertNotNull(installation);
+        
+        pushApplicationService.updateAliasesAndInstallations(application, Arrays.asList("a", "b"));
+        
+        installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+        assertNull(installation);
     }
 
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {

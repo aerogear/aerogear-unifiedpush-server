@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
@@ -49,18 +50,25 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 	
 	@Override
-	public String initiateDeviceVerification(Installation installation) {
+	public String retryDeviceVerification(String deviceToken, Variant variant) {
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		return initiateDeviceVerification(installation, variant);
+	}
+	
+	@Override
+	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 		smsService.sendSMS(installation.getAlias(), verificationCode);
-		String key = buildKey(installation.getVariant().getVariantID(), installation.getDeviceToken());
+		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		deviceToToken.put(key, verificationCode);
 		return verificationCode;
 	}
 
 	@Override
 	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
-		Object code = deviceToToken.remove(buildKey(variantID, deviceToken));
+		final String key = buildKey(variantID, deviceToken);
+		Object code = deviceToToken.get(key);
 		if (code == null) {
 			return VerificationResult.UNKNOWN;
 		} else if (code.equals(verificationAttempt)) {
@@ -69,6 +77,7 @@ public class VerificationServiceImpl implements VerificationService {
 			// TODO: there should be a "verifyDevice" like method in ClientInstallationService, which delegates here,
 			// so implementations of VerificationService will not have to update the installation themselves.
 			clientInstallationService.updateInstallation(installation);
+			deviceToToken.remove(key);
 			return VerificationResult.SUCCESS;
 		}
 		return VerificationResult.FAIL;
