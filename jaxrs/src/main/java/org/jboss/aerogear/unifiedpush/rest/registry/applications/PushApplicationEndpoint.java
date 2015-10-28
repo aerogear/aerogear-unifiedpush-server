@@ -16,11 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,18 +34,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
@@ -62,6 +68,9 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private InstallationDao installationDao;
+    
+    @Inject
+    private DocumentService documentService;
     
     /**
      * Create Push Application
@@ -330,5 +339,56 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         	return Response.noContent().build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+    }
+    
+    @GET
+    @Path("/{pushAppID}/document")
+	@Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+    public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID, @QueryParam("date") Long date, @QueryParam("type") String type, @Context HttpServletRequest request) {
+    	PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        if (pushApp == null) {
+        	return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+        }
+        
+        try {
+        	List<Document> documents = documentService.getPushApplicationDocuments(pushApp, type, new Date(date));
+        	return Response.ok(documents).build();
+        } catch (Exception e) {
+        	logger.severe("Cannot retrieve documents for push app", e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+	/**
+     * POST deploys a file and stores it for later retrieval by a client 
+     * of the push application.
+     *
+     * @param pushAppId id of {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
+     * @aliasToDocuments a map between aliases and a list of documents to save for each one
+     *
+     * @statuscode 401 if unauthorized for this push application
+     * @statuscode 500 if request failed
+     * @statuscode 200 upon success
+     */
+	@POST	
+	@Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+	@Path("/{pushAppID}/document")
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, Map<String, List<Document>> aliasToDocuments) {
+		PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+        if (pushApp == null) {
+        	return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+        }
+        
+        try {
+        	documentService.saveForAliases(pushApp, aliasToDocuments);
+        	return Response.ok(EmptyJSON.STRING).build();
+        } catch (Exception e) {
+        	logger.severe("Cannot deploy file for alias", e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

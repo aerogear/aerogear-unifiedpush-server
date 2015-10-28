@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -53,6 +54,17 @@ public class DocumentServiceImpl implements DocumentService {
 		return documentDao.findAliasDocumentsAfter(pushApplication, alias, type, afterDate);
 	}
 
+	@Override
+	public void saveForAliases(PushApplication pushApplication, Map<String, List<Document>> aliasToDocuments) {
+		for (Map.Entry<String, List<Document>> entry : aliasToDocuments.entrySet()) {
+			String alias = entry.getKey();
+			List<Document> documents = entry.getValue();
+			for (Document document : documents) {
+				saveForAlias(pushApplication, alias, document);
+			}
+		}
+	} 
+	
 	private DocumentMessage createMessage(Document document, String source, String destination) {
 		DocumentMessage message = new DocumentMessage(); 
 		message.setSource(source);
@@ -60,4 +72,5 @@ public class DocumentServiceImpl implements DocumentService {
 		message.setDocument(document);
 		return message;
 	}
+
 }

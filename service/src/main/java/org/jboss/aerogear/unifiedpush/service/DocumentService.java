@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -14,6 +15,8 @@ public interface DocumentService {
 	List<Document> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate);
 	
 	void saveForAlias(PushApplication pushApplication, String alias, Document document);
+	
+	void saveForAliases(PushApplication pushApplication, Map<String, List<Document>> aliasToDocuments);
 	
 	List<Document> getAliasDocuments(Variant variant, String alias, String type, Date afterDate);
 }
