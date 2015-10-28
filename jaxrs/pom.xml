@@ -246,6 +246,13 @@
 
                 <dependency>
                     <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>jaxrs-api</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                        
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
                     <artifactId>resteasy-client</artifactId>
                     <version>${resteasy.version}</version>
                     <scope>test</scope>
@@ -257,7 +264,7 @@
                     <version>${resteasy.version}</version>
                     <scope>test</scope>
                 </dependency>
-        
+    
             </dependencies>
         </profile>
     </profiles>

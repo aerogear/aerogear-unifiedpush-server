@@ -110,7 +110,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
         return addMavenDependencies("org.mockito:mockito-core");
     }
     
-    public UnifiedPushArchive addAsLibrary(String mavenDependency, String findR, String replaceE) {
+    public UnifiedPushArchive addAsLibrary(String mavenDependency, String[] findR, String[] replaceR) {
     	JavaArchive[] archives = resolver.resolve(mavenDependency).withoutTransitivity().as(JavaArchive.class);
     
     	JavaArchive p = null;
@@ -123,8 +123,11 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
     		throw new IllegalStateException("Could not resolve desired artifact");
 
     	// Replace production persistence.xml with test context version
-    	p.delete(findR);
-    	p.add(new ClassLoaderAsset(replaceE), findR);
+    	for (int i=0; i<findR.length; i++){
+	    	p.delete(findR[i]);
+	    	p.add(new ClassLoaderAsset(replaceR[i]), findR[i]);
+	    	
+    	}
 
     	Map<ArchivePath, Node> nodes = getArchive().getContent();
     	
