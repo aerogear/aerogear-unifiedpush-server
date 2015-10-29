@@ -82,9 +82,9 @@ public class InstallationRegistrationEndpointTest {
     	try{
 	    	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
 	    	Response response = target.request().post(Entity.entity(iosInstallation, MediaType.APPLICATION_JSON_TYPE));
-	    	
+	    	response.readEntity(Installation.class);
 			Assert.assertTrue(response.getStatus() == 200);
-    	} catch (Exception e){
+    	} catch (Throwable e){
     		Assert.fail(e.getMessage());
     	}
     }

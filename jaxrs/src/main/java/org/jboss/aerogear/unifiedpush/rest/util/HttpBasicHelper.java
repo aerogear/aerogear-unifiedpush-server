@@ -55,10 +55,12 @@ public final class HttpBasicHelper {
     
     public static String extractBasic(String str) {
     	String base64Token = str.substring(6);
-        String token = "";
+        return decodeBase64(base64Token);
+    }
+    
+    public static String decodeBase64(String str) {
         try {
-            token = new String(Base64.decode(base64Token));
-            return token;
+            return new String(Base64.decode(str));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
