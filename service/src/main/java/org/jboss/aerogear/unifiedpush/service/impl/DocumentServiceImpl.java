@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -31,45 +30,45 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public void saveForPushApplication(String deviceToken, Variant variant,
-			Document document) {
+			String content) {
 		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		documentDao.create(createMessage(document, clientInstallation.getAlias(), pushApplication.getPushApplicationID()));
+		documentDao.create(createMessage(content, clientInstallation.getAlias(), pushApplication.getPushApplicationID()));
 	}
 	
 	@Override
-	public List<Document> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate) {
+	public List<String> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate) {
 		return documentDao.findPushDocumentsAfter(pushApplication, type, afterDate);
 	}
 
 	@Override
 	public void saveForAlias(PushApplication pushApplication, String alias,
-			Document document) {
+			String document) {
 		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias));
 	}
 
 	@Override
-	public List<Document> getAliasDocuments(Variant variant, String alias, String type, Date afterDate) {
+	public List<String> getAliasDocuments(Variant variant, String alias, String type, Date afterDate) {
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		return documentDao.findAliasDocumentsAfter(pushApplication, alias, type, afterDate);
 	}
 
 	@Override
-	public void saveForAliases(PushApplication pushApplication, Map<String, List<Document>> aliasToDocuments) {
-		for (Map.Entry<String, List<Document>> entry : aliasToDocuments.entrySet()) {
+	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments) {
+		for (Map.Entry<String, List<String>> entry : aliasToDocuments.entrySet()) {
 			String alias = entry.getKey();
-			List<Document> documents = entry.getValue();
-			for (Document document : documents) {
+			List<String> documents = entry.getValue();
+			for (String document : documents) {
 				saveForAlias(pushApplication, alias, document);
 			}
 		}
 	} 
 	
-	private DocumentMessage createMessage(Document document, String source, String destination) {
+	private DocumentMessage createMessage(String content, String source, String destination) {
 		DocumentMessage message = new DocumentMessage(); 
 		message.setSource(source);
 		message.setDestination(destination);
-		message.setDocument(document);
+		message.setContent(content);
 		return message;
 	}
 

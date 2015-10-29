@@ -1,12 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.file;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,7 +11,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
@@ -34,35 +28,31 @@ public class DocumentDaoImpl implements DocumentDao {
 	
 	@Override
 	public void create(DocumentMessage message) {		
-		try {
-			Path directoryPath;
-			switch (message.getType()) {
-			case APPLICATION_DOCUMENT:
-				directoryPath = getPushApplicationDocumentDirectoryPath(message.getDestination());
-				break;
-			case INSTALLATION_DOCUMENT:
-				directoryPath = getAliasDocumentDirectoryPath(message.getSource(), message.getDestination());
-				break;
-			default:
-				throw new IllegalArgumentException("for type: " + message.getType());
-			}
-			
-			fileManager.save(Paths.get(directoryPath.toString(), 
-					getDocumentFileName(message)), 
-					serializeDocument(message.getDocument()));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		Path directoryPath;
+		switch (message.getType()) {
+		case APPLICATION_DOCUMENT:
+			directoryPath = getPushApplicationDocumentDirectoryPath(message.getDestination());
+			break;
+		case INSTALLATION_DOCUMENT:
+			directoryPath = getAliasDocumentDirectoryPath(message.getSource(), message.getDestination());
+			break;
+		default:
+			throw new IllegalArgumentException("for type: " + message.getType());
 		}
+		
+		fileManager.save(Paths.get(directoryPath.toString(), 
+				getDocumentFileName(message)), 
+				message.getContent().getBytes());
 	}
 	
 	@Override
-	public List<Document> findPushDocumentsAfter(
+	public List<String> findPushDocumentsAfter(
 			PushApplication pushApplication, String type, Date date) {
 		return getAfter(getPushApplicationDocumentDirectoryPath(pushApplication.getPushApplicationID()), date, null);
 	}
 	
 	@Override
-	public List<Document> findAliasDocumentsAfter(
+	public List<String> findAliasDocumentsAfter(
 			PushApplication pushApplication, String alias, final String qualifier, Date date) {
 		return getAfter(getAliasDocumentDirectoryPath(pushApplication.getPushApplicationID(), alias), date, new DocumentNameFilter() {
 			@Override
@@ -73,7 +63,7 @@ public class DocumentDaoImpl implements DocumentDao {
 		});
 	}
 	
-	private List<Document> getAfter(Path directoryPath, final Date date, final DocumentNameFilter filter) {
+	private List<String> getAfter(Path directoryPath, final Date date, final DocumentNameFilter filter) {
 		File directory = directoryPath.toFile();
 		List<File> files = fileManager.list(directory.toPath(), new FileFilter() {
 			@Override
@@ -87,28 +77,13 @@ public class DocumentDaoImpl implements DocumentDao {
 			}
 		});
 		
-		List<Document> documents = new ArrayList<>(files.size());
+		List<String> documents = new ArrayList<>(files.size());
 		
 		for (File file : files) {
-			documents.add(deserializeDocument(file));
+			documents.add(new String(fileManager.read(file.toPath())));
 		}
 		
 		return documents;
-	}
-
-	private Document deserializeDocument(File file) {
-		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-			return (Document) in.readObject();
-		} catch (IOException | ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private byte[] serializeDocument(Document document) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(document);
-		return baos.toByteArray();
 	}
 
 	private Path getPushApplicationDocumentDirectoryPath(String pushApplicationID) {
@@ -129,7 +104,7 @@ public class DocumentDaoImpl implements DocumentDao {
 		return new StringBuilder("doc_").append(message.getType())
 				.append(message.getSource()).append("_")
 				.append(message.getDestination()).append("_")
-				.append(message.getDocument().getQualifier() == null ? "null" : message.getDocument().getQualifier()).append("_")
+				.append(message.getQualifier() == null ? "null" : message.getQualifier()).append("_")
 				.append(System.currentTimeMillis()).toString();
 	}
 	

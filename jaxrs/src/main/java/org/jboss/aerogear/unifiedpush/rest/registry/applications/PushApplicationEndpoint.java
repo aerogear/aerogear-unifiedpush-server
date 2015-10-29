@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -353,7 +352,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         }
         
         try {
-        	List<Document> documents = documentService.getPushApplicationDocuments(pushApp, type, new Date(date));
+        	List<String> documents = documentService.getPushApplicationDocuments(pushApp, type, new Date(date));
         	return Response.ok(documents).build();
         } catch (Exception e) {
         	logger.severe("Cannot retrieve documents for push app", e);
@@ -377,7 +376,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, Map<String, List<Document>> aliasToDocuments) {
+    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, Map<String, List<String>> aliasToDocuments) {
 		PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         if (pushApp == null) {
         	return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();

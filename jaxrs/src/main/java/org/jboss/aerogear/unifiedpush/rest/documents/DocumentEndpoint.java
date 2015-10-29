@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
@@ -51,7 +50,7 @@ public class DocumentEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForPushApp(Document entity, @Context HttpServletRequest request) {
+    public Response deployDocumentsForPushApp(String entity, @Context HttpServletRequest request) {
         
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService, clientInstallationService, request);
 		if (variant == null) {
@@ -87,7 +86,7 @@ public class DocumentEndpoint {
 				ClientAuthHelper.getDeviceToken(request));
 		
         try {
-        	List<Document> documents = documentService.getAliasDocuments(variant, installation.getAlias(), type, new Date(date));
+        	List<String> documents = documentService.getAliasDocuments(variant, installation.getAlias(), type, new Date(date));
         	return Response.ok(documents).build();
         } catch (Exception e) {
         	logger.severe("Cannot retrieve files for alias", e);

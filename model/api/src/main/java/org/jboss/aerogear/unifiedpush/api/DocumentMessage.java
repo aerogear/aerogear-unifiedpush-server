@@ -12,9 +12,10 @@ public class DocumentMessage implements Serializable {
 
 	private DocumentType type;
 	
-	private Document document;
+	private String content;
 	private String source;
 	private String destination;
+	private String qualifier;
 	
 	public DocumentType getType() {
 		return type;
@@ -34,10 +35,16 @@ public class DocumentMessage implements Serializable {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
-	public Document getDocument() {
-		return document;
+	public String getContent() {
+		return content;
 	}
-	public void setDocument(Document document) {
-		this.document = document;
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getQualifier() {
+		return qualifier;
+	}
+	public void setQualifier(String qualifier) {
+		this.qualifier = qualifier;
 	}
 }

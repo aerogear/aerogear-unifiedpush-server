@@ -4,19 +4,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.aerogear.unifiedpush.api.Document;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public interface DocumentService {
 	
-	void saveForPushApplication(String deviceToken, Variant variant, Document document);
+	void saveForPushApplication(String deviceToken, Variant variant, String content);
 	
-	List<Document> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate);
+	List<String> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate);
 	
-	void saveForAlias(PushApplication pushApplication, String alias, Document document);
+	void saveForAlias(PushApplication pushApplication, String alias, String document);
 	
-	void saveForAliases(PushApplication pushApplication, Map<String, List<Document>> aliasToDocuments);
+	void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments);
 	
-	List<Document> getAliasDocuments(Variant variant, String alias, String type, Date afterDate);
+	List<String> getAliasDocuments(Variant variant, String alias, String type, Date afterDate);
 }
