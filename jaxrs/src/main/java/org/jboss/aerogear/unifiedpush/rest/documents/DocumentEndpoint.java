@@ -50,7 +50,7 @@ public class DocumentEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForPushApp(String entity, @Context HttpServletRequest request) {
+    public Response deployDocumentsForPushApp(String entity, @QueryParam("type") String type, @Context HttpServletRequest request) {
         
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService, clientInstallationService, request);
 		if (variant == null) {
@@ -58,7 +58,7 @@ public class DocumentEndpoint {
 		}
         
         try {
-        	documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity);
+        	documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity, type);
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for push application", e);

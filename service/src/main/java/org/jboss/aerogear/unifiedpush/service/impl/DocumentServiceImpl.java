@@ -31,11 +31,11 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public void saveForPushApplication(String deviceToken, Variant variant,
-			String content) {
+			String content, String qualifier) {
 		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		documentDao.create(createMessage(content, clientInstallation.getAlias(), 
-				pushApplication.getPushApplicationID(), DocumentType.APPLICATION_DOCUMENT));
+				pushApplication.getPushApplicationID(), DocumentType.APPLICATION_DOCUMENT, qualifier));
 	}
 	
 	@Override
@@ -45,8 +45,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public void saveForAlias(PushApplication pushApplication, String alias,
-			String document) {
-		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias, DocumentType.INSTALLATION_DOCUMENT));
+			String document, String qualifier) {
+		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias, DocumentType.INSTALLATION_DOCUMENT, qualifier));
 	}
 
 	@Override
@@ -56,22 +56,23 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments) {
+	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments, String qualifier) {
 		for (Map.Entry<String, List<String>> entry : aliasToDocuments.entrySet()) {
 			String alias = entry.getKey();
 			List<String> documents = entry.getValue();
 			for (String document : documents) {
-				saveForAlias(pushApplication, alias, document);
+				saveForAlias(pushApplication, alias, document, qualifier);
 			}
 		}
 	} 
 	
-	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType) {
+	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType, String qualifier) {
 		DocumentMessage message = new DocumentMessage(); 
 		message.setSource(source);
 		message.setDestination(destination);
 		message.setContent(content);
 		message.setType(documentType);
+		message.setQualifier(qualifier);
 		return message;
 	}
 

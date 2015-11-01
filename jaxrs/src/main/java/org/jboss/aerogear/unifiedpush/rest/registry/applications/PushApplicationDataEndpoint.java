@@ -120,7 +120,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, Map<String, List<String>> aliasToDocuments, @Context HttpServletRequest request) {
+    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, @QueryParam("type") String type, 
+    		Map<String, List<String>> aliasToDocuments, @Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
         if (pushApp == null) {
             return Response.status(Status.UNAUTHORIZED)
@@ -130,7 +131,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
         }
         
         try {
-        	documentService.saveForAliases(pushApp, aliasToDocuments);
+        	documentService.saveForAliases(pushApp, aliasToDocuments, type);
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for alias", e);
