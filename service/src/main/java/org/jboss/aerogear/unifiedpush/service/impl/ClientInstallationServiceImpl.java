@@ -231,7 +231,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		for (Variant variant : application.getVariants()) {
 			variantIDs.add(variant.getVariantID());
 		}
-		removeInstallations(installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases));
+		
+		if (!aliases.isEmpty()) {
+			final List<Installation> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases);
+			if (!installations.isEmpty()) {
+				removeInstallations(installations);
+			}
+		}
 	}
 
     // =====================================================================
