@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -33,7 +34,8 @@ public class DocumentServiceImpl implements DocumentService {
 			String content) {
 		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		documentDao.create(createMessage(content, clientInstallation.getAlias(), pushApplication.getPushApplicationID()));
+		documentDao.create(createMessage(content, clientInstallation.getAlias(), 
+				pushApplication.getPushApplicationID(), DocumentType.APPLICATION_DOCUMENT));
 	}
 	
 	@Override
@@ -44,7 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public void saveForAlias(PushApplication pushApplication, String alias,
 			String document) {
-		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias));
+		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias, DocumentType.INSTALLATION_DOCUMENT));
 	}
 
 	@Override
@@ -64,11 +66,12 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 	} 
 	
-	private DocumentMessage createMessage(String content, String source, String destination) {
+	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType) {
 		DocumentMessage message = new DocumentMessage(); 
 		message.setSource(source);
 		message.setDestination(destination);
 		message.setContent(content);
+		message.setType(documentType);
 		return message;
 	}
 
