@@ -26,7 +26,10 @@ public class FileManagerImpl implements FileManager {
 		try {
 			File directory = path.getParent().toFile();
 			if (!directory.exists()) {
-				directory.mkdirs();
+				boolean created = directory.mkdirs();
+				if (!created) {
+					throw new RuntimeException("could not create new directory " + directory.getAbsolutePath());
+				}
 			}
 			Files.write(path, data);
 		} catch (IOException e) {
