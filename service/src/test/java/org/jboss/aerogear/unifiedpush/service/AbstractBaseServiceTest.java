@@ -18,16 +18,7 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import static org.mockito.Mockito.when;
 
-import java.io.Serializable;
-
-import javax.annotation.PreDestroy;
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.openejb.jee.Beans;
@@ -139,38 +130,5 @@ public abstract class AbstractBaseServiceTest {
     @Module
     public Class<?>[] produceTestEntityManager() throws Exception {
         return new Class<?>[] { EntityManagerProducer.class};
-    }
-
-    /**
-     * Static class to have OpenEJB produce/lookup a test EntityManager.
-     */
-    @SessionScoped
-    @Stateful
-    public static class EntityManagerProducer implements Serializable {
-
-        {
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnifiedPush");
-            entityManager = emf.createEntityManager();
-        }
-
-        private static EntityManager entityManager;
-
-        @Produces
-        public EntityManager produceEm() {
-
-            if (! entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().begin();
-            }
-
-            return entityManager;
-        }
-
-        @PreDestroy
-        public void closeEntityManager() {
-            if (entityManager.isOpen()) {
-                entityManager.getTransaction().commit();
-                entityManager.close();
-            }
-        }
     }
 }

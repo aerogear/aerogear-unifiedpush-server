@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    JBoss, Home of Professional Open Source
+    Copyright Red Hat, Inc., and individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.0"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    
+    <persistence-unit name="unifiedpush-default" transaction-type="JTA">
+        <description>UnifiedPush Persistence Unit</description>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <mapping-file>META-INF/orm.xml</mapping-file>
+		
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.h2.jdbcx.JdbcDataSource"/>
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:unifiedpush_server"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.import_files" value="test-data.sql"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.transaction.flush_before_completion" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

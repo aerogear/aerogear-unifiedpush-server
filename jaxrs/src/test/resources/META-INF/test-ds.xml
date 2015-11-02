@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
+      <datasource jta="false" jndi-name="java:jboss/datasources/UnifiedPushDS" pool-name="UnifiedPushDS" enabled="true" use-ccm="false">
+          <connection-url>jdbc:h2:mem:unifiedpush_server</connection-url>
+          <driver-class>org.h2.jdbcx.JdbcDataSource</driver-class>
+          <driver>h2</driver>
+          <pool>
+              <min-pool-size>5</min-pool-size>
+              <max-pool-size>25</max-pool-size>
+          </pool>
+          <security>
+              <user-name>unifiedpush_server</user-name>
+          </security>
+          <validation>
+              <validate-on-match>false</validate-on-match>
+              <background-validation>false</background-validation>
+              <background-validation-millis>1</background-validation-millis>
+          </validation>
+          <statement>
+              <prepared-statement-cache-size>0</prepared-statement-cache-size>
+          </statement>
+      </datasource>
+</datasources>

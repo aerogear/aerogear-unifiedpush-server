@@ -461,13 +461,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
         
         // TODO: use ClientAuthHelper
-        String deviceToken = request.getHeader("deviceToken");     
-        if (deviceToken == null) {
+        String basicDeviceToken = request.getHeader("device-token");     
+        if (basicDeviceToken == null) {
         	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
         			.entity("deviceToken header required"), request);
         }
         
-        verificationService.retryDeviceVerification(deviceToken, variant);
+        verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
         
         return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
     }
@@ -485,14 +485,17 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
         
-        String deviceToken = HttpBasicHelper.extractBasic(request.getHeader("deviceToken"));
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+        String basicDeviceToken = request.getHeader("device-token");
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
+				new String(HttpBasicHelper.decodeBase64(basicDeviceToken)));
+		
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         }
 
         // Associate the device - find the matching application and update the device to the right application 
         installation = clientInstallationService.associateInstallation(installation);
+        
         Variant newVariant = installation.getVariant();
  
         return appendAllowOriginHeader(Response.ok(newVariant), request);

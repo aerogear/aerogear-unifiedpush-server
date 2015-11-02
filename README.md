@@ -9,7 +9,7 @@ The _UnifiedPush Server_ is a server that allows sending push notifications to d
 * [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
 
 _UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
-* [Full-stack](https://packagecloud.io/unifiedpush/unifiedpush-server/install) installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
+* [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
 * SSL Suuport, NGINX frontend, embeded postgresql.
 * Centralized configuration/managment. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
@@ -34,8 +34,8 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 
 For the on-premise version, execute the following steps to get going!
 
-* Get the [latest package (rpm/deb) files](https://packagecloud.io/unifiedpush/unifiedpush-server)
-* Or follow the steps on the [install page](https://packagecloud.io/unifiedpush/unifiedpush-server/install)
+* Get the [latest package (rpm/deb) files](http://ups.c-b4.com/ups/packages/)
+* Or follow the steps on the [install page](https://github.com/C-B4/unifiedpush-server/wiki/Unifiedpush-Installation)
 * Run ``sudo unifiedpush-server reconfigure``
 * Start the server ``sudo unifiedpush-server start``
 
