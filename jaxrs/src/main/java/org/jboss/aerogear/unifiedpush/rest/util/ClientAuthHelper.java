@@ -9,7 +9,7 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
 public class ClientAuthHelper {
 	
-	private static final String DEVICE_TOKEN_HEADER = "deviceToken";
+	private static final String DEVICE_TOKEN_HEADER = "device-token";
 
 	/**
 	 * Returns the variant if the master secret is valid for the request and the device token
@@ -25,7 +25,8 @@ public class ClientAuthHelper {
 		if (variant == null) {
 			return null;
 		}
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
+			HttpBasicHelper.decodeBase64(deviceToken));
 		return installation == null ? null : variant;
 	}
 	
@@ -50,6 +51,10 @@ public class ClientAuthHelper {
     }
     
     public static String getDeviceToken(HttpServletRequest request) {
-    	return request.getHeader(DEVICE_TOKEN_HEADER);
+    	String deviceToken = request.getHeader(DEVICE_TOKEN_HEADER);
+    	if (deviceToken == null) {
+    		return null;
+    	}
+    	return HttpBasicHelper.decodeBase64(deviceToken);
     }
 }

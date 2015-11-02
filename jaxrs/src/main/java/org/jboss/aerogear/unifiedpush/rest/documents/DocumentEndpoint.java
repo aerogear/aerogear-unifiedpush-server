@@ -7,11 +7,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -27,7 +30,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import com.qmino.miredot.annotations.ReturnType;
 
-@Path("/documents")
+@Path("/document")
 public class DocumentEndpoint {
 	
     private final AeroGearLogger logger = AeroGearLogger.getInstance(DocumentEndpoint.class);
@@ -40,7 +43,21 @@ public class DocumentEndpoint {
     
     @Inject
     private DocumentService documentService;
-	
+    
+    @OPTIONS
+    @ReturnType("java.lang.Void")
+    public Response crossOrigin(
+            @Context HttpHeaders headers,
+            @PathParam("token") String token) {
+
+    	return Response.ok().header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
+                .header("Access-Control-Allow-Methods", "POST, GET") // only POST/DELETE are allowed
+                .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization") // explicit Headers!
+                .header("Access-Control-Allow-Credentials", "true")
+                // indicates how long the results of a preflight request can be cached (in seconds)
+                .header("Access-Control-Max-Age", "604800") // for now, we keep it for seven days
+                .build();
+    }
     
     /**
      * POST deploys a file and stores it for later retrieval by the push application
