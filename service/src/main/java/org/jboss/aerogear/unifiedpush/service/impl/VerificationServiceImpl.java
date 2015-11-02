@@ -15,7 +15,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -24,14 +24,14 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @Startup
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerifyingClientInstallationServiceImpl.class);
+	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationServiceImpl.class);
 	
 	private ConcurrentMap<Object, Object> deviceToToken;
 	
 	@Inject
 	private SMSService smsService;
-	@Inject
-	private ClientInstallationService clientInstallationService;
+    @Inject
+    private InstallationDao installationDao;
 	
 	@PostConstruct
 	private void startup() {
@@ -51,7 +51,7 @@ public class VerificationServiceImpl implements VerificationService {
 	
 	@Override
 	public String retryDeviceVerification(String deviceToken, Variant variant) {
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		Installation installation = installationDao.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		return initiateDeviceVerification(installation, variant);
 	}
 	
@@ -72,11 +72,11 @@ public class VerificationServiceImpl implements VerificationService {
 		if (code == null) {
 			return VerificationResult.UNKNOWN;
 		} else if (code.equals(verificationAttempt)) {
-			Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, deviceToken);
+			Installation installation = installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
 			installation.setEnabled(true);
 			// TODO: there should be a "verifyDevice" like method in ClientInstallationService, which delegates here,
 			// so implementations of VerificationService will not have to update the installation themselves.
-			clientInstallationService.updateInstallation(installation);
+			installationDao.update(installation);
 			deviceToToken.remove(key);
 			return VerificationResult.SUCCESS;
 		}

@@ -117,12 +117,14 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(JPAVariantMetricInformationDao.class);
         beans.addManagedClass(JPAAliasDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
+        beans.addManagedClass(VerificationServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
         beans.addManagedClass(PushMessageMetricsService.class);
         beans.addManagedClass(VerificationServiceImpl.class);
+        beans.addManagedClass(Configuration.class);
         beans.addManagedClass(MockSMSService.class);
         return beans;
     }

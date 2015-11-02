@@ -2,15 +2,20 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.net.URL;
 
+import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -28,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@RunAsClient
 public class InstallationRegistrationEndpointTest {
 	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value().substring(1);
 	
@@ -44,13 +48,11 @@ public class InstallationRegistrationEndpointTest {
         				"test-data.sql"}, new String[] {"META-INF/test-persistence.xml", "META-INF/test-data.sql"})
                 .addPackage(RestApplication.class.getPackage())
                 .addPackage(InstallationRegistrationEndpoint.class.getPackage())
-                .addClasses(InstallationRegistrationEndpoint.class, RestApplication.class, HttpBasicHelper.class)
+                .addClasses(InstallationRegistrationEndpoint.class, RestApplication.class, HttpBasicHelper.class, Authenticator.class)
                 .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
+                .addAsResource("META-INF/beans.xml")
                 .as(WebArchive.class);
     }
-    
-    @ArquillianResource
-    URL deploymentUrl;
     
     @BeforeClass
     public static void initResteasyClient() {
@@ -58,7 +60,8 @@ public class InstallationRegistrationEndpointTest {
     }
     
     @Test
-    public void unAuthorizedDeviceTest() {
+    @RunAsClient
+    public void unAuthorizedDeviceTest(@ArquillianResource URL deploymentUrl) {
     	ResteasyClient client = new ResteasyClientBuilder().build();
     
     	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
@@ -68,7 +71,8 @@ public class InstallationRegistrationEndpointTest {
     }
     
     @Test
-    public void registerDeviceTest() {
+    @RunAsClient
+    public void registerDeviceTest(@ArquillianResource URL deploymentUrl) {
     	// Prepare installation 
     	Installation iosInstallation = new Installation();
     	iosInstallation.setDeviceType("iPhone7,2");
@@ -82,8 +86,36 @@ public class InstallationRegistrationEndpointTest {
     	try{
 	    	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
 	    	Response response = target.request().post(Entity.entity(iosInstallation, MediaType.APPLICATION_JSON_TYPE));
-	    	response.readEntity(Installation.class);
+	    	Installation newInstallation = response.readEntity(Installation.class);
+	    
 			Assert.assertTrue(response.getStatus() == 200);
+			Assert.assertTrue(newInstallation.isEnabled());
+    	} catch (Throwable e){
+    		Assert.fail(e.getMessage());
+    	}
+    }
+
+    @Inject 
+    private Configuration configuration;
+    @Inject
+    private GenericVariantService genericVariantService;
+    
+    @Test
+    public void enableDeviceTest() {
+    	// Prepare installation 
+    	Installation iosInstallation = new Installation();
+    	iosInstallation.setDeviceType("iPhone7,2");
+    	iosInstallation.setDeviceToken(DEFAULT_DEVICE_TOKEN);
+    	iosInstallation.setOperatingSystem("iOS");
+    	iosInstallation.setOsVersion("9.0.2");
+    	iosInstallation.setAlias("17327572923");
+    	
+    	try {    	
+			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
+			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
+			
+			Variant var = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+			Assert.assertTrue(var.getVariantID().equals(DEFAULT_VARIENT_ID));
     	} catch (Throwable e){
     		Assert.fail(e.getMessage());
     	}
