@@ -35,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -382,7 +383,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         
         clientInstallationService.addInstallation(androidVariant, device);
         
-        device = clientInstallationService.associateInstallation(device);
+        device = clientInstallationService.associateInstallation(device, VariantType.ANDROID);
         String variantId = device.getVariant().getId();
 
         assertThat(variantId.equals(variant.getId()));
