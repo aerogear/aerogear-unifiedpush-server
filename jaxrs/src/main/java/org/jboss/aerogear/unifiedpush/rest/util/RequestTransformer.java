@@ -22,15 +22,19 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.github.fge.jackson.JacksonUtils;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+
 import org.jboss.aerogear.unifiedpush.rest.util.transform.DynamicTransformer;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.RequestScoped;
+
 /**
  * Basic request transformer
  */
+@RequestScoped
 public class RequestTransformer {
     private final Logger logger = Logger.getLogger(RequestTransformer.class.getName());
 
