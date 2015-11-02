@@ -37,6 +37,8 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -46,6 +48,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
+	private static final String ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
 
@@ -65,6 +68,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @LoggedIn
     private Instance<String> developer;
 
+	@Inject
+	private VerificationService verificationService;
+	
+    @Inject
+	private Configuration configuration;
+    
 	@Override
 	public Installation associateInstallation(Installation installation) {
 		
@@ -95,7 +104,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
-
+    	boolean shouldVerifiy = configuration.getProperty(ENABLE_VERIFICATION, false);
+    	
         // does it already exist ?
         Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
@@ -105,9 +115,16 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // new device/client ?
         if (installation == null) {
             logger.finest("Performing new device/client registration");
-
+            
+            if (shouldVerifiy)
+            	entity.setEnabled(false);
+			
             // store the installation:
             storeInstallationAndSetReferences(variant, entity);
+            
+            // A better implementation would initiate a new REST call when registration is done.
+            if (shouldVerifiy)
+            	verificationService.initiateDeviceVerification(entity, variant);
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
