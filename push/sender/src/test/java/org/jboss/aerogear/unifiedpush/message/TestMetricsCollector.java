@@ -37,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,7 +49,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestMetricsCollector.class)
+        return UnifiedPushSenderArchive.forTestClass(TestMetricsCollector.class)
                 .withMessaging()
                     .addClasses(MetricsCollector.class)
                     .addClasses(PushMessageMetricsService.class)

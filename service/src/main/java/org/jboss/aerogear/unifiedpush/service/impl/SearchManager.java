@@ -16,16 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
+import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
+
+import org.jboss.aerogear.unifiedpush.service.PushSearchService;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 
 /**
  * Responsible for switch between different types of search

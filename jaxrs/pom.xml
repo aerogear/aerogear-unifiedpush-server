@@ -200,11 +200,10 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             
-            <dependencies>
-                
+            <dependencies>           
                 <dependency>
                     <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                    <artifactId>unifiedpush-push-sender</artifactId>
+                    <artifactId>unifiedpush-service</artifactId>
                     <type>test-jar</type>
                     <scope>test</scope>
                 </dependency>

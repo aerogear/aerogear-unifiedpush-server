@@ -16,14 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
-public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
+public abstract class UnifiedPushArchiveBase <T extends Archive<T>> extends UnifiedPushArchive <T> {
 
+	private PomEquippedResolveStage resolver;
+	
  // -------------------------------------------------------------------------------------||
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
@@ -80,8 +88,10 @@ public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
      * @param delegate
      *            The storage backing.
      */
-    public UnifiedPushArchiveBase(final Archive<?> delegate) {
-        super(delegate);
+    public UnifiedPushArchiveBase(Class<T> actualType, final Archive<?> delegate) {
+        super(actualType, delegate);
+        
+        resolver = Maven.resolver().loadPomFromFile("pom.xml");
     }
 
     // -------------------------------------------------------------------------------------||
@@ -156,5 +166,73 @@ public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
     @Override
     protected ArchivePath getServiceProvidersPath() {
         return PATH_SERVICE_PROVIDERS;
+    }
+    
+    @Override
+    public T addMavenDependencies(String... deps) {
+        return addAsLibraries(resolver.resolve(deps).withTransitivity().asFile());
+    }
+    
+    public T addAsLibrary(String mavenDependency, String[] findR, String[] replaceR) {
+    	JavaArchive[] archives = resolver.resolve(mavenDependency).withoutTransitivity().as(JavaArchive.class);
+    
+    	JavaArchive p = null;
+    	for (JavaArchive jar : archives) {
+    		p = jar;
+    		break;
+    	}
+    	
+    	if (p == null)
+    		throw new IllegalStateException("Could not resolve desired artifact");
+
+    	// Replace production persistence.xml with test context version
+    	for (int i=0; i<findR.length; i++){
+	    	p.delete(findR[i]);
+	    	p.add(new ClassLoaderAsset(replaceR[i]), findR[i]);
+	    	
+    	}
+
+    	Map<ArchivePath, Node> nodes = getArchive().getContent();
+    	
+    	// Remove old library according to maven dependency name groupId:artifactId
+    	for (ArchivePath path: nodes.keySet()){
+    		if (path.get().contains(mavenDependency.split(":")[1])){
+    			delete(path);
+    		}
+    	}
+    	
+    	// Add the manipulated dependency to the test archive
+    	return addAsLibrary(p);
+    }
+    
+    @Override
+    public T withMockito() {
+        return addMavenDependencies("org.mockito:mockito-core");
+    }
+    
+    @Override
+    public T withAssertj() {
+        return addMavenDependencies("org.assertj:assertj-core");
+    }
+    
+    @Override
+    public T withLang() {
+        return addMavenDependencies("commons-lang:commons-lang");
+        
+    }
+    
+    @Override
+    public T withHttpclient() {
+        return addMavenDependencies("org.apache.httpcomponents:httpclient");
+    }
+    
+    @Override
+    public T withDAOs() {
+        return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage());
+    }
+    
+    @Override
+    public T withServices() {
+        return addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage());
     }
 }

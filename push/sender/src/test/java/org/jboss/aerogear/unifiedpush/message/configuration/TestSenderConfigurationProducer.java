@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,7 +37,7 @@ public class TestSenderConfigurationProducer {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestSenderConfigurationProducer.class)
+        return UnifiedPushSenderArchive.forTestClass(TestSenderConfigurationProducer.class)
                     .withApi()
                     .withUtils()
                     .addPackage(SenderConfiguration.class.getPackage())

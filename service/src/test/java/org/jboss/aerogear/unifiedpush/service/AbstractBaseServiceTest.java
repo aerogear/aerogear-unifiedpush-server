@@ -21,57 +21,58 @@ import static org.mockito.Mockito.when;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.openejb.jee.Beans;
-import org.apache.openejb.junit.ApplicationComposer;
-import org.apache.openejb.mockito.MockitoInjector;
-import org.apache.openejb.testing.MockInjector;
-import org.apache.openejb.testing.Module;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAAliasDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
-import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.MockSMSService;
-import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.aerogear.unifiedpush.service.impl.VerificationServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
-@RunWith(ApplicationComposer.class)
+@RunWith(Arquillian.class)
 public abstract class AbstractBaseServiceTest {
 
     @Mock
-    protected HttpServletRequest httpServletRequest;
+    protected HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
 
     @Mock
-    protected KeycloakSecurityContext context;
+    protected KeycloakSecurityContext context = Mockito.mock(KeycloakSecurityContext.class);
 
     @Mock
-    protected KeycloakPrincipal keycloakPrincipal;
+    protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);;
 
     @Inject
     protected SearchManager searchManager;
 
     @Inject
-    protected PushApplicationServiceImpl pushApplicationService;
+    protected PushApplicationService pushApplicationService;
 
     @Inject
     protected PushSearchByDeveloperServiceImpl searchApplicationService;
 
-    // ===================== JUnit hooks =====================
-
+    @Deployment
+    public static WebArchive archive() {
+        return UnifiedPushServiceArchive.forTestClass(AbstractBaseServiceTest.class)
+        		.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
+        		.addMavenDependencies("org.keycloak:keycloak-core")
+        		.addPackages(true, Configuration.class.getPackage())
+        		.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa", new String[]{"META-INF/persistence.xml"}, new String[] {"META-INF/test-persistence.xml"})
+                .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
+                .addAsResource("cert/certificate.p12")
+                .addAsResource("default.properties")
+                .withMockito()
+                .withAssertj()
+                .withLang()
+                .withHttpclient()
+                .as(WebArchive.class);
+    }
+    
     /**
      * Basic setup stuff, needed for all the UPS related service classes
      */
@@ -99,39 +100,4 @@ public abstract class AbstractBaseServiceTest {
     protected abstract void specificSetup();
 
     // ===================== OpenEJB hooks and base methods =====================
-
-    @MockInjector
-    public Class<?> mockitoInjector() {
-        return MockitoInjector.class;
-    }
-
-    @Module
-    public Beans getBeans() {
-        final Beans beans = new Beans();
-        beans.addManagedClass(ClientInstallationServiceImpl.class);
-        beans.addManagedClass(JPAPushMessageInformationDao.class);
-        beans.addManagedClass(JPAInstallationDao.class);
-        beans.addManagedClass(GenericVariantServiceImpl.class);
-        beans.addManagedClass(JPAVariantDao.class);
-        beans.addManagedClass(JPACategoryDao.class);
-        beans.addManagedClass(JPAVariantMetricInformationDao.class);
-        beans.addManagedClass(JPAAliasDao.class);
-        beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
-        beans.addManagedClass(VerificationServiceImpl.class);
-        beans.addManagedClass(PushApplicationServiceImpl.class);
-        beans.addManagedClass(JPAPushApplicationDao.class);
-        beans.addManagedClass(PushSearchServiceImpl.class);
-        beans.addManagedClass(SearchManager.class);
-        beans.addManagedClass(PushMessageMetricsService.class);
-        
-        beans.addManagedClass(Configuration.class);
-        beans.addManagedClass(MockSMSService.class);
-        
-        return beans;
-    }
-
-    @Module
-    public Class<?>[] produceTestEntityManager() throws Exception {
-        return new Class<?>[] { EntityManagerProducer.class};
-    }
 }

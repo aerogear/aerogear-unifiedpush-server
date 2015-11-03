@@ -179,6 +179,12 @@
 
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                <artifactId>unifiedpush-model-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.aerogear.unifiedpush</groupId>
                 <artifactId>unifiedpush-push-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -191,16 +197,17 @@
             
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-push-sender</artifactId>
-                <type>test-jar</type>
+                <artifactId>unifiedpush-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
                 <artifactId>unifiedpush-service</artifactId>
+                <type>test-jar</type>
                 <version>${project.version}</version>
             </dependency>
+            
         </dependencies>
     </dependencyManagement>
 
@@ -315,6 +322,20 @@
                         <version>${aerogear.bom.version}</version>
                         <type>pom</type>
                         <scope>import</scope>
+                    </dependency>
+                    
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <version>1.6.1</version>
+                        <scope>test</scope>
+                    </dependency>
+                
+                    <dependency>
+                        <groupId>org.arquillian.container</groupId>
+                        <artifactId>arquillian-container-chameleon</artifactId>
+                        <version>1.0.0.Alpha5</version>
+                        <scope>test</scope>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
