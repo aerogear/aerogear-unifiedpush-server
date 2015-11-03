@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Asynchronous;
+import javax.ejb.DependsOn;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  * Delegates work to an injected DAO object.
  */
 @Stateless
+@DependsOn(value={"Configuration", "VerificationServiceImpl"})
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 	private static final String ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
 

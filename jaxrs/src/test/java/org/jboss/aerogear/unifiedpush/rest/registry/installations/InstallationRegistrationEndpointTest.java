@@ -13,6 +13,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
@@ -50,7 +51,7 @@ public class InstallationRegistrationEndpointTest {
                 .addPackage(InstallationRegistrationEndpoint.class.getPackage())
                 .addClasses(InstallationRegistrationEndpoint.class, RestApplication.class, HttpBasicHelper.class, Authenticator.class)
                 .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-                .addAsResource("META-INF/beans.xml")
+                .addAsResource("default.properties")
                 .as(WebArchive.class);
     }
     
@@ -65,7 +66,7 @@ public class InstallationRegistrationEndpointTest {
     	ResteasyClient client = new ResteasyClientBuilder().build();
     
     	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
-    	Response response = target.request().post(Entity.entity(new Installation(), "application/json"));
+    	Response response = target.request().post(Entity.entity(new Installation(), MediaType.APPLICATION_JSON_TYPE));
     	
     	Assert.assertTrue(response.getStatus() == 401);
     }
@@ -99,6 +100,9 @@ public class InstallationRegistrationEndpointTest {
     private Configuration configuration;
     @Inject
     private GenericVariantService genericVariantService;
+    @Inject
+    private ClientInstallationService installationService;
+    
     
     @Test
     public void enableDeviceTest() {
@@ -114,10 +118,18 @@ public class InstallationRegistrationEndpointTest {
 			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
 			
-			Variant var = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
-			Assert.assertTrue(var.getVariantID().equals(DEFAULT_VARIENT_ID));
-    	} catch (Throwable e){
-    		Assert.fail(e.getMessage());
-    	}
+			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
+			
+			installationService.addInstallation(variant, iosInstallation);
+			
+			// Wait for @Asynchronous EJB to finish
+			Thread.sleep(500);
+			Installation inst = installationService.findById(iosInstallation.getId());
+			
+			Assert.assertTrue(inst != null && inst.isEnabled() == false);
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
     }
 }
