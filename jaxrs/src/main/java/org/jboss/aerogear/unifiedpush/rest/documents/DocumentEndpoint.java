@@ -91,7 +91,7 @@ public class DocumentEndpoint {
 	
 	@GET	
 	@Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response retrieveDocumentsForAlias(@QueryParam("date") Long date, 
     		@QueryParam("type") String type, @Context HttpServletRequest request) {
