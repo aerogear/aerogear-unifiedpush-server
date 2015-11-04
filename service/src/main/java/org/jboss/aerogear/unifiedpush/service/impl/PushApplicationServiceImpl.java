@@ -16,6 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -24,15 +34,6 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Stateless
 public class PushApplicationServiceImpl implements PushApplicationService {
@@ -97,6 +98,12 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 			aliasDao.create(alias);
 		}
 		clientInstallationService.removeInstallationNotInAliasList(pushApp, aliases);
+	}
+	
+	@Override
+	public PushApplication findByVariantID(String variantID) {
+		List<PushApplication> pushApps = pushApplicationDao.findByVariantIds(Collections.singletonList(variantID));
+		return pushApps.isEmpty() ? null : pushApps.get(0);
 	}
 
 }

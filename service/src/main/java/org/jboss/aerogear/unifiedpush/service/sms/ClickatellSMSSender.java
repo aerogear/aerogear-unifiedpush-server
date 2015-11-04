@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,6 +19,7 @@ import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
  * Sends SMS over Clickatell's HTTP API.
  */
 public class ClickatellSMSSender implements SMSSender {
+	private Logger logger = Logger.getLogger(ClickatellSMSSender.class.getName());
 	
 	private String ERROR_PREFIX = "ERR";
 
@@ -34,6 +37,11 @@ public class ClickatellSMSSender implements SMSSender {
 		final String encoding = getProperty(properties, ENCODING_KEY);
 		
 		try {
+			if (apiId==null || username==null || password==null || encoding ==null){
+				logger.log(Level.WARNING, "Configuraiton peoperties are missing, unable to send SMS request");
+				return;
+			}
+				
 			StringBuilder apiCall = new StringBuilder(API_URL)
 			.append("?user=").append(username)
 			.append("&password=").append(password)
@@ -76,7 +84,7 @@ public class ClickatellSMSSender implements SMSSender {
 	private String getProperty(Properties properties, String key) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-			throw new RuntimeException("cannot find property " + key + " in configuration");
+			logger.log(Level.WARNING, "cannot find property " + key + " in configuration");
 		}
 		return value;
 	}

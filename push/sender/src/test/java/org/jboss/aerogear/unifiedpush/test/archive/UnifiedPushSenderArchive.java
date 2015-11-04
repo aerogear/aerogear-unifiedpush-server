@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.test.archive;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
+import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -29,31 +30,25 @@ import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
 /**
  * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
-public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
+public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPushSenderArchive> {
 
-    private PomEquippedResolveStage resolver;
-
-    public UnifiedPushArchiveImpl(Archive<?> delegate) {
-        super(delegate);
-        resolver = Maven.resolver().loadPomFromFile("pom.xml");
-
+    public UnifiedPushSenderArchive(Archive<?> delegate) {
+        super(UnifiedPushSenderArchive.class, delegate);
+ 
         addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-
-    @Override
-    public UnifiedPushArchive addMavenDependencies(String... deps) {
-        return addAsLibraries(resolver.resolve(deps).withTransitivity().asFile());
+    
+    public static UnifiedPushSenderArchive forTestClass(Class<?> clazz) {
+        return ShrinkWrap.create(UnifiedPushSenderArchive.class, String.format("%s.war", clazz.getSimpleName()));
     }
-
-    @Override
-    public UnifiedPushArchive withMessaging() {
+    
+    public UnifiedPushSenderArchive withMessaging() {
         return withApi()
             .withUtils()
             .withMessageModel()
@@ -69,37 +64,29 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
     }
 
     @Override
-    public UnifiedPushArchive withApi() {
+    public UnifiedPushSenderArchive withApi() {
         return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
     }
 
-    @Override
-    public UnifiedPushArchive withUtils() {
+    public UnifiedPushSenderArchive withUtils() {
         return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage())
                 .addClasses(ConfigurationUtils.class);
     }
 
-    @Override
-    public UnifiedPushArchive withMessageModel() {
+    public UnifiedPushSenderArchive withMessageModel() {
         return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class)
                 .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
                 .addMavenDependencies("org.codehaus.jackson:jackson-mapper-asl");
     }
-
+    
+	public UnifiedPushSenderArchive withAllServices() {
+		return addPackages(true, HealthNetworkService.class.getPackage()); 
+	}
+	
     @Override
-    public UnifiedPushArchive withDAOs() {
+    public UnifiedPushSenderArchive withDAOs() {
         return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
-    }
-
-    @Override
-    public UnifiedPushArchive withServices() {
-        return addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage());
-    }
-
-    @Override
-    public UnifiedPushArchive withMockito() {
-        return addMavenDependencies("org.mockito:mockito-core");
     }
 }

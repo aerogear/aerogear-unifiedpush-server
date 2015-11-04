@@ -1,0 +1,3 @@
+implementingClassName=org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive
+extension=.war
+archiveFormat=ZIP

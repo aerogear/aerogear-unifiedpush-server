@@ -77,4 +77,6 @@ public interface PushApplicationService {
 	 * @param aliases aliases list to match against.
 	 */
     void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases);
+    
+    PushApplication findByVariantID(String variantID);
 }

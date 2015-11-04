@@ -37,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -54,7 +54,7 @@ public class TestMessageRedelivery {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestMessageRedelivery.class)
+        return UnifiedPushSenderArchive.forTestClass(TestMessageRedelivery.class)
                 .withMessaging()
                     .addClasses(MessageHolderWithTokensProducer.class, MessageHolderWithTokensConsumer.class, AbstractJMSMessageListener.class)
                     .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")

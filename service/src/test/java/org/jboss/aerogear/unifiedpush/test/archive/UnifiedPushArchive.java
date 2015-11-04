@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.test.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
@@ -27,30 +26,32 @@ import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 /**
  * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
-public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArchive> implements Archive<UnifiedPushArchive>, LibraryContainer<UnifiedPushArchive>,
-        WebContainer<UnifiedPushArchive>, ResourceContainer<UnifiedPushArchive>, ServiceProviderContainer<UnifiedPushArchive> {
+public abstract class UnifiedPushArchive <T extends Archive<T>> extends WebContainerBase<T> implements Archive<T>, LibraryContainer<T>,
+        WebContainer<T>, ResourceContainer<T>, ServiceProviderContainer<T> {
 
-    public UnifiedPushArchive(final Archive<?> delegate) {
-        super(UnifiedPushArchive.class, delegate);
+    public UnifiedPushArchive(Class<T> actualType, final Archive<?> delegate) {
+        super(actualType, delegate);
     }
 
-    public static UnifiedPushArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushArchive.class, String.format("%s.war", clazz.getSimpleName()));
-    }
+    public abstract T addMavenDependencies(String... deps);
+    
+    /**
+     * Add maven Dependency Library, include transitive dependencies.
+     * Find resource (findR) is replaced eith new resource.
+     */
+    public abstract T addAsLibrary(String mavenDependency, String[] findR, String[] replaceR);
+    
+    public abstract T withMockito();
+    
+    public abstract T withAssertj();
+    
+    public abstract T withLang();
+    
+    public abstract T withHttpclient();
 
-    public abstract UnifiedPushArchive addMavenDependencies(String... deps);
+    public abstract T withServices();
 
-    public abstract UnifiedPushArchive withMockito();
+    public abstract T withDAOs();
 
-    public abstract UnifiedPushArchive withServices();
-
-    public abstract UnifiedPushArchive withDAOs();
-
-    public abstract UnifiedPushArchive withMessageModel();
-
-    public abstract UnifiedPushArchive withUtils();
-
-    public abstract UnifiedPushArchive withApi();
-
-    public abstract UnifiedPushArchive withMessaging();
+    public abstract T withApi();
 }

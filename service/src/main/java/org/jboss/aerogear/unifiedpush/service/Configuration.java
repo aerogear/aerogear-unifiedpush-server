@@ -20,13 +20,16 @@ public class Configuration {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(Configuration.class);
 
 	private static final String PROPERTIES_FILE_KEY = "aerogear.config";
-	
+	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
+
 	private Properties properties;
+	private PropertyPlaceholderConfigurer configurer; 
 	
 	@PostConstruct
 	public void loadProperties() {
 		final String propertiesFilePath = System.getProperty(PROPERTIES_FILE_KEY);
 		properties = new Properties();
+		configurer = new PropertyPlaceholderConfigurer();
 		
 		if (propertiesFilePath != null) {
 			File propertiesFile = new File(propertiesFilePath);
@@ -39,22 +42,7 @@ public class Configuration {
 			loadDefaultProperties();
 		}
 	}
-	
-	public String getProperty(String key) {
-		return properties.getProperty(key);
-	}
-	
-	public boolean getBooleanProperty(String key, boolean defaultValue) {
-		String value = getProperty(key);
-		if (value == null) {
-			return defaultValue;
-		}
-		return Boolean.valueOf(value);
-	}
-	
-	public Properties getProperties() {
-		return new PropertiesView(properties);
-	}
+
 	
 	private void loadDefaultProperties() {
 		InputStream inp = getClass().getClassLoader().getResourceAsStream("default.properties");
@@ -72,17 +60,39 @@ public class Configuration {
 		    logger.severe("Cannot load configuration", e);
 		} 
 	}
+
+	public String getProperty(String key) {
+		return configurer.resolvePlaceholder(key, properties);
+	}
+	
+	public boolean getProperty(String key, boolean defaultValue) {
+		String value = getProperty(key);
+		if (value == null) {
+			return defaultValue;
+		}
+		return Boolean.valueOf(value);
+	}
+	
+	public Properties getProperties() {
+		return new PropertiesView(properties, configurer);
+	}
+	
+	public void setSystemPropertiesMode(int systemPropertiesMode) {
+		this.configurer.setSystemPropertiesMode(systemPropertiesMode);
+	}
 	
 	@SuppressWarnings("serial")
 	private class PropertiesView extends Properties {
 		private final Properties properties;
+		private final PropertyPlaceholderConfigurer configurer;
 		
-		public PropertiesView(Properties properties) {
+		public PropertiesView(Properties properties, PropertyPlaceholderConfigurer configurer) {
 			this.properties = properties;
+			this.configurer = configurer;
 		}
 		
 		public String getProperty(String key) {
-			return properties.getProperty(key);
+			return configurer.resolvePlaceholder(key, properties);
 		}
 	}
 }

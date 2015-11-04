@@ -68,7 +68,6 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID) {
-
         return pushApplicationDao.findByPushApplicationIDForDeveloper(pushApplicationID, loginName.get());
     }
 

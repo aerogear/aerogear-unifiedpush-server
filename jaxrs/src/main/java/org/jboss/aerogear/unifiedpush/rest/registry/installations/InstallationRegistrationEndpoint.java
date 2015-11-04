@@ -43,6 +43,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -411,7 +412,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public Response enable(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -460,13 +461,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
         
         // TODO: use ClientAuthHelper
-        String deviceToken = request.getHeader("deviceToken");     
-        if (deviceToken == null) {
+        String basicDeviceToken = request.getHeader("device-token");     
+        if (basicDeviceToken == null) {
         	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
         			.entity("deviceToken header required"), request);
         }
         
-        verificationService.retryDeviceVerification(deviceToken, variant);
+        verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
         
         return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
     }
@@ -484,14 +485,17 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
         
-        String deviceToken = HttpBasicHelper.extractBasic(request.getHeader("deviceToken"));
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+        String basicDeviceToken = request.getHeader("device-token");
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
+				HttpBasicHelper.decodeBase64(basicDeviceToken));
+		
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         }
 
         // Associate the device - find the matching application and update the device to the right application 
-        installation = clientInstallationService.associateInstallation(installation);
+        installation = clientInstallationService.associateInstallation(installation, variant.getType());
+        
         Variant newVariant = installation.getVariant();
  
         return appendAllowOriginHeader(Response.ok(newVariant), request);

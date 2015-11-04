@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -310,25 +309,5 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
         return Response.ok(result).build();
     }
-    
-    /**
-     * Overwrites existing categories and properties of the push application with the given data
-     * 
-     * @param pushApplicationID id of {@linkplain PushApplication} 
-     * @param categoryData	map from category name to its list of property names
-     */
-    @POST
-    @Path("/{pushAppID}/aliases")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
-    public Response updateAliases(@PathParam("pushAppID") String pushApplicationID, List<String> aliasData) {
-    	PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
-        if (pushApp != null) {
-        	pushAppService.updateAliasesAndInstallations(pushApp, aliasData);
-        	return Response.noContent().build();
-        }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
-    }
 }
