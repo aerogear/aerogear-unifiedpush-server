@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.filter;
 
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -28,7 +28,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 /**
  * Servlet filter only to hold the HTTPServletContext and update the SearchManager

@@ -38,7 +38,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -52,7 +52,7 @@ public class TestNotificationRouter {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestNotificationRouter.class)
+        return UnifiedPushSenderArchive.forTestClass(TestNotificationRouter.class)
                 .withMessaging()
                     .addClasses(NotificationRouter.class, PushNotificationSender.class)
                     .addClasses(PushMessageMetricsService.class)

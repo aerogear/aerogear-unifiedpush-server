@@ -16,21 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.junit.Test;
 
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Override
-    protected void specificSetup() {
-        // noop
-    }
+    protected void specificSetup() {}
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void addPushApplication() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -47,6 +48,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void updatePushApplication() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -65,6 +67,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void findByPushApplicationID() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
@@ -85,10 +88,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void findAllPushApplicationsForDeveloper() {
-
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();
-
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -102,8 +103,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void removePushApplication() {
-
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -111,17 +112,18 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pa.setDeveloper("admin");
 
         pushApplicationService.addPushApplication(pa);
-
+        
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();;
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void findByPushApplicationIDForDeveloper() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");

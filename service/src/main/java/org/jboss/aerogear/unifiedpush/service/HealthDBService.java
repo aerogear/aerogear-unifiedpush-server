@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
-
 import java.util.concurrent.Future;
+
+import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 
 /**
  * Service query database to see how how healthy we are.

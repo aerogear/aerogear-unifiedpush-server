@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 
 @Stateless
 public class GenericVariantServiceImpl implements GenericVariantService {

@@ -18,13 +18,17 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import javax.inject.Inject;
 
 public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
 
@@ -54,6 +58,7 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
     }
 
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void updateAnalyticsTest() {
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
         PushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());

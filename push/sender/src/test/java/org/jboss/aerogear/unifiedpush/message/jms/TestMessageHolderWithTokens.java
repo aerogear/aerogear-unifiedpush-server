@@ -31,7 +31,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,7 +46,7 @@ public class TestMessageHolderWithTokens {
     @Deployment
     public static WebArchive archive() {
 
-        return UnifiedPushArchive.forTestClass(TestMessageHolderWithTokens.class)
+        return UnifiedPushSenderArchive.forTestClass(TestMessageHolderWithTokens.class)
                 .withMessaging()
                     .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class, AbstractJMSMessageListener.class)
                     .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")

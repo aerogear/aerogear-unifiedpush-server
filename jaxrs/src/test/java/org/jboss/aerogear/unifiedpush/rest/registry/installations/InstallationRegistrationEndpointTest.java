@@ -17,7 +17,7 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -43,7 +43,7 @@ public class InstallationRegistrationEndpointTest {
 	
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(InstallationRegistrationEndpointTest.class)
+        return UnifiedPushServiceArchive.forTestClass(InstallationRegistrationEndpointTest.class)
         		.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-service")
         		.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa", new String[]{"META-INF/persistence.xml", 
         				"test-data.sql"}, new String[] {"META-INF/test-persistence.xml", "META-INF/test-data.sql"})
@@ -121,10 +121,8 @@ public class InstallationRegistrationEndpointTest {
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 			
-			installationService.addInstallation(variant, iosInstallation);
-			
-			// Wait for @Asynchronous EJB to finish
-			Thread.sleep(500);
+			installationService.addInstallationSynchronously(variant, iosInstallation);
+	
 			Installation inst = installationService.findById(iosInstallation.getId());
 			
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
