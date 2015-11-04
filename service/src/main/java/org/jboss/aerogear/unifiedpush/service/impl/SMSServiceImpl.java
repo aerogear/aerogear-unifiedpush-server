@@ -52,6 +52,11 @@ public class SMSServiceImpl implements SMSService {
 	 */
 	@Override
 	public void sendSMS(String phoneNumber, String message) {
+		if (sender == null){
+			// Retry initialization
+			initializeSender();
+		}
+			
 		sender.send(phoneNumber, message, configuration.getProperties());
 	}
 

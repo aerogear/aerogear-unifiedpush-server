@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Asynchronous;
+import javax.ejb.DependsOn;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  * Delegates work to an injected DAO object.
  */
 @Stateless
+@DependsOn(value={"Configuration", "VerificationServiceImpl"})
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 	private static final String ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
 
@@ -100,6 +102,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		updateInstallation(installation);
 		return installation;
 	}
+
+	@Override
+	public void addInstallationSynchronously(Variant variant, Installation entity) {
+		this.addInstallation(variant, entity);
+	}
 	
     @Override
     @Asynchronous
@@ -135,6 +142,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
     }
 
+    @Override
+    public void addInstallationsSynchronously(Variant variant, List<Installation> installations){
+    	this.addInstallations(variant, installations);
+    }
+    
     @Override
     @Asynchronous
     public void addInstallations(Variant variant, List<Installation> installations) {
@@ -231,6 +243,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         this.removeInstallations(inactiveInstallations);
     }
 
+    @Override
+    public void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken) {
+    	this.removeInstallationForVariantByDeviceToken(variantID, deviceToken);
+    }
+    
     @Override
     @Asynchronous
     public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
