@@ -77,7 +77,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private Configuration configuration;
     
 	@Override
-	public Installation associateInstallation(Installation installation) {
+	public Installation associateInstallation(Installation installation, VariantType installationVariantType) {
 		
 		if (installation.getAlias() == null) {
 			return installation;
@@ -93,7 +93,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		List<Variant> variants = application.getVariants();
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
-			if(variant.getType().equals(installation.getVariant().getType())){
+			if(variant.getType().equals(installationVariantType)){
 				installation.setVariant(variant);
 				break;
 			}
@@ -265,7 +265,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		for (Variant variant : application.getVariants()) {
 			variantIDs.add(variant.getVariantID());
 		}
-		removeInstallations(installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases));
+		
+		if (!aliases.isEmpty()) {
+			final List<Installation> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases);
+			if (!installations.isEmpty()) {
+				removeInstallations(installations);
+			}
+		}
 	}
 
     // =====================================================================

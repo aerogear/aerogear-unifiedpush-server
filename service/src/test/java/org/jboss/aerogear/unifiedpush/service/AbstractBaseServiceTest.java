@@ -99,5 +99,5 @@ public abstract class AbstractBaseServiceTest {
      */
     protected abstract void specificSetup();
 
-    // ===================== OpenEJB hooks and base methods =====================
+
 }

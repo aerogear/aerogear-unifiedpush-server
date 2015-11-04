@@ -43,6 +43,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -411,7 +412,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public Response enable(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -486,14 +487,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         
         String basicDeviceToken = request.getHeader("device-token");
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
-				new String(HttpBasicHelper.decodeBase64(basicDeviceToken)));
+				HttpBasicHelper.decodeBase64(basicDeviceToken));
 		
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
         }
 
         // Associate the device - find the matching application and update the device to the right application 
-        installation = clientInstallationService.associateInstallation(installation);
+        installation = clientInstallationService.associateInstallation(installation, variant.getType());
         
         Variant newVariant = installation.getVariant();
  

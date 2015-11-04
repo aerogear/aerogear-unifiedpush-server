@@ -10,7 +10,7 @@
         <web-resource-collection>
             <web-resource-name>Admin</web-resource-name>
             <url-pattern>/rest/*</url-pattern>
-        </web-resource-collection>
+        </web-resource-collection>ec
         <auth-constraint>
             <role-name>admin</role-name>
             <role-name>developer</role-name>
@@ -26,6 +26,8 @@
             <description>Matches a few special URLs, not protected by Keycloak</description>
             <url-pattern>/rest/registry/device/*</url-pattern>
             <url-pattern>/rest/sender/*</url-pattern>
+            <url-pattern>/rest/applicationsData/*</url-pattern>          
+			<url-pattern>/rest/document/*</url-pattern>
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>

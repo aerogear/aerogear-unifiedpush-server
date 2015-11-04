@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,12 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 			aliasDao.create(alias);
 		}
 		clientInstallationService.removeInstallationNotInAliasList(pushApp, aliases);
+	}
+	
+	@Override
+	public PushApplication findByVariantID(String variantID) {
+		List<PushApplication> pushApps = pushApplicationDao.findByVariantIds(Collections.singletonList(variantID));
+		return pushApps.isEmpty() ? null : pushApps.get(0);
 	}
 
 }
