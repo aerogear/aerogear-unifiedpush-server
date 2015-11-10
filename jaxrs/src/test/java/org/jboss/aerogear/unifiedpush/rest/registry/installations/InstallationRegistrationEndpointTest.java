@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
@@ -9,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -17,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -102,6 +106,8 @@ public class InstallationRegistrationEndpointTest {
     private GenericVariantService genericVariantService;
     @Inject
     private ClientInstallationService installationService;
+    @Inject
+    private PushApplicationService applicationService;
     
     
     @Test
@@ -124,8 +130,19 @@ public class InstallationRegistrationEndpointTest {
 			installationService.addInstallationSynchronously(variant, iosInstallation);
 	
 			Installation inst = installationService.findById(iosInstallation.getId());
-			
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
+						
+			// Register alias
+			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
+			ArrayList<String> aliases = new ArrayList<String>();
+			aliases.add(inst.getAlias());
+			applicationService.updateAliasesAndInstallations(app, aliases);
+				
+			// Associate according to alias  
+			inst = installationService.associateInstallation(inst, VariantType.IOS);
+			Assert.assertTrue(inst != null && inst.isEnabled() == false);
+			
+			
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}
