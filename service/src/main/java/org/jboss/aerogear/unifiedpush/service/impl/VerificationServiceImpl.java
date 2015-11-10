@@ -82,7 +82,7 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 		return VerificationResult.FAIL;
 	}
-	
+
 	private String buildKey(String variantID, String deviceToken) {
 		return variantID + "_" + deviceToken;
 	}

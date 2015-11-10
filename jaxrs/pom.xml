@@ -244,6 +244,13 @@
                     <version>1.0.0.Alpha5</version>
                     <scope>test</scope>
                 </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.extension</groupId>
+                    <artifactId>arquillian-transaction-jta</artifactId>
+                    <version>1.0.2.Final</version>
+                    <scope>test</scope>
+                </dependency>
                        
                 <dependency>
                     <groupId>org.jboss.resteasy</groupId>

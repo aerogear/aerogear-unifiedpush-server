@@ -21,11 +21,15 @@ import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -108,9 +112,11 @@ public class InstallationRegistrationEndpointTest {
     private ClientInstallationService installationService;
     @Inject
     private PushApplicationService applicationService;
-    
+    @Inject
+    private VerificationService verificationService;
     
     @Test
+    @Transactional(TransactionMode.ROLLBACK)
     public void enableDeviceTest() {
     	// Prepare installation 
     	Installation iosInstallation = new Installation();
@@ -138,11 +144,21 @@ public class InstallationRegistrationEndpointTest {
 			aliases.add(inst.getAlias());
 			applicationService.updateAliasesAndInstallations(app, aliases);
 				
-			// Associate according to alias  
+			// Associate according to alias before we enable verification.
+			// Should result in the same variant
 			inst = installationService.associateInstallation(inst, VariantType.IOS);
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
 			
+			// ReEnable device
+			String code = verificationService.initiateDeviceVerification(inst, variant);
+			VerificationResult results = verificationService.verifyDevice(variant.getVariantID(), inst.getDeviceToken(), code);
+			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 			
+			inst = installationService.associateInstallation(inst, VariantType.IOS);
+			Assert.assertTrue(inst != null && inst.isEnabled() == true);
+			
+			// Rest system property to false
+			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "false");
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}
