@@ -61,8 +61,9 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.api.Variant")
-    public javax.ws.rs.core.Response resetSecret(@PathParam("variantId") String variantId) {
+    public Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
 

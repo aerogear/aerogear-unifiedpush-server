@@ -7,8 +7,7 @@
       <span ng-if="snippet == 'simplePush'">JavaScript</span>
       <span ng-if="snippet == 'ios_objc'">ObjectiveC</span>
       <span ng-if="snippet == 'ios_swift'">Swift</span>
-      <span ng-if="snippet == 'wns'">C#</span>
-      <span ng-if="snippet == 'mpns'">C#</span>
+      <span ng-if="snippet == 'dotnet'">C#</span>
       <span ng-if="snippet == 'cordova'">Cordova</span>
       <span ng-if="snippet == 'adm'">ADM</span>
     </a>
@@ -22,7 +21,7 @@
   <pre ng-bind="snippets.cordova.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('cordova') !== -1" ng-show="state.activeSnippet == 'cordova'"></pre>
   <pre ng-bind="snippets.ios_objc.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_objc') !== -1" ng-show="state.activeSnippet == 'ios_objc'"></pre>
   <pre ng-bind="snippets.ios_swift.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_swift') !== -1" ng-show="state.activeSnippet == 'ios_swift'"></pre>
-  <pre ng-bind="snippets.mpns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'mpns'"></pre>
-  <pre ng-bind="snippets.wns.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'wns'"></pre>
+  <pre ng-bind="snippets.dotnet.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'dotnet'"></pre>
+  <pre ng-bind="snippets.dotnet.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'dotnet'"></pre>
   <pre ng-bind="snippets.adm.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('adm') !== -1" ng-show="state.activeSnippet == 'adm'"></pre>
 </div>
