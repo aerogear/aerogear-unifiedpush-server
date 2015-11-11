@@ -156,11 +156,11 @@ public class InstallationRegistrationEndpointTest {
 			
 			inst = installationService.associateInstallation(inst, VariantType.IOS);
 			Assert.assertTrue(inst != null && inst.isEnabled() == true);
-			
-			// Rest system property to false
-			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "false");
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
+		}finally{
+			// Rest system property to false
+			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "false");
 		}
     }
 }
