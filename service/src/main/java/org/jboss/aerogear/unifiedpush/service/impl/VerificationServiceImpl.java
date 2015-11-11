@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,7 @@ import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.SMSService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -27,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationServiceImpl.class);
+	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
 	
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 	
@@ -34,6 +37,18 @@ public class VerificationServiceImpl implements VerificationService {
 	private SMSService smsService;
     @Inject
     private InstallationDao installationDao;
+    @Inject
+    private Configuration configuration;
+    
+    private ThreadLocal<MessageFormat> tlMessageFormat = new ThreadLocal<MessageFormat>() {
+    	public MessageFormat initialValue() {
+    		String template = configuration.getProperty("aerogear.config.verification.message.template");
+    		if (template == null || template.isEmpty()) {
+    			template = DEFAULT_VERIFICATION_TEMPLATE;
+    		}
+			return new MessageFormat(template);
+    	}
+    };
 	
 	@PostConstruct
 	private void startup() {
@@ -61,7 +76,7 @@ public class VerificationServiceImpl implements VerificationService {
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
-		smsService.sendSMS(installation.getAlias(), verificationCode);
+		smsService.sendSMS(installation.getAlias(), getVerificationMessage(verificationCode));
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		Set<Object> codes;
 		
@@ -97,5 +112,9 @@ public class VerificationServiceImpl implements VerificationService {
 
 	private String buildKey(String variantID, String deviceToken) {
 		return variantID + "_" + deviceToken;
+	}
+	
+	private String getVerificationMessage(String verificationCode) {
+		return tlMessageFormat.get().format(new Object[] { verificationCode });
 	}
 }
