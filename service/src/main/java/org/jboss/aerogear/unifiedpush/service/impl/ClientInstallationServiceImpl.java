@@ -50,8 +50,6 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @Stateless
 @DependsOn(value={"Configuration", "VerificationServiceImpl"})
 public class ClientInstallationServiceImpl implements ClientInstallationService {
-	private static final String ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
-
     private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
 
     @Inject
@@ -111,7 +109,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
-    	boolean shouldVerifiy = configuration.getProperty(ENABLE_VERIFICATION, false);
+    	boolean shouldVerifiy = configuration.getProperty(Configuration.PROP_ENABLE_VERIFICATION, false);
     	
         // does it already exist ?
         Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());

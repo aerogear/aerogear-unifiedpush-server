@@ -20,7 +20,7 @@ public class Configuration {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(Configuration.class);
 
 	private static final String PROPERTIES_FILE_KEY = "aerogear.config";
-	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.sms.enable_verification";
+	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
 
 	private Properties properties;
 	private PropertyPlaceholderConfigurer configurer; 

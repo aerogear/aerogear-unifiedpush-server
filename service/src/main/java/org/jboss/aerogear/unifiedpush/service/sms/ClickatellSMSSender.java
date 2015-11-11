@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.sms;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,21 +21,27 @@ import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
  */
 public class ClickatellSMSSender implements SMSSender {
 	private Logger logger = Logger.getLogger(ClickatellSMSSender.class.getName());
-	
-	private String ERROR_PREFIX = "ERR";
 
+	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
+	private final static String ERROR_PREFIX = "ERR";
+	
 	private final static String API_ID_KEY = "aerogear.config.sms.sender.clickatell.api_id";
 	private final static String USERNAME_KEY = "aerogear.config.sms.sender.clickatell.username";
 	private final static String PASSWORD_KEY = "aerogear.config.sms.sender.clickatell.password";
 	private final static String ENCODING_KEY = "aerogear.config.sms.sender.clickatell.encoding";
+	private final static String MESSAGE_TMPL = "aerogear.config.sms.sender.clickatell.template";
+
 	private final static String API_URL = "https://api.clickatell.com/http/sendmsg";
-	
+
+	private String template;
+    
 	@Override
 	public void send(String phoneNumber, String message, Properties properties) {
 		final String apiId = getProperty(properties, API_ID_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String encoding = getProperty(properties, ENCODING_KEY);
+		template = getProperty(properties, MESSAGE_TMPL);
 		
 		try {
 			if (apiId==null || username==null || password==null || encoding ==null){
@@ -47,7 +54,7 @@ public class ClickatellSMSSender implements SMSSender {
 			.append("&password=").append(password)
 			.append("&api_id=").append(apiId)
 			.append("&to=").append(URLEncoder.encode(phoneNumber, encoding))
-			.append("&text=").append(URLEncoder.encode(message, encoding));
+			.append("&text=").append(URLEncoder.encode(getVerificationMessage(message), encoding));
 			
 			invokeAPI(apiCall.toString());
 		} catch (UnsupportedEncodingException e) {
@@ -88,5 +95,19 @@ public class ClickatellSMSSender implements SMSSender {
 		}
 		return value;
 	}
+    
+	private String getVerificationMessage(String verificationCode) {
+		return tlMessageFormat.get().format(new Object[] { verificationCode });
+	}
+	
+    private ThreadLocal<MessageFormat> tlMessageFormat = new ThreadLocal<MessageFormat>() {
+    	@Override
+    	public MessageFormat initialValue() {
+    		if (template == null || template.isEmpty()) {
+    			template = DEFAULT_VERIFICATION_TEMPLATE;
+    		}
+			return new MessageFormat(template);
+    	}
+    };
 
 }
