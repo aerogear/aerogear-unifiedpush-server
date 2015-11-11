@@ -128,10 +128,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			
             // store the installation:
             storeInstallationAndSetReferences(variant, entity);
-            
-            // A better implementation would initiate a new REST call when registration is done.
-            if (shouldVerifiy)
-            	verificationService.initiateDeviceVerification(entity, variant);
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
@@ -140,6 +136,10 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 this.updateInstallation(installation, entity);
             }
         }
+        
+        // A better implementation would initiate a new REST call when registration is done.
+        if (shouldVerifiy)
+        	verificationService.initiateDeviceVerification(entity, variant);
     }
 
     @Override
