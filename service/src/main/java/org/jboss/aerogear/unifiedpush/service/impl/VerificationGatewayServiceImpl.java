@@ -6,21 +6,21 @@ import javax.inject.Singleton;
 
 import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
-import org.jboss.aerogear.unifiedpush.service.SMSService;
+import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
- * Default implementation of {@link SMSService}. Note that this class does not implement the underlying
+ * Default implementation of {@link VerificationGatewayService}. Note that this class does not implement the underlying
  * SMS sending mechanism. Rather, it uses an implementation of {@link SMSSender} to do so.
  * 
  * @see SMSSender
  */
 @Singleton
-public class SMSServiceImpl implements SMSService {
+public class VerificationGatewayServiceImpl implements VerificationGatewayService {
 	
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(SMSServiceImpl.class);
+	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationGatewayServiceImpl.class);
 
-	private final static String SMS_IMPL_KEY = "aerogear.config.sms.impl.class";
+	private final static String VERIFICATION_IMPL_KEY = "aerogear.config.verification.impl.class";
 	
 	@Inject
 	private Configuration configuration;
@@ -33,7 +33,7 @@ public class SMSServiceImpl implements SMSService {
 	 */
 	@PostConstruct
 	public void initializeSender() {
-		final String className = configuration.getProperty(SMS_IMPL_KEY);
+		final String className = configuration.getProperty(VERIFICATION_IMPL_KEY);
 		if (className == null) {
 			logger.warning("cannot find sms sender implementation class");
 			return;
@@ -51,13 +51,13 @@ public class SMSServiceImpl implements SMSService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sendSMS(String phoneNumber, String message) {
+	public void sendVerificationMessage(String alias, String message) {
 		if (sender == null){
 			// Retry initialization
 			initializeSender();
 		}
 			
-		sender.send(phoneNumber, message, configuration.getProperties());
+		sender.send(alias, message, configuration.getProperties());
 	}
 
 

@@ -86,8 +86,7 @@ angular.module('upsConsole')
       'cordova': { url: 'snippets/register-device/cordova.js' },
       'ios_objc': { url: 'snippets/register-device/ios.objc' },
       'ios_swift': { url: 'snippets/register-device/ios.swift' },
-      'mpns': { url: 'snippets/register-device/mpns.cs' },
-      'wns': { url: 'snippets/register-device/wns.cs' },
+      'dotnet': { url: 'snippets/register-device/dotnet.cs' },
       'adm': { url: 'snippets/register-device/adm.txt' }
     };
     var promises = {};
@@ -128,8 +127,8 @@ angular.module('upsConsole')
         $scope.typeEnum = {
           android:      { name: 'Android',    snippets: ['android', 'cordova'] },
           ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova']},
-          windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
-          windows_wns:  { name: 'Windows',    snippets: ['wns'] },
+          windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
+          windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
           adm:          { name: 'ADM',        snippets: ['adm'] }
         };

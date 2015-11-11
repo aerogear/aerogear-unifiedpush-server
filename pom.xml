@@ -20,7 +20,8 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
+        <!-- NOTE: if updated for version of UPS dependencies, please update 
+            the 'aerogear.bom.version' as well -->
         <version>0.2.16</version>
     </parent>
 

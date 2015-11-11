@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,7 +18,7 @@ import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.service.SMSService;
+import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -25,11 +27,11 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationServiceImpl.class);
-	
-	private ConcurrentMap<Object, Object> deviceToToken;
+
+	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 	
 	@Inject
-	private SMSService smsService;
+	private VerificationGatewayService smsService;
     @Inject
     private InstallationDao installationDao;
 	
@@ -59,19 +61,29 @@ public class VerificationServiceImpl implements VerificationService {
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
-		smsService.sendSMS(installation.getAlias(), verificationCode);
+		smsService.sendVerificationMessage(installation.getAlias(), verificationCode);
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
-		deviceToToken.put(key, verificationCode);
+		Set<Object> codes;
+		
+		if (!deviceToToken.containsKey(key)){
+			codes = new HashSet<Object>();
+		}else{
+			codes = deviceToToken.get(key);
+		}
+	
+		codes.add(verificationCode);
+		deviceToToken.putIfAbsent(key, codes);
+		
 		return verificationCode;
 	}
 
 	@Override
 	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
 		final String key = buildKey(variantID, deviceToken);
-		Object code = deviceToToken.get(key);
-		if (code == null) {
+		Set<Object> codes = deviceToToken.get(key);
+		if (codes == null) {
 			return VerificationResult.UNKNOWN;
-		} else if (code.equals(verificationAttempt)) {
+		} else if (codes.contains(verificationAttempt)) {
 			Installation installation = installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
 			installation.setEnabled(true);
 			// TODO: there should be a "verifyDevice" like method in ClientInstallationService, which delegates here,
@@ -82,7 +94,7 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 		return VerificationResult.FAIL;
 	}
-	
+
 	private String buildKey(String variantID, String deviceToken) {
 		return variantID + "_" + deviceToken;
 	}

@@ -14,7 +14,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7e5082902fb0698856aa589f532d9abe13ccd6ad
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -24,23 +27,23 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-	<artifactId>unifiedpush-server-wildfly</artifactId>
-	<packaging>war</packaging>
-	<name>UnifiedPush Server for Wildfly (WAR)</name>
+    <artifactId>unifiedpush-server-wildfly</artifactId>
+    <packaging>war</packaging>
+    <name>UnifiedPush Server for Wildfly (WAR)</name>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.jboss.aerogear.unifiedpush</groupId>
-			<artifactId>unifiedpush-server-dependencies</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-server-dependencies</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-wildfly-adapter</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-wildfly-adapter</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

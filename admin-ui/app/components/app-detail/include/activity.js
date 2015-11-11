@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
+  .controller('ActivityController', function ( $log, $timeout, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
 
     var self = this;
 
@@ -68,7 +68,10 @@ angular.module('upsConsole')
     // initial load
     refreshUntilAllServed();
 
-    $scope.$on('upsNotificationSent', refreshUntilAllServed);
+    $scope.$on('upsNotificationSent', function() {
+      $timeout(refreshUntilAllServed, 500); // artificial delay - refresh after 0.5sec to ensure server has time to load some batches; prevents situation when totalBatches = 0 for all variants
+      $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
+    });
     $scope.$on('$destroy', function () {
       if (refreshInterval) {
         $interval.cancel(refreshInterval);
