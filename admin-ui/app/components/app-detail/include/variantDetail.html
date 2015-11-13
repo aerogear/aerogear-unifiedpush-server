@@ -45,14 +45,12 @@
   <dd>
     {{ variant.googleKey }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
-<!-- <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button> -->
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'windows_mpns'">
   <dt>Type:</dt>
   <dd>
     Microsoft Push Notification Service<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'windows_wns'">
@@ -64,7 +62,6 @@
   <dd>
     {{ variant.clientSecret }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
-<!--     <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button> -->
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'ios'">
@@ -72,7 +69,6 @@
   <dd>
     {{ variant.production ? 'Production' : 'Development' }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
-    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'chrome'">
@@ -84,7 +80,6 @@
   <dd>
     {{ variant.refreshToken }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
-<!--     <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button> -->
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'adm'">
@@ -94,14 +89,12 @@
   <dd>
     {{ variant.clientSecret }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
-<!--     <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button> -->
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'simplePush'">
   <dt>Network Type:</dt>
   <dd>
     SimplePush<br/>
-    <button class="btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
   </dd>
 </dl>
 
