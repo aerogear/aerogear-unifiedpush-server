@@ -43,7 +43,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>0.0.16</version>
+                <version>0.0.23</version>
 
                 <configuration>
                     <workingDirectory>./</workingDirectory>
@@ -57,8 +57,8 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <nodeVersion>v0.10.31</nodeVersion>
-                            <npmVersion>1.4.23</npmVersion>
+                            <nodeVersion>v5.0.0</nodeVersion>
+                            <npmVersion>3.3.6</npmVersion>
                         </configuration>
                     </execution>
 
