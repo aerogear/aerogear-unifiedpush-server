@@ -26,8 +26,8 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 | Build:          | Maven  |
 | Documentation:  | https://aerogear.org/push/  |
 | Issue tracker:  | https://github.com/C-B4/unifiedpush-server/issues  |
-| Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-users))  |
-|                 | [aerogear-dev](http://aerogear-dev.1069024.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-dev))  |
+|                 | https://github.com/C-B4/omnibus-unifiedpush-server/tree/master/doc  |
+| Mailing lists:  | |
 
 ## Getting started
 
