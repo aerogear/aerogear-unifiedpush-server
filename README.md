@@ -1,5 +1,4 @@
-# UnifiedPush Server [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server)
-
+# UnifiedPush Server [![Build Status](https://travis-ci.org/C-B4/unifiedpush-server.svg?branch=master)](https://travis-ci.org/C-B4/unifiedpush-server)
 The _UnifiedPush Server_ is a free and open source software that allows sending push notifications to different (mobile) platforms and has support for:
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Google Cloud Messaging (GCM)](http://developer.android.com/google/gcm/index.html)
