@@ -10,11 +10,10 @@ The _UnifiedPush Server_ is a free and open source software that allows sending 
 
 _UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
-* SSL Suuport, NGINX frontend, embeded postgresql.
+* SSL Suuport, embeded NGINX, embeded postgresql.
 * Centralized configuration/managment. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Extended application scope
-* Store & forward documents.
+* Store & forward JSON documents.
 * Silent Push Notifications (Notification without payload) 
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
