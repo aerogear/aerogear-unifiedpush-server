@@ -1,5 +1,5 @@
 # UnifiedPush Server [![Build Status](https://travis-ci.org/C-B4/unifiedpush-server.svg?branch=master)](https://travis-ci.org/C-B4/unifiedpush-server)
-The _UnifiedPush Server_ is a free and open source software that allows sending push notifications to different (mobile) platforms and has support for:
+The _UnifiedPush Server_ is a free and open source mobile application server that allows sending push notifications to different (mobile) platforms and has support for:
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Google Cloud Messaging (GCM)](http://developer.android.com/google/gcm/index.html)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
@@ -26,7 +26,6 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 | Documentation:  | https://aerogear.org/push/  |
 |                 | https://github.com/C-B4/omnibus-unifiedpush-server/tree/master/doc  |
 | Issue tracker:  | https://github.com/C-B4/unifiedpush-server/issues  |
-| Mailing lists:  | |
 
 ## Getting started
 
