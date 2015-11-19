@@ -41,7 +41,7 @@
     </fileSets>
     <files>
         <file>
-            <source>${project.basedir}/target/${project.artifactId}.jar</source>
+            <source>${project.basedir}/target/ups-migrator.jar</source>
             <outputDirectory></outputDirectory>
             <destName>ups-migrator.jar</destName>
         </file>
