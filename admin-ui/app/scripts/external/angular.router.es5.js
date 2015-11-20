@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * https://github.com/angular/router/tree/v0.5.0
- * Apache License 2.0
- */
-
 /*
  * A module for adding new a routing system Angular 1.
  */
@@ -12,11 +7,21 @@ angular.module('ngNewRouter', [])
   .factory('$router', routerFactory)
   .value('$routeParams', {})
   .provider('$componentLoader', $componentLoaderProvider)
-  .factory('$$pipeline', pipelineFactory)
+  .provider('$pipeline', pipelineProvider)
+  .factory('$$pipeline', privatePipelineFactory)
+  .factory('$setupRoutersStep', setupRoutersStepFactory)
+  .factory('$initLocalsStep', initLocalsStepFactory)
+  .factory('$initControllersStep', initControllersStepFactory)
+  .factory('$runCanDeactivateHookStep', runCanDeactivateHookStepFactory)
+  .factory('$runCanActivateHookStep', runCanActivateHookStepFactory)
+  .factory('$loadTemplatesStep', loadTemplatesStepFactory)
+  .value('$activateStep', activateStepValue)
   .directive('ngViewport', ngViewportDirective)
   .directive('ngViewport', ngViewportFillContentDirective)
   .directive('ngLink', ngLinkDirective)
-  .directive('a', anchorLinkDirective);
+  .directive('a', anchorLinkDirective)
+
+
 
 
 /*
@@ -111,7 +116,7 @@ routerFactory.$inject = ["$$rootRouter", "$rootScope", "$location", "$$grammar",
  *
  * The value for the `ngViewport` attribute is optional.
  */
-function ngViewportDirective($animate, $compile, $controller, $templateRequest, $rootScope, $location, $componentLoader, $router) {
+function ngViewportDirective($animate, $injector, $q, $router) {
   var rootRouter = $router;
 
   return {
@@ -125,18 +130,22 @@ function ngViewportDirective($animate, $compile, $controller, $templateRequest, 
     controllerAs: '$$ngViewport'
   };
 
+  function invoke(method, context, instruction) {
+    return $injector.invoke(method, context, instruction.locals);
+  }
+
   function viewportLink(scope, $element, attrs, ctrls, $transclude) {
     var viewportName = attrs.ngViewport || 'default',
-      parentCtrl = ctrls[0],
-      myCtrl = ctrls[1],
-      router = (parentCtrl && parentCtrl.$$router) || rootRouter;
+        parentCtrl = ctrls[0],
+        myCtrl = ctrls[1],
+        router = (parentCtrl && parentCtrl.$$router) || rootRouter;
 
     var currentScope,
-      newScope,
-      currentController,
-      currentElement,
-      previousLeaveAnimation,
-      previousInstruction;
+        newScope,
+        currentController,
+        currentElement,
+        previousLeaveAnimation,
+        previousInstruction;
 
     function cleanupLastView() {
       if (previousLeaveAnimation) {
@@ -158,19 +167,19 @@ function ngViewportDirective($animate, $compile, $controller, $templateRequest, 
     }
 
     router.registerViewport({
-      canDeactivate: function (instruction) {
+      canDeactivate: function(instruction) {
         if (currentController && currentController.canDeactivate) {
-          return currentController.canDeactivate();
+          return invoke(currentController.canDeactivate, currentController, instruction);
         }
         return true;
       },
-      activate: function (instruction) {
+      activate: function(instruction) {
         var nextInstruction = serializeInstruction(instruction);
         if (nextInstruction === previousInstruction) {
           return;
         }
 
-        newScope = scope.$new();
+        instruction.locals.$scope = newScope = scope.$new();
         myCtrl.$$router = instruction.router;
         myCtrl.$$template = instruction.template;
         var componentName = instruction.component;
@@ -179,9 +188,15 @@ function ngViewportDirective($animate, $compile, $controller, $templateRequest, 
           cleanupLastView();
         });
 
-        var ctrl = instruction.controller;
-        newScope[componentName] = ctrl;
-        currentController = ctrl;
+        var newController = instruction.controller;
+        newScope[componentName] = newController;
+
+        var result;
+        if (currentController && currentController.deactivate) {
+          result = $q.when(invoke(currentController.deactivate, currentController, instruction));
+        }
+
+        currentController = newController;
 
         currentElement = clone;
         currentScope = newScope;
@@ -189,9 +204,15 @@ function ngViewportDirective($animate, $compile, $controller, $templateRequest, 
         previousInstruction = nextInstruction;
 
         // finally, run the hook
-        if (ctrl.activate) {
-          ctrl.activate(instruction);
+        if (newController.activate) {
+          var activationResult = $q.when(invoke(newController.activate, newController, instruction));
+          if (result) {
+            return result.then(activationResult);
+          } else {
+            return activationResult;
+          }
         }
+        return result;
       }
     }, viewportName);
   }
@@ -207,7 +228,7 @@ function ngViewportDirective($animate, $compile, $controller, $templateRequest, 
     });
   }
 }
-ngViewportDirective.$inject = ["$animate", "$compile", "$controller", "$templateRequest", "$rootScope", "$location", "$componentLoader", "$router"];
+ngViewportDirective.$inject = ["$animate", "$injector", "$q", "$router"];
 
 function ngViewportFillContentDirective($compile) {
   return {
@@ -245,8 +266,8 @@ var LINK_MICROSYNTAX_RE = /^(.+?)(?:\((.*)\))?$/;
  *
  * ```js
  * angular.module('myApp', ['ngFuturisticRouter'])
- *   .controller('AppController', ['router', function(router) {
- *     router.config({ path: '/user/:id' component: 'user' });
+ *   .controller('AppController', ['$router', function($router) {
+ *     $router.config({ path: '/user/:id' component: 'user' });
  *     this.user = { name: 'Brian', id: 123 };
  *   });
  * ```
@@ -309,12 +330,9 @@ function anchorLinkDirective($router) {
       // If the linked element is not an anchor tag anymore, do nothing
       if (element[0].nodeName.toLowerCase() !== 'a') return;
 
-      // do not enhance anchors unless they have ng-link attribute
-      if (!$(element[0]).attr('ng-link')) return;
-
       // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
-      var hrefAttrName = toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
-        'xlink:href' : 'href';
+      var hrefAttrName = Object.prototype.toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
+                     'xlink:href' : 'href';
 
       element.on('click', function(event) {
         var href = element.attr(hrefAttrName);
@@ -331,31 +349,130 @@ function anchorLinkDirective($router) {
 }
 anchorLinkDirective.$inject = ["$router"];
 
-function pipelineFactory($controller, $componentLoader, $templateRequest) {
-  return {
-    init: function(instruction) {
-      var controllerName = $componentLoader.controllerName(instruction.component);
+function setupRoutersStepFactory() {
+  return function (instruction) {
+    return instruction.router.makeDescendantRouters(instruction);
+  }
+}
 
-      var locals = {
+/*
+ * $initLocalsStep
+ */
+function initLocalsStepFactory() {
+  return function initLocals(instruction) {
+    return instruction.router.traverseInstruction(instruction, function(instruction) {
+      return instruction.locals = {
         $router: instruction.router,
-        $routeParams: instruction.params || {}
+        $routeParams: (instruction.params || {})
       };
+    });
+  }
+}
+
+/*
+ * $initControllersStep
+ */
+function initControllersStepFactory($controller, $componentLoader) {
+  return function initControllers(instruction) {
+    return instruction.router.traverseInstruction(instruction, function(instruction) {
+      var controllerName = $componentLoader.controllerName(instruction.component);
+      var locals = instruction.locals;
       var ctrl;
       try {
         ctrl = $controller(controllerName, locals);
-      } catch (e) {
+      } catch(e) {
         console.warn && console.warn('Could not instantiate controller', controllerName);
         ctrl = $controller(angular.noop, locals);
       }
-      return ctrl;
-    },
-    load: function (instruction) {
-      var componentTemplateUrl = $componentLoader.template(instruction.component);
-      return $templateRequest(componentTemplateUrl);
-    }
+      return instruction.controller = ctrl;
+    });
+  }
+}
+initControllersStepFactory.$inject = ["$controller", "$componentLoader"];
+
+function runCanDeactivateHookStepFactory() {
+  return function runCanDeactivateHook(instruction) {
+    return instruction.router.canDeactivatePorts(instruction);
   };
 }
-pipelineFactory.$inject = ["$controller", "$componentLoader", "$templateRequest"];
+
+function runCanActivateHookStepFactory($injector) {
+
+  function invoke(method, context, instruction) {
+    return $injector.invoke(method, context, {
+      $routeParams: instruction.params
+    });
+  }
+
+  return function runCanActivateHook(instruction) {
+    return instruction.router.traverseInstruction(instruction, function(instruction) {
+      var controller = instruction.controller;
+      return !controller.canActivate || invoke(controller.canActivate, controller, instruction);
+    });
+  }
+}
+runCanActivateHookStepFactory.$inject = ["$injector"];
+
+function loadTemplatesStepFactory($componentLoader, $templateRequest) {
+  return function loadTemplates(instruction) {
+    return instruction.router.traverseInstruction(instruction, function(instruction) {
+      var componentTemplateUrl = $componentLoader.template(instruction.component);
+      return $templateRequest(componentTemplateUrl).then(function (templateHtml) {
+        return instruction.template = templateHtml;
+      });
+    });
+  };
+}
+loadTemplatesStepFactory.$inject = ["$componentLoader", "$templateRequest"];
+
+
+function activateStepValue(instruction) {
+  return instruction.router.activatePorts(instruction);
+}
+
+
+function pipelineProvider() {
+  var stepConfiguration;
+
+  var protoStepConfiguration = [
+    '$setupRoutersStep',
+    '$initLocalsStep',
+    '$initControllersStep',
+    '$runCanDeactivateHookStep',
+    '$runCanActivateHookStep',
+    '$loadTemplatesStep',
+    '$activateStep'
+  ];
+
+  return {
+    steps: protoStepConfiguration.slice(0),
+    config: function (newConfig) {
+      protoStepConfiguration = newConfig;
+    },
+    $get: ["$injector", "$q", function ($injector, $q) {
+      stepConfiguration = protoStepConfiguration.map(function (step) {
+        return $injector.get(step);
+      });
+      return {
+        process: function(instruction) {
+          // make a copy
+          var steps = stepConfiguration.slice(0);
+
+          function processOne(result) {
+            if (steps.length === 0) {
+              return result;
+            }
+            var step = steps.shift();
+            return $q.when(step(instruction)).then(processOne);
+          }
+
+          return processOne();
+        }
+      }
+    }]
+  };
+}
+
 
 /**
  * @name $componentLoaderProvider
@@ -428,6 +545,13 @@ function $componentLoaderProvider() {
   };
 }
 
+// this is a hack as a result of the build system used to transpile
+function privatePipelineFactory($pipeline) {
+  return $pipeline;
+}
+privatePipelineFactory.$inject = ["$pipeline"];
+
+
 function dashCase(str) {
   return str.replace(/([A-Z])/g, function ($1) {
     return '-' + $1.toLowerCase();
@@ -436,104 +560,101 @@ function dashCase(str) {
 
 
 angular.module('ngNewRouter').factory('$$rootRouter', ['$q', '$$grammar', '$$pipeline', function ($q, $$grammar, $$pipeline) {
-  /*
-   * artisinal, handcrafted subset of the traceur runtime for picky webdevs
-   */
+/*
+ * artisinal, handcrafted subset of the traceur runtime for picky webdevs
+ */
 
-  var $defineProperty = Object.defineProperty,
+var $defineProperty = Object.defineProperty,
     $defineProperties = Object.defineProperties,
     $create = Object.create,
     $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor,
     $getOwnPropertyNames = Object.getOwnPropertyNames,
     $getPrototypeOf = Object.getPrototypeOf;
 
-  function createClass(ctor, object, staticObject, superClass) {
-    $defineProperty(object, 'constructor', {
-      value: ctor,
-      configurable: true,
-      enumerable: false,
-      writable: true
-    });
-    if (arguments.length > 3) {
-      if (typeof superClass === 'function')
-        ctor.__proto__ = superClass;
-      ctor.prototype = $create(getProtoParent(superClass), getDescriptors(object));
-    } else {
-      ctor.prototype = object;
-    }
-    $defineProperty(ctor, 'prototype', {
-      configurable: false,
-      writable: false
-    });
-    return $defineProperties(ctor, getDescriptors(staticObject));
+function createClass(ctor, object, staticObject, superClass) {
+  $defineProperty(object, 'constructor', {
+    value: ctor,
+    configurable: true,
+    enumerable: false,
+    writable: true
+  });
+  if (arguments.length > 3) {
+    if (typeof superClass === 'function')
+      ctor.__proto__ = superClass;
+    ctor.prototype = $create(getProtoParent(superClass), getDescriptors(object));
+  } else {
+    ctor.prototype = object;
   }
+  $defineProperty(ctor, 'prototype', {
+    configurable: false,
+    writable: false
+  });
+  return $defineProperties(ctor, getDescriptors(staticObject));
+}
 
-  function getProtoParent(superClass) {
-    if (typeof superClass === 'function') {
-      var prototype = superClass.prototype;
-      if (Object(prototype) === prototype || prototype === null)
-        return superClass.prototype;
-      throw new TypeError('super prototype must be an Object or null');
-    }
-    if (superClass === null)
-      return null;
-    throw new TypeError(("Super expression must either be null or a function, not " + typeof superClass + "."));
+function getProtoParent(superClass) {
+  if (typeof superClass === 'function') {
+    var prototype = superClass.prototype;
+    if (Object(prototype) === prototype || prototype === null)
+      return superClass.prototype;
+    throw new TypeError('super prototype must be an Object or null');
   }
+  if (superClass === null)
+    return null;
+  throw new TypeError(("Super expression must either be null or a function, not " + typeof superClass + "."));
+}
 
-  function getDescriptors(object) {
-    var descriptors = {};
-    var names = $getOwnPropertyNames(object);
-    for (var i = 0; i < names.length; i++) {
-      var name = names[i];
-      descriptors[name] = $getOwnPropertyDescriptor(object, name);
-    }
-    // TODO: someday you might use symbols and you'll have to re-evaluate
-    //       your life choices that led to the creation of this file
+function getDescriptors(object) {
+  var descriptors = {};
+  var names = $getOwnPropertyNames(object);
+  for (var i = 0; i < names.length; i++) {
+    var name = names[i];
+    descriptors[name] = $getOwnPropertyDescriptor(object, name);
+  }
+  // TODO: someday you might use symbols and you'll have to re-evaluate
+  //       your life choices that led to the creation of this file
 
-    // var symbols = getOwnPropertySymbols(object);
-    // for (var i = 0; i < symbols.length; i++) {
-    //   var symbol = symbols[i];
-    //   descriptors[$traceurRuntime.toProperty(symbol)] = $getOwnPropertyDescriptor(object, $traceurRuntime.toProperty(symbol));
-    // }
-    return descriptors;
+  // var symbols = getOwnPropertySymbols(object);
+  // for (var i = 0; i < symbols.length; i++) {
+  //   var symbol = symbols[i];
+  //   descriptors[$traceurRuntime.toProperty(symbol)] = $getOwnPropertyDescriptor(object, $traceurRuntime.toProperty(symbol));
+  // }
+  return descriptors;
+}
+function superDescriptor(homeObject, name) {
+  var proto = $getPrototypeOf(homeObject);
+  do {
+    var result = $getOwnPropertyDescriptor(proto, name);
+    if (result)
+      return result;
+    proto = $getPrototypeOf(proto);
+  } while (proto);
+  return undefined;
+}
+function superCall(self, homeObject, name, args) {
+  return superGet(self, homeObject, name).apply(self, args);
+}
+function superGet(self, homeObject, name) {
+  var descriptor = superDescriptor(homeObject, name);
+  if (descriptor) {
+    if (!descriptor.get)
+      return descriptor.value;
+    return descriptor.get.call(self);
   }
-  function superDescriptor(homeObject, name) {
-    var proto = $getPrototypeOf(homeObject);
-    do {
-      var result = $getOwnPropertyDescriptor(proto, name);
-      if (result)
-        return result;
-      proto = $getPrototypeOf(proto);
-    } while (proto);
-    return undefined;
-  }
-  function superCall(self, homeObject, name, args) {
-    return superGet(self, homeObject, name).apply(self, args);
-  }
-  function superGet(self, homeObject, name) {
-    var descriptor = superDescriptor(homeObject, name);
-    if (descriptor) {
-      if (!descriptor.get)
-        return descriptor.value;
-      return descriptor.get.call(self);
-    }
-    return undefined;
-  }
+  return undefined;
+}
 
-  "use strict";
-  var Router = function Router(grammar, pipeline, parent, name) {
+"use strict";
+var Router = function Router(grammar, pipeline, parent, name) {
     this.name = name;
     this.parent = parent || null;
-    this.root = parent ? parent.root : this;
     this.navigating = false;
     this.ports = {};
-    this.rewrites = {};
     this.children = {};
     this.registry = grammar;
     this.pipeline = pipeline;
-    this.instruction = null;
   };
-  (createClass)(Router, {
+(createClass)(Router, {
     childRouter: function() {
       var name = arguments[0] !== (void 0) ? arguments[0] : 'default';
       if (!this.children[name]) {
@@ -543,7 +664,6 @@ angular.module('ngNewRouter').factory('$$rootRouter', ['$q', '$$grammar', '$$pip
     },
     registerViewport: function(view) {
       var name = arguments[1] !== (void 0) ? arguments[1] : 'default';
-      if (this.ports[name]) {}
       this.ports[name] = view;
       return this.renavigate();
     },
@@ -558,33 +678,26 @@ angular.module('ngNewRouter').factory('$$rootRouter', ['$q', '$$grammar', '$$pip
       }
       this.lastNavigationAttempt = url;
       var instruction = this.recognize(url);
-      if (notMatched(instruction)) {
+      if (!instruction) {
         return $q.reject();
       }
-      this.makeDescendantRouters(instruction);
-      return this.canDeactivatePorts(instruction).then((function() {
-        return $__0.traverseInstruction(instruction, (function(instruction, viewportName) {
-          return instruction.controller = $__0.pipeline.init(instruction);
-        }));
-      })).then((function() {
-        return $__0.traverseInstruction(instruction, (function(instruction, viewportName) {
-          var controller = instruction.controller;
-          return !controller.canActivate || controller.canActivate();
-        }));
-      })).then((function() {
-        return $__0.traverseInstruction(instruction, (function(instruction, viewportName) {
-          return $__0.pipeline.load(instruction).then((function(templateHtml) {
-            return instruction.template = templateHtml;
-          }));
-        }));
-      })).then((function() {
-        return $__0.activatePorts(instruction);
+      this._startNavigating();
+      instruction.router = this;
+      return this.pipeline.process(instruction).then((function() {
+        return $__0._finishNavigating();
+      }), (function() {
+        return $__0._finishNavigating();
       })).then((function() {
         return instruction.canonicalUrl;
       }));
     },
+    _startNavigating: function() {
+      this.navigating = true;
+    },
+    _finishNavigating: function() {
+      this.navigating = false;
+    },
     makeDescendantRouters: function(instruction) {
-      instruction.router = this;
       this.traverseInstructionSync(instruction, (function(instruction, childInstruction) {
         childInstruction.router = instruction.router.childRouter(childInstruction.component);
       }));
@@ -602,32 +715,38 @@ angular.module('ngNewRouter').factory('$$rootRouter', ['$q', '$$grammar', '$$pip
       if (!instruction) {
         return $q.when();
       }
-      return $q.all(mapObj(instruction.viewports, (function(childInstruction, viewportName) {
+      return mapObjAsync(instruction.viewports, (function(childInstruction, viewportName) {
         return boolToPromise(fn(childInstruction, viewportName));
-      }))).then((function() {
-        return $q.all(mapObj(instruction.viewports, (function(childInstruction, viewportName) {
+      })).then((function() {
+        return mapObjAsync(instruction.viewports, (function(childInstruction, viewportName) {
           return childInstruction.router.traverseInstruction(childInstruction, fn);
-        })));
+        }));
       }));
     },
     activatePorts: function(instruction) {
-      return $q.all(mapObj(this.ports, (function(port, name) {
+      return this.queryViewports((function(port, name) {
         return port.activate(instruction.viewports[name]);
-      }))).then((function() {
-        return $q.all(mapObj(instruction.viewports, (function(instruction, viewportName) {
+      })).then((function() {
+        return mapObjAsync(instruction.viewports, (function(instruction) {
           return instruction.router.activatePorts(instruction);
-        })));
+        }));
       }));
     },
     canDeactivatePorts: function(instruction) {
-      var $__0 = this;
-      return $q.all(mapObj(this.ports, (function(port, name) {
+      return this.traversePorts((function(port, name) {
         return boolToPromise(port.canDeactivate(instruction.viewports[name]));
-      }))).then((function() {
-        return $q.all(mapObj($__0.children, (function(child) {
-          return child.canDeactivatePorts(instruction);
-        })));
       }));
+    },
+    traversePorts: function(fn) {
+      var $__0 = this;
+      return this.queryViewports(fn).then((function() {
+        return mapObjAsync($__0.children, (function(child) {
+          return child.traversePorts(fn);
+        }));
+      }));
+    },
+    queryViewports: function(fn) {
+      return mapObjAsync(this.ports, fn);
     },
     recognize: function(url) {
       return this.registry.recognize(url);
@@ -644,138 +763,135 @@ angular.module('ngNewRouter').factory('$$rootRouter', ['$q', '$$grammar', '$$pip
       return this.registry.generate(name, params);
     }
   }, {});
-  Object.defineProperty(Router, "parameters", {get: function() {
-    return [[Grammar], [Pipeline], [], []];
-  }});
-  Object.defineProperty(Router.prototype.generate, "parameters", {get: function() {
-    return [[$traceurRuntime.type.string], []];
-  }});
-  var RootRouter = function RootRouter(grammar, pipeline) {
+Object.defineProperty(Router, "parameters", {get: function() {
+      return [[Grammar], [Pipeline], [], []];
+    }});
+Object.defineProperty(Router.prototype.generate, "parameters", {get: function() {
+      return [[$traceurRuntime.type.string], []];
+    }});
+var RootRouter = function RootRouter(grammar, pipeline) {
     superCall(this, $RootRouter.prototype, "constructor", [grammar, pipeline, null, '/']);
   };
-  var $RootRouter = RootRouter;
-  (createClass)(RootRouter, {}, {}, Router);
-  Object.defineProperty(RootRouter, "parameters", {get: function() {
-    return [[Grammar], [Pipeline]];
-  }});
-  var ChildRouter = function ChildRouter(parent, name) {
+var $RootRouter = RootRouter;
+(createClass)(RootRouter, {}, {}, Router);
+Object.defineProperty(RootRouter, "parameters", {get: function() {
+      return [[Grammar], [Pipeline]];
+    }});
+var ChildRouter = function ChildRouter(parent, name) {
     superCall(this, $ChildRouter.prototype, "constructor", [parent.registry, parent.pipeline, parent, name]);
     this.parent = parent;
   };
-  var $ChildRouter = ChildRouter;
-  (createClass)(ChildRouter, {}, {}, Router);
-  function copy(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-  function notMatched(instruction) {
-    return instruction == null || instruction.length < 1;
-  }
-  function forEach(obj, fn) {
+var $ChildRouter = ChildRouter;
+(createClass)(ChildRouter, {}, {}, Router);
+function forEach(obj, fn) {
     Object.keys(obj).forEach((function(key) {
       return fn(obj[key], key);
     }));
   }
-  function mapObj(obj, fn) {
+function mapObjAsync(obj, fn) {
+    return $q.all(mapObj(obj, fn));
+  }
+function mapObj(obj, fn) {
     var result = [];
     Object.keys(obj).forEach((function(key) {
       return result.push(fn(obj[key], key));
     }));
     return result;
   }
-  function boolToPromise(value) {
+function boolToPromise(value) {
     return value ? $q.when(value) : $q.reject();
   }
-  return new RootRouter($$grammar, $$pipeline);
+return new RootRouter($$grammar, $$pipeline);
 }]);
 
 
 angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
-  /*
-   * artisinal, handcrafted subset of the traceur runtime for picky webdevs
-   */
+/*
+ * artisinal, handcrafted subset of the traceur runtime for picky webdevs
+ */
 
-  var $defineProperty = Object.defineProperty,
+var $defineProperty = Object.defineProperty,
     $defineProperties = Object.defineProperties,
     $create = Object.create,
     $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor,
     $getOwnPropertyNames = Object.getOwnPropertyNames,
     $getPrototypeOf = Object.getPrototypeOf;
 
-  function createClass(ctor, object, staticObject, superClass) {
-    $defineProperty(object, 'constructor', {
-      value: ctor,
-      configurable: true,
-      enumerable: false,
-      writable: true
-    });
-    if (arguments.length > 3) {
-      if (typeof superClass === 'function')
-        ctor.__proto__ = superClass;
-      ctor.prototype = $create(getProtoParent(superClass), getDescriptors(object));
-    } else {
-      ctor.prototype = object;
-    }
-    $defineProperty(ctor, 'prototype', {
-      configurable: false,
-      writable: false
-    });
-    return $defineProperties(ctor, getDescriptors(staticObject));
+function createClass(ctor, object, staticObject, superClass) {
+  $defineProperty(object, 'constructor', {
+    value: ctor,
+    configurable: true,
+    enumerable: false,
+    writable: true
+  });
+  if (arguments.length > 3) {
+    if (typeof superClass === 'function')
+      ctor.__proto__ = superClass;
+    ctor.prototype = $create(getProtoParent(superClass), getDescriptors(object));
+  } else {
+    ctor.prototype = object;
   }
+  $defineProperty(ctor, 'prototype', {
+    configurable: false,
+    writable: false
+  });
+  return $defineProperties(ctor, getDescriptors(staticObject));
+}
 
-  function getProtoParent(superClass) {
-    if (typeof superClass === 'function') {
-      var prototype = superClass.prototype;
-      if (Object(prototype) === prototype || prototype === null)
-        return superClass.prototype;
-      throw new TypeError('super prototype must be an Object or null');
-    }
-    if (superClass === null)
-      return null;
-    throw new TypeError(("Super expression must either be null or a function, not " + typeof superClass + "."));
+function getProtoParent(superClass) {
+  if (typeof superClass === 'function') {
+    var prototype = superClass.prototype;
+    if (Object(prototype) === prototype || prototype === null)
+      return superClass.prototype;
+    throw new TypeError('super prototype must be an Object or null');
   }
+  if (superClass === null)
+    return null;
+  throw new TypeError(("Super expression must either be null or a function, not " + typeof superClass + "."));
+}
 
-  function getDescriptors(object) {
-    var descriptors = {};
-    var names = $getOwnPropertyNames(object);
-    for (var i = 0; i < names.length; i++) {
-      var name = names[i];
-      descriptors[name] = $getOwnPropertyDescriptor(object, name);
-    }
-    // TODO: someday you might use symbols and you'll have to re-evaluate
-    //       your life choices that led to the creation of this file
+function getDescriptors(object) {
+  var descriptors = {};
+  var names = $getOwnPropertyNames(object);
+  for (var i = 0; i < names.length; i++) {
+    var name = names[i];
+    descriptors[name] = $getOwnPropertyDescriptor(object, name);
+  }
+  // TODO: someday you might use symbols and you'll have to re-evaluate
+  //       your life choices that led to the creation of this file
 
-    // var symbols = getOwnPropertySymbols(object);
-    // for (var i = 0; i < symbols.length; i++) {
-    //   var symbol = symbols[i];
-    //   descriptors[$traceurRuntime.toProperty(symbol)] = $getOwnPropertyDescriptor(object, $traceurRuntime.toProperty(symbol));
-    // }
-    return descriptors;
+  // var symbols = getOwnPropertySymbols(object);
+  // for (var i = 0; i < symbols.length; i++) {
+  //   var symbol = symbols[i];
+  //   descriptors[$traceurRuntime.toProperty(symbol)] = $getOwnPropertyDescriptor(object, $traceurRuntime.toProperty(symbol));
+  // }
+  return descriptors;
+}
+function superDescriptor(homeObject, name) {
+  var proto = $getPrototypeOf(homeObject);
+  do {
+    var result = $getOwnPropertyDescriptor(proto, name);
+    if (result)
+      return result;
+    proto = $getPrototypeOf(proto);
+  } while (proto);
+  return undefined;
+}
+function superCall(self, homeObject, name, args) {
+  return superGet(self, homeObject, name).apply(self, args);
+}
+function superGet(self, homeObject, name) {
+  var descriptor = superDescriptor(homeObject, name);
+  if (descriptor) {
+    if (!descriptor.get)
+      return descriptor.value;
+    return descriptor.get.call(self);
   }
-  function superDescriptor(homeObject, name) {
-    var proto = $getPrototypeOf(homeObject);
-    do {
-      var result = $getOwnPropertyDescriptor(proto, name);
-      if (result)
-        return result;
-      proto = $getPrototypeOf(proto);
-    } while (proto);
-    return undefined;
-  }
-  function superCall(self, homeObject, name, args) {
-    return superGet(self, homeObject, name).apply(self, args);
-  }
-  function superGet(self, homeObject, name) {
-    var descriptor = superDescriptor(homeObject, name);
-    if (descriptor) {
-      if (!descriptor.get)
-        return descriptor.value;
-      return descriptor.get.call(self);
-    }
-    return undefined;
-  }
+  return undefined;
+}
 
-  "use strict";
-  var RouteRecognizer = (function() {
+"use strict";
+var RouteRecognizer = (function() {
     var map = (function() {
       function Target(path, matcher, delegate) {
         this.path = path;
@@ -783,19 +899,19 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
         this.delegate = delegate;
       }
       Target.prototype = {to: function(target, callback) {
-        var delegate = this.delegate;
-        if (delegate && delegate.willAddRoute) {
-          target = delegate.willAddRoute(this.matcher.target, target);
-        }
-        this.matcher.add(this.path, target);
-        if (callback) {
-          if (callback.length === 0) {
-            throw new Error("You must have an argument in the function passed to `to`");
+          var delegate = this.delegate;
+          if (delegate && delegate.willAddRoute) {
+            target = delegate.willAddRoute(this.matcher.target, target);
           }
-          this.matcher.addChild(this.path, target, callback, this.delegate);
-        }
-        return this;
-      }};
+          this.matcher.add(this.path, target);
+          if (callback) {
+            if (callback.length === 0) {
+              throw new Error("You must have an argument in the function passed to `to`");
+            }
+            this.matcher.addChild(this.path, target, callback, this.delegate);
+          }
+          return this;
+        }};
       function Matcher(target) {
         this.routes = {};
         this.children = {};
@@ -828,7 +944,7 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       function addRoute(routeArray, path, handler) {
         var len = 0;
         for (var i = 0,
-               l = routeArray.length; i < l; i++) {
+            l = routeArray.length; i < l; i++) {
           len += routeArray[i].path.length;
         }
         path = path.substr(len);
@@ -875,9 +991,9 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
     StaticSegment.prototype = {
       eachChar: function(callback) {
         var string = this.string,
-          ch;
+            ch;
         for (var i = 0,
-               l = string.length; i < l; i++) {
+            l = string.length; i < l; i++) {
           ch = string.charAt(i);
           callback({validChars: ch});
         }
@@ -938,11 +1054,11 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
         route = route.substr(1);
       }
       var segments = route.split("/"),
-        results = [];
+          results = [];
       for (var i = 0,
-             l = segments.length; i < l; i++) {
+          l = segments.length; i < l; i++) {
         var segment = segments[i],
-          match;
+            match;
         if (match = segment.match(/^:([^\/]+)$/)) {
           results.push(new DynamicSegment(match[1]));
           names.push(match[1]);
@@ -968,7 +1084,7 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       get: function(charSpec) {
         var nextStates = this.nextStates;
         for (var i = 0,
-               l = nextStates.length; i < l; i++) {
+            l = nextStates.length; i < l; i++) {
           var child = nextStates[i];
           var isEqual = child.charSpec.validChars === charSpec.validChars;
           isEqual = isEqual && child.charSpec.invalidChars === charSpec.invalidChars;
@@ -991,12 +1107,12 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       },
       match: function(ch) {
         var nextStates = this.nextStates,
-          child,
-          charSpec,
-          chars;
+            child,
+            charSpec,
+            chars;
         var returned = [];
         for (var i = 0,
-               l = nextStates.length; i < l; i++) {
+            l = nextStates.length; i < l; i++) {
           child = nextStates[i];
           charSpec = child.charSpec;
           if (typeof(chars = charSpec.validChars) !== 'undefined') {
@@ -1037,17 +1153,17 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
     function recognizeChar(states, ch) {
       var nextStates = [];
       for (var i = 0,
-             l = states.length; i < l; i++) {
+          l = states.length; i < l; i++) {
         var state = states[i];
         nextStates = nextStates.concat(state.match(ch));
       }
       return nextStates;
     }
     var oCreate = Object.create || function(proto) {
-        function F() {}
-        F.prototype = proto;
-        return new F();
-      };
+      function F() {}
+      F.prototype = proto;
+      return new F();
+    };
     function RecognizeResults(queryParams) {
       this.queryParams = queryParams || {};
     }
@@ -1060,17 +1176,17 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
     });
     function findHandler(state, path, queryParams) {
       var handlers = state.handlers,
-        regex = state.regex;
+          regex = state.regex;
       var captures = path.match(regex),
-        currentCapture = 1;
+          currentCapture = 1;
       var result = new RecognizeResults(queryParams);
       for (var i = 0,
-             l = handlers.length; i < l; i++) {
+          l = handlers.length; i < l; i++) {
         var handler = handlers[i],
-          names = handler.names,
-          params = {};
+            names = handler.names,
+            params = {};
         for (var j = 0,
-               m = names.length; j < m; j++) {
+            m = names.length; j < m; j++) {
           params[names[j]] = captures[currentCapture++];
         }
         result.push({
@@ -1095,24 +1211,24 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
     RouteRecognizer.prototype = {
       add: function(routes, options) {
         var currentState = this.rootState,
-          regex = "^",
-          types = {
-            statics: 0,
-            dynamics: 0,
-            stars: 0
-          },
-          handlers = [],
-          allSegments = [],
-          name;
+            regex = "^",
+            types = {
+              statics: 0,
+              dynamics: 0,
+              stars: 0
+            },
+            handlers = [],
+            allSegments = [],
+            name;
         var isEmpty = true;
         for (var i = 0,
-               l = routes.length; i < l; i++) {
+            l = routes.length; i < l; i++) {
           var route = routes[i],
-            names = [];
+              names = [];
           var segments = parse(route.path, names, types);
           allSegments = allSegments.concat(segments);
           for (var j = 0,
-                 m = segments.length; j < m; j++) {
+              m = segments.length; j < m; j++) {
             var segment = segments[j];
             if (segment instanceof EpsilonSegment) {
               continue;
@@ -1145,12 +1261,12 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       },
       handlersFor: function(name) {
         var route = this.names[name],
-          result = [];
+            result = [];
         if (!route) {
           throw new Error("There is no route named " + name);
         }
         for (var i = 0,
-               l = route.handlers.length; i < l; i++) {
+            l = route.handlers.length; i < l; i++) {
           result.push(route.handlers[i]);
         }
         return result;
@@ -1160,13 +1276,13 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       },
       generate: function(name, params) {
         var route = this.names[name],
-          output = "";
+            output = "";
         if (!route) {
           throw new Error("There is no route named " + name);
         }
         var segments = route.segments;
         for (var i = 0,
-               l = segments.length; i < l; i++) {
+            l = segments.length; i < l; i++) {
           var segment = segments[i];
           if (segment instanceof EpsilonSegment) {
             continue;
@@ -1192,7 +1308,7 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
         }
         keys.sort();
         for (var i = 0,
-               len = keys.length; i < len; i++) {
+            len = keys.length; i < len; i++) {
           key = keys[i];
           var value = params[key];
           if (value == null) {
@@ -1201,7 +1317,7 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
           var pair = encodeURIComponent(key);
           if (isArray(value)) {
             for (var j = 0,
-                   l = value.length; j < l; j++) {
+                l = value.length; j < l; j++) {
               var arrayPair = key + '[]' + '=' + encodeURIComponent(value[j]);
               pairs.push(arrayPair);
             }
@@ -1217,13 +1333,13 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       },
       parseQueryString: function(queryString) {
         var pairs = queryString.split("&"),
-          queryParams = {};
+            queryParams = {};
         for (var i = 0; i < pairs.length; i++) {
           var pair = pairs[i].split('='),
-            key = decodeURIComponent(pair[0]),
-            keyLength = key.length,
-            isArray = false,
-            value;
+              key = decodeURIComponent(pair[0]),
+              keyLength = key.length,
+              isArray = false,
+              value;
           if (pair.length === 1) {
             value = 'true';
           } else {
@@ -1246,12 +1362,12 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       },
       recognize: function(path) {
         var states = [this.rootState],
-          pathLen,
-          i,
-          l,
-          queryStart,
-          queryParams = {},
-          isSlashDropped = false;
+            pathLen,
+            i,
+            l,
+            queryStart,
+            queryParams = {},
+            isSlashDropped = false;
         queryStart = path.indexOf('?');
         if (queryStart !== -1) {
           var queryString = path.substr(queryStart + 1, path.length);
@@ -1293,23 +1409,26 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
     RouteRecognizer.VERSION = 'VERSION_STRING_PLACEHOLDER';
     return RouteRecognizer;
   }());
-  var CHILD_ROUTE_SUFFIX = '/*childRoute';
-  var Grammar = function Grammar() {
+var CHILD_ROUTE_SUFFIX = '/*childRoute';
+var Grammar = function Grammar() {
     this.rules = {};
   };
-  (createClass)(Grammar, {
+(createClass)(Grammar, {
     config: function(name, config) {
       if (name === 'app') {
         name = '/';
       }
       if (!this.rules[name]) {
-        this.rules[name] = new MiniRecognizer(name);
+        this.rules[name] = new CanonicalRecognizer(name);
       }
       this.rules[name].config(config);
     },
     recognize: function(url) {
       var componentName = arguments[1] !== (void 0) ? arguments[1] : '/';
       var $__0 = this;
+      if (typeof url === 'undefined') {
+        return;
+      }
       var componentRecognizer = this.rules[componentName];
       if (!componentRecognizer) {
         return;
@@ -1363,15 +1482,15 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       return path;
     }
   }, {});
-  Object.defineProperty(Grammar.prototype.recognize, "parameters", {get: function() {
-    return [[$traceurRuntime.type.string], []];
-  }});
-  var MiniRecognizer = function MiniRecognizer(name) {
+Object.defineProperty(Grammar.prototype.recognize, "parameters", {get: function() {
+      return [[$traceurRuntime.type.string], []];
+    }});
+var CanonicalRecognizer = function CanonicalRecognizer(name) {
     this.name = name;
     this.rewrites = {};
     this.recognizer = new RouteRecognizer();
   };
-  (createClass)(MiniRecognizer, {
+(createClass)(CanonicalRecognizer, {
     config: function(mapping) {
       var $__0 = this;
       if (mapping instanceof Array) {
@@ -1458,20 +1577,20 @@ angular.module('ngNewRouter').factory('$$grammar', ['$q', function ($q) {
       return this.recognizer.hasRoute(name);
     }
   }, {});
-  function copy(obj) {
+function copy(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
-  function forEach(obj, fn) {
+function forEach(obj, fn) {
     Object.keys(obj).forEach((function(key) {
       return fn(obj[key], key);
     }));
   }
-  function mapObj(obj, fn) {
+function mapObj(obj, fn) {
     var result = [];
     Object.keys(obj).forEach((function(key) {
       return result.push(fn(obj[key], key));
     }));
     return result;
   }
-  return new Grammar();
+return new Grammar();
 }]);
