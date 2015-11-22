@@ -28,7 +28,7 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Inject
 	private ClientInstallationService clientInstallationService;
-
+    
 	@Override
 	public void saveForPushApplication(String deviceToken, Variant variant,
 			String content, String qualifier) {
@@ -64,6 +64,7 @@ public class DocumentServiceImpl implements DocumentService {
 				saveForAlias(pushApplication, alias, document, qualifier);
 			}
 		}
+	
 	} 
 	
 	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType, String qualifier) {

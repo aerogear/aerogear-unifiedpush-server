@@ -99,6 +99,7 @@ public class DocumentEndpoint {
 		if (variant == null) {
 			return getUnauthorizedResponse();
 		}
+	
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
 				ClientAuthHelper.getDeviceToken(request));
 		
