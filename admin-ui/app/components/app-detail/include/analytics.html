@@ -93,7 +93,7 @@
   <h1 ng-if="appDetail.app.$messageCount != 0">No Charts yet</h1>
 
   <div ng-if="appDetail.app.$deviceCount == 0">
-    <p>There are no registered device for this application. Follow the instructions to register a device on <a href="#">the documentation</a>.</p>
+    <p>There are no registered device for this application.</p>
     <div class="blank-slate-pf-main-action">
       <a href class="btn btn-primary btn-lg" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" ng-disabled="!appDetail.app.variants.length">
         </i><i class="fa fa-mobile"></i>
