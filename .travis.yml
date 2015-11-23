@@ -2,8 +2,6 @@ language: java
 
 jdk:
   - openjdk7
-  - oraclejdk7
-  - oraclejdk8
 
 notifications:
   irc: "irc.freenode.org#aerogear"
@@ -11,7 +9,7 @@ notifications:
 branches:
   only:
     - master
-    - 1.0.x
+    - 1.1.x
 
 before_install: "npm install -g grunt-cli bower@1.3.9"
 

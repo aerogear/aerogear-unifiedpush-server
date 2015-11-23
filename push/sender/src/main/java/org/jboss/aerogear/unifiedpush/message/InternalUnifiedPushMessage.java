@@ -29,8 +29,16 @@ public class InternalUnifiedPushMessage extends UnifiedPushMessage {
 
     private String ipAddress;
     private String clientIdentifier;
+    
+    public InternalUnifiedPushMessage() {}
 
-    /**
+    public InternalUnifiedPushMessage(UnifiedPushMessage pushMessage) {
+    	setConfig(pushMessage.getConfig());
+    	setMessage(pushMessage.getMessage());
+    	setCriteria(pushMessage.getCriteria());
+	}
+
+	/**
      * The IP address from the agent that did issue the push message request.
      *
      * @return the IP address

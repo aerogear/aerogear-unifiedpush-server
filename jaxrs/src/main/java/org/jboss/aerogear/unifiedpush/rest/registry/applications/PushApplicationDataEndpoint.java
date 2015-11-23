@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +34,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.document.DocumentDeployRequest;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -51,6 +55,9 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private DocumentService documentService;
+    
+    @Inject
+    private NotificationRouter notificationRouter;
     
     /**
      * Overwrites existing categories and properties of the push application with the given data
@@ -119,11 +126,11 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
-    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, @QueryParam("type") String type, 
-    		Map<String, List<String>> aliasToDocuments, @Context HttpServletRequest request) {
-		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
-        if (pushApp == null) {
+    public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, 
+    	  DocumentDeployRequest deployRequest, @Context HttpServletRequest request) {
+		
+		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
+        if (pushApplication == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
                     .entity("Unauthorized Request")
@@ -131,7 +138,20 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
         }
         
         try {
-        	documentService.saveForAliases(pushApp, aliasToDocuments, type);
+        	documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocuments(), deployRequest.getType());
+        	
+        	final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
+			if (pushMessage != null) {
+				InternalUnifiedPushMessage message = new InternalUnifiedPushMessage(pushMessage);
+				// TODO: refactor into common class shared with PushNotificationSenderEndpoint
+				// submit http request metadata:
+				message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
+	            // add the client identifier
+				message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+				
+				notificationRouter.submit(pushApplication, message);
+        	}
+        	
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for alias", e);
