@@ -33,6 +33,7 @@
     </dependencies>
 
     <build>
+        <finalName>ups-migrator</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -40,7 +41,7 @@
                 <version>2.4</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}</outputDirectory>
-                    <finalName>${project.artifactId}</finalName>
+                    <finalName>ups-migrator</finalName>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>

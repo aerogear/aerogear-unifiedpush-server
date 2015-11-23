@@ -52,7 +52,15 @@ In case of a successful run, the script prints
 If you want to get some more details on the actual migration steps, enable logging while performing the database migration:
 
     ./bin/ups-migrator --logLevel=DEBUG update
+    
+#### Running the script from source
 
+If you are developing UnifiedPush Server, you can run the script from source instead of from distribution:
+
+    cd aerogear-unifiedpush-server/migrator/
+    mvn clean install dependency:copy-dependencies -DincludeScope=runtime
+    export UPS_MIGRATOR_HOME=$PWD/target/dependency/*:$PWD/target
+    sh ./src/main/shell/ups-migrator update
 
 ### WAR migration
 
