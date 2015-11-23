@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +34,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.document.DocumentDeployRequest;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
@@ -125,11 +126,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
-    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID, 
-    		@QueryParam("type") String type, @QueryParam("sendpush") Boolean sendpush,   
-    		@QueryParam("alert") String alert, @QueryParam("sound") String sound,
-    		Map<String, List<String>> aliasToDocuments, @Context HttpServletRequest request) {
+    	  DocumentDeployRequest deployRequest, @Context HttpServletRequest request) {
 		
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
         if (pushApplication == null) {
@@ -140,22 +138,18 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
         }
         
         try {
-        	documentService.saveForAliases(pushApplication, aliasToDocuments, type);
-        
-        	if (sendpush){
-        		final InternalUnifiedPushMessage message = new InternalUnifiedPushMessage();
-        
-	        	// Support silent alert (no sound or alert text)
-	        	message.getMessage().setAlert(alert);
-	        	message.getMessage().setSound(sound);
-	        	
-	            // submit http request metadata:
-	            message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
+        	documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocuments(), deployRequest.getType());
+        	
+        	final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
+			if (pushMessage != null) {
+				InternalUnifiedPushMessage message = new InternalUnifiedPushMessage(pushMessage);
+				// TODO: refactor into common class shared with PushNotificationSenderEndpoint
+				// submit http request metadata:
+				message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
 	            // add the client identifier
-	            message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
-	        
-	        	// TODO - Better impl would be - Extract relevant tokens and send message by tokens  
-	            notificationRouter.submit(pushApplication, message);
+				message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+				
+				notificationRouter.submit(pushApplication, message);
         	}
         	
         	return Response.ok(EmptyJSON.STRING).build();
