@@ -271,13 +271,13 @@ module.exports = function (grunt) {
             expand: true,
             cwd: '<%= yeoman.tmp %>',
             dest: '<%= local.jbossweb %>',
-            src: [ '**', '!**/*.txt', '!**/*.less' ]
+            src: [ '**', '!**/*.less' ]
           },
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
             dest: '<%= local.jbossweb %>',
-            src: [ '**', '!**/*.txt' ]
+            src: [ '**' ]
           }
         ]
       },

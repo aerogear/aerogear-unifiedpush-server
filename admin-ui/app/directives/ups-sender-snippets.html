@@ -1,41 +1,37 @@
 <ul class="nav nav-tabs nav-tabs-pf">
-  <li ng-class="{ active: activeSnippet == 'java' || !activeSnippet }"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'nodejs' }"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
-  <li ng-class="{ active: activeSnippet == 'curl' }"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
+  <li ng-class="{ active: activeSnippet == 'java' }" ng-show=" snippets.java.show"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
+  <li ng-class="{ active: activeSnippet == 'nodejs' }"  ng-show=" snippets.nodejs.show"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
+  <li ng-class="{ active: activeSnippet == 'curl' }"  ng-show=" snippets.curl.show"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
 </ul>
 
 
-<div ng-if="activeSnippet == 'java' || !activeSnippet">
+<div ng-if="activeSnippet == 'java'">
   <h3>Set up Java UPS Sender API</h3>
-  <p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>
-  <p>Then let's use following snippet in your Java code to enable push notification sending.</p>
+  <div ups-bind-html-compile="snippets.java.text.before"></div>
 </div>
 <div ng-if="activeSnippet == 'nodejs'">
   <h3>Set up Node.js Sender API</h3>
-  <p>First you need to download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>
-  <p>Then let's use following snippet in your Node.js code to enable push notification sending.</p>
+  <div ups-bind-html-compile="snippets.nodejs.text.before"></div>
 </div>
 <div ng-if="activeSnippet == 'curl'">
   <h3>Use UPS REST Sender API (with CURL)</h3>
-  <p>If none from the official client libs doesn't suit you or you just want to simply try out the notification sending, you can use REST API directly.</p>
-  <p>Run following <code>curl</code> command in the shell to send notification to UPS server.</p>
+  <div ups-bind-html-compile="snippets.curl.text.before"></div>
 </div>
 
 <div class="ups-snippet">
   <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()">Copy</a>
-  <pre ng-bind="snippets.java.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'java' || !activeSnippet"></pre>
+  <pre ng-bind="snippets.java.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'java'"></pre>
   <pre ng-bind="snippets.nodejs.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'nodejs'"></pre>
   <pre ng-bind="snippets.curl.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'curl'"></pre>
 </div>
 
 
-<div ng-if="activeSnippet == 'java' || !activeSnippet">
-  <p>Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.</p>
-  <p>If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.</p>
+<div ng-if="activeSnippet == 'java'">
+  <div ups-bind-html-compile="snippets.java.text.after"></div>
 </div>
 <div ng-if="activeSnippet == 'nodejs'">
-  <p>Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.</p>
+  <div ups-bind-html-compile="snippets.nodejs.text.after"></div>
 </div>
 <div ng-if="activeSnippet == 'curl'">
-  <p>Read more on the details of the <a ups-doc="sender-api-rest">UPS REST Sender API in documentation</a>.</p>
+  <div ups-bind-html-compile="snippets.curl.text.after"></div>
 </div>
