@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, $timeout, bootstrapedAppName, allowCreateVariant ) {
+  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, bootstrapedAppName, allowCreateVariant ) {
 
     var self = this;
 

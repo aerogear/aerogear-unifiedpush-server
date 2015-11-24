@@ -69,10 +69,21 @@ angular.module('upsConsole')
       });
     }
     updateWarnings();
-    $interval(updateWarnings, 30000);
+
+    var updateWarningsInterval = $interval(updateWarnings, 30000);
+    $scope.$on('$destroy', function() {
+      $log.debug('cancelling updateWarnings interval');
+      $interval.cancel( updateWarningsInterval );
+    });
     $scope.$on('upsNotificationSent', function() {
-      $timeout(updateWarnings, 1500);
-      $timeout(updateWarnings, 5000);
-      $timeout(updateWarnings, 10000);
+      var timer1 = $timeout(updateWarnings, 1500);
+      var timer2 = $timeout(updateWarnings, 5000);
+      var timer3 = $timeout(updateWarnings, 10000);
+      $scope.$on('$destroy', function() {
+        $log.debug('cancelling updateWarnings timeouts');
+        $timeout.cancel( timer1 );
+        $timeout.cancel( timer2 );
+        $timeout.cancel( timer3 );
+      });
     });
   });

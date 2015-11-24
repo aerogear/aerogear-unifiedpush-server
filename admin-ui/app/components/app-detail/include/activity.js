@@ -77,11 +77,18 @@ angular.module('upsConsole')
     refreshUntilAllServed();
 
     $scope.$on('upsNotificationSent', function() {
-      $timeout(refreshUntilAllServed, 500); // artificial delay - refresh after 0.5sec to ensure server has time to load some batches; prevents situation when totalBatches = 0 for all variants
-      $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
+      var timer1 = $timeout(refreshUntilAllServed, 500); // artificial delay - refresh after 0.5sec to ensure server has time to load some batches; prevents situation when totalBatches = 0 for all variants
+      var timer2 = $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
+      // destroy timeouts
+      $scope.$on("$destroy", function() {
+        $log.debug('cancelling refreshUntilAllServed timeouts');
+        $timeout.cancel( timer1 );
+        $timeout.cancel( timer2 );
+      });
     });
     $scope.$on('$destroy', function () {
       if (refreshInterval) {
+        $log.debug('cancelling refreshInterval');
         $interval.cancel(refreshInterval);
       }
     });
