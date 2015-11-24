@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -20,6 +21,11 @@ import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
  * Sends SMS over Clickatell's HTTP API.
  */
 public class ClickatellSMSSender implements SMSSender {
+	
+	private static final int COUNTRY_CODE_LENGTH = 3;
+	private static final int PHONE_NUMBER_LENGTH = 10;
+	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
+	
 	private Logger logger = Logger.getLogger(ClickatellSMSSender.class.getName());
 
 	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
@@ -35,6 +41,14 @@ public class ClickatellSMSSender implements SMSSender {
 
 	private String template;
     
+	/**
+	 * Sends off an sms message to the number.
+	 * It is assumed the message argument string is the concatenated country code and mobile number, where the mobile number is 10 digits long, 
+	 * with '0' left padding if required. The country code need not have extra left padding.
+	 * @param phoneNumber the phone number to send to. 
+	 * @param message text to send
+	 * @properties configuration
+	 */
 	@Override
 	public void send(String phoneNumber, String message, Properties properties) {
 		final String apiId = getProperty(properties, API_ID_KEY);
@@ -48,13 +62,26 @@ public class ClickatellSMSSender implements SMSSender {
 				logger.log(Level.WARNING, "Configuraiton peoperties are missing, unable to send SMS request");
 				return;
 			}
+			
+			PhoneNumber parsedNumber = parseNumber(phoneNumber);
+			String fromNumber = getFromNumber(parsedNumber, properties);
+			String formattedNumber = formatNumber(parsedNumber);
 				
 			StringBuilder apiCall = new StringBuilder(API_URL)
 			.append("?user=").append(username)
 			.append("&password=").append(password)
 			.append("&api_id=").append(apiId)
-			.append("&to=").append(URLEncoder.encode(phoneNumber, encoding))
+			.append("&to=").append(URLEncoder.encode(formattedNumber, encoding))
 			.append("&text=").append(URLEncoder.encode(getVerificationMessage(message), encoding));
+			
+			if (fromNumber != null) {
+				apiCall.append("&from=").append(fromNumber);
+			}
+			
+			// TODO: take this out to the propers file as well...
+			if (parsedNumber.getCountryCode().equals("001")) {
+				apiCall.append("&mo=1");
+			}
 			
 			invokeAPI(apiCall.toString());
 		} catch (UnsupportedEncodingException e) {
@@ -62,6 +89,25 @@ public class ClickatellSMSSender implements SMSSender {
 		} catch (IOException e) {
 			throw new RuntimeException("api call failed", e);
 		}
+	}
+	
+	/**
+	 * Returns a phone number string formatted to clickatell's API 
+	 * specification: a 3 digit country code and a mobile number with no leading 0's.
+	 */
+	private String formatNumber(PhoneNumber parsedNumber) {
+		String mobileNumber = parsedNumber.getNumber();
+		while (mobileNumber.startsWith("0")) {
+			mobileNumber = mobileNumber.substring(1);
+		}
+		return parsedNumber.getCountryCode() + mobileNumber;
+	}
+
+	private String getFromNumber(PhoneNumber number, Properties properties) {
+		// Look up the "from" number to use when sending the sms to the argument number.
+		// Each country code can have its own from number. They are mapped in the properties file
+		// using the format prefix<country-code>=<from-number>
+		return properties.getProperty(COUNTRY_CODE_KEY_PREFIX + number.getCountryCode());
 	}
 	
 	private void invokeAPI(String apiCall) throws IOException {
@@ -78,6 +124,14 @@ public class ClickatellSMSSender implements SMSSender {
 				}
 			}
 		}
+	}
+	
+	private PhoneNumber parseNumber(String normalizedNumber) {
+		int numberIndex = normalizedNumber.length() - PHONE_NUMBER_LENGTH;
+		// left pad the country code 
+		final String countryCode = StringUtils.leftPad(normalizedNumber.substring(0, numberIndex), COUNTRY_CODE_LENGTH, '0');
+		final String number = normalizedNumber.substring(numberIndex);
+		return new PhoneNumber(countryCode, number);
 	}
 	
 	/**
@@ -109,5 +163,24 @@ public class ClickatellSMSSender implements SMSSender {
 			return new MessageFormat(template);
     	}
     };
+    
+    private class PhoneNumber {
+    	private final String number;
+    	private final String countryCode;
+    	
+    	public PhoneNumber(String countryCode, String number) {
+    		this.number = number;
+    		this.countryCode = countryCode;
+    	}
+    	
+    	public String getNumber() {
+    		return number;
+    	}
+    	
+		public String getCountryCode() {
+			return countryCode;
+		}
+    	
+    }
 
 }
