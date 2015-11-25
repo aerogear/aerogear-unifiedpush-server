@@ -119,6 +119,7 @@ public class ClickatellSMSSender implements SMSSender {
 				int status = response.getStatusLine().getStatusCode();
 				String responseText = EntityUtils.toString(entity);
 				if (status != org.apache.http.HttpStatus.SC_OK || isError(responseText)) {
+					logger.warning("Using clickatell api format: " + apiCall);
 					throw new RuntimeException("Received status code " + status + " from clickatell, with response " + 
 							responseText);
 				}
