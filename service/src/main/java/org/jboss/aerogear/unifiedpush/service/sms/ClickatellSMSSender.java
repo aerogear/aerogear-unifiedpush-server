@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,8 +20,6 @@ import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
  * Sends SMS over Clickatell's HTTP API.
  */
 public class ClickatellSMSSender implements SMSSender {
-	
-	private static final int COUNTRY_CODE_LENGTH = 3;
 	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
 	
@@ -79,7 +76,7 @@ public class ClickatellSMSSender implements SMSSender {
 			}
 			
 			// TODO: take this out to the propers file as well...
-			if (parsedNumber.getCountryCode().equals("001")) {
+			if (parsedNumber.getCountryCode().equals("1")) {
 				apiCall.append("&mo=1");
 			}
 			
@@ -93,7 +90,7 @@ public class ClickatellSMSSender implements SMSSender {
 	
 	/**
 	 * Returns a phone number string formatted to clickatell's API 
-	 * specification: a 3 digit country code and a mobile number with no leading 0's.
+	 * specification: A mobile number with no leading 0's.
 	 */
 	private String formatNumber(PhoneNumber parsedNumber) {
 		String mobileNumber = parsedNumber.getNumber();
@@ -130,7 +127,7 @@ public class ClickatellSMSSender implements SMSSender {
 	private PhoneNumber parseNumber(String normalizedNumber) {
 		int numberIndex = normalizedNumber.length() - PHONE_NUMBER_LENGTH;
 		// left pad the country code 
-		final String countryCode = StringUtils.leftPad(normalizedNumber.substring(0, numberIndex), COUNTRY_CODE_LENGTH, '0');
+		final String countryCode = normalizedNumber.substring(0, numberIndex);
 		final String number = normalizedNumber.substring(numberIndex);
 		return new PhoneNumber(countryCode, number);
 	}
