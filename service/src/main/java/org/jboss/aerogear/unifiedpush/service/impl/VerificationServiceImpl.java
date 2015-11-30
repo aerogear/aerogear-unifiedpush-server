@@ -78,16 +78,20 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public VerificationResult verifyDevice(String variantID, String deviceToken, String verificationAttempt) {
-		final String key = buildKey(variantID, deviceToken);
+	public VerificationResult verifyDevice(Installation installation, Variant variant, String verificationCode){
+		final String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		Set<Object> codes = deviceToToken.get(key);
+		
 		if (codes == null) {
+			// Installation was already enabled
+			if (installation.isEnabled()){
+				return VerificationResult.SUCCESS;
+			}
+			
+			logger.warning("Verification attempt was made without calling /registry/device, installation id: " + installation.getId());
 			return VerificationResult.UNKNOWN;
-		} else if (codes.contains(verificationAttempt)) {
-			Installation installation = installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
+		} else if (codes.contains(verificationCode)) {
 			installation.setEnabled(true);
-			// TODO: there should be a "verifyDevice" like method in ClientInstallationService, which delegates here,
-			// so implementations of VerificationService will not have to update the installation themselves.
 			installationDao.update(installation);
 			deviceToToken.remove(key);
 			return VerificationResult.SUCCESS;

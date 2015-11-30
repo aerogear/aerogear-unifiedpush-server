@@ -151,7 +151,7 @@ public class InstallationRegistrationEndpointTest {
 			
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
-			VerificationResult results = verificationService.verifyDevice(variant.getVariantID(), inst.getDeviceToken(), code);
+			VerificationResult results = verificationService.verifyDevice(inst, variant, code);
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 			
 			inst = installationService.associateInstallation(inst, VariantType.IOS);

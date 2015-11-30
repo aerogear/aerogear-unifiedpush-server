@@ -25,7 +25,7 @@ public interface VerificationService {
 	 * @param verificationCode verification code sent back by the device
 	 * @return a {@link VerificationResult} signaling the outcome of the verification attempt.
 	 */
-	VerificationResult verifyDevice(String variantID, String deviceToken, String verificationCode);
+	VerificationResult verifyDevice(Installation installation, Variant variant, String verificationCode);
 	
 	public enum VerificationResult {
 		/**
