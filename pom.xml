@@ -186,6 +186,7 @@
         <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
         <ant.contrib.version>20020829</ant.contrib.version>
         <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+        <ups.ddl_value>update</ups.ddl_value>
     </properties>
 
     <profiles>
@@ -222,6 +223,9 @@
 	                </plugin>
 	            </plugins>
 	        </build>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
 		</profile>
 
         <!--
@@ -238,6 +242,9 @@
             <modules>
                 <module>dist</module>
             </modules>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
         </profile>
 
         <!--
