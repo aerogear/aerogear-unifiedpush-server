@@ -127,4 +127,20 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return all the matching installations
      */
 	List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases);
+
+	/**
+	 * Disables any installations with the given alias.
+	 * 
+	 * @param alias alias of installations
+	 * @return the number of installations that have been disabled
+	 */
+	int disableInstallationsByAlias(String alias);
+
+	/**
+	 * Returns the subset of the given aliases whose device is marked as enabled.
+	 * 
+	 * @param aliases aliases to filter
+	 * @return aliases that are enabled
+	 */
+	Set<String> filterDisabledDevices(Set<String> aliases);
 }

@@ -13,8 +13,6 @@ public interface DocumentService {
 	
 	List<String> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate);
 	
-	void saveForAlias(PushApplication pushApplication, String alias, String document, String qualifier);
-	
 	void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments, String qualifier);
 	
 	List<String> getAliasDocuments(Variant variant, String alias, String type, Date afterDate);
