@@ -49,7 +49,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
 		
-		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant, verificationCode);
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
@@ -60,6 +60,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		device.setVariant(androidVariant);
+		device.setEnabled(false);
 		clientInstallationService.addInstallationSynchronously(androidVariant, device);
 		
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant); 
@@ -69,8 +70,10 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		Installation fakeDevice = new Installation();
 		fakeDevice.setAlias("myalias");
 		fakeDevice.setDeviceToken("fake device");
+		fakeDevice.setVariant(androidVariant);
+		fakeDevice.setEnabled(false);
 		
-		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), fakeDevice.getDeviceToken(), verificationCode);
+		VerificationResult result = verificationService.verifyDevice(fakeDevice, androidVariant, verificationCode);
 		assertEquals(VerificationResult.UNKNOWN, result);	
 	}
 	
@@ -87,11 +90,11 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
 		
-		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode + "1");
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant, verificationCode + "1");
 		assertEquals(VerificationResult.FAIL, result);
 		
 		// now retry with the correct code.
-		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
+		result = verificationService.verifyDevice(device, androidVariant, verificationCode);
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
@@ -103,6 +106,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setAlias("myalias");
 		device.setDeviceToken(deviceToken);
 		device.setVariant(androidVariant);
+		
 		clientInstallationService.addInstallationSynchronously(androidVariant, device);
 		
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
@@ -112,11 +116,12 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertNotNull(newVerificationCode);
 		
 		// the first code should have been invalidated
-		VerificationResult result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), verificationCode);
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant, verificationCode);
 		assertEquals(VerificationResult.SUCCESS, result);
 
-		result = verificationService.verifyDevice(androidVariant.getVariantID(), device.getDeviceToken(), newVerificationCode);
-		assertEquals(VerificationResult.UNKNOWN, result);
+		result = verificationService.verifyDevice(device, androidVariant, newVerificationCode);
+		// Device is already enabled so always return success.
+		assertEquals(VerificationResult.SUCCESS, result);
 	}
 	
 }

@@ -417,11 +417,16 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
         
-        String[] authorization = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String variantID = authorization[0];
-        
-        VerificationResult result = verificationService.verifyDevice(variantID, verificationAttempt.getDeviceToken(), 
-        		verificationAttempt.getCode());
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
+				verificationAttempt.getDeviceToken());
+		
+		if (installation == null) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("installation not found for: " + verificationAttempt.getDeviceToken()),
+					request);
+		}
+		
+        VerificationResult result = verificationService.verifyDevice(installation, variant, verificationAttempt.getCode());
         
         return appendAllowOriginHeader(Response.ok(result), request);
     }
@@ -462,10 +467,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         
         // TODO: use ClientAuthHelper
         String basicDeviceToken = request.getHeader("device-token");     
-        if (basicDeviceToken == null) {
-        	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-        			.entity("deviceToken header required"), request);
-        }
+		if (basicDeviceToken == null) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("deviceToken header required"), request);
+		}
         
         verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
         
@@ -486,12 +491,25 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
         
         String basicDeviceToken = request.getHeader("device-token");
+		if (basicDeviceToken == null) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("deviceToken header required"), request);
+		}
+        
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
 				HttpBasicHelper.decodeBase64(basicDeviceToken));
 		
-        if (installation == null) {
-            return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
-        }
+		if (installation == null) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("installation not found for: " + basicDeviceToken),
+					request);
+		}
+		
+		if (installation.isEnabled() == false) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("unable to assosiate, device is disabled: " + basicDeviceToken),
+					request);
+		}
 
         // Associate the device - find the matching application and update the device to the right application 
         installation = clientInstallationService.associateInstallation(installation, variant.getType());
