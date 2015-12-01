@@ -512,7 +512,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		}
 
         // Associate the device - find the matching application and update the device to the right application 
-        installation = clientInstallationService.associateInstallation(installation, variant.getType());
+        installation = clientInstallationService.associateInstallation(installation, variant);
         
         Variant newVariant = installation.getVariant();
  

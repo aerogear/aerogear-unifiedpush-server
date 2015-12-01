@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -146,7 +145,7 @@ public class InstallationRegistrationEndpointTest {
 				
 			// Associate according to alias before we enable verification.
 			// Should result in the same variant
-			inst = installationService.associateInstallation(inst, VariantType.IOS);
+			inst = installationService.associateInstallation(inst, variant);
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
 			
 			// ReEnable device
@@ -154,7 +153,7 @@ public class InstallationRegistrationEndpointTest {
 			VerificationResult results = verificationService.verifyDevice(inst, variant, code);
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 			
-			inst = installationService.associateInstallation(inst, VariantType.IOS);
+			inst = installationService.associateInstallation(inst, variant);
 			Assert.assertTrue(inst != null && inst.isEnabled() == true);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
