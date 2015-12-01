@@ -110,8 +110,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
     	boolean shouldVerifiy = configuration.getProperty(Configuration.PROP_ENABLE_VERIFICATION, false);
-    	
-        // does it already exist ?
+
+    	// does it already exist ?
         Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
 
         // Needed for the Admin UI Only. Help for setting up Routes
@@ -121,8 +121,10 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         if (installation == null) {
             logger.finest("Performing new device/client registration");
             
-            if (shouldVerifiy)
+            if (shouldVerifiy) {
+            	disablePreviousInstallations(entity.getAlias());
             	entity.setEnabled(false);
+            }
 			
             // store the installation:
             storeInstallationAndSetReferences(variant, entity);
@@ -140,7 +142,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         	verificationService.initiateDeviceVerification(entity, variant);
     }
 
-    @Override
+	@Override
     public void addInstallationsSynchronously(Variant variant, List<Installation> installations){
     	this.addInstallations(variant, installations);
     }
@@ -331,5 +333,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
+    
+    private void disablePreviousInstallations(String alias) {
+		installationDao.disableInstallationsByAlias(alias);
+	}
 
 }

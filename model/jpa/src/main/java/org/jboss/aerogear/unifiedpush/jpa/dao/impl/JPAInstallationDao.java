@@ -230,6 +230,26 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     			.setParameter("aliases", aliases)
     			.getResultList();
 	}
+    
+    @Override
+	public int disableInstallationsByAlias(String alias) {
+		return entityManager.createQuery(
+				"update Installation set enabled = false "
+				+ "where alias = :alias "
+				+ "and enabled = true")
+				.setParameter("alias", alias)
+				.executeUpdate();
+	}
+    
+    @Override
+	public Set<String> filterDisabledDevices(Set<String> aliases) {
+		return new HashSet<>(createQuery("select alias from Installation "
+				+ "where enabled = true "
+				+ "and alias in :aliases", String.class)
+				.setParameter("aliases", aliases)
+				.getResultList());
+	}
+
 
     /**
      *

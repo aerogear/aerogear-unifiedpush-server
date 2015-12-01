@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -28,6 +30,9 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Inject
 	private ClientInstallationService clientInstallationService;
+	
+	@Inject
+	private InstallationDao installationDao;
     
 	@Override
 	public void saveForPushApplication(String deviceToken, Variant variant,
@@ -43,8 +48,7 @@ public class DocumentServiceImpl implements DocumentService {
 		return documentDao.findPushDocumentsAfter(pushApplication, type, afterDate);
 	}
 
-	@Override
-	public void saveForAlias(PushApplication pushApplication, String alias,
+	private void saveForAlias(PushApplication pushApplication, String alias,
 			String document, String qualifier) {
 		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias, DocumentType.INSTALLATION_DOCUMENT, qualifier));
 	}
@@ -57,11 +61,14 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments, String qualifier) {
+		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocuments.keySet()); 
 		for (Map.Entry<String, List<String>> entry : aliasToDocuments.entrySet()) {
 			String alias = entry.getKey();
-			List<String> documents = entry.getValue();
-			for (String document : documents) {
-				saveForAlias(pushApplication, alias, document, qualifier);
+			if (enabledDevices.contains(alias)) {
+				List<String> documents = entry.getValue();
+				for (String document : documents) {
+					saveForAlias(pushApplication, alias, document, qualifier);
+				}
 			}
 		}
 	
