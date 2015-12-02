@@ -112,6 +112,14 @@ public class UnifiedPushMessage implements Serializable {
         this.message = message;
     }
 
+    /**
+     * Returns a JSON representation of the payload. This does not include any pushed data,
+     * just the alert of the message. This also contains the entire criteria object.
+     *
+     * @see #toMinimizedJsonString()
+     *
+     * @return JSON payload
+     */
     public String toStrippedJsonString() {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
@@ -126,6 +134,35 @@ public class UnifiedPushMessage implements Serializable {
         }
     }
 
+    /**
+     * Returns a minimized JSON representation of the payload. This does not include potentially large objects, like
+     * alias or category from the given criteria.
+     *
+     * @see #toStrippedJsonString()
+     *
+     * @return minizmized JSON payload
+     */
+    public String toMinimizedJsonString() {
+        try {
+            final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
+            json.put("alert", this.message.getAlert());
+            json.put("config", this.config);
+
+            // we strip down the criteria too, as alias/category can be quite long, based on use-case
+            final HashMap<String, Object> shrinkedCriteriaJSON = new LinkedHashMap<String, Object>();
+            shrinkedCriteriaJSON.put("variants", this.criteria.getVariants());
+            shrinkedCriteriaJSON.put("deviceType", this.criteria.getDeviceTypes());
+            json.put("criteria", shrinkedCriteriaJSON);
+
+            return OBJECT_MAPPER.writeValueAsString(json);
+        } catch (JsonProcessingException e) {
+            return "[\"invalid json\"]";
+        } catch (IOException e) {
+            return "[\"invalid json\"]";
+        }
+    }
+
+    // used in java-sender
     public String toJsonString() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);
