@@ -137,25 +137,27 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
                     .build();
         }
         
-        try {
-        	documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocuments(), deployRequest.getType());
-        	
-        	final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
-			if (pushMessage != null) {
-				InternalUnifiedPushMessage message = new InternalUnifiedPushMessage(pushMessage);
-				// TODO: refactor into common class shared with PushNotificationSenderEndpoint
-				// submit http request metadata:
-				message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
-	            // add the client identifier
-				message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
-				
-				notificationRouter.submit(pushApplication, message);
-        	}
-        	
-        	return Response.ok(EmptyJSON.STRING).build();
-        } catch (Exception e) {
-        	logger.severe("Cannot deploy file for alias", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        if (!deployRequest.getAliasToDocuments().isEmpty()) {
+        	try {
+            	documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocuments(), deployRequest.getType());
+            	
+            	final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
+    			if (pushMessage != null) {
+    				InternalUnifiedPushMessage message = new InternalUnifiedPushMessage(pushMessage);
+    				// TODO: refactor into common class shared with PushNotificationSenderEndpoint
+    				// submit http request metadata:
+    				message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
+    	            // add the client identifier
+    				message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+    				
+    				notificationRouter.submit(pushApplication, message);
+            	}
+            } catch (Exception e) {
+            	logger.severe("Cannot deploy file for alias", e);
+                return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+            }
         }
+        
+    	return Response.ok(EmptyJSON.STRING).build();
     }
 }
