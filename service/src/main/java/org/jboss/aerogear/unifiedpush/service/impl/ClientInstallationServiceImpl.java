@@ -75,7 +75,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private Configuration configuration;
     
 	@Override
-	public Installation associateInstallation(Installation installation, VariantType installationVariantType) {
+	public Installation associateInstallation(Installation installation, Variant currentVariant) {
 		
 		if (installation.getAlias() == null) {
 			return installation;
@@ -91,7 +91,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		List<Variant> variants = application.getVariants();
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
-			if(variant.getType().equals(installationVariantType)){
+			if(variant.getType().equals(currentVariant.getType())){
 				installation.setVariant(variant);
 				break;
 			}
