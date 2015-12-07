@@ -138,7 +138,7 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
             admVariant.setName(updatedAdmApplication.getName());
             admVariant.setDescription(updatedAdmApplication.getDescription());
             variantService.updateVariant(admVariant);
-            return Response.noContent().build();
+            return Response.ok(admVariant).build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();

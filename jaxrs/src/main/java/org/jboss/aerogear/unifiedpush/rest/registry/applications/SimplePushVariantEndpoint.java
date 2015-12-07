@@ -138,7 +138,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
             spVariant.setName(updatedSimplePushApplication.getName());
             spVariant.setDescription(updatedSimplePushApplication.getDescription());
             variantService.updateVariant(spVariant);
-            return Response.noContent().build();
+            return Response.ok(spVariant).build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
