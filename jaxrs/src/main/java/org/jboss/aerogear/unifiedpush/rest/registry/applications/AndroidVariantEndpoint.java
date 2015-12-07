@@ -139,7 +139,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
             variantService.updateVariant(androidVariant);
-            return Response.noContent().build();
+            return Response.ok(androidVariant).build();
         }
 
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
