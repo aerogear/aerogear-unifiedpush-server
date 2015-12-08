@@ -1,0 +1,25 @@
+unifiedpushDB:
+  image: mysql:5.5
+  environment:
+   - MYSQL_USER=unifiedpush
+   - MYSQL_PASSWORD=unifiedpush
+   - MYSQL_DATABASE=unifiedpush
+   - MYSQL_ROOT_PASSWORD=supersecret
+  ports:
+  - 4306:3306
+keycloakDB:
+  image: mysql:5.5
+  environment:
+   - MYSQL_USER=unifiedpush
+   - MYSQL_PASSWORD=unifiedpush
+   - MYSQL_DATABASE=keycloak
+   - MYSQL_ROOT_PASSWORD=supersecret
+  ports:
+  - 4406:3306
+unifiedpushserver:
+  image: aerogear/unifiedpush-wildfly-dev
+  links:
+    - unifiedpushDB:unifiedpush
+    - keycloakDB:keycloak
+  ports:
+  - 8443:8443

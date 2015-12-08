@@ -35,6 +35,11 @@ Or for the on-premise version, execute the following steps to get going!
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
+
+## Docker-Compose
+
+For your convenience, we do have an easy way of launch with our [Docker compose file](tree/master/docker-compose)
+
 ## Documentation
 
 For more details about the current release, please consult [our documentation](https://aerogear.org/getstarted/guides/#push).
