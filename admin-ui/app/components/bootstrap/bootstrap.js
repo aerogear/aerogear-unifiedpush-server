@@ -62,7 +62,7 @@ angular.module('upsConsole')
         .then(function( app ) {
           Notifications.success('Application ' + app.name + ' successfully created');
           $rootScope.$broadcast('upsUpdateStats');
-          $router.root.navigate('/app/' + app.pushApplicationID + '/variants');
+          $rootScope.$broadcast('upsNavigate', '/app/' + app.pushApplicationID + '/variants');
         })
         .catch(function() {
           Notifications.error('Failed to create application ' + self.application.name);

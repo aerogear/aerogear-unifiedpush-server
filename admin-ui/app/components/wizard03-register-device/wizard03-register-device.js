@@ -1,13 +1,13 @@
 angular.module('upsConsole')
-  .controller('Wizard03RegisterDeviceController', function( variantModal, $router, createAppWizard, appModal, $timeout, $interval, applicationsEndpoint ) {
+  .controller('Wizard03RegisterDeviceController', function( $rootScope, $router, variantModal, createAppWizard, appModal, $timeout, $interval, applicationsEndpoint ) {
 
     this.canActivate = function() {
       if ( !createAppWizard.app ) {
-        $router.root.navigate('/wizard/create-app');
+        $rootScope.$broadcast('upsNavigate', '/wizard/create-app');
         return false;
       }
       if ( !createAppWizard.variant ) {
-        $router.root.navigate('/wizard/add-variant');
+        $rootScope.$broadcast('upsNavigate', '/wizard/add-variant');
         return false;
       }
       return true;
@@ -24,7 +24,7 @@ angular.module('upsConsole')
           console.log('success');
           console.log(variant);
           createAppWizard.variant = variant;
-          $router.root.navigate('/wizard/register-device');
+          $rootScope.$broadcast('upsNavigate', '/wizard/register-device');
         })
         .catch(function() {
           console.log('error');
@@ -54,7 +54,7 @@ angular.module('upsConsole')
         })
         .then(function( installationDetected ) {
           if ( installationDetected ) {
-            $router.root.navigate('/wizard/send-push-notification');
+            $rootScope.$broadcast('upsNavigate', '/wizard/send-push-notification');
           }
         });
     }
