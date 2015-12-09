@@ -1,7 +1,9 @@
+node
 node_modules
 node_tmp
 dist
 .tmp
 .build-tmp
+app/bower-components
 app/bower_components
 npm-debug.log
