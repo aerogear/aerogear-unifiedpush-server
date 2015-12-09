@@ -25,3 +25,4 @@ release.properties
 
 .DS_Store
 admin-ui/node
+admin-ui/app/bower-components/
