@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
-				<version>1.1.0.Final</version>
+				<version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-migrator</artifactId>
@@ -33,6 +33,7 @@
     </dependencies>
 
     <build>
+        <finalName>ups-migrator</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -40,7 +41,7 @@
                 <version>2.4</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}</outputDirectory>
-                    <finalName>${project.artifactId}</finalName>
+                    <finalName>ups-migrator</finalName>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>

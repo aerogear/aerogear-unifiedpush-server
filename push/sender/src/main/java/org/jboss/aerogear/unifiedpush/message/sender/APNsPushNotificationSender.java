@@ -216,6 +216,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             final ApnsServiceBuilder builder = APNS.newService();
 
+
+
             // using the APNS Delegate callback to log success/failure for each token:
             builder.withDelegate(new ApnsDelegateAdapter() {
                 @Override
@@ -226,6 +228,14 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
+
+                    // message not found in Java-APNs cache
+                    if (message == null) {
+                        // Notification has been rejected by Apple, and it was removed from the java-apns cache
+                        logger.severe("Error sending payload to APNs server", e);
+                        return;
+                    }
+
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
@@ -237,6 +247,12 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                             logger.severe("Error sending payload to APNs server", e);
                         }
                     }
+                }
+
+                @Override
+                public void cacheLengthExceeded(int newCacheLength) {
+                    logger.warning("Internal cache size exceeded, new size is: " + newCacheLength);
+
                 }
             });
 

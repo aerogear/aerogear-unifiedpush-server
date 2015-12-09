@@ -20,14 +20,14 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-model-parent</artifactId>
-        <version>1.1.0.Final</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-model-jpa</artifactId>
     <name>UnifiedPush Server Model JPA implementation</name>
 
     <dependencies>
-		
+        
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-model-api</artifactId>
@@ -53,7 +53,16 @@
         </dependency>
 
     </dependencies>
-    
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
     <profiles>
         <profile>
             <id>test</id>

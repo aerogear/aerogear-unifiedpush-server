@@ -143,10 +143,15 @@ public class PushSearchServiceImpl implements PushSearchService {
     private List<Application> wrapApplication(List<PushMessageInformation> pushMessageInformations) {
         final List<Application> applications = new ArrayList<Application>(pushMessageInformations.size());
         for (PushMessageInformation pushMessageInformation : pushMessageInformations) {
-            String applicationName = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId()).getName();
-            final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
-            applications.add(application);
 
+            final PushApplication pushApplication = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId());
+
+            // make sure this is really there, and has not been deleted
+            if (pushApplication != null) {
+                final String applicationName = pushApplication.getName();
+                final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
+                applications.add(application);
+            }
         }
         return applications;
     }

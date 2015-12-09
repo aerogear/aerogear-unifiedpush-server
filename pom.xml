@@ -22,12 +22,13 @@
         <artifactId>aerogear-parent</artifactId>
         <!-- NOTE: if updated for version of UPS dependencies, please update 
             the 'aerogear.bom.version' as well -->
-        <version>0.2.16</version>
+        <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
+        <version>0.2.18</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unifiedpush-parent</artifactId>
-    <version>1.1.0.Final</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>UnifiedPush Server</name>
@@ -37,7 +38,7 @@
         <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
         <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
-        <tag>1.1.0.Final</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
@@ -288,7 +289,7 @@
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
         <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.16</aerogear.bom.version>
+        <aerogear.bom.version>0.2.18</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
@@ -305,6 +306,7 @@
         <mysql.version>5.1.36</mysql.version>
        
         <wildfly.version>8.2.1.Final</wildfly.version>
+        <ups.ddl_value>validate</ups.ddl_value>
     </properties>
 
     <profiles>
@@ -355,6 +357,9 @@
 	                </plugin>
 	            </plugins>
 	        </build>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
 		</profile>
 
         <!--
@@ -371,6 +376,9 @@
             <modules>
                 <module>dist</module>
             </modules>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
         </profile>
 
         <!--
