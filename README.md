@@ -38,7 +38,7 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 ## Docker-Compose
 
-For your convenience, we do have an easy way of launch with our [Docker compose file](tree/master/docker-compose)
+For your convenience, we do have an easy way of launch with our [Docker compose file](/tree/master/docker-compose)
 
 ## Documentation
 
