@@ -1,11 +1,7 @@
 angular.module('upsConsole')
-  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, $timeout ) {
+  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, bootstrapedAppName, allowCreateVariant ) {
 
     var self = this;
-
-    this.activate = function() {
-
-    };
 
     this.types = {};
 
@@ -16,6 +12,10 @@ angular.module('upsConsole')
       windows_wns: {},
       windows_mpns: {},
       adm: {}
+    };
+
+    this.allowCreate = function( variantType ) {
+      return allowCreateVariant( null, variantType );
     };
 
     this.iosCertificates = [];
@@ -37,7 +37,7 @@ angular.module('upsConsole')
       var formData = new FormData(),
           variantConfig = null;
 
-      formData.append('pushApplicationName', uuid());
+      formData.append('pushApplicationName', bootstrapedAppName());
       angular.forEach(self.types, function(enabled, variantType) {
         if (enabled) {
           variantConfig = angular.copy(self.config[variantType]);
@@ -62,7 +62,7 @@ angular.module('upsConsole')
         .then(function( app ) {
           Notifications.success('Application ' + app.name + ' successfully created');
           $rootScope.$broadcast('upsUpdateStats');
-          $router.root.navigate('/app/' + app.pushApplicationID + '/variants');
+          $rootScope.$broadcast('upsNavigate', '/app/' + app.pushApplicationID + '/variants');
         })
         .catch(function() {
           Notifications.error('Failed to create application ' + self.application.name);
@@ -71,13 +71,6 @@ angular.module('upsConsole')
 
     function capitalize(s) {
       return s[0].toUpperCase() + s.slice(1);
-    }
-
-    function uuid() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      });
     }
 
   });

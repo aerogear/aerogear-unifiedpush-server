@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard01CreateAppController', function ( $rootScope, variantModal, $router, applicationsEndpoint, createAppWizard, Notifications ) {
+  .controller('Wizard01CreateAppController', function ( $rootScope, $router, variantModal, applicationsEndpoint, createAppWizard, Notifications ) {
 
     var self = this;
 
@@ -11,7 +11,7 @@ angular.module('upsConsole')
           createAppWizard.app = app;
           Notifications.success('Application ' + self.application.name + ' successfully created');
           $rootScope.$broadcast('upsUpdateStats');
-          $router.root.navigate('/wizard/add-variant');
+          $rootScope.$broadcast('upsNavigate', '/wizard/add-variant');
         })
         .catch(function() {
           Notifications.error('Failed to create application ' + self.application.name);
