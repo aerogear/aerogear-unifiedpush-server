@@ -223,6 +223,8 @@ angular.module('upsConsole')
 
   .directive('upsSenderSnippets', function () {
     return {
+      restrict: 'E',
+      templateUrl: 'directives/ups-sender-snippets.html',
       scope: {
         app: '=',
         activeSnippet: '@'
@@ -232,15 +234,18 @@ angular.module('upsConsole')
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
         $scope.snippets = senderSnippets;
-        angular.forEach($scope.snippets, function(data, senderType) {
-          if (data.show) {
-            $scope.activeSnippet = $scope.activeSnippet || senderType;
-            SnippetRetriever.get(data.url)
-              .then(function (response) {
-                $scope.snippets[senderType].source = $interpolate(response.data)($scope);
-              });
-          }
-        });
+        function renderSnippets() {
+          angular.forEach($scope.snippets, function(data, senderType) {
+            if (data.show) {
+              $scope.activeSnippet = $scope.activeSnippet || senderType;
+              SnippetRetriever.get(data.url)
+                .then(function (response) {
+                  $scope.snippets[senderType].source = $interpolate(response.data)($scope);
+                });
+            }
+          });
+        }
+        renderSnippets();
         $scope.copySnippet = function() {
           return $scope.snippets[$scope.activeSnippet].source;
         };
@@ -250,9 +255,10 @@ angular.module('upsConsole')
             $scope.clipText = 'Copy to clipboard';
           }, 1000);
         };
-      },
-      restrict: 'E',
-      templateUrl: 'directives/ups-sender-snippets.html'
+        $scope.$watch('app.masterSecret', function() {
+          renderSnippets();
+        });
+      }
     };
   })
 
