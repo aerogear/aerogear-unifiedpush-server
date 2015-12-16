@@ -129,9 +129,11 @@
 
 <ng-viewport ng-controller="RouteController"></ng-viewport>
 
+<!-- build:js({.tmp,app}) scripts/jquery.js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<!-- endbuild -->
 
 <!-- build:js scripts/modules.js -->
-<script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
@@ -195,6 +197,10 @@
 <script src="scripts/endpoints/dashboardEndpoint.js"></script>
 <script src="scripts/endpoints/importerEndpoint.js"></script>
 <script src="scripts/endpoints/exporterEndpoint.js"></script>
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/keycloak-init.js -->
+<script src="scripts/keycloak-init.js"></script>
 <!-- endbuild -->
 
 <!-- build:js scripts/templates.js -->

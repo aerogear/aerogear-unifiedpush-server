@@ -2,8 +2,8 @@
 
 var upsServices = angular.module('upsConsole');
 
-upsServices.factory('metricsEndpoint', function ($resource, $q) {
-  return $resource('rest/metrics/messages/:verb/:id', { id: '@id' }, {
+upsServices.factory('metricsEndpoint', function ($resource, $q, apiPrefix) {
+  return $resource( apiPrefix + 'rest/metrics/messages/:verb/:id', { id: '@id' }, {
     application: {
       method: 'GET',
       isArray: true,

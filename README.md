@@ -39,6 +39,11 @@ For the on-premise version, execute the following steps to get going!
 Now go to ``http://localhost/unifiedpush-server`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
+
+## Docker-Compose
+
+For your convenience, we do have an easy way of launch with our [Docker compose file](docker-compose)
+
 ## Documentation
 
 For more details about the current release, please consult [our documentation] (https://github.com/C-B4/omnibus-unifiedpush-server/tree/master/doc) or visit [AeroGear documentation] 

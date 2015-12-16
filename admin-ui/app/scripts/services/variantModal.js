@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint) {
+angular.module('upsConsole').factory('variantModal', function ($modal, $q, variantsEndpoint, allowCreateVariant) {
   var service = {
 
     editName: function(app, variant) {
@@ -62,6 +62,10 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
               return $scope.variant.certificates.length > 0;
             }
             return true;
+          };
+
+          $scope.allowCreate = function( variantType ) {
+            return allowCreateVariant( app, variantType );
           };
         }
       }).result;
@@ -147,13 +151,6 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
         formData.append(property, variant[property] === undefined ? '' : variant[property]);
       });
       return formData;
-    case 'windows':
-      if (variant.protocolType === 'wns') {
-        properties = properties.concat(['sid', 'clientSecret', 'protocolType']);
-      } else {
-        properties = properties.concat(['protocolType']);
-      }
-      break;
     case 'windows_wns':
       result.protocolType = 'wns';
       properties = properties.concat(['sid', 'clientSecret']);
@@ -176,8 +173,6 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
 
   function extractVariantType( variant ) {
     switch(variant.type) {
-    case 'windows':
-      return 'windows_' + variant.protocolType;
     default:
       return variant.type;
     }

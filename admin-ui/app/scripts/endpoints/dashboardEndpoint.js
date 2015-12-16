@@ -2,8 +2,8 @@
 
 var upsServices = angular.module('upsConsole');
 
-upsServices.factory('dashboardEndpoint', function ($resource) {
-  return $resource('rest/metrics/dashboard/:verb', {}, {
+upsServices.factory('dashboardEndpoint', function ($resource, apiPrefix) {
+  return $resource( apiPrefix + 'rest/metrics/dashboard/:verb', {}, {
     totals: {
       method: 'GET'
     },
