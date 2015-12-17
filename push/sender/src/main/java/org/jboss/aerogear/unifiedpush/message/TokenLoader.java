@@ -100,6 +100,7 @@ public class TokenLoader {
         final Collection<Variant> variants = msg.getVariants();
         final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
         final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
+        int serialId = msg.getLastSerialId();
 
         logger.fine("Received message from queue: " + message.getMessage().getAlert());
 
@@ -125,8 +126,8 @@ public class TokenLoader {
                         tokensLoaded += 1;
                     }
                     if (tokens.size() > 0) {
-                        dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens));
-                        logger.fine(String.format("Loaded batch for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                        dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId));
+                        logger.fine(String.format("Loaded batch #%s for %s variant (%s)", serialId, variant.getType().getTypeName(), variant.getVariantID()));
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()));
                     } else {
                         break;
@@ -135,7 +136,7 @@ public class TokenLoader {
                 // should we load next batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
                     logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
-                    nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, lastTokenInBatch));
+                    nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
                     logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
                     allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()));

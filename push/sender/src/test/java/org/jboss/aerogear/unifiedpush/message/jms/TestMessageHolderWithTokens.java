@@ -76,7 +76,7 @@ public class TestMessageHolderWithTokens {
     public void test() throws InterruptedException {
         variant = new AndroidVariant();
         for (int i = 0; i < 5; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens));
+            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
         }
         delivered.await(5, TimeUnit.SECONDS);
     }

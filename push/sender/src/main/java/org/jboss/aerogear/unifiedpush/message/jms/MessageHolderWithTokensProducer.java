@@ -19,10 +19,12 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
  * Receives CDI event with {@link MessageHolderWithTokens} payload and dispatches this payload to JMS queue selected by a type of the variant specified in payload.
@@ -31,6 +33,9 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
  */
 @Stateless
 public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer {
+
+    @Inject
+    private JmsClient jmsClient;
 
     @Resource(mappedName = "java:/queue/AdmTokenBatchQueue")
     private Queue admTokenBatchQueue;
@@ -51,7 +56,8 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     private Queue wnsTokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
-        sendTransacted(selectQueue(msg.getVariant().getType()), msg);
+        String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
+        jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(selectQueue(msg.getVariant().getType()));
     }
 
     private Queue selectQueue(VariantType variantType) {
