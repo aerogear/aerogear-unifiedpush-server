@@ -92,11 +92,11 @@ public class TestMetricsCollector extends AbstractJMSTest {
         when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
 
         // when
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID1), variantID1);
-        send(batchLoadedQueue, new BatchLoadedEvent(variantID2), variantID2);
-        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID1), variantID1);
-        send(allBatchesLoaded, new AllBatchesLoadedEvent(variantID2), variantID2);
+        send(new BatchLoadedEvent(variantID1)).withProperty("variantID", variantID1).to(batchLoadedQueue);
+        send(new BatchLoadedEvent(variantID1)).withProperty("variantID", variantID1).to(batchLoadedQueue);
+        send(new BatchLoadedEvent(variantID2)).withProperty("variantID", variantID2).to(batchLoadedQueue);
+        send(new AllBatchesLoadedEvent(variantID1)).withProperty("variantID", variantID1).to(allBatchesLoaded);
+        send(new AllBatchesLoadedEvent(variantID2)).withProperty("variantID", variantID2).to(allBatchesLoaded);
 
         metricsCollector.collectMetrics(variant1Metric1);
         metricsCollector.collectMetrics(variant1Metric2);
@@ -111,10 +111,10 @@ public class TestMetricsCollector extends AbstractJMSTest {
         assertEquals(2, variant1Metric1.getTotalBatches().intValue());
         assertEquals(1, variant2Metric1.getServedBatches().intValue());
         assertEquals(1, variant2Metric1.getTotalBatches().intValue());
-        assertNull(receive(batchLoadedQueue, variantID1));
-        assertNull(receive(allBatchesLoaded, variantID1));
-        assertNull(receive(batchLoadedQueue, variantID2));
-        assertNull(receive(allBatchesLoaded, variantID2));
+        assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID1).from(batchLoadedQueue));
+        assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID1).from(allBatchesLoaded));
+        assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2).from(batchLoadedQueue));
+        assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2).from(allBatchesLoaded));
     }
 
     public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {
