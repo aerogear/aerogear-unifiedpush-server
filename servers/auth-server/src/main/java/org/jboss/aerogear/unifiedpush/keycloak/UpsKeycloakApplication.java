@@ -36,8 +36,8 @@ public class UpsKeycloakApplication extends KeycloakApplication {
     }
 
     @Override
-    protected void setupDefaultRealm(String contextPath) {
-        super.setupDefaultRealm(contextPath);
+    public   void importRealmResources(ServletContext contextPath) {
+        super.importRealmResources(contextPath);
 
         KeycloakSession session = sessionFactory.create();
         session.getTransaction().begin();
