@@ -56,7 +56,7 @@ public class SenderConfigurationProvider {
 
     @Produces @ApplicationScoped @SenderType(VariantType.IOS)
     public SenderConfiguration produceIosConfiguration() {
-        return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 10000));
+        return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));
     }
 
     @Produces @ApplicationScoped @SenderType(VariantType.SIMPLE_PUSH)
