@@ -29,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -58,7 +59,7 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
             .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
-            .addClasses(AbstractJMSTest.class)
+            .addClasses(AbstractJMSTest.class, JmsClient.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
             .addAsWebInfResource("hornetq-jms.xml");
     }

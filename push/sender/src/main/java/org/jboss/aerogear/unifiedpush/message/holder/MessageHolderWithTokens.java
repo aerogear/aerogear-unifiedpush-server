@@ -32,16 +32,18 @@ public class MessageHolderWithTokens extends AbstractMessageHolder implements Se
 
     private static final long serialVersionUID = -7955411139315335655L;
 
+    private int serialId;
     private Variant variant;
     private Collection<String> deviceTokens;
 
-    public MessageHolderWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, Collection<String> deviceTokens) {
+    public MessageHolderWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, Collection<String> deviceTokens, int serialId) {
         super(pushMessageInformation, unifiedPushMessage);
         if (!(deviceTokens instanceof Serializable)) {
             throw new IllegalArgumentException("deviceTokens must be a serializable collection");
         }
         this.variant = variant;
         this.deviceTokens = deviceTokens;
+        this.serialId = serialId;
     }
 
     public Variant getVariant() {
@@ -50,5 +52,9 @@ public class MessageHolderWithTokens extends AbstractMessageHolder implements Se
 
     public Collection<String> getDeviceTokens() {
         return deviceTokens;
+    }
+
+    public int getSerialId() {
+        return serialId;
     }
 }
