@@ -22,6 +22,10 @@
         "provider": "basic"
     },
 
+    "userSessionPersister": {
+        "provider": "jpa"
+    },
+    
     "theme": {
         "default": "keycloak",
         "welcomeTheme": "aerogear",
