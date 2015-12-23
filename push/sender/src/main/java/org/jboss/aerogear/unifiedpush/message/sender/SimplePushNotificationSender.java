@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
@@ -32,8 +32,6 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @SenderType(VariantType.SIMPLE_PUSH)
 public class SimplePushNotificationSender implements PushNotificationSender {
-
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(SimplePushNotificationSender.class);
 
@@ -98,7 +96,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
             throw new IllegalArgumentException("SimplePush Update URL cannot be null");
         }
 
-        byte[] bytes = body.getBytes(UTF_8);
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         HttpURLConnection conn = getConnection(url);
         conn.setDoOutput(true);
         conn.setUseCaches(false);
