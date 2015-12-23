@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-1.3.1.Final.ja
- r keycloak-adapter-core-1.3.1.Final.jar keycloak-jboss-adapter-core-1
- .3.1.Final.jar httpclient-4.3.6.jar httpcore-4.3.3.jar commons-loggin
+Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-1.5.1.Final.ja
+ r keycloak-adapter-core-1.5.1.Final.jar keycloak-jboss-adapter-core-1
+ .5.1.Final.jar httpclient-4.3.6.jar httpcore-4.3.3.jar commons-loggin
  g-1.1.1.jar commons-codec-1.6.jar base64-2.3.8.jar bcprov-jdk15on-1.5
  0.jar jackson-core-asl-1.9.9.jar jackson-mapper-asl-1.9.9.jar jackson
  -xc-1.9.9.jar unifiedpush-model-jpa.jar unifiedpush-model-api.jar slf
@@ -18,6 +18,6 @@ Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-1.3.1.Final.ja
  3.jar sc-light-jdk15on-1.47.0.3.jar json-patch-1.7.jar jackson-coreut
  ils-1.6.jar msg-simple-1.1.jar btf-1.2.jar jsr305-2.0.1.jar guava-16.
  0.1.jar miredot-annotations-1.3.1.jar unifiedpush-admin-ui.jar keyclo
- ak-wildfly-adapter-1.3.1.Final.jar keycloak-undertow-adapter-1.3.1.Fi
+ ak-wildfly-adapter-1.5.1.Final.jar keycloak-undertow-adapter-1.5.1.Fi
  nal.jar
 
