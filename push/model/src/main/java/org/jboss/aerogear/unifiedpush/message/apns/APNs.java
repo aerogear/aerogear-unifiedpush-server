@@ -43,6 +43,12 @@ public class APNs implements Serializable {
 
     @JsonProperty("content-available")
     private boolean contentAvailable;
+	
+    @JsonProperty("localized-key")
+    private String localizedKey;	
+	
+	@JsonProperty("localized-arguments")
+    private String[] localizedArguments;
 
     /**
      * Returns the value of the 'action-category', which is used on the client (iOS for now),
@@ -111,6 +117,11 @@ public class APNs implements Serializable {
 
     public void setLocalizedTitleArguments(String[] localizedTitleArguments) {this.localizedTitleArguments = localizedTitleArguments;}
 
+	public String[] getLocalizedArguments() { return localizedArguments; }
+	
+	public void setLocalizedArguments(String[] localizedArguments){ this.localizedArguments = localizedArguments; }
 
-
+	public String getLocalizedKey() { return localizedKey; }
+	
+	public void setLocalizedKey(String localizedKey) { this.localizedKey = localizedKey; }
 }
