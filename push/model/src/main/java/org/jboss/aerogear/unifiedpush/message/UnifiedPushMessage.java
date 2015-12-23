@@ -57,6 +57,8 @@ import java.util.LinkedHashMap;
  *           "content-available": true,
  *           "action" : "someAction",
  *           "url-args" :["args1","arg2"],
+ *           "localized-key" : "some value",
+ *           "localized-arguments" : ["args1","arg2"],
  *           "localized-title-key" : "some value",
  *           "localized-title-arguments" : ["args1","arg2"]
  *       },
