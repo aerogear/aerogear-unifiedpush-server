@@ -35,7 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
@@ -50,7 +50,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestTokenBatchDeduplication.class)
+        return UnifiedPushSenderArchive.forTestClass(TestTokenBatchDeduplication.class)
                 .withMessaging()
                     .addClasses(MessageHolderWithTokensProducer.class, MessageHolderWithTokensConsumer.class, AbstractJMSMessageListener.class)
                     .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
