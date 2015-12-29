@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
@@ -75,7 +76,7 @@ public class DocumentEndpoint {
 		}
         
         try {
-        	documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity, type);
+        	documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity, DocumentMessage.getDocumentQualifier(type));
         	return Response.ok(EmptyJSON.STRING).build();
         } catch (Exception e) {
         	logger.severe("Cannot deploy file for push application", e);
@@ -89,12 +90,11 @@ public class DocumentEndpoint {
 	            .entity("Unauthorized Request").build();
 	}
 	
-	@GET	
+	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response retrieveDocumentsForAlias(@QueryParam("date") Long date, 
-    		@QueryParam("type") String type, @Context HttpServletRequest request) {
+    public Response retrieveDocumentsForAlias(@QueryParam("date") Long date, @QueryParam("type") String type, @Context HttpServletRequest request) {
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService, clientInstallationService, request);
 		if (variant == null) {
 			return getUnauthorizedResponse();
@@ -104,7 +104,7 @@ public class DocumentEndpoint {
 				ClientAuthHelper.getDeviceToken(request));
 		
         try {
-        	List<String> documents = documentService.getAliasDocuments(variant, installation.getAlias(), type, new Date(date));
+        	List<String> documents = documentService.getAliasDocuments(variant, installation.getAlias(), DocumentMessage.getDocumentQualifier(type), new Date(date));
         	return Response.ok(documents).build();
         } catch (Exception e) {
         	logger.severe("Cannot retrieve files for alias", e);

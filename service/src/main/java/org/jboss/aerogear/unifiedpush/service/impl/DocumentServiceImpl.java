@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
@@ -24,44 +26,46 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Inject
 	private DocumentDao documentDao;
-	
+
 	@Inject
 	private PushApplicationService pushApplicationService;
-	
+
 	@Inject
 	private ClientInstallationService clientInstallationService;
-	
+
 	@Inject
 	private InstallationDao installationDao;
-    
+
 	@Override
-	public void saveForPushApplication(String deviceToken, Variant variant,
-			String content, String qualifier) {
-		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+	public void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier) {
+		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(
+				variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		documentDao.create(createMessage(content, clientInstallation.getAlias(), 
+		documentDao.create(createMessage(content, clientInstallation.getAlias(),
 				pushApplication.getPushApplicationID(), DocumentType.APPLICATION_DOCUMENT, qualifier));
 	}
-	
-	@Override
-	public List<String> getPushApplicationDocuments(PushApplication pushApplication, String type, Date afterDate) {
-		return documentDao.findPushDocumentsAfter(pushApplication, type, afterDate);
-	}
-
-	private void saveForAlias(PushApplication pushApplication, String alias,
-			String document, String qualifier) {
-		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias, DocumentType.INSTALLATION_DOCUMENT, qualifier));
-	}
 
 	@Override
-	public List<String> getAliasDocuments(Variant variant, String alias, String type, Date afterDate) {
+	public List<String> getPushApplicationDocuments(PushApplication pushApplication, DocumentType type, Date higherMark) {
+		return documentDao.findPushDocumentsNewer(pushApplication, higherMark);
+	}
+
+	private void saveForAlias(PushApplication pushApplication, String alias, String document, String qualifier) {
+		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias,
+				DocumentType.INSTALLATION_DOCUMENT, qualifier));
+	}
+
+	@Override
+	@TransactionAttribute(value = TransactionAttributeType.SUPPORTS)
+	public List<String> getAliasDocuments(Variant variant, String alias, String qualifier, Date afterDate) {
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		return documentDao.findAliasDocumentsAfter(pushApplication, alias, type, afterDate);
+		return documentDao.findAliasDocumentsNewer(pushApplication, alias, qualifier, afterDate);
 	}
 
 	@Override
-	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments, String qualifier) {
-		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocuments.keySet()); 
+	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments,
+			String qualifier) {
+		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocuments.keySet());
 		for (Map.Entry<String, List<String>> entry : aliasToDocuments.entrySet()) {
 			String alias = entry.getKey();
 			if (enabledDevices.contains(alias)) {
@@ -71,11 +75,12 @@ public class DocumentServiceImpl implements DocumentService {
 				}
 			}
 		}
-	
-	} 
-	
-	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType, String qualifier) {
-		DocumentMessage message = new DocumentMessage(); 
+
+	}
+
+	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType,
+			String qualifier) {
+		DocumentMessage message = new DocumentMessage();
 		message.setSource(source);
 		message.setDestination(destination);
 		message.setContent(content);

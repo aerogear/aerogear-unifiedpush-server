@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.file;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -30,5 +31,5 @@ public interface FileManager {
 	 * @param filter predicate for files
 	 * @return list of files 
 	 */
-	List<File> list(Path path, FileFilter filter);
+	List<File> list(Path path, FileFilter filter) throws FileNotFoundException;
 }

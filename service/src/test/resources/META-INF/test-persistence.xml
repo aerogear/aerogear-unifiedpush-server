@@ -32,6 +32,7 @@
             <property name="hibernate.connection.url" value="jdbc:h2:mem:unifiedpush_server"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.import_files" value="test-data.sql"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.transaction.flush_before_completion" value="true"/>

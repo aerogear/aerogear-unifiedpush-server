@@ -10,8 +10,8 @@ public interface DocumentDao {
 	
 	void create(DocumentMessage document);
 	
-	List<String> findPushDocumentsAfter(PushApplication pushApplication, String type, Date date);
+	List<String> findPushDocumentsNewer(PushApplication pushApplication, Date date);
 	
-	List<String> findAliasDocumentsAfter(PushApplication pushApplication, String alias, String qualifier, Date date);
+	List<String> findAliasDocumentsNewer(PushApplication pushApplication, String alias, String qualifier, Date date);
 	
 }
