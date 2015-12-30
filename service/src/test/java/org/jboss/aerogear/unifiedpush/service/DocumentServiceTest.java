@@ -2,15 +2,13 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -75,17 +73,15 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
 
 			// Register alias
-			PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
+			PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
-			Map<String, List<String>> aliasToDocuments = new HashMap<String, List<String>>();
-			List<String> documents = new ArrayList<String>();
-			documents.add("{TEST JSON}");
-			aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, documents);
+			Map<String, String> aliasToDocuments = new HashMap<String, String>();
+			aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
 
-			// Save alias should return without saving, divice is not emabled.
+			// Save alias should return without saving, device is not enabled.
 			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
-			documents = documentService.getAliasDocuments(variant, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER,
-					new Date(System.currentTimeMillis() - 5000));
+			String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
+					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
@@ -94,10 +90,10 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 			// Re-save device
 			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
-			documents = documentService.getAliasDocuments(variant, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER,
-					new Date(System.currentTimeMillis() - 5000));
+			document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
+					DEFAULT_DEVICE_QUALIFIER);
 
-			Assert.assertTrue(documents != null && documents.size() == 1);
+			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		} finally {
@@ -106,6 +102,31 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		}
 	}
 	
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void lastUpdatedDocumentTest() {
+		saveDocumentTest();
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// Nothing to do
+		}
+		
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
+					
+		Map<String, String> aliasToDocuments = new HashMap<String, String>();
+		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON NEWEST}");
+
+		// Save alias should return without saving, device is not enabled.
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
+				DEFAULT_DEVICE_QUALIFIER);
+		
+		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
+	}
+
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
 	public void saveDocumentWithoutVerificationModeTest() {
@@ -128,16 +149,14 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
-		Map<String, List<String>> aliasToDocuments = new HashMap<String, List<String>>();
-		List<String> documents = new ArrayList<String>();
-		documents.add("{TEST JSON}");
-		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, documents);
+		Map<String, String> aliasToDocuments = new HashMap<String, String>();
+		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
 
 		// Save alias should return without saving, divice is not emabled.
 		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
-		documents = documentService.getAliasDocuments(variant, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER,
-				new Date(System.currentTimeMillis() - 5000));
-		
-		Assert.assertTrue(documents != null && documents.size() == 1);
+		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+
+		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 	}
 }

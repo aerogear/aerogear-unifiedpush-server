@@ -6,7 +6,8 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,7 +16,6 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 
@@ -32,17 +32,7 @@ public class DocumentDaoImpl implements DocumentDao {
 
 	@Override
 	public void create(DocumentMessage message) {
-		Path directoryPath;
-		switch (message.getType()) {
-		case APPLICATION_DOCUMENT:
-			directoryPath = getPushApplicationDocumentDirectoryPath(message.getDestination());
-			break;
-		case INSTALLATION_DOCUMENT:
-			directoryPath = getAliasDocumentDirectoryPath(message.getSource(), message.getDestination());
-			break;
-		default:
-			throw new IllegalArgumentException("for type: " + message.getType());
-		}
+		Path directoryPath = getDocumentPath(message);
 
 		fileManager.save(Paths.get(directoryPath.toString(), getDocumentFileName(message)), message.getContent()
 				.getBytes());
@@ -57,24 +47,31 @@ public class DocumentDaoImpl implements DocumentDao {
 	 * 
 	 * @return - List<String> of document content.
 	 */
-	public List<String> findPushDocumentsNewer(PushApplication pushApplication, Date date) {
-		return getNewer(getPushApplicationDocumentDirectoryPath(pushApplication.getPushApplicationID()), date, null);
+	public List<DocumentMessage> findDocuments(DocumentMessage message) {
+		return getDocuments(getDocumentPath(message), message, null);
 	}
 
 	@Override
-	public List<String> findAliasDocumentsNewer(PushApplication pushApplication, String alias, final String qualifier,
-			Date date) {
-		return getNewer(getAliasDocumentDirectoryPath(pushApplication.getPushApplicationID(), alias), date,
-				new DocumentNameFilter() {
-					@Override
-					public boolean accept(DocumentType type, String source, String destination,
-							String documentQualifier, String time) {
-						return documentQualifier == null || documentQualifier.equals(qualifier);
-					}
-				});
+	public DocumentMessage findLatestDocument(DocumentMessage message) {
+		List<DocumentMessage> documents = getDocuments(getDocumentPath(message), message, null);
+
+		if (documents != null && documents.size() >= 1) {
+			Collections.sort(documents, new Comparator<DocumentMessage>() {
+
+				@Override
+				public int compare(DocumentMessage o1, DocumentMessage o2) {
+					return (int) (o1.getTimestamp() - o2.getTimestamp());
+				}
+			});
+
+			return documents.get(documents.size() - 1);
+		}
+
+		return null;
 	}
 
-	private List<String> getNewer(Path directoryPath, final Date date, final DocumentNameFilter filter) {
+	private List<DocumentMessage> getDocuments(Path directoryPath, final DocumentMessage message,
+			final DocumentNameFilter filter) {
 		File directory = directoryPath.toFile();
 		List<File> files;
 		try {
@@ -83,11 +80,12 @@ public class DocumentDaoImpl implements DocumentDao {
 				public boolean accept(File pathname) {
 					String[] parts = pathname.getName().split(DOCUMENT_TOKEN);
 					if (filter != null
-							&& !filter.accept(DocumentType.valueOf(parts[0]), parts[1], parts[2], parts[3], parts[4])) {
+							&& !filter.accept(parts[0], DocumentType.valueOf(parts[1]), parts[2], parts[3], parts[4])) {
 						return false;
 					}
-					Long messageTime = Long.parseLong(parts[4]);
-					return messageTime >= date.getTime();
+
+					return message.getPushApplication().getPushApplicationID().equals(parts[0])
+							&& message.getPublisher().name().equals(parts[1]);
 				}
 			});
 		} catch (FileNotFoundException e) {
@@ -97,21 +95,25 @@ public class DocumentDaoImpl implements DocumentDao {
 			files = new ArrayList<>();
 		}
 
-		List<String> documents = new ArrayList<>(files.size());
-
+		List<DocumentMessage> documents = new ArrayList<>(files.size());
+		DocumentMessage document;
 		for (File file : files) {
-			documents.add(new String(fileManager.read(file.toPath())));
+			document = new DocumentMessage(new String(fileManager.read(file.toPath())), message);
+			document.setTimestamp(file.lastModified());
+			documents.add(document);
 		}
 
 		return documents;
 	}
 
-	private Path getPushApplicationDocumentDirectoryPath(String pushApplicationID) {
-		return getFullDirectoryPath(Paths.get(pushApplicationID));
-	}
-
-	private Path getAliasDocumentDirectoryPath(String pushApplicationID, String alias) {
-		return getFullDirectoryPath(Paths.get(pushApplicationID, alias));
+	private Path getDocumentPath(DocumentMessage message) {
+		// Application publisher allowed to create global alias documents.
+		if (message.getPublisher() == DocumentType.APPLICATION && message.getAlias().equalsIgnoreCase(DocumentMessage.NULL_ALIAS))
+			return getFullDirectoryPath(Paths.get(message.getPushApplication().getPushApplicationID(),
+					message.getPublisher().name()));
+		
+		return getFullDirectoryPath(Paths.get(message.getPushApplication().getPushApplicationID(),
+				message.getPublisher().name(), message.getAlias()));
 	}
 
 	private Path getFullDirectoryPath(Path path) {
@@ -120,13 +122,14 @@ public class DocumentDaoImpl implements DocumentDao {
 	}
 
 	private String getDocumentFileName(DocumentMessage message) {
-		return new StringBuilder(message.getType().toString()).append(DOCUMENT_TOKEN).append(message.getSource())
-				.append(DOCUMENT_TOKEN).append(message.getDestination()).append(DOCUMENT_TOKEN)
+		return new StringBuilder(message.getPushApplication().getPushApplicationID()).append(DOCUMENT_TOKEN)
+				.append(message.getPublisher().name()).append(DOCUMENT_TOKEN).append(message.getAlias())
+				.append(DOCUMENT_TOKEN)
 				.append(message.getQualifier() == null ? "NULL" : message.getQualifier().toUpperCase())
 				.append(DOCUMENT_TOKEN).append(System.currentTimeMillis()).toString();
 	}
 
 	private static interface DocumentNameFilter {
-		boolean accept(DocumentType type, String source, String destination, String qualifier, String time);
+		boolean accept(String publisher, DocumentType type, String alias, String qualifier, String time);
 	}
 }

@@ -6,42 +6,63 @@ public class DocumentMessage implements Serializable {
 	private static final long serialVersionUID = 1345771671978529056L;
 
 	public static enum DocumentType {
-		APPLICATION_DOCUMENT, INSTALLATION_DOCUMENT
+		NULL, APPLICATION, INSTALLATION
 	};
 
-	public static String getDocumentQualifier(String type) {
-		return type == null ? "NULL" : type.toUpperCase();
+	public static DocumentType getPublisher(String publisher) {
+		return publisher == null ? DocumentType.NULL : DocumentType.valueOf(publisher.toUpperCase());
 	}
 
-	private DocumentType type;
+	public static String getQualifier(String value) {
+		return value == null | value.equalsIgnoreCase(NULL_QUALIFIER) ? NULL_QUALIFIER : value.toUpperCase();
+	}
+
+	public static final String NULL_QUALIFIER = "NULL";
+	public static final String NULL_ALIAS = "NULL";
 
 	private String content;
-	private String source;
-	private String destination;
+	private PushApplication pushApplication;
+	private DocumentType publisher;
+	private String alias;
 	private String qualifier;
+	private Boolean latest;
+	private Long timestamp;
 
-	public DocumentType getType() {
-		return type;
+	public DocumentMessage() {
 	}
 
-	public void setType(DocumentType type) {
-		this.type = type;
+	public DocumentMessage(String content, DocumentMessage other) {
+		this.content = content;
+		this.pushApplication = other.pushApplication;
+		this.publisher = other.publisher;
+		this.alias = other.alias;
+		this.qualifier = other.qualifier;
+		this.latest = other.latest;
+		this.timestamp = other.timestamp;
 	}
 
-	public String getSource() {
-		return source;
+	public DocumentType getPublisher() {
+		return publisher;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
+	public void setPublisher(DocumentType publisher) {
+		this.publisher = publisher;
 	}
 
-	public String getDestination() {
-		return destination;
+	public PushApplication getPushApplication() {
+		return pushApplication;
 	}
 
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setPushApplication(PushApplication pushApplication) {
+		this.pushApplication = pushApplication;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 	public String getContent() {
@@ -60,4 +81,19 @@ public class DocumentMessage implements Serializable {
 		this.qualifier = qualifier;
 	}
 
+	public Boolean getLatest() {
+		return latest;
+	}
+
+	public void setLatest(Boolean latest) {
+		this.latest = latest;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
+	}
 }

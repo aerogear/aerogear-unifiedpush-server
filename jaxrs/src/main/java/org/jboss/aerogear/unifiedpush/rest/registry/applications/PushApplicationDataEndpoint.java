@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -99,7 +98,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-			@QueryParam("date") Long date, @QueryParam("type") DocumentType type, @Context HttpServletRequest request) {
+			@QueryParam("publisher") DocumentType publisher, @Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
@@ -108,7 +107,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		}
 
 		try {
-			documentService.getPushApplicationDocuments(pushApp, type, new Date(date));
+			documentService.getDocuments(pushApp, publisher);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve documents for push app", e);
@@ -119,12 +118,12 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	/**
 	 * POST deploys a file and stores it for later retrieval by a client of the
 	 * push application.
-	 *
+	 *  
+	 * @deprecated This is a private case of @POST /document/{publisher}/{alias}/{qualifier}
 	 * @param pushAppId
 	 *            id of
 	 *            {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
-	 * @aliasToDocuments a map between aliases and a list of documents to save
-	 *                   for each one
+	 * @aliasToDocument a map between aliases and documents.
 	 *
 	 * @statuscode 401 if unauthorized for this push application
 	 * @statuscode 500 if request failed
@@ -145,10 +144,10 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 					.entity("Unauthorized Request").build();
 		}
 
-		if (!deployRequest.getAliasToDocuments().isEmpty()) {
+		if (!deployRequest.getAliasToDocument().isEmpty()) {
 			try {
-				documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocuments(),
-						DocumentMessage.getDocumentQualifier(deployRequest.getType()));
+				documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocument(),
+						DocumentMessage.getQualifier(deployRequest.getQualifier()));
 
 				final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
 				if (pushMessage != null) {

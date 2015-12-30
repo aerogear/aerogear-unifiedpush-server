@@ -1,13 +1,10 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
@@ -41,51 +38,64 @@ public class DocumentServiceImpl implements DocumentService {
 		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(
 				variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		documentDao.create(createMessage(content, clientInstallation.getAlias(),
-				pushApplication.getPushApplicationID(), DocumentType.APPLICATION_DOCUMENT, qualifier));
+		documentDao.create(createMessage(content, pushApplication, DocumentType.INSTALLATION,
+				clientInstallation.getAlias(), qualifier));
 	}
 
 	@Override
-	public List<String> getPushApplicationDocuments(PushApplication pushApplication, DocumentType type, Date higherMark) {
-		return documentDao.findPushDocumentsNewer(pushApplication, higherMark);
-	}
-
-	private void saveForAlias(PushApplication pushApplication, String alias, String document, String qualifier) {
-		documentDao.create(createMessage(document, pushApplication.getPushApplicationID(), alias,
-				DocumentType.INSTALLATION_DOCUMENT, qualifier));
+	public List<DocumentMessage> getDocuments(PushApplication pushApplication, DocumentType publisher) {
+		return documentDao.findDocuments(createMessage(pushApplication, publisher, DocumentMessage.NULL_ALIAS,
+				DocumentMessage.NULL_QUALIFIER, false));
 	}
 
 	@Override
-	@TransactionAttribute(value = TransactionAttributeType.SUPPORTS)
-	public List<String> getAliasDocuments(Variant variant, String alias, String qualifier, Date afterDate) {
+	public String getLatestDocument(Variant variant, DocumentType publisher, String alias, String qualifier) {
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		return documentDao.findAliasDocumentsNewer(pushApplication, alias, qualifier, afterDate);
-	}
+		DocumentMessage document = documentDao.findLatestDocument(createMessage(pushApplication, publisher, alias,
+				qualifier, true));
 
+		if (document != null)
+			return document.getContent();
+
+		return null;
+	}
+	
 	@Override
-	public void saveForAliases(PushApplication pushApplication, Map<String, List<String>> aliasToDocuments,
-			String qualifier) {
-		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocuments.keySet());
-		for (Map.Entry<String, List<String>> entry : aliasToDocuments.entrySet()) {
+	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier) {
+		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocument.keySet());
+		
+		for (Map.Entry<String, String> entry : aliasToDocument.entrySet()) {
 			String alias = entry.getKey();
-			if (enabledDevices.contains(alias)) {
-				List<String> documents = entry.getValue();
-				for (String document : documents) {
-					saveForAlias(pushApplication, alias, document, qualifier);
-				}
+			if (enabledDevices.contains(alias) || alias.equalsIgnoreCase(DocumentMessage.NULL_ALIAS)) {
+				save(entry.getValue(), pushApplication, DocumentType.APPLICATION, alias, qualifier);
 			}
 		}
-
 	}
 
-	private DocumentMessage createMessage(String content, String source, String destination, DocumentType documentType,
+	private void save(String document, PushApplication pushApplication, DocumentType publisher, String alias,
 			String qualifier) {
+		documentDao.create(createMessage(document, pushApplication, publisher, alias, qualifier));
+	}
+
+	private DocumentMessage createMessage(String content, PushApplication pushApplication, DocumentType publisher,
+			String alias, String qualifier) {
 		DocumentMessage message = new DocumentMessage();
-		message.setSource(source);
-		message.setDestination(destination);
 		message.setContent(content);
-		message.setType(documentType);
+		message.setPushApplication(pushApplication);
+		message.setPublisher(publisher);
+		message.setAlias(alias);
 		message.setQualifier(qualifier);
+		return message;
+	}
+
+	private DocumentMessage createMessage(PushApplication pushApplication, DocumentType publisher, String alias,
+			String qualifier, Boolean latest) {
+		DocumentMessage message = new DocumentMessage();
+		message.setPushApplication(pushApplication);
+		message.setPublisher(publisher);
+		message.setAlias(alias);
+		message.setQualifier(qualifier);
+		message.setLatest(latest);
 		return message;
 	}
 
