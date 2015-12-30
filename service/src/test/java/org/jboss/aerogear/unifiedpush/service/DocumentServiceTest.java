@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -126,6 +127,24 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
 	}
+	
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void saveGlobalDocumentTest() {
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
+					
+		Map<String, String> aliasToDocuments = new HashMap<String, String>();
+		aliasToDocuments.put(DocumentMessage.NULL_ALIAS, "{TEST JSON NULL_ALIAS}");
+
+		// Save alias should return without saving, device is not enabled.
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DocumentMessage.NULL_ALIAS,
+				DEFAULT_DEVICE_QUALIFIER);
+		
+		Assert.assertTrue(document != null && document.equals("{TEST JSON NULL_ALIAS}"));
+	}
+	
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
