@@ -2,7 +2,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -29,9 +27,6 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Inject
 	private ClientInstallationService clientInstallationService;
-
-	@Inject
-	private InstallationDao installationDao;
 
 	@Override
 	public void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier) {
@@ -62,13 +57,8 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Override
 	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier) {
-		Set<String> enabledDevices = installationDao.filterDisabledDevices(aliasToDocument.keySet());
-		
 		for (Map.Entry<String, String> entry : aliasToDocument.entrySet()) {
-			String alias = entry.getKey();
-			if (enabledDevices.contains(alias) || alias.equalsIgnoreCase(DocumentMessage.NULL_ALIAS)) {
-				save(entry.getValue(), pushApplication, DocumentType.APPLICATION, alias, qualifier);
-			}
+			save(entry.getValue(), pushApplication, DocumentType.APPLICATION, entry.getKey(), qualifier);
 		}
 	}
 

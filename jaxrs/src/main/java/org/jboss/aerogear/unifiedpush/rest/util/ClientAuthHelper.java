@@ -27,7 +27,8 @@ public class ClientAuthHelper {
 		}
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), 
 			HttpBasicHelper.decodeBase64(deviceToken));
-		return installation == null ? null : variant;
+		
+		return installation != null && installation.isEnabled() ? variant: null;
 	}
 	
 	/**

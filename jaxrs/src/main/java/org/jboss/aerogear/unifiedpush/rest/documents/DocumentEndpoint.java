@@ -28,16 +28,13 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/document")
-public class DocumentEndpoint {
-	
+public class DocumentEndpoint {	
     private final AeroGearLogger logger = AeroGearLogger.getInstance(DocumentEndpoint.class);
 	
 	@Inject
     private ClientInstallationService clientInstallationService;
-	
     @Inject
     private GenericVariantService genericVariantService;
-    
     @Inject
     private DocumentService documentService;
     
