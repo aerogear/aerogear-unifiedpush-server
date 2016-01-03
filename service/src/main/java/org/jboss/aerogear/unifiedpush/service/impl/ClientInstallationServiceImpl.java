@@ -89,15 +89,20 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
 		List<Variant> variants = application.getVariants();
+		boolean matched = false;
+		
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
 			if(variant.getType().equals(currentVariant.getType())){
 				installation.setVariant(variant);
+				matched = true;
 				break;
 			}
 		}
 		
-		updateInstallation(installation);
+		if (matched)
+			updateInstallation(installation);
+		
 		return installation;
 	}
 

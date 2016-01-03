@@ -514,6 +514,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // Associate the device - find the matching application and update the device to the right application 
         installation = clientInstallationService.associateInstallation(installation, variant);
         
+        // Associate did not match to any alias  
+        if (installation.getVariant() ==  variant) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("unable to assosiate, either alias is missing or can't find equivelent variant!"),
+					request);
+        }
+        
         Variant newVariant = installation.getVariant();
  
         return appendAllowOriginHeader(Response.ok(newVariant), request);
