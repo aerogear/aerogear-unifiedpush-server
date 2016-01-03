@@ -133,7 +133,7 @@ public interface ClientInstallationService {
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
-	Installation associateInstallation(Installation installation, Variant currentVariant);
+    Variant associateInstallation(Installation installation, Variant currentVariant);
 
 	/**
 	 * Removes installations that are installed under the supplied application, but whose alias

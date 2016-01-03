@@ -142,19 +142,14 @@ public class InstallationRegistrationEndpointTest {
 			ArrayList<String> aliases = new ArrayList<String>();
 			aliases.add(inst.getAlias());
 			applicationService.updateAliasesAndInstallations(app, aliases);
-				
-			// Associate according to alias before we enable verification.
-			// Should result in the same variant
-			inst = installationService.associateInstallation(inst, variant);
-			Assert.assertTrue(inst != null && inst.isEnabled() == false);
 			
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
 			VerificationResult results = verificationService.verifyDevice(inst, variant, code);
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 			
-			inst = installationService.associateInstallation(inst, variant);
-			Assert.assertTrue(inst != null && inst.isEnabled() == true);
+			Variant var = installationService.associateInstallation(inst, variant);
+			Assert.assertTrue(var != null);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}finally{

@@ -75,35 +75,31 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private Configuration configuration;
     
 	@Override
-	public Installation associateInstallation(Installation installation, Variant currentVariant) {
-		
+	public Variant associateInstallation(Installation installation, Variant currentVariant) {
 		if (installation.getAlias() == null) {
-			return installation;
+			logger.warning("Unable to associate, installation alias is missing!");
+			return null;
 		}
 		
 		Alias alias = aliasDao.findByName(installation.getAlias());
 		
 		if (alias == null) {
-			return installation;
+			return null;
 		}
 		
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
 		List<Variant> variants = application.getVariants();
-		boolean matched = false;
 		
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
 			if(variant.getType().equals(currentVariant.getType())){
 				installation.setVariant(variant);
-				matched = true;
-				break;
+				updateInstallation(installation);
+				return variant;
 			}
 		}
 		
-		if (matched)
-			updateInstallation(installation);
-		
-		return installation;
+		return null;
 	}
 
 	@Override

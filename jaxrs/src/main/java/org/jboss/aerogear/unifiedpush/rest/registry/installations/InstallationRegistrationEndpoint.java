@@ -512,16 +512,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		}
 
         // Associate the device - find the matching application and update the device to the right application 
-        installation = clientInstallationService.associateInstallation(installation, variant);
+        Variant newVariant = clientInstallationService.associateInstallation(installation, variant);
         
         // Associate did not match to any alias  
-        if (installation.getVariant() ==  variant) {
+        if (newVariant == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("unable to assosiate, either alias is missing or can't find equivelent variant!"),
+					.entity("unable to assosiate, either alias is missing or can't find equivalent variant!"),
 					request);
         }
-        
-        Variant newVariant = installation.getVariant();
  
         return appendAllowOriginHeader(Response.ok(newVariant), request);
     }
@@ -542,7 +540,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
 
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Credentials", "true").type(MediaType.APPLICATION_JSON)
                  .build();
     }
 
