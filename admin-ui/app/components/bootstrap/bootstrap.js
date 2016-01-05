@@ -60,12 +60,12 @@ angular.module('upsConsole')
       });
       applicationsEndpoint.bootstrap({}, formData)
         .then(function( app ) {
-          Notifications.success('Application ' + app.name + ' successfully created');
+          Notifications.success('Push notification support enabled for ' + app.name);
           $rootScope.$broadcast('upsUpdateStats');
           $rootScope.$broadcast('upsNavigate', '/app/' + app.pushApplicationID + '/variants');
         })
         .catch(function() {
-          Notifications.error('Failed to create application ' + self.application.name);
+          Notifications.error('Failed to enable Push notification support for ' + self.application.name);
         });
     };
 
