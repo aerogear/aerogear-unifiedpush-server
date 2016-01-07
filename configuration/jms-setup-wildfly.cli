@@ -1,0 +1,6 @@
+connect
+batch
+
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:add(redelivery-delay=1000, max-delivery-attempts=300)
+
+run-batch

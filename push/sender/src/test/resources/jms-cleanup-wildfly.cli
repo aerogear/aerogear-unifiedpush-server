@@ -1,0 +1,6 @@
+connect
+batch
+
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:remove()
+
+run-batch

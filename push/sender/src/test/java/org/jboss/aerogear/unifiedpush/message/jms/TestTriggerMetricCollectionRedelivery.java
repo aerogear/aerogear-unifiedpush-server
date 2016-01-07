@@ -18,6 +18,8 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -29,9 +31,11 @@ import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,17 +63,21 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
                 .as(WebArchive.class);
     }
 
-    @Before
-    public void setUp() {
-        messageId = UUID.randomUUID().toString();
+    @Test @RunAsClient @InSequence(1)
+    public void setUpMessaging(@ArquillianResource URL contextPath) throws IOException {
+        new MessagingSetup(contextPath).install();
     }
 
-    @Test(timeout = 11000)
-    public void testTransactedMDBRedelivery() throws InterruptedException {
+    @Test(timeout = 6000) @InSequence(2)
+    public void testTransactedRedelivery() throws InterruptedException {
+        // given
+        messageId = UUID.randomUUID().toString();
         TriggerMetricCollection msg = new TriggerMetricCollection(messageId);
 
+        // when
         triggerMetricCollection.fire(msg);
 
+        // then
         latch.await();
     }
 
@@ -88,5 +96,10 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
             }
             latch.countDown();
         }
+    }
+
+    @Test @RunAsClient @InSequence(3)
+    public void tearDownMessagingSetup(@ArquillianResource URL contextPath) throws IOException {
+        new MessagingSetup(contextPath).uninstall();
     }
 }
