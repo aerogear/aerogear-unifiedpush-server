@@ -16,17 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Consumes {@link MessageHolderWithTokens} from queue and pass them as a CDI event for further processing.

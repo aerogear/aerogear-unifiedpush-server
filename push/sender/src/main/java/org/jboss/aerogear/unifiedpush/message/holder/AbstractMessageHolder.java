@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
 
 /**
  * Abstract class that serves as a base for objects that holds push notification details and can be used as a payload in messaging subsystems.

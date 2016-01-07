@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
  */
 public abstract class DispatchInitiationException extends RuntimeException {
 
-    private final static String MESSAGE = "Failed to initiate dispatch, the message will be re-delivered";
+    private static final String MESSAGE = "Failed to initiate dispatch, the message will be re-delivered";
 
     private static final long serialVersionUID = 8379855199857322818L;
 

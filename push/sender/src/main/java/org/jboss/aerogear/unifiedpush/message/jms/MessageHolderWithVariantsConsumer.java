@@ -16,12 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 
 /**
  * Consumes {@link MessageHolderWithVariants} from queue and pass them as a CDI event for further processing.

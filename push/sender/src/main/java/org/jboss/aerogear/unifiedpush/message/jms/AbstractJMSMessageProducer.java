@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import java.io.Serializable;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.jms.Connection;
@@ -26,13 +28,14 @@ import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
-
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import java.io.Serializable;
 
 /**
  * Simplifies sending of messages to a destination
  */
 public abstract class AbstractJMSMessageProducer {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageProducer.class);
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
@@ -43,6 +46,9 @@ public abstract class AbstractJMSMessageProducer {
     /**
      * Sends message to the destination in non-transactional manner.
      *
+     * @param destination where to send
+     * @param message what to send
+     *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
     protected void sendNonTransacted(Destination destination, Serializable message) {
@@ -51,6 +57,9 @@ public abstract class AbstractJMSMessageProducer {
 
     /**
      * Sends message to the destination in transactional manner.
+     *
+     * @param destination where to send
+     * @param message what to send
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends
      */
@@ -61,6 +70,11 @@ public abstract class AbstractJMSMessageProducer {
     /**
      * Sends message to destination with given JMS message property name and value in non-transactional manner.
      *
+     * @param destination where to send
+     * @param message what to send
+     * @param propertyName property of obj
+     * @param propertValue value of obj
+     *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
     protected void sendNonTransacted(Destination destination, Serializable message, String propertyName, String propertValue) {
@@ -69,6 +83,11 @@ public abstract class AbstractJMSMessageProducer {
 
     /**
      * Sends message to destination with given JMS message property name and value in transactional manner.
+     *
+     * @param destination where to send
+     * @param message what to send
+     * @param propertyName property of obj
+     * @param propertValue value of obj
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends.
      */
@@ -99,7 +118,7 @@ public abstract class AbstractJMSMessageProducer {
                 try {
                     connection.close();
                 } catch (JMSException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to close JMS connection: ", e);
                 }
             }
         }

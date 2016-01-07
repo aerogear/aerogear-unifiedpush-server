@@ -123,6 +123,6 @@ public class SenderConfigurationProvider {
      */
     private static enum ConfigurationProperty {
         batchesToLoad,
-        batchSize;
+        batchSize
     }
 }

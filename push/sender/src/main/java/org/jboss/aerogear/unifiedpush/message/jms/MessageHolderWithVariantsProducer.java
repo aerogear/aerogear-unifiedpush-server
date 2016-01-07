@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 
 /**
  * Receives CDI event with {@link MessageHolderWithVariants} payload and dispatches this payload to JMS queue selected by a type of the variant specified in payload.

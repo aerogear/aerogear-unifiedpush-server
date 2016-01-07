@@ -46,14 +46,13 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class TestTokenBatchDeduplication extends AbstractJMSTest {
 
-    private static final long TEST_TIMEOUT = 2000;
+    private static final long TEST_TIMEOUT = 5000;
 
     @Deployment
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestTokenBatchDeduplication.class)
                 .withMessaging()
-                    .addClasses(MessageHolderWithTokensProducer.class, MessageHolderWithTokensConsumer.class, AbstractJMSMessageListener.class)
-                    .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
+                .withMessageDrivenBeans()
                 .as(WebArchive.class);
     }
 
@@ -77,7 +76,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
 
         // we will be able to receive a message just once
         firstBatch.await();
-        Thread.sleep(1000);
+        Thread.sleep(2500);
         assertEquals(1, counter.get());
     }
 
@@ -87,7 +86,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
         // any other try for sending the message with same ID...
         sendBatchWithSerialId(1);
         // ...will again mean the message won't be accepted to the queue (will be de-duplicated based on its ID)
-        Thread.sleep(1000);
+        Thread.sleep(2500);
         assertEquals(1, counter.get());
     }
 
@@ -98,7 +97,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
         sendBatchWithSerialId(2);
         sendBatchWithSerialId(2);
         secondBatch.await();
-        Thread.sleep(1000);
+        Thread.sleep(2500);
         assertEquals(2, counter.get());
     }
 

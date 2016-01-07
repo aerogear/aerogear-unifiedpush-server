@@ -16,12 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
@@ -31,6 +25,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
 public class TestSenderConfigurationProducer {
@@ -49,7 +49,7 @@ public class TestSenderConfigurationProducer {
     private Instance<SenderConfiguration> senderConfiguration;
 
     @Test
-    public void test() {
+    public void testAndroid() {
         try {
             System.setProperty("aerogear.android.batchSize", "999");
             SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.ANDROID)).get();
@@ -57,6 +57,18 @@ public class TestSenderConfigurationProducer {
             assertEquals(999, configuration.batchSize());
         } finally {
             System.clearProperty("aerogear.android.batchSize");
+        }
+    }
+
+    @Test
+    public void testIOS() {
+        try {
+            System.setProperty("aerogear.ios.batchSize", "1");
+            SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.IOS)).get();
+            assertEquals(3, configuration.batchesToLoad());
+            assertEquals(1, configuration.batchSize());
+        } finally {
+            System.clearProperty("aerogear.ios.batchSize");
         }
     }
 }
