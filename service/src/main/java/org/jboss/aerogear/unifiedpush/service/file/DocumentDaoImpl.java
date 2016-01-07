@@ -99,7 +99,8 @@ public class DocumentDaoImpl implements DocumentDao {
 		List<DocumentMessage> documents = new ArrayList<>(files.size());
 		DocumentMessage document;
 		for (File file : files) {
-			document = new DocumentMessage(new String(fileManager.read(file.toPath())), message);
+			document = new DocumentMessage(new String(fileManager.read(file.toPath()),
+					StandardCharsets.UTF_8), message);
 			document.setTimestamp(file.lastModified());
 			documents.add(document);
 		}
