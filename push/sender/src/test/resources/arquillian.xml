@@ -36,9 +36,9 @@
 
             <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
             <!-- both http and management ports are offset  -->
-<!--             <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4321</property> -->
+            <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4321</property>
             <!--  tell Arquillian where he will find the running container -->
-<!--             <property name="managementPort">14311</property> -->
+            <property name="managementPort">14311</property>
         </configuration>
     </container>
 </arquillian>

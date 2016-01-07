@@ -72,6 +72,11 @@
             <jms-queue name="AllBatchesLoadedQueue">
                 <entry name="/queue/AllBatchesLoadedQueue"/>
             </jms-queue>
+            
+            
+            <jms-queue name="TriggerMetricCollectionQueue">
+                <entry name="/queue/TriggerMetricCollectionQueue"/>
+            </jms-queue>
         </jms-destinations>
     </hornetq-server>
 </messaging-deployment>
