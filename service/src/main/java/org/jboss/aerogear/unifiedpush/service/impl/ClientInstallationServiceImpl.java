@@ -261,6 +261,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
     
     @Override
+    public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+        return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
+    }
+    
+    @Override
 	public void removeInstallationNotInAliasList(PushApplication application, List<String> aliases) {
 		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
 		for (Variant variant : application.getVariants()) {
