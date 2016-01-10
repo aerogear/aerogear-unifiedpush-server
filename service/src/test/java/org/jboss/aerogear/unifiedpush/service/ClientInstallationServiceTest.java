@@ -463,6 +463,56 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
         assertNull(installation);
     }
+    
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    public void testFindDisabledInstallationForVariantByDeviceToken() {
+    	AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("Key");
+        variant.setName("NewVaraint");
+        variant.setDeveloper("me");
+        variantService.addVariant(variant);
+        
+        PushApplication application = new PushApplication();
+        application.setName("NewApp");
+        applicationService.addPushApplication(application);
+        applicationService.addVariant(application, variant);
+        
+        Installation disabled = new Installation();
+        String deviceToken = TestUtils.generateFakedDeviceTokenString();
+        disabled.setDeviceToken(deviceToken);
+        disabled.setEnabled(false);
+        clientInstallationService.addInstallationSynchronously(variant, disabled);
+        
+        Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(variant.getVariantID(), 
+        		deviceToken);
+        assertNull(installation);
+    }
+    
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    public void testFindEnabledInstallationForVariantByDeviceToken() {
+    	AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("Key");
+        variant.setName("NewVaraint");
+        variant.setDeveloper("me");
+        variantService.addVariant(variant);
+        
+        PushApplication application = new PushApplication();
+        application.setName("NewApp");
+        applicationService.addPushApplication(application);
+        applicationService.addVariant(application, variant);
+        
+        Installation disabled = new Installation();
+        String deviceToken = TestUtils.generateFakedDeviceTokenString();
+        disabled.setDeviceToken(deviceToken);
+        disabled.setEnabled(true);
+        clientInstallationService.addInstallationSynchronously(variant, disabled);
+        
+        Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(variant.getVariantID(), 
+        		deviceToken);
+        assertNotNull(installation);
+    }
 
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
