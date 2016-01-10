@@ -3,12 +3,14 @@ package org.jboss.aerogear.unifiedpush.rest.documents;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -64,6 +66,7 @@ public class DocumentEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response deployDocuments(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
+			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
 			@Context HttpServletRequest request) {
 
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
@@ -74,7 +77,7 @@ public class DocumentEndpoint {
 
 		try {
 			documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity,
-					DocumentMessage.getQualifier(qualifier));
+					DocumentMessage.getQualifier(qualifier), overwrite);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.severe("Cannot deploy file for push application", e);

@@ -21,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -134,7 +135,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
 	public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID,
-			DocumentDeployRequest deployRequest, @Context HttpServletRequest request) {
+			DocumentDeployRequest deployRequest, @Context HttpServletRequest request,
+			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite) {
 
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
@@ -147,7 +149,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		if (!deployRequest.getAliasToDocument().isEmpty()) {
 			try {
 				documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocument(),
-						DocumentMessage.getQualifier(deployRequest.getQualifier()));
+						DocumentMessage.getQualifier(deployRequest.getQualifier()), overwrite);
 
 				final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
 				if (pushMessage != null) {

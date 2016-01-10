@@ -6,7 +6,7 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 
 public interface DocumentDao {
 	
-	void create(DocumentMessage document);
+	void create(DocumentMessage document, boolean overwrite);
 	
 	DocumentMessage findLatestDocument(DocumentMessage message);
 	

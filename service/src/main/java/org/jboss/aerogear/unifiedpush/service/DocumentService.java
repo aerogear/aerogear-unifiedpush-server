@@ -10,11 +10,11 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public interface DocumentService {
 
-	void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier);
+	void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier, boolean overwrite);
 
 	List<DocumentMessage> getDocuments(PushApplication pushApplication, DocumentType publisher);
 	
 	String getLatestDocument(Variant variant, DocumentType publisher, String alias, String qualifier);
 
-	void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier);
+	void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier, boolean overwrite);
 }

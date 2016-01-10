@@ -80,7 +80,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
 
 			// Save alias should return without saving, device is not enabled.
-			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, false);
 			String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
 					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
@@ -90,7 +90,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			// Re-save device
-			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+			documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, false);
 			document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
 					DEFAULT_DEVICE_QUALIFIER);
 
@@ -121,7 +121,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON NEWEST}");
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, false);
 		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
 				DEFAULT_DEVICE_QUALIFIER);
 		
@@ -138,7 +138,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasToDocuments.put(DocumentMessage.NULL_ALIAS, "{TEST JSON NULL_ALIAS}");
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, false);
 		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION, DocumentMessage.NULL_ALIAS,
 				DEFAULT_DEVICE_QUALIFIER);
 		
@@ -172,10 +172,52 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
 
 		// Save alias should return without saving, divice is not emabled.
-		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER);
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, false);
 		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
 				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
+	}
+	
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void saveDocumentOverwriteTest() {
+		// Prepare installation
+		Installation iosInstallation = new Installation();
+		iosInstallation.setDeviceType("iPhone7,2");
+		iosInstallation.setDeviceToken(DEFAULT_DEVICE_TOKEN);
+		iosInstallation.setOperatingSystem("iOS");
+		iosInstallation.setOsVersion("9.0.2");
+		iosInstallation.setAlias(DEFAULT_DEVICE_ALIAS);
+
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
+
+		installationService.addInstallationSynchronously(variant, iosInstallation);
+
+		Installation inst = installationService.findById(iosInstallation.getId());
+		Assert.assertTrue(inst != null && inst.isEnabled());
+
+		// Register alias
+		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
+
+		Map<String, String> aliasToDocuments = new HashMap<String, String>();
+		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
+
+		// Save once
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, true);
+		String document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+
+		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
+		
+		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON 2}");
+
+		// save 2nd time and check that it was overwritten
+		documentService.saveForAliases(pushApplication, aliasToDocuments, DEFAULT_DEVICE_QUALIFIER, true);
+		document = documentService.getLatestDocument(variant, DocumentType.APPLICATION,
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+
+		Assert.assertTrue(document != null && document.equals("{TEST JSON 2}"));
 	}
 }

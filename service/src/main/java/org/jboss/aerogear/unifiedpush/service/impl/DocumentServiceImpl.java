@@ -29,12 +29,12 @@ public class DocumentServiceImpl implements DocumentService {
 	private ClientInstallationService clientInstallationService;
 
 	@Override
-	public void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier) {
+	public void saveForPushApplication(String deviceToken, Variant variant, String content, String qualifier, boolean overwrite) {
 		Installation clientInstallation = clientInstallationService.findInstallationForVariantByDeviceToken(
 				variant.getVariantID(), deviceToken);
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		documentDao.create(createMessage(content, pushApplication, DocumentType.INSTALLATION,
-				clientInstallation.getAlias(), qualifier));
+				clientInstallation.getAlias(), qualifier), overwrite);
 	}
 
 	@Override
@@ -56,15 +56,16 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 	
 	@Override
-	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier) {
+	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier,
+			boolean overwrite) {
 		for (Map.Entry<String, String> entry : aliasToDocument.entrySet()) {
-			save(entry.getValue(), pushApplication, DocumentType.APPLICATION, entry.getKey(), qualifier);
+			save(entry.getValue(), pushApplication, DocumentType.APPLICATION, entry.getKey(), qualifier, overwrite);
 		}
 	}
 
 	private void save(String document, PushApplication pushApplication, DocumentType publisher, String alias,
-			String qualifier) {
-		documentDao.create(createMessage(document, pushApplication, publisher, alias, qualifier));
+			String qualifier, boolean overwrite) {
+		documentDao.create(createMessage(document, pushApplication, publisher, alias, qualifier), overwrite);
 	}
 
 	private DocumentMessage createMessage(String content, PushApplication pushApplication, DocumentType publisher,
