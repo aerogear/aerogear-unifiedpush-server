@@ -18,13 +18,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -39,6 +41,8 @@ public class DocumentEndpoint {
     private GenericVariantService genericVariantService;
     @Inject
     private DocumentService documentService;
+    @Inject
+    private PushApplicationService pushApplicationService;
     
     @OPTIONS
     @ReturnType("java.lang.Void")
@@ -62,10 +66,11 @@ public class DocumentEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{publisher}/{alias}/{qualifier}")
+	@Path("/{publisher}/{alias}/{qualifier}/{id}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response deployDocuments(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
+			@PathParam("id") String id,
 			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
 			@Context HttpServletRequest request) {
 
@@ -76,8 +81,9 @@ public class DocumentEndpoint {
 		}
 
 		try {
-			documentService.saveForPushApplication(ClientAuthHelper.getDeviceToken(request), variant, entity,
-					DocumentMessage.getQualifier(qualifier), overwrite);
+			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
+			documentService.saveForPushApplication(pushApp, alias, entity,
+					DocumentMetadata.getQualifier(qualifier), id, overwrite);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.severe("Cannot deploy file for push application", e);
@@ -109,7 +115,7 @@ public class DocumentEndpoint {
 		}
 
 		try {
-			String document = documentService.getLatestDocument(variant, DocumentMessage.getPublisher(publisher), alias, DocumentMessage.getQualifier(qualifier));
+			String document = documentService.getLatestDocumentForAlias(variant, DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier));
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING: document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);

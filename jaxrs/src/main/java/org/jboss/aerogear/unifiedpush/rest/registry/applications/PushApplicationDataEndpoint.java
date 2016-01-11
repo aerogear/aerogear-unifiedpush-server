@@ -33,8 +33,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.document.DocumentDeployRequest;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
@@ -149,7 +149,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		if (!deployRequest.getAliasToDocument().isEmpty()) {
 			try {
 				documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocument(),
-						DocumentMessage.getQualifier(deployRequest.getQualifier()), overwrite);
+						DocumentMetadata.getQualifier(deployRequest.getQualifier()), null, overwrite);
 
 				final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
 				if (pushMessage != null) {
