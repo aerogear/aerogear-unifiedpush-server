@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +47,8 @@ import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 
 import com.qmino.miredot.annotations.ReturnType;
 
@@ -94,12 +97,14 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	}
 
 	@GET
-	@Path("/{pushAppID}/document")
+	@Path("/{pushAppID}/document/{qualifier}/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("multipart/form-data")
+	@PartType(MediaType.TEXT_PLAIN)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-			@QueryParam("publisher") DocumentType publisher, @Context HttpServletRequest request) {
+			@PathParam("qualifier") String qualifer, @PathParam("id") String id, 
+			@Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
@@ -108,8 +113,12 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		}
 
 		try {
-			documentService.getDocuments(pushApp, publisher);
-			return Response.ok(EmptyJSON.STRING).build();
+			MultipartFormDataOutput mdo = new MultipartFormDataOutput();
+			List<String> documents = documentService.getLatestDocumentsForApplication(pushApp, qualifer, id);
+			for (int i = 0; i < documents.size(); i++) {
+				mdo.addFormData("file" + i, documents.get(i), MediaType.TEXT_PLAIN_TYPE);
+			}
+			return Response.ok(mdo).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve documents for push app", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();

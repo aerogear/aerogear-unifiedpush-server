@@ -63,10 +63,16 @@ public class DocumentDaoImpl implements DocumentDao {
 	@Override
 	public List<DocumentMessage> findLatestDocumentsForApplication(DocumentMetadata message) {
 		try {
+			final Path fullDirectoryPath = getFullDirectoryPath(Paths.get(message.getPushApplication()
+					.getPushApplicationID(), DocumentType.INSTALLATION
+					.toString()));
+			
+			if (!fullDirectoryPath.toFile().exists()) {
+				return Collections.emptyList();
+			}
+			
 			List<File> aliasDirectories = fileManager.list(
-					getFullDirectoryPath(Paths.get(message.getPushApplication()
-							.getPushApplicationID(), DocumentType.INSTALLATION
-							.toString())), new FileFilter() {
+					fullDirectoryPath, new FileFilter() {
 						@Override
 						public boolean accept(File pathname) {
 							return pathname.isDirectory();
