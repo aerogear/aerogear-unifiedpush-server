@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +34,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.document.DocumentDeployRequest;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
