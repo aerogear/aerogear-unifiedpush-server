@@ -27,6 +27,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 
 /**
@@ -36,9 +37,8 @@ import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 @Stateless
 public class PushMessageMetricsService {
 
-    // that's what we currently use as the maximum days the message information objects are stored
-    // before wiped out automatically by the DeleteOldPushMessageInformationScheduler
-    private final static int DAYS_OF_MAX_OLDEST_INFO_MSG = 30;
+    // system property name used as the configurable maximum days the message information objects are stored
+    public static final String AEROGEAR_METRICS_STORAGE_MAX_DAYS = "aerogear.metrics.storage.days";
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
@@ -131,7 +131,7 @@ public class PushMessageMetricsService {
      *  <i>older</i> than 30 days!
      */
     public void deleteOutdatedPushInformationData() {
-        final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
+        final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
 

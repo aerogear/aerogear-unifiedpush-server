@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.util;
+package org.jboss.aerogear.unifiedpush.system;
 
 
 import org.junit.After;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.*;
+
 import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigurationUtilsTest {
 

@@ -191,7 +191,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
      * </pre>
      *
-     * @HTTP 200 (OK) Successful indicated that application was opened due to push.
+     * @H   TTP 200 (OK) Successful indicated that application was opened due to push.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      *
      * @param pushMessageId push message identifier

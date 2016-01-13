@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
