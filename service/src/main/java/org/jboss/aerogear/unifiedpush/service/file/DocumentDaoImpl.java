@@ -120,7 +120,10 @@ public class DocumentDaoImpl implements DocumentDao {
 		try {
 			files = fileManager.list(directory.toPath(), new FileFilter() {
 				@Override
-				public boolean accept(File pathname) {					
+				public boolean accept(File pathname) {	
+					if (pathname.isDirectory()) {
+						return false;
+					}
 					String[] parts = pathname.getName().split(DOCUMENT_TOKEN);
 					if (filter != null
 							&& !filter.accept(parts[0], DocumentType.valueOf(parts[1]), parts[2], parts[3], parts[4], parts[5])) {
