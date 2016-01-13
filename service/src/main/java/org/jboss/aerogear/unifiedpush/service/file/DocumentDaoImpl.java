@@ -81,7 +81,10 @@ public class DocumentDaoImpl implements DocumentDao {
 			List<DocumentMessage> documents = new LinkedList<>();
 			
 			for (File aliasDirectory : aliasDirectories) {
-				documents.add(findLatestDocumentInDirectory(aliasDirectory.toPath(), message));
+				final DocumentMessage latest = findLatestDocumentInDirectory(aliasDirectory.toPath(), message);
+				if (latest != null) {
+					documents.add(latest);
+				}
 			}
 			
 			return documents;
@@ -117,7 +120,7 @@ public class DocumentDaoImpl implements DocumentDao {
 		try {
 			files = fileManager.list(directory.toPath(), new FileFilter() {
 				@Override
-				public boolean accept(File pathname) {
+				public boolean accept(File pathname) {					
 					String[] parts = pathname.getName().split(DOCUMENT_TOKEN);
 					if (filter != null
 							&& !filter.accept(parts[0], DocumentType.valueOf(parts[1]), parts[2], parts[3], parts[4], parts[5])) {
@@ -189,10 +192,8 @@ public class DocumentDaoImpl implements DocumentDao {
 		@Override
 		public boolean accept(String pushApp, DocumentType type,
 				String alias, String qualifier, String time, String id) {
-			System.out.println(documentMetadata.getAlias() + "," + alias);
-			System.out.println(documentMetadata.getPushApplication() + "," + pushApp);
-			System.out.println(documentMetadata.getPublisher() + "," + type);
-			if (documentMetadata.getAlias() != null && !documentMetadata.getAlias().equals(alias)) return false;
+			if (!documentMetadata.getAlias().equalsIgnoreCase(DocumentMetadata.NULL_ALIAS) &&
+					!documentMetadata.getAlias().equals(alias)) return false;
 			if (documentMetadata.getPushApplication() != null && !documentMetadata.getPushApplication().getPushApplicationID().equals(pushApp)) return false;
 			
 			return documentMetadata.getPublisher() == type 
