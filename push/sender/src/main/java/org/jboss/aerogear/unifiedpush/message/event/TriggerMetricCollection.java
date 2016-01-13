@@ -32,7 +32,7 @@ public class TriggerMetricCollection implements Serializable {
     public static final long REDELIVERY_DELAY_MS = 1000L;
 
     private String pushMessageInformationId;
-    private boolean allBatchesLoaded = false;
+    private boolean allVariantsProcessed = false;
 
     public TriggerMetricCollection(String pushMessageInformationId) {
         this.pushMessageInformationId = pushMessageInformationId;
@@ -45,15 +45,15 @@ public class TriggerMetricCollection implements Serializable {
     /**
      * Marks that all batches are known to be loaded and so that the metric collection process can stop.
      */
-    public void markAllBatchesLoaded() {
-        allBatchesLoaded = true;
+    public void markAllVariantsProcessed() {
+        allVariantsProcessed = true;
     }
 
     /**
      * Returns true if all batches are known to be loaded
      */
-    public boolean isAllBatchesLoaded() {
-        return allBatchesLoaded;
+    public boolean areAllVariantsProcessed() {
+        return allVariantsProcessed;
     }
 
 }

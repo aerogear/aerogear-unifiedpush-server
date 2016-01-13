@@ -52,7 +52,7 @@ public class TriggerMetricCollectionConsumer extends AbstractJMSMessageListener<
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(TriggerMetricCollection message) {
         dequeueEvent.fire(message);
-        if (!message.isAllBatchesLoaded()) {
+        if (!message.areAllVariantsProcessed()) {
             context.setRollbackOnly();
         }
     }

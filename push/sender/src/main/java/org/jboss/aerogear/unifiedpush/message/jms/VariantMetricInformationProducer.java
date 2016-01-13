@@ -19,9 +19,11 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
  * Receives CDI event with {@link VariantMetricInformation} payload and dispatches this payload to JMS queue.
@@ -32,10 +34,13 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 public class VariantMetricInformationProducer extends AbstractJMSMessageProducer {
 
     @Resource(mappedName = "java:/queue/MetricsQueue")
-    private Queue tokenBatchQueue;
+    private Queue metricsQueue;
+
+    @Inject
+    private JmsClient jmsClient;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue VariantMetricInformation msg) {
-        sendNonTransacted(tokenBatchQueue, msg);
+        jmsClient.send(msg).withProperty("pushMessageInformationId", msg.getPushMessageInformation().getId()).to(metricsQueue);
     }
 
 }

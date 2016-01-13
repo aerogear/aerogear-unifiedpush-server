@@ -89,7 +89,7 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
                         deltaMs < DELIVERY_DELAY_TOLERANCE_MS);
             }
             if (latch.getCount() == 0) {
-                msg.markAllBatchesLoaded();
+                msg.markAllVariantsProcessed();
             } else {
                 lastDelivery = System.currentTimeMillis();
                 System.out.println("redelivery attempt #" + (NUMBER_OF_FAILURES_UNTIL_SUCCESS - latch.getCount()));
