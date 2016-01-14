@@ -109,7 +109,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         send(variant1Metric2).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
         send(variant2Metric1).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
 
-        metricsCollector.collectMetrics(new TriggerMetricCollection(pushMessageInformationId));
+        metricsCollector.collectMetrics(new TriggerMetricCollection(pushMetric));
 
         variantsCompleted.await(2, TimeUnit.SECONDS);
         pushMessagesCompleted.await(1, TimeUnit.SECONDS);

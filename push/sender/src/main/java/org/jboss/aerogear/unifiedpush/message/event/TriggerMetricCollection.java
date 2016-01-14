@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message.event;
 
 import java.io.Serializable;
 
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 
 /**
@@ -33,6 +34,10 @@ public class TriggerMetricCollection implements Serializable {
 
     private String pushMessageInformationId;
     private boolean allVariantsProcessed = false;
+
+    public TriggerMetricCollection(PushMessageInformation pushMessageInformation) {
+        this.pushMessageInformationId = pushMessageInformation.getId();
+    }
 
     public TriggerMetricCollection(String pushMessageInformationId) {
         this.pushMessageInformationId = pushMessageInformationId;

@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
@@ -52,6 +53,10 @@ public class NotificationDispatcher {
     @Inject
     @DispatchToQueue
     private Event<VariantMetricInformation> dispatchVariantMetricEvent;
+
+    @Inject
+    @DispatchToQueue
+    private Event<TriggerMetricCollection> triggerMetricCollection;
 
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
@@ -119,5 +124,6 @@ public class NotificationDispatcher {
         variantMetricInformation.setServedBatches(1);
 
         dispatchVariantMetricEvent.fire(variantMetricInformation);
+        triggerMetricCollection.fire(new TriggerMetricCollection(pushMessageInformation));
     }
 }

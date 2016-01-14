@@ -59,8 +59,8 @@ public class CdiJmsBridge {
 
     public void queueMessage(@Observes @DispatchToQueue TriggerMetricCollection msg) {
     	jmsClient.send(msg)
-    	    .inTransaction()
     	    .withDuplicateDetectionId(msg.getPushMessageInformationId())
+    	    .withDelayedDelivery(500L)
     	    .to(triggerMetricCollectionQueue);
     }
 }

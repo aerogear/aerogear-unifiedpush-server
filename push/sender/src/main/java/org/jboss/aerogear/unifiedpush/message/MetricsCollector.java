@@ -47,7 +47,7 @@ public class MetricsCollector {
     private PushMessageMetricsService metricsService;
 
     @Resource(mappedName = "java:/queue/MetricsQueue")
-    private Queue tokenBatchQueue;
+    private Queue metricsQueue;
 
     @Resource(mappedName = "java:/queue/BatchLoadedQueue")
     private Queue batchLoadedQueue;
@@ -179,7 +179,7 @@ public class MetricsCollector {
     }
 
     private ObjectMessage receiveVariantMetricInformation(String pushMessageInformationId) {
-        return jmsClient.receive().inTransaction().noWait().withSelector("pushMessageInformationId = '%s'", pushMessageInformationId).from(tokenBatchQueue);
+        return jmsClient.receive().inTransaction().noWait().withSelector("pushMessageInformationId = '%s'", pushMessageInformationId).from(metricsQueue);
     }
 
     private ObjectMessage receiveBatchLoadedEvent(String variantID) {

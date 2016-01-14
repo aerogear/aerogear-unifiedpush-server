@@ -212,7 +212,7 @@ public class JmsClient {
 
         private Serializable message;
         private boolean transacted = false;
-        private Map<String, String> properties = new LinkedHashMap<String, String>();
+        private Map<String, Object> properties = new LinkedHashMap<String, Object>();
         private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 
         public JmsSender(Serializable message) {
@@ -237,6 +237,20 @@ public class JmsClient {
          * @return the sender
          */
         public JmsSender withProperty(String name, String value) {
+            if (value == null) {
+                throw new NullPointerException("property value");
+            }
+            this.properties.put(name, value);
+            return this;
+        }
+
+        /**
+         * Sets the property that can be later used to query message by selector.
+         */
+        public JmsSender withProperty(String name, Long value) {
+            if (value == null) {
+                throw new NullPointerException("property value");
+            }
             this.properties.put(name, value);
             return this;
         }
@@ -251,7 +265,21 @@ public class JmsClient {
          * @return the sender
          */
         public JmsSender withDuplicateDetectionId(String duplicateDetectionId) {
+            if (duplicateDetectionId == null) {
+                throw new NullPointerException("duplicateDetectionId");
+            }
             this.properties.put("_HQ_DUPL_ID", duplicateDetectionId);
+            return this;
+        }
+
+        /**
+         * The message sent with given ID will be scheduled to be delivered after specified number of miliseconds.
+         */
+        public JmsSender withDelayedDelivery(Long delayMs) {
+            if (delayMs == null) {
+                throw new NullPointerException("delayMs");
+            }
+            this.properties.put("_HQ_SCHED_DELIVERY", new Long(System.currentTimeMillis() + delayMs));
             return this;
         }
 
@@ -272,8 +300,13 @@ public class JmsClient {
                 MessageProducer messageProducer = session.createProducer(destination);
                 connection.start();
                 ObjectMessage objectMessage = session.createObjectMessage(message);
-                for (Entry<String, String> property : properties.entrySet()) {
-                    objectMessage.setStringProperty(property.getKey(), property.getValue());
+                for (Entry<String, Object> property : properties.entrySet()) {
+                    final Object value = property.getValue();
+                    if (value instanceof String) {
+                        objectMessage.setStringProperty(property.getKey(), (String) value);
+                    } else if (value instanceof Long) {
+                        objectMessage.setLongProperty(property.getKey(), (Long) value);
+                    }
                 }
                 messageProducer.send(objectMessage);
             } catch (JMSException e) {
