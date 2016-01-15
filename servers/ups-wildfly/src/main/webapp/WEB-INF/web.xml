@@ -8,6 +8,13 @@
 
     <security-constraint>
         <web-resource-collection>
+            <web-resource-name>Configuration Endpoint</web-resource-name>
+            <url-pattern>/rest/keycloak/config</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
             <web-resource-name>Admin</web-resource-name>
             <url-pattern>/rest/*</url-pattern>
         </web-resource-collection>

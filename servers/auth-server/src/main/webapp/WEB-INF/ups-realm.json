@@ -76,9 +76,9 @@
             "name": "unified-push-server-js",
             "enabled": true,
             "publicClient": true,
-            "baseUrl": "/ag-push",
+            "baseUrl": "http://localhost:8082/ag-push",
             "redirectUris": [
-                "/ag-push/*"
+                "http://localhost:8082/ag-push/*"
             ]
         }
     ]
