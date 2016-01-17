@@ -26,6 +26,7 @@
   "sender-downloads-java": "https://aerogear.org/getstarted/downloads/#push",
   "sender-downloads-nodejs": "https://aerogear.org/getstarted/downloads/#push",
   "sender-step-by-step-java": "https://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/",
+  "docs-push-getting-started": "https://aerogear.org/getstarted/guides/#push",
   "docs-push-ios": "http://aerogear.org/docs/unifiedpush/aerogear-push-ios/",
   "docs-push-cordova": "http://aerogear.org/docs/guides/aerogear-cordova/AerogearCordovaPush/",
   "docs-push-android": "http://aerogear.org/docs/unifiedpush/aerogear-push-android/",

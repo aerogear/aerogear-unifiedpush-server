@@ -94,12 +94,7 @@
 
   <div ng-if="appDetail.app.$deviceCount == 0">
     <p>There are no registered device for this application.</p>
-    <div class="blank-slate-pf-main-action">
-      <a href class="btn btn-primary btn-lg" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" ng-disabled="!appDetail.app.variants.length">
-        </i><i class="fa fa-mobile"></i>
-        Register a device
-      </a>
-    </div>
+    Check out the documentation on how to get started to <a ups-doc="docs-push-getting-started">register a device</a>.
   </div>
 
   <div ng-if="appDetail.app.$deviceCount != 0">
