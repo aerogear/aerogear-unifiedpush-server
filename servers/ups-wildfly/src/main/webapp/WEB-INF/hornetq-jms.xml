@@ -17,8 +17,8 @@
     limitations under the License.
 
 -->
-<messaging-deployment xmlns="urn:jboss:messaging-deployment:1.0">
-    <hornetq-server>
+<messaging-deployment xmlns="urn:jboss:messaging-activemq-deployment:1.0">
+    <server name="default">
         <jms-destinations>
             <!-- Push Message Queues split by Push Networks -->
             <jms-queue name="AdmPushMessageQueue">
@@ -82,5 +82,5 @@
                 <entry name="/queue/AllBatchesLoadedQueue"/>
             </jms-queue>
         </jms-destinations>
-    </hornetq-server>
+    </server>
 </messaging-deployment>

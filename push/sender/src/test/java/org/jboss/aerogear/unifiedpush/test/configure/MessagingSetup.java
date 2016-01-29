@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.test.configure;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.BeforeStop;
@@ -31,6 +32,7 @@ import org.wildfly.extras.creaper.core.ManagementClient;
 import org.wildfly.extras.creaper.core.online.ManagementProtocol;
 import org.wildfly.extras.creaper.core.online.OnlineManagementClient;
 import org.wildfly.extras.creaper.core.online.OnlineOptions;
+import org.wildfly.extras.creaper.core.online.operations.admin.Administration;
 
 /**
  * Sets messaging up once server is started, tears it down once server stops
@@ -41,14 +43,24 @@ public class MessagingSetup {
     @SuiteScoped
     private InstanceProducer<OnlineManagementClient> managementClient;
 
-    public void setupMessaging(@Observes AfterStart event) throws IOException, CommandFailedException {
-        managementClient.set(createClient());
-        managementClient.get().apply(new CliFile(new File("../../configuration/jms-setup-wildfly.cli")));
+    public void setupMessaging(@Observes AfterStart event) throws IOException, CommandFailedException, InterruptedException, TimeoutException {
+        final OnlineManagementClient client = createClient();
+        managementClient.set(client);
+        client.apply(new CliFile(new File("../../configuration/jms-setup-wildfly.cli")));
+
+        Administration administration = new Administration(client);
+        administration.reload();
     }
 
-    public void teardownMessaging(@Observes BeforeStop event) throws CommandFailedException, IOException {
-        managementClient.get().apply(new CliFile(new File("src/test/resources/jms-cleanup-wildfly.cli")));
-        managementClient.get().close();
+    public void teardownMessaging(@Observes BeforeStop event) throws CommandFailedException, IOException, InterruptedException, TimeoutException {
+        final OnlineManagementClient client = managementClient.get();
+        client.apply(new CliFile(new File("src/test/resources/jms-cleanup-wildfly.cli")));
+
+        Administration administration = new Administration(client);
+        administration.reload();
+
+        client.close();
+        managementClient.set(null);
     }
 
     private OnlineManagementClient createClient() throws IOException {
