@@ -44,7 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class TestTokenLoaderBlockingForGCM extends AbstractJMSTest {
+public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
 
     private static final int CONCURRENT_WORKERS = 15; // specified by maxSession MDB config in jboss-ejb.xml
     private static final int BATCH_SIZE = 1000; // maximum number of tokens in one batch for Android/GCM
@@ -63,7 +63,7 @@ public class TestTokenLoaderBlockingForGCM extends AbstractJMSTest {
 
     @Deployment
     public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(TestTokenLoaderBlockingForGCM.class)
+        return UnifiedPushArchive.forTestClass(TestTokenLoaderTransactionFailForGCM.class)
                 .withMessaging()
                 .withMessageDrivenBeans()
                 .as(WebArchive.class);
@@ -89,8 +89,16 @@ public class TestTokenLoaderBlockingForGCM extends AbstractJMSTest {
         // when
         long start = System.currentTimeMillis();
         for (int i = 0; i < NUMBER_OF_BATCHES_TO_SEND; i++) {
-            MessageHolderWithTokens msg = new MessageHolderWithTokens(pmi, pushMessage, variant, tokens, i);
-            dispatchTokensEvent.fire(msg);
+            while (true) {
+                try {
+                    MessageHolderWithTokens msg = new MessageHolderWithTokens(pmi, pushMessage, variant, tokens, i);
+                    System.err.println(i);
+                    dispatchTokensEvent.fire(msg);
+                    break;
+                } catch (Exception e) {
+                    Thread.sleep(50);
+                }
+            }
         }
 
         // then
@@ -113,8 +121,12 @@ public class TestTokenLoaderBlockingForGCM extends AbstractJMSTest {
 
     public void observeMessage(@Observes @Dequeue MessageHolderWithTokens msg) throws InterruptedException {
         if (msg.getPushMessageInformation().getId().equals(messageId)) {
+            currentConcurrency.incrementAndGet();
             maxConcurrency.set(Math.max(currentConcurrency.get(), maxConcurrency.get()));
+            System.err.println("started processing: " + msg.getSerialId());
             Thread.sleep(TIME_TO_DELIVER_BATCH);
+            System.err.println("finished processing: " + msg.getSerialId());
+            currentConcurrency.decrementAndGet();
             waitToDeliverAllBatches.countDown();
         }
     }

@@ -2,7 +2,7 @@ connect
 batch
 
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:add(redelivery-delay=1000, max-delivery-attempts=300)
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMTokenBatchQueue:add(address-full-policy=BLOCK, max-size-bytes=400000)
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=400000)
 
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.MetricsQueue:add(max-delivery-attempts=-1)
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.BatchLoadedQueue:add(max-delivery-attempts=-1)
