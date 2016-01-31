@@ -61,7 +61,7 @@ public class DocumentDaoImpl implements DocumentDao {
 
 				@Override
 				public int compare(DocumentMessage o1, DocumentMessage o2) {
-					return (int) (o1.getTimestamp() - o2.getTimestamp());
+					return Long.compare(o1.getTimestamp(), o2.getTimestamp());
 				}
 			});
 
