@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -278,7 +279,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         installationDao.update(device1);
         clientInstallationService.addInstallationSynchronously(androidVariant, device1);
 
-
         Installation device2 = new Installation();
         device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
         categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
@@ -287,7 +287,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         installationDao.update(device2);
         clientInstallationService.addInstallationSynchronously(androidVariant, device2);
 
-
         Installation device3 = new Installation();
         device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
         categories = new HashSet<Category>(Arrays.asList(new Category("football")));
@@ -295,7 +294,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setVariant(androidVariant);
         installationDao.update(device3);
         clientInstallationService.addInstallationSynchronously(androidVariant, device3);
-
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
 
