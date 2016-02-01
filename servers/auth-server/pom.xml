@@ -75,10 +75,12 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-invalidation-cache-infinispan</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>

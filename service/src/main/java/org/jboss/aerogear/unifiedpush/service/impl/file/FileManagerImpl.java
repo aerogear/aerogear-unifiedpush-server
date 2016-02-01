@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.impl.file;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,19 +51,19 @@ public class FileManagerImpl implements FileManager {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Throw Checked exception to prevent transaction rollback when used from service layer.
 	 */
 	@Override
-	public List<File> list(Path path, FileFilter filter) {
+	public List<File> list(Path path, FileFilter filter) throws FileNotFoundException {
 		File directory = path.toFile();
 		if (!directory.exists()) {
-			throw new RuntimeException(path + " does not exist");
+			throw new FileNotFoundException(path + " does not exist");
 		}
-		
+
 		if (!directory.isDirectory()) {
-			throw new RuntimeException(path + " is not a directory");
+			throw new FileNotFoundException(path + " is not a directory");
 		}
-		
+
 		return Arrays.asList(directory.listFiles(filter));
 	}
 

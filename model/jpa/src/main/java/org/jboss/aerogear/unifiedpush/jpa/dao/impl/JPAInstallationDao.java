@@ -93,12 +93,25 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        return getSingleResultForQuery(createQuery("select installation from Installation installation " +
-                " join installation.variant abstractVariant" +
-                " where abstractVariant.variantID = :variantID" +
-                " and installation.deviceToken = :deviceToken")
+        return getSingleResultForQuery(createQuery(getFindVariantByDeviceTokenQuery().toString())
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
+    }
+    
+    public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+    	final String query = getFindVariantByDeviceTokenQuery()
+    			.append(" and installation.enabled = :enabled")
+    			.toString();
+    	List<Installation> installation = createQuery(query)
+    			.setParameter("variantID", variantID)
+                .setParameter("deviceToken", deviceToken)
+                .setParameter("enabled", true)
+                .getResultList();
+    			
+    	if (!isListNotEmpty(installation)) {
+    		return null;
+    	}
+    	return installation.get(0);
     }
 
     @Override
@@ -264,7 +277,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??
-        if (isListEmpty(aliases)) {
+        if (isListNotEmpty(aliases)) {
             // append the string:
             jpqlString.append(" AND installation.alias IN :aliases");
             // add the params:
@@ -272,7 +285,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         }
 
         // are devices present ??
-        if (isListEmpty(deviceTypes)) {
+        if (isListNotEmpty(deviceTypes)) {
             // append the string:
             jpqlString.append(" AND installation.deviceType IN :deviceTypes");
             // add the params:
@@ -280,7 +293,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         }
 
         // is a category present ?
-        if (isListEmpty(categories)) {
+        if (isListNotEmpty(categories)) {
             jpqlString.append(" AND ( c.name in (:categories))");
             parameters.put("categories", categories);
         }
@@ -288,8 +301,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     /**
      * Checks if the list is empty, and not null
      */
-    private boolean isListEmpty(List list) {
+    private boolean isListNotEmpty(List<?> list) {
         return (list != null && !list.isEmpty());
+    }
+    
+    private StringBuilder getFindVariantByDeviceTokenQuery() {
+    	return new StringBuilder("select installation from Installation installation " +
+                " join installation.variant abstractVariant" +
+                " where abstractVariant.variantID = :variantID" +
+                " and installation.deviceToken = :deviceToken");
     }
 
 }

@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  JBoss, Home of Professional Open Source
-  Copyright Red Hat, Inc., and individual contributors
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and 
+    individual contributors Licensed under the Apache License, Version 2.0 (the 
+    "License"); you may not use this file except in compliance with the License. 
+    You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+    Unless required by applicable law or agreed to in writing, software distributed 
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+    the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jboss.aerogear</groupId>
@@ -71,7 +64,8 @@
                 <version>${aerogear.crypto.version}</version>
             </dependency>
 
-            <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
+            <!-- We need to redefine few testing dependencies until JDF updates 
+                -with-tools BOM -->
             <!-- https://issues.jboss.org/browse/JDF-417 -->
             <dependency>
                 <groupId>junit</groupId>
@@ -80,10 +74,11 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill of Materials (BOM). A BOM specifies the versions
-                of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
-                Here we use
-                the jboss-javaee-7.0 stack (you can read this as the JBoss stack of the Java EE 7 APIs) -->
+            <!-- JBoss distributes a complete set of Java EE 7 APIs including 
+                a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or 
+                a collection) of artifacts. We use this here so that we always get the correct 
+                versions of artifacts. Here we use the jboss-javaee-7.0 stack (you can read 
+                this as the JBoss stack of the Java EE 7 APIs) -->
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
                 <artifactId>jboss-javaee-7.0-with-infinispan</artifactId>
@@ -128,7 +123,7 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.3.6</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
@@ -171,7 +166,7 @@
                 <artifactId>resteasy-multipart-provider</artifactId>
                 <version>${resteasy.version}</version>
             </dependency>
-	        
+
             <!-- Internal dependency managment -->
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -190,32 +185,38 @@
                 <artifactId>unifiedpush-push-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
                 <artifactId>unifiedpush-push-sender</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
                 <artifactId>unifiedpush-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.aerogear.unifiedpush</groupId>
                 <artifactId>unifiedpush-service</artifactId>
                 <type>test-jar</type>
                 <version>${project.version}</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
-            <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
+            <!-- we really do not need javadocs for the server, there are 
+                no Java APIs exposed -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -243,46 +244,46 @@
                 </configuration>
             </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<wtpapplicationxml>true</wtpapplicationxml>
-					<wtpversion>2.0</wtpversion>
-					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
-					<downloadSources>true</downloadSources>
-					<ajdtVersion>none</ajdtVersion>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <wtpapplicationxml>true</wtpapplicationxml>
+                    <wtpversion>2.0</wtpversion>
+                    <manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
+                    <downloadSources>true</downloadSources>
+                    <ajdtVersion>none</ajdtVersion>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <properties>
-    	<java.version>1.7</java.version>
+        <java.version>1.7</java.version>
 
-	    <!-- Override Areogear BOM -->
-	    <resteasy.version>3.0.10.Final</resteasy.version>
-    
+        <!-- Override Areogear BOM -->
+        <resteasy.version>3.0.10.Final</resteasy.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
-            version defined by this BOM -->
+        <!-- Define the version of JBoss' Java EE 6 APIs we want to import. 
+            Any dependencies from org.jboss.spec will have their version defined by this 
+            BOM -->
         <jboss-javaee-7.0.version>1.0.2.Final</jboss-javaee-7.0.version>
 
-        <!--
-            Options to override the compiler arguments directly on the compiler arument line to separate between what
-            the IDE understands as the source level and what the Maven compiler actually use.
-        -->
+        <!-- Options to override the compiler arguments directly on the compiler 
+            arument line to separate between what the IDE understands as the source level 
+            and what the Maven compiler actually use. -->
         <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
         <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
 
@@ -291,7 +292,7 @@
 
         <aerogear.bom.version>0.2.19</aerogear.bom.version>
 
-        <!-- Override versions of AeroGear BOMs-->
+        <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
 
         <!-- Code coverage -->
@@ -304,7 +305,7 @@
         <hibernate.version>4.2.15.Final</hibernate.version>
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mysql.version>5.1.36</mysql.version>
-       
+
         <wildfly.version>8.2.1.Final</wildfly.version>
         <ups.ddl_value>validate</ups.ddl_value>
     </properties>
@@ -326,14 +327,14 @@
                         <type>pom</type>
                         <scope>import</scope>
                     </dependency>
-                    
+
                     <dependency>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
                         <version>1.6.1</version>
                         <scope>test</scope>
                     </dependency>
-                
+
                     <dependency>
                         <groupId>org.arquillian.container</groupId>
                         <artifactId>arquillian-container-chameleon</artifactId>
@@ -344,33 +345,27 @@
             </dependencyManagement>
         </profile>
         <profile>
-            <!-- Make sure that you also activate 'test' profile if you activate this one explicitly -->
-	        <id>openshift</id>
-	        <build>
-	            <plugins>
-	                <plugin>
-	                    <groupId>org.apache.maven.plugins</groupId>
-	                    <artifactId>maven-war-plugin</artifactId>
-	                    <configuration>
-	                        <webXml>src/main/resources/openshift/web.xml</webXml>
-	                    </configuration>
-	                </plugin>
-	            </plugins>
-	        </build>
+            <!-- Make sure that you also activate 'test' profile if you activate 
+                this one explicitly -->
+            <id>openshift</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webXml>src/main/resources/openshift/web.xml</webXml>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <properties>
                 <ups.ddl_value>validate</ups.ddl_value>
             </properties>
-		</profile>
+        </profile>
 
-        <!--
-            Builds the distribution.
-
-            Usage:
-                - mvn clean install -Pdist,test
-
-            Preparing/Performing release, include as well:
-                - mvn release:GOAL -Pdist,test
-        -->
+        <!-- Builds the distribution. Usage: - mvn clean install -Pdist,test 
+            Preparing/Performing release, include as well: - mvn release:GOAL -Pdist,test -->
         <profile>
             <id>dist</id>
             <modules>
@@ -381,12 +376,8 @@
             </properties>
         </profile>
 
-        <!--
-            Profile for JAX-RS doclet generation. This is only working on JDK7, due to the usage of outdated tools
-
-            Usage:
-               - mvn clean install -Pjaxrs-doclet,test
-        -->
+        <!-- Profile for JAX-RS doclet generation. This is only working on 
+            JDK7, due to the usage of outdated tools Usage: - mvn clean install -Pjaxrs-doclet,test -->
         <profile>
             <id>jaxrs-doclet</id>
             <build>
@@ -403,7 +394,8 @@
                                     <rules>
                                         <requireJavaVersion>
                                             <!-- Enforce java 1.7 for compiling -->
-                                            <!-- This is needed because jax-doclet is broken on jdk8 -->
+                                            <!-- This is needed because jax-doclet 
+                                                is broken on jdk8 -->
                                             <version>(,1.8)</version>
                                         </requireJavaVersion>
                                     </rules>
@@ -411,9 +403,9 @@
                             </execution>
                         </executions>
                     </plugin>
-	            </plugins>
-	        </build>
-		</profile>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>code-coverage</id>
@@ -469,29 +461,47 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask" classpathref="maven.plugin.classpath" />
-                                        <taskdef classpathref="maven.runtime.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
-                                        <available file="${project.build.sourceDirectory}" type="dir" property="source.dir.exists" />
-                                        <available file="${jacoco.report.file}" property="exec.file.exists" />
+                                        <taskdef name="jacoco-report"
+                                            classname="org.jacoco.ant.ReportTask"
+                                            classpathref="maven.plugin.classpath" />
+                                        <taskdef
+                                            classpathref="maven.runtime.classpath"
+                                            resource="net/sf/antcontrib/antcontrib.properties" />
+                                        <available
+                                            file="${project.build.sourceDirectory}"
+                                            type="dir" property="source.dir.exists" />
+                                        <available
+                                            file="${jacoco.report.file}"
+                                            property="exec.file.exists" />
                                         <if>
-                                            <equals arg1="${source.dir.exists}" arg2="true" />
+                                            <equals
+                                                arg1="${source.dir.exists}"
+                                                arg2="true" />
                                             <then>
-                                                <copy todir="${jacoco.prep.sources}">
-                                                    <fileset dir="${project.build.sourceDirectory}" />
+                                                <copy
+                                                    todir="${jacoco.prep.sources}">
+                                                    <fileset
+                                                        dir="${project.build.sourceDirectory}" />
                                                 </copy>
-                                                <copy todir="${jacoco.prep.classes}">
-                                                    <fileset dir="${project.build.directory}/classes" />
+                                                <copy
+                                                    todir="${jacoco.prep.classes}">
+                                                    <fileset
+                                                        dir="${project.build.directory}/classes" />
                                                 </copy>
                                                 <if>
-                                                    <equals arg1="${exec.file.exists}" arg2="true" />
+                                                    <equals
+                                                        arg1="${exec.file.exists}"
+                                                        arg2="true" />
                                                     <then>
-                                                        <trycatch reference="report_exception">
+                                                        <trycatch
+                                                            reference="report_exception">
                                                             <try>
                                                                 <jacoco-report>
                                                                     <executiondata>
                                                                         <file file="${jacoco.report.file}" />
                                                                     </executiondata>
-                                                                    <structure name="AeroGear UnifiedPush Server Unit Tests">
+                                                                    <structure
+                                                                        name="AeroGear UnifiedPush Server Unit Tests">
                                                                         <classfiles>
                                                                             <fileset dir="${jacoco.prep.classes}" />
                                                                         </classfiles>
@@ -499,23 +509,31 @@
                                                                             <fileset dir="${jacoco.prep.sources}" />
                                                                         </sourcefiles>
                                                                     </structure>
-                                                                    <html destdir="${jacoco.report.output}" />
+                                                                    <html
+                                                                        destdir="${jacoco.report.output}" />
                                                                 </jacoco-report>
                                                             </try>
                                                             <catch>
-                                                                <property name="exception" refid="report_exception" />
-                                                                <property name="message" value="Error while generating jacoco report: ${exception}" />
-                                                                <echo message="${message}" />
+                                                                <property
+                                                                    name="exception"
+                                                                    refid="report_exception" />
+                                                                <property
+                                                                    name="message"
+                                                                    value="Error while generating jacoco report: ${exception}" />
+                                                                <echo
+                                                                    message="${message}" />
                                                             </catch>
                                                         </trycatch>
                                                     </then>
                                                     <else>
-                                                        <echo message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
+                                                        <echo
+                                                            message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
                                                     </else>
                                                 </if>
                                             </then>
                                             <else>
-                                                <echo message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
+                                                <echo
+                                                    message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
                                             </else>
                                         </if>
                                     </target>

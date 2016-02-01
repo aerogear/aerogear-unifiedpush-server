@@ -116,6 +116,16 @@ public interface ClientInstallationService {
      * @return the installation entity
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+    
+    /**
+     * Finder that returns the actual client <b>enabled</b> installation, identified by its device-token, for the given variant.
+     *
+     * @param variantID id of the variant
+     * @param deviceToken one tokens
+     *
+     * @return the installation entity
+     */
+    Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     // ===================   SENDER API   ===================
 
@@ -133,7 +143,7 @@ public interface ClientInstallationService {
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
-	Installation associateInstallation(Installation installation, Variant currentVariant);
+    Variant associateInstallation(Installation installation, Variant currentVariant);
 
 	/**
 	 * Removes installations that are installed under the supplied application, but whose alias

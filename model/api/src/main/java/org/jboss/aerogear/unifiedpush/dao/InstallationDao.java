@@ -33,6 +33,16 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return intallation object or null.
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+    
+    /**
+     * Loads a specific <b>enabled</b> installation for the given Variant, specified by the device token.
+     *
+     * @param variantID the variantID for the filter
+     * @param deviceToken the deviceToken for the filter
+     *
+     * @return intallation object or null.
+     */
+    Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
      * Loads all installations matching the <code>Set</code> of deviceTokens, for the given Variant.

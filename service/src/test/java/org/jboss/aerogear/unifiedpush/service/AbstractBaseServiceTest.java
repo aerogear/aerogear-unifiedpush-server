@@ -38,66 +38,65 @@ import org.mockito.Mockito;
 @RunWith(Arquillian.class)
 public abstract class AbstractBaseServiceTest {
 
-    @Mock
-    protected HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
+	@Mock
+	protected HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
 
-    @Mock
-    protected KeycloakSecurityContext context = Mockito.mock(KeycloakSecurityContext.class);
+	@Mock
+	protected KeycloakSecurityContext context = Mockito.mock(KeycloakSecurityContext.class);
 
-    @Mock
-    protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);;
+	@Mock
+	protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);;
 
-    @Inject
-    protected SearchManager searchManager;
+	@Inject
+	protected SearchManager searchManager;
 
-    @Inject
-    protected PushApplicationService pushApplicationService;
+	@Inject
+	protected PushApplicationService pushApplicationService;
 
-    @Inject
-    protected PushSearchByDeveloperServiceImpl searchApplicationService;
+	@Inject
+	protected PushSearchByDeveloperServiceImpl searchApplicationService;
 
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushServiceArchive.forTestClass(AbstractBaseServiceTest.class)
-        		.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
-        		.addMavenDependencies("org.keycloak:keycloak-core")
-        		.addPackages(true, Configuration.class.getPackage())
-        		.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa", new String[]{"META-INF/persistence.xml"}, new String[] {"META-INF/test-persistence.xml"})
-                .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-                .addAsResource("cert/certificate.p12")
-                .addAsResource("default.properties")
-                .withMockito()
-                .withAssertj()
-                .withLang()
-                .withHttpclient()
-                .as(WebArchive.class);
-    }
-    
-    /**
-     * Basic setup stuff, needed for all the UPS related service classes
-     */
-    @Before
-    public void setUp(){
-        // Keycloak test environment
-        AccessToken token = new AccessToken();
-        //The current developer will always be the admin in this testing scenario
-        token.setPreferredUsername("admin");
-        when(context.getToken()).thenReturn(token);
-        when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
-        when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
+	@Deployment
+	public static WebArchive archive() {
+		return UnifiedPushServiceArchive
+				.forTestClass(AbstractBaseServiceTest.class)
+				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
+				.addMavenDependencies("commons-io:commons-io")
+				.addMavenDependencies("org.keycloak:keycloak-core")
+				.addPackages(true, Configuration.class.getPackage())
+				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
+						new String[] { "META-INF/persistence.xml", "test-data.sql" },
+						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
+				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml").addAsResource("cert/certificate.p12")
+				.addAsResource("default.properties").withMockito().withAssertj().withLang().withHttpclient()
+				.as(WebArchive.class);
+	}
 
-        // glue it to serach mgr
-        searchManager.setHttpServletRequest(httpServletRequest);
+	/**
+	 * Basic setup stuff, needed for all the UPS related service classes
+	 */
+	@Before
+	public void setUp() {
+		// Keycloak test environment
+		AccessToken token = new AccessToken();
+		// The current developer will always be the admin in this testing
+		// scenario
+		token.setPreferredUsername("admin");
+		when(context.getToken()).thenReturn(token);
+		when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
+		when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
 
-        // more to setup ?
-        specificSetup();
-    }
+		// glue it to serach mgr
+		searchManager.setHttpServletRequest(httpServletRequest);
 
-    /**
-     * Enforced to override to make sure test-case specific
-     * setup is done inside here!
-     */
-    protected abstract void specificSetup();
+		// more to setup ?
+		specificSetup();
+	}
 
+	/**
+	 * Enforced to override to make sure test-case specific setup is done inside
+	 * here!
+	 */
+	protected abstract void specificSetup();
 
 }

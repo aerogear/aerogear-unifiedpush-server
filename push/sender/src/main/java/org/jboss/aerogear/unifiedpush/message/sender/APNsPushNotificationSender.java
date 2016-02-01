@@ -119,7 +119,17 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if(apns.getLocalizedTitleArguments() != null) {
             builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
+		
+        //this kind of check should belong in java-apns
+        if(apns.getLocalizedKey() != null) {
+            builder.localizedKey(apns.getLocalizedKey()); // Localized Key;
+        }		
 
+        //this kind of check should belong in java-apns
+        if(apns.getLocalizedArguments() != null) {
+            builder.localizedArguments(apns.getLocalizedArguments()); // Localized Arguments;
+        }		
+		
        // apply the 'content-available:1' value:
         if (apns.isContentAvailable()) {
             // content-available is for 'silent' notifications and Newsstand
@@ -198,10 +208,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
-            return new Date(System.currentTimeMillis() + EnhancedApnsNotification.MAXIMUM_EXPIRY * 1000L);
+            return new Date(EnhancedApnsNotification.MAXIMUM_EXPIRY * 1000L);
         } else {
             // apply the given TTL to the current time
-            return new Date(System.currentTimeMillis() + ttl);
+            return new Date(System.currentTimeMillis() + ttl * 1000L);
         }
     }
 

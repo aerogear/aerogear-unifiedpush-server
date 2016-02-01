@@ -99,7 +99,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pushApplicationService.addPushApplication(pa);
 
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
     }
 
     @Test
@@ -114,11 +114,11 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pushApplicationService.addPushApplication(pa);
         
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
 
         pushApplicationService.removePushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isEmpty();;
+        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
         assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
     }
 

@@ -75,30 +75,31 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private Configuration configuration;
     
 	@Override
-	public Installation associateInstallation(Installation installation, Variant currentVariant) {
-		
+	public Variant associateInstallation(Installation installation, Variant currentVariant) {
 		if (installation.getAlias() == null) {
-			return installation;
+			logger.warning("Unable to associate, installation alias is missing!");
+			return null;
 		}
 		
 		Alias alias = aliasDao.findByName(installation.getAlias());
 		
 		if (alias == null) {
-			return installation;
+			return null;
 		}
 		
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
 		List<Variant> variants = application.getVariants();
+		
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
 			if(variant.getType().equals(currentVariant.getType())){
 				installation.setVariant(variant);
-				break;
+				updateInstallation(installation);
+				return variant;
 			}
 		}
 		
-		updateInstallation(installation);
-		return installation;
+		return null;
 	}
 
 	@Override
@@ -209,8 +210,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
-        installationToUpdate.setCategories(postedInstallation.getCategories());
-        mergeCategories(installationToUpdate);
+        mergeCategories(installationToUpdate, postedInstallation.getCategories());
+
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
         installationToUpdate.setAlias(postedInstallation.getAlias());
         installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
@@ -260,6 +261,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
     
     @Override
+    public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+        return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
+    }
+    
+    @Override
 	public void removeInstallationNotInAliasList(PushApplication application, List<String> aliases) {
 		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
 		for (Variant variant : application.getVariants()) {
@@ -297,15 +303,19 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * When an installation is created or updated, the categories are passed without IDs.
      * This method solve this issue by checking for existing categories and updating them (otherwise it would
      * persist a new object).
-     * @param entity
+     * @param entity to merge the categories for
+     * @param categoriesToMerge are the categories to merge with the existing one
      */
-    private void mergeCategories(Installation entity) {
+    private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
         if (entity.getCategories() != null) {
-            final List<String> categoryNames = convertToNames(entity.getCategories());
+            final List<String> categoryNames = convertToNames(categoriesToMerge);
             final List<Category> categories = categoryDao.findByNames(categoryNames);
-            //Replace json deserialised categories with their persistent counter parts see Category.equals
-            entity.getCategories().removeAll(categories);
+            //Replace json dematerialised categories with their persistent counter parts see Category.equals
             entity.getCategories().addAll(categories);
+            entity.getCategories().retainAll(categories);
+
+            categoriesToMerge.removeAll(categories);
+            entity.getCategories().addAll(categoriesToMerge);
         }
     }
 
@@ -329,7 +339,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // set reference
         entity.setVariant(variant);
         // update attached categories
-        mergeCategories(entity);
+        mergeCategories(entity, entity.getCategories());
         // store Installation entity
         installationDao.create(entity);
     }
