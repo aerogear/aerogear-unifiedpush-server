@@ -11,12 +11,17 @@ angular.module('upsConsole')
     this.currentEnd = 0;
     this.perPage = 10;
     this.searchString = '';
+    this.activeSearch = '';
 
     var refreshInterval;
 
+    /**
+     * Fetches new data, reflecting provided page and searchString
+     */
     function fetchMetrics( page, searchString ) {
       return metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
         .then(function( data ) {
+          self.activeSearch = searchString;
           self.metrics.forEach(function( originalMetric ) {
             data.pushMetrics.some(function ( newMetric ) {
               if (originalMetric.id === newMetric.id && originalMetric.$toggled) {
@@ -43,6 +48,18 @@ angular.module('upsConsole')
         });
     }
 
+    /**
+     * Determines whether search is active - either the user typed search string or the data doesn't reflect the search string yet.
+     *
+     * @return false if searchString if false and data reflects that searchString; true otherwise
+     */
+    this.isSearchActive = function() {
+      return self.searchString || self.activeSearch;
+    };
+
+    /**
+     * Fetches new data on page change
+     */
     this.onPageChange = function ( page ) {
       fetchMetrics( page, self.searchString );
     };
