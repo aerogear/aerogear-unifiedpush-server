@@ -64,7 +64,7 @@ angular.module('upsConsole')
               .then(function() {
                 $modalInstance.close();
                 if (self.totalItems < 1) {
-                  $router.parent.navigate('/welcome');
+                  $rootScope.$broadcast('upsNavigate', '/welcome');
                 }
               });
           };

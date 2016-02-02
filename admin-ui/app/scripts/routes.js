@@ -33,6 +33,6 @@ angular.module('upsConsole')
             $log.warn( 'Navigation failure: ' + path );
           }
         );
-      }, 100);
+      }, 500);
     });
   });
