@@ -89,13 +89,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>4.2.15.Final</version>
-            </dependency>
 
-            <!-- AeroGear Dependencies BOM Imports -->
+            <!-- removed because of colision with hibernate ogm
+           <dependency>
+               <groupId>org.hibernate</groupId>
+               <artifactId>hibernate-core</artifactId>
+               <version>4.2.15.Final</version>
+           </dependency>
+           -->
+
+           <!-- AeroGear Dependencies BOM Imports -->
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
                 <artifactId>aerogear-bom</artifactId>
@@ -274,6 +277,7 @@
 	        </build>
 		</profile>
 
+        <!--
         <profile>
             <id>code-coverage</id>
             <properties>
@@ -386,6 +390,7 @@
             </build>
 
         </profile>
+        -->
     </profiles>
 
 </project>
