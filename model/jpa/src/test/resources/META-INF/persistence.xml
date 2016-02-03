@@ -17,27 +17,41 @@
     limitations under the License.
 
 -->
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             version="2.0"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
 
-        <mapping-file>META-INF/orm.xml</mapping-file>
-        <mapping-file>org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml</mapping-file>
-        <mapping-file>org/jboss/aerogear/unifiedpush/api/Category.hbm.xml</mapping-file>
-        <mapping-file>org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml</mapping-file>
-        <mapping-file>org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml</mapping-file>
+    <!--
+        <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
+            <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+            <mapping-file>META-INF/orm.xml</mapping-file>
+            <mapping-file>org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml</mapping-file>
+            <mapping-file>org/jboss/aerogear/unifiedpush/api/Category.hbm.xml</mapping-file>
+            <mapping-file>org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml</mapping-file>
+            <mapping-file>org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml</mapping-file>
+
+            <properties>
+                <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+                <property name="hibernate.connection.url" value="jdbc:derby:memory:testDB"/>
+                <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
+                <property name="hibernate.connection.username" value="sa"/>
+                <property name="hibernate.hbm2ddl.auto" value="update"/>
+                <property name="hibernate.show_sql" value="false"/>
+                <property name="hibernate.format_sql" value="false"/>
+                <property name="hibernate.transaction.flush_before_completion" value="true"/>
+            </properties>
+        </persistence-unit>
+        -->
+    <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 
         <properties>
-            <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:derby:memory:testDB"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
-            <property name="hibernate.transaction.flush_before_completion" value="true"/>
+
+            <property name="hibernate.ogm.datastore.provider" value="mongodb" />
+            <property name="hibernate.ogm.datastore.database" value="HikeDB" />
+            <property name="hibernate.ogm.datastore.create_database" value="true" />
         </properties>
     </persistence-unit>
 </persistence>
