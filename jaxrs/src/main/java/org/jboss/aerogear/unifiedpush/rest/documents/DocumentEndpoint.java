@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
+import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -66,13 +67,19 @@ public class DocumentEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{publisher}/{alias}/{qualifier}/{id}")
+	@Path("/{publisher}/{alias}/{qualifier}{id : (/[^/]+?)?}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response deployDocuments(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
 			@PathParam("id") String id,
 			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
 			@Context HttpServletRequest request) {
+		
+		if (StringUtils.isEmpty(id)) {
+			id = DocumentMessage.NULL_PART;
+		} else {
+			id = id.substring(1); // remove first /
+		}
 
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
 				clientInstallationService, request);

@@ -3,6 +3,9 @@ package org.jboss.aerogear.unifiedpush.api;
 import java.io.Serializable;
 
 public class DocumentMessage implements Serializable {
+	
+	public static final String NULL_PART = "NULL";
+
 	private static final long serialVersionUID = 1345771671978529056L;
 	
 	private String content;

@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.file;
 
+import static org.jboss.aerogear.unifiedpush.api.DocumentMessage.NULL_PART;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -27,7 +29,6 @@ public class DocumentDaoImpl implements DocumentDao {
 	private static final Logger logger = Logger.getLogger(DocumentDao.class.getName());
 
 	private static final String DOCUMENT_TOKEN = "__";
-	private static final String NULL_PART = "NULL";
 	
 	@Inject
 	private FileManager fileManager;
@@ -201,7 +202,7 @@ public class DocumentDaoImpl implements DocumentDao {
 			
 			return documentMetadata.getPublisher() == type 
 					&& qualifier.equals(getFileNamePart(documentMetadata.getQualifier()))
-					&& id.equals(getFileNamePart(documentMetadata.getId()));
+					&& (id.equalsIgnoreCase(NULL_PART) || id.equals(getFileNamePart(documentMetadata.getId())));
 		}
 	}
 }
