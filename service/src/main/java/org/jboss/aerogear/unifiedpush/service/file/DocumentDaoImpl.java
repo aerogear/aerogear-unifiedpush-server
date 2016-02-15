@@ -126,8 +126,10 @@ public class DocumentDaoImpl implements DocumentDao {
 						return false;
 					}
 					String[] parts = pathname.getName().split(DOCUMENT_TOKEN);
+					String id = parts.length < 6 ? NULL_PART : parts[5];
 					if (filter != null
-							&& !filter.accept(parts[0], DocumentType.valueOf(parts[1]), parts[2], parts[3], parts[4], parts[5])) {
+							&& !filter.accept(parts[0], DocumentType.valueOf(parts[1]), parts[2], parts[3], 
+									parts[4], id)) {
 						return false;
 					}
 
