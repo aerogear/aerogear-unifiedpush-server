@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.Person;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,7 +26,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -42,7 +40,7 @@ public class DatabasePingTest {
     public static JavaArchive createDeployment() {
         JavaArchive war =  ShrinkWrap.create(JavaArchive.class)
 
-                .addClass(Person.class)
+                //.addClass(Person.class)
                         //.addPackage("org.jboss.aerogear.unifiedpush.jpa.dao.impl")
                         //.addPackage("org.jboss.aerogear.unifiedpush.api")
                         //.addPackage("org.jboss.aerogear.unifiedpush.api.dao")
@@ -66,12 +64,12 @@ public class DatabasePingTest {
 
     @Test
     public void findAllIDsForDeveloper() {
-        Person p = new Person("frrr","frrr");
+        /*Person p = new Person("frrr","frrr");
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         em.persist(p);
         em.getTransaction().commit();
-        em.close();
+        em.close();*/
     }
 
 
