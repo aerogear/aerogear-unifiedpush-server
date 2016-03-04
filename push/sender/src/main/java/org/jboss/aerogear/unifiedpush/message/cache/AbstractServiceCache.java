@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
@@ -59,7 +59,7 @@ public abstract class AbstractServiceCache<T> {
      * In case the service is not available when times out, cache returns null.
      *
      * @param pushMessageInformationId the push message id
-     * @param variant the variant
+     * @param variantID the variant
      * @param constructor the service constructor
      * @return the service instance; or null in case too much services were created and no services are queued for reuse
      */
@@ -72,7 +72,7 @@ public abstract class AbstractServiceCache<T> {
     /**
      * Dequeues the service instance if there is one available, otherwise returns null
      * @param pushMessageInformationId the push message id
-     * @param variant the variant
+     * @param variantID the variant
      * @return the service instance or null if no instance is queued
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
@@ -87,7 +87,7 @@ public abstract class AbstractServiceCache<T> {
      * Allows to queue used and freed up service into cache so that can be reused by another consumer.
      *
      * @param pushMessageInformationId the push message
-     * @param variant the variant
+     * @param variantID the variant
      * @param service the used and freed up service
      */
     public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service) {
@@ -102,7 +102,7 @@ public abstract class AbstractServiceCache<T> {
      * Freed up service is a service that died, disconnected or similar and can no longer be used.
      *
      * @param pushMessageInformationId the push message
-     * @param variant the variant
+     * @param variantID the variant
      */
     public void freeUpSlot(final String pushMessageInformationId, final String variantID) {
         Key instanceKey = new Key(pushMessageInformationId, variantID);
@@ -202,7 +202,7 @@ public abstract class AbstractServiceCache<T> {
     }
 
     /**
-     * The key that is used to store a {@link Holder} in the map.
+     * The key that is used to store a Holder in the map.
      */
     private static class Key {
 
