@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import java.util.List;
-import java.util.Set;
-
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+
+import java.util.List;
+import java.util.Set;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
@@ -68,6 +68,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param developer the developer
      * @param page the page number
      * @param pageSize the size of the pages
+     * @param search any value of the device metadata
      *
      * @return all installations found or empty list + the total count of results
      */
@@ -78,6 +79,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param variantID the id of the variant to find the installations for
      * @param page the page number
      * @param pageSize the size of the pages
+     * @param search any value of the device metadata
      *
      * @return all installations found or empty list + the total count of results
      */

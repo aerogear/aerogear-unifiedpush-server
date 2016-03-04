@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Holds push message details with what type and list of variants should be the notification sent to.
@@ -60,6 +60,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
      * @param unifiedPushMessage the push message
      * @param variantType variant type info
      * @param variants list of effected variants
+     * @param lastSerialId last id from previous batch
      * @param lastTokenFromPreviousBatch last token from previous stream
      */
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {

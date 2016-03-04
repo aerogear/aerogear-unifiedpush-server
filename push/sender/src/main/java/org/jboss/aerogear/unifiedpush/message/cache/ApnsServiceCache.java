@@ -16,18 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
+import com.notnoop.apns.ApnsService;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-import com.notnoop.apns.ApnsService;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -37,9 +35,9 @@ import com.notnoop.apns.ApnsService;
  *
  * This cache also listens for {@link VariantCompletedEvent} event and stops all instantiated {@link ApnsService}s and frees the cache.
  *
- * @see AbstractServiceCache#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor)
- * @see AbstractServiceCache#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
- * @see AbstractServiceCache#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
+ * @see AbstractServiceCache#dequeueOrCreateNewService(String, String, ServiceConstructor)
+ * @see AbstractServiceCache#queueFreedUpService(String, String, Object)
+ * @see AbstractServiceCache#freeUpSlot(String, String)
  */
 @ApplicationScoped
 public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {

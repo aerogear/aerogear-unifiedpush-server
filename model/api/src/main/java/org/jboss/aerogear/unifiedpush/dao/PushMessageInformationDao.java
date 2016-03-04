@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+
+import java.util.Date;
+import java.util.List;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
@@ -45,7 +45,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     /**
      * Counts push messages for given variant ID
      *
-     * @param pushApplicationId the variant ID
+     * @param variantID the variant ID
      *
      * @return number of push messages
      */
