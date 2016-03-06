@@ -69,10 +69,9 @@ public class PushNotificationSenderEndpoint {
      * </pre>
      *
      * Details about the Message Format can be found HERE!
+     * <p/><p/>
      *
-     * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
-     * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     * <b>Request Header</b> {@code aerogear-sender} uses to identify the used client. If the header is not present, the standard "user-agent" header is used.
      *
      * @param message   message to send
      * @return          empty JSON body
