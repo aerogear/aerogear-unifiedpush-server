@@ -16,12 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  * The Android variant class encapsulates GCM specific behavior.
  */
+@Entity
 public class AndroidVariant extends Variant {
     private static final long serialVersionUID = -4473752252296190311L;
 

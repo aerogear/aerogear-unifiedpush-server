@@ -51,6 +51,7 @@
         <class>org.jboss.aerogear.unifiedpush.api.BaseModel</class>
         <class>org.jboss.aerogear.unifiedpush.api.Variant</class>
         <class>org.jboss.aerogear.unifiedpush.api.AdmVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.AndroidVariant</class>
 
         <properties>
 
