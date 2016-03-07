@@ -59,6 +59,7 @@
         <class>org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant</class>
 
         <class>org.jboss.aerogear.unifiedpush.api.PushApplication</class>
+        <class>org.jboss.aerogear.unifiedpush.api.Installation</class>
 
 
         <properties>
