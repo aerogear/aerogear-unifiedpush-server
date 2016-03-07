@@ -50,6 +50,9 @@ public class CategoryDaoTest {
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Categories.xml");
 
+
+
+
     @Test
     public void shouldFindCategoriesByName() {
         // given

@@ -18,11 +18,21 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * A category of a specific installation.
  * @see Installation
  */
+
+@Entity
 public class Category {
+
+    @Id
+    @GeneratedValue
+    //@GenericGenerator(name = "uuid", strategy = "uuid2")
     private Long id;
     private String name;
 
