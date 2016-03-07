@@ -16,12 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
 /**
  * Logical construct which matches a mobile app in the appstore.
  */
+@Entity
 public abstract class Variant extends BaseModel {
     private static final long serialVersionUID = -5028062942838899201L;
 

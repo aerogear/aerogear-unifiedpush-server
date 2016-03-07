@@ -46,9 +46,11 @@
         -->
     <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
-        <!-- <class>org.jboss.aerogear.unifiedpush.jpa.dao.impl.Person</class>-->
-        <class>org.jboss.aerogear.unifiedpush.api.Category</class>
 
+        <class>org.jboss.aerogear.unifiedpush.api.Category</class>
+        <class>org.jboss.aerogear.unifiedpush.api.BaseModel</class>
+        <class>org.jboss.aerogear.unifiedpush.api.Variant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.AdmVariant</class>
 
         <properties>
 

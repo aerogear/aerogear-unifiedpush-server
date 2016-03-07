@@ -66,6 +66,8 @@ public class VariantDaoTest {
         entityManager.getTransaction().rollback();
     }
 
+
+
     @Test
     public void findVariantByIdForDeveloper() {
         assertThat(variantDao.findByVariantID("1")).isNotNull();

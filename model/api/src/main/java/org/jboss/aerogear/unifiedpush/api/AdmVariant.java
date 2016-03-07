@@ -17,10 +17,11 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
+@Entity
 public class AdmVariant extends Variant {
     @NotNull
     @Size(min = 1, max = 255, message = "ClientId must be max. 255 chars long")
