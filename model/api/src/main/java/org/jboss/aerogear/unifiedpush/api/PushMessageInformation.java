@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import java.util.Date;
@@ -25,6 +27,7 @@ import java.util.Set;
 /**
  * Metadata object that contains various informations around a submitted push message request
  */
+@Entity
 public class PushMessageInformation extends BaseModel {
 
     private static final long serialVersionUID = -3855047068913784279L;
@@ -46,6 +49,7 @@ public class PushMessageInformation extends BaseModel {
     private Integer servedVariants = 0;
     private Integer totalVariants = 0;
 
+    @OneToMany
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
 
     /**
