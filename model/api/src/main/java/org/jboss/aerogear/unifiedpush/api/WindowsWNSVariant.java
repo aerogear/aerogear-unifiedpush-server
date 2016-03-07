@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Entity
 public class WindowsWNSVariant extends WindowsVariant {
 
     @NotNull

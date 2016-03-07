@@ -55,6 +55,8 @@
         <class>org.jboss.aerogear.unifiedpush.api.iOSVariant</class>
         <class>org.jboss.aerogear.unifiedpush.api.SimplePushVariant</class>
         <class>org.jboss.aerogear.unifiedpush.api.WindowsVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant</class>
 
 
         <properties>

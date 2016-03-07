@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
+
+@Entity
 public class WindowsMPNSVariant extends WindowsVariant {
     @Override
     public VariantType getType() {
