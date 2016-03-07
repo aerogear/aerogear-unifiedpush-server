@@ -54,6 +54,9 @@
         <class>org.jboss.aerogear.unifiedpush.api.AndroidVariant</class>
         <class>org.jboss.aerogear.unifiedpush.api.iOSVariant</class>
         <class>org.jboss.aerogear.unifiedpush.api.SimplePushVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsVariant</class>
+
+
         <properties>
 
             <property name="hibernate.ogm.datastore.provider" value="mongodb" />
