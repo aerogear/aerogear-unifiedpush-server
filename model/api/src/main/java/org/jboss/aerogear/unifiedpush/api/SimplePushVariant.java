@@ -16,9 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
+
 /**
  * The SimplePush variant class encapsulates SimplePush specific behavior.
  */
+@Entity
 public class SimplePushVariant extends Variant {
     private static final long serialVersionUID = 9046963507735955449L;
 
