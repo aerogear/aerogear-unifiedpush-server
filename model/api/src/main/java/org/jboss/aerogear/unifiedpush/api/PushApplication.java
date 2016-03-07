@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.UUID;
 /**
  * Logical construct of an overall mobile and push-enabled Application
  */
+@Entity
 public class PushApplication extends BaseModel {
     private static final long serialVersionUID = 6507691362454032282L;
 
@@ -47,6 +50,7 @@ public class PushApplication extends BaseModel {
     @Size(min = 1, max = 255)
     private String developer;
 
+    @OneToMany
     private List<Variant> variants = new ArrayList<Variant>();
 
     /**

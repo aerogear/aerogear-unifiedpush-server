@@ -16,21 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -41,6 +28,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class PushApplicationDaoTest {
@@ -63,11 +59,33 @@ public class PushApplicationDaoTest {
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().rollback();
+
+        //entityManager.getTransaction().rollback();
     }
 
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");
+
+
+    @Test
+    public void persistPushAplication()
+    {
+        PushApplication p = new PushApplication();
+        List<Variant> var = new ArrayList<Variant>();
+        Variant v1 = new AndroidVariant();
+        v1.setDescription("android");
+        Variant v2 = new AdmVariant();
+        v2.setDescription("adm");
+        var.add(v1);
+        var.add(v2);
+        p.setVariants(var);
+        entityManager.persist(p);
+        entityManager.persist(v1);
+        entityManager.persist(v2);
+
+        entityManager.getTransaction().commit();
+
+    }
 
     @Test
     public void findAllForDeveloper() throws Exception {
