@@ -22,28 +22,6 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <!--
-        <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
-            <provider>org.hibernate.ejb.HibernatePersistence</provider>
-
-            <mapping-file>META-INF/orm.xml</mapping-file>
-            <mapping-file>org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml</mapping-file>
-            <mapping-file>org/jboss/aerogear/unifiedpush/api/Category.hbm.xml</mapping-file>
-            <mapping-file>org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml</mapping-file>
-            <mapping-file>org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml</mapping-file>
-
-            <properties>
-                <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-                <property name="hibernate.connection.url" value="jdbc:derby:memory:testDB"/>
-                <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
-                <property name="hibernate.connection.username" value="sa"/>
-                <property name="hibernate.hbm2ddl.auto" value="update"/>
-                <property name="hibernate.show_sql" value="false"/>
-                <property name="hibernate.format_sql" value="false"/>
-                <property name="hibernate.transaction.flush_before_completion" value="true"/>
-            </properties>
-        </persistence-unit>
-        -->
     <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 
@@ -61,7 +39,7 @@
         <class>org.jboss.aerogear.unifiedpush.api.PushApplication</class>
         <class>org.jboss.aerogear.unifiedpush.api.Installation</class>
         <class>org.jboss.aerogear.unifiedpush.api.PushMessageInformation</class>
-
+        <class>org.jboss.aerogear.unifiedpush.api.VariantMetricInformation</class>
 
         <properties>
 
