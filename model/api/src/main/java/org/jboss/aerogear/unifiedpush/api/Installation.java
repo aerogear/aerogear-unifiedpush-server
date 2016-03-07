@@ -25,6 +25,8 @@ import java.util.Set;
  * One installation of a push-enabled client, running on a device (Android/iOS)
  * or user-agent (SimplePush)
  */
+
+
 @DeviceTokenCheck
 public class Installation extends BaseModel {
     private static final long serialVersionUID = 7177135979544758234L;

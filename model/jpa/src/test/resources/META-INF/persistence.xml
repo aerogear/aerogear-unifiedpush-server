@@ -49,10 +49,11 @@
         <!-- <class>org.jboss.aerogear.unifiedpush.jpa.dao.impl.Person</class>-->
         <class>org.jboss.aerogear.unifiedpush.api.Category</class>
 
+
         <properties>
 
             <property name="hibernate.ogm.datastore.provider" value="mongodb" />
-            <property name="hibernate.ogm.datastore.database" value="HikeDB" />
+            <property name="hibernate.ogm.datastore.database" value="unifiedpush" />
             <property name="hibernate.ogm.datastore.create_database" value="true" />
         </properties>
     </persistence-unit>
