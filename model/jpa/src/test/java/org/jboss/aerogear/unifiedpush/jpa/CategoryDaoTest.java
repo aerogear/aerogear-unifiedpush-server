@@ -51,6 +51,15 @@ public class CategoryDaoTest {
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Categories.xml");
 
 
+    @Test
+    public void saveCategory() {
+        Category c = new Category("muheheh");
+        entityManager.getTransaction().begin();
+        entityManager.persist(c);
+
+        entityManager.getTransaction().commit();
+    }
+
 
 
     @Test
