@@ -280,7 +280,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * The format of the JSON file is an array, containing several objects that follow the same syntax used on the
      * <code>/rest/registry/device</code> endpoint.
-     * <p/>
+     * <p>
      * Here is an example:
      *
      * <pre>

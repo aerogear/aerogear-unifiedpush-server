@@ -16,6 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -26,17 +37,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
@@ -50,7 +50,7 @@ public class PushNotificationSenderEndpoint {
     /**
      * RESTful API for sending Push Notifications.
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>PushApplicationID:masterSecret</code>).
-     * <p/><p/>
+     * <p>
      *
      * Messages are submitted as flexible JSON maps. Below is a simple example:
      * <pre>
@@ -69,7 +69,7 @@ public class PushNotificationSenderEndpoint {
      * </pre>
      *
      * Details about the Message Format can be found HERE!
-     * <p/><p/>
+     * <p>
      *
      * <b>Request Header</b> {@code aerogear-sender} uses to identify the used client. If the header is not present, the standard "user-agent" header is used.
      *
