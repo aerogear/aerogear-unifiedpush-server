@@ -158,6 +158,25 @@
                     </analysis>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- Adds custom Miredot tags (required for JDK 8 DocLint: http://openjdk.java.net/jeps/172) -->
+                    <tags>
+                        <tag>
+                            <name>statuscode</name>
+                            <placement>m</placement>
+                            <head>Status codes:</head>
+                        </tag>
+                        <tag>
+                            <name>responseheader</name>
+                            <placement>m</placement>
+                            <head>Response headers:</head>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
