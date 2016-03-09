@@ -74,5 +74,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
                 senderCallback.onError(e.getMessage());
             }
         }
+
+        logger.info(String.format("Sent push notification to Amazon's ADM Server for %d tokens",clientIdentifiers.size()));
     }
 }
