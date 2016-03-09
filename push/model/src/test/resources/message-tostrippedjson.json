@@ -1,5 +1,6 @@
 {
   "alert": "HELLO!",
+  "badge": "2",
   "criteria": {
     "categories": null,
     "variants": null,

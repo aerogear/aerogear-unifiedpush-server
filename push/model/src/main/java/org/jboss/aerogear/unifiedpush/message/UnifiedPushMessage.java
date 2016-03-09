@@ -126,6 +126,9 @@ public class UnifiedPushMessage implements Serializable {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
             json.put("alert", this.message.getAlert());
+            if (this.getMessage().getBadge()>0) {
+                json.put("badge", Integer.toString(this.getMessage().getBadge()));
+            }
             json.put("criteria", this.criteria);
             json.put("config", this.config);
             return OBJECT_MAPPER.writeValueAsString(json);
@@ -148,6 +151,9 @@ public class UnifiedPushMessage implements Serializable {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
             json.put("alert", this.message.getAlert());
+            if (this.getMessage().getBadge()>0) {
+                json.put("badge", Integer.toString(this.getMessage().getBadge()));
+            }
             json.put("config", this.config);
 
             // we strip down the criteria too, as alias/category can be quite long, based on use-case
