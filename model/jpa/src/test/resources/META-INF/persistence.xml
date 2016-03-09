@@ -39,12 +39,8 @@
         <class>org.jboss.aerogear.unifiedpush.api.PushApplication</class>
         <class>org.jboss.aerogear.unifiedpush.api.VariantMetricInformation</class>
         <class>org.jboss.aerogear.unifiedpush.api.PushMessageInformation</class>
-        <!--
-    <class>org.jboss.aerogear.unifiedpush.api.Installation</class>
+        <class>org.jboss.aerogear.unifiedpush.api.Installation</class>
 
-
-
-                   -->
 
         <properties>
 

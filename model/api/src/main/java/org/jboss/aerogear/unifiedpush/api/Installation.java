@@ -20,6 +20,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.Set;
 
 /**
@@ -40,10 +42,11 @@ public class Installation extends BaseModel {
     private String osVersion;
     private String alias;
 
-    //@OneToMany
+    @OneToMany
     private Set<Category> categories;
     private String platform;
     @JsonIgnore
+    @ManyToOne
     private Variant variant;
 
     public boolean isEnabled() {
