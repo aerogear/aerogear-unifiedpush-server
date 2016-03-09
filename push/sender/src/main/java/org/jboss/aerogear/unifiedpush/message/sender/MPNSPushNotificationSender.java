@@ -16,23 +16,26 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.windows.mpns.MPNS;
 import org.jboss.aerogear.windows.mpns.MpnsNotification;
 import org.jboss.aerogear.windows.mpns.MpnsService;
 import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 @SenderType(VariantType.WINDOWS_MPNS)
 public class MPNSPushNotificationSender implements PushNotificationSender {
+
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(MPNSPushNotificationSender.class);
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
@@ -99,6 +102,8 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
         for (String identifier : clientIdentifiers) {
             mpnsService.push(identifier, notification);
         }
+
+        logger.info(String.format("Sent push notification to MPNs for %d tokens",clientIdentifiers.size()));
 
         senderCallback.onSuccess();
     }

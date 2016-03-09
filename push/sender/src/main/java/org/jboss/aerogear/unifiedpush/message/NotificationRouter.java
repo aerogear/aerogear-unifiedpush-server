@@ -73,7 +73,7 @@ public class NotificationRouter {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
-        logger.info("Processing send request with '" + message.getMessage().toString() + "' payload");
+        logger.fine("Processing send request with '" + message.getMessage().toString() + "' payload");
 
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();
@@ -116,6 +116,7 @@ public class NotificationRouter {
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
+            logger.info(String.format("Internal dispatching of push message for one %s variant", entry.getKey().getTypeName()));
             dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
         }
     }

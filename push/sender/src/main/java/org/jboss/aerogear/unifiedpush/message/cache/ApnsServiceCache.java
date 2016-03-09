@@ -69,7 +69,7 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
 
                     // trigger asynchronous deletion:
                     if (! transformedTokens.isEmpty()) {
-                        logger.info("Deleting '" + inactiveTokens.size() + "' invalid iOS installations");
+                        logger.info("Deleting '" + inactiveTokens.size() + "' inactive iOS installations");
                         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
                     }
                 } catch (Exception e) {
