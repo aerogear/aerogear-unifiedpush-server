@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -40,6 +41,7 @@ public class VariantMetricInformation extends BaseModel {
     private Integer totalBatches = 0;
 
     @JsonIgnore
+    @ManyToOne
     private PushMessageInformation pushMessageInformation;
 
     public VariantMetricInformation() {
