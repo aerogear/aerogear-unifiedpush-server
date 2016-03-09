@@ -16,15 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
@@ -35,6 +26,14 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
@@ -64,13 +63,19 @@ public class NotificationDispatcher {
      */
     public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
-        final UnifiedPushMessage message = msg.getUnifiedPushMessage();
+        final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
-        logger.fine("Received message from queue: " + msg.getUnifiedPushMessage().getMessage().getAlert());
+        logger.info(String.format("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
 
         senders.select(new SenderTypeLiteral(variant.getType())).get()
-                            .sendPushMessage(variant, deviceTokens, message, msg.getPushMessageInformation().getId(), new SenderServiceCallback(variant, deviceTokens.size(), msg.getPushMessageInformation()));
+                            .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
+                                    new SenderServiceCallback(
+                                            variant,
+                                            deviceTokens.size(),
+                                            msg.getPushMessageInformation()
+                                    )
+                            );
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {
