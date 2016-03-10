@@ -101,6 +101,102 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    public void registerDevicesWithCategories() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+    }
+
+    @Test
+    public void registerTwoDevicesWithDifferentCategories() {
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        device.setVariant(androidVariant);
+        installationDao.update(device);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        // second device, with slightly different metadata
+        device = new Installation();
+        deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        categories = new HashSet<Category>(Arrays.asList(new Category("lame"), new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        assertThat(
+                clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories())
+                .extracting("name")
+                .contains("football","lame")
+                .doesNotContain("soccer");
+    }
+
+    @Test
+    public void removeOneCategoryFromPreviouslyRegisteredDevice() {
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        device.setVariant(androidVariant);
+        installationDao.update(device);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        // same device, with slightly different metadata
+        device = new Installation();
+        device.setDeviceToken(deviceToken);
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+
+        assertThat(
+                clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories())
+                .extracting("name")
+                .contains("football")
+                .doesNotContain("soccer");
+    }
+
+
+    @Test
+    public void registerDevicesAndUpdateWithCategories() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).isEmpty();
+
+        device = new Installation();
+        device.setDeviceToken(deviceToken);
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
+        device.setCategories(categories);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+    }
+
+
+    @Test
     public void updateDevice() {
         Installation device = new Installation();
         String deviceToken = generateFakedDeviceTokenString();
