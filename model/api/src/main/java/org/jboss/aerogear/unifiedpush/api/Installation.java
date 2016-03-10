@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,7 +37,7 @@ public class Installation extends BaseModel {
     private String osVersion;
     private String alias;
 
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
     private String platform;
     @JsonIgnore
     private Variant variant;

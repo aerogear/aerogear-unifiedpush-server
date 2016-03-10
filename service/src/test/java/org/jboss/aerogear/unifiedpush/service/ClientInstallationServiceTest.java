@@ -251,6 +251,34 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
+    public void updateDeviceByRemovingCategory() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+        device.setAlias("root");
+
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        device.setVariant(androidVariant);
+        installationDao.update(device);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories()).hasSize(2);
+
+        // simulate a post WITHOUT the categories metadataad
+        device = new Installation();
+        device.setDeviceToken(deviceToken);
+        device.setAlias("root");
+
+        // and update
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories()).isEmpty();
+    }
+
+    @Test
     public void findDeviceTokensWithSingleCategory() {
 
         Installation device1 = new Installation();
