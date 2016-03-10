@@ -33,7 +33,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return intallation object or null.
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
-    
+
     /**
      * Loads a specific <b>enabled</b> installation for the given Variant, specified by the device token.
      *
@@ -53,13 +53,13 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @return list of intallation objects.
      */
     List<Installation> findInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
-    
+
     /**
      * Loads all installations matching the alias, for the given list of variants.
-     * 
+     *
      * @param variantIDs variant IDs by which to filter.
      * @param alias alias by which to filter
-     * 
+     *
      * @return list of matching installations.
      */
     List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias);
@@ -139,8 +139,16 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
 	List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases);
 
 	/**
+     * Find all installations matching the given variant IDs whose alias is in the {@code aliases} list.
+     * @param variantIDs variant IDs to include.
+     * @param aliases aliases the aliases the installation do not match against.
+     * @return all the matching installations
+     */
+	List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases);
+
+	/**
 	 * Disables any installations with the given alias.
-	 * 
+	 *
 	 * @param alias alias of installations
 	 * @return the number of installations that have been disabled
 	 */
@@ -148,7 +156,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
 	/**
 	 * Returns the subset of the given aliases whose device is marked as enabled.
-	 * 
+	 *
 	 * @param aliases aliases to filter
 	 * @return aliases that are enabled
 	 */

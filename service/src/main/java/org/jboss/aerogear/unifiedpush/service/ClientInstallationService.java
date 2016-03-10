@@ -48,7 +48,7 @@ public interface ClientInstallationService {
     void addInstallations(Variant variant, List<Installation> installations);
 
     void addInstallationsSynchronously(Variant variant, List<Installation> installations);
-    
+
     /**
      * Performs an update/merge on the given entity.
      *
@@ -104,7 +104,7 @@ public interface ClientInstallationService {
     void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken);
-    	
+
     /**
      * Used for "Device Registration":
      *
@@ -116,7 +116,7 @@ public interface ClientInstallationService {
      * @return the installation entity
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
-    
+
     /**
      * Finder that returns the actual client <b>enabled</b> installation, identified by its device-token, for the given variant.
      *
@@ -146,11 +146,11 @@ public interface ClientInstallationService {
     Variant associateInstallation(Installation installation, Variant currentVariant);
 
 	/**
-	 * Removes installations that are installed under the supplied application, but whose alias
-	 * does not match any alias in the {@code aliases} list.
+	 * Disable installations that are installed under the supplied application, but whose alias
+	 * does not match any alias in the {@code aliases} list, Enable existing installations in the alias list.
 	 * @param application the application the installations belong to
 	 * @param aliases aliases to match against
 	 */
-	void removeInstallationNotInAliasList(PushApplication application, List<String> aliases);
+	void syncInstallationByAliasList(PushApplication application, List<String> aliases);
 
 }

@@ -57,39 +57,39 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Inject
     private CategoryDao categoryDao;
-    
+
     @Inject
     private AliasDao aliasDao;
-    
+
     @Inject
     private PushApplicationDao pushApplicationDao;
-    
+
     @Inject
     @LoggedIn
     private Instance<String> developer;
 
 	@Inject
 	private VerificationService verificationService;
-	
+
     @Inject
 	private Configuration configuration;
-    
+
 	@Override
 	public Variant associateInstallation(Installation installation, Variant currentVariant) {
 		if (installation.getAlias() == null) {
 			logger.warning("Unable to associate, installation alias is missing!");
 			return null;
 		}
-		
+
 		Alias alias = aliasDao.findByName(installation.getAlias());
-		
+
 		if (alias == null) {
 			return null;
 		}
-		
+
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
 		List<Variant> variants = application.getVariants();
-		
+
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
 			if(variant.getType().equals(currentVariant.getType())){
@@ -98,7 +98,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 				return variant;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -106,7 +106,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	public void addInstallationSynchronously(Variant variant, Installation entity) {
 		this.addInstallation(variant, entity);
 	}
-	
+
     @Override
     @Asynchronous
     public void addInstallation(Variant variant, Installation entity) {
@@ -121,12 +121,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // new device/client ?
         if (installation == null) {
             logger.finest("Performing new device/client registration");
-            
+
             if (shouldVerifiy) {
             	disablePreviousInstallations(entity.getAlias());
             	entity.setEnabled(false);
             }
-			
+
             // store the installation:
             storeInstallationAndSetReferences(variant, entity);
         } else {
@@ -137,7 +137,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 this.updateInstallation(installation, entity);
             }
         }
-        
+
         // A better implementation would initiate a new REST call when registration is done.
         if (shouldVerifiy)
         	verificationService.initiateDeviceVerification(entity, variant);
@@ -147,7 +147,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public void addInstallationsSynchronously(Variant variant, List<Installation> installations){
     	this.addInstallations(variant, installations);
     }
-    
+
     @Override
     @Asynchronous
     public void addInstallations(Variant variant, List<Installation> installations) {
@@ -248,7 +248,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken) {
     	this.removeInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
-    
+
     @Override
     @Asynchronous
     public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
@@ -259,23 +259,35 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
-    
+
     @Override
     public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
-    
+
+    /**
+     * Synchronize installations according to alias list.
+     * Disable any installation not in alias list
+     * Enable any existing installation is alias list.
+     * @param application
+     * @param aliases
+     */
     @Override
-	public void removeInstallationNotInAliasList(PushApplication application, List<String> aliases) {
+	public void syncInstallationByAliasList(PushApplication application, List<String> aliases) {
 		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
 		for (Variant variant : application.getVariants()) {
 			variantIDs.add(variant.getVariantID());
 		}
-		
+
 		if (!aliases.isEmpty()) {
 			final List<Installation> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases);
 			if (!installations.isEmpty()) {
-				removeInstallations(installations);
+				disableInstallations(installations);
+			}
+
+			final List<Installation> existingInstallations = installationDao.findByVariantIDsInAliasList(variantIDs, aliases);
+			if (!existingInstallations.isEmpty()) {
+				enableInstallations(installations);
 			}
 		}
 	}
@@ -343,9 +355,22 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
-    
+
     private void disablePreviousInstallations(String alias) {
 		installationDao.disableInstallationsByAlias(alias);
 	}
 
+    private void disableInstallations(List<Installation> installations) {
+        for (Installation installation : installations) {
+        	installation.setEnabled(false);
+            updateInstallation(installation);
+        }
+    }
+
+    private void enableInstallations(List<Installation> installations) {
+        for (Installation installation : installations) {
+        	installation.setEnabled(true);
+            updateInstallation(installation);
+        }
+    }
 }
