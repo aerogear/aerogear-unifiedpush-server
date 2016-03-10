@@ -20,13 +20,11 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
 
 import javax.inject.Inject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,9 +44,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private GenericVariantService variantService;
-
-    @Inject
-    private InstallationDao installationDao;
 
     private AndroidVariant androidVariant;
 
@@ -123,7 +118,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
         assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
@@ -154,7 +148,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
         assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
@@ -320,7 +313,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
 
@@ -339,7 +331,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
 
@@ -358,7 +349,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
@@ -382,7 +372,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
-        installationDao.update(device1);
         clientInstallationService.addInstallation(androidVariant, device1);
 
         Installation device2 = new Installation();
@@ -390,7 +379,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
-        installationDao.update(device2);
         clientInstallationService.addInstallation(androidVariant, device2);
 
         Installation device3 = new Installation();
@@ -398,7 +386,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         device3.setVariant(androidVariant);
-        installationDao.update(device3);
         clientInstallationService.addInstallation(androidVariant, device3);
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
@@ -418,7 +405,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
-        installationDao.update(device1);
         clientInstallationService.addInstallation(androidVariant, device1);
 
         Installation device2 = new Installation();
@@ -426,7 +412,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
-        installationDao.update(device2);
         clientInstallationService.addInstallation(androidVariant, device2);
 
         Installation device3 = new Installation();
@@ -434,7 +419,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         device3.setVariant(androidVariant);
-        installationDao.update(device3);
         clientInstallationService.addInstallation(androidVariant, device3);
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
