@@ -20,13 +20,11 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.junit.Test;
 
 import javax.inject.Inject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,9 +44,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private GenericVariantService variantService;
-
-    @Inject
-    private InstallationDao installationDao;
 
     private AndroidVariant androidVariant;
 
@@ -99,6 +94,100 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         clientInstallationService.addInstallation(androidVariant, otherDevice);
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
     }
+
+    @Test
+    public void registerDevicesWithCategories() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+    }
+
+    @Test
+    public void registerTwoDevicesWithDifferentCategories() {
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        device.setVariant(androidVariant);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        // second device, with slightly different metadata
+        device = new Installation();
+        deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        categories = new HashSet<Category>(Arrays.asList(new Category("lame"), new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        assertThat(
+                clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories())
+                .extracting("name")
+                .contains("football","lame")
+                .doesNotContain("soccer");
+    }
+
+    @Test
+    public void removeOneCategoryFromPreviouslyRegisteredDevice() {
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString();
+        device.setDeviceToken(deviceToken);
+
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
+        device.setCategories(categories);
+
+        device.setVariant(androidVariant);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
+
+        // same device, with slightly different metadata
+        device = new Installation();
+        device.setDeviceToken(deviceToken);
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
+        device.setCategories(categories);
+        clientInstallationService.addInstallation(androidVariant, device);
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+
+        assertThat(
+                clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories())
+                .extracting("name")
+                .contains("football")
+                .doesNotContain("soccer");
+    }
+
+
+    @Test
+    public void registerDevicesAndUpdateWithCategories() {
+
+        Installation device = new Installation();
+        String deviceToken = generateFakedDeviceTokenString().toUpperCase();
+        device.setDeviceToken(deviceToken);
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).isEmpty();
+
+        device = new Installation();
+        device.setDeviceToken(deviceToken);
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
+        device.setCategories(categories);
+
+        clientInstallationService.addInstallation(androidVariant, device);
+
+        assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
+    }
+
 
     @Test
     public void updateDevice() {
@@ -224,7 +313,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
 
@@ -243,7 +331,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
 
@@ -262,7 +349,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
-        installationDao.update(device);
 
         clientInstallationService.addInstallation(androidVariant, device);
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
@@ -286,7 +372,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
-        installationDao.update(device1);
         clientInstallationService.addInstallation(androidVariant, device1);
 
         Installation device2 = new Installation();
@@ -294,7 +379,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
-        installationDao.update(device2);
         clientInstallationService.addInstallation(androidVariant, device2);
 
         Installation device3 = new Installation();
@@ -302,7 +386,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         device3.setVariant(androidVariant);
-        installationDao.update(device3);
         clientInstallationService.addInstallation(androidVariant, device3);
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
@@ -322,7 +405,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
-        installationDao.update(device1);
         clientInstallationService.addInstallation(androidVariant, device1);
 
         Installation device2 = new Installation();
@@ -330,7 +412,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
-        installationDao.update(device2);
         clientInstallationService.addInstallation(androidVariant, device2);
 
         Installation device3 = new Installation();
@@ -338,7 +419,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         device3.setVariant(androidVariant);
-        installationDao.update(device3);
         clientInstallationService.addInstallation(androidVariant, device3);
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
