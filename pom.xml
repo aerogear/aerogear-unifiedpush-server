@@ -277,7 +277,7 @@
 	        </build>
 		</profile>
 
-        <!--
+
         <profile>
             <id>code-coverage</id>
             <properties>
@@ -390,7 +390,7 @@
             </build>
 
         </profile>
-        -->
+
     </profiles>
 
 </project>
