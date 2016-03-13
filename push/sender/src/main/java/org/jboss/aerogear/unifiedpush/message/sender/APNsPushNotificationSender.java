@@ -16,15 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
-
-import java.io.ByteArrayInputStream;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.inject.Inject;
-
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsDelegateAdapter;
+import com.notnoop.apns.ApnsNotification;
+import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.ApnsServiceBuilder;
+import com.notnoop.apns.DeliveryError;
+import com.notnoop.apns.EnhancedApnsNotification;
+import com.notnoop.apns.PayloadBuilder;
+import com.notnoop.apns.internal.Utilities;
+import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -39,16 +40,13 @@ import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailab
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsDelegateAdapter;
-import com.notnoop.apns.ApnsNotification;
-import com.notnoop.apns.ApnsService;
-import com.notnoop.apns.ApnsServiceBuilder;
-import com.notnoop.apns.DeliveryError;
-import com.notnoop.apns.EnhancedApnsNotification;
-import com.notnoop.apns.PayloadBuilder;
-import com.notnoop.apns.internal.Utilities;
-import com.notnoop.exceptions.ApnsDeliveryErrorException;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
+import java.util.Date;
+
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
 
 @SenderType(VariantType.IOS)
 public class APNsPushNotificationSender implements PushNotificationSender {
@@ -177,7 +175,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
 
-            logger.info("One batch to APNs has been submitted");
+            logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
+
             apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
             try {
                 service = null; // we don't want a failure in onSuccess stop the APNs service
@@ -250,7 +249,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
-                            logger.info("Removing invalid token: " + invalidToken);
+                            logger.info("Removing invalid (not allowed) token: " + invalidToken);
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases

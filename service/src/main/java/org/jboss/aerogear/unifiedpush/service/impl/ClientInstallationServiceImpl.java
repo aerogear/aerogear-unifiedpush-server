@@ -197,17 +197,14 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public void removeInstallations(
-            List<Installation> installations) {
-
+    public void removeInstallations(List<Installation> installations) {
         // uh... :)
         for (Installation installation : installations) {
             removeInstallation(installation);
         }
     }
 
-    public void updateInstallation(
-            Installation installation) {
+    public void updateInstallation(Installation installation) {
         installationDao.update(installation);
     }
 
@@ -325,13 +322,15 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
         if (entity.getCategories() != null) {
             final List<String> categoryNames = convertToNames(categoriesToMerge);
-            final List<Category> categories = categoryDao.findByNames(categoryNames);
-            //Replace json dematerialised categories with their persistent counter parts see Category.equals
-            entity.getCategories().addAll(categories);
-            entity.getCategories().retainAll(categories);
+            final List<Category> existingCategoriesFromDB = categoryDao.findByNames(categoryNames);
 
-            categoriesToMerge.removeAll(categories);
-            entity.getCategories().addAll(categoriesToMerge);
+            // Replace json dematerialised categories with their persistent counter parts (see Category.equals),
+            // by remove existing/persistent categories from the new collection, and adding them back in (with their PK).
+            categoriesToMerge.removeAll(existingCategoriesFromDB);
+            categoriesToMerge.addAll(existingCategoriesFromDB);
+
+            // and apply the passed in ones.
+            entity.setCategories(categoriesToMerge);
         }
     }
 

@@ -106,8 +106,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to EJB:
         notificationRouter.submit(pushApplication, message);
-        logger.fine("Message sent by: '" + message.getClientIdentifier() + "'");
-        logger.info("Message submitted to PushNetworks for further processing");
+        logger.fine(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }

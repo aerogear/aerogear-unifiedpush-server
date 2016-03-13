@@ -16,18 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -43,6 +31,17 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
@@ -109,6 +108,7 @@ public class TokenLoader {
         final List<String> aliases = criteria.getAliases();
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
+        logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
         for (Variant variant : variants) {
             ResultsStream<String> tokenStream =
                 clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
@@ -127,8 +127,10 @@ public class TokenLoader {
                     }
                     if (tokens.size() > 0) {
                         dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId));
-                        logger.fine(String.format("Loaded batch #%s for %s variant (%s)", serialId, variant.getType().getTypeName(), variant.getVariantID()));
-                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()));
+                        logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+
+                        // using combined key of variant and PMI (AGPUSH-1585):
+                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
                         break;
                     }
@@ -139,7 +141,9 @@ public class TokenLoader {
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
                     logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
-                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()));
+
+                    // using combined key of variant and PMI (AGPUSH-1585):
+                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
