@@ -256,11 +256,10 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 	}
 
     @Override
-	public int disableInstallationsByAlias(String alias) {
+	public int removeInstallationsByAlias(String alias) {
 		return entityManager.createQuery(
-				"update Installation set enabled = false "
-				+ "where alias = :alias "
-				+ "and enabled = true")
+				" delete from Installation "
+				+ "where alias = :alias ")
 				.setParameter("alias", alias)
 				.executeUpdate();
 	}

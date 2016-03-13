@@ -106,7 +106,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         otherDevice.setAlias("username");
 
         clientInstallationService.addInstallationSynchronously(androidVariant, otherDevice);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
 
+        // Replace token and re-registered
+        otherDevice.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
+        clientInstallationService.addInstallationSynchronously(androidVariant, otherDevice);
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null)).hasSize(2);
     }
 
@@ -393,7 +397,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         otherDevice.setAlias("root");
         clientInstallationService.addInstallationSynchronously(androidVariant, otherDevice);
 
-        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(1);
     }
 
     @Test
@@ -464,6 +468,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertThat(installation.isEnabled()==false);
 
         pushApplicationService.updateAliasesAndInstallations(application, aliases);
+        installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 
         assertThat(installation.isEnabled()==true);
     }
