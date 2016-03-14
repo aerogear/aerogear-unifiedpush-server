@@ -21,7 +21,6 @@
   <pre ng-bind="snippets.cordova.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('cordova') !== -1" ng-show="state.activeSnippet == 'cordova'"></pre>
   <pre ng-bind="snippets.ios_objc.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_objc') !== -1" ng-show="state.activeSnippet == 'ios_objc'"></pre>
   <pre ng-bind="snippets.ios_swift.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('ios_swift') !== -1" ng-show="state.activeSnippet == 'ios_swift'"></pre>
-  <pre ng-bind="snippets.dotnet.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1" ng-show="state.activeSnippet == 'dotnet'"></pre>
-  <pre ng-bind="snippets.dotnet.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'dotnet'"></pre>
+  <pre ng-bind="snippets.dotnet.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('mpns') !== -1 || typeEnum[variant.type].indexOf('wns') !== -1" ng-show="state.activeSnippet == 'dotnet'"></pre>
   <pre ng-bind="snippets.adm.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('adm') !== -1" ng-show="state.activeSnippet == 'adm'"></pre>
 </div>
