@@ -21,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,8 +33,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage.DocumentType;
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.document.DocumentDeployRequest;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
@@ -45,6 +45,8 @@ import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 
 import com.qmino.miredot.annotations.ReturnType;
 
@@ -93,12 +95,14 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	}
 
 	@GET
-	@Path("/{pushAppID}/document")
+	@Path("/{pushAppID}/document/{qualifier}/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("multipart/form-data")
+	@PartType(MediaType.TEXT_PLAIN)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-			@QueryParam("publisher") DocumentType publisher, @Context HttpServletRequest request) {
+			@PathParam("qualifier") String qualifer, @PathParam("id") String id, 
+			@Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
@@ -107,8 +111,12 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		}
 
 		try {
-			documentService.getDocuments(pushApp, publisher);
-			return Response.ok(EmptyJSON.STRING).build();
+			MultipartFormDataOutput mdo = new MultipartFormDataOutput();
+			List<String> documents = documentService.getLatestDocumentsForApplication(pushApp, qualifer, id);
+			for (int i = 0; i < documents.size(); i++) {
+				mdo.addFormData("file" + i, documents.get(i), MediaType.TEXT_PLAIN_TYPE);
+			}
+			return Response.ok(mdo).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve documents for push app", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -134,7 +142,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{pushAppID}/document")
 	public Response deployDocumentsForAlias(@PathParam("pushAppID") String pushApplicationID,
-			DocumentDeployRequest deployRequest, @Context HttpServletRequest request) {
+			DocumentDeployRequest deployRequest, @Context HttpServletRequest request,
+			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite) {
 
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
@@ -147,7 +156,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 		if (!deployRequest.getAliasToDocument().isEmpty()) {
 			try {
 				documentService.saveForAliases(pushApplication, deployRequest.getAliasToDocument(),
-						DocumentMessage.getQualifier(deployRequest.getQualifier()));
+						DocumentMetadata.getQualifier(deployRequest.getQualifier()), null, overwrite);
 
 				final UnifiedPushMessage pushMessage = deployRequest.getPushMessage();
 				if (pushMessage != null) {

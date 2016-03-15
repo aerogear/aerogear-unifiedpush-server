@@ -97,7 +97,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken));
     }
-    
+
     public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
     	final String query = getFindVariantByDeviceTokenQuery()
     			.append(" and installation.enabled = :enabled")
@@ -107,7 +107,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .setParameter("deviceToken", deviceToken)
                 .setParameter("enabled", true)
                 .getResultList();
-    			
+
     	if (!isListNotEmpty(installation)) {
     		return null;
     	}
@@ -135,7 +135,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 	public List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias) {
 		return createQuery("select installation from Installation installation " +
 			" join installation.variant abstractVariant " +
-			" where abstractVariant.variantID IN :variantIDs " + 
+			" where abstractVariant.variantID IN :variantIDs " +
 			" and installation.alias = :alias")
 			.setParameter("variantIDs", variantIDs)
 			.setParameter("alias", alias)
@@ -232,28 +232,38 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .setParameter("variantId", variantId)
                 .getSingleResult();
     }
-    
+
     @Override
 	public List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
     	return createQuery("select installation from Installation installation " +
     			" join installation.variant abstractVariant " +
-    			" where abstractVariant.variantID IN :variantIDs " + 
+    			" where abstractVariant.variantID IN :variantIDs " +
     			" and installation.alias NOT IN :aliases")
     			.setParameter("variantIDs", variantIDs)
     			.setParameter("aliases", aliases)
     			.getResultList();
 	}
-    
+
     @Override
-	public int disableInstallationsByAlias(String alias) {
+	public List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases) {
+    	return createQuery("select installation from Installation installation " +
+    			" join installation.variant abstractVariant " +
+    			" where abstractVariant.variantID IN :variantIDs " +
+    			" and installation.alias IN :aliases")
+    			.setParameter("variantIDs", variantIDs)
+    			.setParameter("aliases", aliases)
+    			.getResultList();
+	}
+
+    @Override
+	public int removeInstallationsByAlias(String alias) {
 		return entityManager.createQuery(
-				"update Installation set enabled = false "
-				+ "where alias = :alias "
-				+ "and enabled = true")
+				" delete from Installation "
+				+ "where alias = :alias ")
 				.setParameter("alias", alias)
 				.executeUpdate();
 	}
-    
+
     @Override
 	public Set<String> filterDisabledDevices(Set<String> aliases) {
 		return new HashSet<>(createQuery("select alias from Installation "
@@ -304,7 +314,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     private boolean isListNotEmpty(List<?> list) {
         return (list != null && !list.isEmpty());
     }
-    
+
     private StringBuilder getFindVariantByDeviceTokenQuery() {
     	return new StringBuilder("select installation from Installation installation " +
                 " join installation.variant abstractVariant" +

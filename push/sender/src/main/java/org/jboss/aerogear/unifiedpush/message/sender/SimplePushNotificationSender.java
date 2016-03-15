@@ -16,19 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-
-import javax.ws.rs.core.Response.Status;
-
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 @SenderType(VariantType.SIMPLE_PUSH)
 public class SimplePushNotificationSender implements PushNotificationSender {
@@ -79,12 +78,15 @@ public class SimplePushNotificationSender implements PushNotificationSender {
                 }
             }
         }
-       if (hasWarning) {
-           callback.onError("Error delivering SimplePush payload");
-       }
-       else {
-           callback.onSuccess();
-       }
+
+        logger.info(String.format("Sent push notification to SimplePush Server for %d  tokens",tokens.size()));
+
+        if (hasWarning) {
+            callback.onError("Error delivering SimplePush payload");
+        }
+        else {
+            callback.onSuccess();
+        }
     }
 
     /*

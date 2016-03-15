@@ -37,13 +37,13 @@ import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
 @Stateless
 public class PushApplicationServiceImpl implements PushApplicationService {
-	
+
 	@Inject
 	private AliasDao aliasDao;
-	
+
     @Inject
     private PushApplicationDao pushApplicationDao;
-    
+
     @Inject
     private ClientInstallationService clientInstallationService;
 
@@ -97,9 +97,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 			alias.setPushApplicationID(pushApp.getPushApplicationID());
 			aliasDao.create(alias);
 		}
-		clientInstallationService.removeInstallationNotInAliasList(pushApp, aliases);
+		clientInstallationService.syncInstallationByAliasList(pushApp, aliases);
 	}
-	
+
 	@Override
 	public PushApplication findByVariantID(String variantID) {
 		List<PushApplication> pushApps = pushApplicationDao.findByVariantIds(Collections.singletonList(variantID));

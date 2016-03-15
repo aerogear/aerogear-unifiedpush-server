@@ -95,6 +95,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 responses = wnsService.pushToast(channelUris, optional, createSimpleToastMessage(message));
             }
 
+            logger.info(String.format("Sent push notification to WNS for %d  tokens", channelUris.size()));
+
             for (WnsNotificationResponse response : responses) {
                 if (response.code == HttpServletResponse.SC_GONE) {
                     expiredClientIdentifiers.add(response.channelUri);
