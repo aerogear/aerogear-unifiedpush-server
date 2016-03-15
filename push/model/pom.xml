@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.jboss.aerogear.unifiedpush</groupId>
 		<artifactId>unifiedpush-push-parent</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.2.Final</version>
 	</parent>
 
 	<artifactId>unifiedpush-push-model</artifactId>
@@ -57,5 +57,4 @@
 			</dependencies>
 		</profile>
 	</profiles>
-
 </project>
