@@ -115,6 +115,8 @@ public class TestMetricsCollector extends AbstractJMSTest {
         pushMessagesCompleted.await(1, TimeUnit.SECONDS);
 
         // then
+        variant1Metric1 = updateVarianMetricById(pushMetric, variant1Metric1);
+        variant2Metric1 = updateVarianMetricById(pushMetric, variant2Metric1);
         assertEquals(2, pushMetric.getServedVariants().intValue());
         assertEquals(2, variant1Metric1.getServedBatches().intValue());
         assertEquals(2, variant1Metric1.getTotalBatches().intValue());
@@ -124,6 +126,15 @@ public class TestMetricsCollector extends AbstractJMSTest {
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID1+":"+pushMetric.getId()).from(allBatchesLoaded));
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2+":"+pushMetric.getId()).from(batchLoadedQueue));
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2+":"+pushMetric.getId()).from(allBatchesLoaded));
+    }
+
+    private VariantMetricInformation updateVarianMetricById(PushMessageInformation pmi, VariantMetricInformation vmi) {
+        for (VariantMetricInformation v : pmi.getVariantInformations()) {
+            if (vmi.getVariantID().equals(v.getVariantID())) {
+                return v;
+            }
+        }
+        throw new IllegalStateException("No variant metric found for given id");
     }
 
     public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {

@@ -115,16 +115,9 @@ public class MetricsCollector {
     }
 
     private void updateVariantMetrics(PushMessageInformation pushMessageInformation, VariantMetricInformation variantMetricInformation) {
-        final String variantID = variantMetricInformation.getVariantID();
-
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
-        // AGPUSH-1585:
-        // using a combined key of variant ID and PushMessageInformation ID, to not limit different push requests on the queue just to the variant
-        // TODO: improve name and/or implementation if this.
-        final String variantPushMessageID = variantID + ":" + pushMessageInformation.getId();
-
-        int loadedBatches = countLoadedBatches(variantPushMessageID);
+        int loadedBatches = countLoadedBatches(variantMetricInformation);
         variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
 
         boolean updatedExisting = false;
@@ -142,19 +135,18 @@ public class MetricsCollector {
         }
     }
 
-    private int countLoadedBatches(String variantID) {
+    private int countLoadedBatches(VariantMetricInformation variantMetricInformation) {
         int loadedBatches = 0;
-        while (receiveBatchLoadedEvent(variantID) != null) {
+        while (receiveBatchLoadedEvent(variantMetricInformation) != null) {
             loadedBatches += 1;
         }
         return loadedBatches;
     }
 
     private boolean areAllBatchesLoaded(VariantMetricInformation variantMetricInformation) {
-        final String variantID = variantMetricInformation.getVariantID();
         if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
             // if there is no AllBatchesLoaded event in the queue, then all batches weren't loaded yet
-            return receiveAllBatchedLoadedEvent(variantID) != null;
+            return receiveAllBatchedLoadedEvent(variantMetricInformation) != null;
         }
         return false;
     }
@@ -182,11 +174,15 @@ public class MetricsCollector {
         return jmsClient.receive().inTransaction().noWait().withSelector("pushMessageInformationId = '%s'", pushMessageInformationId).from(metricsQueue);
     }
 
-    private ObjectMessage receiveBatchLoadedEvent(String variantID) {
-        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID).from(batchLoadedQueue);
+    private ObjectMessage receiveBatchLoadedEvent(VariantMetricInformation variantMetricInformation) {
+        final String pushMessageInformationId = variantMetricInformation.getPushMessageInformation().getId();
+        final String variantID = variantMetricInformation.getVariantID();
+        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID + ":" + pushMessageInformationId).from(batchLoadedQueue);
     }
 
-    private ObjectMessage receiveAllBatchedLoadedEvent(String variantID) {
-        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID).from(allBatchesLoaded);
+    private ObjectMessage receiveAllBatchedLoadedEvent(VariantMetricInformation variantMetricInformation) {
+        final String pushMessageInformationId = variantMetricInformation.getPushMessageInformation().getId();
+        final String variantID = variantMetricInformation.getVariantID();
+        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID + ":" + pushMessageInformationId).from(allBatchesLoaded);
     }
 }
