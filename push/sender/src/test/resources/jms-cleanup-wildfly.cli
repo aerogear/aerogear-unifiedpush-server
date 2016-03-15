@@ -8,8 +8,4 @@ batch
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.BatchLoadedQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AllBatchesLoadedQueue:remove()
 
-/subsystem=messaging-activemq/server=default/connection-factory=InVmConnectionFactory:write-attribute(name=min-large-message-size, value=102400)
-/subsystem=messaging-activemq/server=default/pooled-connection-factory=activemq-ra:write-attribute(name=min-large-message-size,value=102400)
-/subsystem=messaging-activemq/server=default/connection-factory=RemoteConnectionFactory:write-attribute(name=min-large-message-size,value=102400)
-
 run-batch

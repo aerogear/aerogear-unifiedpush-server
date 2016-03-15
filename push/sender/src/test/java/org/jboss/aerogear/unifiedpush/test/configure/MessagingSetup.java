@@ -49,7 +49,7 @@ public class MessagingSetup {
         client.apply(new CliFile(new File("../../configuration/jms-setup-wildfly.cli")));
 
         Administration administration = new Administration(client);
-        administration.reload();
+        administration.reloadIfRequired();
     }
 
     public void teardownMessaging(@Observes BeforeStop event) throws CommandFailedException, IOException, InterruptedException, TimeoutException {
@@ -57,10 +57,9 @@ public class MessagingSetup {
         client.apply(new CliFile(new File("src/test/resources/jms-cleanup-wildfly.cli")));
 
         Administration administration = new Administration(client);
-        administration.reload();
+        administration.reloadIfRequired();
 
         client.close();
-        managementClient.set(null);
     }
 
     private OnlineManagementClient createClient() throws IOException {
