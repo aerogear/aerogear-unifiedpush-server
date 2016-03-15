@@ -177,7 +177,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                 installation.setDeviceToken(canonicalRegId);
               
                 //update installation with the new token
-                logger.info(String.format("Based on GCM error response codes, updating Android installations with registration id [%s] with new token [%s} ", registrationIDs.get(i), canonicalRegId));
+                logger.info(String.format("Based on returned canonical id from GCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
                 clientInstallationService.updateInstallation(installation);
               
                 //if the result contains a canonical id, there is no need to remove the current inactive token from data store
