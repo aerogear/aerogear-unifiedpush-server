@@ -58,6 +58,7 @@ public class InstallationManagementEndpoint {
      * @param variantId id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
      * @param page      page number
      * @param pageSize  number of items per page
+     * @param search    search query
      * @return          list of {@link Installation}s
      *
      * @responseheader Link     Links to "prev", "first", "next" and "last" pages

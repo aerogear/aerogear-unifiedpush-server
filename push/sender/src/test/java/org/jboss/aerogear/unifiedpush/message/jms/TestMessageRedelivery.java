@@ -96,7 +96,7 @@ public class TestMessageRedelivery {
 
         // when
         for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens));
+            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
         }
 
         // then
@@ -122,7 +122,7 @@ public class TestMessageRedelivery {
 
         // when
         for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens));
+            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
         }
 
         // then

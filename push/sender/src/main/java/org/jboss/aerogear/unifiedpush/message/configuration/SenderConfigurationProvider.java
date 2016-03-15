@@ -21,7 +21,7 @@ import javax.enterprise.inject.Produces;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
-import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
@@ -56,7 +56,7 @@ public class SenderConfigurationProvider {
 
     @Produces @ApplicationScoped @SenderType(VariantType.IOS)
     public SenderConfiguration produceIosConfiguration() {
-        return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 10000));
+        return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));
     }
 
     @Produces @ApplicationScoped @SenderType(VariantType.SIMPLE_PUSH)

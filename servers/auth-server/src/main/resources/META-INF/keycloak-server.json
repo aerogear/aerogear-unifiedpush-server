@@ -18,25 +18,14 @@
         "provider": "jpa"
     },
 
-    "userSessions": {
-        "provider" : "mem"
-    },
-
-    "realmCache": {
-        "provider": "mem"
-    },
-
-    "userCache": {
-        "provider": "mem",
-        "mem": {
-            "maxSize": 20000
-        }
-    },
-
     "timer": {
         "provider": "basic"
     },
 
+    "userSessionPersister": {
+        "provider": "jpa"
+    },
+    
     "theme": {
         "default": "keycloak",
         "welcomeTheme": "aerogear",

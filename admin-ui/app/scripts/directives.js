@@ -80,28 +80,46 @@ angular.module('upsConsole')
     };
   })
 
-  .factory('SnippetService', function($http, $q) {
-    var snippets = {
+  .factory('SnippetRetriever', function($http, $templateCache, $q) {
+    return {
+      get: function( snippetUrl ) {
+        var cacheResult = $templateCache.get( snippetUrl );
+        if ( cacheResult ) {
+          return $q.when( { data: cacheResult } );
+        }
+        return $http.get( snippetUrl )
+          .then(function( response ) {
+            $templateCache.put( snippetUrl, response.data );
+            return response;
+          });
+      }
+    };
+  })
+
+  .factory('clientSnippets', function() {
+    return {
       'android': { url: 'snippets/register-device/android.java' },
       'cordova': { url: 'snippets/register-device/cordova.js' },
       'ios_objc': { url: 'snippets/register-device/ios.objc' },
       'ios_swift': { url: 'snippets/register-device/ios.swift' },
-      'mpns': { url: 'snippets/register-device/mpns.cs' },
-      'wns': { url: 'snippets/register-device/wns.cs' },
+      'dotnet': { url: 'snippets/register-device/dotnet.cs' },
       'adm': { url: 'snippets/register-device/adm.txt' }
     };
+  })
+
+  .factory('ClientSnippetService', function(SnippetRetriever, $q, clientSnippets) {
     var promises = {};
-    angular.forEach(snippets, function (value, key) {
-      promises[key] = $http.get(value.url)
+    angular.forEach(clientSnippets, function (value, key) {
+      promises[key] = SnippetRetriever.get(value.url)
         .then(function(response){
-          snippets[key].template = response.data;
+          clientSnippets[key].template = response.data;
         });
     });
     return {
       populate: function (result) {
         return $q.all(promises)
           .then(function () {
-            angular.forEach(snippets, function (value, key) {
+            angular.forEach(clientSnippets, function (value, key) {
               if (!result[key]) {
                 result[key] = {};
               }
@@ -115,21 +133,21 @@ angular.module('upsConsole')
     };
   })
 
-  .directive('upsClientSnippets', function (SnippetService) {
+  .directive('upsClientSnippets', function (ClientSnippetService) {
     return {
       templateUrl: 'directives/ups-client-snippets.html',
       scope: {
         variant: '='
       },
       restrict: 'E',
-      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout ) {
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
           android:      { name: 'Android',    snippets: ['android', 'cordova'] },
           ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova']},
-          windows_mpns: { name: 'Windows',    snippets: ['mpns', 'cordova'] },
-          windows_wns:  { name: 'Windows',    snippets: ['wns'] },
+          windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
+          windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
           adm:          { name: 'ADM',        snippets: ['adm'] }
         };
@@ -138,7 +156,7 @@ angular.module('upsConsole')
         };
         $scope.snippets = {};
         function renderSnippets() {
-          SnippetService.populate($scope.snippets).then(function() {
+          ClientSnippetService.populate($scope.snippets).then(function() {
             angular.forEach($scope.snippets, function(value, key) {
               $scope.snippets[key].source = $interpolate($scope.snippets[key].template)($scope);
             });
@@ -170,27 +188,64 @@ angular.module('upsConsole')
     };
   })
 
+  .factory('senderSnippets', function() {
+    return {
+      java: {
+        url: 'snippets/senders/sender.java',
+        show: true,
+        text: {
+          before: '<p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>' +
+                  '<p>Then let\'s use following snippet in your Java code to enable push notification sending.</p>',
+          after:  '<p>Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.</p>' +
+                  '<p>If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.</p>'
+        }
+      },
+      nodejs: {
+        url: 'snippets/senders/sender-nodejs.js',
+        show: true,
+        text: {
+          before: '<p>First you need to download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>' +
+                  '<p>Then let\'s use following snippet in your Node.js code to enable push notification sending.</p>',
+          after:  '<p>Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.</p>'
+        }
+      },
+      curl: {
+        url: 'snippets/senders/sender-curl.sh',
+        show: true,
+        text: {
+          before: '<p>If none from the official client libs doesn\'t suit you or you just want to simply try out the notification sending, you can use REST API directly.</p>' +
+                  '<p>Run following <code>curl</code> command in the shell to send notification to UPS server.</p>',
+          after:  '<p>Read more on the details of the <a ups-doc="sender-api-rest">UPS REST Sender API in documentation</a>.</p>'
+        }
+      }
+    };
+  })
+
   .directive('upsSenderSnippets', function () {
     return {
+      restrict: 'E',
+      templateUrl: 'directives/ups-sender-snippets.html',
       scope: {
         app: '=',
         activeSnippet: '@'
       },
-      controller: function( $scope, ContextProvider, $http, $sce, $interpolate, $timeout ) {
-        $scope.activeSnippet = $scope.activeSnippet || 'java';
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, senderSnippets ) {
+
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
-        $scope.snippets = {
-          java: { url: 'snippets/senders/sender.java' },
-          nodejs: { url: 'snippets/senders/sender-nodejs.js' },
-          curl: { url: 'snippets/senders/sender-curl.sh' }
-        };
-        angular.forEach($scope.snippets, function(value, key) {
-          $http.get( value.url )
-            .then(function( response ) {
-              $scope.snippets[key].source = $interpolate(response.data)($scope);
-            });
-        });
+        $scope.snippets = senderSnippets;
+        function renderSnippets() {
+          angular.forEach($scope.snippets, function(data, senderType) {
+            if (data.show) {
+              $scope.activeSnippet = $scope.activeSnippet || senderType;
+              SnippetRetriever.get(data.url)
+                .then(function (response) {
+                  $scope.snippets[senderType].source = $interpolate(response.data)($scope);
+                });
+            }
+          });
+        }
+        renderSnippets();
         $scope.copySnippet = function() {
           return $scope.snippets[$scope.activeSnippet].source;
         };
@@ -200,9 +255,10 @@ angular.module('upsConsole')
             $scope.clipText = 'Copy to clipboard';
           }, 1000);
         };
-      },
-      restrict: 'E',
-      templateUrl: 'directives/ups-sender-snippets.html'
+        $scope.$watch('app.masterSecret', function() {
+          renderSnippets();
+        });
+      }
     };
   })
 
@@ -273,5 +329,20 @@ angular.module('upsConsole')
         });
         $scope.$on('$destroy', unwatch);
       }
+    };
+  })
+
+  .directive('upsBindHtmlCompile', function ($compile) {
+    return function (scope, element, attrs) {
+      var ensureCompileRunsOnce = scope.$watch(
+        function (scope) {
+          return scope.$eval(attrs.upsBindHtmlCompile);
+        },
+        function (value) {
+          element.html(value);
+          $compile(element.contents())(scope);
+          ensureCompileRunsOnce();
+        }
+      );
     };
   });

@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
+  .controller('ActivityController', function ( $log, $timeout, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
 
     var self = this;
 
@@ -11,12 +11,25 @@ angular.module('upsConsole')
     this.currentEnd = 0;
     this.perPage = 10;
     this.searchString = '';
+    this.activeSearch = '';
 
     var refreshInterval;
 
+    /**
+     * Fetches new data, reflecting provided page and searchString
+     */
     function fetchMetrics( page, searchString ) {
       return metricsEndpoint.fetchApplicationMetrics(self.app.pushApplicationID, searchString, page, self.perPage)
         .then(function( data ) {
+          self.activeSearch = searchString;
+          self.metrics.forEach(function( originalMetric ) {
+            data.pushMetrics.some(function ( newMetric ) {
+              if (originalMetric.id === newMetric.id && originalMetric.$toggled) {
+                newMetric.$toggled = true;
+                return true;
+              }
+            });
+          });
           self.metrics = data.pushMetrics;
           self.totalCount = data.totalItems;
           self.currentStart = self.perPage * (self.currentPage - 1) + 1;
@@ -35,6 +48,18 @@ angular.module('upsConsole')
         });
     }
 
+    /**
+     * Determines whether search is active - either the user typed search string or the data doesn't reflect the search string yet.
+     *
+     * @return false if searchString if false and data reflects that searchString; true otherwise
+     */
+    this.isSearchActive = function() {
+      return self.searchString || self.activeSearch;
+    };
+
+    /**
+     * Fetches new data on page change
+     */
     this.onPageChange = function ( page ) {
       fetchMetrics( page, self.searchString );
     };
@@ -68,9 +93,19 @@ angular.module('upsConsole')
     // initial load
     refreshUntilAllServed();
 
-    $scope.$on('upsNotificationSent', refreshUntilAllServed);
+    $scope.$on('upsNotificationSent', function() {
+      var timer1 = $timeout(refreshUntilAllServed, 500); // artificial delay - refresh after 0.5sec to ensure server has time to load some batches; prevents situation when totalBatches = 0 for all variants
+      var timer2 = $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
+      // destroy timeouts
+      $scope.$on("$destroy", function() {
+        $log.debug('cancelling refreshUntilAllServed timeouts');
+        $timeout.cancel( timer1 );
+        $timeout.cancel( timer2 );
+      });
+    });
     $scope.$on('$destroy', function () {
       if (refreshInterval) {
+        $log.debug('cancelling refreshInterval');
         $interval.cancel(refreshInterval);
       }
     });

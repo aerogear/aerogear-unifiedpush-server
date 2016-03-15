@@ -142,8 +142,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
-        installationToUpdate.setCategories(postedInstallation.getCategories());
-        mergeCategories(installationToUpdate);
+        mergeCategories(installationToUpdate, postedInstallation.getCategories());
+
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
         installationToUpdate.setAlias(postedInstallation.getAlias());
         installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
@@ -210,15 +210,21 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * When an installation is created or updated, the categories are passed without IDs.
      * This method solve this issue by checking for existing categories and updating them (otherwise it would
      * persist a new object).
-     * @param entity
+     * @param entity to merge the categories for
+     * @param categoriesToMerge are the categories to merge with the existing one
      */
-    private void mergeCategories(Installation entity) {
+    private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
         if (entity.getCategories() != null) {
-            final List<String> categoryNames = convertToNames(entity.getCategories());
-            final List<Category> categories = categoryDao.findByNames(categoryNames);
-            //Replace json deserialised categories with their persistent counter parts see Category.equals
-            entity.getCategories().removeAll(categories);
-            entity.getCategories().addAll(categories);
+            final List<String> categoryNames = convertToNames(categoriesToMerge);
+            final List<Category> existingCategoriesFromDB = categoryDao.findByNames(categoryNames);
+
+            // Replace json dematerialised categories with their persistent counter parts (see Category.equals),
+            // by remove existing/persistent categories from the new collection, and adding them back in (with their PK).
+            categoriesToMerge.removeAll(existingCategoriesFromDB);
+            categoriesToMerge.addAll(existingCategoriesFromDB);
+
+            // and apply the passed in ones.
+            entity.setCategories(categoriesToMerge);
         }
     }
 
@@ -242,7 +248,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // set reference
         entity.setVariant(variant);
         // update attached categories
-        mergeCategories(entity);
+        mergeCategories(entity, entity.getCategories());
         // store Installation entity
         installationDao.create(entity);
     }

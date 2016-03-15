@@ -21,12 +21,12 @@
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
         <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-        <version>0.2.16</version>
+        <version>0.2.19</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unifiedpush-parent</artifactId>
-    <version>1.1.0.Final-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>AeroGear UnifiedPush Server</name>
@@ -50,6 +50,7 @@
     </ciManagement>
 
     <modules>
+        <module>common</module>
         <module>model</module>
         <module>migrator</module>
         <module>push</module>
@@ -175,7 +176,7 @@
         <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
         <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.16</aerogear.bom.version>
+        <aerogear.bom.version>0.2.19</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
@@ -186,6 +187,7 @@
         <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
         <ant.contrib.version>20020829</ant.contrib.version>
         <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+        <ups.ddl_value>update</ups.ddl_value>
     </properties>
 
     <profiles>
@@ -222,6 +224,9 @@
 	                </plugin>
 	            </plugins>
 	        </build>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
 		</profile>
 
         <!--
@@ -238,41 +243,10 @@
             <modules>
                 <module>dist</module>
             </modules>
+            <properties>
+                <ups.ddl_value>validate</ups.ddl_value>
+            </properties>
         </profile>
-
-        <!--
-            Profile for JAX-RS doclet generation. This is only working on JDK7, due to the usage of outdated tools
-
-            Usage:
-               - mvn clean install -Pjaxrs-doclet,test
-        -->
-        <profile>
-            <id>jaxrs-doclet</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>enforce-tools</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <requireJavaVersion>
-                                            <!-- Enforce java 1.7 for compiling -->
-                                            <!-- This is needed because jax-doclet is broken on jdk8 -->
-                                            <version>(,1.8)</version>
-                                        </requireJavaVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-	            </plugins>
-	        </build>
-		</profile>
 
         <profile>
             <id>code-coverage</id>

@@ -45,7 +45,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
 
     private static final String CORDOVA = "cordova";
-    static final String CORDOVA_PAGE = "/Plugins/org.jboss.aerogear.cordova.push/P.xaml";
+    static final String CORDOVA_PAGE = "/Plugins/aerogear-cordova-push/P.xaml";
     private String pushMessageInformationId;
 
     @Inject
@@ -94,6 +94,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             } else {
                 responses = wnsService.pushToast(channelUris, optional, createSimpleToastMessage(message));
             }
+
+            logger.info(String.format("Sent push notification to WNS for %d  tokens", channelUris.size()));
 
             for (WnsNotificationResponse response : responses) {
                 if (response.code == HttpServletResponse.SC_GONE) {

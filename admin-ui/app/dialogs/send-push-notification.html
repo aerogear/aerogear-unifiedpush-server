@@ -10,7 +10,7 @@
     <div class="form-group">
       <label class="col-sm-3 control-label" for="textInput-modal-markup">Message</label>
       <div class="col-sm-9">
-        <textarea class="form-control" rows="3" placeholder="Write the notification" ng-model="pushData.message.alert" ng-required="true"></textarea>
+        <textarea id="pushAlert" class="form-control" rows="3" placeholder="Write the notification" ng-model="pushData.message.alert" ng-required="true"></textarea>
       </div>
     </div>
 
@@ -54,7 +54,7 @@
 
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid">Send Push Notification</button>
+    <button id="cancelPush" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button id="sendPush" class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid">Send Push Notification</button>
   </div>
 </form>

@@ -138,7 +138,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             windowsVariant.setName(updatedWindowsVariant.getName());
             windowsVariant.setDescription(updatedWindowsVariant.getDescription());
             variantService.updateVariant(windowsVariant);
-            return Response.noContent().build();
+            return Response.ok(windowsVariant).build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();

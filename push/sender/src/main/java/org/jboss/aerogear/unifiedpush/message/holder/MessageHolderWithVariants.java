@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Holds push message details with what type and list of variants should be the notification sent to.
@@ -36,6 +36,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
 
     private VariantType variantType;
     private Collection<Variant> variants;
+    private int lastSerialId;
     private String lastTokenFromPreviousBatch;
 
     /**
@@ -49,7 +50,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
      * @param variants list of effected variants
      */
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
-        this(pushMessageInformation, unifiedPushMessage, variantType, variants, null);
+        this(pushMessageInformation, unifiedPushMessage, variantType, variants, 0, null);
     }
 
     /**
@@ -59,12 +60,14 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
      * @param unifiedPushMessage the push message
      * @param variantType variant type info
      * @param variants list of effected variants
+     * @param lastSerialId last id from previous batch
      * @param lastTokenFromPreviousBatch last token from previous stream
      */
-    public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, String lastTokenFromPreviousBatch) {
+    public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {
         super(pushMessageInformation, unifiedPushMessage);
         this.variantType = variantType;
         this.variants = new ArrayList<Variant>(variants);
+        this.lastSerialId = lastSerialId;
         this.lastTokenFromPreviousBatch = lastTokenFromPreviousBatch;
     }
 
@@ -74,6 +77,10 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
 
     public Collection<Variant> getVariants() {
         return variants;
+    }
+
+    public int getLastSerialId() {
+        return lastSerialId;
     }
 
     public String getLastTokenFromPreviousBatch() {

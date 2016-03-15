@@ -208,7 +208,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             }
 
             variantService.updateVariant(iOSVariant);
-            return Response.noContent().build();
+            return Response.ok(iOSVariant).build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }

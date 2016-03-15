@@ -1,15 +1,15 @@
 angular.module('upsConsole')
-  .controller('Wizard05SetupSenderController', function( variantModal, $router, createAppWizard, ContextProvider, appModal ) {
+  .controller('Wizard05SetupSenderController', function( $rootScope, $router, variantModal, createAppWizard, ContextProvider, appModal ) {
 
     var self = this;
 
     this.canActivate = function() {
       if ( !createAppWizard.app ) {
-        $router.root.navigate('/wizard/create-app');
+        $rootScope.$broadcast('upsNavigate', '/wizard/create-app');
         return false;
       }
       if ( !createAppWizard.variant ) {
-        $router.root.navigate('/wizard/add-variant');
+        $rootScope.$broadcast('upsNavigate', '/wizard/add-variant');
         return false;
       }
       return true;

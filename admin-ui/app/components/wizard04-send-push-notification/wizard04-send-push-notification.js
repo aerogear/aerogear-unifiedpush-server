@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard04SendPushNotificationController', function( $router, $interval, $timeout, createAppWizard, Notifications, $rootScope, messageSenderEndpoint, appModal, applicationsEndpoint) {
+  .controller('Wizard04SendPushNotificationController', function( $rootScope, $router, $interval, $timeout, createAppWizard, Notifications, messageSenderEndpoint, appModal, applicationsEndpoint) {
 
     var self = this;
 
@@ -7,11 +7,11 @@ angular.module('upsConsole')
 
     this.canActivate = function() {
       if ( !createAppWizard.app ) {
-        $router.root.navigate('/wizard/create-app');
+        $rootScope.$broadcast('upsNavigate', '/wizard/create-app');
         return false;
       }
       if ( !createAppWizard.variant ) {
-        $router.root.navigate('/wizard/add-variant');
+        $rootScope.$broadcast('upsNavigate', '/wizard/add-variant');
         return false;
       }
       return true;
@@ -37,7 +37,7 @@ angular.module('upsConsole')
         .then(function() {
           $rootScope.$broadcast('upsNotificationSent', self.pushData, self.app);
           Notifications.success('Notification was successfully sent');
-          $router.root.navigate('/wizard/setup-sender');
+          $rootScope.$broadcast('upsNavigate', '/wizard/setup-sender');
         })
         .catch(function() {
           Notifications.error('Failed to sent notification');

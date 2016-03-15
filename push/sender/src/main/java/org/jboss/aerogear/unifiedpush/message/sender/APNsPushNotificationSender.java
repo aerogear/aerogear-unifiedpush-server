@@ -16,15 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
-
-import java.io.ByteArrayInputStream;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.inject.Inject;
-
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsDelegateAdapter;
+import com.notnoop.apns.ApnsNotification;
+import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.ApnsServiceBuilder;
+import com.notnoop.apns.DeliveryError;
+import com.notnoop.apns.EnhancedApnsNotification;
+import com.notnoop.apns.PayloadBuilder;
+import com.notnoop.apns.internal.Utilities;
+import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -39,16 +40,13 @@ import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailab
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsDelegateAdapter;
-import com.notnoop.apns.ApnsNotification;
-import com.notnoop.apns.ApnsService;
-import com.notnoop.apns.ApnsServiceBuilder;
-import com.notnoop.apns.DeliveryError;
-import com.notnoop.apns.EnhancedApnsNotification;
-import com.notnoop.apns.PayloadBuilder;
-import com.notnoop.apns.internal.Utilities;
-import com.notnoop.exceptions.ApnsDeliveryErrorException;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
+import java.util.Date;
+
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
 @SenderType(VariantType.IOS)
 public class APNsPushNotificationSender implements PushNotificationSender {
@@ -119,7 +117,17 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if(apns.getLocalizedTitleArguments() != null) {
             builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
+		
+        //this kind of check should belong in java-apns
+        if(apns.getLocalizedKey() != null) {
+            builder.localizedKey(apns.getLocalizedKey()); // Localized Key;
+        }		
 
+        //this kind of check should belong in java-apns
+        if(apns.getLocalizedArguments() != null) {
+            builder.localizedArguments(apns.getLocalizedArguments()); // Localized Arguments;
+        }		
+		
        // apply the 'content-available:1' value:
         if (apns.isContentAvailable()) {
             // content-available is for 'silent' notifications and Newsstand
@@ -167,7 +175,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
 
-            logger.info("One batch to APNs has been submitted");
+            logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
+
             apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
             try {
                 service = null; // we don't want a failure in onSuccess stop the APNs service
@@ -198,10 +207,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
-            return new Date(System.currentTimeMillis() + EnhancedApnsNotification.MAXIMUM_EXPIRY * 1000L);
+            return new Date(EnhancedApnsNotification.MAXIMUM_EXPIRY * 1000L);
         } else {
             // apply the given TTL to the current time
-            return new Date(System.currentTimeMillis() + ttl);
+            return new Date(System.currentTimeMillis() + ttl * 1000L);
         }
     }
 
@@ -216,6 +225,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             final ApnsServiceBuilder builder = APNS.newService();
 
+
+
             // using the APNS Delegate callback to log success/failure for each token:
             builder.withDelegate(new ApnsDelegateAdapter() {
                 @Override
@@ -226,17 +237,31 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
+
+                    // message not found in Java-APNs cache
+                    if (message == null) {
+                        // Notification has been rejected by Apple, and it was removed from the java-apns cache
+                        logger.severe("Error sending payload to APNs server", e);
+                        return;
+                    }
+
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
-                            logger.info("Removing invalid token: " + invalidToken);
+                            logger.info("Removing invalid (not allowed) token: " + invalidToken);
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases
                             logger.severe("Error sending payload to APNs server", e);
                         }
                     }
+                }
+
+                @Override
+                public void cacheLengthExceeded(int newCacheLength) {
+                    logger.warning("Internal cache size exceeded, new size is: " + newCacheLength);
+
                 }
             });
 

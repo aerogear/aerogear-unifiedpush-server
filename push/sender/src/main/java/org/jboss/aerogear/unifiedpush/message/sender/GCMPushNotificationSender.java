@@ -107,7 +107,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             // send out a message to a batch of devices...
             processGCM(androidVariant, registrationIDs, gcmMessage, sender);
 
-            logger.info("Message batch to GCM has been submitted");
+            logger.fine("Message batch to GCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
      */
     private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
-        logger.info("Sending payload for [" + registrationIDs.size() + "] devices to GCM");
+        logger.info(String.format("Sent push notification to GCM Server for %d registrationIDs",registrationIDs.size()));
 
         MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
 
@@ -156,6 +156,9 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             final Result result = results.get(i);
 
             final String errorCodeName = result.getErrorCodeName();
+            if (errorCodeName != null) {
+                logger.info(String.format("Processing [%s] error code from GCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
+            }
 
             // is there any 'interesting' error code, which requires a clean up of the registration IDs
             if (GCM_ERROR_CODES.contains(errorCodeName)) {
@@ -170,7 +173,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         }
 
         // trigger asynchronous deletion:
-        logger.fine("Deleting '" + inactiveTokens.size() + "' invalid Android installations");
+        logger.info(String.format("Based on GCM error response codes, deleting %d invalid Android installations", inactiveTokens.size()));
         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
     }
 }

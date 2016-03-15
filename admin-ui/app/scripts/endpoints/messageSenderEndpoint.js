@@ -2,9 +2,9 @@
 
 var upsServices = angular.module('upsConsole');
 
-upsServices.factory('messageSenderEndpoint', function ($resource) {
+upsServices.factory('messageSenderEndpoint', function ($resource, apiPrefix) {
   return function ( applicationID, masterSecret ) {
-    return $resource('rest/sender', {}, {
+    return $resource( apiPrefix + 'rest/sender', {}, {
       send: {
         method: 'POST',
         headers: {

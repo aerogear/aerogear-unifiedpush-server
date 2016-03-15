@@ -11,7 +11,7 @@ angular.module('upsConsole')
       return self.fetchNewPage(1)
         .then(function() {
           if (self.totalItems < 1) {
-            $router.parent.navigate('/welcome');
+            $rootScope.$broadcast('upsNavigate', '/welcome');
             return false;
           }
         });

@@ -2,12 +2,12 @@
 <p>Make your backend server send push notifications through this UnifiedPush Server using supported sender APIs.</p>
 <dl class="dl-horizontal">
   <dt>Server URL</dt>
-  <dd>{{ appDetail.contextPath }}</dd>
+  <dd id="server-url">{{ appDetail.contextPath }}</dd>
   <dt>Application ID</dt>
-  <dd>{{ appDetail.app.pushApplicationID }}</dd>
+  <dd id="application-id">{{ appDetail.app.pushApplicationID }}</dd>
   <dt>Master Secret</dt>
-  <dd>{{ appDetail.app.masterSecret }}
-    <br /><button class="btn btn-sm btn-default" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
+  <dd id="master-secret">{{ appDetail.app.masterSecret }}
+    <br /><button id="renew-master-secret" class="btn btn-sm btn-default" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
   </dd>
 </dl>
 

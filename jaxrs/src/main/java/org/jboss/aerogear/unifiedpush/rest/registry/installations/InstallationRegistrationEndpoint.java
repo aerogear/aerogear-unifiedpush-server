@@ -133,10 +133,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * Details about JSON format can be found HERE!
      *
-     * @HTTP 200 (OK) Successful storage of the device metadata.
-     * @HTTP 400 (Bad Request) The format of the client request was incorrect (e.g. missing required values).
-     * @HTTP 401 (Unauthorized) The request requires authentication.
-     *
      * @param entity    {@link Installation} for Device registration
      * @return          registered {@link Installation}
      *
@@ -191,9 +187,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
      * </pre>
      *
-     * @HTTP 200 (OK) Successful indicated that application was opened due to push.
-     * @HTTP 401 (Unauthorized) The request requires authentication.
-     *
      * @param pushMessageId push message identifier
      * @return              empty JSON body
      *
@@ -234,10 +227,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *   -X DELETE
      *   https://SERVER:PORT/context/rest/registry/device/{token}
      * </pre>
-     *
-     * @HTTP 204 (OK) Successful unregistration.
-     * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @HTTP 404 (Not Found) The requested device metadata does not exist.
      *
      * @param token device token
      *
@@ -291,7 +280,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * The format of the JSON file is an array, containing several objects that follow the same syntax used on the
      * <code>/rest/registry/device</code> endpoint.
-     * <p/>
+     * <p>
      * Here is an example:
      *
      * <pre>
@@ -311,10 +300,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *   ...
      * ]
      * </pre>
-     *
-     * @HTTP 200 (OK) Successful submission of import job.
-     * @HTTP 400 (Bad Request) The format of the client request was incorrect.
-     * @HTTP 401 (Unauthorized) The request requires authentication.
      *
      * @param form  JSON file to import
      * @return      empty JSON body

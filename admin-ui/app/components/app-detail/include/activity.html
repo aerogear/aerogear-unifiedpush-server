@@ -1,4 +1,4 @@
-<div ng-if="activity.totalCount > 0">
+<div ng-if="activity.totalCount > 0 || activity.isSearchActive()">
   <h3>Notification activity</h3>
 
   <p>Explore push messages that you have sent to the registered devices.</p>
@@ -15,7 +15,7 @@
 
     <div class="table-responsive">
 
-  <table class="datatable table table-striped table-bordered" pf-datatable>
+  <table id="activity-table" class="datatable table table-striped table-bordered" pf-datatable>
     <thead>
     <tr>
       <th></th>
@@ -29,10 +29,15 @@
     </tr>
     </thead>
     <tbody>
+    <tr class="odd" ng-if="activity.totalCount === 0">
+      <td valign="top" align="center" colspan="8" class="dataTables_empty">
+        <p>No message matches the given search criteria.</p>
+      </td>
+    </tr>
     <tr ng-repeat-start="metric in activity.metrics">
       <td>
         <a href ng-click="metric.$toggled = !metric.$toggled">
-          <i class="fa fa-plus-square-o" ng-class="{ 'fa-plus-square-o': !metric.$toggled, 'fa-minus-square-o': metric.$toggled }"></i>
+          <i class="fa" ng-class="{ 'fa-plus-square-o icon-plus-sign-alt': !metric.$toggled, 'fa-minus-square-o icon-minus-sign-alt': metric.$toggled }"></i>
         </a>
       </td>
       <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
@@ -93,7 +98,7 @@
   </div>
 </div><!-- ng-if -->
 
-<div class="blank-slate-pf" ng-if="activity.totalCount == 0">
+<div class="blank-slate-pf" ng-if="activity.totalCount == 0 && !activity.isSearchActive()">
   <div class="blank-slate-pf-icon">
     <i class="fa fa-table"></i>
   </div>
@@ -102,13 +107,8 @@
   <h1 ng-if="appDetail.app.$deviceCount != 0">You haven't send push notifications yet</h1>
 
   <div ng-if="appDetail.app.$deviceCount == 0">
-    <p>There are no registered device for this application. Follow the instructions to register a device on <a href="#">the documentation</a>.</p>
-    <div class="blank-slate-pf-main-action">
-      <a href class="btn btn-primary btn-lg" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" ng-disabled="!appDetail.app.variants.length">
-        <i class="fa fa-paper-plane"></i>
-        Register a device
-      </a>
-    </div>
+    <p>There are no registered device for this application.</p>
+    <p>Check out the documentation on how to get started to <a ups-doc="docs-push-getting-started">register a device</a>.</p>
   </div>
 
   <div ng-if="appDetail.app.$deviceCount != 0">
