@@ -48,8 +48,7 @@ public class TestMessageHolderWithTokens {
 
         return UnifiedPushArchive.forTestClass(TestMessageHolderWithTokens.class)
                 .withMessaging()
-                    .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class, AbstractJMSMessageListener.class)
-                    .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
+                .withMessageDrivenBeans()
                 .withMockito()
                     .addClasses(MockProviders.class)
                 .as(WebArchive.class);

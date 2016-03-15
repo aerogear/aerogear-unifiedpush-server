@@ -53,4 +53,6 @@ public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArc
     public abstract UnifiedPushArchive withApi();
 
     public abstract UnifiedPushArchive withMessaging();
+
+    public abstract UnifiedPushArchive withMessageDrivenBeans();
 }

@@ -52,8 +52,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestTokenBatchDeduplication.class)
                 .withMessaging()
-                    .addClasses(MessageHolderWithTokensProducer.class, MessageHolderWithTokensConsumer.class, AbstractJMSMessageListener.class)
-                    .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
+                .withMessageDrivenBeans()
                 .as(WebArchive.class);
     }
 
