@@ -55,7 +55,7 @@ public class MessagingSetup {
         return ManagementClient.online(OnlineOptions
                 .standalone()
                 .hostAndPort("localhost", 14311)
-                .protocol(ManagementProtocol.HTTP_REMOTE)
+                .protocol(ManagementProtocol.HTTP_REMOTING)
                 .build()
         );
     }
