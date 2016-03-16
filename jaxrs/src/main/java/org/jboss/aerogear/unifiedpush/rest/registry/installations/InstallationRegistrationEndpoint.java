@@ -161,7 +161,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // Poor up-front validation for required token
         final String deviceToken = entity.getDeviceToken();
         if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
-            logger.finest("Invalid device token was delivered: " + deviceToken);
+            logger.finest(String.format("Invalid device token was delivered: %s for variant type: %s", deviceToken, variant.getType()));
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 
