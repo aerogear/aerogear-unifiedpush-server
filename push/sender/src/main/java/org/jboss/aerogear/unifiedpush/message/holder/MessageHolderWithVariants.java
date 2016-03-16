@@ -34,6 +34,8 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
 
     private static final long serialVersionUID = -7955411139315335655L;
 
+    public static final int INITIAL_SERIAL_ID = 0;
+
     private VariantType variantType;
     private Collection<Variant> variants;
     private int lastSerialId;
@@ -50,7 +52,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
      * @param variants list of effected variants
      */
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
-        this(pushMessageInformation, unifiedPushMessage, variantType, variants, 0, null);
+        this(pushMessageInformation, unifiedPushMessage, variantType, variants, INITIAL_SERIAL_ID, null);
     }
 
     /**

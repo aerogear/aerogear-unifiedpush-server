@@ -59,6 +59,9 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @Stateless
 public class TokenLoader {
 
+    private final static int MAX_TIME_TO_BLOCK_WHEN_QUEUE_IS_FULL = 1000; // ms - how long token loader blocks until it gives up and fail transaction when queue is full
+    private final static int TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL = 200; // ms - the time between single retries to resend token batch when queue is full
+
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
 
     @Inject
@@ -105,8 +108,10 @@ public class TokenLoader {
      * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
+     * @throws InterruptedException
+     * @throws IllegalStateException
      */
-    public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) {
+    public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) throws IllegalStateException, InterruptedException {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final VariantType variantType = msg.getVariantType();
         final Collection<Variant> variants = msg.getVariants();
@@ -140,20 +145,20 @@ public class TokenLoader {
                         tokensLoaded += 1;
                     }
                     if (tokens.size() > 0) {
-                        try {
-                            dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId));
-                        } catch (MessageDeliveryException e) {
-                            Throwable cause = e.getCause();
-                            if (cause.getMessage() != null && cause.getMessage().contains("is full")) {
-                                context.setRollbackOnly();
-                                return;
-                            }
+                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId))) {
+                            logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        } else {
+                            logger.fine(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue remains full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                            context.setRollbackOnly();
+                            return;
                         }
-                        logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+
 
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
-                        triggerVariantMetricCollection.fire(new TriggerVariantMetricCollection(msg.getPushMessageInformation(), variant));
+                        if (serialId == MessageHolderWithVariants.INITIAL_SERIAL_ID) {
+                            triggerVariantMetricCollection.fire(new TriggerVariantMetricCollection(msg.getPushMessageInformation(), variant));
+                        }
                     } else {
                         break;
                     }
@@ -181,6 +186,44 @@ public class TokenLoader {
             } catch (ResultStreamException e) {
                 logger.severe("Failed to load batch of tokens", e);
             }
+        }
+    }
+
+    /**
+     * Tries to submit token batch to queue. Returns true in case of success.
+     *
+     * It retries submitting when it detects that queue is full until it times out and return false;.
+     *
+     * @return returns true if token batch was queued; return false is queue was still full even after retrying
+     */
+    private boolean tryToDispatchTokens(MessageHolderWithTokens msg) throws InterruptedException {
+        for (int i = 0 ; i <= MAX_TIME_TO_BLOCK_WHEN_QUEUE_IS_FULL; i += TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL) {
+            if (dispatchTokensOrFailWhenQueueIsFull(msg)) {
+                return true;
+            } else {
+                logger.fine(String.format("Queue is full, blocking loading of batch token #%s for %s variant (%s) for %s ms", msg.getSerialId(), msg.getVariant().getType().getTypeName(), msg.getVariant().getVariantID(), TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL));
+                Thread.sleep(TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tries to dispatch tokens; returns true if tokens were successfully queues.
+     * Detects when queue is full and in that case returns false.
+     *
+     * @return returns true if tokens were successfully queued; returns false if queue was full
+     */
+    private boolean dispatchTokensOrFailWhenQueueIsFull(MessageHolderWithTokens msg) {
+        try {
+            dispatchTokensEvent.fire(msg);
+            return true;
+        } catch (MessageDeliveryException e) {
+            Throwable cause = e.getCause();
+            if (cause.getMessage() != null && cause.getMessage().contains("is full")) {
+                return false;
+            }
+            throw e;
         }
     }
 }

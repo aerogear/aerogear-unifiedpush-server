@@ -17,10 +17,14 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -66,7 +70,8 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
     public static final int TOKENS_TO_SEND = BATCH_SIZE * NUMBER_OF_BATCHES_TO_SEND;
     private static final long TIME_TO_DELIVER_BATCH = 1000L; // in practice this depends on network delay/bandwidth between UPS instance and GCM servers
     private static final long MIN_TIME_TO_DELIVER_ALL_BATCHES = (NUMBER_OF_BATCHES_TO_SEND / CONCURRENT_WORKERS) * TIME_TO_DELIVER_BATCH;
-    private static final long MAX_TIME_TO_DELIVER_ALL_BATCHES = MIN_TIME_TO_DELIVER_ALL_BATCHES + 2000L; // 2 sec tolerance
+    private static final long MAX_TIME_TO_DELIVER_ALL_BATCHES = MIN_TIME_TO_DELIVER_ALL_BATCHES + 4000L; // 4 sec tolerance
+    private static final long MAX_TIME_TO_DELIVER_ALL_BATCHES_ONCE_THEY_ARE_ALL_LODED = 12000L; // the bigger the queue is (max-size-bytes), the bigger is the "buffer" and so it takes longer to deliver all batches remaining in queue
 
     @Inject @DispatchToQueue
     private Event<MessageHolderWithVariants> startLoadingTokensForVariant;
@@ -84,8 +89,7 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
     private static final CountDownLatch waitToDeliverAllBatches = new CountDownLatch(NUMBER_OF_BATCHES_TO_SEND);
     private static final AtomicInteger currentConcurrency = new AtomicInteger(0);
     private static final AtomicInteger maxConcurrency = new AtomicInteger(0);
-
-
+    private static final Set<Integer> deliveredSerials = Collections.newSetFromMap(new ConcurrentHashMap());
 
     @Deployment
     public static WebArchive archive() {
@@ -100,8 +104,7 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
                 .as(WebArchive.class);
     }
 
-    @Test(timeout = 12000)
-//    @Test
+    @Test(timeout = 20000)
     public void testAndroidTransactedRedelivery() throws InterruptedException {
 
         for (int i = 0; i < NUMBER_OF_BATCHES_TO_SEND; i++) {
@@ -121,11 +124,15 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
         startLoadingTokensForVariant.fire(new MessageHolderWithVariants(pmi, pushMessage, VariantType.ANDROID, Arrays.asList(variant)));
 
         // then
-        Assert.assertNotNull(messageId, jmsClient.receive().withTimeout(10000L).withSelector("variantID = '%s'", messageId).from(allBatchesLoaded));
+        Assert.assertNotNull(messageId, jmsClient.receive().withTimeout(10000L).withSelector("variantID = '%s'", messageId + ":" + messageId).from(allBatchesLoaded));
         long allBatchesWereLoaded = System.currentTimeMillis();
         waitToDeliverAllBatches.await();
         long finishedDeliveringOfAllBatchesOnceAllAreLoaded = System.currentTimeMillis() - allBatchesWereLoaded;
         long took = System.currentTimeMillis() - start;
+
+        for (int i = 0; i < NUMBER_OF_BATCHES_TO_SEND; i++) {
+            assertTrue(String.format("serialId=%s should be delivered", i), deliveredSerials.contains(i + 1));
+        }
 
         assertEquals("all workers are used to send notifications", CONCURRENT_WORKERS, maxConcurrency.get());
         if (took < MIN_TIME_TO_DELIVER_ALL_BATCHES) {
@@ -136,8 +143,8 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
         if (finishedDeliveringOfAllBatchesOnceAllAreLoaded < TIME_TO_DELIVER_BATCH) {
             fail(String.format("it should take at least %s ms to deliver all batches once all tokens were loaded, but it took %s", TIME_TO_DELIVER_BATCH, finishedDeliveringOfAllBatchesOnceAllAreLoaded));
         }
-        if (finishedDeliveringOfAllBatchesOnceAllAreLoaded > TIME_TO_DELIVER_BATCH * 3) {
-            fail(String.format("it should take at most %s ms to deliver all batches once all tokens were loaded, but it took %s", TIME_TO_DELIVER_BATCH * 2, finishedDeliveringOfAllBatchesOnceAllAreLoaded));
+        if (finishedDeliveringOfAllBatchesOnceAllAreLoaded > MAX_TIME_TO_DELIVER_ALL_BATCHES_ONCE_THEY_ARE_ALL_LODED) {
+            fail(String.format("it should take at most %s ms to deliver all batches once all tokens were loaded, but it took %s", MAX_TIME_TO_DELIVER_ALL_BATCHES_ONCE_THEY_ARE_ALL_LODED, finishedDeliveringOfAllBatchesOnceAllAreLoaded));
         }
     }
 
@@ -147,6 +154,7 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
             maxConcurrency.set(Math.max(concurrency, maxConcurrency.get()));
             logger.fine("started processing: " + msg.getSerialId());
             Thread.sleep(TIME_TO_DELIVER_BATCH);
+            deliveredSerials.add(msg.getSerialId());
             logger.fine("finished processing: " + msg.getSerialId());
             currentConcurrency.decrementAndGet();
             waitToDeliverAllBatches.countDown();

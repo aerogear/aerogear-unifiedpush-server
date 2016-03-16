@@ -30,6 +30,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class NotificationRouter {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(NotificationRouter.class);
 
     @Inject
-    private GenericVariantService genericVariantService;
+    private Instance<GenericVariantService> genericVariantService;
     @Inject
     private PushMessageMetricsService metricsService;
 
@@ -85,7 +86,7 @@ public class NotificationRouter {
         if (variantIDs != null) {
 
             for (String variantID : variantIDs) {
-                Variant variant = genericVariantService.findByVariantID(variantID);
+                Variant variant = genericVariantService.get().findByVariantID(variantID);
 
                 // does the variant exist ?
                 if (variant != null) {
