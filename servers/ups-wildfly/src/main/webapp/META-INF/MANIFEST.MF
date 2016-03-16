@@ -21,7 +21,7 @@ Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-1.5.1.Final.ja
  n-jaxrs-xml-provider-2.5.1.jar jackson-jaxrs-base-2.5.1.jar jackson-d
  ataformat-xml-2.5.1.jar jackson-module-jaxb-annotations-2.5.1.jar sta
  x2-api-3.1.1.jar stax-api-1.0-2.jar woodstox-core-asl-4.4.0.jar jacks
- on-jaxrs-json-provider-2.5.1.jar java-mpns-0.2.0.jar jcl-over-slf4j-1
+ on-jaxrs-json-provider-2.5.1.jar java-mpns-0.3.0.jar jcl-over-slf4j-1
  .6.1.jar java-adm-0.1.0.jar gson-2.2.2.jar unifiedpush-jaxrs.jar aero
  gear-crypto-0.1.5.jar scprov-jdk15on-1.47.0.3.jar sc-light-jdk15on-1.
  47.0.3.jar json-patch-1.7.jar jackson-coreutils-1.6.jar msg-simple-1.
