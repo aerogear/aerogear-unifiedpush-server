@@ -93,7 +93,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// get document @Path("/{publisher}/{alias}/{qualifier}/latest")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
-					+ newInstallation.getAlias() + "/STATUS/latest");
+					+ newInstallation.getAlias() + "/STATUS/json/latest");
 
 			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
