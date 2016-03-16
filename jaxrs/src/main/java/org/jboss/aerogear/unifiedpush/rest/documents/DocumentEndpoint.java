@@ -166,9 +166,36 @@ public class DocumentEndpoint {
 	 * <li>document/application/null/test/latest - global scope document (for any alias).
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	@Path("/{publisher}/{alias}/{qualifier}/latest")
-	public Response retrieveDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
+	@Deprecated
+	public Response retrieveTextDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
+			@PathParam("qualifier") String qualifier, @Context HttpServletRequest request) {
+		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
+				clientInstallationService, request);
+		if (variant == null) {
+			return create401Response(request);
+		}
+
+		try {
+			String document = documentService.getLatestDocumentForAlias(variant, DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier));
+			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING: document).build();
+		} catch (Exception e) {
+			logger.severe("Cannot retrieve files for alias", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	/**
+	 * Get latest (last-updated) document according to path parameters </br>
+	 * <b>Examples:</b></br>
+	 * <li>document/application/17327572923/test/json/latest - alias specific document
+	 * <li>document/application/null/test/json/latest - global scope document (for any alias).
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{publisher}/{alias}/{qualifier}/json/latest")
+	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
 			@PathParam("qualifier") String qualifier, @Context HttpServletRequest request) {
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
 				clientInstallationService, request);
