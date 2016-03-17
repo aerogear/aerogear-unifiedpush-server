@@ -17,11 +17,9 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * A category of a specific installation.
@@ -29,11 +27,13 @@ import javax.persistence.Id;
  */
 
 @Entity
+@Table(name = "category")
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type = "objectid")
+    private String id;
     private String name;
 
     public Category() {
@@ -44,11 +44,11 @@ public class Category {
     }
 
     @JsonIgnore //we don't want the id of the category in the JSON since the import will not work otherwise.
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
