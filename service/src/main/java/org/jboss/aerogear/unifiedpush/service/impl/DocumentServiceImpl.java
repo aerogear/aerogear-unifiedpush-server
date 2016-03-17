@@ -48,7 +48,7 @@ public class DocumentServiceImpl implements DocumentService {
 
 		return null;
 	}
-	
+
 	@Override
 	public List<String> getLatestDocumentsForApplication(
 			PushApplication pushApp, String qualifier, String id) {
@@ -60,8 +60,14 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 		return contents;
 	}
-	
+
 	@Override
+	public void savePayload(PushApplication pushApplication, String alias, String payload, String qualifier, String id, boolean overwrite){
+		save(payload, pushApplication, DocumentType.APPLICATION, alias, qualifier, id, overwrite);
+	}
+
+	@Override
+	@Deprecated
 	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier,
 			String id, boolean overwrite) {
 		for (Map.Entry<String, String> entry : aliasToDocument.entrySet()) {

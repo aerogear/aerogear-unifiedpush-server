@@ -15,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
@@ -35,7 +35,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/document")
-public class DocumentEndpoint {
+public class DocumentEndpoint extends AbstractEndpoint {
     private final AeroGearLogger logger = AeroGearLogger.getInstance(DocumentEndpoint.class);
 
 	@Inject
@@ -65,19 +65,6 @@ public class DocumentEndpoint {
     @ReturnType("java.lang.Void")
     public Response crossOriginForInstallations(@Context HttpHeaders headers) {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
-    }
-
-    private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
-        // add response headers for the preflight request
-        // required
-        response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
-                .header("Access-Control-Allow-Methods", "POST, DELETE, PATCH") // only POST/DELETE/PATCH are allowed
-                .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization") // explicit Headers!
-                .header("Access-Control-Allow-Credentials", "true")
-                // indicates how long the results of a preflight request can be cached (in seconds)
-                .header("Access-Control-Max-Age", "604800"); // for now, we keep it for seven days
-
-        return response;
     }
 
     /**
@@ -142,22 +129,6 @@ public class DocumentEndpoint {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
-
-    private Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
-
-        return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-                .header("Access-Control-Allow-Credentials", "true").type(MediaType.APPLICATION_JSON)
-                 .build();
-    }
-
-    private Response create401Response(final HttpServletRequest request) {
-        return appendAllowOriginHeader(
-                Response.status(Status.UNAUTHORIZED)
-                        .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                        .entity("Unauthorized Request"),
-                request);
-    }
 
 	/**
 	 * Get latest (last-updated) document according to path parameters </br>
