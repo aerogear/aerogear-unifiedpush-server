@@ -49,8 +49,8 @@ public class JmsClient {
     /**
      * Creates {@link JmsSender} utility that allows to specify how should be message sent and into which destination
      *
-     * @param message msg to be send out
-     * @return the sender
+     * @param message the message to be send out
+     * @return the new sender object
      */
     public JmsSender send(Serializable message) {
         return new JmsSender(message);
@@ -59,7 +59,7 @@ public class JmsClient {
     /**
      * Creates {@link JmsReceiver} utility that allows to specify how should be message received and from which destination
      *
-     * @return the sender
+     * @return the new receiver object
      */
     public JmsReceiver receive() {
         return new JmsReceiver();
@@ -84,7 +84,7 @@ public class JmsClient {
         /**
          * Receives the message in transaction (i.e. use JmsXA connection factory).
          *
-         * @return the receiver
+         * @return this receiver object
          */
         public JmsReceiver inTransaction() {
             this.transacted = true;
@@ -97,7 +97,7 @@ public class JmsClient {
          *
          * @param selector specifies to query messages from a destination.
          * @param args argument for the selector
-         * @return the receiver
+         * @return this receiver object
          *
          * @see String#format(String, Object...)
          */
@@ -109,7 +109,7 @@ public class JmsClient {
         /**
          * Don't block and returns the message what is in the queue, if there is none queued, then returns null immediately.
          *
-         * @return the receiver
+         * @return this receiver object
          */
         public JmsReceiver noWait() {
             this.wait = new NoWait();
@@ -120,7 +120,7 @@ public class JmsClient {
          * Waits specific number of milliseconds for a message to eventually appear in the queue, or returns null if there was no message queued in given interval.
          *
          * @param timeout wait until
-         * @return the receiver
+         * @return this receiver object
          */
         public JmsReceiver withTimeout(long timeout) {
             this.wait = new WaitSpecificTime(timeout);
@@ -130,8 +130,8 @@ public class JmsClient {
         /**
          * Sets the message acknowledgement mode.
          *
-         * @param acknowledgeMode
-         * @return
+         * @param acknowledgeMode JMS acknowledge mode as in {@link Session}
+         * @return this receiver object
          */
         public JmsReceiver withAcknowledgeMode(int acknowledgeMode) {
             this.acknowledgeMode = acknowledgeMode;
@@ -141,7 +141,7 @@ public class JmsClient {
         /**
          * Won't close the connection automatically upon completion, allowing to reuse given connection.
          *
-         * @return the receiver
+         * @return this receiver object
          */
         public JmsReceiver noAutoClose() {
             this.autoClose = false;
@@ -163,7 +163,7 @@ public class JmsClient {
          * Receives message from the given destination.
          *
          * @param destination where to receive from
-         * @return JMS object
+         * @return dequeued {@link ObjectMessage}
          */
         public ObjectMessage from(Destination destination) {
             try {
@@ -212,7 +212,7 @@ public class JmsClient {
 
         private Serializable message;
         private boolean transacted = false;
-        private Map<String, String> properties = new LinkedHashMap<String, String>();
+        private Map<String, Object> properties = new LinkedHashMap<String, Object>();
         private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 
         public JmsSender(Serializable message) {
@@ -222,7 +222,7 @@ public class JmsClient {
         /**
          * Send the message in transaction (i.e. use JmsXA connection factory).
          *
-         * @return the sender
+         * @return this sender object
          */
         public JmsSender inTransaction() {
             this.transacted = true;
@@ -233,10 +233,28 @@ public class JmsClient {
          * Sets the property that can be later used to query message by selector.
          *
          * @param name of property
-         * @param value of propery
-         * @return the sender
+         * @param value of property
+         * @return this sender object
          */
         public JmsSender withProperty(String name, String value) {
+            if (value == null) {
+                throw new NullPointerException("property value");
+            }
+            this.properties.put(name, value);
+            return this;
+        }
+
+        /**
+         * Sets the property that can be later used to query message by selector.
+         *
+         * @param name of property
+         * @param value of property
+         * @return this sender object
+         */
+        public JmsSender withProperty(String name, Long value) {
+            if (value == null) {
+                throw new NullPointerException("property value");
+            }
             this.properties.put(name, value);
             return this;
         }
@@ -248,10 +266,27 @@ public class JmsClient {
          * no matter what payload the another message has.
          *
          * @param duplicateDetectionId protection of ID for duplicate msgs
-         * @return the sender
+         * @return this sender object
          */
         public JmsSender withDuplicateDetectionId(String duplicateDetectionId) {
+            if (duplicateDetectionId == null) {
+                throw new NullPointerException("duplicateDetectionId");
+            }
             this.properties.put("_HQ_DUPL_ID", duplicateDetectionId);
+            return this;
+        }
+
+        /**
+         * The message sent with given ID will be scheduled to be delivered after specified number of miliseconds.
+         *
+         * @param delayMs the delay in milliseconds
+         * @return this sender object
+         */
+        public JmsSender withDelayedDelivery(Long delayMs) {
+            if (delayMs == null) {
+                throw new NullPointerException("delayMs");
+            }
+            this.properties.put("_HQ_SCHED_DELIVERY", new Long(System.currentTimeMillis() + delayMs));
             return this;
         }
 
@@ -272,8 +307,13 @@ public class JmsClient {
                 MessageProducer messageProducer = session.createProducer(destination);
                 connection.start();
                 ObjectMessage objectMessage = session.createObjectMessage(message);
-                for (Entry<String, String> property : properties.entrySet()) {
-                    objectMessage.setStringProperty(property.getKey(), property.getValue());
+                for (Entry<String, Object> property : properties.entrySet()) {
+                    final Object value = property.getValue();
+                    if (value instanceof String) {
+                        objectMessage.setStringProperty(property.getKey(), (String) value);
+                    } else if (value instanceof Long) {
+                        objectMessage.setLongProperty(property.getKey(), (Long) value);
+                    }
                 }
                 messageProducer.send(objectMessage);
             } catch (JMSException e) {

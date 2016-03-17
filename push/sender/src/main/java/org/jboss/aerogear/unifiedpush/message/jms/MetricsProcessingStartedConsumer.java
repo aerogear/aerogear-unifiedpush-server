@@ -16,33 +16,33 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJBContext;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStarted;
 
-/**
- * Consumes {@link VariantMetricInformation} from queue and pass them as a CDI event for further processing.
- *
- * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
- */
-@MessageDriven(name = "MetricsConsumer", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MetricsQueue"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+@MessageDriven(name = "MetricsProcessingStartedConsumer", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic/MetricsProcessingStartedTopic"),
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class VariantMetricInformationConsumer extends AbstractJMSMessageListener<VariantMetricInformation> {
+public class MetricsProcessingStartedConsumer extends AbstractJMSMessageListener<MetricsProcessingStarted> {
 
     @Inject
     @Dequeue
-    private Event<VariantMetricInformation> dequeueEvent;
+    private Event<MetricsProcessingStarted> dequeueEvent;
+
+    @Resource
+    private EJBContext context;
 
     @Override
-    public void onMessage(VariantMetricInformation message) {
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public void onMessage(MetricsProcessingStarted message) {
         dequeueEvent.fire(message);
     }
 }

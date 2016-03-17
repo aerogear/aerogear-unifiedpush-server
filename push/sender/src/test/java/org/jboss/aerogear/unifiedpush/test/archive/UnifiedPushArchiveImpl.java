@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import java.io.File;
+
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
@@ -66,7 +68,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
             .addClasses(AbstractJMSTest.class, JmsClient.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
-            .addAsWebInfResource("hornetq-jms.xml");
+            .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/hornetq-jms.xml"));
     }
 
     @Override

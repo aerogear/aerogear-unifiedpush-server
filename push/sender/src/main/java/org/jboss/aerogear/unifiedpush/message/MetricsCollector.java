@@ -16,32 +16,38 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
+
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Receives metrics from {@link NotificationDispatcher} and updates the database.
  */
 @Stateless
-public class MetricsCollector extends AbstractJMSMessageConsumer {
+public class MetricsCollector {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricsCollector.class);
 
     @Inject
     private PushMessageMetricsService metricsService;
+
+    @Resource(mappedName = "java:/queue/MetricsQueue")
+    private Queue metricsQueue;
 
     @Resource(mappedName = "java:/queue/BatchLoadedQueue")
     private Queue batchLoadedQueue;
@@ -55,6 +61,9 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
     @Inject
     private Event<PushMessageCompletedEvent> pushMessageCompleted;
 
+    @Inject
+    private JmsClient jmsClient;
+
     /**
      * Receives variant metrics and update the push message information in a database.
      *
@@ -64,22 +73,52 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
      * Additionally when a variant was completed and there are no more variants to be completed for this variant,
      * the {@link PushMessageCompletedEvent} CDI event is fired.
      *
-     * @param variantMetricInformation the variant metrics info object
+     * @param event {@link TriggerMetricCollection} event dequeued from JMS
+     * @throws JMSException when JMS provider fails to dequeue messages that {@link MetricsCollector} pulls
      */
-    public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
-        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformation.getPushMessageInformation().getId());
+    public void collectMetrics(@Observes @Dequeue TriggerMetricCollection event) throws JMSException {
+        final String pushMessageInformationId = event.getPushMessageInformationId();
+        final PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(pushMessageInformationId);
         metricsService.lock(pushMessageInformation);
 
-        final String variantID = variantMetricInformation.getVariantID();
+        receiveVariantMetricsRemainingInQueues(pushMessageInformation);
 
+        for (VariantMetricInformation variantMetricInformation : pushMessageInformation.getVariantInformations()) {
+            if (areAllBatchesLoaded(variantMetricInformation)) {
+                pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
+                logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
+            }
+        }
+
+        if (areAllVariantsServed(pushMessageInformation)) {
+            event.markAllVariantsProcessed();
+            logger.fine(String.format("All variants for application %s were processed", pushMessageInformation.getId()));
+            pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
+        }
+
+        metricsService.updatePushMessageInformation(pushMessageInformation);
+    }
+
+    private void receiveVariantMetricsRemainingInQueues(PushMessageInformation pushMessageInformation) throws JMSException {
+        while (true) {
+            ObjectMessage message = receiveVariantMetricInformation(pushMessageInformation.getId());
+            if (message == null) {
+                break;
+            } else {
+                updateVariantMetrics(pushMessageInformation, (VariantMetricInformation) message.getObject());
+            }
+        }
+    }
+
+    private boolean areAllVariantsServed(PushMessageInformation pushMessageInformation) {
+        return areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants());
+    }
+
+    private void updateVariantMetrics(PushMessageInformation pushMessageInformation, VariantMetricInformation variantMetricInformation) {
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
-        // AGPUSH-1585:
-        // using a combined key of variant ID and PushMessageInformation ID, to not limit different push requests on the queue just to the variant
-        // TODO: improve name and/or implementation if this.
-        final String variantPushMessageID = variantID + ":" + pushMessageInformation.getId();
-
-        int loadedBatches = countLoadedBatches(variantPushMessageID);
+        int loadedBatches = countLoadedBatches(variantMetricInformation);
         variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
 
         boolean updatedExisting = false;
@@ -95,34 +134,22 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
-
-        metricsService.updatePushMessageInformation(pushMessageInformation);
-
-        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
-
-            if (areAllBatchesLoaded(variantPushMessageID)) {
-                pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
-                logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
-                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
-
-                if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
-                    logger.fine(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
-                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
-                }
-            }
-        }
     }
 
-    private int countLoadedBatches(String variantID) {
+    private int countLoadedBatches(VariantMetricInformation variantMetricInformation) {
         int loadedBatches = 0;
-        while (receiveInTransactionNoWait(batchLoadedQueue, "variantID", variantID) != null) {
+        while (receiveBatchLoadedEvent(variantMetricInformation) != null) {
             loadedBatches += 1;
         }
         return loadedBatches;
     }
 
-    private boolean areAllBatchesLoaded(String variantID) {
-        return receiveInTransactionNoWait(allBatchesLoaded, "variantID", variantID) != null;
+    private boolean areAllBatchesLoaded(VariantMetricInformation variantMetricInformation) {
+        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
+            // if there is no AllBatchesLoaded event in the queue, then all batches weren't loaded yet
+            return receiveAllBatchedLoadedEvent(variantMetricInformation) != null;
+        }
+        return false;
     }
 
     private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
@@ -142,5 +169,21 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
     private boolean areIntegersEqual(int i1, int i2) {
         return i1 == i2;
+    }
+
+    private ObjectMessage receiveVariantMetricInformation(String pushMessageInformationId) {
+        return jmsClient.receive().inTransaction().noWait().withSelector("pushMessageInformationId = '%s'", pushMessageInformationId).from(metricsQueue);
+    }
+
+    private ObjectMessage receiveBatchLoadedEvent(VariantMetricInformation variantMetricInformation) {
+        final String pushMessageInformationId = variantMetricInformation.getPushMessageInformation().getId();
+        final String variantID = variantMetricInformation.getVariantID();
+        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID + ":" + pushMessageInformationId).from(batchLoadedQueue);
+    }
+
+    private ObjectMessage receiveAllBatchedLoadedEvent(VariantMetricInformation variantMetricInformation) {
+        final String pushMessageInformationId = variantMetricInformation.getPushMessageInformation().getId();
+        final String variantID = variantMetricInformation.getVariantID();
+        return jmsClient.receive().inTransaction().noWait().withSelector("variantID = '%s'", variantID + ":" + pushMessageInformationId).from(allBatchesLoaded);
     }
 }

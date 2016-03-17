@@ -64,6 +64,9 @@
             <jms-queue name="MetricsQueue">
                 <entry name="/queue/MetricsQueue"/>
             </jms-queue>
+            <jms-queue name="TriggerMetricCollectionQueue">
+                <entry name="/queue/TriggerMetricCollectionQueue"/>
+            </jms-queue>
 
             <!-- Batch Loaded Statuses Queues -->
             <jms-queue name="BatchLoadedQueue">

@@ -1,0 +1,9 @@
+connect
+batch
+
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:add(redelivery-delay=1000, max-delivery-attempts=300)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.MetricsQueue:add(max-delivery-attempts=-1)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.BatchLoadedQueue:add(max-delivery-attempts=-1)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.AllBatchesLoadedQueue:add(max-delivery-attempts=-1)
+
+run-batch
