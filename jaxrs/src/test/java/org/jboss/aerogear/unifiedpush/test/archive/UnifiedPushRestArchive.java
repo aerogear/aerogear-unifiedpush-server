@@ -16,11 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
-import org.jboss.aerogear.unifiedpush.message.Config;
-import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.Message;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -28,33 +23,29 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 /**
  * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
-public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushServiceArchive> {
+public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRestArchive> {
 
     public UnifiedPushRestArchive(Archive<?> delegate) {
-        super(UnifiedPushServiceArchive.class, delegate);
- 
+        super(UnifiedPushRestArchive.class, delegate);
+
         addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
-    public static UnifiedPushServiceArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushServiceArchive.class, String.format("%s.war", clazz.getSimpleName()));
+
+    public static UnifiedPushRestArchive forTestClass(Class<?> clazz) {
+        return ShrinkWrap.create(UnifiedPushRestArchive.class, String.format("%s.war", clazz.getSimpleName()));
     }
-    
-  
+
+    public UnifiedPushRestArchive withUtils() {
+        return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage());
+    }
+
     @Override
-    public UnifiedPushServiceArchive withApi() {
+    public UnifiedPushRestArchive withApi() {
         return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
     }
-    
-    public UnifiedPushServiceArchive withMessageModel() {
-        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class)
-                .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
-                .addMavenDependencies("org.codehaus.jackson:jackson-mapper-asl");
-    }
-	
+
     @Override
-    public UnifiedPushServiceArchive withDAOs() {
+    public UnifiedPushRestArchive withDAOs() {
         return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
     }

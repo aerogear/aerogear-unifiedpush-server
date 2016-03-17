@@ -65,7 +65,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	/**
 	 * Overwrites existing categories and properties of the push application
 	 * with the given data
-	 * 
+	 *
 	 * @param pushApplicationID
 	 *            id of {@linkplain PushApplication}
 	 * @param categoryData
@@ -101,7 +101,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@PartType(MediaType.TEXT_PLAIN)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-			@PathParam("qualifier") String qualifer, @PathParam("id") String id, 
+			@PathParam("qualifier") String qualifer, @PathParam("id") String id,
 			@Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 		if (pushApp == null) {
@@ -126,8 +126,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	/**
 	 * POST deploys a file and stores it for later retrieval by a client of the
 	 * push application.
-	 *  
-	 * @deprecated This is a private case of @POST /document/{publisher}/{alias}/{qualifier}
+	 *
+	 * @deprecated Use @Path("/sender/payload/")
 	 * @param pushAppId
 	 *            id of
 	 *            {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
@@ -145,8 +145,11 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			DocumentDeployRequest deployRequest, @Context HttpServletRequest request,
 			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite) {
 
+		logger.warning("method call to @deprecated API /applicationsData/{pushAppID}/document");
+
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
+
 		if (pushApplication == null) {
 			return Response.status(Status.UNAUTHORIZED)
 					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
