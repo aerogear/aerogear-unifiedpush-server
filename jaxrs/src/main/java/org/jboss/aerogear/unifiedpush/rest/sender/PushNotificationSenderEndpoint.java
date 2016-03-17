@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -38,7 +39,6 @@ import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
@@ -123,13 +123,12 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
     }
 
 	/**
-	 * POST accept large payload and stores it for later retrieval by a client
-	 * of the push application.
+	 * @POST accept large payload and stores it for later retrieval by a client
+	 * of the push application. when querying for payload which was stored using
+	 * POST, use ../latest to retrieve most recent snapshot.
 	 *
-	 * @param pushAppId
-	 *            id of
-	 *            {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
-	 * @aliasToDocument a map between aliases and documents.
+	 * @param payloadRequest
+	 *            {@link org.jboss.aerogear.unifiedpush.documentDocumentDeployMessage}
 	 *
 	 * @statuscode 401 if unauthorized for this push application
 	 * @statuscode 500 if request failed
@@ -146,7 +145,19 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
 	}
 
-	@PATCH
+	/**
+	 * @PUT accept large payload and stores it for later retrieval by a client
+	 * of the push application. when querying for payload which was stored using
+	 * @PUT, only one payload snapshot exists.
+	 *
+	 * @param payloadRequest
+	 *            {@link org.jboss.aerogear.unifiedpush.documentDocumentDeployMessage}
+	 *
+	 * @statuscode 401 if unauthorized for this push application
+	 * @statuscode 500 if request failed
+	 * @statuscode 200 upon success
+	 */
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payload")
@@ -180,7 +191,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
 				for (Map.Entry<String, MessagePayload> entry : payloadRequest.getAliasPayload().entrySet()) {
 					documentService.savePayload(pushApplication, entry.getKey(), entry.getValue().getPayload(),
-							DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, false);
+							DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, override);
 
 					// Push notification
 					if (!pushGlobalMessage) {
@@ -195,7 +206,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
 				documentService.savePayload(pushApplication, DocumentMetadata.NULL_ALIAS,
 						payloadRequest.getGlobalPayload().getPayload(),
-						DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, false);
+						DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, override);
 			}
 
 			// Send global push
@@ -213,8 +224,6 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	private void push(UnifiedPushMessage pushMessage, PushApplication pushApplication, HttpServletRequest request) {
 		if (pushMessage != null) {
 			InternalUnifiedPushMessage message = new InternalUnifiedPushMessage(pushMessage);
-			// TODO: refactor into common class shared with
-			// PushNotificationSenderEndpoint
 			// submit http request metadata:
 			message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
 			// add the client identifier
