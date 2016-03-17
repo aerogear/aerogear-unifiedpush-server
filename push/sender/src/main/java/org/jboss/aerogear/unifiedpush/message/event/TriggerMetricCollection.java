@@ -24,7 +24,7 @@ import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 /**
  * Event that triggers {@link MetricsCollector} processing.
  *
- * @see {@link org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer}
+ * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer
  */
 public class TriggerMetricCollection implements Serializable {
 
@@ -55,7 +55,7 @@ public class TriggerMetricCollection implements Serializable {
     }
 
     /**
-     * Returns true if all batches are known to be loaded
+     * @return true if all batches are known to be loaded; false otherwise
      */
     public boolean areAllVariantsProcessed() {
         return allVariantsProcessed;

@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 /**
  * Event that triggers {@link MetricsCollector} processing.
  *
- * @see {@link org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer}
+ * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerVariantMetricCollectionConsumer
  */
 public class TriggerVariantMetricCollection implements Serializable {
 

@@ -49,7 +49,7 @@ public class TestSenderConfigurationProducer {
     private Instance<SenderConfiguration> senderConfiguration;
 
     @Test
-    public void test() {
+    public void testAndroid() {
         try {
             System.setProperty("aerogear.android.batchSize", "999");
             SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.ANDROID)).get();
@@ -57,6 +57,18 @@ public class TestSenderConfigurationProducer {
             assertEquals(999, configuration.batchSize());
         } finally {
             System.clearProperty("aerogear.android.batchSize");
+        }
+    }
+
+    @Test
+    public void testIOS() {
+        try {
+            System.setProperty("aerogear.ios.batchSize", "1");
+            SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.IOS)).get();
+            assertEquals(3, configuration.batchesToLoad());
+            assertEquals(1, configuration.batchSize());
+        } finally {
+            System.clearProperty("aerogear.ios.batchSize");
         }
     }
 }

@@ -73,7 +73,8 @@ public class MetricsCollector {
      * Additionally when a variant was completed and there are no more variants to be completed for this variant,
      * the {@link PushMessageCompletedEvent} CDI event is fired.
      *
-     * @param variantMetricInformation the variant metrics info object
+     * @param event {@link TriggerMetricCollection} event dequeued from JMS
+     * @throws JMSException when JMS provider fails to dequeue messages that {@link MetricsCollector} pulls
      */
     public void collectMetrics(@Observes @Dequeue TriggerMetricCollection event) throws JMSException {
         final String pushMessageInformationId = event.getPushMessageInformationId();
