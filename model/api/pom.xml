@@ -29,7 +29,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ogm.version>4.1.1.Final</ogm.version>
+        <ogm.version>4.2.0.Final</ogm.version>
     </properties>
 
     <dependencyManagement>

@@ -16,32 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
-import org.jboss.aerogear.unifiedpush.api.AdmVariant;
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Category;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
-import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -54,9 +29,18 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class InstallationDaoTest {
@@ -77,9 +61,9 @@ public class InstallationDaoTest {
         return DaoDeployment.createDeployment();
     }
 
-    @Rule
+/*    @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
-
+*/
     @Before
     public void setUp() {
         entityManager.getTransaction().begin();
