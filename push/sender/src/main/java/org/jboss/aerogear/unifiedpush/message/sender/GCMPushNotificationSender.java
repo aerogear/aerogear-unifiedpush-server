@@ -23,6 +23,7 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -128,6 +129,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
+        
     }
 
     /**
@@ -159,21 +161,56 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             if (errorCodeName != null) {
                 logger.info(String.format("Processing [%s] error code from GCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
             }
+            
+            //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
+            //according to gcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
+            //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
+            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has 
+            //been changed to this canonical id, so change it on your server side as well.
+            
+            //check if current index of result has canonical id
+            String canonicalRegId = result.getCanonicalRegistrationId();
+            if (canonicalRegId != null) {
+                // same device has more than one registration id: update it, if needed!
+                // let's see if the canonical id is already in our system:
+                Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, canonicalRegId);
 
-            // is there any 'interesting' error code, which requires a clean up of the registration IDs
-            if (GCM_ERROR_CODES.contains(errorCodeName)) {
+                if (installation != null) {
+                    // ok, there is already a device, with newest/latest registration ID (aka canonical id)
+                    // It is time to remove the old reg id, to avoid duplicated messages in the future!
+                    inactiveTokens.add(registrationIDs.get(i));
 
-                // Ok the result at INDEX 'i' represents a 'bad' registrationID
+                } else {
+                    // since there is no registered device with newest/latest registration ID (aka canonical id),
+                    // this means the new token/regId was never stored on the server. Let's update the device and change its token to new canonical id:
+                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID,registrationIDs.get(i));
+                    installation.setDeviceToken(canonicalRegId);
 
-                // Now use the INDEX of the _that_ result object, and look
-                // for the matching registrationID inside of the List that contains
-                // _all_ the used registration IDs and store it:
-               inactiveTokens.add(registrationIDs.get(i));
+                    //update installation with the new token
+                    logger.info(String.format("Based on returned canonical id from GCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
+                    clientInstallationService.updateInstallation(installation);
+                }
+                
+            }
+            else
+            {
+                // is there any 'interesting' error code, which requires a clean up of the registration IDs
+                if (GCM_ERROR_CODES.contains(errorCodeName)) {
+    
+                    // Ok the result at INDEX 'i' represents a 'bad' registrationID
+    
+                    // Now use the INDEX of the _that_ result object, and look
+                    // for the matching registrationID inside of the List that contains
+                    // _all_ the used registration IDs and store it:
+                   inactiveTokens.add(registrationIDs.get(i));
+                }
             }
         }
-
-        // trigger asynchronous deletion:
-        logger.info(String.format("Based on GCM error response codes, deleting %d invalid Android installations", inactiveTokens.size()));
-        clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+        
+        if (! inactiveTokens.isEmpty()) {
+            // trigger asynchronous deletion:
+            logger.info(String.format("Based on GCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
+            clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+        }
     }
 }
