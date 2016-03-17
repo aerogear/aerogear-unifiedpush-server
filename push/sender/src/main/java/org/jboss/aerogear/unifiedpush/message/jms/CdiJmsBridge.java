@@ -20,10 +20,13 @@ import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
+import javax.jms.Topic;
 
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStarted;
 import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollection;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
@@ -39,6 +42,12 @@ public class CdiJmsBridge {
 
     @Resource(mappedName = "java:/queue/TriggerMetricCollectionQueue")
     private Queue triggerMetricCollectionQueue;
+
+    @Resource(mappedName = "java:/queue/TriggerVariantMetricCollectionQueue")
+    private Queue triggerVariantMetricCollectionQueue;
+
+    @Resource(mappedName = "java:/topic/MetricsProcessingStartedTopic")
+    private Topic metricsProcessingStartedTopic;
 
     @Inject
     private JmsClient jmsClient;
@@ -62,5 +71,15 @@ public class CdiJmsBridge {
     	    .withDuplicateDetectionId(msg.getPushMessageInformationId())
     	    .withDelayedDelivery(500L)
     	    .to(triggerMetricCollectionQueue);
+    }
+
+    public void queueMessage(@Observes @DispatchToQueue TriggerVariantMetricCollection msg) {
+        jmsClient.send(msg)
+            .to(triggerVariantMetricCollectionQueue);
+    }
+
+    public void broadcastMessage(@Observes @DispatchToQueue MetricsProcessingStarted msg) {
+        jmsClient.send(msg)
+            .to(metricsProcessingStartedTopic);
     }
 }
