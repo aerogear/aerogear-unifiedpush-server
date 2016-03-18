@@ -31,14 +31,6 @@
     <build>
         <plugins>
             <plugin>
-              <groupId>org.jboss.as.plugins</groupId>
-              <artifactId>jboss-as-maven-plugin</artifactId>
-              <version>${jboss-as-maven-plugin.version}</version>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
-            </plugin>
-            <plugin>
               <groupId>org.wildfly.plugins</groupId>
               <artifactId>wildfly-maven-plugin</artifactId>
               <configuration>
@@ -47,31 +39,10 @@
             </plugin>
         </plugins>
     </build>
-	<profiles>
-        <profile>
-            <id>buildOnly</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>auth-server</module>
-                <module>ups-as7</module>
-                <module>ups-wildfly</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>as7</id>
-            <modules>
-                <module>auth-server</module>
-                <module>ups-as7</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>wildfly</id>
-            <modules>
-                <module>auth-server</module>
-                <module>ups-wildfly</module>
-            </modules>
-        </profile>
-    </profiles>
+
+    <modules>
+        <module>auth-server</module>
+        <module>ups-wildfly</module>
+    </modules>
+
 </project>

@@ -139,14 +139,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>${jboss-as-maven-plugin.version}</version>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>${wildfly-maven-plugin.version}</version>
@@ -170,11 +162,10 @@
             Options to override the compiler arguments directly on the compiler arument line to separate between what
             the IDE understands as the source level and what the Maven compiler actually use.
         -->
-        <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+        <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
 
-        <jboss-as-maven-plugin.version>7.5.Final</jboss-as-maven-plugin.version>
-        <wildfly-maven-plugin.version>1.0.2.Final</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>1.1.0.Alpha7</wildfly-maven-plugin.version>
 
         <aerogear.bom.version>0.2.19</aerogear.bom.version>
 

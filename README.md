@@ -29,7 +29,7 @@ Or for the on-premise version, execute the following steps to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
-* Start the {Wildfly|EAP 6.3} server (e.g. ``$JBOSS/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0``)
+* Start the {Wildfly-10|EAP 7} server (e.g. ``$SERVER_HOME/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0``)
 * Deploy the two `WAR` files to the [server](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#deploy)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
@@ -59,31 +59,22 @@ The above `Getting started` section covers the latest release of the UnifiedPush
 
 ### Deployment 
 
-For deployment of the `master branch` to a specific server (Wildfly or EAP 6.3), you need to build the WAR files and deploy them to a running and configured server.
+For deployment of the `master branch` to a specific server (Wildfly-10 or EAP7), you need to build the WAR files and deploy them to a running and configured server.
 
 First build the entire project:
 ```
 mvn clean install
 ```
 
-Note, this will build the also the WAR files for both, WildFly and EAP 6.3. If you are only intereted in building for a specific platform, you can also use the profiles, discussed below.
+Note, this will build the also the WAR files for both, WildFly-10 and EAP7.
 
-#### Deployment to WildFly
+#### Deployment to WildFly/EAP7
 
 For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
 
 ```
 cd servers
 mvn wildfly:deploy -Pwildfly
-```
-
-#### Deployment to EAP
-
-For EAP, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured EAP server.
-
-```
-cd servers
-mvn jboss-as:deploy -Pas7
 ```
 
 ### AdminUI and its release
