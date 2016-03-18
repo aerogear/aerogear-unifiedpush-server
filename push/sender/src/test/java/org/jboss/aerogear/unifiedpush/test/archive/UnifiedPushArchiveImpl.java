@@ -73,8 +73,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
             .addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)
-            .addClasses(DispatchToQueue.class, Dequeue.class)
-            .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/hornetq-jms.xml"));
+            .addClasses(DispatchToQueue.class, Dequeue.class);
     }
 
     @Override
