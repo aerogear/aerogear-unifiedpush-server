@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import java.util.List;
-import java.util.Set;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -25,13 +25,14 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream.QueryBuilder;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 @Stateless
 public class MocksForTokenLoaderTransactionFailForGCM  {
@@ -42,62 +43,19 @@ public class MocksForTokenLoaderTransactionFailForGCM  {
     @Inject
     private JmsClient jmsClient;
 
+    /**
+     * Returns mock {@link ClientInstallationService} that generates fake unique Android tokens
+     *
+     * @return mock {@link ClientInstallationService} that generates fake unique Android tokens
+     */
     @Produces
     public ClientInstallationService getClientInstallationService() {
-        return new ClientInstallationService() {
 
+        ClientInstallationService mock = mock(ClientInstallationService.class);
+
+        when(mock.findAllDeviceTokenForVariantIDByCriteria(Mockito.anyString(), Mockito.anyList(), Mockito.anyList(), Mockito.anyList(), Mockito.anyInt(), Mockito.anyString())).thenAnswer(new Answer<QueryBuilder<String>>() {
             @Override
-            public void updateInstallation(Installation toUpdate, Installation postedInstallation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void updateInstallation(Installation installation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void removeInstallations(List<Installation> installations) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void removeInstallation(Installation installation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public Installation findById(String primaryKey) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(final String variantID, List<String> categories,
-                    List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
-
+            public QueryBuilder<String> answer(InvocationOnMock invocation) throws Throwable {
                 return new QueryBuilder<String>() {
 
                     @Override
@@ -134,18 +92,8 @@ public class MocksForTokenLoaderTransactionFailForGCM  {
                     }
                 };
             }
+        });
 
-            @Override
-            public void addInstallations(Variant variant, List<Installation> installations) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void addInstallation(Variant variant, Installation installation) {
-                // TODO Auto-generated method stub
-
-            }
-        };
+        return mock;
     }
 }

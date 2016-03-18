@@ -148,7 +148,7 @@ public class TokenLoader {
                         if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId))) {
                             logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
                         } else {
-                            logger.fine(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue remains full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                            logger.fine(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
                             context.setRollbackOnly();
                             return;
                         }
@@ -190,40 +190,32 @@ public class TokenLoader {
     }
 
     /**
-     * Tries to submit token batch to queue. Returns true in case of success.
-     *
-     * It retries submitting when it detects that queue is full until it times out and return false;.
-     *
-     * @return returns true if token batch was queued; return false is queue was still full even after retrying
-     */
-    private boolean tryToDispatchTokens(MessageHolderWithTokens msg) throws InterruptedException {
-        for (int i = 0 ; i <= MAX_TIME_TO_BLOCK_WHEN_QUEUE_IS_FULL; i += TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL) {
-            if (dispatchTokensOrFailWhenQueueIsFull(msg)) {
-                return true;
-            } else {
-                logger.fine(String.format("Queue is full, blocking loading of batch token #%s for %s variant (%s) for %s ms", msg.getSerialId(), msg.getVariant().getType().getTypeName(), msg.getVariant().getVariantID(), TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL));
-                Thread.sleep(TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Tries to dispatch tokens; returns true if tokens were successfully queues.
+     * Tries to dispatch tokens; returns true if tokens were successfully queued.
      * Detects when queue is full and in that case returns false.
      *
      * @return returns true if tokens were successfully queued; returns false if queue was full
      */
-    private boolean dispatchTokensOrFailWhenQueueIsFull(MessageHolderWithTokens msg) {
+    private boolean tryToDispatchTokens(MessageHolderWithTokens msg) throws InterruptedException {
         try {
             dispatchTokensEvent.fire(msg);
             return true;
         } catch (MessageDeliveryException e) {
             Throwable cause = e.getCause();
-            if (cause.getMessage() != null && cause.getMessage().contains("is full")) {
+            if (isQueueFullException(cause)) {
                 return false;
             }
             throw e;
         }
+    }
+
+    /**
+     * Since different messaging implementations use different exceptions when queue is full,
+     * we have to detect that queue is full by analyzing properties of the thrown exception.
+     *
+     * @param e throwable thrown when JMS message delivery fails
+     * @return true if exceptions represents state when queue is full; false otherwise
+     */
+    private boolean isQueueFullException(Throwable e) {
+        return e != null && e.getMessage().contains("is full");
     }
 }

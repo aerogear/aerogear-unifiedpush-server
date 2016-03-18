@@ -34,6 +34,9 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
 
     private static final long serialVersionUID = -7955411139315335655L;
 
+    /**
+     * The serial ID of the first (initial) batch of tokens for given Push Message
+     */
     public static final int INITIAL_SERIAL_ID = 0;
 
     private VariantType variantType;
