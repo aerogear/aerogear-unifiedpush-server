@@ -63,15 +63,32 @@ public class VariantDaoTest {
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().rollback();
+
+        //entityManager.getTransaction().rollback();
+        entityManager.getTransaction().commit();
     }
 
 
+    @Test
+    public void mongoNative() {
+
+        Variant av = variantDao.findByVariantID("9a9b5116-aed8-428a-a86f-be0f9ea6824c");
+
+        /*Variant av = new AndroidVariant();
+        av.setDescription("muhehehehehe");
+        variantDao.create(av);
+
+        Variant av2 = new AdmVariant();
+        av2.setDescription("brmmmmm");
+        variantDao.create(av2);*/
+    }
 
     @Test
     public void findVariantByIdForDeveloper() {
+
         assertThat(variantDao.findByVariantID("1")).isNotNull();
         assertThat(variantDao.findByVariantID(null)).isNull();
+
     }
 
     @Test

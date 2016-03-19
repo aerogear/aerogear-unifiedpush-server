@@ -16,16 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import java.util.List;
+import org.hibernate.Session;
+import org.jboss.aerogear.unifiedpush.dao.GenericBaseDao;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.jboss.aerogear.unifiedpush.dao.GenericBaseDao;
+import java.util.List;
 
 public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
 
@@ -45,6 +44,11 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     protected TypedQuery<T> createQuery(String jpql) {
         return entityManager.createQuery(jpql, getType());
     }
+
+    protected Query createNativeQuery(String mql) {
+        return  entityManager.createNativeQuery(mql, getType());
+    }
+
 
     protected Query createUntypedQuery(String jpql) {
         return entityManager.createQuery(jpql);
@@ -104,6 +108,16 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     }
 
     protected T getSingleResultForQuery(TypedQuery<T> query) {
+        List<T> result = query.getResultList();
+
+        if (!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    protected T getSingleResultForQuery(Query query) {
         List<T> result = query.getResultList();
 
         if (!result.isEmpty()) {
