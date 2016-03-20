@@ -14,4 +14,4 @@ branches:
 
 before_install: "npm install -g grunt-cli bower@1.3.9"
 
-script: "mvn verify -X"
+script: "mvn verify"
