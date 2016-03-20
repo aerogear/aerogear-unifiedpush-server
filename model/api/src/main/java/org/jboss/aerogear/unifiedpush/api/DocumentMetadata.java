@@ -27,6 +27,9 @@ public class DocumentMetadata implements Serializable {
 	private String alias;
 	private String qualifier;
 	private Boolean latest;
+
+	// When reading documents from directories, this property contain
+	// file lastModified attribute and not timestamp from file parts.
 	private Long timestamp;
 
 	public DocumentMetadata() {

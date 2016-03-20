@@ -104,6 +104,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			@PathParam("qualifier") String qualifer, @PathParam("id") String id,
 			@Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
+
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
 					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")

@@ -7,6 +7,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,7 +25,6 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
@@ -83,18 +83,20 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			@Context HttpServletRequest request) {
 
 		// Overwrite is @Deprecated, this method should always use overwrite false - will be removed on 1.3.0
+		if (overwrite)
+			logger.warning("method call to @deprecated API /applicationsData/{pushAppID}/document");
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
 		return deployDocument(entity, publisher, alias, qualifier, id, overwrite, request);
 	}
 
-	@PATCH
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{publisher}/{alias}/{qualifier}{id : (/[^/]+?)?}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response updateDocument(String entity, @PathParam("publisher") String publisher,
+	public Response storeDocument(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
 			@PathParam("id") String id,
 			@Context HttpServletRequest request) {
