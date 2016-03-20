@@ -241,7 +241,6 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>
-                    <version>1.0.0.Alpha5</version>
                     <scope>test</scope>
                 </dependency>
 
