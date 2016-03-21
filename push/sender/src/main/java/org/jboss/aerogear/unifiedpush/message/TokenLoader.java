@@ -16,20 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
@@ -49,6 +35,19 @@ import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
  *
@@ -58,9 +57,6 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 @Stateless
 public class TokenLoader {
-
-    private final static int MAX_TIME_TO_BLOCK_WHEN_QUEUE_IS_FULL = 1000; // ms - how long token loader blocks until it gives up and fail transaction when queue is full
-    private final static int TIME_BETWEEN_RETRIES_WHEN_QUEUE_IS_FULL = 200; // ms - the time between single retries to resend token batch when queue is full
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
 
