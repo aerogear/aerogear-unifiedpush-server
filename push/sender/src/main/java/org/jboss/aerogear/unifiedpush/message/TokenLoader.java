@@ -43,6 +43,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.jms.JMSException;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -212,6 +214,11 @@ public class TokenLoader {
      * @return true if exceptions represents state when queue is full; false otherwise
      */
     private boolean isQueueFullException(Throwable e) {
-        return e != null && e.getMessage().contains("is full");
+        if (e instanceof JMSException && e.getCause() != null) {
+            if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
