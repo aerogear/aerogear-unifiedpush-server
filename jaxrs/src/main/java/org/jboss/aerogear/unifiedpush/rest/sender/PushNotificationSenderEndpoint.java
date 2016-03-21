@@ -174,19 +174,12 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 					.entity("Unauthorized Request").build();
 		}
 
-		if (payloadRequest.getAliasPayload().isEmpty() && payloadRequest.getGlobalPayload() == null) {
-			return appendAllowOriginHeader(
-					Response.status(Status.BAD_REQUEST).entity("At list one MessagePayload should be provided"),
-					request);
-
-		}
-
 		try {
 			// Save aliases payload
-			if (!payloadRequest.getAliasPayload().isEmpty()) {
+			if (payloadRequest.getAliasPayload() != null && !payloadRequest.getAliasPayload().isEmpty()) {
 				boolean pushGlobalMessage = false;
 
-				if (payloadRequest.getGlobalPayload().getPushMessage() != null)
+				if (payloadRequest.getGlobalPayload() != null && payloadRequest.getGlobalPayload().getPushMessage() != null)
 					pushGlobalMessage = true;
 
 				for (Map.Entry<String, MessagePayload> entry : payloadRequest.getAliasPayload().entrySet()) {

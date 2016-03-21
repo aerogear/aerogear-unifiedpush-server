@@ -15,7 +15,7 @@ public class DocumentMetadata implements Serializable {
 	}
 
 	public static String getQualifier(String value) {
-		return value == null | value.equalsIgnoreCase(NULL_QUALIFIER) ? NULL_QUALIFIER : value.toUpperCase();
+		return value == null || value.equalsIgnoreCase(NULL_QUALIFIER) ? NULL_QUALIFIER : value.toUpperCase();
 	}
 
 	public static final String NULL_QUALIFIER = "NULL";
