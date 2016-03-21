@@ -55,13 +55,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>unifiedpush-server-as7</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <destFileName>unifiedpush-server-as7.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
                                     <artifactId>unifiedpush-server-wildfly</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>

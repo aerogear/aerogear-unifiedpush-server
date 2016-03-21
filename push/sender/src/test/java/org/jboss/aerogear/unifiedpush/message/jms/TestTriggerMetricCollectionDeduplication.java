@@ -16,13 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
@@ -42,8 +45,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestTriggerMetricCollectionDeduplication.class)
                 .withMessaging()
-                    .addClasses(MessageHolderWithTokensProducer.class, MessageHolderWithTokensConsumer.class, AbstractJMSMessageListener.class)
-                    .addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
+                .withMessageDrivenBeans()
                 .addClasses(CdiJmsBridge.class)
                 .as(WebArchive.class);
     }
@@ -54,30 +56,45 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
     @Resource(mappedName = "java:/queue/TriggerMetricCollectionQueue")
     private Queue triggerMetricCollectionQueue;
 
+    private static final ConcurrentLinkedQueue<TriggerMetricCollection> receivedTriggers = new ConcurrentLinkedQueue<TriggerMetricCollection>();
+    private static final CountDownLatch firstMessageLatch = new CountDownLatch(1);
+    private static String messageId;
+
     @Test(timeout = 5000)
     public void testDeduplication() throws InterruptedException {
-        String uuid = UUID.randomUUID().toString();
+        messageId = UUID.randomUUID().toString();
 
-        TriggerMetricCollection msg = new TriggerMetricCollection(uuid);
-
-        final String msgSelector = String.format("_HQ_DUPL_ID = '%s'", uuid);
+        TriggerMetricCollection msg = new TriggerMetricCollection(messageId);
 
         // it doesn't matter how many times we send the message, ...
         triggerMetricCollection.fire(msg);
         triggerMetricCollection.fire(msg);
 
+        firstMessageLatch.await(2500L, TimeUnit.MILLISECONDS);
         // we will be able to receive it just once
-        assertNotNull("first try for receiving the message should receive it successfully", receive().withTimeout(2500).withSelector(msgSelector).from(triggerMetricCollectionQueue));
+        assertEquals("first try for receiving the message should receive it successfully", 1, receivedTriggers.size());
         // and any other try to receive it again won't succeed
         // since it will be dropped by the queue (that is detecting duplicates by ID)
-        assertNull("but second try should not receive any message since it was de-duplicated", receive().withTimeout(1000).withSelector(msgSelector).from(triggerMetricCollectionQueue));
+        Thread.sleep(1000L);
+        assertEquals("but second try should not receive any further message since it was de-duplicated", 1, receivedTriggers.size());
 
         // any other try for sending the message with same ID (even though we are sending different object in terms of equality)
-        msg = new TriggerMetricCollection(uuid);
+        msg = new TriggerMetricCollection(messageId);
         triggerMetricCollection.fire(msg);
         triggerMetricCollection.fire(msg);
 
         // ...will again mean the message will be rejected by the queue
-        assertNull("any other try should not receive any message since it was de-duplicated", receive().withTimeout(1000).withSelector(msgSelector).from(triggerMetricCollectionQueue));
+        Thread.sleep(1000L);
+        assertEquals("any other try should not receive any further message since it was de-duplicated", 1, receivedTriggers.size());
+    }
+
+    public void receiveTrigger(@Observes @Dequeue TriggerMetricCollection triggerEvent) {
+        if (triggerEvent.getPushMessageInformationId().equals(messageId)) {
+            triggerEvent.markAllVariantsProcessed(); // mark processed, otherwise it will be rolled-back and redelivered
+            receivedTriggers.add(triggerEvent);
+            if (receivedTriggers.size() == 1) {
+                firstMessageLatch.countDown();
+            }
+        }
     }
 }

@@ -130,54 +130,6 @@
             <artifactId>java-adm</artifactId>
             <version>0.1.0</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.wildfly.extras.creaper</groupId>
-            <artifactId>creaper-core</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-controller-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-cli</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.extras.creaper</groupId>
-            <artifactId>creaper-commands</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-patching</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-controller-client</artifactId>
-            <version>8.2.1.Final</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-cli</artifactId>
-            <version>8.2.1.Final</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-patching</artifactId>
-            <version>8.2.1.Final</version>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
 
@@ -216,9 +168,60 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>
-                    <version>1.0.0.Alpha1</version>
+                    <version>1.0.0.Alpha6</version>
                     <scope>test</scope>
                 </dependency>
+                
+                
+        
+                <dependency>
+                    <groupId>org.wildfly.extras.creaper</groupId>
+                    <artifactId>creaper-core</artifactId>
+                    <version>1.0.0</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.as</groupId>
+                            <artifactId>jboss-as-controller-client</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.as</groupId>
+                            <artifactId>jboss-as-cli</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.extras.creaper</groupId>
+                    <artifactId>creaper-commands</artifactId>
+                    <version>1.0.0</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.wildfly</groupId>
+                            <artifactId>wildfly-patching</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>test</scope>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-controller-client</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-cli</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-patching</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                
             </dependencies>
         </profile>
     </profiles>
