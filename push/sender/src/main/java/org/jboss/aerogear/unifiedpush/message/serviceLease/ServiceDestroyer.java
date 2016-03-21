@@ -18,11 +18,15 @@ package org.jboss.aerogear.unifiedpush.message.serviceLease;
 
 /**
  * Allows to destroy instance of service T
+ *
+ * @param <T> the type of service
  */
 public interface ServiceDestroyer<T> {
 
     /**
      * Destroys the service instance
+     *
+     * @param instance the service instance
      */
     void destroy(T instance);
 }

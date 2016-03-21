@@ -106,10 +106,8 @@ public class TokenLoader {
      * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
-     * @throws InterruptedException
-     * @throws IllegalStateException
      */
-    public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) throws IllegalStateException, InterruptedException {
+    public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) throws IllegalStateException {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final VariantType variantType = msg.getVariantType();
         final Collection<Variant> variants = msg.getVariants();
@@ -193,7 +191,7 @@ public class TokenLoader {
      *
      * @return returns true if tokens were successfully queued; returns false if queue was full
      */
-    private boolean tryToDispatchTokens(MessageHolderWithTokens msg) throws InterruptedException {
+    private boolean tryToDispatchTokens(MessageHolderWithTokens msg) {
         try {
             dispatchTokensEvent.fire(msg);
             return true;
@@ -210,7 +208,7 @@ public class TokenLoader {
      * When queue is full, ActiveMQ/Artemis throws an instance of org.apache.activemq.artemis.api.core.ActiveMQAddressFullException
      * In order to avoid hard dependency on that API for this check, we detect that queue is full by analyzing the name of the thrown exception.
      *
-     * @param e throwable thrown when JMS message delivery fails 
+     * @param e throwable thrown when JMS message delivery fails
      * @return true if exceptions represents state when queue is full; false otherwise
      */
     private boolean isQueueFullException(Throwable e) {
