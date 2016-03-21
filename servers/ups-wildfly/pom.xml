@@ -54,7 +54,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.3.7.Final</version>
             <scope>provided</scope>
         </dependency>
 
@@ -114,7 +113,7 @@
                             <targetPath>/</targetPath>
                         </resource>
                     </webResources>
-                    
+
 				    <archive>
 				        <manifest>
                             <addClasspath>true</addClasspath>
@@ -126,7 +125,7 @@
 				</configuration>
 			</plugin>
 			<!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
-			<!-- To use, set the JBOSS_HOME environment variable and run: mvn package 
+			<!-- To use, set the JBOSS_HOME environment variable and run: mvn package
 				jboss-as:deploy -->
 			<plugin>
 				<groupId>org.jboss.as.plugins</groupId>

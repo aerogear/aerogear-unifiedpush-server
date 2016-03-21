@@ -27,8 +27,9 @@ import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
  * @see Mysql5BitBooleanDialect
  */
 public class MysqlDialectResolver implements DialectResolver {
+	private static final long serialVersionUID = 809745459149545607L;
 
-    @Override
+	@Override
     public Dialect resolveDialect(DialectResolutionInfo dialectResolutionInfo) {
         if ("MySQL".equals(dialectResolutionInfo.getDatabaseName())) {
             return dialectResolutionInfo.getDatabaseMajorVersion() >= 5 ? new Mysql5BitBooleanDialect() : new MySQLDialect();

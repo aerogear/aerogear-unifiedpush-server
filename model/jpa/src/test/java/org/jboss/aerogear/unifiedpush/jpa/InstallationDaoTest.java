@@ -246,7 +246,8 @@ public class InstallationDaoTest {
         installationDao.create(installation);
 
         //then
-        final List list = entityManager.createQuery("select c from Category c where c.name = 'one'").getResultList();
+        @SuppressWarnings("unchecked")
+		final List<Category> list = entityManager.createQuery("select c from Category c where c.name = 'one'").getResultList();
         assertThat(list).hasSize(1);
     }
 

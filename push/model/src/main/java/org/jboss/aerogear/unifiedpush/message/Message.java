@@ -17,13 +17,14 @@
 package org.jboss.aerogear.unifiedpush.message;
 
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.message.windows.Windows;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The message part of the UnifiedPush message.
@@ -32,8 +33,9 @@ import java.util.Map;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Message implements Serializable {
+	private static final long serialVersionUID = -8627598387293896616L;
 
-    private String alert;
+	private String alert;
     private String sound;
     private int badge = -1;
 

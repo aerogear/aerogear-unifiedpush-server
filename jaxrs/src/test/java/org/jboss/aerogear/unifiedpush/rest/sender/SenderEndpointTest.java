@@ -41,7 +41,6 @@ public class SenderEndpointTest extends RestEndpointTest {
 	public static WebArchive archive() {
 		return UnifiedPushRestArchive.forTestClass(SenderEndpointTest.class)
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-sender")
-				.addMavenDependencies("com.fasterxml.jackson.module:jackson-module-jaxb-annotations")
 				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
 						new String[] { "META-INF/persistence.xml", "test-data.sql" },
 						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })

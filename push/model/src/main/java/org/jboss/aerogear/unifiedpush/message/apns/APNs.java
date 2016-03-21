@@ -18,25 +18,26 @@ package org.jboss.aerogear.unifiedpush.message.apns;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
  * iOS specific settings for Push Notifications
  */
 @JsonRootName("apns")
 public class APNs implements Serializable {
+	private static final long serialVersionUID = 1721248899064332647L;
 
-    @JsonProperty("action-category")
+	@JsonProperty("action-category")
     private String actionCategory;
     private String title;
     private String action;
-    
+
     @JsonProperty("localized-key")
-    private String localizedKey;	
-	
+    private String localizedKey;
+
     @JsonProperty("localized-arguments")
-    private String[] localizedArguments;    
+    private String[] localizedArguments;
 
     @JsonProperty("localized-title-key")
     private String localizedTitleKey;
@@ -118,10 +119,10 @@ public class APNs implements Serializable {
     public void setLocalizedTitleArguments(String[] localizedTitleArguments) {this.localizedTitleArguments = localizedTitleArguments;}
 
     public String getLocalizedKey() { return localizedKey; }
-	
+
     public void setLocalizedKey(String localizedKey) { this.localizedKey = localizedKey; }
-    
+
     public String[] getLocalizedArguments() { return localizedArguments; }
-	
+
     public void setLocalizedArguments(String[] localizedArguments){ this.localizedArguments = localizedArguments; }
 }

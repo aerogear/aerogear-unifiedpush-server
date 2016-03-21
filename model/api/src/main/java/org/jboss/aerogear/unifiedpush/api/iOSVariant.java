@@ -16,14 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import java.io.IOException;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import net.iharder.Base64;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.IOException;
+import net.iharder.Base64;
 
 /**
  * The iOS variant class encapsulates APNs specific behavior.

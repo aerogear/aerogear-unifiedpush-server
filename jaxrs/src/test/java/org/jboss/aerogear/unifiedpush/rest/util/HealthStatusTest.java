@@ -16,16 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HealthStatusTest {
 

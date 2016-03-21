@@ -102,10 +102,47 @@
             <artifactId>gcm-server</artifactId>
         </dependency>
 
+        <!-- Exclude old httpclient and make sure only one version is used -->
+        <!-- We Also exclude jersey because it is bundled with with old jaxrs classes -->
+        <!-- httpclient, jaxrs-api and resteasy-jaxrs are added because of the above -->
         <dependency>
             <groupId>com.github.fernandospr</groupId>
             <artifactId>java-wns</artifactId>
             <version>1.3.1</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.sun.jersey.contribs</groupId>
+                    <artifactId>jersey-apache-client</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-client</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+
+                <!-- Wildfly 8.2.x is bundled with fasterxml 2.4.1 -->
+                <!-- While java-wns is bundled with 2.5.1 -->
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                    <artifactId>jackson-jaxrs-xml-provider</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                    <artifactId>jackson-jaxrs-json-provider</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

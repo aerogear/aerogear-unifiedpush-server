@@ -16,11 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Logical construct of an overall mobile and push-enabled Application
