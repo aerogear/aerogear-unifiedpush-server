@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.message.serviceLease;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

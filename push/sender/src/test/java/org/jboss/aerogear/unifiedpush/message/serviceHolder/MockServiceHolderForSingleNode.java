@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,10 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-public class MockServiceCacheForSingleNode extends AbstractServiceHolder<Integer> {
+public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 200;
@@ -35,17 +35,17 @@ public class MockServiceCacheForSingleNode extends AbstractServiceHolder<Integer
 
     private AtomicInteger counter = new AtomicInteger(0);
 
-    private AeroGearLogger log = AeroGearLogger.getInstance(MockServiceCacheForSingleNode.class);
+    private AeroGearLogger log = AeroGearLogger.getInstance(MockServiceHolderForSingleNode.class);
 
-    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    @Resource(mappedName = "java:/queue/FreeServiceSlotQueue")
     private Queue queue;
 
-    public MockServiceCacheForSingleNode() {
+    public MockServiceHolderForSingleNode() {
         super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT, DISPOSAL_DELAY);
     }
 
     @Override
-    public Queue getBadgeQueue() {
+    public Queue getFreeServiceSlotQueue() {
         return queue;
     }
 
@@ -65,21 +65,21 @@ public class MockServiceCacheForSingleNode extends AbstractServiceHolder<Integer
     }
 
     @Override
-    protected Object leaseBadge(String pushMessageInformationId) {
-        Object badge = super.leaseBadge(pushMessageInformationId);
-        if (badge != null) {
+    protected Object borrowServiceSlotFromQueue(String pushMessageInformationId, String variantID) {
+        Object serviceSlot = super.borrowServiceSlotFromQueue(pushMessageInformationId, variantID);
+        if (serviceSlot != null) {
             counter.decrementAndGet();
             log.fine(counter.toString());
             assertTrue("Instance count can't be never lesser than zero", counter.get() >= 0);
         }
-        return badge;
+        return serviceSlot;
     }
 
     @Override
-    protected void returnBadge(String pushMessageInformationId) {
+    protected void returnServiceSlotToQueue(String pushMessageInformationId, String variantID) {
         counter.incrementAndGet();
         log.fine(counter.toString());
         assertTrue("Instance count can't be never greater than limit", counter.get() <= INSTANCE_LIMIT);
-        super.returnBadge(pushMessageInformationId);
+        super.returnServiceSlotToQueue(pushMessageInformationId, variantID);
     }
 }

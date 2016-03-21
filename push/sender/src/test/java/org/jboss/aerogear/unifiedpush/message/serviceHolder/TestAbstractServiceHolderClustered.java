@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,9 +28,9 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -53,9 +53,9 @@ public class TestAbstractServiceHolderClustered {
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestAbstractServiceHolderClustered.class)
                 .withMessaging()
-                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder.class.getPackage())
+                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder.class.getPackage())
                     .deleteClass(ApnsServiceHolder.class)
-                    .addClasses(MockServiceCacheForCluster.class)
+                    .addClasses(MockServiceHolderForCluster.class)
                     .addAsWebInfResource("test-jms.xml")
                 .withMockito()
                 .as(WebArchive.class);
@@ -70,7 +70,7 @@ public class TestAbstractServiceHolderClustered {
     private ServiceDestroyer<Integer> mockDestroyer;
 
     @Inject
-    private MockServiceCacheForCluster cache;
+    private MockServiceHolderForCluster holder;
 
     @Resource(mappedName = "java:/queue/CountingQueue")
     private Queue countingQueue;
@@ -103,8 +103,8 @@ public class TestAbstractServiceHolderClustered {
 
     @Test @OperateOnDeployment("war-1") @InSequence(1)
     public void initializeQueuesOnFirstNode() throws InterruptedException {
-        // initialize cache with the badges
-        cache.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
+        // initialize holder with the service slots
+        holder.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
         // remove all numbers from counting queue so that we start test with blank slate (in case of previous errors)
         for (int i = 1; i <= TOTAL_COUNT; i++) {
             if (jmsClient.receive().withTimeout(1500L).from(countingQueue) == null) {
@@ -119,40 +119,40 @@ public class TestAbstractServiceHolderClustered {
 
     @Test @OperateOnDeployment("war-1") @InSequence(2)
     public void testLeaseFewNumbers() throws InterruptedException {
-        assertEquals(1, leaseService());
-        assertEquals(2, leaseService());
-        assertEquals(3, leaseService());
+        assertEquals(1, borrowServiceSlot());
+        assertEquals(2, borrowServiceSlot());
+        assertEquals(3, borrowServiceSlot());
     }
 
     @Test @OperateOnDeployment("war-2") @InSequence(3)
     public void testLeaseTwoAndReturnOne() throws InterruptedException {
-        assertEquals(4, leaseService());
-        assertEquals(5, leaseService());
-        assertEquals("the sixth lease operation should fail to retrieve a service", 0, leaseService());
-        returnService(4);
+        assertEquals(4, borrowServiceSlot());
+        assertEquals(5, borrowServiceSlot());
+        assertEquals("the sixth lease operation should fail to retrieve a service", 0, borrowServiceSlot());
+        returnServiceSlot(4);
     }
 
     @Test @OperateOnDeployment("war-1") @InSequence(4)
     public void testLeaseOneAndReturnOne() throws InterruptedException {
-        assertEquals(4, leaseService());
-        returnService(1);
+        assertEquals(4, borrowServiceSlot());
+        returnServiceSlot(1);
     }
 
     @Test @OperateOnDeployment("war-2") @InSequence(5)
     public void testReturnAndLease() throws InterruptedException {
-        returnService(5);
-        Set<Integer> leased = new HashSet<Integer>(Arrays.asList(leaseService(), leaseService()));
+        returnServiceSlot(5);
+        Set<Integer> leased = new HashSet<Integer>(Arrays.asList(borrowServiceSlot(), borrowServiceSlot()));
         assertTrue("leased tokens should contain 1", leased.contains(1));
         assertTrue("leased tokens should contain 5", leased.contains(5));
-        assertEquals("the lease operation should fail when no badges are available", 0, leaseService());
+        assertEquals("the borrow operation should fail when no slots are available", 0, borrowServiceSlot());
     }
 
-    private int leaseService() {
-        Integer leased = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
-        return (leased == null) ? 0 : leased;
+    private int borrowServiceSlot() {
+        Integer borrowed = holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
+        return (borrowed == null) ? 0 : borrowed;
     }
 
-    private void returnService(int service) {
-        cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyer);
+    private void returnServiceSlot(int service) {
+        holder.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyer);
     }
 }

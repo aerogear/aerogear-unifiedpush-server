@@ -14,28 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder;
 
-public class MockServiceCacheForCluster extends AbstractServiceHolder<Integer> {
+public class MockServiceHolderForCluster extends AbstractServiceHolder<Integer> {
 
     private static final int INSTANCE_LIMIT = 5;
     private static final long INSTANTIATION_TIMEOUT = 7500;
     private static final long DISPOSAL_DELAY = 5000;
 
-    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    @Resource(mappedName = "java:/queue/FreeServiceSlotQueue")
     private Queue queue;
 
-    public MockServiceCacheForCluster() {
+    public MockServiceHolderForCluster() {
         super(INSTANCE_LIMIT, INSTANTIATION_TIMEOUT, DISPOSAL_DELAY);
     }
 
     @Override
-    public Queue getBadgeQueue() {
+    public Queue getFreeServiceSlotQueue() {
         return queue;
     }
 }

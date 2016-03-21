@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.serviceLease;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,16 +59,16 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
-    private Queue apnsBadgeLeaseQueue;
+    @Resource(mappedName = "java:/queue/FreeServiceSlotQueue")
+    private Queue freeServiceCounterQueue;
 
     public ApnsServiceHolder() {
         super(INSTANCE_LIMIT, INSTANCE_ACQUIRING_TIMEOUT, DISPOSING_DELAY);
     }
 
     @Override
-    public Queue getBadgeQueue() {
-        return apnsBadgeLeaseQueue;
+    public Queue getFreeServiceSlotQueue() {
+        return freeServiceCounterQueue;
     }
 
     public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {

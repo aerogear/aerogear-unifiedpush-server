@@ -29,8 +29,8 @@ import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -42,7 +42,7 @@ public class APNsPushNotificationSenderTest {
 
     @Test
     public void callbackOnError() throws Exception {
-        final APNsPushNotificationSender sender = new APNsPushNotificationSender(createMockApnsServiceCache());
+        final APNsPushNotificationSender sender = new APNsPushNotificationSender(createMockApnsServiceHolder());
         final NotificationSenderCallback callback = mock(NotificationSenderCallback.class);
 
         final iOSVariant iosVariant = mock(iOSVariant.class);
@@ -73,15 +73,15 @@ public class APNsPushNotificationSenderTest {
         return baos.toByteArray();
     }
 
-    private ApnsServiceHolder createMockApnsServiceCache() {
-        ApnsServiceHolder apnsServiceCache = mock(ApnsServiceHolder.class);
-        when(apnsServiceCache.dequeueOrCreateNewService(Mockito.anyString(), Mockito.anyString(), Mockito.any(ServiceConstructor.class))).thenAnswer(new Answer<ApnsService>() {
+    private ApnsServiceHolder createMockApnsServiceHolder() {
+        ApnsServiceHolder apnsServiceHolder = mock(ApnsServiceHolder.class);
+        when(apnsServiceHolder.dequeueOrCreateNewService(Mockito.anyString(), Mockito.anyString(), Mockito.any(ServiceConstructor.class))).thenAnswer(new Answer<ApnsService>() {
             @Override
             public ApnsService answer(InvocationOnMock invocation) throws Throwable {
                 ServiceConstructor<ApnsService> constructor = (ServiceConstructor<ApnsService>) invocation.getArguments()[2];
                 return constructor.construct();
             }
         });
-        return apnsServiceCache;
+        return apnsServiceHolder;
     }
 }
