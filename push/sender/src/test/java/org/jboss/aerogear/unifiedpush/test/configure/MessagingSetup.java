@@ -20,12 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.wildfly.extras.creaper.commands.foundation.online.CliFile;
 import org.wildfly.extras.creaper.core.CommandFailedException;
 import org.wildfly.extras.creaper.core.ManagementClient;
@@ -40,8 +40,10 @@ import org.wildfly.extras.creaper.core.online.operations.admin.Administration;
 public class MessagingSetup {
 
     @Inject
-    @SuiteScoped
+    @ContainerScoped
     private InstanceProducer<OnlineManagementClient> managementClient;
+
+    private static int portOffset = 14311;
 
     public void setupMessaging(@Observes AfterStart event) throws IOException, CommandFailedException, InterruptedException, TimeoutException {
         final OnlineManagementClient client = createClient();
@@ -65,7 +67,7 @@ public class MessagingSetup {
     private OnlineManagementClient createClient() throws IOException {
         return ManagementClient.online(OnlineOptions
                 .standalone()
-                .hostAndPort("localhost", 14311)
+                .hostAndPort("localhost", portOffset++)
                 .protocol(ManagementProtocol.HTTP_REMOTING)
                 .build()
         );

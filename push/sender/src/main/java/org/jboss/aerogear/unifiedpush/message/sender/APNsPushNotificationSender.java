@@ -33,10 +33,11 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceCache.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -67,7 +68,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     @Inject
-    private ApnsServiceCache apnsServiceCache;
+    private ApnsServiceHolder apnsServiceCache;
 
     public APNsPushNotificationSender() {
     }
@@ -75,7 +76,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     /**
      * Constructor used for test purposes
      */
-    APNsPushNotificationSender(ApnsServiceCache apnsServiceCache) {
+    APNsPushNotificationSender(ApnsServiceHolder apnsServiceCache) {
         this.apnsServiceCache = apnsServiceCache;
     }
 
@@ -101,6 +102,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         PayloadBuilder builder = APNS.newPayload()
                 // adding recognized key values
                 .alertBody(message.getAlert()) // alert dialog, in iOS or Safari
+                .badge(message.getBadge()) // little badge icon update;
                 .sound(message.getSound()) // sound to be played by app
                 .alertTitle(apns.getTitle()) // The title of the notification in Safari and Apple Watch
                 .alertAction(apns.getAction()) // The label of the action button, if the user sets the notifications to appear as alerts in Safari.
@@ -108,26 +110,11 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 .category(apns.getActionCategory()) // iOS8: User Action category
                 .localizedTitleKey(apns.getLocalizedTitleKey()); //iOS8 : Localized Title Key
 
-        // was a badge included?
-        if (message.getBadge() >= 0) {
-            builder.badge(message.getBadge()); // only set badge if needed
-        }
-
         //this kind of check should belong in java-apns
         if(apns.getLocalizedTitleArguments() != null) {
             builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
-		
-        //this kind of check should belong in java-apns
-        if(apns.getLocalizedKey() != null) {
-            builder.localizedKey(apns.getLocalizedKey()); // Localized Key;
-        }		
 
-        //this kind of check should belong in java-apns
-        if(apns.getLocalizedArguments() != null) {
-            builder.localizedArguments(apns.getLocalizedArguments()); // Localized Arguments;
-        }		
-		
        // apply the 'content-available:1' value:
         if (apns.isContentAvailable()) {
             // content-available is for 'silent' notifications and Newsstand
@@ -149,7 +136,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
+        final ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
             @Override
             public ApnsService construct() {
                 ApnsService service = buildApnsService(iOSVariant, callback);
@@ -176,10 +163,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             service.push(tokens, apnsMessage, expireDate);
 
             logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
-
-            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service);
+            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {
+                @Override
+                public void destroy(ApnsService instance) {
+                    service.stop();
+                }
+            });
             try {
-                service = null; // we don't want a failure in onSuccess stop the APNs service
                 callback.onSuccess();
             } catch (Exception e) {
                 logger.severe("Failed to call onSuccess after successful push", e);
@@ -225,8 +215,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             final ApnsServiceBuilder builder = APNS.newService();
 
-
-
             // using the APNS Delegate callback to log success/failure for each token:
             builder.withDelegate(new ApnsDelegateAdapter() {
                 @Override
@@ -237,14 +225,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
-
-                    // message not found in Java-APNs cache
-                    if (message == null) {
-                        // Notification has been rejected by Apple, and it was removed from the java-apns cache
-                        logger.severe("Error sending payload to APNs server", e);
-                        return;
-                    }
-
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
@@ -256,12 +236,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                             logger.severe("Error sending payload to APNs server", e);
                         }
                     }
-                }
-
-                @Override
-                public void cacheLengthExceeded(int newCacheLength) {
-                    logger.warning("Internal cache size exceeded, new size is: " + newCacheLength);
-
                 }
             });
 

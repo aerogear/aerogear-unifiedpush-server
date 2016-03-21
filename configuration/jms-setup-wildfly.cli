@@ -55,6 +55,10 @@ batch
 
 
 
+/subsystem=messaging-activemq/server=default/jms-queue=APNsBadgeLeaseQueue:add(entries=[queue/APNsBadgeLeaseQueue])
+
+
+
 /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:add(entries=[topic/MetricsProcessingStartedTopic])
 
 run-batch
