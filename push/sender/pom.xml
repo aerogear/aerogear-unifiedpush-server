@@ -109,7 +109,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ganyo</groupId>
+            <groupId>com.google.gcm</groupId>
             <artifactId>gcm-server</artifactId>
         </dependency>
 
