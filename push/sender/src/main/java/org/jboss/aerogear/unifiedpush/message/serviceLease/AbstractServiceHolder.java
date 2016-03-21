@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.message.serviceLease;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
@@ -47,10 +46,11 @@ public abstract class AbstractServiceHolder<T> {
     private ServiceDisposalScheduler serviceDisposalScheduler;
 
     /**
-     * Creates new cache
+     * Creates new service instance
      *
      * @param instanceLimit how many instances can be created
-     * @param instanceAcquiringTimeoutInMillis what is a timeout before the cache can return null
+     * @param instanceAcquiringTimeoutInMillis what is a timeout before the holder can return null
+     * @param serviceDisposalDelayInMillis how long the service instance will be held until it is disposed for inactivity
      */
     public AbstractServiceHolder(int instanceLimit, long instanceAcquiringTimeoutInMillis, long serviceDisposalDelayInMillis) {
         this.instanceLimit = instanceLimit;
@@ -75,19 +75,18 @@ public abstract class AbstractServiceHolder<T> {
     }
 
     /**
-     * Cache returns a service for given parameters or uses service constructor to instantiate new service.
+     * Holder returns a service for given parameters or uses service constructor to instantiate new service.
      *
      * Number of created or queued services is limited up to configured {@link #instanceLimit}.
      *
      * The service blocks until a service is available or configured {@link #instanceAcquiringTimeoutInMillis}.
      *
-     * In case the service is not available when times out, cache returns null.
+     * In case the service is not available when times out, holder returns null.
      *
      * @param pushMessageInformationId the push message id
      * @param variantID the variant
      * @param constructor the service constructor
      * @return the service instance; or null in case too much services were created and no services are queued for reuse
-     * @throws ExecutionException
      */
     public T dequeueOrCreateNewService(final String pushMessageInformationId, final String variantID, ServiceConstructor<T> constructor) {
         T instance = dequeue(pushMessageInformationId, variantID);
@@ -107,7 +106,6 @@ public abstract class AbstractServiceHolder<T> {
      * @param pushMessageInformationId the push message id
      * @param variantID the variant
      * @return the service instance or null if no instance is queued
-     * @throws ExecutionException
      */
     public T dequeue(final String pushMessageInformationId, final String variantID) {
         ConcurrentLinkedQueue<DisposableReference<T>> concurrentLinkedQueue = getCache(pushMessageInformationId, variantID);
@@ -129,7 +127,7 @@ public abstract class AbstractServiceHolder<T> {
      * @param pushMessageInformationId the push message
      * @param variantID the variant
      * @param service the used and freed up service
-     * @throws ExecutionException
+     * @param destroyer the instance of {@link ServiceDestroyer} used to destroy service instance
      */
     public void queueFreedUpService(final String pushMessageInformationId, final String variantID, final T service, final ServiceDestroyer<T> destroyer) {
         ServiceDestroyer<T> destroyAndReturnBadge = new ServiceDestroyer<T>() {

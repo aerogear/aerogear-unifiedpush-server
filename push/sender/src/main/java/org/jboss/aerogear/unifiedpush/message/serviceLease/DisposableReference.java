@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * A reference that is set and can be disposed later.
  *
  * A reference becomes null when retrieved or disposed.
+ *
+ * @param <T> the type of service
  */
 public class DisposableReference<T> {
 
@@ -30,6 +32,9 @@ public class DisposableReference<T> {
 
     /**
      * Create reference to instance together with a destroyer that will be applied to instance if it is being disposed.
+     *
+     * @param instance the service instance
+     * @param destroyer the service destroyer
      */
     public DisposableReference(T instance, ServiceDestroyer<T> destroyer) {
         this.reference = new AtomicReference<T>(instance);

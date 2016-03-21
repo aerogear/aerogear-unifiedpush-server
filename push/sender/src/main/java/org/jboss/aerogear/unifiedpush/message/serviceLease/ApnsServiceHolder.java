@@ -43,9 +43,9 @@ import com.notnoop.apns.ApnsService;
  *
  * This cache also listens for {@link VariantCompletedEvent} event and stops all instantiated {@link ApnsService}s and frees the cache.
  *
- * @see AbstractServiceHolder#dequeueOrCreateNewService(String, org.jboss.aerogear.unifiedpush.api.Variant, org.jboss.aerogear.unifiedpush.message.cache.AbstractServiceHolder.ServiceConstructor)
- * @see AbstractServiceHolder#queueFreedUpService(String, org.jboss.aerogear.unifiedpush.api.Variant, Object)
- * @see AbstractServiceHolder#freeUpSlot(String, org.jboss.aerogear.unifiedpush.api.Variant)
+ * @see AbstractServiceHolder#dequeueOrCreateNewService(String, String, ServiceConstructor)
+ * @see AbstractServiceHolder#queueFreedUpService(String, String, Object, ServiceDestroyer)
+ * @see AbstractServiceHolder#freeUpSlot(String, String)
  */
 @ApplicationScoped
 public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
