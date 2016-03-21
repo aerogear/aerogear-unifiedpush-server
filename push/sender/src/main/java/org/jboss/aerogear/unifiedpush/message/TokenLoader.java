@@ -43,6 +43,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.jms.JMSException;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -204,14 +206,19 @@ public class TokenLoader {
         }
     }
 
-    /**
-     * Since different messaging implementations use different exceptions when queue is full,
-     * we have to detect that queue is full by analyzing properties of the thrown exception.
+    /*
+     * When queue is full, ActiveMQ/Artemis throws an instance of org.apache.activemq.artemis.api.core.ActiveMQAddressFullException
+     * In order to avoid hard dependency on that API for this check, we detect that queue is full by analyzing the name of the thrown exception.
      *
-     * @param e throwable thrown when JMS message delivery fails
+     * @param e throwable thrown when JMS message delivery fails 
      * @return true if exceptions represents state when queue is full; false otherwise
      */
     private boolean isQueueFullException(Throwable e) {
-        return e != null && e.getMessage().contains("is full");
+        if (e instanceof JMSException && e.getCause() != null) {
+            if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
