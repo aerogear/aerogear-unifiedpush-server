@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,9 +31,9 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -56,9 +56,9 @@ public class TestAbstractServiceHolderOnSingleNode {
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestAbstractServiceHolderOnSingleNode.class)
                 .withMessaging()
-                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceLease.AbstractServiceHolder.class.getPackage())
+                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder.class.getPackage())
                     .deleteClass(ApnsServiceHolder.class)
-                    .addClasses(MockServiceCacheForSingleNode.class)
+                    .addClasses(MockServiceHolderForSingleNode.class)
                 .withMockito()
                 .as(WebArchive.class);
     }
@@ -68,14 +68,14 @@ public class TestAbstractServiceHolderOnSingleNode {
     private AtomicInteger instanceCounter = new AtomicInteger();
 
     @Inject
-    private MockServiceCacheForSingleNode cache;
+    private MockServiceHolderForSingleNode holder;
 
-    @Resource(mappedName = "java:/queue/APNsBadgeLeaseQueue")
+    @Resource(mappedName = "java:/queue/FreeServiceSlotQueue")
     private Queue queue;
 
     @Before
     public void setUp() {
-        cache.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
+        holder.initialize(PUSH_MESSAGE_ID, VARIANT_ID);
         mockConstructor = new ServiceConstructor<Integer>() {
             @Override
             public Integer construct() {
@@ -91,8 +91,8 @@ public class TestAbstractServiceHolderOnSingleNode {
 
     @After
     public void tearDown() {
-        if (cache != null) {
-            cache.destroy(PUSH_MESSAGE_ID, VARIANT_ID);
+        if (holder != null) {
+            holder.destroy(PUSH_MESSAGE_ID, VARIANT_ID);
         }
     }
 
@@ -100,30 +100,30 @@ public class TestAbstractServiceHolderOnSingleNode {
     public void allows_to_free_up_slots() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
             // create first service
-            assertNotNull(cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            assertNotNull(holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
             // create second service
-            assertEquals(new Integer(i * 2), cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            assertEquals(new Integer(i * 2), holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
             // simulate that second service has died
-            cache.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
+            holder.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
         }
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
             // simulate that services died
-            cache.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
+            holder.freeUpSlot(PUSH_MESSAGE_ID, VARIANT_ID);
         }
         for (Integer i = 1; i <= INSTANCE_LIMIT; i++) {
             // since all previous services died, we can now create up to 5 services again
-            assertNotNull(cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            assertNotNull(holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
         }
-        assertNull("No more services should be created", cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+        assertNull("No more services should be created", holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
     }
 
     @Test
     public void allows_to_return_freed_up_services_to_queue() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT - 1; i++) {
-            Integer service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
+            Integer service = holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
             assertEquals(i, service);
-            cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
-            service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
+            holder.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
+            service = holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
             assertEquals(i, service);
         }
     }
@@ -131,9 +131,9 @@ public class TestAbstractServiceHolderOnSingleNode {
     @Test
     public void returns_null_when_no_slots_available() throws ExecutionException {
         for (Integer i = 1; i <= INSTANCE_LIMIT; i++) {
-            assertEquals(i, cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+            assertEquals(i, holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
         }
-        assertNull(cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
+        assertNull(holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor));
     }
 
     @Test
@@ -146,9 +146,9 @@ public class TestAbstractServiceHolderOnSingleNode {
                 public void run() {
                     try {
                         for (int i = 0; i < INSTANCE_LIMIT; i++) {
-                            Integer service = cache.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
+                            Integer service = holder.dequeueOrCreateNewService(PUSH_MESSAGE_ID, VARIANT_ID, mockConstructor);
                             sleep(INSTANTIATION_TIMEOUT / (threadCount * 2));
-                            cache.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
+                            holder.queueFreedUpService(PUSH_MESSAGE_ID, VARIANT_ID, service, mockDestroyed);
                             if (service != null) {
                                 latch.countDown();
                             }
@@ -167,7 +167,7 @@ public class TestAbstractServiceHolderOnSingleNode {
 
     @Test
     public void allows_to_call_dequeue_when_no_instance_was_created() throws ExecutionException {
-        assertNull(cache.dequeue("non-existent", "non-existent"));
+        assertNull(holder.dequeue("non-existent", "non-existent"));
     }
 
     private static void sleep(long millis) {

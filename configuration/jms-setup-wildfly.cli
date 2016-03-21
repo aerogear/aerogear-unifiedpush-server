@@ -54,8 +54,11 @@ batch
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AllBatchesLoadedQueue:add(max-delivery-attempts=-1)
 
 
-
-/subsystem=messaging-activemq/server=default/jms-queue=APNsBadgeLeaseQueue:add(entries=[queue/APNsBadgeLeaseQueue])
+# This queue is populated with number of messages corresponding to limit of how many services can be created for given push network.
+# The message is borrowed from this queue when new service is created.
+# The message is returned to this queue when service is destroyed.
+# That ensures that there won't be created more service instances in entire cluster of servers than given limit.
+/subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:add(entries=[queue/FreeServiceSlotQueue])
 
 
 

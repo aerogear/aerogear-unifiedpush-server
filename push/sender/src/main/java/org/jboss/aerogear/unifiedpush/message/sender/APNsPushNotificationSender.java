@@ -35,9 +35,9 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ApnsServiceHolder;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceConstructor;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
@@ -68,7 +68,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     @Inject
-    private ApnsServiceHolder apnsServiceCache;
+    private ApnsServiceHolder apnsServiceHolder;
 
     public APNsPushNotificationSender() {
     }
@@ -76,8 +76,8 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     /**
      * Constructor used for test purposes
      */
-    APNsPushNotificationSender(ApnsServiceHolder apnsServiceCache) {
-        this.apnsServiceCache = apnsServiceCache;
+    APNsPushNotificationSender(ApnsServiceHolder apnsServiceHolder) {
+        this.apnsServiceHolder = apnsServiceHolder;
     }
 
     /**
@@ -136,7 +136,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 
-        final ApnsService service = apnsServiceCache.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
+        final ApnsService service = apnsServiceHolder.dequeueOrCreateNewService(pushMessageInformationId, iOSVariant.getVariantID(), new ServiceConstructor<ApnsService>() {
             @Override
             public ApnsService construct() {
                 ApnsService service = buildApnsService(iOSVariant, callback);
@@ -163,7 +163,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             service.push(tokens, apnsMessage, expireDate);
 
             logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
-            apnsServiceCache.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {
+            apnsServiceHolder.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {
                 @Override
                 public void destroy(ApnsService instance) {
                     service.stop();
@@ -184,7 +184,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
-                apnsServiceCache.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
+                apnsServiceHolder.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
             }
         }
     }

@@ -55,7 +55,7 @@ batch
 
 
 
-/subsystem=messaging-activemq/server=default/jms-queue=APNsBadgeLeaseQueue:remove()
+/subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:remove()
 
 
 

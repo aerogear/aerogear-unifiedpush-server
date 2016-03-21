@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.message.cache;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -7,14 +7,14 @@ import static org.mockito.Mockito.mock;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jboss.aerogear.unifiedpush.message.serviceLease.DisposableReference;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDestroyer;
-import org.jboss.aerogear.unifiedpush.message.serviceLease.ServiceDisposalScheduler;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.DisposableReference;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDisposalScheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestAbstractServiceCacheHolder {
+public class TestAbstractServiceHolder {
 
     private ServiceDisposalScheduler scheduler = new ServiceDisposalScheduler();
     private ServiceDestroyer<Object> mockDestroyer;

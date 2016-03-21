@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.serviceLease;
+package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -25,11 +25,15 @@ import javax.jms.Queue;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
- * Abstract cache holds queue of services with upper-bound limit of created instances.
+ * Holds instances of given service &lt;T&gt; and allows their instantiation, reuse and disposal.
  *
- * The limit is enforced across entire cluster of servers by maintaining a queue as a counter of available slots.
+ * Leverages JMS queue to store number of messages corresponding to limit of how many services can be created for given push network.
  *
- * Cache allows to return freed up services to the queue or free a slot for creating new services up to a limit.
+ * The message is borrowed from this queue when new service is created.The message is returned to this queue when service is destroyed.
+ *
+ * That ensures that there won't be created more service instances in entire cluster of servers than given limit.
+ *
+ * @param <T> the type of the service
  */
 public abstract class AbstractServiceHolder<T> {
 
@@ -46,6 +50,18 @@ public abstract class AbstractServiceHolder<T> {
     private ServiceDisposalScheduler serviceDisposalScheduler;
 
     /**
+     * Returns the Queue used as a counter of free services.
+     *
+     * This queue is populated with number of messages corresponding to limit of how many services can be created for given push network.
+     * The message is borrowed from this queue when new service is created.
+     * The message is returned to this queue when service is destroyed.
+     * That ensures that there won't be created more service instances in entire cluster of servers than given limit.
+     *
+     * @return the Queue used as a counter of free services.
+     */
+    public abstract Queue getFreeServiceSlotQueue();
+
+    /**
      * Creates new service instance
      *
      * @param instanceLimit how many instances can be created
@@ -58,17 +74,15 @@ public abstract class AbstractServiceHolder<T> {
         this.serviceDisposalDelayInMillis = serviceDisposalDelayInMillis;
     }
 
-    public abstract Queue getBadgeQueue();
-
     public void initialize(final String pushMessageInformationId, final String variantID) {
         for (int i = 0; i < instanceLimit; i++) {
-            returnBadge(pushMessageInformationId);
+            returnServiceSlotToQueue(pushMessageInformationId, variantID);
         }
     }
 
     public void destroy(final String pushMessageInformationId, final String variantID) {
         for (int i = 0; i < instanceLimit; i++) {
-            if (leaseBadge(pushMessageInformationId) == null) {
+            if (borrowServiceSlotFromQueue(pushMessageInformationId, variantID) == null) {
                 return;
             }
         }
@@ -94,8 +108,8 @@ public abstract class AbstractServiceHolder<T> {
             return instance;
         }
         // there is no cached instance, try to establish one
-        if (leaseBadge(pushMessageInformationId) != null) {
-            // we have leased a badge, we can create new instance
+        if (borrowServiceSlotFromQueue(pushMessageInformationId, variantID) != null) {
+            // we have borrowed a service, we can create new instance
             return constructor.construct();
         }
         return null;
@@ -130,14 +144,14 @@ public abstract class AbstractServiceHolder<T> {
      * @param destroyer the instance of {@link ServiceDestroyer} used to destroy service instance
      */
     public void queueFreedUpService(final String pushMessageInformationId, final String variantID, final T service, final ServiceDestroyer<T> destroyer) {
-        ServiceDestroyer<T> destroyAndReturnBadge = new ServiceDestroyer<T>() {
+        ServiceDestroyer<T> destroyAndReturnServiceSlot = new ServiceDestroyer<T>() {
             @Override
             public void destroy(T instance) {
                 destroyer.destroy(instance);
-                returnBadge(pushMessageInformationId);
+                returnServiceSlotToQueue(pushMessageInformationId, variantID);
             };
         };
-        DisposableReference<T> disposableReference = new DisposableReference<T>(service, destroyAndReturnBadge);
+        DisposableReference<T> disposableReference = new DisposableReference<T>(service, destroyAndReturnServiceSlot);
         serviceDisposalScheduler.scheduleForDisposal(disposableReference, serviceDisposalDelayInMillis);
         getCache(pushMessageInformationId, variantID).add(disposableReference);
     }
@@ -151,15 +165,15 @@ public abstract class AbstractServiceHolder<T> {
      * @param variantID the variant
      */
     public void freeUpSlot(final String pushMessageInformationId, final String variantID) {
-        returnBadge(pushMessageInformationId);
+        returnServiceSlotToQueue(pushMessageInformationId, variantID);
     }
 
-    protected Object leaseBadge(String pushMessageInformationId) {
-        return jmsClient.receive().withSelector("pushMessageInformationId = '%s'", pushMessageInformationId).withTimeout(instanceAcquiringTimeoutInMillis).from(getBadgeQueue());
+    protected Object borrowServiceSlotFromQueue(String pushMessageInformationId, String variantID) {
+        return jmsClient.receive().withSelector("variantID = '%s'", variantID).withTimeout(instanceAcquiringTimeoutInMillis).from(getFreeServiceSlotQueue());
     }
 
-    protected void returnBadge(String pushMessageInformationId) {
-        jmsClient.send(pushMessageInformationId).withProperty("pushMessageInformationId", pushMessageInformationId).to(getBadgeQueue());
+    protected void returnServiceSlotToQueue(String pushMessageInformationId, String variantID) {
+        jmsClient.send(pushMessageInformationId + ":" + variantID).withProperty("variantID", variantID).to(getFreeServiceSlotQueue());
     }
 
     private ConcurrentLinkedQueue<DisposableReference<T>> getCache(String pushMessageInformationId, String variantID) {
