@@ -130,12 +130,14 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
-        Set<T> variants = new HashSet<T>();
-        for (Variant variant : application.getVariants()) {
+        Set<T> variants = new HashSet<>();
+
+        application.getVariants().forEach(variant -> {
             if (variant.getClass().equals(type)) {
                 variants.add((T) variant);
             }
-        }
+        });
+
         return variants;
     }
 

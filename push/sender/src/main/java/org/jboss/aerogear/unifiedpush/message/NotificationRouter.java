@@ -33,12 +33,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
@@ -86,14 +84,14 @@ public class NotificationRouter {
         // we look up each of those mentioned variants, by their "variantID":
         if (variantIDs != null) {
 
-            for (String variantID : variantIDs) {
+            variantIDs.forEach(variantID -> {
                 Variant variant = genericVariantService.get().findByVariantID(variantID);
 
                 // does the variant exist ?
                 if (variant != null) {
                     variants.add(variant);
                 }
-            }
+            });
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplicationEntity:
@@ -117,10 +115,10 @@ public class NotificationRouter {
                         );
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
-        for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
-            logger.info(String.format("Internal dispatching of push message for one %s variant", entry.getKey().getTypeName()));
-            dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
-        }
+		variants.forEach(((variantType, variant) -> {
+            logger.info(String.format("Internal dispatching of push message for one %s variant", variantType.getTypeName()));
+            dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));
+        }));
     }
 
     /**
@@ -134,15 +132,13 @@ public class NotificationRouter {
         void add(Variant variant) {
             List<Variant> list = this.get(variant.getType());
             if (list == null) {
-                list = new ArrayList<Variant>();
+                list = new ArrayList<>();
                 this.put(variant.getType(), list);
             }
             list.add(variant);
         }
         void addAll(Collection<Variant> variants) {
-            for (Variant variant : variants) {
-                this.add(variant);
-            }
+			variants.forEach(this::add);
         }
         int getVariantCount() {
             int count = 0;

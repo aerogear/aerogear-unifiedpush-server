@@ -31,10 +31,9 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -128,10 +127,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     public void removeInstallations(
             List<Installation> installations) {
 
-        // uh... :)
-        for (Installation installation : installations) {
-            removeInstallation(installation);
-        }
+        // uh..., fancy method reference :)
+        installations.forEach(this::removeInstallation);
     }
 
     public void updateInstallation(
@@ -234,11 +231,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     private List<String> convertToNames(Set<Category> categories) {
-        List<String> result = new ArrayList<String>();
-        for (Category category : categories) {
-            result.add(category.getName());
-        }
-        return result;
+        return categories.stream().map(Category::getName).collect(Collectors.toList());
     }
 
     /*

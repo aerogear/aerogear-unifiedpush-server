@@ -66,9 +66,9 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     @Asynchronous
     @Override
     public Future<List<HealthDetails>> networkStatus() {
-        List<HealthDetails> results = new ArrayList<HealthDetails>(PUSH_NETWORKS.size());
+        final List<HealthDetails> results = new ArrayList<>(PUSH_NETWORKS.size());
 
-        for (PushNetwork pushNetwork : PUSH_NETWORKS) {
+        PUSH_NETWORKS.forEach(pushNetwork -> {
             HealthDetails details = new HealthDetails();
             details.start();
             details.setDescription(pushNetwork.getName());
@@ -82,8 +82,8 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
 
             results.add(details);
             details.stop();
-        }
+        });
 
-        return new AsyncResult<List<HealthDetails>>(results);
+        return new AsyncResult<>(results);
     }
 }

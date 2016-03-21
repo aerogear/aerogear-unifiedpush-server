@@ -128,6 +128,7 @@ public class TokenLoader {
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
         logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
+
         for (Variant variant : variants) {
 
             try {

@@ -73,12 +73,12 @@ public abstract class AbstractBaseEndpoint {
      * @return 400 Bad Request response, containing details on the constraint violations 
      */
     protected ResponseBuilder createBadRequestResponse(Set<ConstraintViolation<?>> violations) {
-        final Map<String, String> responseObj = new HashMap<String, String>();
+        final Map<String, String> responseObj = new HashMap<>();
 
-        for (ConstraintViolation<?> violation : violations) {
+        violations.forEach(violation -> {
             responseObj.put(violation.getPropertyPath().toString(),
-                                violation.getMessage());
-        }
+                    violation.getMessage());
+            });
 
         return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);

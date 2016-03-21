@@ -100,11 +100,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         }
 
         // iterate over the missing keys:
-        Set<String> keys = message.getUserData().keySet();
-        for (String key : keys) {
-            // GCM needs stringified values:
-            gcmBuilder.addData(key, "" + message.getUserData().get(key));
-        }
+        message.getUserData().keySet().forEach(key -> gcmBuilder.addData(key, "" + message.getUserData().get(key)));
 
         //add the aerogear-push-id
         gcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);

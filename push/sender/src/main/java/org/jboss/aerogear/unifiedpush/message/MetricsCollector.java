@@ -83,13 +83,13 @@ public class MetricsCollector {
 
         receiveVariantMetricsRemainingInQueues(pushMessageInformation);
 
-        for (VariantMetricInformation variantMetricInformation : pushMessageInformation.getVariantInformations()) {
-            if (areAllBatchesLoaded(variantMetricInformation)) {
-                pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
-                logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
-                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
-            }
-        }
+        pushMessageInformation.getVariantInformations().stream()
+                .filter(variantMetricInformation -> areAllBatchesLoaded(variantMetricInformation))
+                .forEach(variantMetricInformation -> {
+                    pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
+                    logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+
+                });
 
         if (areAllVariantsServed(pushMessageInformation)) {
             event.markAllVariantsProcessed();
