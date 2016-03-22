@@ -1,0 +1,9 @@
+{
+  "message": {
+    "alert": "HELLO!",
+    "sound": "default",
+    "badge": 2,
+    "consolidationKey": null,
+    "priority": "normal"
+  }
+}

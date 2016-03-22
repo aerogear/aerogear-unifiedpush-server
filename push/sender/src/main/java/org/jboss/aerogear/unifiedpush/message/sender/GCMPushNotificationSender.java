@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jboss.aerogear.unifiedpush.message.Priority;
 
 @SenderType(VariantType.ANDROID)
 public class GCMPushNotificationSender implements PushNotificationSender {
@@ -80,6 +81,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         gcmBuilder.addData("alert", message.getAlert());
         gcmBuilder.addData("sound", message.getSound());
         gcmBuilder.addData("badge", "" + message.getBadge());
+        gcmBuilder.priority(message.getPriority() ==     Priority.HIGH ? 
+                                                         Message.Priority.HIGH :
+                                                         Message.Priority.NORMAL
+                           );
 
         // if present, apply the time-to-live metadata:
         int ttl = pushMessage.getConfig().getTimeToLive();
