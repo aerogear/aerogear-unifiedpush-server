@@ -4,16 +4,16 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Default implementation of {@link VerificationGatewayService}. Note that this class does not implement the underlying
- * SMS sending mechanism. Rather, it uses an implementation of {@link SMSSender} to do so.
+ * SMS sending mechanism. Rather, it uses an implementation of {@link VerificationPublisher} to do so.
  * 
- * @see SMSSender
+ * @see VerificationPublisher
  */
 @Singleton
 public class VerificationGatewayServiceImpl implements VerificationGatewayService {
@@ -25,7 +25,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	@Inject
 	private Configuration configuration;
 	
-	private SMSSender sender;
+	private VerificationPublisher publisher;
 	
 	/**
 	 * Initializes the SMS sender. We cache the sender since an implementation might set up
@@ -40,7 +40,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		}
 		
 		try {
-			sender = (SMSSender) Class.forName(className).newInstance();
+			publisher = (VerificationPublisher) Class.forName(className).newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
 			throw new RuntimeException("cannot instantiate class " + className);
@@ -52,12 +52,12 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	 */
 	@Override
 	public void sendVerificationMessage(String alias, String message) {
-		if (sender == null){
+		if (publisher == null){
 			// Retry initialization
 			initializeSender();
 		}
 			
-		sender.send(alias, message, configuration.getProperties());
+		publisher.send(alias, message, configuration.getProperties());
 	}
 
 
