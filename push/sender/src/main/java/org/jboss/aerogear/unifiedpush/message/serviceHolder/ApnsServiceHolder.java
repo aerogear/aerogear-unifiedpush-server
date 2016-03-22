@@ -16,16 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.Queue;
-
+import com.notnoop.apns.ApnsService;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
@@ -33,7 +24,14 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
-import com.notnoop.apns.ApnsService;
+import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.Queue;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -79,6 +77,10 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
         }
     }
 
+    /**
+     * Listen to {@link VariantCompletedEvent} to free up APNs bound resources after the (iOS) variant has
+     * been completely processed for push notification delivery.
+     */
     public void freeUpAvailableServices(@Observes VariantCompletedEvent variantCompleted) throws ExecutionException {
         final String pushMessageInformationId = variantCompleted.getPushMessageInformationId();
         String variantID = variantCompleted.getVariantID();

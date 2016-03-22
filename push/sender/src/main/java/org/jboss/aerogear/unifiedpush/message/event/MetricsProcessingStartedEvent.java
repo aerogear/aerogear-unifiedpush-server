@@ -18,13 +18,13 @@ package org.jboss.aerogear.unifiedpush.message.event;
 
 import java.io.Serializable;
 
-public class MetricsProcessingStarted implements Serializable {
+public class MetricsProcessingStartedEvent implements Serializable {
 
     private static final long serialVersionUID = -5192336478703267019L;
 
     private String pushMessageInformationId;
 
-    public MetricsProcessingStarted(String pushMessageInformationId) {
+    public MetricsProcessingStartedEvent(String pushMessageInformationId) {
         this.pushMessageInformationId = pushMessageInformationId;
     }
 

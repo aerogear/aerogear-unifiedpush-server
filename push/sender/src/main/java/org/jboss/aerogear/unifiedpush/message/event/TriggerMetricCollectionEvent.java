@@ -16,42 +16,49 @@
  */
 package org.jboss.aerogear.unifiedpush.message.event;
 
-import java.io.Serializable;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
+
+import java.io.Serializable;
 
 /**
  * Event that triggers {@link MetricsCollector} processing.
  *
- * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerVariantMetricCollectionConsumer
+ * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer
  */
-public class TriggerVariantMetricCollection implements Serializable {
+public class TriggerMetricCollectionEvent implements Serializable {
 
     private static final long serialVersionUID = 1036025116554796512L;
 
     public static final long REDELIVERY_DELAY_MS = 1000L;
 
     private String pushMessageInformationId;
-    private String variantID;
+    private boolean allVariantsProcessed = false;
 
-    public TriggerVariantMetricCollection(PushMessageInformation pushMessageInformation, Variant variant) {
+    public TriggerMetricCollectionEvent(PushMessageInformation pushMessageInformation) {
         this.pushMessageInformationId = pushMessageInformation.getId();
-        this.variantID = variant.getVariantID();
     }
 
-    public TriggerVariantMetricCollection(String pushMessageInformationId, String variantID) {
+    public TriggerMetricCollectionEvent(String pushMessageInformationId) {
         this.pushMessageInformationId = pushMessageInformationId;
-        this.variantID = variantID;
     }
 
     public String getPushMessageInformationId() {
         return pushMessageInformationId;
     }
 
-    public String getVariantID() {
-        return variantID;
+    /**
+     * Marks that all batches are known to be loaded and so that the metric collection process can stop.
+     */
+    public void markAllVariantsProcessed() {
+        allVariantsProcessed = true;
+    }
+
+    /**
+     * @return true if all batches are known to be loaded; false otherwise
+     */
+    public boolean areAllVariantsProcessed() {
+        return allVariantsProcessed;
     }
 
 }

@@ -26,23 +26,23 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 
 @MessageDriven(name = "TriggerMetricsCollectionConsumer", activationConfig = {
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/TriggerMetricCollectionQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-public class TriggerMetricCollectionConsumer extends AbstractJMSMessageListener<TriggerMetricCollection> {
+public class TriggerMetricCollectionConsumer extends AbstractJMSMessageListener<TriggerMetricCollectionEvent> {
 
     @Inject
     @Dequeue
-    private Event<TriggerMetricCollection> dequeueEvent;
+    private Event<TriggerMetricCollectionEvent> dequeueEvent;
 
     @Resource
     private EJBContext context;
 
     /**
-     * Fires the {@link TriggerMetricCollection} event and checks if its listeners reports that all batches were loaded by {@link MetricsCollector}.
+     * Fires the {@link TriggerMetricCollectionEvent} event and checks if its listeners reports that all batches were loaded by {@link MetricsCollector}.
      *
      * If all batches were loaded, the metric collection process ends.
      *
@@ -50,7 +50,7 @@ public class TriggerMetricCollectionConsumer extends AbstractJMSMessageListener<
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void onMessage(TriggerMetricCollection message) {
+    public void onMessage(TriggerMetricCollectionEvent message) {
         dequeueEvent.fire(message);
         if (!message.areAllVariantsProcessed()) {
             context.setRollbackOnly();

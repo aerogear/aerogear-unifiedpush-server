@@ -16,23 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStartedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStarted;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollection;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Stateless
 public class MetricCollectionTrigger {
@@ -42,15 +41,15 @@ public class MetricCollectionTrigger {
     private static final Set<String> METRICS_PROCESSING_STARTED = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Inject @DispatchToQueue
-    private Event<MetricsProcessingStarted> broadcastMetricsProcessingStarted;
+    private Event<MetricsProcessingStartedEvent> broadcastMetricsProcessingStarted;
 
     @Inject @DispatchToQueue
-    private Event<TriggerMetricCollection> triggerMetricCollection;
+    private Event<TriggerMetricCollectionEvent> triggerMetricCollection;
 
     @Inject
     private PushMessageMetricsService metricsService;
 
-    public void tryToStartMetricCollection(@Observes @Dequeue TriggerVariantMetricCollection event) throws JMSException {
+    public void tryToStartMetricCollection(@Observes @Dequeue TriggerVariantMetricCollectionEvent event) throws JMSException {
         final String pushMessageInformationId = event.getPushMessageInformationId();
 
         if (!METRICS_PROCESSING_STARTED.contains(pushMessageInformationId)) {
@@ -61,9 +60,9 @@ public class MetricCollectionTrigger {
                 if (!METRICS_PROCESSING_STARTED.contains(pushMessageInformationId)) { // re-check after DB read
                     METRICS_PROCESSING_STARTED.add(pushMessageInformationId);
                     logger.fine(String.format("Broadcasting information that metrics processing started for push message %s", pushMessageInformationId));
-                    broadcastMetricsProcessingStarted.fire(new MetricsProcessingStarted(pushMessageInformationId));
+                    broadcastMetricsProcessingStarted.fire(new MetricsProcessingStartedEvent(pushMessageInformationId));
                     logger.fine(String.format("Trigger metric collection process for push message %s", pushMessageInformationId));
-                    triggerMetricCollection.fire(new TriggerMetricCollection(pushMessageInformationId));
+                    triggerMetricCollection.fire(new TriggerMetricCollectionEvent(pushMessageInformationId));
                 }
             }
         }
@@ -82,7 +81,7 @@ public class MetricCollectionTrigger {
         return false;
     }
 
-    public void markMetricsProcessingAsStarted(@Observes @Dequeue MetricsProcessingStarted event) throws JMSException {
+    public void markMetricsProcessingAsStarted(@Observes @Dequeue MetricsProcessingStartedEvent event) throws JMSException {
         logger.fine(String.format("Received signal that metrics collection started for push message %s", event.getPushMessageInformationId()));
         METRICS_PROCESSING_STARTED.add(event.getPushMessageInformationId());
     }
