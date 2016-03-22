@@ -33,12 +33,23 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Receives {@link TriggerVariantMetricCollectionEvent}s and turns them into one {@link TriggerMetricCollectionEvent}.
+ *
+ * Since {@link TriggerMetricCollectionEvent} should be send exactly once, it maintains set of IDs that metrics processing was started for.
+ * It also rechecks in DB whether metrics processing already started.
+ *
+ * When metrics processing is starting, it broadcast that information via a topic to nodes in the cluster.
+ */
 @Stateless
 public class MetricCollectionTrigger {
 
     private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricCollectionTrigger.class);
 
-    private static final Set<String> METRICS_PROCESSING_STARTED = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    /**
+     * Stores pushMessageInformationIds for the push messages that the metrics collection process was already started for
+     */
+    private static final Set<String> METRICS_PROCESSING_STARTED_FOR_IDS = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Inject @DispatchToQueue
     private Event<MetricsProcessingStartedEvent> broadcastMetricsProcessingStarted;
@@ -49,16 +60,23 @@ public class MetricCollectionTrigger {
     @Inject
     private PushMessageMetricsService metricsService;
 
-    public void tryToStartMetricCollection(@Observes @Dequeue TriggerVariantMetricCollectionEvent event) throws JMSException {
+    /**
+     * Receives {@link TriggerVariantMetricCollectionEvent} event from JMS and determines whether a {@link TriggerMetricCollectionEvent} should be sent as reaction or not.
+     *
+     * It check with shared Set of IDs that metrics processing already started for, and if no record is there, it rechecks in DB.
+     *
+     * @param event the event dequeued from JMS
+     */
+    public void tryToStartMetricCollection(@Observes @Dequeue TriggerVariantMetricCollectionEvent event) {
         final String pushMessageInformationId = event.getPushMessageInformationId();
 
-        if (!METRICS_PROCESSING_STARTED.contains(pushMessageInformationId)) {
+        if (!METRICS_PROCESSING_STARTED_FOR_IDS.contains(pushMessageInformationId)) {
             if (detectMetricsProcessingStartedFromDB(pushMessageInformationId)) {
                 logger.fine(String.format("Detected that metrics collection already started from DB state for push message %s", pushMessageInformationId));
-                METRICS_PROCESSING_STARTED.add(pushMessageInformationId);
+                METRICS_PROCESSING_STARTED_FOR_IDS.add(pushMessageInformationId);
             } else {
-                if (!METRICS_PROCESSING_STARTED.contains(pushMessageInformationId)) { // re-check after DB read
-                    METRICS_PROCESSING_STARTED.add(pushMessageInformationId);
+                if (!METRICS_PROCESSING_STARTED_FOR_IDS.contains(pushMessageInformationId)) { // re-check after DB read
+                    METRICS_PROCESSING_STARTED_FOR_IDS.add(pushMessageInformationId);
                     logger.fine(String.format("Broadcasting information that metrics processing started for push message %s", pushMessageInformationId));
                     broadcastMetricsProcessingStarted.fire(new MetricsProcessingStartedEvent(pushMessageInformationId));
                     logger.fine(String.format("Trigger metric collection process for push message %s", pushMessageInformationId));
@@ -83,6 +101,6 @@ public class MetricCollectionTrigger {
 
     public void markMetricsProcessingAsStarted(@Observes @Dequeue MetricsProcessingStartedEvent event) throws JMSException {
         logger.fine(String.format("Received signal that metrics collection started for push message %s", event.getPushMessageInformationId()));
-        METRICS_PROCESSING_STARTED.add(event.getPushMessageInformationId());
+        METRICS_PROCESSING_STARTED_FOR_IDS.add(event.getPushMessageInformationId());
     }
 }
