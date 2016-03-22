@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -51,12 +51,12 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
     }
 
     @Inject @DispatchToQueue
-    private Event<TriggerMetricCollection> triggerMetricCollection;
+    private Event<TriggerMetricCollectionEvent> triggerMetricCollection;
 
     @Resource(mappedName = "java:/queue/TriggerMetricCollectionQueue")
     private Queue triggerMetricCollectionQueue;
 
-    private static final ConcurrentLinkedQueue<TriggerMetricCollection> receivedTriggers = new ConcurrentLinkedQueue<TriggerMetricCollection>();
+    private static final ConcurrentLinkedQueue<TriggerMetricCollectionEvent> receivedTriggers = new ConcurrentLinkedQueue<TriggerMetricCollectionEvent>();
     private static final CountDownLatch firstMessageLatch = new CountDownLatch(1);
     private static String messageId;
 
@@ -64,7 +64,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
     public void testDeduplication() throws InterruptedException {
         messageId = UUID.randomUUID().toString();
 
-        TriggerMetricCollection msg = new TriggerMetricCollection(messageId);
+        TriggerMetricCollectionEvent msg = new TriggerMetricCollectionEvent(messageId);
 
         // it doesn't matter how many times we send the message, ...
         triggerMetricCollection.fire(msg);
@@ -79,7 +79,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
         assertEquals("but second try should not receive any further message since it was de-duplicated", 1, receivedTriggers.size());
 
         // any other try for sending the message with same ID (even though we are sending different object in terms of equality)
-        msg = new TriggerMetricCollection(messageId);
+        msg = new TriggerMetricCollectionEvent(messageId);
         triggerMetricCollection.fire(msg);
         triggerMetricCollection.fire(msg);
 
@@ -88,7 +88,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
         assertEquals("any other try should not receive any further message since it was de-duplicated", 1, receivedTriggers.size());
     }
 
-    public void receiveTrigger(@Observes @Dequeue TriggerMetricCollection triggerEvent) {
+    public void receiveTrigger(@Observes @Dequeue TriggerMetricCollectionEvent triggerEvent) {
         if (triggerEvent.getPushMessageInformationId().equals(messageId)) {
             triggerEvent.markAllVariantsProcessed(); // mark processed, otherwise it will be rolled-back and redelivered
             receivedTriggers.add(triggerEvent);

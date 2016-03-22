@@ -19,46 +19,39 @@ package org.jboss.aerogear.unifiedpush.message.event;
 import java.io.Serializable;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 
 /**
  * Event that triggers {@link MetricsCollector} processing.
  *
- * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer
+ * @see org.jboss.aerogear.unifiedpush.message.jms.TriggerVariantMetricCollectionConsumer
  */
-public class TriggerMetricCollection implements Serializable {
+public class TriggerVariantMetricCollectionEvent implements Serializable {
 
     private static final long serialVersionUID = 1036025116554796512L;
 
     public static final long REDELIVERY_DELAY_MS = 1000L;
 
     private String pushMessageInformationId;
-    private boolean allVariantsProcessed = false;
+    private String variantID;
 
-    public TriggerMetricCollection(PushMessageInformation pushMessageInformation) {
+    public TriggerVariantMetricCollectionEvent(PushMessageInformation pushMessageInformation, Variant variant) {
         this.pushMessageInformationId = pushMessageInformation.getId();
+        this.variantID = variant.getVariantID();
     }
 
-    public TriggerMetricCollection(String pushMessageInformationId) {
+    public TriggerVariantMetricCollectionEvent(String pushMessageInformationId, String variantID) {
         this.pushMessageInformationId = pushMessageInformationId;
+        this.variantID = variantID;
     }
 
     public String getPushMessageInformationId() {
         return pushMessageInformationId;
     }
 
-    /**
-     * Marks that all batches are known to be loaded and so that the metric collection process can stop.
-     */
-    public void markAllVariantsProcessed() {
-        allVariantsProcessed = true;
-    }
-
-    /**
-     * @return true if all batches are known to be loaded; false otherwise
-     */
-    public boolean areAllVariantsProcessed() {
-        return allVariantsProcessed;
+    public String getVariantID() {
+        return variantID;
     }
 
 }

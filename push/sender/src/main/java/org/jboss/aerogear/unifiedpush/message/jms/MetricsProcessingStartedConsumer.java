@@ -16,33 +16,31 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
+import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStartedEvent;
+
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJBContext;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStarted;
-
 @MessageDriven(name = "MetricsProcessingStartedConsumer", activationConfig = {
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic/MetricsProcessingStartedTopic"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-public class MetricsProcessingStartedConsumer extends AbstractJMSMessageListener<MetricsProcessingStarted> {
+public class MetricsProcessingStartedConsumer extends AbstractJMSMessageListener<MetricsProcessingStartedEvent> {
 
     @Inject
     @Dequeue
-    private Event<MetricsProcessingStarted> dequeueEvent;
+    private Event<MetricsProcessingStartedEvent> dequeueEvent;
 
-    @Resource
-    private EJBContext context;
-
+    /**
+     * Receives MetricsProcessingStartedEvent from the JMS queue and triggers further processing via CDI event.
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public void onMessage(MetricsProcessingStarted message) {
+    public void onMessage(MetricsProcessingStartedEvent message) {
         dequeueEvent.fire(message);
     }
 }

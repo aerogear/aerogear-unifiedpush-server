@@ -26,7 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,7 +41,7 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
     private static final long DELIVERY_DELAY_TOLERANCE_MS = 100L;
 
     @Inject @DispatchToQueue
-    private Event<TriggerMetricCollection> triggerMetricCollection;
+    private Event<TriggerMetricCollectionEvent> triggerMetricCollection;
 
     private static String messageId;
     private static final CountDownLatch latch = new CountDownLatch(NUMBER_OF_FAILURES_UNTIL_SUCCESS);
@@ -59,7 +59,7 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
     public void testTransactedRedelivery() throws InterruptedException {
         // given
         messageId = UUID.randomUUID().toString();
-        TriggerMetricCollection msg = new TriggerMetricCollection(messageId);
+        TriggerMetricCollectionEvent msg = new TriggerMetricCollectionEvent(messageId);
 
         // when
         triggerMetricCollection.fire(msg);
@@ -68,10 +68,10 @@ public class TestTriggerMetricCollectionRedelivery extends AbstractJMSTest {
         latch.await();
     }
 
-    public void observeMessage(@Observes @Dequeue TriggerMetricCollection msg) {
+    public void observeMessage(@Observes @Dequeue TriggerMetricCollectionEvent msg) {
         if (msg.getPushMessageInformationId().equals(messageId)) {
             if (lastDelivery != null) {
-                long deltaMs = Math.abs(System.currentTimeMillis() - lastDelivery - TriggerMetricCollection.REDELIVERY_DELAY_MS);
+                long deltaMs = Math.abs(System.currentTimeMillis() - lastDelivery - TriggerMetricCollectionEvent.REDELIVERY_DELAY_MS);
                 assertTrue("redelivery must be performed timely with less than " + DELIVERY_DELAY_TOLERANCE_MS + "ms tolerance, but was " + deltaMs,
                         deltaMs < DELIVERY_DELAY_TOLERANCE_MS);
             }

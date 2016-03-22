@@ -16,34 +16,29 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
+import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
+
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJBContext;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollection;
-
 @MessageDriven(name = "TriggerVariantMetricCollectionConsumer", activationConfig = {
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/TriggerVariantMetricCollectionQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-public class TriggerVariantMetricCollectionConsumer extends AbstractJMSMessageListener<TriggerVariantMetricCollection> {
+public class TriggerVariantMetricCollectionConsumer extends AbstractJMSMessageListener<TriggerVariantMetricCollectionEvent> {
 
     @Inject
     @Dequeue
-    private Event<TriggerVariantMetricCollection> dequeueEvent;
-
-    @Resource
-    private EJBContext context;
+    private Event<TriggerVariantMetricCollectionEvent> dequeueEvent;
 
     /**
-     * Fires the {@link TriggerMetricCollection} event and checks if its listeners reports that all batches were loaded by {@link MetricsCollector}.
+     * Fires the {@link TriggerMetricCollectionEvent} event and checks if its listeners reports that all batches were loaded by {@link MetricsCollector}.
      *
      * If all batches were loaded, the metric collection process ends.
      *
@@ -51,7 +46,7 @@ public class TriggerVariantMetricCollectionConsumer extends AbstractJMSMessageLi
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void onMessage(TriggerVariantMetricCollection message) {
+    public void onMessage(TriggerVariantMetricCollectionEvent message) {
         dequeueEvent.fire(message);
     }
 }

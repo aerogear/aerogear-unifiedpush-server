@@ -36,7 +36,7 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.MetricCollectionTrigger;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -111,7 +111,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         send(variant1Metric2).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
         send(variant2Metric1).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
 
-        metricsCollector.collectMetrics(new TriggerMetricCollection(pushMetric));
+        metricsCollector.collectMetrics(new TriggerMetricCollectionEvent(pushMetric));
 
         variantsCompleted.await(2, TimeUnit.SECONDS);
         pushMessagesCompleted.await(1, TimeUnit.SECONDS);

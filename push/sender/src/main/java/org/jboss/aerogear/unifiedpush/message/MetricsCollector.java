@@ -16,6 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -24,16 +34,6 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
-import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Receives metrics from {@link NotificationDispatcher} and updates the database.
@@ -73,10 +73,10 @@ public class MetricsCollector {
      * Additionally when a variant was completed and there are no more variants to be completed for this variant,
      * the {@link PushMessageCompletedEvent} CDI event is fired.
      *
-     * @param event {@link TriggerMetricCollection} event dequeued from JMS
+     * @param event {@link TriggerMetricCollectionEvent} event dequeued from JMS
      * @throws JMSException when JMS provider fails to dequeue messages that {@link MetricsCollector} pulls
      */
-    public void collectMetrics(@Observes @Dequeue TriggerMetricCollection event) throws JMSException {
+    public void collectMetrics(@Observes @Dequeue TriggerMetricCollectionEvent event) throws JMSException {
         final String pushMessageInformationId = event.getPushMessageInformationId();
         final PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(pushMessageInformationId);
         metricsService.lock(pushMessageInformation);

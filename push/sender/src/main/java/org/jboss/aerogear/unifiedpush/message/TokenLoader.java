@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollection;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -83,7 +83,7 @@ public class TokenLoader {
 
     @Inject
     @DispatchToQueue
-    private Event<TriggerVariantMetricCollection> triggerVariantMetricCollection;
+    private Event<TriggerVariantMetricCollectionEvent> triggerVariantMetricCollection;
 
     @Inject
     @DispatchToQueue
@@ -153,7 +153,7 @@ public class TokenLoader {
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                         if (serialId == MessageHolderWithVariants.INITIAL_SERIAL_ID) {
-                            triggerVariantMetricCollection.fire(new TriggerVariantMetricCollection(msg.getPushMessageInformation(), variant));
+                            triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(msg.getPushMessageInformation(), variant));
                         }
                     } else {
                         break;
@@ -168,7 +168,7 @@ public class TokenLoader {
 
                     // using combined key of variant and PMI (AGPUSH-1585):
                     allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
-                    triggerVariantMetricCollection.fire(new TriggerVariantMetricCollection(pushMessageInformation, variant));
+                    triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(pushMessageInformation, variant));
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!

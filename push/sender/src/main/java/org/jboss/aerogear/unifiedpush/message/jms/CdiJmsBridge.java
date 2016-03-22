@@ -16,18 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStartedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+
 import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.Topic;
-
-import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStarted;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollection;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollection;
-import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
  * A CDI-to-JMS bridge takes some selected CDI events and passes them to JMS messaging system so that they can be handled asynchronously.
@@ -66,20 +66,25 @@ public class CdiJmsBridge {
             .to(batchLoadedQueue);
     }
 
-    public void queueMessage(@Observes @DispatchToQueue TriggerMetricCollection msg) {
+    public void queueMessage(@Observes @DispatchToQueue TriggerMetricCollectionEvent msg) {
     	jmsClient.send(msg)
     	    .withDuplicateDetectionId(msg.getPushMessageInformationId())
     	    .withDelayedDelivery(500L)
     	    .to(triggerMetricCollectionQueue);
     }
 
-    public void queueMessage(@Observes @DispatchToQueue TriggerVariantMetricCollection msg) {
+    public void queueMessage(@Observes @DispatchToQueue TriggerVariantMetricCollectionEvent msg) {
         jmsClient.send(msg)
             .to(triggerVariantMetricCollectionQueue);
     }
 
-    public void broadcastMessage(@Observes @DispatchToQueue MetricsProcessingStarted msg) {
-        jmsClient.send(msg)
+    /**
+     * Listens to {@link MetricsProcessingStartedEvent} to deliver it to the JMS queue for internal processing
+     *
+     * @param event indicator that Metrics processing has started
+     */
+    public void broadcastMessage(@Observes @DispatchToQueue MetricsProcessingStartedEvent event) {
+        jmsClient.send(event)
             .to(metricsProcessingStartedTopic);
     }
 }
