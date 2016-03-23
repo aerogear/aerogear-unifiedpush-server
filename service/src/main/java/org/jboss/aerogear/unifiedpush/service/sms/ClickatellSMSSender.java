@@ -14,12 +14,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.jboss.aerogear.unifiedpush.api.sms.SMSSender;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
 
 /**
  * Sends SMS over Clickatell's HTTP API.
  */
-public class ClickatellSMSSender implements SMSSender {
+public class ClickatellSMSSender implements VerificationPublisher {
 	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
 	

@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
  */
-public abstract class AbstractBaseEndpoint {
+public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 
     protected final AeroGearLogger logger = AeroGearLogger.getInstance(getClass());
 
@@ -51,8 +51,8 @@ public abstract class AbstractBaseEndpoint {
     private HttpServletRequest httpServletRequest;
 
     /**
-     * Generic validator used to identify constraint violations of the given model class. 
-     * 
+     * Generic validator used to identify constraint violations of the given model class.
+     *
      * @param model object to validate
      * @throws ConstraintViolationException if constraint violations on the given model have been identified.
      */
@@ -68,9 +68,9 @@ public abstract class AbstractBaseEndpoint {
 
     /**
      * Helper function to create a 400 Bad Request response, containing a JSON map giving details about the violations
-     * 
+     *
      * @param violations set of occurred constraint violations
-     * @return 400 Bad Request response, containing details on the constraint violations 
+     * @return 400 Bad Request response, containing details on the constraint violations
      */
     protected ResponseBuilder createBadRequestResponse(Set<ConstraintViolation<?>> violations) {
         final Map<String, String> responseObj = new HashMap<String, String>();

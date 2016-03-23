@@ -16,8 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import javax.validation.constraints.Size;
 import java.util.UUID;
+
+import javax.validation.constraints.Size;
 
 /**
  * Logical construct which matches a mobile app in the appstore.

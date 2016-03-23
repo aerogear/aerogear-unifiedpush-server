@@ -16,16 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-import static org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY;
-import static org.codehaus.jackson.annotate.JsonTypeInfo.Id.NAME;
-
-@JsonTypeInfo(use = NAME, include = PROPERTY, property = "protocolType")
+@JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "protocolType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value=WindowsWNSVariant.class, name="wns"),
         @JsonSubTypes.Type(value=WindowsMPNSVariant.class, name="mpns")
 })
 public abstract class WindowsVariant extends Variant {
+	private static final long serialVersionUID = 4116027822443177838L;
 }

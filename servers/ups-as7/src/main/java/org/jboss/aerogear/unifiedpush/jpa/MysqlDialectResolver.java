@@ -18,11 +18,8 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQLDialect;
-import org.hibernate.exception.JDBCConnectionException;
-import org.hibernate.service.jdbc.dialect.spi.DialectResolver;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-
-import java.sql.DatabaseMetaData;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
 
 /**
  * A Hibernate dialect resolver to allow for a custom Mysql5 dialect
@@ -30,16 +27,12 @@ import java.sql.DatabaseMetaData;
  * @see Mysql5BitBooleanDialect
  */
 public class MysqlDialectResolver implements DialectResolver {
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MysqlDialectResolver.class);
+	private static final long serialVersionUID = 5207494319463253126L;
 
-    @Override
-    public Dialect resolveDialect(final DatabaseMetaData databaseMetaData) throws JDBCConnectionException {
-        try {
-            if ("MySQL".equals(databaseMetaData.getDatabaseProductName())) {
-                return databaseMetaData.getDatabaseMajorVersion() >= 5 ? new Mysql5BitBooleanDialect() : new MySQLDialect();
-            }
-        } catch (final Exception e) {
-            logger.severe("Could not get database name/version", e);
+	@Override
+    public Dialect resolveDialect(DialectResolutionInfo dialectResolutionInfo) {
+        if ("MySQL".equals(dialectResolutionInfo.getDatabaseName())) {
+            return dialectResolutionInfo.getDatabaseMajorVersion() >= 5 ? new Mysql5BitBooleanDialect() : new MySQLDialect();
         }
         return null;
     }

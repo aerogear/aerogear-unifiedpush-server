@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public abstract class BaseModel implements Serializable {
-
-    private String id = UUID.randomUUID().toString();
+	private static final long serialVersionUID = -4123402116687584512L;
+	private String id = UUID.randomUUID().toString();
 
     /**
      * Key identifying the model object in the underlying database (primary key)

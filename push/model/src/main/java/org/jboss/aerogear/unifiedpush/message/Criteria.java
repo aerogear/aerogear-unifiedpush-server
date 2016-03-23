@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.io.Serializable;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Simple class, containing all "query criteria" options for a message,
@@ -29,8 +29,9 @@ import java.util.List;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Criteria implements Serializable {
+	private static final long serialVersionUID = -798832013729311816L;
 
-    @JsonProperty("alias")
+	@JsonProperty("alias")
     private List<String> aliases;
     @JsonProperty("deviceType")
     private List<String> deviceTypes;

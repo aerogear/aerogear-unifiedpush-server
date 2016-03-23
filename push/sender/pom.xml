@@ -52,7 +52,7 @@
             <artifactId>jboss-ejb-api_3.2_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.spec.javax.jms</groupId>
             <artifactId>jboss-jms-api_2.0_spec</artifactId>
@@ -109,7 +109,7 @@
             <groupId>com.github.fernandospr</groupId>
             <artifactId>java-wns</artifactId>
             <version>1.3.1</version>
-            
+
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jersey</groupId>
@@ -120,15 +120,27 @@
                     <groupId>com.sun.jersey.contribs</groupId>
                     <artifactId>jersey-apache-client</artifactId>
                 </exclusion>
-                
+
                 <exclusion>
                     <groupId>com.sun.jersey</groupId>
                     <artifactId>jersey-client</artifactId>
                 </exclusion>
-                
+
                 <exclusion>
                     <groupId>commons-httpclient</groupId>
                     <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+
+                <!-- Wildfly 8.2.x is bundled with fasterxml 2.4.1 -->
+                <!-- While java-wns is bundled with 2.5.1 -->
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                    <artifactId>jackson-jaxrs-xml-provider</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                    <artifactId>jackson-jaxrs-json-provider</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -137,13 +149,13 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>jaxrs-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
@@ -178,7 +190,7 @@
                     <type>test-jar</type>
                     <scope>test</scope>
                 </dependency>
-                
+
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
@@ -202,7 +214,7 @@
                     <artifactId>arquillian-junit-container</artifactId>
                     <scope>test</scope>
                 </dependency>
-                
+
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>

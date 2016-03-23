@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
 * Model for details of health check

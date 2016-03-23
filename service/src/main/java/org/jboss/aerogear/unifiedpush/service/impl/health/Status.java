@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * status

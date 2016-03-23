@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import javax.validation.constraints.NotNull;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Metadata object that contains various informations around a submitted push message request

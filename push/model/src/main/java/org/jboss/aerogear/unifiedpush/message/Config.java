@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Configuration options of the UnifiedPush Message.
@@ -27,7 +27,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Config implements Serializable {
-    @JsonProperty("ttl")
+	private static final long serialVersionUID = 3082419142618843583L;
+
+	@JsonProperty("ttl")
     private int timeToLive = -1;
 
     /**

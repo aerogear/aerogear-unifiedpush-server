@@ -1,0 +1,1 @@
+Helper classes copied form Spring core 4.1.2.RELEASE

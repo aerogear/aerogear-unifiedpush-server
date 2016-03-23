@@ -1,11 +1,11 @@
-package org.jboss.aerogear.unifiedpush.api.sms;
+package org.jboss.aerogear.unifiedpush.api.verification;
 
 import java.util.Properties;
 
 /**
  * Implementation of this class are responsible for sending SMS messages.
  */
-public interface SMSSender {
+public interface VerificationPublisher {
 	
 	/**
 	 * Sends the message to number.
