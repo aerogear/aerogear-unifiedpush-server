@@ -137,18 +137,19 @@ angular.module('upsConsole')
     return {
       templateUrl: 'directives/ups-client-snippets.html',
       scope: {
-        variant: '='
+        variant: '=',
+        allVariants: '='
       },
       restrict: 'E',
-      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout ) {
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, pushConfigGenerator ) {
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
-          android:      { name: 'Android',    snippets: ['android', 'cordova'] },
-          ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova']},
-          windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
-          windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova'] },
-          simplePush:   { name: 'SimplePush', snippets: ['cordova'] },
+          android:      { name: 'Android',    snippets: ['android', 'cordova', 'push_config'] },
+          ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova', 'push_config']},
+          windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
+          windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
+          simplePush:   { name: 'SimplePush', snippets: ['cordova', 'push_config'] },
           adm:          { name: 'ADM',        snippets: ['adm'] }
         };
         $scope.state = {
@@ -161,6 +162,7 @@ angular.module('upsConsole')
               $scope.snippets[key].source = $interpolate($scope.snippets[key].template)($scope);
             });
           });
+          $scope.pushConfigSource = pushConfigGenerator.generate($scope.allVariants);
         }
         renderSnippets();
         $scope.copySnippet = function() {
