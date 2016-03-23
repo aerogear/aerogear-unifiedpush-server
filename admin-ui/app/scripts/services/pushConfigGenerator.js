@@ -25,13 +25,15 @@ upsServices.factory('pushConfigGenerator', function ($resource, $q, ContextProvi
 			var pushConfig = {
 				'pushServerURL': ContextProvider.contextPath()
 			};
-			variants.forEach(function(variant) {
-				var type = cordovaVariantType(variant);
-				var config = pushConfig[type] = {};
-				variantSpecificConfiguration(variant, config);
-				config.variantID = variant.variantID;
-				config.variantSecret = variant.secret;
-			});
+      if (variants) {
+        variants.forEach(function (variant) {
+          var type = cordovaVariantType(variant);
+          var config = pushConfig[type] = {};
+          variantSpecificConfiguration(variant, config);
+          config.variantID = variant.variantID;
+          config.variantSecret = variant.secret;
+        });
+      }
 			return JSON.stringify(pushConfig, null, 2);
 		}
 	};
