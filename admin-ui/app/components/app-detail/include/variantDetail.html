@@ -101,7 +101,7 @@
   </dd>
 </dl>
 
-<ups-client-snippets variant="variant" ng-if="variant.$deviceCount == 0 || variantDetail.forceShowSnippets"></ups-client-snippets>
+<ups-client-snippets variant="variant" all-variants="appDetail.app.variants" ng-if="variant.$deviceCount == 0 || variantDetail.forceShowSnippets"></ups-client-snippets>
 
 <p ng-if="variant.$deviceCount > 0">
   This is a list of devices using this variable.
