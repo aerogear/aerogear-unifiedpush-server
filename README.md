@@ -66,12 +66,12 @@ Up to date generated REST endpoint documentation can be found in `jaxrs/target/m
 
 We have a list of users in our [wiki](https://github.com/aerogear/aerogear-unifiedpush-server/wiki/Users-of-the-UnifiedPush-Server). If you are using the UnifiedPush Server, please add yourself to the list!
 
-## Development 
+## Development
 
 The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
 
 
-### Deployment 
+### Deployment
 
 For deployment of the `master branch` to a specific server (Wildfly-10 or EAP7), you need to build the WAR files and deploy them to a running and configured server.
 
@@ -149,6 +149,10 @@ If you are using this functionality, please convert your applications to use the
 If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
 
 Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
+
+## How to develop and run tests
+
+There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS.md)
 
 ## Questions?
 
