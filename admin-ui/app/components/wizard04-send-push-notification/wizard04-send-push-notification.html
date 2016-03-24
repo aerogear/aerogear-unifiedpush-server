@@ -31,7 +31,7 @@
       <form>
         <div class="form-group">
           <label class="control-label">Message</label>
-          <textarea class="form-control" rows="3" ng-model="wizard04SendPushNotification.pushData.message.alert" ng-disabled="wizard04SendPushNotification.deviceCount == 0"></textarea>
+          <textarea class="form-control" rows="3" ng-model="wizard04SendPushNotification.pushData.message.alert" ng-disabled="wizard04SendPushNotification.deviceCount == 0" pf-focused="true"></textarea>
         </div>
 
         <div ng-if="wizard04SendPushNotification.deviceCount == 0" class="form-group pull-right">
