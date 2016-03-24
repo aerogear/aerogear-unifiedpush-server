@@ -120,6 +120,8 @@ Tests can leverage basic JUnit features such as `@Before` and `@After`, `@Test(t
 Tests for cluster
 -----------------
 
+_NOTE:_ **You need to enable multicast, as discussed [here](https://github.com/aerogear/aerogear-unifiedpush-server#getting-started-with-clustered-servers)**
+
 Since we are running two containers in HA profile, we can test also behavior specific to clustering.
 
 In that case, we need to define which deployment will be targetting which container (if no `@TargetsContainer` is specified, a container marked as `default=true` in `arquillian.xml` will be used):
