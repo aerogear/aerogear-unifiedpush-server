@@ -81,6 +81,11 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         gcmBuilder.addData("alert", message.getAlert());
         gcmBuilder.addData("sound", message.getSound());
         gcmBuilder.addData("badge", "" + message.getBadge());
+        /*
+        The Message defaults to a Normal priority.  High priority is used
+        by GCM to wake up devices in Doze mode as well as apps in AppStandby 
+        mode.  This has no effect on devices older than Android 6.0
+        */
         gcmBuilder.priority(message.getPriority() ==     Priority.HIGH ? 
                                                          Message.Priority.HIGH :
                                                          Message.Priority.NORMAL
