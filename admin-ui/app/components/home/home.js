@@ -43,8 +43,8 @@ angular.module('upsConsole')
           angular.extend( app, updatedApp );
           Notifications.success('The name of ' + app.name + ' application was successfully changed');
         })
-        .catch(function() {
-          if ( e != 'cancel' ) {
+        .catch(function( e ) {
+          if ( e instanceof Error ) {
             Notifications.error('Failed to modify app ' + app.name + ': ' + e);
           }
         });
