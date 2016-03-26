@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -71,27 +72,28 @@ public class VariantDaoTest {
 
     @Test
     public void mongoNative() {
-        Variant av = variantDao.findByVariantID("34e9fa5e-79ad-4bab-bd82-97d0ffc88e10");
+        /*Variant av = variantDao.findByVariantID("34e9fa5e-79ad-4bab-bd82-97d0ffc88e10");
         variantDao.delete(av);
 
+*/
+        Variant av = new AndroidVariant();
+        av.setDescription("muhehehehehe");
+        variantDao.create(av);
 
-        /*Variant av = variantDao.findByVariantID("9a9b5116-aed8-428a-a86f-be0f9ea6824c");
+        Variant av2 = new AdmVariant();
+        av2.setDescription("brmmmmm");
+        variantDao.create(av2);
+
         Installation i = new Installation();
         i.setVariant(av);
         i.setAlias("muhehehehe");
         installationDao = new JPAInstallationDao();
         installationDao.setEntityManager(entityManager);
 
-        installationDao.create(i);*/
+        installationDao.create(i);
 
 
-        /*Variant av = new AndroidVariant();
-        av.setDescription("muhehehehehe");
-        variantDao.create(av);
 
-        Variant av2 = new AdmVariant();
-        av2.setDescription("brmmmmm");
-        variantDao.create(av2);*/
     }
 
     @Test
