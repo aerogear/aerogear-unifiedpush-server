@@ -127,7 +127,7 @@
             <column name="pushApplicationId" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="rawJsonMessage" type="VARCHAR(4500)"/>
+            <column name="rawJsonMessage" type="LONGTEXT"/>
             <column name="submitDate" type="DATETIME"/>
             <column name="totalReceivers" type="BIGINT">
                 <constraints nullable="false"/>
