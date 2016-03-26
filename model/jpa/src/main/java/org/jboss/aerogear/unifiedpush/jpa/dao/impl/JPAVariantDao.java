@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
@@ -28,8 +29,14 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
 
     @Override
     public void delete(Variant variant) {
-        entityManager.createQuery("delete from Installation i where i.variant in :variant")
-                .setParameter("variant", variant).executeUpdate();
+        Query q = createNativeQuery("{ $query : { variantID: '" + variant.getId() + "'} }");
+        List<Installation> result = q.getResultList();
+
+        if (!result.isEmpty()) {
+            entityManager.remove(result.get(0));
+        }
+        /*entityManager.createQuery("delete from Installation i where i.variant in :variant")
+                .setParameter("variant", variant).executeUpdate();*/
         Variant entity = find(variant.getId());
         super.delete(entity);
     }
@@ -39,6 +46,7 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
     public Variant findByVariantID(String variantID) {
         Query q = createNativeQuery("{ $query : { variantID: '" + variantID + "'} }");
         return getSingleResultForQuery(q);
+        // hibernate OGM doesnt support parameters  yet
         /*return getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));*/
     }
