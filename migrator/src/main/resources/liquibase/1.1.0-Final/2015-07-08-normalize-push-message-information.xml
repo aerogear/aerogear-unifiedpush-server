@@ -43,7 +43,7 @@
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="push_message_info" columnName="rawJsonMessage"/>
         </preConditions>
-        <renameColumn tableName="push_message_info" oldColumnName="rawJsonMessage" newColumnName="raw_json_message" columnDataType="LONGTEXT"/>
+        <renameColumn tableName="push_message_info" oldColumnName="rawJsonMessage" newColumnName="raw_json_message" columnDataType="VARCHAR(4500)"/>
     </changeSet>
     <changeSet id="04" author="qmx" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
