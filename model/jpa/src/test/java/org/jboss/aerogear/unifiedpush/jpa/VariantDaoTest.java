@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -35,6 +34,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,10 +72,14 @@ public class VariantDaoTest {
 
     @Test
     public void mongoNative() {
+        ArrayList<String> a = new ArrayList<String>();
+        a.add("a");
+       List<Variant> v = variantDao.findAllVariantsByIDs(a);
+
         /*Variant av = variantDao.findByVariantID("34e9fa5e-79ad-4bab-bd82-97d0ffc88e10");
         variantDao.delete(av);
 
-*/
+
         Variant av = new AndroidVariant();
         av.setDescription("muhehehehehe");
         variantDao.create(av);
@@ -93,7 +97,7 @@ public class VariantDaoTest {
         installationDao.create(i);
 
 
-
+*/
     }
 
     @Test

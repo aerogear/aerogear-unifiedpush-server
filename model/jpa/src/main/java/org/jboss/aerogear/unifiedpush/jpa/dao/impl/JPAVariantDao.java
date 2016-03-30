@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,19 +56,31 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
     @Override
     public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
 
-        Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer", Long.class)
+        String sqlString = "db.variant.count({ 'id' : '" + variantID + "' , 'developer' : '" + loginName + "'})";
+        Long numberOfVariants = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+
+        /*Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer", Long.class)
                 .setParameter("variantID", variantID)
                 .setParameter("developer", loginName).getSingleResult();
 
-
+1        */
         return numberOfVariants == 1L;
     }
 
 
     @Override
     public List<String> findVariantIDsForDeveloper(String loginName) {
-        return createQuery("select t.variantID from Variant t where t.developer = :developer", String.class)
-                .setParameter("developer", loginName).getResultList();
+        String sqlString = "db.variant.find( { 'developer' : '" + loginName + "'}, {'id' : 1} )";
+        List<Object[]> variantsWithIds =  entityManager.createNativeQuery(sqlString).getResultList();
+        List<String> variants = new ArrayList<String>();
+
+        for(Object [] v : variantsWithIds)
+        {
+            variants.add(String.valueOf(v[1]));
+        }
+        /*return createQuery("select t.variantID from Variant t where t.developer = :developer", String.class)
+                .setParameter("developer", loginName).getResultList();*/
+        return variants;
     }
 
     @Override
@@ -75,17 +89,30 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
             return Collections.emptyList();
         }
 
-        return createQuery("select t from Variant t where t.variantID IN :variantIDs")
-                .setParameter("variantIDs", variantIDs).getResultList();
+        for (int i = 0; i < variantIDs.size(); i++)
+        {
+            String s = variantIDs.get(i);
+            variantIDs.set(i, "'" + s + "'");
+        }
+
+        String variants = Arrays.toString(variantIDs.toArray());
+        String sqlString = "{ $query : { variantID: { $in: ['a', 'b'] }} }";
+        return createNativeQuery(sqlString).getResultList();
+        /*return createQuery("select t from Variant t where t.variantID IN :variantIDs")
+                .setParameter("variantIDs", variantIDs).getResultList();*/
+
     }
 
     //Admin queries
     @Override
     public boolean existsVariantIDForAdmin(String variantID) {
 
+        String sqlString = "db.variant.count( { 'id' : '" + variantID + "'})";
+        Long numberOfVariants = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+        /*
         Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID", Long.class)
                 .setParameter("variantID", variantID).getSingleResult();
-
+        */
         return numberOfVariants == 1L;
     }
 
