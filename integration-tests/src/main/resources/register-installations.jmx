@@ -27,6 +27,16 @@
             <stringProp name="Argument.value">088a814a-ff2b-4acf-9091-5bcd0ccece16</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="SERVER_HOST" elementType="Argument">
+            <stringProp name="Argument.name">SERVER_HOST</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CONTEXT_ROOT" elementType="Argument">
+            <stringProp name="Argument.name">CONTEXT_ROOT</stringProp>
+            <stringProp name="Argument.value">unifiedpush-server</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -60,7 +70,7 @@ vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword
       </ThreadGroup>
       <hashTree>
         <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller - register installations" enabled="true">
-          <stringProp name="IncludeController.includepath">/home/yanivn/Workspaces/C-B4-Unifiedpush/unifiedpush-server/integration-tests/src/main/resources/register-installations-fregment.jmx</stringProp>
+          <stringProp name="IncludeController.includepath">./register-installations-fregment.jmx</stringProp>
         </IncludeController>
         <hashTree/>
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
