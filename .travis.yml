@@ -9,7 +9,6 @@ notifications:
 branches:
   only:
     - master
-    - 1.0.x
 
 before_install: 
   - cat /etc/hosts # optionally check the content *before*
