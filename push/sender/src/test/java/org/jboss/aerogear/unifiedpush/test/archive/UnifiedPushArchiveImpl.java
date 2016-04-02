@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
+import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
@@ -82,7 +83,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     @Override
     public UnifiedPushArchive withMessageModel() {
-        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class)
+        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class, Priority.class)
                 .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
                 .addMavenDependencies("org.codehaus.jackson:jackson-mapper-asl");

@@ -4,6 +4,7 @@
     "sound": "default",
     "badge": 2,
     "consolidationKey": null,
+    "priority": "normal",
     "windows": {
       "type": "tile",
       "duration": null,

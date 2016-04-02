@@ -87,6 +87,22 @@ public class UnifiedPushMessageTest {
     }
 
     @Test
+    public void testPriorityMapping() throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(getClass().getResourceAsStream("/message-normal-priority.json"), UnifiedPushMessage.class).getMessage();
+        
+        assertEquals(Priority.NORMAL, message.getPriority());
+    }
+    
+    @Test
+    public void testPriorityEnumHighMapping() throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();        
+        Message message = mapper.readValue(getClass().getResourceAsStream("/message-high-priority.json"), UnifiedPushMessage.class).getMessage();
+        
+        assertEquals(Priority.HIGH, message.getPriority());
+    }
+    
+    @Test
     public void createBroadcastMessage() throws IOException {
 
         final Map<String, Object> container = new LinkedHashMap<String, Object>();
