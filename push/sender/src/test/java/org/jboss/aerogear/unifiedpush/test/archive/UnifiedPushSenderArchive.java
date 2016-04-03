@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
+import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
@@ -41,14 +42,14 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
 
     public UnifiedPushSenderArchive(Archive<?> delegate) {
         super(UnifiedPushSenderArchive.class, delegate);
- 
+
         addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
+
     public static UnifiedPushSenderArchive forTestClass(Class<?> clazz) {
         return ShrinkWrap.create(UnifiedPushSenderArchive.class, String.format("%s.war", clazz.getSimpleName()));
     }
-    
+
     public UnifiedPushSenderArchive withMessaging() {
         return withApi()
             .withUtils()
@@ -75,16 +76,16 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
     }
 
     public UnifiedPushSenderArchive withMessageModel() {
-        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class)
+        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class, Priority.class)
                 .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
                 .addMavenDependencies("org.codehaus.jackson:jackson-mapper-asl");
     }
-    
+
 	public UnifiedPushSenderArchive withAllServices() {
-		return addPackages(true, HealthNetworkService.class.getPackage()); 
+		return addPackages(true, HealthNetworkService.class.getPackage());
 	}
-	
+
     @Override
     public UnifiedPushSenderArchive withDAOs() {
         return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())

@@ -16,24 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import com.google.android.gcm.server.Constants;
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Message.Builder;
-import com.google.android.gcm.server.MulticastResult;
-import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-
-import javax.inject.Inject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +23,25 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Priority;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import com.google.android.gcm.server.Constants;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Message.Builder;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
 
 @SenderType(VariantType.ANDROID)
 public class GCMPushNotificationSender implements PushNotificationSender {
@@ -80,6 +81,15 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         gcmBuilder.addData("alert", message.getAlert());
         gcmBuilder.addData("sound", message.getSound());
         gcmBuilder.addData("badge", "" + message.getBadge());
+        /*
+        The Message defaults to a Normal priority.  High priority is used
+        by GCM to wake up devices in Doze mode as well as apps in AppStandby
+        mode.  This has no effect on devices older than Android 6.0
+        */
+        gcmBuilder.priority(message.getPriority() ==     Priority.HIGH ?
+                                                         Message.Priority.HIGH :
+                                                         Message.Priority.NORMAL
+                           );
 
         // if present, apply the time-to-live metadata:
         int ttl = pushMessage.getConfig().getTimeToLive();
@@ -129,7 +139,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
-        
+
     }
 
     /**
@@ -161,13 +171,13 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             if (errorCodeName != null) {
                 logger.info(String.format("Processing [%s] error code from GCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
             }
-            
+
             //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
             //according to gcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
             //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
-            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has 
+            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
             //been changed to this canonical id, so change it on your server side as well.
-            
+
             //check if current index of result has canonical id
             String canonicalRegId = result.getCanonicalRegistrationId();
             if (canonicalRegId != null) {
@@ -194,9 +204,9 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (GCM_ERROR_CODES.contains(errorCodeName)) {
-    
+
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
-    
+
                     // Now use the INDEX of the _that_ result object, and look
                     // for the matching registrationID inside of the List that contains
                     // _all_ the used registration IDs and store it:

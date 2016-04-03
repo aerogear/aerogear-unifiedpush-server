@@ -17,17 +17,23 @@
 package org.jboss.aerogear.unifiedpush.message;
 
 
+import static org.jboss.aerogear.unifiedpush.message.Priority.NORMAL;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.json.PriorityDeserializer;
+import org.jboss.aerogear.unifiedpush.message.json.PrioritySerializer;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * The message part of the UnifiedPush message.
+ * The message part of the Unifieh message.
  *
  * <p>
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
@@ -44,6 +50,10 @@ public class Message implements Serializable {
 
     @JsonProperty("simple-push")
     private String simplePush;
+
+    @JsonSerialize(using=PrioritySerializer.class)
+    @JsonDeserialize(using=PriorityDeserializer.class)
+    private Priority priority = NORMAL;
 
     private String consolidationKey;
 
@@ -162,12 +172,21 @@ public class Message implements Serializable {
         this.windows = windows;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
                 ", alert='" + alert + '\'' +
                 ", sound='" + sound + '\'' +
                 ", badge=" + badge +
+                ", priority=" + priority +
                 ", consolidationKey=" + consolidationKey +
                 ", user-data=" + userData +
                 ", simple-push='" + simplePush + '\'' +

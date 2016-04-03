@@ -34,9 +34,11 @@ angular.module('upsConsole')
 
           // default message
           $scope.pushData = {
+            
             'message': {
               'sound': 'default',
               'alert': '',
+              'priority':'normal',
               'simple-push': 'version=' + new Date().getTime()
             },
             'criteria' : {}
