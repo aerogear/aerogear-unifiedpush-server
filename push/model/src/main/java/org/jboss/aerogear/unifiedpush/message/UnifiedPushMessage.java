@@ -126,6 +126,7 @@ public class UnifiedPushMessage implements Serializable {
         try {
             final HashMap<String, Object> json = new LinkedHashMap<String, Object>();
             json.put("alert", this.message.getAlert());
+            json.put("priority", this.message.getPriority().toString());
             if (this.getMessage().getBadge()>0) {
                 json.put("badge", Integer.toString(this.getMessage().getBadge()));
             }

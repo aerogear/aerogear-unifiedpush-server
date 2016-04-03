@@ -10,6 +10,7 @@
     'ngAnimate',
     'ngIdle',
     'ui.bootstrap',
+    'patternfly.autofocus',
     'patternfly.notification',
     'patternfly.select',
     'angular-c3',

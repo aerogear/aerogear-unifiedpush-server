@@ -98,8 +98,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ganyo</groupId>
+            <groupId>com.google.gcm</groupId>
             <artifactId>gcm-server</artifactId>
+            <version>${gcm-server.version}</version>
         </dependency>
 
         <!-- Exclude old httpclient and make sure only one version is used -->
