@@ -13,6 +13,7 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
+import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
@@ -62,8 +63,20 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public void savePayload(PushApplication pushApplication, String alias, String payload, String qualifier, String id, boolean overwrite){
-		save(payload, pushApplication, DocumentType.APPLICATION, alias, qualifier, id, overwrite);
+	public void savePayload(PushApplication pushApplication, MessagePayload message, boolean overwrite) {
+		// Store documents according to aliases
+		if (message.getPushMessage() != null && message.getPushMessage().getCriteria() != null
+				&& message.getPushMessage().getCriteria().getAliases() != null) {
+
+			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
+				save(message.getPayload(), pushApplication, DocumentType.APPLICATION, DocumentMetadata.getAlias(alias),
+						DocumentMetadata.getQualifier(message.getQualifier()), DocumentMetadata.getId(message.getId()), overwrite);
+			}
+		// Store payload without alias
+		} else {
+			save(message.getPayload(), pushApplication, DocumentType.APPLICATION, DocumentMetadata.NULL_ALIAS,
+					DocumentMetadata.getQualifier(message.getQualifier()), DocumentMetadata.getId(message.getId()), overwrite);
+		}
 	}
 
 	@Override

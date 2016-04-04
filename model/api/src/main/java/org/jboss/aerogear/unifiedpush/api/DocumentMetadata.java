@@ -18,8 +18,17 @@ public class DocumentMetadata implements Serializable {
 		return value == null || value.equalsIgnoreCase(NULL_QUALIFIER) ? NULL_QUALIFIER : value.toUpperCase();
 	}
 
+	public static String getAlias(String value) {
+		return value == null || value.equalsIgnoreCase(NULL_ALIAS) ? NULL_ALIAS : value;
+	}
+
+	public static String getId(String value) {
+		return value == null || value.equalsIgnoreCase(NULL_ID) ? NULL_ID : value;
+	}
+
 	public static final String NULL_QUALIFIER = "NULL";
 	public static final String NULL_ALIAS = "NULL";
+	public static final String NULL_ID = "NULL";
 
 	private String id;
 	private PushApplication pushApplication;
