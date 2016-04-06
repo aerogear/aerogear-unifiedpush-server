@@ -70,7 +70,7 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
 
     @Override
     public List<String> findVariantIDsForDeveloper(String loginName) {
-        String sqlString = "db.variant.find( { 'developer' : '" + loginName + "'}, {'id' : 1} )";
+        String sqlString = "db.variant.find( { developer : '" + loginName + "'}, {'id' : 1} )";
         List<Object[]> variantsWithIds =  entityManager.createNativeQuery(sqlString).getResultList();
         List<String> variants = new ArrayList<String>();
 
@@ -96,8 +96,14 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
         }
 
         String variants = Arrays.toString(variantIDs.toArray());
-        String sqlString = "{ $query : { variantID: { $in: ['a', 'b'] }} }";
-        return createNativeQuery(sqlString).getResultList();
+
+        String sqlString = "{ $query: { _id : { $in : " + variantIDs + " } } }";
+
+        Query q = createNativeQuery(sqlString);
+        List<Variant> result = q.getResultList();
+
+
+        return result;
         /*return createQuery("select t from Variant t where t.variantID IN :variantIDs")
                 .setParameter("variantIDs", variantIDs).getResultList();*/
 

@@ -72,9 +72,12 @@ public class VariantDaoTest {
 
     @Test
     public void mongoNative() {
+
         ArrayList<String> a = new ArrayList<String>();
         a.add("a");
-       List<Variant> v = variantDao.findAllVariantsByIDs(a);
+
+        List<Variant> l = variantDao.findAllVariantsByIDs(a);
+
 
         /*Variant av = variantDao.findByVariantID("34e9fa5e-79ad-4bab-bd82-97d0ffc88e10");
         variantDao.delete(av);

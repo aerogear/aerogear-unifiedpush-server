@@ -43,7 +43,6 @@
 
 
         <properties>
-
             <property name="hibernate.ogm.datastore.provider" value="mongodb" />
             <property name="hibernate.ogm.datastore.database" value="unifiedpush" />
             <property name="hibernate.ogm.datastore.create_database" value="true" />
