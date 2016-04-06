@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
@@ -28,8 +29,18 @@ public class JPACategoryDao extends JPABaseDao<Category, Integer> implements Cat
     public List<Category> findByNames(List<String> names) {
         List<Category> categoryList = new ArrayList<Category>();
         if(!names.isEmpty()){
-            categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
-                    .setParameter("names", names).getResultList();
+            for (int i = 0; i < names.size(); i++)
+            {
+                String s = names.get(i);
+                names.set(i, "'" + s + "'");
+            }
+            String namesString = Arrays.toString(names.toArray());
+            String sqlString = "{ $query: { name : { $in : " + namesString + " } } }";
+
+            return createNativeQuery(sqlString).getResultList();
+
+            /*categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
+                    .setParameter("names", names).getResultList();*/
         }
         return categoryList;
     }

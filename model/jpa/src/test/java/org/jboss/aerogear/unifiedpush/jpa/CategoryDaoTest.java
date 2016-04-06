@@ -57,6 +57,7 @@ public class CategoryDaoTest {
         // given
         List<String> categoryNames = Arrays.asList("cat1", "cat2", "non-existing");
 
+
         // when
         final List<Category> names = categoryDao.findByNames(categoryNames);
 
