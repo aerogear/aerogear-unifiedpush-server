@@ -214,9 +214,13 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     @Override
     public long getNumberOfDevicesForVariantID(String variantId) {
-        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID = :variantId ", Long.class)
+
+        String sqlString = "db.installation.count( { 'variant_id' : '" + variantId +"'})";
+        Long numberOfInstallations = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+        return numberOfInstallations;
+        /*return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID = :variantId ", Long.class)
                 .setParameter("variantId", variantId)
-                .getSingleResult();
+                .getSingleResult();*/
     }
 
     /**
