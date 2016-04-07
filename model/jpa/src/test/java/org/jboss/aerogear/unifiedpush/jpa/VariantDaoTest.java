@@ -34,7 +34,6 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,43 +64,9 @@ public class VariantDaoTest {
     @After
     public void tearDown() {
 
-        //entityManager.getTransaction().rollback();
-        entityManager.getTransaction().commit();
+        entityManager.getTransaction().rollback();
     }
 
-
-    @Test
-    public void mongoNative() {
-
-        ArrayList<String> a = new ArrayList<String>();
-        a.add("a");
-
-        List<Variant> l = variantDao.findAllVariantsByIDs(a);
-
-
-        /*Variant av = variantDao.findByVariantID("34e9fa5e-79ad-4bab-bd82-97d0ffc88e10");
-        variantDao.delete(av);
-
-
-        Variant av = new AndroidVariant();
-        av.setDescription("muhehehehehe");
-        variantDao.create(av);
-
-        Variant av2 = new AdmVariant();
-        av2.setDescription("brmmmmm");
-        variantDao.create(av2);
-
-        Installation i = new Installation();
-        i.setVariant(av);
-        i.setAlias("muhehehehe");
-        installationDao = new JPAInstallationDao();
-        installationDao.setEntityManager(entityManager);
-
-        installationDao.create(i);
-
-
-*/
-    }
 
     @Test
     public void findVariantByIdForDeveloper() {
