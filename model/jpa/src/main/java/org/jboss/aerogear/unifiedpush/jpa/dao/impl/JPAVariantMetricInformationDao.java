@@ -20,15 +20,20 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 
+import javax.persistence.Query;
+
 
 public class JPAVariantMetricInformationDao extends JPABaseDao<VariantMetricInformation, String> implements VariantMetricInformationDao {
 
     @Override
     public VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId){
-        return getSingleResultForQuery(createQuery(
+
+        Query q = createNativeQuery("{ $query : {$and: [{ variantID: '" + variantID + "'}, { pushmessageinformationId: '" + pushmessageinformationId + "'}] } }");
+        return getSingleResultForQuery(q);
+        /*return getSingleResultForQuery(createQuery(
                 "select vmi from VariantMetricInformation vmi where vmi.variantID = :variantId and vmi.pushMessageInformation.id = :pushmessageinformationId")
                 .setParameter("variantId", variantID)
-                .setParameter("pushmessageinformationId",pushmessageinformationId));
+                .setParameter("pushmessageinformationId",pushmessageinformationId));*/
 
     }
 
