@@ -16,17 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.persistence.TypedQuery;
-
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -36,6 +25,10 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+
+import javax.persistence.TypedQuery;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -188,8 +181,23 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     @Override
     public long getNumberOfDevicesForLoginName(String loginName) {
-        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
-                .setParameter("developer", loginName).getSingleResult();
+
+        String sqlString = "db.variant.find( { 'developer' : '" + loginName + "'}, {'_id' : 1} )";
+        List<String> variantsWithIds =  entityManager.createNativeQuery(sqlString).getResultList();
+
+        for (int i = 0; i < variantsWithIds.size(); i++)
+        {
+            String s = variantsWithIds.get(i);
+            variantsWithIds.set(i, "'" + s + "'");
+        }
+
+        String variantsString = Arrays.toString(variantsWithIds.toArray());
+
+        String sqlString2 = "db.installation.count( { 'variant_id' : { '$in' : " + variantsString + " } })";
+        Long numberOfInstallations = (Long)entityManager.createNativeQuery(sqlString2).getSingleResult();
+        return numberOfInstallations;
+        /*return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
+                .setParameter("developer", loginName).getSingleResult();*/
     }
 
     @Override

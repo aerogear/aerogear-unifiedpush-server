@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
@@ -29,6 +30,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -61,9 +63,9 @@ public class InstallationDaoTest {
         return DaoDeployment.createDeployment();
     }
 
-/*    @Rule
+    @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
-*/
+
     @Before
     public void setUp() {
         entityManager.getTransaction().begin();
