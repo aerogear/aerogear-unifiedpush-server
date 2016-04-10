@@ -31,7 +31,7 @@ import java.util.Set;
 
 
 @DeviceTokenCheck
-@Entity
+@Entity(name = "installation")
 public class Installation extends BaseModel {
     private static final long serialVersionUID = 7177135979544758234L;
 

@@ -86,12 +86,17 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        return getSingleResultForQuery(createQuery("select installation from Installation installation " +
+        String sqlString = "db.installation.find({ 'variant_id' : '" + variantID + "' , 'deviceToken' : '" + deviceToken + "'})";
+
+        Installation i = getSingleResultForQuery(createNativeQuery(sqlString));
+        return i;
+
+        /*return getSingleResultForQuery(createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken")
                 .setParameter("variantID", variantID)
-                .setParameter("deviceToken", deviceToken));
+                .setParameter("deviceToken", deviceToken));*/
     }
 
     @Override
@@ -208,8 +213,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     //Admin query
     @Override
     public long getTotalNumberOfDevices() {
-        return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ", Long.class)
-                .getSingleResult();
+        String sqlString = "db.installation.count( {})";
+        Long numberOfInstallations = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+        return numberOfInstallations;
+        /*return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t) ", Long.class)
+                .getSingleResult();*/
     }
 
     @Override

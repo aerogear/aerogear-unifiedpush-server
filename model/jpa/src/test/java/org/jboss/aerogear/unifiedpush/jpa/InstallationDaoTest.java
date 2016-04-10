@@ -73,8 +73,19 @@ public class InstallationDaoTest {
 
     @After
     public void tearDown() {
-        entityManager.getTransaction().rollback();
+
+        //entityManager.getTransaction().rollback();
+        entityManager.getTransaction().commit();
     }
+
+    @Test
+    public void test() {
+
+        Installation one = installationDao.findInstallationForVariantByDeviceToken("1", "APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUyWlixrIta35NXW");
+        assertThat(one.getDeviceToken()).isEqualTo("APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUyWlixrIta35NXW");
+    }
+
+
 
     @Test
     public void countDevicesForLoginName() {
