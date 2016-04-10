@@ -66,18 +66,30 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	 * Overwrites existing categories and properties of the push application
 	 * with the given data
 	 *
-	 * @param pushApplicationID
-	 *            id of {@linkplain PushApplication}
 	 * @param categoryData
 	 *            map from category name to its list of property names
 	 */
+	@POST
+	@Path("/aliases")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response updateAliases(List<String> aliasData, @Context HttpServletRequest request) {
+		return aliasesUpdate(aliasData, request);
+	}
+
 	@POST
 	@Path("/{pushAppID}/aliases")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
 	public Response updateAliases(@PathParam("pushAppID") String pushApplicationID, List<String> aliasData,
 			@Context HttpServletRequest request) {
+		return aliasesUpdate(aliasData, request);
+	}
+
+	private Response aliasesUpdate(List<String> aliasData, @Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
@@ -95,13 +107,30 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	}
 
 	@GET
+	@Path("/document/{qualifier}/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces("multipart/form-data")
+	@PartType(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response retrieveDocumentsForPushApp(@PathParam("qualifier") String qualifer, @PathParam("id") String id,
+			@Context HttpServletRequest request) {
+		return getDocumentsForPushApp(qualifer, id, request);
+	}
+
+	@GET
 	@Path("/{pushAppID}/document/{qualifier}/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("multipart/form-data")
 	@PartType(MediaType.TEXT_PLAIN)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
 			@PathParam("qualifier") String qualifer, @PathParam("id") String id,
+			@Context HttpServletRequest request) {
+		return getDocumentsForPushApp(qualifer, id, request);
+	}
+
+	public Response getDocumentsForPushApp(@PathParam("qualifier") String qualifer, @PathParam("id") String id,
 			@Context HttpServletRequest request) {
 		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
 
@@ -123,6 +152,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
 
 	/**
 	 * POST deploys a file and stores it for later retrieval by a client of the

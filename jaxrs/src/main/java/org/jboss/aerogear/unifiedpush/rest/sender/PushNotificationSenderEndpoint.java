@@ -178,7 +178,8 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 				for (MessagePayload payload : payloadRequest.getPayloads()) {
 					documentService.savePayload(pushApplication, payload, override);
 
-					if (payload.getPushMessage() != null && payload.getPushMessage().getMessage() !=null){
+					// Send push message only if alert exists
+					if (payload.getPushMessage() != null && payload.getPushMessage().getMessage() != null && payload.getPushMessage().getMessage().getAlert() != null){
 						push(payload.getPushMessage(), pushApplication, request);
 					}
 				}

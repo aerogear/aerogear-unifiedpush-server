@@ -71,15 +71,34 @@ public class DocumentEndpoint extends AbstractEndpoint {
      * POST deploys a file and stores it for later retrieval by the push application
      * of the client.
      */
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{alias}/{qualifier}{id : (/[^/]+?)?}")
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response newDocument(String entity, @PathParam("alias") String alias,
+			@PathParam("qualifier") String qualifier, @PathParam("id") String id,
+			@Context HttpServletRequest request) {
+
+		// Store new document according to path params.
+		// If document exists a newer version will be stored.
+		return deployDocument(entity, alias, qualifier, id, false, request);
+	}
+
+	/**
+	 * @Deprecated - publisher is always INSTALLATION for device documents.
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{publisher}/{alias}/{qualifier}{id : (/[^/]+?)?}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
 	public Response newDocument(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
 			@PathParam("id") String id,
-			@Deprecated @DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
+			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
 			@Context HttpServletRequest request) {
 
 		// Overwrite is @Deprecated, this method should always use overwrite false - will be removed on 1.3.0
@@ -88,14 +107,31 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
-		return deployDocument(entity, publisher, alias, qualifier, id, overwrite, request);
+		return deployDocument(entity, alias, qualifier, id, overwrite, request);
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{alias}/{qualifier}{id : (/[^/]+?)?}")
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response storeDocument(String entity, @PathParam("alias") String alias,
+			@PathParam("qualifier") String qualifier, @PathParam("id") String id, @Context HttpServletRequest request) {
+
+		// Store new document according to path params.
+		// If document exists update stored version.
+		return deployDocument(entity, alias, qualifier, id, true, request);
+	}
+
+	/**
+	 * @Deprecated - publisher is always INSTALLATION for device documents.
+	 */
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{publisher}/{alias}/{qualifier}{id : (/[^/]+?)?}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
 	public Response storeDocument(String entity, @PathParam("publisher") String publisher,
 			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
 			@PathParam("id") String id,
@@ -103,11 +139,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Store new document according to path params.
 		// If document exists update stored version.
-		return deployDocument(entity, publisher, alias, qualifier, id, true, request);
+		return deployDocument(entity, alias, qualifier, id, true, request);
 	}
 
-	private Response deployDocument(String entity, String publisher,String alias, String qualifier,
-			String id, boolean overwrite, HttpServletRequest request) {
+	private Response deployDocument(String entity, String alias, String qualifier, String id, boolean overwrite,
+			HttpServletRequest request) {
 
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
 				clientInstallationService, request);
