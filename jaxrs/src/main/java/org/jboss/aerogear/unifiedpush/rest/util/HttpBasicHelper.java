@@ -16,19 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import net.iharder.Base64;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 
 public final class HttpBasicHelper {
+
+    private static final String HTTP_BASIC_SCHEME = "Basic ";
 
     private HttpBasicHelper() {
     }
 
     private static boolean isBasic(String authorizationHeader) {
-        return authorizationHeader.startsWith("Basic ");
+        return authorizationHeader.startsWith(HTTP_BASIC_SCHEME);
     }
 
     private static String getAuthorizationHeader(HttpServletRequest request) {
@@ -41,13 +43,8 @@ public final class HttpBasicHelper {
         String authorizationHeader = getAuthorizationHeader(request);
 
         if (authorizationHeader != null && isBasic(authorizationHeader)) {
-            String base64Token = authorizationHeader.substring(6);
-            String token = "";
-            try {
-                token = new String(Base64.decode(base64Token));
-            } catch (IOException e) {
-                //
-            }
+            final String base64Token = authorizationHeader.substring(HTTP_BASIC_SCHEME.length());
+            final String token = new String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8);
 
             int delimiter = token.indexOf(':');
 
