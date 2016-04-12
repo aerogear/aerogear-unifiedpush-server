@@ -65,7 +65,7 @@ public class SenderEndpointTest extends RestEndpointTest {
 		try {
 			// First prepare push message with large payload
 			DocumentDeployMessage message = new DocumentDeployMessage();
-			message.setGlobalPayload(new MessagePayload(null, "{TEST}"));
+			message.addPayload(new MessagePayload(null, "{TEST}"));
 
 			ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/sender/payload");
 			Response response = target.request().post(Entity.entity(message, MediaType.APPLICATION_JSON_TYPE));

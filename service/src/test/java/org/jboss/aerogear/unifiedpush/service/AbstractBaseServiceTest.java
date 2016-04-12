@@ -61,6 +61,7 @@ public abstract class AbstractBaseServiceTest {
 		return UnifiedPushServiceArchive
 				.forTestClass(AbstractBaseServiceTest.class)
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
+				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-model")
 				.addMavenDependencies("commons-io:commons-io")
 				.addMavenDependencies("org.keycloak:keycloak-core")
 				.addPackages(true, Configuration.class.getPackage())

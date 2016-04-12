@@ -127,7 +127,7 @@ vars.put(&quot;IOS_TOKENID&quot;, generator( ((&apos;a&apos;..&apos;f&apos;)+(&a
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/${CONTEXT_ROOT}r/rest/registry/device</stringProp>
+            <stringProp name="HTTPSampler.path">/${CONTEXT_ROOT}/rest/registry/device</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

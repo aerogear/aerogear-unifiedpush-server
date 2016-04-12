@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -30,7 +28,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.document.DocumentDeployMessage;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
@@ -175,37 +172,19 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 		}
 
 		try {
-			// Save aliases payload
-			if (payloadRequest.getAliasPayload() != null && !payloadRequest.getAliasPayload().isEmpty()) {
-				boolean pushGlobalMessage = false;
+			// Save payload for aliases
+			if (payloadRequest.getPayloads() != null && !payloadRequest.getPayloads().isEmpty()) {
 
-				if (payloadRequest.getGlobalPayload() != null && payloadRequest.getGlobalPayload().getPushMessage() != null)
-					pushGlobalMessage = true;
+				for (MessagePayload payload : payloadRequest.getPayloads()) {
+					documentService.savePayload(pushApplication, payload, override);
 
-				for (Map.Entry<String, MessagePayload> entry : payloadRequest.getAliasPayload().entrySet()) {
-					documentService.savePayload(pushApplication, entry.getKey(), entry.getValue().getPayload(),
-							DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, override);
-
-					// Push notification
-					if (!pushGlobalMessage) {
-						push(entry.getValue().getPushMessage(), pushApplication, request);
+					// Send push message only if alert exists
+					if (payload.getPushMessage() != null && payload.getPushMessage().getMessage() != null && payload.getPushMessage().getMessage().getAlert() != null){
+						push(payload.getPushMessage(), pushApplication, request);
 					}
 				}
 			}
 
-			// Save global payload
-			if (payloadRequest.getGlobalPayload() != null && payloadRequest.getGlobalPayload().getPayload() != null
-					&& payloadRequest.getGlobalPayload().getPayload().length() != 0) {
-
-				documentService.savePayload(pushApplication, DocumentMetadata.NULL_ALIAS,
-						payloadRequest.getGlobalPayload().getPayload(),
-						DocumentMetadata.getQualifier(payloadRequest.getQualifier()), null, override);
-			}
-
-			// Send global push
-			if (payloadRequest.getGlobalPayload().getPushMessage() != null) {
-				push(payloadRequest.getGlobalPayload().getPushMessage(), pushApplication, request);
-			}
 		} catch (Exception e) {
 			logger.severe("Cannot store payload and send notification", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();

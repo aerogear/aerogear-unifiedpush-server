@@ -3,10 +3,8 @@ package org.jboss.aerogear.unifiedpush.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -16,6 +14,8 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.document.MessagePayload;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -80,7 +80,9 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
 			// Save alias should return without saving, device is not enabled.
-			documentService.savePayload(pushApplication, DEFAULT_DEVICE_ALIAS, "{TEST JSON}" , DEFAULT_DEVICE_QUALIFIER, null, false);
+			MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
+					"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+			documentService.savePayload(pushApplication, msgPayload, false);
 			String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
 					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
@@ -90,7 +92,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			// Re-save device
-			documentService.savePayload(pushApplication, DEFAULT_DEVICE_ALIAS, "{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, null, false);
+			documentService.savePayload(pushApplication, msgPayload, false);
 			document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
 					DEFAULT_DEVICE_QUALIFIER);
 
@@ -117,8 +119,11 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
+		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
+				"{TEST JSON NEWEST}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+
 		// Save alias should return without saving, device is not enabled.
-		documentService.savePayload(pushApplication,  DEFAULT_DEVICE_ALIAS, "{TEST JSON NEWEST}", DEFAULT_DEVICE_QUALIFIER, null, false);
+		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
 				DEFAULT_DEVICE_QUALIFIER);
 
@@ -131,8 +136,11 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
+		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DocumentMetadata.NULL_ALIAS),
+				"{TEST JSON NULL_ALIAS}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+
 		// Save alias should return without saving, device is not enabled.
-		documentService.savePayload(pushApplication,  DocumentMetadata.NULL_ALIAS, "{TEST JSON NULL_ALIAS}", DEFAULT_DEVICE_QUALIFIER, null, false);
+		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DocumentMetadata.NULL_ALIAS,
 				DEFAULT_DEVICE_QUALIFIER);
 
@@ -162,8 +170,11 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
+		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
+				"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+
 		// Save alias should return without saving, divice is not emabled.
-		documentService.savePayload(pushApplication, DEFAULT_DEVICE_ALIAS, "{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, null, false);
+		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
 				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
@@ -192,20 +203,19 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
-		Map<String, String> aliasToDocuments = new HashMap<String, String>();
-		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON}");
+		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
+				"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
 
 		// Save once
-		documentService.savePayload(pushApplication, DEFAULT_DEVICE_ALIAS, "{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, null, true);
+		documentService.savePayload(pushApplication, msgPayload, true);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
 				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 
-		aliasToDocuments.put(DEFAULT_DEVICE_ALIAS, "{TEST JSON 2}");
-
+		msgPayload.setPayload("{TEST JSON 2}");
 		// save 2nd time and check that it was overwritten
-		documentService.savePayload(pushApplication, DEFAULT_DEVICE_ALIAS, "{TEST JSON 2}", DEFAULT_DEVICE_QUALIFIER, null, true);
+		documentService.savePayload(pushApplication, msgPayload, true);
 		document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
 				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
 
