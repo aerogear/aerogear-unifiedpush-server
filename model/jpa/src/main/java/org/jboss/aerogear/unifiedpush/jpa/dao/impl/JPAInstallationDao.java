@@ -86,7 +86,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        String sqlString = "db.installation.find({ 'variant_id' : '" + variantID + "' , 'deviceToken' : '" + deviceToken + "'})";
+        String sqlString = String.format("db.installation.find({ 'variant_id' : '%s' , 'deviceToken' : '%s'})", variantID, deviceToken);
 
         Installation i = getSingleResultForQuery(createNativeQuery(sqlString));
         return i;
