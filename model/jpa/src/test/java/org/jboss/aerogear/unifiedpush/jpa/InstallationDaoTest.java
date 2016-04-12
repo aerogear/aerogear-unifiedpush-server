@@ -80,10 +80,12 @@ public class InstallationDaoTest {
 
     @Test
     public void test() {
-
-        Installation one = installationDao.findInstallationForVariantByDeviceToken("1", "APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUyWlixrIta35NXW");
-        assertThat(one.getDeviceToken()).isEqualTo("APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUyWlixrIta35NXW");
-    }
+        final Set<String> tokenz = new HashSet<String>();
+        tokenz.add(DEVICE_TOKEN_1);
+        tokenz.add("foobar223");
+        List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+        assertThat(list).hasSize(1);
+  }
 
 
 

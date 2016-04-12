@@ -107,13 +107,31 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             return Collections.emptyList();
         }
 
-        return createQuery("select installation from Installation installation " +
+        StringBuilder dT = new StringBuilder("[");
+        Iterator<String> iter = deviceTokens.iterator();
+
+        while (iter.hasNext()) {
+            dT.append("'")
+            .append(iter.next())
+            .append("'");
+
+            if (iter.hasNext())
+                dT.append(",");
+        }
+        dT.append("]");
+
+        String dTs = dT.toString();
+
+        String sqlString =  String.format("{ $query : { 'variant_id' : '%s' , 'deviceToken' : { $in : %s} } }", variantID, dTs);
+        return createNativeQuery(sqlString).getResultList();
+
+        /*return createQuery("select installation from Installation installation " +
                 " join installation.variant abstractVariant " +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)
-                .getResultList();
+                .getResultList();*/
     }
 
 
