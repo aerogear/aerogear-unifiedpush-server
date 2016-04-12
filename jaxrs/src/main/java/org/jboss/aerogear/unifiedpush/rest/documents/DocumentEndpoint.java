@@ -123,25 +123,6 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		return deployDocument(entity, alias, qualifier, id, true, request);
 	}
 
-	/**
-	 * @Deprecated - publisher is always INSTALLATION for device documents.
-	 */
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{publisher}/{alias}/{qualifier}{id : (/[^/]+?)?}")
-	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	@Deprecated
-	public Response storeDocument(String entity, @PathParam("publisher") String publisher,
-			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
-			@PathParam("id") String id,
-			@Context HttpServletRequest request) {
-
-		// Store new document according to path params.
-		// If document exists update stored version.
-		return deployDocument(entity, alias, qualifier, id, true, request);
-	}
-
 	private Response deployDocument(String entity, String alias, String qualifier, String id, boolean overwrite,
 			HttpServletRequest request) {
 
