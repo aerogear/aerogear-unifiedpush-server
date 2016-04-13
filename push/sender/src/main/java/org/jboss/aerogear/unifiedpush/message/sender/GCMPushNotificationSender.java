@@ -83,10 +83,11 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         gcmBuilder.addData("badge", "" + message.getBadge());
         /*
         The Message defaults to a Normal priority.  High priority is used
+
         by GCM to wake up devices in Doze mode as well as apps in AppStandby
         mode.  This has no effect on devices older than Android 6.0
         */
-        gcmBuilder.priority(message.getPriority() ==     Priority.HIGH ?
+        gcmBuilder.priority(message.getPriority() == Priority.HIGH ?
                                                          Message.Priority.HIGH :
                                                          Message.Priority.NORMAL
                            );
@@ -139,7 +140,6 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
-
     }
 
     /**
@@ -206,7 +206,6 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                 if (GCM_ERROR_CODES.contains(errorCodeName)) {
 
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
-
                     // Now use the INDEX of the _that_ result object, and look
                     // for the matching registrationID inside of the List that contains
                     // _all_ the used registration IDs and store it:

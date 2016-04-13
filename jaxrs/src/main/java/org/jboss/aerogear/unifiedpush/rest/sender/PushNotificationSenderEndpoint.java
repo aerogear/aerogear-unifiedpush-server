@@ -45,6 +45,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 
+
 @Path("/sender")
 public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
@@ -59,7 +60,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
     /**
      * RESTful API for sending Push Notifications.
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>PushApplicationID:masterSecret</code>).
-     * <p/><p/>
+     * <p>
      *
      * Messages are submitted as flexible JSON maps. Below is a simple example:
      * <pre>
@@ -78,10 +79,9 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
      * </pre>
      *
      * Details about the Message Format can be found HERE!
+     * <p>
      *
-     * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
-     * @HTTP 401 (Unauthorized) The request requires authentication.
-     * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     * <b>Request Header</b> {@code aerogear-sender} uses to identify the used client. If the header is not present, the standard "user-agent" header is used.
      *
      * @param message   message to send
      * @return          empty JSON body

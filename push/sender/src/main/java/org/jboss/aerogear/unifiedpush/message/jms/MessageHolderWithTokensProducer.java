@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.annotation.Resource;
-import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
@@ -31,7 +30,6 @@ import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
  *
  * This bean serves as mediator for decoupling of JMS subsystem and services that triggers these messages.
  */
-@Stateless
 public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer {
 
     @Inject

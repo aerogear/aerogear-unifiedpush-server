@@ -27,8 +27,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 /**
  *
  * Class for serializing Priority enums.
- *
- * @author Summers Pittman
  */
 public final class PrioritySerializer extends JsonSerializer<Priority> {
 
@@ -36,5 +34,4 @@ public final class PrioritySerializer extends JsonSerializer<Priority> {
     public void serialize(Priority value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         jgen.writeString(value.toString());
     }
-
 }

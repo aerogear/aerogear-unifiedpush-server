@@ -60,6 +60,7 @@ public abstract class AbstractBaseServiceTest {
 	public static WebArchive archive() {
 		return UnifiedPushServiceArchive
 				.forTestClass(AbstractBaseServiceTest.class)
+				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-common")
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-model")
 				.addMavenDependencies("commons-io:commons-io")

@@ -30,7 +30,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
 
-public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
+public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
@@ -42,7 +42,7 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
 
     @Override
     protected void specificSetup() {
-         pushMessageInformation =
+        pushMessageInformation =
                 pushMessageMetricsService.storeNewRequestFrom(
                         "123",
                         "hello",
@@ -60,13 +60,13 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     public void updateAnalyticsTest() {
-        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(), "321");
         PushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation.getAppOpenCounter()).isEqualTo(1);
         VariantMetricInformation updatedVariantMetric = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
         assertThat(updatedVariantMetric.getVariantOpenCounter()).isEqualTo(1);
 
-        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(), "321");
         PushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
         VariantMetricInformation updatedVariantMetric1 = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
@@ -74,4 +74,17 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
 
     }
 
+    @Test
+    public void deleteAnalyticsTest() {
+
+        assertThat(pushMessageMetricsService.countMessagesForVariant("321")).isEqualTo(1);
+
+        System.setProperty(PushMessageMetricsService.AEROGEAR_METRICS_STORAGE_MAX_DAYS, "0");
+
+        // delete all
+        pushMessageMetricsService.deleteOutdatedPushInformationData();
+
+        assertThat(pushMessageMetricsService.countMessagesForVariant("321")).isZero();
+
+    }
 }

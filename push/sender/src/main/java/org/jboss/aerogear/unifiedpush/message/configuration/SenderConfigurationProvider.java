@@ -21,7 +21,7 @@ import javax.enterprise.inject.Produces;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
-import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**

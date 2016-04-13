@@ -338,7 +338,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         device.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device);
-
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
 
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);

@@ -35,5 +35,4 @@ public final class PriorityDeserializer extends JsonDeserializer<Priority> {
     public Priority deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         return Priority.valueOf(jp.getText().toUpperCase());
     }
-
 }

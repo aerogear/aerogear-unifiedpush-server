@@ -67,16 +67,6 @@
 	</repositories>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.jboss.as.plugins</groupId>
-					<artifactId>jboss-as-maven-plugin</artifactId>
-					<version>${jboss-as-maven-plugin.version}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<resources>
 			<resource>
 				<!-- no need to include the database modules -->

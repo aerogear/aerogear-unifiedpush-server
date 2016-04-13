@@ -54,6 +54,8 @@ public class SenderConfiguration {
      * UPS splits device tokens loaded from database into batches and loads at most {@link #batchesToLoad()} in one transaction.
      *
      * This avoids long transactions and enables fail-over procedures.
+     *
+     * @return the number of batches to load
      */
     public int batchesToLoad() {
         return batchesToLoad;
@@ -74,6 +76,8 @@ public class SenderConfiguration {
      *
      * One device token theoretically requires 2 * (upper-bound limit of its length) bytes of memory.
      * The minimum or maximum lengths of specific push networks are partially listed in {@link DeviceTokenValidator}.
+     *
+     * @return the size (number of device tokens) of the batch
      */
     public int batchSize() {
         return batchSize;
@@ -87,6 +91,8 @@ public class SenderConfiguration {
      * This is a derived property, computed as a product of {@link #batchesToLoad()} and {@link #batchSize()}.
      *
      * It configures how many tokens will be loaded in one token-loading transaction.
+     *
+     * @return int value, computed as a product of {@link #batchesToLoad()} and {@link #batchSize()}.
      */
     public int tokensToLoad() {
         return batchesToLoad * batchSize;

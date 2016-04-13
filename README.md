@@ -40,6 +40,21 @@ Now go to ``http://localhost/unifiedpush-server`` and enjoy the UnifiedPush Serv
 __NOTE:__ the default user/password is ```admin```:```123```
 
 
+#### Getting Started with Clustered Servers
+
+In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
+
+And in a second terminal
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
+
+Note: on OS X, you need to enable multicast first:
+
+    # Adds a multicast route for 224.0.0.1-231.255.255.254
+    sudo route add -net 224.0.0.0/5 127.0.0.1
+    
 ## Docker-Compose
 
 For your convenience, we do have an easy way of launch with our [Docker compose file](docker-compose)
@@ -82,6 +97,11 @@ The Chrome Packaged App Variant will be removed.  Google has deprecated the [chr
 This change allows the UnifiedPush Server to now use the Android Variant for both Android and Chrome Apps.
 
 If you are using this functionality, please convert your applications to use the new API and recreate your variants.
+
+
+## How to develop and run tests
+
+There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS.md)
 
 ## Found a bug?
 

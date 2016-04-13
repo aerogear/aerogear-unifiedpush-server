@@ -159,6 +159,10 @@
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
                 </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>15</activation-config-property-value>
+                </activation-config-property>
             </activation-config>
         </message-driven>
         <message-driven>
@@ -177,6 +181,10 @@
                 <activation-config-property>
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>10</activation-config-property-value>
                 </activation-config-property>
             </activation-config>
         </message-driven>
@@ -197,6 +205,10 @@
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
                 </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>15</activation-config-property-value>
+                </activation-config-property>
             </activation-config>
         </message-driven>
         <message-driven>
@@ -215,6 +227,10 @@
                 <activation-config-property>
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>15</activation-config-property-value>
                 </activation-config-property>
             </activation-config>
         </message-driven>
@@ -235,6 +251,10 @@
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
                 </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>15</activation-config-property-value>
+                </activation-config-property>
             </activation-config>
         </message-driven>
         <message-driven>
@@ -253,6 +273,10 @@
                 <activation-config-property>
                     <activation-config-property-name>acknowledgeMode</activation-config-property-name>
                     <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>maxSession</activation-config-property-name>
+                    <activation-config-property-value>15</activation-config-property-value>
                 </activation-config-property>
             </activation-config>
         </message-driven>

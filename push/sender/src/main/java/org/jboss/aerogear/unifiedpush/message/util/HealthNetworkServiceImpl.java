@@ -34,8 +34,8 @@ import java.util.concurrent.Future;
 
 import static org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
 import static org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
 /**
  * Checks the health of the push networks.

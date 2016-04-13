@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+
 /**
  * The message part of the Unifieh message.
  *
@@ -54,7 +55,6 @@ public class Message implements Serializable {
     @JsonSerialize(using=PrioritySerializer.class)
     @JsonDeserialize(using=PriorityDeserializer.class)
     private Priority priority = NORMAL;
-
     private String consolidationKey;
 
     private Windows windows = new Windows();
