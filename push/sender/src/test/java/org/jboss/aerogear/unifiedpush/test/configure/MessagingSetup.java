@@ -48,7 +48,7 @@ public class MessagingSetup {
     public void setupMessaging(@Observes AfterStart event) throws IOException, CommandFailedException, InterruptedException, TimeoutException {
         final OnlineManagementClient client = createClient();
         managementClient.set(client);
-        client.apply(new CliFile(new File("../../configuration/jms-setup-wildfly.cli")));
+        client.apply(new CliFile(new File("src/test/resources/jms-setup-wildfly.cli").getAbsoluteFile()));
 
         Administration administration = new Administration(client);
         administration.reloadIfRequired();

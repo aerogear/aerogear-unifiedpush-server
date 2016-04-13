@@ -26,11 +26,9 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@Ignore
 @RunWith(Arquillian.class)
 public class SenderEndpointTest extends RestEndpointTest {
 	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
@@ -48,8 +46,9 @@ public class SenderEndpointTest extends RestEndpointTest {
 				.addPackage(PushNotificationSenderEndpoint.class.getPackage())
 				.addPackage(ClientAuthHelper.class.getPackage())
 				.addClasses(RestEndpointTest.class, RestApplication.class)
-				.addAsWebInfResource("jboss-ejb3-message-holder-with-tokens.xml", "jboss-ejb3.xml")
-				.addAsWebInfResource("hornetq-jms.xml").addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
+				.addAsWebInfResource("jms-cleanup-wildfly.cli")
+				.addAsWebInfResource("jms-setup-wildfly.cli")
+				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
 				.addAsResource("test.properties", "default.properties").as(WebArchive.class);
 	}
 
