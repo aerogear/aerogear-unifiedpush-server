@@ -141,7 +141,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		try {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
 			documentService.saveForPushApplication(pushApp, alias, entity,
-					DocumentMetadata.getQualifier(qualifier), id, overwrite);
+					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.severe("Cannot deploy file for push application", e);
