@@ -93,7 +93,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// get document @Path("/{publisher}/{alias}/{qualifier}/latest")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
-					+ newInstallation.getAlias() + "/STATUS/json/latest");
+					+ newInstallation.getAlias() + "/STATUS/null/latest");
 
 			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
@@ -101,7 +101,61 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			Assert.assertTrue(response.getStatus() == 200);
 
 			Installation getinst = response.readEntity(Installation.class);
-			Assert.assertTrue(getinst.isEnabled());
+			Assert.assertTrue(getinst.getAlias().equals(DEFAULT_DEVICE_ALIAS));
+
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+
+	@Test
+	@RunAsClient
+	public void updateDocument(@ArquillianResource URL deploymentUrl) {
+		Installation iosInstallation = getDefaultInstallation();
+
+		ResteasyClient client = new ResteasyClientBuilder()
+				.register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+
+		// First register installation
+		try {
+			ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
+			Response response = target.request().post(Entity.entity(iosInstallation, MediaType.APPLICATION_JSON_TYPE));
+			Installation newInstallation = response.readEntity(Installation.class);
+			newInstallation.setOperatingSystem("XXX");
+
+			Assert.assertTrue(response.getStatus() == 200);
+			Assert.assertTrue(newInstallation.isEnabled());
+
+			// Store document @Path("/{alias}/{qualifier}{id}")
+			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/"
+					+ newInstallation.getAlias() + "/STATUS/55");
+
+			// Documents registration is async, lets wait a while
+			Thread.sleep(500);
+
+			response = target.request()
+					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
+							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
+					.put(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
+
+			if (response.getStatus() != 200) {
+				Assert.fail("Response status was " + response.getStatus());
+			}
+
+			response.close();
+
+			// get document @Path("/{alias}/{qualifier}/latest")
+			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
+					+ newInstallation.getAlias() + "/STATUS/55/latest");
+
+			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
+					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
+
+			Assert.assertTrue(response.getStatus() == 200);
+
+			Installation getinst = response.readEntity(Installation.class);
+			Assert.assertTrue(getinst.getOperatingSystem().equals("XXX"));
 
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());

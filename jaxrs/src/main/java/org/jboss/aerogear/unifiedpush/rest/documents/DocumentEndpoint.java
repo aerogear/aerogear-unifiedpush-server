@@ -168,8 +168,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		}
 
 		try {
-			String document = documentService.getLatestDocumentForAlias(variant, DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier));
-			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING: document).build();
+			String document = documentService.getLatestDocumentForAlias(variant,
+					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
+					DocumentMetadata.NULL_ID);
+			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -179,14 +181,15 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	/**
 	 * Get latest (last-updated) document according to path parameters </br>
 	 * <b>Examples:</b></br>
-	 * <li>document/application/17327572923/test/json/latest - alias specific document
-	 * <li>document/application/null/test/json/latest - global scope document (for any alias).
+	 * <li>/document/application/17327572923/test/1/latest - alias specific document
+	 * <li>/document/application/null/test/1/latest - global scope document (for any alias).
+	 * <li>/document/application/null/test/null/latest - global scope document (for any alias).
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{publisher}/{alias}/{qualifier}/json/latest")
+	@Path("/{publisher}/{alias}/{qualifier}/{id}/latest")
 	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier, @Context HttpServletRequest request) {
+			@PathParam("qualifier") String qualifier, @PathParam("id") String id, @Context HttpServletRequest request) {
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
 				clientInstallationService, request);
 		if (variant == null) {
@@ -194,8 +197,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		}
 
 		try {
-			String document = documentService.getLatestDocumentForAlias(variant, DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier));
-			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING: document).build();
+			String document = documentService.getLatestDocumentForAlias(variant,
+					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
+					DocumentMetadata.getId(id));
+			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();

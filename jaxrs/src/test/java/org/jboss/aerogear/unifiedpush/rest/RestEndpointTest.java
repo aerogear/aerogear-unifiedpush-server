@@ -9,6 +9,7 @@ public abstract class RestEndpointTest {
 	protected static final String  DEFAULT_DEVICE_TOKEN = "c5106a4e97ecc8b8ab8448c2ebccbfa25938c0f9a631f96eb2dd5f16f0bedc40";
 	protected static final String  DEFAULT_APP_ID = "7385c294-2003-4abf-83f6-29a27415326b";
 	protected static final String  DEFAULT_APP_PASS = "1f73558f-d01b-48d7-9f6a-fc5d0ec6da51";
+	protected static final String  DEFAULT_DEVICE_ALIAS = "17327572923";
 
 
 	protected static Installation getDefaultInstallation(){
@@ -17,7 +18,7 @@ public abstract class RestEndpointTest {
     	iosInstallation.setDeviceToken(DEFAULT_DEVICE_TOKEN);
     	iosInstallation.setOperatingSystem("iOS");
     	iosInstallation.setOsVersion("9.0.2");
-    	iosInstallation.setAlias("17327572923");
+    	iosInstallation.setAlias(DEFAULT_DEVICE_ALIAS);
 
     	return iosInstallation;
 	}
