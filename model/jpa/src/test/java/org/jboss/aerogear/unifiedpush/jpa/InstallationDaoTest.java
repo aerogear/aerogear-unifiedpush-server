@@ -80,11 +80,11 @@ public class InstallationDaoTest {
 
     @Test
     public void test() {
-        final Set<String> tokenz = new HashSet<String>();
-        tokenz.add(DEVICE_TOKEN_1);
-        tokenz.add("foobar223");
-        List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).hasSize(1);
+        installationDao.findInstallationsByVariantForDeveloper("1","admin", new Integer(0) , new Integer(5) , "abc");
+        /*Installation i = new Installation();
+        i.setEnabled(true);
+        entityManager.persist(i);*/
+
   }
 
 

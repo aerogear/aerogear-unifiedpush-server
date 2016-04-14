@@ -44,6 +44,54 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
 
 
+        StringBuilder qBase = new StringBuilder("{ $query : { 'variant_id' : '%s' ");
+
+        ArrayList<String> parameters = new ArrayList<String>();
+        parameters.add(variantID);
+
+        if (developer != null) {
+            // fetch developer from variant
+            // compare if it equals to variantID
+            String qString = String.format("db.variant.count( {'_id': '%s', 'developer' : '%s'})",variantID,developer);
+            long devs = (Long) entityManager.createNativeQuery(qString).getSingleResult();
+
+            if (devs == 0)
+            {
+                return new PageResult<Installation, Count>(new ArrayList<Installation>(), new Count(0L));
+            }
+
+        }
+        if (search != null) {
+            qBase.append(", $or: [ " +
+                    "{ 'deviceToken' : {'$regex': '%s'} }," +
+                    " { 'deviceType' : {'$regex': '%s'} }," +
+                    " { 'platform' : {'$regex': '%s'} }," +
+                    " { 'operatingSystem' : {'$regex': '%s'} }," +
+                    " { 'osVersion' : {'$regex': '%s'} }," +
+                    " { 'alias' : {'$regex': '%s'} }" +
+                    " ]");
+            parameters.add(search);
+            parameters.add(search);
+            parameters.add(search);
+            parameters.add(search);
+            parameters.add(search);
+            parameters.add(search);
+
+            //parameters.put("search", "%" + search + "%");
+        }
+        qBase.append("} , $orderby: { _id : 1 } }");
+        String sqlString = String.format(qBase.toString(), parameters.toArray());
+
+
+        List<Installation> resultList = createNativeQuery(sqlString)
+                .setFirstResult(page * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+        Long count = Long.valueOf(createNativeQuery(sqlString).getResultList().size());
+
+        return new PageResult<Installation, Count>(resultList, new Count(count));
+
+        /*
         final StringBuilder jpqlBase = new StringBuilder(FIND_INSTALLATIONS);
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("variantID", variantID);
@@ -69,6 +117,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         Long count = setParameters(countQuery, parameters).getSingleResult();
 
         return new PageResult<Installation, Count>(resultList, new Count(count));
+        */
     }
 
     private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
@@ -138,9 +187,24 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     @Override
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
-        TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
-        query.setParameter("variantID", variantID);
-        return new HashSet<String>(query.getResultList());
+
+        String sqlString = String.format("{ $query :  { 'variant_id' : '%s', 'enabled' : true} }, {deviceToken: 1}", variantID);
+
+        //TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
+        //query.setParameter("variantID", variantID);
+
+        // possible bottleneck, ogm doesnt allow to fetch just part of document
+        List<Installation> installationList = createNativeQuery(sqlString).getResultList();
+
+        HashSet<String> result = new HashSet<String>();
+
+        for(Installation i : installationList)
+        {
+            result.add(i.getDeviceToken());
+        }
+
+
+        return result;
     }
 
     @Override

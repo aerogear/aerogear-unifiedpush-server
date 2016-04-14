@@ -50,6 +50,7 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     }
 
 
+
     protected Query createUntypedQuery(String jpql) {
         return entityManager.createQuery(jpql);
     }
