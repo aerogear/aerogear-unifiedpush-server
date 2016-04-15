@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -28,12 +27,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +60,39 @@ public class PushApplicationDaoTest {
 
     @After
     public void tearDown() {
-
-        entityManager.getTransaction().rollback();
+        //entityManager.getTransaction().rollback();
+        entityManager.getTransaction().commit();
     }
-
+/*
     @Rule
-    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");*/
 
+    @Test
+    public void test() {
+        /*PushApplication p = new PushApplication();
+        p.setDescription("frrrrr");
+        AndroidVariant v = new AndroidVariant();
+        v.setDescription("andorid");
+        AndroidVariant v2 = new AndroidVariant();
+        v.setDescription("andorid2");
+        entityManager.persist(v);
+        entityManager.persist(v2);
+        ArrayList<Variant> l = new ArrayList<Variant>();
+        l.add(v);
+        l.add(v2);
+
+        //i.setVariant(v);
+        //entityManager.persist(i);
+        p.setVariants(l);
+
+        entityManager.persist(p);
+        */
+
+        List<String> vIds = new ArrayList<String>();
+        vIds.add("1");
+        List<PushApplication> p =  pushApplicationDao.findByVariantIds(vIds);
+
+    }
 
 
     @Test

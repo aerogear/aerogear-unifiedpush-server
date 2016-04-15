@@ -16,13 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
@@ -211,7 +207,49 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch) {
         // the required part: Join + all tokens for variantID;
 
+        // "FROM Installation installation"" JOIN installation.variant v"" WHERE v.variantID = :variantID";
+
+        StringBuilder qBase = new StringBuilder("{ $query : { 'variant_id' : '%s' ");
+
+        ArrayList<String> parameters = new ArrayList<String>();
+        parameters.add(variantID);
+
+        String s;
+
+        if (isListEmpty(aliases)) {
+            // append the string:
+            s = Arrays.toString(aliases.toArray());
+            qBase.append(" alias : { $in : [%s]");
+            // add the params:
+            parameters.add(s);
+        }
+
+        // are devices present ??
+        if (isListEmpty(deviceTypes)) {
+            // append the string:
+            qBase.append(" AND installation.deviceType IN :deviceTypes");
+            // add the params:
+            parameters.addAll(deviceTypes);
+        }
+
+        // is a category present ?
+        if (isListEmpty(categories)) {
+            qBase.append(" AND ( c.name in (:categories))");
+            parameters.addAll(categories);
+        }
+        // sort on ids so that we can handle paging properly
+        if (lastTokenFromPreviousBatch != null) {
+            qBase.append(" AND installation.deviceToken > :lastTokenFromPreviousBatch");
+            parameters.add(lastTokenFromPreviousBatch);
+        }
+
+        qBase.append(" ORDER BY installation.deviceToken ASC");
+
+        return null;
+
+        /*
         final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
+
         final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("variantID", variantID);
 
@@ -264,6 +302,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             }
 
         };
+        */
     }
 
     @Override

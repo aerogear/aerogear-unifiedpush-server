@@ -16,12 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.TypedQuery;
-
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -29,15 +24,36 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
+import javax.persistence.TypedQuery;
+import java.util.*;
+
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
 
     @Override
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         final List<Variant> variants = entity.getVariants();
+        List<Installation> l;
+        List<String> ids = new ArrayList<String>();
+        for(Variant v : variants)
+        {
+            ids.add("'" + v.getId() + "'");
+        }
+
+
         if (!variants.isEmpty()) {
-            entityManager.createQuery("delete from Installation i where i.variant in :variants")
-                    .setParameter("variants", variants).executeUpdate();
+            String vS = Arrays.toString(ids.toArray());
+            String qS = String.format("{ $query : { 'variant' : { $in : %s} } }", vS);
+            l = entityManager.createNativeQuery(qS,Installation.class).getResultList();
+
+            JPAInstallationDao idao = new JPAInstallationDao();
+            for (Installation i : l)
+            {
+               idao.delete(i);
+            }
+
+            /*entityManager.createQuery("delete from Installation i where i.variant in :variants")
+                    .setParameter("variants", variants).executeUpdate();*/
         }
         super.delete(entity);
     }
@@ -58,22 +74,31 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
+        String qS = String.format("db.push_application.find( { 'developer' : '%s'}, {'id' : 1} )", loginName);
+        List<String> ids =  entityManager.createNativeQuery(qS).getResultList();
+        return ids;
+        /*
         return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer", String.class)
-                .setParameter("developer", loginName).getResultList();
+                .setParameter("developer", loginName).getResultList();*/
     }
 
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
-        return getSingleResultForQuery(createQuery(
+
+        String qS = String.format("{ $query: { 'pushApplicationID' : '%s', 'loginName': '%s'} }",pushApplicationID,loginName);
+        return getSingleResultForQuery(createNativeQuery(qS));
+        /*return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
                 .setParameter("pushApplicationID", pushApplicationID)
-                .setParameter("developer", loginName));
+                .setParameter("developer", loginName));*/
     }
 
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
-        return getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
-                .setParameter("pushApplicationID", pushApplicationID));
+        String qS = String.format("{ $query: { 'pushApplicationID' : '%s'} }",pushApplicationID);
+        return getSingleResultForQuery(createNativeQuery(qS));
+        /*return getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
+                .setParameter("pushApplicationID", pushApplicationID));*/
     }
 
     @Override
@@ -102,15 +127,28 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public long getNumberOfPushApplicationsForDeveloper(String name) {
-        return createQuery("select count(pa) from PushApplication pa where pa.developer = :developer", Long.class)
-                .setParameter("developer", name).getSingleResult();
+
+        String qS = String.format("db.push_application.count({ 'developer' : '%s' })", name);
+        return  (Long) entityManager.createNativeQuery(qS).getSingleResult();
+        /*return createQuery("select count(pa) from PushApplication pa where pa.developer = :developer", Long.class)
+                .setParameter("developer", name).getSingleResult();*/
     }
 
     @Override
     public List<PushApplication> findByVariantIds(List<String> variantIDs) {
+
+        StringBuilder sb = new StringBuilder();
+        for(String s : variantIDs)
+        {
+            sb.append("'").append(s).append("'");
+        }
+
+        String qS = String.format("{ $query : { 'variants' : { $in : [%s] } } }", sb.toString());
+        return createNativeQuery(qS).getResultList();
+        /*
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
 
-        return createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
+        return createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();*/
     }
 
     @Override
@@ -134,15 +172,18 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public PushApplication findAllByPushApplicationID(String pushApplicationID) {
-        return getSingleResultForQuery(createQuery(
+        String qS = String.format("{ $query: { 'pushApplicationID' : '%s'} }",pushApplicationID);
+        return getSingleResultForQuery(createNativeQuery(qS));
+        /*return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
-                .setParameter("pushApplicationID", pushApplicationID));
+                .setParameter("pushApplicationID", pushApplicationID));*/
     }
 
     @Override
     public long getNumberOfPushApplicationsForDeveloper() {
-        return createQuery("select count(pa) from PushApplication pa", Long.class)
-                .getSingleResult();
+        return  (Long) entityManager.createNativeQuery("db.push_application.count({})").getSingleResult();
+        /*return createQuery("select count(pa) from PushApplication pa", Long.class)
+                .getSingleResult();*/
     }
 
 }

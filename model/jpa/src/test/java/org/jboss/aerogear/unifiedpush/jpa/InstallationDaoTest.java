@@ -80,10 +80,9 @@ public class InstallationDaoTest {
 
     @Test
     public void test() {
-        installationDao.findInstallationsByVariantForDeveloper("1","admin", new Integer(0) , new Integer(5) , "abc");
-        /*Installation i = new Installation();
-        i.setEnabled(true);
-        entityManager.persist(i);*/
+        String[] alias = { "foo@bar.org" };
+        installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null, Integer.MAX_VALUE, null);
+
 
   }
 

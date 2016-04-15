@@ -27,7 +27,7 @@ import java.util.UUID;
 /**
  * Logical construct of an overall mobile and push-enabled Application
  */
-@Entity
+@Entity(name = "push_application")
 public class PushApplication extends BaseModel {
     private static final long serialVersionUID = 6507691362454032282L;
 
