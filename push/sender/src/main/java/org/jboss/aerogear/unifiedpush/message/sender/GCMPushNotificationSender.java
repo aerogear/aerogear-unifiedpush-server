@@ -22,18 +22,17 @@ import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.inject.Inject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +40,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.jboss.aerogear.unifiedpush.message.Priority;
 
 @SenderType(VariantType.ANDROID)
 public class GCMPushNotificationSender implements PushNotificationSender {
@@ -63,6 +61,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      */
+    @Override
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
@@ -123,23 +122,20 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         } catch (Exception e) {
             // GCM exceptions:
-            logger.severe("Error sending payload to GCM server");
-            callback.onError("Error sending payload to GCM server");
+            callback.onError(String.format("Error sending payload to GCM server: %s", e.getMessage()));
         }
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.     *
+     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.
      */
     private void processGCM(AndroidVariant androidVariant, List<String> registrationIDs, Message gcmMessage, Sender sender) throws IOException {
 
         logger.info(String.format("Sent push notification to GCM Server for %d registrationIDs",registrationIDs.size()));
-
-        MulticastResult multicastResult = sender.send(gcmMessage, registrationIDs, 0);
+        MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, registrationIDs);
 
         // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
         cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, registrationIDs);
-        
     }
 
     /**
