@@ -245,6 +245,7 @@
                     </exclusions>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.extras.creaper</groupId>
                     <artifactId>creaper-commands</artifactId>
@@ -264,12 +265,14 @@
                     <version>2.0.5.Final</version>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-cli</artifactId>
                     <version>2.0.5.Final</version>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-patching</artifactId>
