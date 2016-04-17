@@ -112,7 +112,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// get document @Path("/{publisher}/{alias}/{qualifier}/latest")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
-					+ newInstallation.getAlias() + "/STATUS/null/latest");
+					+ newInstallation.getAlias() + "/STATUS/null");
 
 			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
@@ -178,7 +178,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// get document @Path("/{alias}/{qualifier}/{id}/latest")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
-					+ newInstallation.getAlias() + "/STATUS/55/latest");
+					+ newInstallation.getAlias() + "/STATUS/55");
 
 			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();

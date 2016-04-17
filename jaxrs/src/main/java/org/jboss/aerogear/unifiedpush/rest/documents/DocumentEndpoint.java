@@ -181,15 +181,20 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	/**
 	 * Get latest (last-updated) document according to path parameters </br>
 	 * <b>Examples:</b></br>
-	 * <li>/document/application/17327572923/test/1/latest - alias specific document
-	 * <li>/document/application/null/test/1/latest - global scope document (for any alias).
-	 * <li>/document/application/null/test/null/latest - global scope document (for any alias).
+	 * <li>document/application/17327572923/test - alias specific document (latest snapshot)
+	 * <li>document/application/null/test - global scope document (for any alias).
+	 * <li>/document/application/null/test?snapshot=5 - global scope document (specific snapshot id).
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{publisher}/{alias}/{qualifier}/{id}/latest")
-	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier, @PathParam("id") String id, @Context HttpServletRequest request) {
+	@Path("/{publisher}/{alias}/{qualifier}")
+	public Response retrieveJsonDocument(@PathParam("publisher") String publisher,
+			@PathParam("alias") String alias,
+			@PathParam("qualifier") String qualifier,
+			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot,
+			@Context HttpServletRequest request) {
+
+		// Authentication
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
 				clientInstallationService, request);
 		if (variant == null) {
@@ -197,6 +202,44 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		}
 
 		try {
+			// TODO - support snapshot other then latest
+			String document = documentService.getLatestDocumentForAlias(variant,
+					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
+					DocumentMetadata.NULL_ID);
+			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
+		} catch (Exception e) {
+			logger.severe("Cannot retrieve files for alias", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	/**
+	 * Get latest (last-updated) document according to path parameters </br>
+	 * <b>Examples:</b></br>
+	 * <li>/document/application/17327572923/test/1 - alias specific document (latest snapshot)
+	 * <li>/document/application/null/test/1 - global scope document (for any alias).
+	 * <li>/document/application/null/test/null - global scope document (for any alias).
+	 * <li>/document/application/null/test/null?snapshot=5 - global scope document (specific snapshot id).
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{publisher}/{alias}/{qualifier}/{id}")
+	public Response retrieveJsonDocument(@PathParam("publisher") String publisher,
+			@PathParam("alias") String alias,
+			@PathParam("qualifier") String qualifier,
+			@PathParam("id") String id,
+			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot,
+			@Context HttpServletRequest request) {
+
+		// Authentication
+		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
+				clientInstallationService, request);
+		if (variant == null) {
+			return create401Response(request);
+		}
+
+		try {
+			// TODO - support snapshot other then latest
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
 					DocumentMetadata.getId(id));
