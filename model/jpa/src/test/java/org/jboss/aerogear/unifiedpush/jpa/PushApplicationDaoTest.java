@@ -32,7 +32,6 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -88,9 +87,9 @@ public class PushApplicationDaoTest {
         entityManager.persist(p);
         */
 
-        List<String> vIds = new ArrayList<String>();
-        vIds.add("1");
-        List<PushApplication> p =  pushApplicationDao.findByVariantIds(vIds);
+        /*
+        PageResult l = pushApplicationDao.findAllForDeveloper("admin", new Integer(0), new Integer(7));*/
+        pushApplicationDao.countInstallationsByType("c09b7c1d-9f41-4a2e-a3cb-1128add83279");
 
     }
 

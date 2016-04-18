@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import com.mongodb.BasicDBList;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -33,23 +34,30 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         final List<Variant> variants = entity.getVariants();
+
         List<Installation> l;
-        List<String> ids = new ArrayList<String>();
-        for(Variant v : variants)
+        StringBuilder ids = new StringBuilder();
+        Iterator<Variant> vI = variants.iterator();
+
+        while (vI.hasNext())
         {
-            ids.add("'" + v.getId() + "'");
+            ids.append("'").append(vI.next().getId()).append("'");
+
+            if(vI.hasNext())
+            {
+                ids.append(",");
+            }
         }
 
 
         if (!variants.isEmpty()) {
-            String vS = Arrays.toString(ids.toArray());
-            String qS = String.format("{ $query : { 'variant' : { $in : %s} } }", vS);
+            String qS = String.format("{ $query : { 'variant_id' : { '$in' : [%s]} } }", ids.toString());
             l = entityManager.createNativeQuery(qS,Installation.class).getResultList();
 
             JPAInstallationDao idao = new JPAInstallationDao();
             for (Installation i : l)
             {
-               idao.delete(i);
+               entityManager.remove(i);
             }
 
             /*entityManager.createQuery("delete from Installation i where i.variant in :variants")
@@ -60,13 +68,22 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public PageResult<PushApplication, Count> findAllForDeveloper(String loginName, Integer page, Integer pageSize) {
-        String select = "from PushApplication pa where pa.developer = :developer";
+
+        String qS = String.format("db.push_application.find({'developer': '%s'})",loginName);
+        String qCS = String.format("db.push_application.count({'developer': '%s'})", loginName);
+
+        Long count = (Long) entityManager.createNativeQuery(qCS).getSingleResult();
+
+        List<PushApplication> entities = entityManager.createNativeQuery(qS, PushApplication.class)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+        /*String select = "from PushApplication pa where pa.developer = :developer";
 
         Long count = entityManager.createQuery("select count(*) " + select, Long.class)
                 .setParameter("developer", loginName).getSingleResult();
         List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize)
-                .setParameter("developer", loginName).getResultList();
+                .setParameter("developer", loginName).getResultList();*/
 
         return new PageResult<PushApplication, Count>(entities, new Count(count));
     }
@@ -103,15 +120,39 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public Map<String, Long> countInstallationsByType(String pushApplicationID) {
-        final String jpql = "select v.type, v.variantID, count(*) from Installation i join i.variant v where i.variant.variantID in "
-                + "(select v.variantID from PushApplication pa join pa.variants v where pa.pushApplicationID = :pushApplicationID) "
-                + "group by v.type, v.variantID";
+
+
+        String qS = String.format("db.push_application.find( {'pushApplicationID' : '%s'}, {'variants' : 1 } )",pushApplicationID);
+        Object [] pa = (Object[]) entityManager.createNativeQuery(qS).getSingleResult();
+
+        BasicDBList variants = (BasicDBList) pa[1];
+
+
+        StringBuilder sb = new StringBuilder();
+
+        Iterator i = variants.iterator();
+        while(i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+            if(i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+
+        // main query
+        String qSM = String.format("db.installation.find( {  'variant_id' : {$in :[%s]} }, {variant} )", sb.toString());
 
         final HashMap<String, Long> results = new HashMap<String, Long>();
 
         for (VariantType type : VariantType.values()) {
             results.put(type.getTypeName(), 0L);
         }
+
+        final String jpql = "select v.type, v.variantID, count(*) from Installation i join i.variant v where i.variant.variantID in "
+                + "(select v.variantID from PushApplication pa join pa.variants v where pa.pushApplicationID = :pushApplicationID) "
+                + "group by v.type, v.variantID";
+
         final TypedQuery<Object[]> query = createQuery(jpql, Object[].class)
                 .setParameter("pushApplicationID", pushApplicationID);
         final List<Object[]> resultList = query.getResultList();
@@ -138,12 +179,17 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     public List<PushApplication> findByVariantIds(List<String> variantIDs) {
 
         StringBuilder sb = new StringBuilder();
-        for(String s : variantIDs)
+
+        Iterator<String> sI = variantIDs.iterator();
+        while (sI.hasNext())
         {
-            sb.append("'").append(s).append("'");
+            sb.append("'").append(sI.next()).append("'");
+
+            if (sI.hasNext())
+                sb.append(",");
         }
 
-        String qS = String.format("{ $query : { 'variants' : { $in : [%s] } } }", sb.toString());
+        String qS = String.format("{ $query : { 'variants' : { '$in' : [%s] } } }", sb.toString());
         return createNativeQuery(qS).getResultList();
         /*
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
@@ -160,12 +206,19 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     @Override
     public PageResult<PushApplication, Count> findAll(Integer page, Integer pageSize) {
 
-        String select = "from PushApplication pa";
+        String qS = "db.push_application.find({})";
+        String qCS = "db.push_application.count({})";
+
+        Long count = (Long) entityManager.createNativeQuery(qCS).getSingleResult();
+
+        List<PushApplication> entities = entityManager.createNativeQuery(qS, PushApplication.class)
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+        /*String select = "from PushApplication pa";
 
         Long count = entityManager.createQuery("select count(*) " + select, Long.class).getSingleResult();
 
         List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
-                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();*/
 
         return new PageResult<PushApplication, Count>(entities, new Count(count));
     }
