@@ -84,7 +84,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 					"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
 			documentService.savePayload(pushApplication, msgPayload, false);
 			String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
@@ -94,7 +94,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			// Re-save device
 			documentService.savePayload(pushApplication, msgPayload, false);
 			document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_QUALIFIER);
+					DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 		} catch (Throwable e) {
@@ -125,7 +125,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Save alias should return without saving, device is not enabled.
 		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_QUALIFIER);
+				DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
 	}
@@ -142,7 +142,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Save alias should return without saving, device is not enabled.
 		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DocumentMetadata.NULL_ALIAS,
-				DEFAULT_DEVICE_QUALIFIER);
+				DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NULL_ALIAS}"));
 	}
@@ -176,7 +176,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Save alias should return without saving, divice is not emabled.
 		documentService.savePayload(pushApplication, msgPayload, false);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 	}
@@ -209,7 +209,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// Save once
 		documentService.savePayload(pushApplication, msgPayload, true);
 		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 
@@ -217,7 +217,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		// save 2nd time and check that it was overwritten
 		documentService.savePayload(pushApplication, msgPayload, true);
 		document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER);
+				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON 2}"));
 	}

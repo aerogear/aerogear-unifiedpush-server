@@ -15,7 +15,7 @@ public interface DocumentService {
 
 	List<DocumentMessage> getDocuments(PushApplication pushApplication, DocumentType publisher);
 
-	String getLatestDocumentForAlias(Variant variant, DocumentType publisher, String alias, String qualifier);
+	String getLatestDocumentForAlias(Variant variant, DocumentType publisher, String alias, String qualifier, String id);
 
 	@Deprecated
 	void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier, String id,
