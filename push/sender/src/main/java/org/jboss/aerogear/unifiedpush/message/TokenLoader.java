@@ -134,6 +134,11 @@ public class TokenLoader {
                 String lastTokenInBatch = null;
                 int tokensLoaded = 0;
                 for (int batchNumber = 0; batchNumber < configuration.batchesToLoad(); batchNumber++) {
+
+                    // increasing the serial ID,
+                    // to make sure it's properly read from all block
+                    ++serialId;
+
                     Set<String> tokens = new TreeSet<String>();
                     for (int i = 0; i < configuration.batchSize() && tokenStream.next(); i++) {
                         lastTokenInBatch = tokenStream.get();
@@ -141,7 +146,7 @@ public class TokenLoader {
                         tokensLoaded += 1;
                     }
                     if (tokens.size() > 0) {
-                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId))) {
+                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
                             logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
                         } else {
                             logger.fine(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
@@ -149,17 +154,17 @@ public class TokenLoader {
                             return;
                         }
 
-
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                         if (serialId == MessageHolderWithVariants.INITIAL_SERIAL_ID) {
                             triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(msg.getPushMessageInformation(), variant));
                         }
                     } else {
+                        logger.fine(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
                         break;
                     }
                 }
-                // should we load next batch ?
+                // should we trigger next transaction?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
                     logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
@@ -172,6 +177,8 @@ public class TokenLoader {
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
+                        logger.warning("Check your push query: Not a single token was loaded from the DB!");
+
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
                         variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
                         variantMetricInformation.setVariantID(variant.getVariantID());
