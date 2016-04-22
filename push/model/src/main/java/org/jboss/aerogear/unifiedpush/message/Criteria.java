@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
@@ -80,6 +81,37 @@ public class Criteria implements Serializable {
 
     public void setVariants(List<String> variants) {
         this.variants = variants;
+    }
+
+    /**
+     * Helper method to check if only categories are applied. Usful in GCM land, where we use topics
+     */
+    @JsonIgnore
+    public boolean isCategoryOnly() {
+
+        return  isEmpty(aliases) &&
+                isEmpty(deviceTypes) &&
+                isEmpty(variants) &&
+                !isEmpty(categories);
+    }
+
+    /**
+     * Helper method to check if all criteria are empty. Usful in GCM land, where we use topics.
+     */
+    @JsonIgnore
+    public boolean isEmpty() {
+
+        return  isEmpty(aliases) &&
+                isEmpty(deviceTypes) &&
+                isEmpty(variants) &&
+                isEmpty(categories);
+    }
+
+    /**
+     * Checks if the list is empty, and not null
+     */
+    private boolean isEmpty(List list) {
+        return (list == null || list.isEmpty());
     }
 
     @Override
