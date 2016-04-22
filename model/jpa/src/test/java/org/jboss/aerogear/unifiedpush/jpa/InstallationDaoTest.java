@@ -63,6 +63,8 @@ public class InstallationDaoTest {
 
     public static final String DEVICE_TOKEN_1 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
     public static final String DEVICE_TOKEN_2 = "67890167890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    public static final String DEVICE_TOKEN_3 = "27890167890:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    public static final String DEVICE_TOKEN_4 = "12345678901:23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
     @Inject
     private EntityManager entityManager;
@@ -92,12 +94,12 @@ public class InstallationDaoTest {
 
     @Test
     public void countDevicesForLoginName() {
-        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(7);
+        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(9);
     }
 
     @Test
     public void getNumberOfDevicesForVariantID() {
-        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(4);
+        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(6);
         assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
     }
 
@@ -105,7 +107,7 @@ public class InstallationDaoTest {
     public void findDeviceTokensForOneInstallationOfOneVariant() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(2);
+        assertThat(tokens).hasSize(4);
 
         Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
         assertThat(one.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
@@ -119,10 +121,25 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void findDeviceTokensOfVariant() {
+        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
+        assertThat(tokens).hasSize(4);
+        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
+    }
+
+    @Test
+    public void findOldGCMDeviceTokensOfVariant() {
+        List<String> tokens = findAllOldGCMDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
+        assertThat(tokens).hasSize(2);
+        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2);
+    }
+
+    @Test
     public void findDeviceTokensForAliasOfVariant() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-         assertThat(tokens).hasSize(2);
+        assertThat(tokens).hasSize(4);
+        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
     }
 
     @Test
@@ -137,8 +154,8 @@ public class InstallationDaoTest {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Tablet" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_2);
+        assertThat(tokens).hasSize(2);
+        assertThat(tokens).containsOnly(DEVICE_TOKEN_2, DEVICE_TOKEN_3);
     }
 
     @Test
@@ -522,7 +539,7 @@ public class InstallationDaoTest {
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(4);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
     }
 
     @Test
@@ -533,7 +550,7 @@ public class InstallationDaoTest {
         //then
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(4);
+        assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
     }
 
     @Test
@@ -549,7 +566,7 @@ public class InstallationDaoTest {
         //when
         final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "Tablet");
         //then
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(2);
+        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -597,8 +614,14 @@ public class InstallationDaoTest {
     }
 
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, false);
+    }
+    private List<String> findAllOldGCMDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, true);
+    }
+    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, boolean oldGCM) {
         try {
-            ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null, oldGCM).executeQuery();
             List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
