@@ -19,7 +19,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  * Sends SMS over Clickatell's HTTP API.
  */
 public class ClickatellSMSSender implements VerificationPublisher {
-	private AeroGearLogger logger = AeroGearLogger.getInstance(ClickatellSMSSender.class);
+	private final static AeroGearLogger logger = AeroGearLogger.getInstance(ClickatellSMSSender.class);
 
 	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
@@ -47,7 +47,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 	 * @properties configuration
 	 */
 	@Override
-	public void send(String phoneNumber, String message, Properties properties) {
+	public void send(String alias, String code, Properties properties) {
 		final String apiId = getProperty(properties, API_ID_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
@@ -60,7 +60,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 				return;
 			}
 
-			PhoneNumber parsedNumber = parseNumber(phoneNumber);
+			PhoneNumber parsedNumber = parseNumber(alias);
 			String fromNumber = getFromNumber(parsedNumber, properties);
 			String formattedNumber = formatNumber(parsedNumber);
 
@@ -69,7 +69,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 			.append("&password=").append(password)
 			.append("&api_id=").append(apiId)
 			.append("&to=").append(URLEncoder.encode(formattedNumber, encoding))
-			.append("&text=").append(URLEncoder.encode(getVerificationMessage(message), encoding));
+			.append("&text=").append(URLEncoder.encode(getVerificationMessage(code), encoding));
 
 			if (fromNumber != null) {
 				apiCall.append("&from=").append(fromNumber);

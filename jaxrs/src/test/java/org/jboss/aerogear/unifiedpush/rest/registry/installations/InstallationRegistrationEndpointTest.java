@@ -55,7 +55,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
                 .addPackage(InstallationRegistrationEndpoint.class.getPackage())
                 .addClasses(RestEndpointTest.class, InstallationRegistrationEndpoint.class, RestApplication.class, HttpBasicHelper.class, Authenticator.class)
                 .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-                .addAsResource("default.properties")
+                .addAsResource("test.properties", "default.properties")
                 .as(WebArchive.class);
     }
 
@@ -111,7 +111,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     public void enableDeviceTest() {
     	// Prepare installation
     	Installation iosInstallation = getDefaultInstallation();
-
+    	iosInstallation.setAlias("support@test.com");
     	try {
 			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
