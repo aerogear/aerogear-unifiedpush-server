@@ -79,6 +79,11 @@
 			<version>1.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>7.3.1</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
