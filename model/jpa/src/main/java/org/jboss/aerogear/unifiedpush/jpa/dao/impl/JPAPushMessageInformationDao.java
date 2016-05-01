@@ -17,17 +17,19 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
-import java.util.Date;
-import java.util.List;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
@@ -40,20 +42,35 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
-        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
-                .setParameter("pushApplicationId", pushApplicationId).getResultList();
+        String sQ;
+        if (ascending)
+        {
+            sQ = String.format("db.push_message_info.find( { 'id' : '%s'}, '$orderby': { 'submitDate' : 1 }  )", pushApplicationId);
+        }
+        else
+        {
+            sQ = String.format("db.push_message_info.find( { 'id' : '%s'}, '$orderby': { 'submitDate' : -1 }  )", pushApplicationId);
+        }
+        return entityManager.createNativeQuery(sQ).getResultList();
+
+        /*return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId ORDER BY pmi.submitDate " + ascendingOrDescending(ascending))
+                .setParameter("pushApplicationId", pushApplicationId).getResultList();*/
     }
 
     @Override
     public long getNumberOfPushMessagesForPushApplication(String pushApplicationId) {
-        return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
-                .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
+        String qS = "db.push_message_information.count( {'pushApplicationId' : '%s' })";
+        return  (Long) entityManager.createNativeQuery(String.format(qS,pushApplicationId)).getSingleResult();
+        /*return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
+                .setParameter("pushApplicationId", pushApplicationId).getSingleResult();*/
     }
 
     @Override
     public long getNumberOfPushMessagesForVariant(String variantID) {
-        return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
-                .setParameter("variantID", variantID).getSingleResult();
+        String qS = "db.variant_metric_information.count( {'variantID' : '%s' })";
+        return  (Long) entityManager.createNativeQuery(String.format(qS,variantID)).getSingleResult();
+        /*return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
+                .setParameter("variantID", variantID).getSingleResult();*/
     }
 
     @Override
@@ -85,18 +102,53 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
-        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
+
+        String sQ = String.format("db.push_message_information.find( { 'developer': '%s' }, {'id' : 1} )",loginName);
+        List<String> vL = entityManager.createNativeQuery(sQ).getResultList();
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = vL.iterator();
+
+        while (i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+
+            if (i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+        String sQ2 = String.format("db.push_message_info.count( { 'id': { '$in': [%s]}})",sb.toString());
+        return (Long) entityManager.createNativeQuery(sQ2).getSingleResult();
+        /*return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
                 "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
-                .setParameter("developer", loginName).getSingleResult();
+                .setParameter("developer", loginName).getSingleResult();*/
     }
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+
+        String sQ = String.format("db.variant.find( { 'developer': '%s' }, {'id' : 1} )",loginName);
+        List<String> vL = entityManager.createNativeQuery(sQ).getResultList();
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = vL.iterator();
+
+        while (i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+
+            if (i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+
+        String sQ2 = String.format("db.variant_metric_info.find( { 'variantID': { '$in': [%s]} }, {'id' : 1} )",sb.toString());
+        return entityManager.createNativeQuery(sQ2).getResultList();
+        /*return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
                 " and vmi.deliveryStatus = false", String.class)
                 .setParameter("developer", loginName)
-                .getResultList();
+                .getResultList();*/
     }
 
     @Override
@@ -112,6 +164,37 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public void deletePushInformationOlderThan(Date oldest) {
         // TODO: use criteria API...
+
+        String sQ = String.format("db.push_message_info.find( { 'submitDate': {'$lt' : '%s'} }, {'id': 1})",oldest);
+        List<String> l = entityManager.createNativeQuery(sQ).getResultList();
+
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = l.iterator();
+
+        while (i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+
+            if (i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+
+
+        String sQ2 = String.format("db.variant_metric_info.find( { 'pushMessageInformation.id': { '$in': [%s]} })");
+        List<VariantMetricInformation> vml = entityManager.createNativeQuery(sQ2).getResultList();
+
+        VariantMetricInformationDao vmd = new JPAVariantMetricInformationDao();
+        for (VariantMetricInformation vmi : vml)
+        {
+            vmd.delete(vmi);
+        }
+
+        String sQ3 = String.format("db.push_message_info.find( { 'submitDate': '%s' })",oldest);
+        int affectedRows = entityManager.createNativeQuery(sQ3).getMaxResults();
+
+        /*
         entityManager.createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
@@ -119,6 +202,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         int affectedRows = entityManager.createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
+        */
 
         logger.info("Deleting ['" + affectedRows + "'] outdated PushMessageInformation objects");
     }
@@ -126,22 +210,28 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     //Admin queries
     @Override
     public List<String> findVariantIDsWithWarnings() {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+        String qS = "db.variant_metric_information.find( {'deliveryStatus' : false}, {variantID : 1} )";
+        return entityManager.createNativeQuery(String.format(qS)).getResultList();
+        /*return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
                 " where vmi.deliveryStatus = false", String.class)
-                .getResultList();
+                .getResultList();*/
     }
 
     @Override
     public List<PushMessageInformation> findLatestActivity(int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi" +
+        String qS = "db.push_message_information.find( {}, $orderby: { 'submitDate' : -1 } )";
+        return entityManager.createNativeQuery(String.format(qS)).setMaxResults(maxResults).getResultList();
+        /*return createQuery("select pmi from PushMessageInformation pmi" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setMaxResults(maxResults)
-                .getResultList();
+                .getResultList();*/
     }
 
     @Override
     public long getNumberOfPushMessagesForApplications() {
-        return createQuery("select count(pmi) from PushMessageInformation pmi", Long.class).getSingleResult();
+        String qS = "db.push_message_information.count( {})";
+        return  (Long) entityManager.createNativeQuery(qS).getSingleResult();
+        /*return createQuery("select count(pmi) from PushMessageInformation pmi", Long.class).getSingleResult();*/
     }
 
     /**
