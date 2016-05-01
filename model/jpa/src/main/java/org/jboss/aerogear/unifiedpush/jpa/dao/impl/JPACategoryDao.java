@@ -19,31 +19,36 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
 
     @Override
     public List<Category> findByNames(List<String> names) {
-        List<Category> categoryList = new ArrayList<Category>();
-        if(!names.isEmpty()){
-            for (int i = 0; i < names.size(); i++)
-            {
-                String s = names.get(i);
-                names.set(i, "'" + s + "'");
-            }
-            String namesString = Arrays.toString(names.toArray());
-            String sqlString = "{ $query: { name : { $in : " + namesString + " } } }";
 
-            return createNativeQuery(sqlString).getResultList();
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = names.iterator();
+
+        while (i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+
+            if (i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+
+        String sqlString = String.format("{ $query: { name : { $in : %s } } }", sb.toString());
+
+        return createNativeQuery(sqlString).getResultList();
 
             /*categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
                     .setParameter("names", names).getResultList();*/
-        }
-        return categoryList;
     }
+
+
 
     @Override
     public Class<Category> getType() {
