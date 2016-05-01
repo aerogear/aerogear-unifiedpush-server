@@ -153,12 +153,33 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public List<PushMessageInformation> findLatestActivity(String loginName, int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
+
+        String qS = String.format("db.push_application.find( { 'developer' : '%s'}, {'id' : 1} )", loginName);
+        List<String> ids =  entityManager.createNativeQuery(qS).getResultList();
+
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = ids.iterator();
+
+        while (i.hasNext())
+        {
+            sb.append("'").append(i.next()).append("'");
+
+            if(i.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+
+
+        String qS2 = String.format("db.push_message_information.find( { 'pushApplicationId' : {$in: [%s]} }, $orderby: { 'submitDate' : -1 } )",
+                sb.toString());
+        return entityManager.createNativeQuery(String.format(qS2)).setMaxResults(maxResults).getResultList();
+        /*return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
                 " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
                 .setMaxResults(maxResults)
-                .getResultList();
+                .getResultList();*/
     }
 
     @Override
