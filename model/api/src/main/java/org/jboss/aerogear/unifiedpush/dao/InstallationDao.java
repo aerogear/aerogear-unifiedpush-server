@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import java.util.List;
-import java.util.Set;
-
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+
+import java.util.List;
+import java.util.Set;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
@@ -55,10 +55,11 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param deviceTypes applied deviceTypes for the filter
      * @param maxResults number of maxResults for the filter
      * @param lastTokenFromPreviousBatch identifier of the last fetched token
+     * @param oldGCM if true only old GCM tokens (not containing a :) are load
      *
      * @return list of device tokens that matches this filter
      */
-    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM);
 
     Set<String> findAllDeviceTokenForVariantID(String variantID);
 
