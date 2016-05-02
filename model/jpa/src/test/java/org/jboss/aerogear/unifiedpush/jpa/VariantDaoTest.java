@@ -64,9 +64,28 @@ public class VariantDaoTest {
     @After
     public void tearDown() {
 
+        //entityManager.getTransaction().commit();
         entityManager.getTransaction().rollback();
     }
 
+    @Test
+    public void test() {
+
+        AndroidVariant a = new AndroidVariant();
+        a.setId("1");
+        a.setDeveloper("admin");
+        a.setName("Android Variant");
+        a.setGoogleKey("KEY");
+        variantDao.create(a);
+
+        AndroidVariant b = new AndroidVariant();
+        b.setId("2");
+        b.setName("Something more Android");
+        b.setDeveloper("foo");
+
+        variantDao.create(b);
+
+    }
 
     @Test
     public void findVariantByIdForDeveloper() {

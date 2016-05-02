@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,8 +45,13 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
 
     @Override
     public Variant findByVariantID(String variantID) {
-        Query q = createNativeQuery("{ $query : { variantID: '" + variantID + "'} }");
-        return getSingleResultForQuery(q);
+        if (variantID == null)
+            return null;
+
+        String qS = String.format("db.variant.find({ '_id': '%s'})", variantID);
+        return getSingleResultForQuery(entityManager.createNativeQuery(qS));
+        //return (Variant) entityManager.createNativeQuery(qS).getSingleResult();
+
         // hibernate OGM doesnt support parameters  yet
         /*return getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
                 .setParameter("variantID", variantID));*/
@@ -56,8 +60,8 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
     @Override
     public boolean existsVariantIDForDeveloper(String variantID, String loginName) {
 
-        String sqlString = "db.variant.count({ 'id' : '" + variantID + "' , 'developer' : '" + loginName + "'})";
-        Long numberOfVariants = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+        String qS = String.format("db.variant.count({ '_id' : '%s' , 'developer' : '%s'})", variantID,loginName);
+        Long numberOfVariants = (Long)entityManager.createNativeQuery(qS).getSingleResult();
 
         /*Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID and t.developer = :developer", Long.class)
                 .setParameter("variantID", variantID)
@@ -70,17 +74,11 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
 
     @Override
     public List<String> findVariantIDsForDeveloper(String loginName) {
-        String sqlString = "db.variant.find( { developer : '" + loginName + "'}, {'id' : 1} )";
-        List<Object[]> variantsWithIds =  entityManager.createNativeQuery(sqlString).getResultList();
-        List<String> variants = new ArrayList<String>();
-
-        for(Object [] v : variantsWithIds)
-        {
-            variants.add(String.valueOf(v[1]));
-        }
+        String qS = String.format("db.variant.find( { 'developer' : '%s'}, {'id' : 1} )", loginName);
+        return entityManager.createNativeQuery(qS).getResultList();
         /*return createQuery("select t.variantID from Variant t where t.developer = :developer", String.class)
-                .setParameter("developer", loginName).getResultList();*/
-        return variants;
+                .setParameter("developer", loginName).getResultList(); */
+
     }
 
     @Override
@@ -113,7 +111,8 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
     @Override
     public boolean existsVariantIDForAdmin(String variantID) {
 
-        String sqlString = "db.variant.count( { 'id' : '" + variantID + "'})";
+
+        String sqlString = String.format("db.variant.count( { '_id' : '%s'})",variantID);
         Long numberOfVariants = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
         /*
         Long numberOfVariants = createQuery("select count(t) from Variant t where t.variantID = :variantID", Long.class)
