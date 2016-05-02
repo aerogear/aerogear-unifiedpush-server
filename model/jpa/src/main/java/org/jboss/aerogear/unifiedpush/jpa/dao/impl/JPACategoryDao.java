@@ -40,7 +40,7 @@ public class JPACategoryDao extends JPABaseDao<Category, Integer> implements Cat
             }
         }
 
-        String sqlString = String.format("{ $query: { name : { $in : %s } } }", sb.toString());
+        String sqlString = String.format("{ $query: { 'name' : { $in : [%s] } } }", sb.toString());
 
         return createNativeQuery(sqlString).getResultList();
 

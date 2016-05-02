@@ -55,13 +55,13 @@ public class CategoryDaoTest {
     @Test
     public void shouldFindCategoriesByName() {
         // given
-        List<String> categoryNames = Arrays.asList("cat1", "cat2", "non-existing");
+        List<String> categoryNames = Arrays.asList("foo", "bar", "non-existing");
 
 
         // when
         final List<Category> names = categoryDao.findByNames(categoryNames);
 
         // then
-        assertThat(names).hasSize(2).contains(new Category("cat1"), new Category("cat2"));
+        assertThat(names).hasSize(2).contains(new Category("foo"), new Category("bar"));
     }
 }
