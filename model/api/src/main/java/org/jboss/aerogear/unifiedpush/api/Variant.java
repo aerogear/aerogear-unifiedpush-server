@@ -16,9 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -26,7 +24,7 @@ import java.util.UUID;
  * Logical construct which matches a mobile app in the appstore.
  */
 @Entity(name = "variant")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance
 public abstract class Variant extends BaseModel {
     private static final long serialVersionUID = -5028062942838899201L;
 
@@ -35,6 +33,8 @@ public abstract class Variant extends BaseModel {
 
     @Size(min = 0, max = 255)
     private String description;
+
+
 
     private String variantID = UUID.randomUUID().toString();
 

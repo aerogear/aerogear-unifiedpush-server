@@ -16,17 +16,24 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 
 import javax.persistence.Query;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class JPAVariantDao extends JPABaseDao<Variant, String> implements VariantDao {
 
+
+    // stupid solution, if it will be time make it better
+    public AndroidVariant find(String id)
+    {
+        return entityManager.find(AndroidVariant.class,id);
+    }
 
     @Override
     public void delete(Variant variant) {
@@ -48,8 +55,15 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
         if (variantID == null)
             return null;
 
-        String qS = String.format("db.variant.find({ '_id': '%s'})", variantID);
-        return getSingleResultForQuery(entityManager.createNativeQuery(qS));
+        String qS = String.format("db.variant.find({ 'variantID': '%s'})", variantID);
+
+        List<Variant> result = entityManager.createNativeQuery(qS, Variant.class).getResultList();
+
+        if (!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
         //return (Variant) entityManager.createNativeQuery(qS).getSingleResult();
 
         // hibernate OGM doesnt support parameters  yet
@@ -87,15 +101,21 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
             return Collections.emptyList();
         }
 
-        for (int i = 0; i < variantIDs.size(); i++)
+        StringBuilder sb = new StringBuilder();
+
+        Iterator<String> i = variantIDs.iterator();
+
+        while (i.hasNext())
         {
-            String s = variantIDs.get(i);
-            variantIDs.set(i, "'" + s + "'");
+            sb.append("'").append(i.next()).append("'");
+
+            if(i.hasNext())
+            {
+                sb.append(",");
+            }
         }
 
-        String variants = Arrays.toString(variantIDs.toArray());
-
-        String sqlString = "{ $query: { _id : { $in : " + variantIDs + " } } }";
+        String sqlString = String.format("{ $query: { 'variantID' : { $in : [%s] } } }",sb.toString());
 
         Query q = createNativeQuery(sqlString);
         List<Variant> result = q.getResultList();
