@@ -138,6 +138,22 @@
             <value>baz@bar.org</value>
             <value></value>
         </row>
+        <row>
+            <value>8</value>
+            <value>true</value>
+            <value>12345678901:23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>foo@bar.org</value>
+            <value>Android Phone</value>
+        </row>
+        <row>
+            <value>9</value>
+            <value>true</value>
+            <value>27890167890:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>1</value>
+            <value>foo@bar.org</value>
+            <value>Android Tablet</value>
+        </row>
     </table>
 
     <table name="SA.CATEGORY">
