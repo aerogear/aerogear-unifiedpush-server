@@ -122,13 +122,13 @@ public class TokenLoader {
                 final Set<String> topics = new TreeSet<>();
                 final boolean isAndroid = variantType.equals(VariantType.ANDROID);
 
-                // GCM TOPS....
-                if (isAndroid) {
+                if (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria)) {
 
-                    // find all topis
+                    // If we are able to do GCM topics, we
+                    // 1) find all topis
                     topics.addAll(TokenLoaderUtils.extractGCMTopics(criteria, variant.getVariantID()));
 
-                    // as well as legacy tokens
+                    // 2) as well as legacy tokens
                     tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
                             .executeQuery();

@@ -66,7 +66,7 @@ public final class TokenLoaderUtils {
     }
 
     /**
-     * Helper method to check if all criteria are empty. Usful in GCM land, where we use topics.
+     * Helper method to check if all criteria are empty. Useful in GCM land, where we use topics.
      */
     public static boolean isEmptyCriteria(final Criteria criteria) {
 
@@ -74,6 +74,13 @@ public final class TokenLoaderUtils {
                 isEmpty(criteria.getDeviceTypes()) &&
                 isEmpty(criteria.getVariants()) &&
                 isEmpty(criteria.getCategories());
+    }
+
+    /**
+     * Helper method to check if we should do GCM topic request.
+     */
+    public static boolean isGCMTopicRequest(final Criteria criteria) {
+        return isEmptyCriteria(criteria) || isCategoryOnlyCriteria(criteria);
     }
 
     /**
