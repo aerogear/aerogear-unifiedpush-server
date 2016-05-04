@@ -134,7 +134,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 
-        String sqlString = String.format("db.installation.find({ 'variant_id' : '%s' , 'deviceToken' : '%s'})", variantID, deviceToken);
+        String sqlString = String.format("db.installation.find({ 'variant_id' : '%s' , 'device_token' : '%s'})", variantID, deviceToken);
 
         Installation i = getSingleResultForQuery(createNativeQuery(sqlString));
         return i;
@@ -155,7 +155,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             return Collections.emptyList();
         }
 
-        StringBuilder dT = new StringBuilder("[");
+        StringBuilder dT = new StringBuilder();
         Iterator<String> iter = deviceTokens.iterator();
 
         while (iter.hasNext()) {
@@ -166,11 +166,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             if (iter.hasNext())
                 dT.append(",");
         }
-        dT.append("]");
+
 
         String dTs = dT.toString();
 
-        String sqlString =  String.format("{ $query : { 'variant_id' : '%s' , 'deviceToken' : { $in : %s} } }", variantID, dTs);
+        String sqlString =  String.format("{ $query : { 'variant_id' : '%s' , 'device_token' : { $in : [%s] } } }", variantID, dTs);
         return createNativeQuery(sqlString).getResultList();
 
         /*return createQuery("select installation from Installation installation " +
@@ -224,39 +224,41 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         BasicDBObject query1 = new BasicDBObject("enabled", true);
         andList.add(query1);
 
-        BasicDBObject query2 = new BasicDBObject("variant_id", "2");
+        BasicDBObject query2 = new BasicDBObject("variant_id", variantID);
         andList.add(query2);
 
-        DBCursor cursor = installation.find(new BasicDBObject("$and", andList));
+        final DBCursor cursor = installation.find(new BasicDBObject("$and", andList));
 
 
         if (isListEmpty(aliases)) {
-
+            BasicDBObject query3 = new BasicDBObject("alias", new BasicDBObject("$in", aliases));
+            andList.add(query3);
         }
 
         // are devices present ??
-       /* if (isListEmpty(deviceTypes)) {
-            // append the string:
-           // qBase.append(" AND installation.deviceType IN :deviceTypes");
-            sB.append(" , 'deviceType': {$in: [%s]}");
-            // add the params:
-            parameters.addAll(deviceTypes);
+        if (isListEmpty(deviceTypes)) {
+            BasicDBObject query4 = new BasicDBObject("deviceType", new BasicDBObject("$in", deviceTypes));
+            andList.add(query4);
         }
 
         // is a category present ?
         if (isListEmpty(categories)) {
-            sB.append(" , ( c.name in (:categories))");
-            parameters.addAll(categories);
-        }
-        // sort on ids so that we can handle paging properly
-        if (lastTokenFromPreviousBatch != null) {
-            sB.append(" AND installation.deviceToken > :lastTokenFromPreviousBatch");
-            parameters.add(lastTokenFromPreviousBatch);
+            BasicDBObject query5 = new BasicDBObject("categories", new BasicDBObject("$exists", true));
+            andList.add(query5);
         }
 
-        sB.append(" ORDER BY installation.deviceToken ASC");
-*/
-         return new ResultsStream.QueryBuilder<String>() {
+        // sort on ids so that we can handle paging properly
+        if (lastTokenFromPreviousBatch != null) {
+            BasicDBObject query6 = new BasicDBObject("deviceToken", new BasicDBObject("$gt",lastTokenFromPreviousBatch));
+            andList.add(query6);
+        }
+
+
+        cursor.sort(new BasicDBObject("deviceToken", 1));
+
+
+
+        return new ResultsStream.QueryBuilder<String>() {
             private Integer fetchSize = null;
             @Override
             public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
@@ -265,36 +267,45 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             }
             @Override
             public ResultsStream<String> executeQuery() {
-                //javax.persistence.Query q = entityManager.createNativeQuery(sB.toString());
-                //Query q = JPAInstallationDao.this.createHibernateQuery(sB.toString());
-                //q.setMaxResults(maxResults);
-                /* adding parameters
-                for (Entry<String, Object> parameter : parameters.entrySet()) {
-                    Object value = parameter.getValue();
-                    if (value instanceof Collection<?>) {
-                        hibernateQuery.setParameterList(parameter.getKey(), (Collection<?>) parameter.getValue());
-                    } else {
-                        hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
-                    }
 
-                }*/
-                //DBCursor cursor = new DBCursor();
+                cursor.limit(maxResults);
 
-
-                /*
-                q.setReadOnly(true);
+                // just read
+                //q.setReadOnly(true);
                 if (fetchSize != null) {
-                    q.setFetchSize(fetchSize);
-                }*/
+                    cursor.batchSize(fetchSize);
+                }
                // final ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
                 return new ResultsStream<String>() {
                     @Override
                     public boolean next() throws ResultStreamException {
-                        return false;//results.next();
+                        try {
+                            return cursor.hasNext();
+                        }
+                        catch (Exception e)
+                        {
+                            throw new ResultStreamException(e);
+                        }
+
                     }
                     @Override
                     public String get() throws ResultStreamException {
-                        return null;//(String) results.get()[0];
+                        try {
+                            Object dT = cursor.next().get("device_token");
+                            if (dT != null)
+                            {
+                                return String.valueOf(dT);
+                            }
+                            else
+                            {
+                                return null;
+                            }
+
+                        }
+                        catch (Exception e)
+                        {
+                            throw new ResultStreamException(e);
+                        }
                     }
                 };
             }

@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import com.mongodb.*;
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.*;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
@@ -42,7 +41,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.net.UnknownHostException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,66 +91,6 @@ public class InstallationDaoTest {
     public void test() {
 
 
-        /*Installation in = new Installation();
-        in.setVariant(variantDao.findByVariantID("1"));
-
-
-        String[] names = {"foo","bar"};
-        List<Category> setC = categoryDao.findByNames(Arrays.asList(names));
-
-        in.setCategories(new HashSet<Category>(setC));
-
-        in.setEnabled(true);
-        in.setAlias("foo");
-        installationDao.create(in);
-*/
-
-
-        try {
-            String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
-                    + " from Installation installation"
-                    + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
-            // to posledne sa da prepiat ako variant = 0 and enabled = true
-
-            MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-            DB db = mongoClient.getDB( "unifiedpush" );
-
-            DBCollection installation = db.getCollection( "installation" );
-
-            ArrayList andList = new ArrayList();
-            BasicDBObject query1 = new BasicDBObject("enabled", true);
-            andList.add(query1);
-
-            BasicDBObject query2 = new BasicDBObject("variant_id", "1");
-            andList.add(query2);
-
-            String[] al = {"foo","mehehe"};
-            List<String> aliases = Arrays.asList(al);
-
-
-            BasicDBObject query3 = new BasicDBObject("alias", new BasicDBObject("$in", aliases));
-            andList.add(query3);
-
-            DBCursor cursorI = installation.find(new BasicDBObject("$and", andList));
-
-            cursorI.skip(0);
-            cursorI.batchSize(10);
-            cursorI.sort(new BasicDBObject("name", -1));
-            System.out.println(cursorI.next());
-            //System.out.println(cursorI.next());
-
-            //System.out.println(cursorI.next().get("deviceToken"));
-            //System.out.println(cursorI.next().get("variant_id"));
-
-
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-
-
 
         /*for (int i = 0; i < 4; i++)
         {
@@ -166,10 +104,38 @@ public class InstallationDaoTest {
             in.setVariant(variantDao.findByVariantID("2"));
             installationDao.create(in);
         }*/
-        /*String[] alias = { "foo@bar.org" };
-        installationDao.findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null, Integer.MAX_VALUE, null);
-*/
 
+        Category soccer = new Category("soccer");
+        Category news = new Category("news");
+        Category weather = new Category("weather");
+
+        categoryDao.create(soccer);
+        categoryDao.create(news);
+        categoryDao.create(weather);
+
+
+
+        Installation in = new Installation();
+        in.setVariant(variantDao.findByVariantID("1"));
+        in.setAlias("foo@bar.org");
+        Set<Category> ff = new HashSet<Category>();
+        ff.add(news);
+        in.setCategories(ff);
+        in.setDeviceToken(DEVICE_TOKEN_1);
+
+        in.setDeviceType("Android Phone");
+        in.setEnabled(true);
+        installationDao.create(in);
+
+
+        Installation in2 = new Installation();
+        in2.setVariant(variantDao.findByVariantID("1"));
+        in2.setAlias("foo@bar.org");
+        in2.setDeviceType("Android Tablet");
+        in2.setDeviceToken(DEVICE_TOKEN_2);
+        in2.setEnabled(true);
+        in2.setCategories(ff);
+        installationDao.create(in2);
   }
 
 
@@ -191,7 +157,7 @@ public class InstallationDaoTest {
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
         assertThat(tokens).hasSize(2);
 
-        /*Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
+        Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
         assertThat(one.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
 
         final Set<String> tokenz = new HashSet<String>();
@@ -199,7 +165,7 @@ public class InstallationDaoTest {
         tokenz.add("foobar223");
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
         assertThat(list).hasSize(1);
-        assertThat(list).extracting("deviceToken").containsOnly(DEVICE_TOKEN_1);*/
+        assertThat(list).extracting("deviceToken").containsOnly(DEVICE_TOKEN_1);
     }
 
     @Test
