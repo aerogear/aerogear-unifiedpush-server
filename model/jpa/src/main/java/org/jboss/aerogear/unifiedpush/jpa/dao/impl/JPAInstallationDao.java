@@ -16,13 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import com.mongodb.*;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
 import javax.persistence.TypedQuery;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -207,45 +210,96 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch) {
         // the required part: Join + all tokens for variantID;
 
-        // "FROM Installation installation"" JOIN installation.variant v"" WHERE v.variantID = :variantID";
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = new MongoClient( "localhost" , 27017 );
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        DB db = mongoClient.getDB( "unifiedpush" );
 
-        StringBuilder qBase = new StringBuilder("{ $query : { 'variant_id' : '%s' ");
+        DBCollection installation = db.getCollection( "installation" );
 
-        ArrayList<String> parameters = new ArrayList<String>();
-        parameters.add(variantID);
+        ArrayList andList = new ArrayList();
+        BasicDBObject query1 = new BasicDBObject("enabled", true);
+        andList.add(query1);
 
-        String s;
+        BasicDBObject query2 = new BasicDBObject("variant_id", "2");
+        andList.add(query2);
+
+        DBCursor cursor = installation.find(new BasicDBObject("$and", andList));
+
 
         if (isListEmpty(aliases)) {
-            // append the string:
-            s = Arrays.toString(aliases.toArray());
-            qBase.append(" alias : { $in : [%s]");
-            // add the params:
-            parameters.add(s);
+
         }
 
         // are devices present ??
-        if (isListEmpty(deviceTypes)) {
+       /* if (isListEmpty(deviceTypes)) {
             // append the string:
-            qBase.append(" AND installation.deviceType IN :deviceTypes");
+           // qBase.append(" AND installation.deviceType IN :deviceTypes");
+            sB.append(" , 'deviceType': {$in: [%s]}");
             // add the params:
             parameters.addAll(deviceTypes);
         }
 
         // is a category present ?
         if (isListEmpty(categories)) {
-            qBase.append(" AND ( c.name in (:categories))");
+            sB.append(" , ( c.name in (:categories))");
             parameters.addAll(categories);
         }
         // sort on ids so that we can handle paging properly
         if (lastTokenFromPreviousBatch != null) {
-            qBase.append(" AND installation.deviceToken > :lastTokenFromPreviousBatch");
+            sB.append(" AND installation.deviceToken > :lastTokenFromPreviousBatch");
             parameters.add(lastTokenFromPreviousBatch);
         }
 
-        qBase.append(" ORDER BY installation.deviceToken ASC");
+        sB.append(" ORDER BY installation.deviceToken ASC");
+*/
+         return new ResultsStream.QueryBuilder<String>() {
+            private Integer fetchSize = null;
+            @Override
+            public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
+                this.fetchSize = fetchSize;
+                return this;
+            }
+            @Override
+            public ResultsStream<String> executeQuery() {
+                //javax.persistence.Query q = entityManager.createNativeQuery(sB.toString());
+                //Query q = JPAInstallationDao.this.createHibernateQuery(sB.toString());
+                //q.setMaxResults(maxResults);
+                /* adding parameters
+                for (Entry<String, Object> parameter : parameters.entrySet()) {
+                    Object value = parameter.getValue();
+                    if (value instanceof Collection<?>) {
+                        hibernateQuery.setParameterList(parameter.getKey(), (Collection<?>) parameter.getValue());
+                    } else {
+                        hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
+                    }
 
-        return null;
+                }*/
+                //DBCursor cursor = new DBCursor();
+
+
+                /*
+                q.setReadOnly(true);
+                if (fetchSize != null) {
+                    q.setFetchSize(fetchSize);
+                }*/
+               // final ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
+                return new ResultsStream<String>() {
+                    @Override
+                    public boolean next() throws ResultStreamException {
+                        return false;//results.next();
+                    }
+                    @Override
+                    public String get() throws ResultStreamException {
+                        return null;//(String) results.get()[0];
+                    }
+                };
+            }
+
+        };
 
         /*
         final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
@@ -308,19 +362,23 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public long getNumberOfDevicesForLoginName(String loginName) {
 
-        String sqlString = "db.variant.find( { 'developer' : '" + loginName + "'}, {'_id' : 1} )";
-        List<String> variantsWithIds =  entityManager.createNativeQuery(sqlString).getResultList();
+        String qS = String.format("db.variant.find( { 'developer' : '%s'}, {'_id' : 1} )",loginName);
+        List<String> variantsWithIds =  entityManager.createNativeQuery(qS).getResultList();
 
-        for (int i = 0; i < variantsWithIds.size(); i++)
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = variantsWithIds.iterator();
+
+        while (i.hasNext())
         {
-            String s = variantsWithIds.get(i);
-            variantsWithIds.set(i, "'" + s + "'");
+            sb.append("'").append(i.next()).append("'");
+            if (i.hasNext())
+            {
+                sb.append(",");
+            }
         }
 
-        String variantsString = Arrays.toString(variantsWithIds.toArray());
-
-        String sqlString2 = "db.installation.count( { 'variant_id' : { '$in' : " + variantsString + " } })";
-        Long numberOfInstallations = (Long)entityManager.createNativeQuery(sqlString2).getSingleResult();
+        String qS2 = String.format("db.installation.count( { 'variant_id' : { '$in' : [%s] } })",sb.toString());
+        Long numberOfInstallations = (Long)entityManager.createNativeQuery(qS2).getSingleResult();
         return numberOfInstallations;
         /*return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID IN (select t.variantID from Variant t where t.developer = :developer) ", Long.class)
                 .setParameter("developer", loginName).getSingleResult();*/
@@ -344,8 +402,8 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     @Override
     public long getNumberOfDevicesForVariantID(String variantId) {
 
-        String sqlString = "db.installation.count( { 'variant_id' : '" + variantId +"'})";
-        Long numberOfInstallations = (Long)entityManager.createNativeQuery(sqlString).getSingleResult();
+        String qS = String.format("db.installation.count( { 'variant_id' : '%s'})",variantId);
+        Long numberOfInstallations = (Long)entityManager.createNativeQuery(qS).getSingleResult();
         return numberOfInstallations;
         /*return createQuery("select count(installation) from Installation installation join installation.variant abstractVariant where abstractVariant.variantID = :variantId ", Long.class)
                 .setParameter("variantId", variantId)

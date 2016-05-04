@@ -81,6 +81,7 @@ public class VariantDaoTest {
 
         AndroidVariant b = new AndroidVariant();
         b.setVariantID("2");
+        b.setId("2");
         b.setName("Something more Android");
         b.setDeveloper("foo");
 

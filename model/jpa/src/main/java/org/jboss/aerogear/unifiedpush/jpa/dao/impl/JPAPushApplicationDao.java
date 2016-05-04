@@ -25,7 +25,6 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
-import javax.persistence.TypedQuery;
 import java.util.*;
 
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
@@ -140,8 +139,6 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
             }
         }
 
-        // main query
-        String qSM = String.format("db.installation.find( {  'variant_id' : {$in :[%s]} }, {variant} )", sb.toString());
 
         final HashMap<String, Long> results = new HashMap<String, Long>();
 
@@ -149,6 +146,21 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
             results.put(type.getTypeName(), 0L);
         }
 
+        // main query
+        String qSM = String.format("db.installation.aggreagate( " +
+                "{ '$group' : {_id:'$province'}  } )", sb.toString());
+
+        final List<Object[]> resultList = new ArrayList<Object[]>();
+
+        for (Object[] objects : resultList) {
+            final Long value = (Long) objects[2];
+            final VariantType variantType = (VariantType) objects[0];
+            results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
+            results.put((String) objects[1], value);
+        }
+
+
+        /*
         final String jpql = "select v.type, v.variantID, count(*) from Installation i join i.variant v where i.variant.variantID in "
                 + "(select v.variantID from PushApplication pa join pa.variants v where pa.pushApplicationID = :pushApplicationID) "
                 + "group by v.type, v.variantID";
@@ -161,7 +173,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
             final VariantType variantType = (VariantType) objects[0];
             results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
             results.put((String) objects[1], value);
-        }
+        }*/
 
         return results;
     }

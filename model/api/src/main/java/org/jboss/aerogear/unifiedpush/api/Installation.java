@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -36,6 +37,8 @@ public class Installation extends BaseModel {
     private static final long serialVersionUID = 7177135979544758234L;
 
     private boolean enabled = true;
+
+    @Column(name = "device_token")
     private String deviceToken;
     private String deviceType;
     private String operatingSystem;
