@@ -91,4 +91,32 @@ public class TokenLoaderUtilsTest {
 
         assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).isEmpty();
     }
+
+    @Test
+    public void testGCMTopic() {
+        final Criteria criteria = new Criteria();
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+                Constants.TOPIC_PREFIX+"123"
+        );
+    }
+
+    @Test
+    public void testGCMTopicForCategory() {
+        final Criteria criteria = new Criteria();
+        criteria.setCategories(Arrays.asList("football"));
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+                Constants.TOPIC_PREFIX+"football"
+        );
+    }
+
+    @Test
+    public void testGCMTopicForAlias() {
+        final Criteria criteria = new Criteria();
+        criteria.setAliases(Arrays.asList("foo@bar.org"));
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isFalse();
+    }
+
+
 }
