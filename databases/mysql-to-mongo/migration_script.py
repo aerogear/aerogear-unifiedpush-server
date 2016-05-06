@@ -131,6 +131,10 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
     for p in packet_list:
         p["_id"] = p["id"]
         del p["id"]
+        if p["delivery_status"] == '\x01':
+            p["delivery_status"] = True
+        else:
+            p["delivery_status"] = False
     store_packets(mongo_client,database, collection, packet_list, ["variant_id"])
     # push_application
     collection = "push_application"

@@ -28,7 +28,9 @@ public class JPAVariantMetricInformationDao extends JPABaseDao<VariantMetricInfo
     @Override
     public VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId){
 
-        Query q = createNativeQuery("{ $query : {$and: [{ variantID: '" + variantID + "'}, { pushmessageinformationId: '" + pushmessageinformationId + "'}] } }");
+        String qS = String.format("db.variant_metric_info.find( { '$and' : [{ 'variant_id': '%s'}, { 'push_message_info_id': '%s'}] } )"
+                ,variantID , pushmessageinformationId);
+        Query q = createNativeQuery(qS);
         return getSingleResultForQuery(q);
         /*return getSingleResultForQuery(createQuery(
                 "select vmi from VariantMetricInformation vmi where vmi.variantID = :variantId and vmi.pushMessageInformation.id = :pushmessageinformationId")

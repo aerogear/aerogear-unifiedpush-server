@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -32,12 +33,17 @@ public class VariantMetricInformation extends BaseModel {
     private static final long serialVersionUID = 8704836533294404718L;
 
     @NotNull
+    @Column(name = "variant_id")
     private String variantID;
     private Long receivers = 0L;
+    @Column(name = "delivery_status")
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
+    @Column(name = "variant_open_counter")
     private Long variantOpenCounter = 0L;
+    @Column(name = "served_batches")
     private Integer servedBatches = 0;
+    @Column(name = "total_batches")
     private Integer totalBatches = 0;
 
     @JsonIgnore
