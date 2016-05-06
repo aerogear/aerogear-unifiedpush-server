@@ -20,6 +20,8 @@ import net.iharder.Base64;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,6 +31,7 @@ import java.io.IOException;
  * The iOS variant class encapsulates APNs specific behavior.
  */
 @Entity
+@DiscriminatorValue("ios")
 public class iOSVariant extends Variant {
     private static final long serialVersionUID = -889367404039436329L;
 
@@ -41,6 +44,7 @@ public class iOSVariant extends Variant {
 
     @NotNull(message = "Certificate must be provided")
     @JsonIgnore
+    @Column(name = "certificate_data")
     private String certificateData;
 
     /**

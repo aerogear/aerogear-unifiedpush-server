@@ -16,11 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@DiscriminatorValue("windows_wns")
 public class WindowsWNSVariant extends WindowsVariant {
 
     @NotNull
@@ -29,6 +32,7 @@ public class WindowsWNSVariant extends WindowsVariant {
 
     @NotNull
     @Size(max = 255, message = "Client Secret must be max. 255 chars long")
+    @Column(name = "client_secret")
     private String clientSecret;
 
 

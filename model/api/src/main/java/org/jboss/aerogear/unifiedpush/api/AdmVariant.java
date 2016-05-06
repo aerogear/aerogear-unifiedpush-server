@@ -17,17 +17,22 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@DiscriminatorValue("adm")
 public class AdmVariant extends Variant {
     @NotNull
     @Size(min = 1, max = 255, message = "ClientId must be max. 255 chars long")
+    @Column(name = "client_id")
     private String clientId;
 
     @Size(min = 1, max = 255, message = "Client Secret must be max. 255 chars long")
+    @Column(name = "client_secret")
     private String clientSecret;
 
 

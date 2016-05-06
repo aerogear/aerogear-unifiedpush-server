@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import static org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY;
@@ -30,5 +31,6 @@ import static org.codehaus.jackson.annotate.JsonTypeInfo.Id.NAME;
         @JsonSubTypes.Type(value=WindowsMPNSVariant.class, name="mpns")
 })
 @Entity
+@DiscriminatorValue("windows")
 public abstract class WindowsVariant extends Variant {
 }

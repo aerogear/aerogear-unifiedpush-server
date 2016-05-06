@@ -25,6 +25,7 @@ import java.util.UUID;
  */
 @Entity(name = "variant")
 @Inheritance
+@DiscriminatorColumn(name="VARIANT_TYPE")
 public abstract class Variant extends BaseModel {
     private static final long serialVersionUID = -5028062942838899201L;
 
@@ -36,7 +37,7 @@ public abstract class Variant extends BaseModel {
 
 
 
-    private String variantID = UUID.randomUUID().toString();
+    //private String variantID = UUID.randomUUID().toString();
 
     private String secret = UUID.randomUUID().toString();
 
@@ -79,7 +80,7 @@ public abstract class Variant extends BaseModel {
     }
 
     public String getVariantID() {
-        return variantID;
+        return getId();
     }
 
     /**
@@ -88,7 +89,7 @@ public abstract class Variant extends BaseModel {
      * @param variantID the variant ID
      */
     public void setVariantID(String variantID) {
-        this.variantID = variantID;
+        setId(variantID);
     }
 
     public void setSecret(String secret) {

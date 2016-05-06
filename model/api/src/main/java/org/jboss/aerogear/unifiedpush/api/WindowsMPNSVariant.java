@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("windows_mpns")
 public class WindowsMPNSVariant extends WindowsVariant {
     @Override
     public VariantType getType() {

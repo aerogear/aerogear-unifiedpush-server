@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -24,14 +26,19 @@ import javax.validation.constraints.Size;
  * The Android variant class encapsulates GCM specific behavior.
  */
 @Entity
+@DiscriminatorValue("android")
 public class AndroidVariant extends Variant {
     private static final long serialVersionUID = -4473752252296190311L;
 
+
+
     @NotNull
     @Size(min = 1, max = 255, message = "Google Cloud Messaging Key must be max. 255 chars long")
+    @Column(name = "google_key")
     private String googleKey;
 
     @Size(min = 1, max = 255, message = "Project Number must be max. 255 chars long")
+    @Column(name = "project_number")
     private String projectNumber;
 
     /**

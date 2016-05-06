@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
@@ -29,15 +28,9 @@ import java.util.List;
 public class JPAVariantDao extends JPABaseDao<Variant, String> implements VariantDao {
 
 
-    // stupid solution, if it will be time make it better
-    public AndroidVariant find(String id)
-    {
-        return entityManager.find(AndroidVariant.class,id);
-    }
-
     @Override
     public void delete(Variant variant) {
-        Query q = createNativeQuery("{ $query : { variantID: '" + variant.getId() + "'} }");
+        Query q = createNativeQuery("{ $query : { _id: '" + variant.getId() + "'} }");
         List<Installation> result = q.getResultList();
 
         if (!result.isEmpty()) {
@@ -55,7 +48,7 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
         if (variantID == null)
             return null;
 
-        String qS = String.format("db.variant.find({ 'variantID': '%s'})", variantID);
+        String qS = String.format("db.variant.find({ '_id': '%s'})", variantID);
 
         List<Variant> result = entityManager.createNativeQuery(qS, Variant.class).getResultList();
 
@@ -115,7 +108,7 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
             }
         }
 
-        String sqlString = String.format("{ $query: { 'variantID' : { $in : [%s] } } }",sb.toString());
+        String sqlString = String.format("{ $query: { '_id' : { $in : [%s] } } }",sb.toString());
 
         Query q = createNativeQuery(sqlString);
         List<Variant> result = q.getResultList();
