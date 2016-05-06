@@ -39,6 +39,7 @@ public class VariantMetricInformation extends BaseModel {
     @Column(name = "delivery_status")
     private Boolean deliveryStatus = Boolean.FALSE;
     private String reason;
+
     @Column(name = "variant_open_counter")
     private Long variantOpenCounter = 0L;
     @Column(name = "served_batches")

@@ -135,6 +135,14 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
             p["delivery_status"] = True
         else:
             p["delivery_status"] = False
+        p["pushMessageInformation_id"] = p["push_message_info_id"]
+        del p["push_message_info_id"]
+
+        p["served_batches"] = int(p["served_batches"])
+        p["total_batches"] = int(p["total_batches"])
+
+
+
     store_packets(mongo_client,database, collection, packet_list, ["variant_id"])
     # push_application
     collection = "push_application"
