@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -32,7 +31,6 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Type(type = "objectid")
     private String id;
     private String name;
 

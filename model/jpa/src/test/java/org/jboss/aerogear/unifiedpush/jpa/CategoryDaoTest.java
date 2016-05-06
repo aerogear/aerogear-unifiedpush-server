@@ -54,8 +54,11 @@ public class CategoryDaoTest {
 
     @Test
     public void shouldFindCategoriesByName() {
+
+
         // given
         List<String> categoryNames = Arrays.asList("foo", "bar", "non-existing");
+
 
 
         // when
