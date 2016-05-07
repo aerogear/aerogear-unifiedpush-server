@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import com.mongodb.*;
+import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
@@ -24,21 +25,14 @@ import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
-import javax.persistence.TypedQuery;
+import javax.inject.Inject;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
-    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
-                    + " from Installation installation"
-                    + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
-
-    private static final String FIND_INSTALLATIONS = "FROM Installation installation"
-                    + " JOIN installation.variant v"
-                    + " WHERE v.variantID = :variantID";
+    @Inject
+    JPACategoryDao categoryDao;
 
     public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
 
@@ -62,11 +56,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         }
         if (search != null) {
             qBase.append(", $or: [ " +
-                    "{ 'deviceToken' : {'$regex': '%s'} }," +
-                    " { 'deviceType' : {'$regex': '%s'} }," +
+                    "{ 'device_token' : {'$regex': '%s'} }," +
+                    " { 'device_type' : {'$regex': '%s'} }," +
                     " { 'platform' : {'$regex': '%s'} }," +
-                    " { 'operatingSystem' : {'$regex': '%s'} }," +
-                    " { 'osVersion' : {'$regex': '%s'} }," +
+                    " { 'operating_system' : {'$regex': '%s'} }," +
+                    " { 'os_version' : {'$regex': '%s'} }," +
                     " { 'alias' : {'$regex': '%s'} }" +
                     " ]");
             parameters.add(search);
@@ -117,13 +111,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         return new PageResult<Installation, Count>(resultList, new Count(count));
         */
-    }
-
-    private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
-        for (Entry<String, Object> entry : parameters.entrySet()) {
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
-        return query;
     }
 
     public PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize, String search) {
@@ -202,7 +189,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             result.add(i.getDeviceToken());
         }
 
-
         return result;
     }
 
@@ -221,6 +207,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         DBCollection installation = db.getCollection( "installation" );
 
         ArrayList andList = new ArrayList();
+
         BasicDBObject query1 = new BasicDBObject("enabled", true);
         andList.add(query1);
 
@@ -230,31 +217,50 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         final DBCursor cursor = installation.find(new BasicDBObject("$and", andList));
 
 
-        if (isListEmpty(aliases)) {
+        if (isListNotEmpty(aliases)) {
             BasicDBObject query3 = new BasicDBObject("alias", new BasicDBObject("$in", aliases));
             andList.add(query3);
         }
 
         // are devices present ??
-        if (isListEmpty(deviceTypes)) {
-            BasicDBObject query4 = new BasicDBObject("deviceType", new BasicDBObject("$in", deviceTypes));
+        if (isListNotEmpty(deviceTypes)) {
+            BasicDBObject query4 = new BasicDBObject("device_type", new BasicDBObject("$in", deviceTypes));
             andList.add(query4);
         }
 
         // is a category present ?
-        if (isListEmpty(categories)) {
-            BasicDBObject query5 = new BasicDBObject("categories", new BasicDBObject("$exists", true));
-            andList.add(query5);
+        if (isListNotEmpty(categories)) {
+            List<Category> cat = categoryDao.findByNames(categories);
+
+            ArrayList orList = new ArrayList();
+            BasicDBObject query5 = new BasicDBObject("$or", orList);
+            for (Category c : cat)
+            {
+                orList.add(new BasicDBObject("categories", c.getId()  ) );
+
+            }
+
+            if (isListNotEmpty(cat) )
+            {
+                andList.add(query5);
+            }
+            else
+            {
+                // query failed so return nothing
+                BasicDBObject query7 = new BasicDBObject("enabled", false);
+                andList.add(query7);
+
+            }
         }
 
         // sort on ids so that we can handle paging properly
         if (lastTokenFromPreviousBatch != null) {
-            BasicDBObject query6 = new BasicDBObject("deviceToken", new BasicDBObject("$gt",lastTokenFromPreviousBatch));
+            BasicDBObject query6 = new BasicDBObject("device_token", new BasicDBObject("$gt",lastTokenFromPreviousBatch));
             andList.add(query6);
         }
 
 
-        cursor.sort(new BasicDBObject("deviceToken", 1));
+        cursor.sort(new BasicDBObject("device_token", 1));
 
 
 
@@ -421,44 +427,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .getSingleResult();*/
     }
 
-    /**
-     *
-     * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.
-     * The method appends different criterias to the given JPQL string, IF PRESENT.
-     *
-     * Done in one method, instead of having similar, but error-thrown Strings, in different methods.
-     *
-     * TODO: perhaps moving to Criteria API for this later
-     */
-    private void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
-        // OPTIONAL query arguments, as provided.....
-        // are aliases present ??
-        if (isListEmpty(aliases)) {
-            // append the string:
-            jpqlString.append(" AND installation.alias IN :aliases");
-            // add the params:
-            parameters.put("aliases", aliases);
-        }
-
-        // are devices present ??
-        if (isListEmpty(deviceTypes)) {
-            // append the string:
-            jpqlString.append(" AND installation.deviceType IN :deviceTypes");
-            // add the params:
-            parameters.put("deviceTypes", deviceTypes);
-        }
-
-        // is a category present ?
-        if (isListEmpty(categories)) {
-            jpqlString.append(" AND ( c.name in (:categories))");
-            parameters.put("categories", categories);
-        }
-    }
     /**
      * Checks if the list is empty, and not null
      */
-    private boolean isListEmpty(List list) {
+    private boolean isListNotEmpty(List list) {
         return (list != null && !list.isEmpty());
     }
 }

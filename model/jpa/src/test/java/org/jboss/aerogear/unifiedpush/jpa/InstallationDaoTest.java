@@ -22,9 +22,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -57,11 +55,6 @@ public class InstallationDaoTest {
     @Inject
     private JPAInstallationDao installationDao;
 
-    @Inject
-    private JPACategoryDao categoryDao;
-
-    @Inject
-    private JPAVariantDao variantDao;
 
     private String androidVariantID = "1";
     private String simplePushVariantID = "2";
@@ -82,62 +75,9 @@ public class InstallationDaoTest {
     @After
     public void tearDown() {
 
-        //entityManager.getTransaction().rollback();
-        entityManager.getTransaction().commit();
+        entityManager.getTransaction().rollback();
 
     }
-
-    @Test
-    public void test() {
-
-
-
-        /*for (int i = 0; i < 4; i++)
-        {
-            Installation in = new Installation();
-            in.setVariant(variantDao.findByVariantID("1"));
-            installationDao.create(in);
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            Installation in = new Installation();
-            in.setVariant(variantDao.findByVariantID("2"));
-            installationDao.create(in);
-        }*/
-
-        Category soccer = new Category("soccer");
-        Category news = new Category("news");
-        Category weather = new Category("weather");
-
-        categoryDao.create(soccer);
-        categoryDao.create(news);
-        categoryDao.create(weather);
-
-
-
-        Installation in = new Installation();
-        in.setVariant(variantDao.findByVariantID("1"));
-        in.setAlias("foo@bar.org");
-        Set<Category> ff = new HashSet<Category>();
-        ff.add(news);
-        in.setCategories(ff);
-        in.setDeviceToken(DEVICE_TOKEN_1);
-
-        in.setDeviceType("Android Phone");
-        in.setEnabled(true);
-        installationDao.create(in);
-
-
-        Installation in2 = new Installation();
-        in2.setVariant(variantDao.findByVariantID("1"));
-        in2.setAlias("foo@bar.org");
-        in2.setDeviceType("Android Tablet");
-        in2.setDeviceToken(DEVICE_TOKEN_2);
-        in2.setEnabled(true);
-        in2.setCategories(ff);
-        installationDao.create(in2);
-  }
-
 
 
     @Test

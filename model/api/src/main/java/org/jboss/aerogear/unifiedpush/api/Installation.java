@@ -40,8 +40,11 @@ public class Installation extends BaseModel {
 
     @Column(name = "device_token")
     private String deviceToken;
+    @Column(name = "device_type")
     private String deviceType;
+    @Column(name = "operating_system")
     private String operatingSystem;
+    @Column(name = "os_version")
     private String osVersion;
     private String alias;
 

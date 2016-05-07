@@ -33,7 +33,7 @@ def create_packet(colList, rowList):
 
 def store_packets(client, database_name, collection_name, packet_list, indexes=[]):
 
-    db = client[database_name]
+    db = client["unifiedpush"]
 
     foo = db[collection_name]
     foo.drop()
@@ -85,7 +85,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
         else:
             p["enabled"] = False
 
-        p['categories'] = [d['category_id'] for d in installation_category if d['installation_id'] == p["_id"]]
+        p['categories'] = [ str(d['category_id']) for d in installation_category if d['installation_id'] == p["_id"]]
     store_packets(mongo_client,database, collection, packet_list)
     # variant
     collection = "variant"
@@ -155,7 +155,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
 
 #-----------------------------------------------------------------------------------------
 
-database = 'unifiedpush'
+database = 'uni'
 mysql_server = 'localhost'
 mongo_server = 'localhost'
 mysql_user = 'root'
