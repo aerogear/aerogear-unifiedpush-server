@@ -12,7 +12,7 @@ public class PushApplication extends Application {
 
     private final String VARIANT_ID       = "{{ variant.variantID }}";
     private final String SECRET           = "{{ variant.secret }}";
-    private final String GCM_SENDER_ID    = "{{ variant.projectNumber }}";
+    private final String GCM_SENDER_ID    = {{ variant.projectNumber ? '"' + variant.projectNumber + '";': '""; // getString(R.string.gcm_defaultSenderId)'}}
     private final String UNIFIED_PUSH_URL = "{{ contextPath }}";
 
     @Override

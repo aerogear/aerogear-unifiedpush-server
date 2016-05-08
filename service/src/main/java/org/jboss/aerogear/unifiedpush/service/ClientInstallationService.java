@@ -142,6 +142,22 @@ public interface ClientInstallationService {
      * @return list of device tokens that matches this filter
      */
     ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    
+    /**
+     * Used to query all old GCM tokens, which do not contain a ':' char.
+     * Queries the available device-tokens for a given variant, based on provided criteria.
+     *
+     * @param variantID the variantID for the filter
+     * @param categories applied categories for the filter
+     * @param aliases applied aliases for the filter
+     * @param deviceTypes applied deviceTypes for the filter
+     * @param maxResults number of maxResults for the filter
+     * @param lastTokenFromPreviousBatch identifier of the last fetched token
+     *
+     * @return list of old GCM device tokens that matches this filter
+     */
+    ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    
 
     Variant associateInstallation(Installation installation, Variant currentVariant);
 
@@ -152,5 +168,4 @@ public interface ClientInstallationService {
 	 * @param aliases aliases to match against
 	 */
 	void syncInstallationByAliasList(PushApplication application, List<String> aliases);
-
 }

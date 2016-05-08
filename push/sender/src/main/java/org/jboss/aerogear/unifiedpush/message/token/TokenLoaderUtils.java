@@ -1,0 +1,93 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.aerogear.unifiedpush.message.token;
+
+import com.google.android.gcm.server.Constants;
+import org.jboss.aerogear.unifiedpush.message.Criteria;
+
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+public final class TokenLoaderUtils {
+
+    private TokenLoaderUtils () {
+        // no-op
+    }
+
+    /**
+     * Extracts GCM topic names out of a given Criteria object (e.g. /topics/nameOfcategory).
+     * If the Criteria is empty, the given variant ID will be returned as topic name (/topics/variantID)
+     *
+     * @param criteria the push message filter criteria
+     * @param variantID variant ID, used as global fallback GCM topic name
+     *
+     * @return GCM topic names for the given push message criteria filter.
+     */
+    public static Set<String> extractGCMTopics(final Criteria criteria, final String variantID) {
+        final Set<String> topics = new TreeSet<>();
+
+        if (isEmptyCriteria(criteria)) {
+            // use the variant 'convenience' topic
+            topics.add(Constants.TOPIC_PREFIX + variantID);
+
+        } else if (isCategoryOnlyCriteria(criteria)) {
+            // use the given categories
+            for (String category : criteria.getCategories()) {
+                topics.add(Constants.TOPIC_PREFIX + category);
+            }
+        }
+        return topics;
+    }
+
+    /**
+     * Helper method to check if only categories are applied. Useful in GCM land, where we use topics
+     */
+    public static boolean isCategoryOnlyCriteria(final Criteria criteria) {
+
+        return  isEmpty(criteria.getAliases()) &&
+                isEmpty(criteria.getDeviceTypes()) &&
+                isEmpty(criteria.getVariants()) &&
+                !isEmpty(criteria.getCategories());
+    }
+
+    /**
+     * Helper method to check if all criteria are empty. Useful in GCM land, where we use topics.
+     */
+    public static boolean isEmptyCriteria(final Criteria criteria) {
+
+        return  isEmpty(criteria.getAliases()) &&
+                isEmpty(criteria.getDeviceTypes()) &&
+                isEmpty(criteria.getVariants()) &&
+                isEmpty(criteria.getCategories());
+    }
+
+    /**
+     * Helper method to check if we should do GCM topic request.
+     */
+    public static boolean isGCMTopicRequest(final Criteria criteria) {
+        return isEmptyCriteria(criteria) || isCategoryOnlyCriteria(criteria);
+    }
+
+    /**
+     * Checks if the list is empty, and not null
+     */
+    private static boolean isEmpty(List list) {
+        return (list == null || list.isEmpty());
+    }
+
+}
