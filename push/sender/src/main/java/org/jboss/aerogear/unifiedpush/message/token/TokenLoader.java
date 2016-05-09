@@ -122,13 +122,26 @@ public class TokenLoader {
                 final Set<String> topics = new TreeSet<>();
                 final boolean isAndroid = variantType.equals(VariantType.ANDROID);
 
+                // the entire batch size
+                int batchesToLoad= configuration.batchesToLoad();
+
+                // Some checks for GCM, because of GCM-3 topics
                 if (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria)) {
 
-                    // If we are able to do GCM topics, we
-                    // 1) find all topis
-                    topics.addAll(TokenLoaderUtils.extractGCMTopics(criteria, variant.getVariantID()));
+                    // If we are able to do push for GCM topics...
 
-                    // 2) as well as legacy tokens
+                    // 1)
+                    // find all topics, BUT only on the very first round of batches
+                    // otherwise after 10 (or what ever the max. is) another request would be sent to that topic
+                    if (serialId == 0) {
+                        topics.addAll(TokenLoaderUtils.extractGCMTopics(criteria, variant.getVariantID()));
+
+                        // topics are handled as a first extra batch,
+                        // therefore we have to adjust the number by adding this extra batch
+                        batchesToLoad = batchesToLoad + 1;
+                    }
+
+                    // 2) always load the legacy tokens, for all number of batch iterations
                     tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
                             .executeQuery();
@@ -140,7 +153,7 @@ public class TokenLoader {
 
                 String lastTokenInBatch = null;
                 int tokensLoaded = 0;
-                for (int batchNumber = 0; batchNumber < configuration.batchesToLoad(); batchNumber++) {
+                for (int batchNumber = 0; batchNumber < batchesToLoad; batchNumber++) {
 
                     // increasing the serial ID,
                     // to make sure it's properly read from all block
