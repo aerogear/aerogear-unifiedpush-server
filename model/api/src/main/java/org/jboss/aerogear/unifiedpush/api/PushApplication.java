@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -44,7 +45,9 @@ public class PushApplication extends BaseModel {
      * look at it like an API key, which is subject to change
      * TODO: improve naming?
      */
+    @Column(name = "api_key")
     private String pushApplicationID = UUID.randomUUID().toString();
+    @Column(name = "master_secret")
     private String masterSecret = UUID.randomUUID().toString();
 
     @Size(min = 1, max = 255)

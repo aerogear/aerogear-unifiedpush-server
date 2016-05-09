@@ -87,6 +87,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
 
         p['categories'] = [ str(d['category_id']) for d in installation_category if d['installation_id'] == p["_id"]]
     store_packets(mongo_client,database, collection, packet_list)
+
     # variant
     collection = "variant"
     cur.execute("SELECT * FROM variant")
@@ -103,6 +104,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 p.update(v2)
                 p["_id"] = str(p["id"])
                 del p["id"]
+                p["type"] = int(p["type"])
                 all_variants.append(p)
         else:
             cur.execute("SELECT * FROM " + v['VARIANT_TYPE'] + "_variant WHERE id = %s", (v["id"]))
@@ -114,6 +116,13 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 p.update(v2)
                 p["_id"] = p["id"]
                 del p["id"]
+                if "production" in p:
+                    if p["production"] == '\x01':
+                        p["production"] = True
+                    else:
+                        p["production"] = False
+
+                p["type"] = int(p["type"])
                 all_variants.append(p)
     store_packets(mongo_client,database, collection, all_variants)
     # push_message_info
@@ -123,6 +132,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
     for p in packet_list:
         p["_id"] = p["id"]
         del p["id"]
+
     store_packets(mongo_client,database, collection, packet_list, ["submit_date", "total_receivers", "app_open_counter"])
     # variant_metric_info
     collection = "variant_metric_info"
@@ -138,6 +148,12 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
         p["pushMessageInformation_id"] = p["push_message_info_id"]
         del p["push_message_info_id"]
 
+        if p["served_batches"] is None:
+            p["served_batches"] = 0
+
+        if p["total_batches"] is None:
+            p["total_batches"] = 0
+
         p["served_batches"] = int(p["served_batches"])
         p["total_batches"] = int(p["total_batches"])
 
@@ -149,13 +165,18 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
     cur.execute("SELECT * FROM " + collection)
     packet_list = cur.fetchall()
     for p in packet_list:
+        cur.execute("SELECT id FROM variant WHERE api_key = " + p["id"])
+        app_variants = cur.fetchall()
+        print app_variants
         p["_id"] = p["id"]
         del p["id"]
+        p["variants"] = [ str(d['id']) for d in app_variants]
+
     store_packets(mongo_client,database, collection, packet_list)
 
 #-----------------------------------------------------------------------------------------
 
-database = 'uni'
+database = 'uni_push_application'
 mysql_server = 'localhost'
 mongo_server = 'localhost'
 mysql_user = 'root'

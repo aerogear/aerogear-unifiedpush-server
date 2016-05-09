@@ -35,7 +35,7 @@ import java.io.IOException;
 public class iOSVariant extends Variant {
     private static final long serialVersionUID = -889367404039436329L;
 
-    private boolean production = false;
+    private Boolean production = false;
 
     @NotNull
     @Size(max = 255, message = "Passphrase must be 1-255 characters long")

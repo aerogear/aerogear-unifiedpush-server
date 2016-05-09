@@ -16,17 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,6 +49,9 @@ public class PushApplicationDaoTest {
     @Inject
     private PushApplicationDao pushApplicationDao;
 
+    @Inject
+    private VariantDao variantDao;
+
     @Deployment
     public static JavaArchive createDeployment() {
         return DaoDeployment.createDeployment();
@@ -62,36 +68,9 @@ public class PushApplicationDaoTest {
         //entityManager.getTransaction().rollback();
         entityManager.getTransaction().commit();
     }
-/*
+
     @Rule
-    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");*/
-
-    @Test
-    public void test() {
-        /*PushApplication p = new PushApplication();
-        p.setDescription("frrrrr");
-        AndroidVariant v = new AndroidVariant();
-        v.setDescription("andorid");
-        AndroidVariant v2 = new AndroidVariant();
-        v.setDescription("andorid2");
-        entityManager.persist(v);
-        entityManager.persist(v2);
-        ArrayList<Variant> l = new ArrayList<Variant>();
-        l.add(v);
-        l.add(v2);
-
-        //i.setVariant(v);
-        //entityManager.persist(i);
-        p.setVariants(l);
-
-        entityManager.persist(p);
-        */
-
-        /*
-        PageResult l = pushApplicationDao.findAllForDeveloper("admin", new Integer(0), new Integer(7));*/
-        pushApplicationDao.countInstallationsByType("c09b7c1d-9f41-4a2e-a3cb-1128add83279");
-
-    }
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");
 
 
     @Test

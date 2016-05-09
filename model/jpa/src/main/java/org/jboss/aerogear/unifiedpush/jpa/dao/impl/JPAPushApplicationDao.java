@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import com.mongodb.BasicDBList;
+import com.mongodb.*;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -25,43 +25,46 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
+import javax.inject.Inject;
+import java.net.UnknownHostException;
 import java.util.*;
 
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
 
+    @Inject
+    JPAInstallationDao installationDao;
+
+    @Inject
+    JPAVariantDao variantDao;
+
     @Override
     public void delete(PushApplication pushApplication) {
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
-        final List<Variant> variants = entity.getVariants();
+        List<Variant> variants = entity.getVariants();
 
-        List<Installation> l;
-        StringBuilder ids = new StringBuilder();
-        Iterator<Variant> vI = variants.iterator();
+        Iterator<Variant> i = variants.iterator();
 
-        while (vI.hasNext())
+        StringBuilder sb = new StringBuilder();
+        while (i.hasNext())
         {
-            ids.append("'").append(vI.next().getId()).append("'");
-
-            if(vI.hasNext())
+            sb.append("'").append(i.next().getId()) .append("'");
+            if (i.hasNext())
             {
-                ids.append(",");
+                sb.append(",");
             }
         }
+        String qS = String.format("db.installation.find( { 'variant_id': { '$in' : [%s]} } )", sb.toString());
+        List<Installation> installations= entityManager.createNativeQuery(qS, Installation.class).getResultList();
 
-
-        if (!variants.isEmpty()) {
-            String qS = String.format("{ $query : { 'variant_id' : { '$in' : [%s]} } }", ids.toString());
-            l = entityManager.createNativeQuery(qS,Installation.class).getResultList();
-
-            JPAInstallationDao idao = new JPAInstallationDao();
-            for (Installation i : l)
-            {
-               entityManager.remove(i);
-            }
+        for (Installation installation : installations)
+        {
+            installationDao.delete(installation);
+            variantDao.delete(installation.getVariant());
+        }
 
             /*entityManager.createQuery("delete from Installation i where i.variant in :variants")
                     .setParameter("variants", variants).executeUpdate();*/
-        }
+
         super.delete(entity);
     }
 
@@ -90,9 +93,14 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
-        String qS = String.format("db.push_application.find( { 'developer' : '%s'}, {'id' : 1} )", loginName);
-        List<String> ids =  entityManager.createNativeQuery(qS).getResultList();
-        return ids;
+        String qS = String.format("db.push_application.find( { 'developer' : '%s'}, {'api_key' : 1} )", loginName);
+        List<Object []> objects = entityManager.createNativeQuery(qS).getResultList();
+        List<String> api_keys =  new ArrayList<String>();
+        for (Object [] o : objects)
+        {
+            api_keys.add((String) o[1]);
+        }
+        return api_keys;
         /*
         return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer", String.class)
                 .setParameter("developer", loginName).getResultList();*/
@@ -101,7 +109,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     @Override
     public PushApplication findByPushApplicationIDForDeveloper(String pushApplicationID, String loginName) {
 
-        String qS = String.format("{ $query: { 'pushApplicationID' : '%s', 'loginName': '%s'} }",pushApplicationID,loginName);
+        String qS = String.format("{ $query: { 'api_key' : '%s', 'developer': '%s'} }",pushApplicationID,loginName);
         return getSingleResultForQuery(createNativeQuery(qS));
         /*return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID and pa.developer = :developer")
@@ -111,7 +119,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
-        String qS = String.format("{ $query: { 'pushApplicationID' : '%s'} }",pushApplicationID);
+        String qS = String.format("{ $query: { 'api_key' : '%s'} }",pushApplicationID);
         return getSingleResultForQuery(createNativeQuery(qS));
         /*return getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
                 .setParameter("pushApplicationID", pushApplicationID));*/
@@ -120,45 +128,65 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     @Override
     public Map<String, Long> countInstallationsByType(String pushApplicationID) {
 
+        // hibernate ogm doesnt support aggregation queries
 
-        String qS = String.format("db.push_application.find( {'pushApplicationID' : '%s'}, {'variants' : 1 } )",pushApplicationID);
-        Object [] pa = (Object[]) entityManager.createNativeQuery(qS).getSingleResult();
-
-        BasicDBList variants = (BasicDBList) pa[1];
-
-
-        StringBuilder sb = new StringBuilder();
-
-        Iterator i = variants.iterator();
-        while(i.hasNext())
-        {
-            sb.append("'").append(i.next()).append("'");
-            if(i.hasNext())
-            {
-                sb.append(",");
-            }
-        }
-
-
+        final List<Object[]> resultList = new ArrayList<Object[]>();
         final HashMap<String, Long> results = new HashMap<String, Long>();
 
         for (VariantType type : VariantType.values()) {
             results.put(type.getTypeName(), 0L);
         }
 
-        // main query
-        String qSM = String.format("db.installation.aggreagate( " +
-                "{ '$group' : {_id:'$province'}  } )", sb.toString());
 
-        final List<Object[]> resultList = new ArrayList<Object[]>();
+        String qS = String.format("db.push_application.find( {'api_key' : '%s'} )",pushApplicationID);
+        PushApplication pa = (PushApplication) entityManager.createNativeQuery(qS, PushApplication.class).getSingleResult();
 
-        for (Object[] objects : resultList) {
-            final Long value = (Long) objects[2];
-            final VariantType variantType = (VariantType) objects[0];
-            results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
-            results.put((String) objects[1], value);
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = new MongoClient( "localhost" , 27017 );
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
 
+        DB db = mongoClient.getDB( "unifiedpush" );
+        DBCollection installation = db.getCollection( "variant" );
+
+
+        DBObject match  = BasicDBObjectBuilder.start().push("$match")
+                .add("push_application_id", pa.getId()).get();
+        DBObject group = BasicDBObjectBuilder.start().push("$group")
+                .push("_id").add("variant_type","$VARIANT_TYPE").add("id", "$_id").pop()
+                .push("sum").add("$sum", 1).get();
+
+
+
+        AggregationOutput aggr = installation.aggregate(Arrays.asList(match, group));
+        Iterator<DBObject> i = aggr.results().iterator();
+
+        DBObject o;
+        while (i.hasNext())
+        {
+            o = i.next();
+            String variantString = (String) ((DBObject)o.get("_id")).get("variant_type");
+            String id =  (String) ((DBObject)o.get("_id")).get("id");
+            String qS2 = String.format("db.installation.count({'variant_id': '%s'})",id);
+            Long l = (Long) entityManager.createNativeQuery(qS2).getSingleResult();
+            Integer sum = (Integer) o.get("sum");
+
+
+            VariantType variantType = null;
+            Long value = l * sum;
+
+            if (variantString.equals("simplePush") )
+                variantType = VariantType.valueOf("SIMPLE_PUSH");
+            else {
+                variantType = VariantType.valueOf(variantString.toUpperCase());
+            }
+
+            results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
+            results.put(id, value);
+
+        }
 
         /*
         final String jpql = "select v.type, v.variantID, count(*) from Installation i join i.variant v where i.variant.variantID in "
@@ -201,7 +229,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 sb.append(",");
         }
 
-        String qS = String.format("{ $query : { 'variants' : { '$in' : [%s] } } }", sb.toString());
+        String qS = String.format("db.push_application.find( { 'variants': { '$in' : [%s] } } )", sb.toString());
         return createNativeQuery(qS).getResultList();
         /*
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
@@ -237,7 +265,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public PushApplication findAllByPushApplicationID(String pushApplicationID) {
-        String qS = String.format("{ $query: { 'pushApplicationID' : '%s'} }",pushApplicationID);
+        String qS = String.format("{ $query: { 'api_key' : '%s'} }",pushApplicationID);
         return getSingleResultForQuery(createNativeQuery(qS));
         /*return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
