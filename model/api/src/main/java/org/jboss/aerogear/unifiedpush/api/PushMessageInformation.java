@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -26,26 +27,41 @@ import java.util.Set;
 /**
  * Metadata object that contains various informations around a submitted push message request
  */
-@Entity
+@Entity(name = "push_message_info")
 public class PushMessageInformation extends BaseModel {
 
     private static final long serialVersionUID = -3855047068913784279L;
 
     @NotNull
+    @Column(name = "push_application_id")
     private String pushApplicationId;
 
+    @Column(name = "raw_json_message")
     private String rawJsonMessage;
+    @Column(name = "ip_address")
     private String ipAddress;
+    @Column(name = "client_identifier")
     private String clientIdentifier;
 
+    @Column(name = "submit_date")
     private Date submitDate = new Date();
+
+    @Column(name = "total_receivers")
     private Long totalReceivers = 0L;
 
+    @Column(name = "app_open_counter")
     private Long appOpenCounter = 0L;
+
+    @Column(name = "first_open_date")
     private Date firstOpenDate;
+
+    @Column(name = "last_open_date")
     private Date lastOpenDate;
 
+    @Column(name = "served_variants")
     private Integer servedVariants = 0;
+
+    @Column(name = "total_variants")
     private Integer totalVariants = 0;
 
     @OneToMany

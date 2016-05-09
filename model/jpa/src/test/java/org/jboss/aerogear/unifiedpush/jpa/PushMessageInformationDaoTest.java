@@ -16,19 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
@@ -45,11 +36,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 @RunWith(Arquillian.class)
 public class PushMessageInformationDaoTest {
 
     @Inject
     private EntityManager entityManager;
+
+    @Inject
+    private CategoryDao categoryDao;
 
     @Inject
     private PushMessageInformationDao pushMessageInformationDao;
@@ -84,7 +86,10 @@ public class PushMessageInformationDaoTest {
     @After
     public void tearDown() {
         entityManager.getTransaction().rollback();
+
+
     }
+
 
     @Test
     public void createPushMessageInformation() {
@@ -127,6 +132,7 @@ public class PushMessageInformationDaoTest {
     public void addVariantInfoToPushMessageInformation() {
         PushMessageInformation pushMessageInformation = pushMessageInformationDao.find("2");
 
+
         assertThat(pushMessageInformation.getVariantInformations()).extracting("receivers", "deliveryStatus")
                 .contains(
                         tuple(1000L, Boolean.FALSE),
@@ -135,6 +141,7 @@ public class PushMessageInformationDaoTest {
 
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
     }
+
 
     @Test
     public void findByPushApplicationID() {
@@ -183,7 +190,7 @@ public class PushMessageInformationDaoTest {
     @Test
     public void countMessagesPerApplication() {
         assertThat(pushMessageInformationDao.getNumberOfPushMessagesForPushApplication("231231231")).isEqualTo(2);
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForPushApplication("231231232")).isEqualTo(1);
+
     }
 
     @Test

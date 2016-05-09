@@ -125,15 +125,37 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 p["type"] = int(p["type"])
                 all_variants.append(p)
     store_packets(mongo_client,database, collection, all_variants)
-    # push_message_info
+    # push_message_info ------------------------------------------------------------------------------------------------
     collection = "push_message_info"
     cur.execute("SELECT * FROM " + collection)
     packet_list = cur.fetchall()
     for p in packet_list:
         p["_id"] = p["id"]
         del p["id"]
+        if p["served_variants"] is None:
+            p["served_variants"] = 0
+
+        if p["served_variants"] is None:
+            p["served_variants"] = 0
+
+        if p["app_open_counter"] is None:
+            p["app_open_counter"] = 0L
+
+        if p["total_variants"] is None:
+            p["total_variants"] = 0
+
+        if p["total_receivers"] is None:
+            p["total_receivers"] = 0L
+
+        cur.execute("SELECT id FROM variant_metric_info WHERE push_message_info_id = " + p["_id"])
+        variant_infos = cur.fetchall()
+        p["variantInformations"] = [ str(d['id']) for d in variant_infos]
+
+
+
 
     store_packets(mongo_client,database, collection, packet_list, ["submit_date", "total_receivers", "app_open_counter"])
+
     # variant_metric_info
     collection = "variant_metric_info"
     cur.execute("SELECT * FROM " + collection)
@@ -167,7 +189,6 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
     for p in packet_list:
         cur.execute("SELECT id FROM variant WHERE api_key = " + p["id"])
         app_variants = cur.fetchall()
-        print app_variants
         p["_id"] = p["id"]
         del p["id"]
         p["variants"] = [ str(d['id']) for d in app_variants]
@@ -176,7 +197,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
 
 #-----------------------------------------------------------------------------------------
 
-database = 'uni_push_application'
+database = 'uni_push_message_info'
 mysql_server = 'localhost'
 mongo_server = 'localhost'
 mysql_user = 'root'
