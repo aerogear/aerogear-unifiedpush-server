@@ -90,6 +90,11 @@ public class PushMessageInformationDaoTest {
 
     }
 
+    @Test
+    public void test()
+    {
+        System.out.print(entityManager.getEntityManagerFactory().getProperties());
+    }
 
     @Test
     public void createPushMessageInformation() {

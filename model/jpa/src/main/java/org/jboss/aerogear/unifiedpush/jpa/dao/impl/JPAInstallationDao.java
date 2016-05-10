@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.jpa.MyMongoClient;
 
 import javax.inject.Inject;
 import java.net.UnknownHostException;
@@ -196,13 +197,12 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch) {
         // the required part: Join + all tokens for variantID;
 
-        MongoClient mongoClient = null;
+        DB db = null;
         try {
-            mongoClient = new MongoClient( "localhost" , 27017 );
+            db = MyMongoClient.getDB(entityManager);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        DB db = mongoClient.getDB( "unifiedpush" );
 
         DBCollection installation = db.getCollection( "installation" );
 

@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.jpa.MyMongoClient;
 
 import javax.inject.Inject;
 import java.net.UnknownHostException;
@@ -141,14 +142,13 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
         String qS = String.format("db.push_application.find( {'api_key' : '%s'} )",pushApplicationID);
         PushApplication pa = (PushApplication) entityManager.createNativeQuery(qS, PushApplication.class).getSingleResult();
 
-        MongoClient mongoClient = null;
+
+        DB db = null;
         try {
-            mongoClient = new MongoClient( "localhost" , 27017 );
+            db = MyMongoClient.getDB(entityManager);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-        DB db = mongoClient.getDB( "unifiedpush" );
         DBCollection installation = db.getCollection( "variant" );
 
 

@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+import org.jboss.aerogear.unifiedpush.jpa.MyMongoClient;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.persistence.Query;
@@ -98,14 +99,13 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         q.setFirstResult(page * pageSize).setMaxResults(pageSize);
         List<PushMessageInformation> pushMessageInformationList = q.getResultList();
 
-        MongoClient mongoClient = null;
+
+        DB db = null;
         try {
-            mongoClient = new MongoClient( "localhost" , 27017 );
+            db = MyMongoClient.getDB(entityManager);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-        DB db = mongoClient.getDB( "unifiedpush" );
         DBCollection installation = db.getCollection( "push_message_info" );
 
 
