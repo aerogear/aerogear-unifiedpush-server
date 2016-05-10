@@ -49,7 +49,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     private static final Set<String> GCM_ERROR_CODES =
             new HashSet<String>(Arrays.asList(
                     Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
-                    Constants.ERROR_NOT_REGISTERED)        // The user has uninstalled the application or turned off notifications.
+                    Constants.ERROR_NOT_REGISTERED,        // The user has uninstalled the application or turned off notifications.
+                    Constants.ERROR_MISMATCH_SENDER_ID)    // incorrect token, from a different project/sender ID
             );
 
     @Inject
