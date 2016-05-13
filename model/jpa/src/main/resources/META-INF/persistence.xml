@@ -17,6 +17,7 @@
     limitations under the License.
 
 -->
+<!--
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="unifiedpush-default" transaction-type="JTA">
     <description>UnifiedPush Persistence Unit</description>
@@ -34,4 +35,39 @@
     </properties>
   </persistence-unit>
 
+</persistence>
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="unifiedpush-default" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+
+        <class>org.jboss.aerogear.unifiedpush.api.Category</class>
+        <class>org.jboss.aerogear.unifiedpush.api.BaseModel</class>
+        <class>org.jboss.aerogear.unifiedpush.api.Variant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.AdmVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.AndroidVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.iOSVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.SimplePushVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant</class>
+        <class>org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant</class>
+
+        <class>org.jboss.aerogear.unifiedpush.api.PushApplication</class>
+        <class>org.jboss.aerogear.unifiedpush.api.VariantMetricInformation</class>
+        <class>org.jboss.aerogear.unifiedpush.api.PushMessageInformation</class>
+        <class>org.jboss.aerogear.unifiedpush.api.Installation</class>
+
+
+        <properties>
+            <property name="hibernate.ogm.datastore.provider" value="mongodb" />
+            <property name="hibernate.ogm.datastore.host" value="localhost" />
+            <property name="hibernate.ogm.datastore.port" value="27017" />
+            <property name="hibernate.ogm.datastore.database" value="unifiedpush" />
+            <property name="hibernate.ogm.datastore.create_database" value="true" />
+        </properties>
+    </persistence-unit>
 </persistence>
