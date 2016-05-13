@@ -102,7 +102,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 # merge
                 p = v.copy()
                 p.update(v2)
-                p["_id"] = str(p["id"])
+                p["_id"] = v['VARIANT_TYPE'] + str(p["id"])
                 del p["id"]
                 p["type"] = int(p["type"])
                 all_variants.append(p)
@@ -114,7 +114,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 # merge
                 p = v.copy()
                 p.update(v2)
-                p["_id"] = p["id"]
+                p["_id"] = v['VARIANT_TYPE'] + str(p["id"])
                 del p["id"]
                 if "production" in p:
                     if p["production"] == '\x01':
@@ -147,7 +147,9 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
         if p["total_receivers"] is None:
             p["total_receivers"] = 0L
 
-        cur.execute("SELECT id FROM variant_metric_info WHERE push_message_info_id = " + p["_id"])
+
+
+        cur.execute("SELECT id FROM variant_metric_info WHERE push_message_info_id = %s ", (p["_id"]))
         variant_infos = cur.fetchall()
         p["variantInformations"] = [ str(d['id']) for d in variant_infos]
 
@@ -187,7 +189,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
     cur.execute("SELECT * FROM " + collection)
     packet_list = cur.fetchall()
     for p in packet_list:
-        cur.execute("SELECT id FROM variant WHERE api_key = " + p["id"])
+        cur.execute("SELECT id FROM variant WHERE api_key = %s",(p["id"]))
         app_variants = cur.fetchall()
         p["_id"] = p["id"]
         del p["id"]
@@ -197,7 +199,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
 
 #-----------------------------------------------------------------------------------------
 
-database = 'uni_push_message_info'
+database = 'unifiedpush'
 mysql_server = 'localhost'
 mongo_server = 'localhost'
 mysql_user = 'root'
