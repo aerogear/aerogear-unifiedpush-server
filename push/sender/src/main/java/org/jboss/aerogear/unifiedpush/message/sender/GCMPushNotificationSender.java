@@ -49,7 +49,8 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     private static final Set<String> GCM_ERROR_CODES =
             new HashSet<String>(Arrays.asList(
                     Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
-                    Constants.ERROR_NOT_REGISTERED)        // The user has uninstalled the application or turned off notifications.
+                    Constants.ERROR_NOT_REGISTERED,        // The user has uninstalled the application or turned off notifications.
+                    Constants.ERROR_MISMATCH_SENDER_ID)    // incorrect token, from a different project/sender ID
             );
 
     @Inject
@@ -143,11 +144,13 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to GCM topic: %s", topic));
                 Result result = sender.sendNoRetry(gcmMessage, topic);
 
-                logger.info("Response from GCM: " + result);
+                logger.finest("Response from GCM topic request: " + result);
             }
         } else {
             logger.info(String.format("Sent push notification to GCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, pushTargets);
+
+            logger.finest("Response from GCM request: " + multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);

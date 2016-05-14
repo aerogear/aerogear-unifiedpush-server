@@ -29,7 +29,7 @@ public class AndroidVariant extends Variant {
     @Size(min = 1, max = 255, message = "Google Cloud Messaging Key must be max. 255 chars long")
     private String googleKey;
 
-    @Size(min = 1, max = 255, message = "Project Number must be max. 255 chars long")
+    @Size(max = 255, message = "Project Number must be max. 255 chars long")
     private String projectNumber;
 
     /**
