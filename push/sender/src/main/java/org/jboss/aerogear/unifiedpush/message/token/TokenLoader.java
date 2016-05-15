@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.message.token;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -22,6 +22,10 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.message.Criteria;
+import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
+import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
@@ -125,23 +129,66 @@ public class TokenLoader {
 
         logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
         for (Variant variant : variants) {
-            ResultsStream<String> tokenStream =
-                clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
-                                         .fetchSize(configuration.batchSize())
-                                         .executeQuery();
 
             try {
+
+                ResultsStream<String> tokenStream;
+                final Set<String> topics = new TreeSet<>();
+                final boolean isAndroid = variantType.equals(VariantType.ANDROID);
+
+                // the entire batch size
+                int batchesToLoad= configuration.batchesToLoad();
+
+                // Some checks for GCM, because of GCM-3 topics
+                if (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria)) {
+
+                    // If we are able to do push for GCM topics...
+
+                    // 1)
+                    // find all topics, BUT only on the very first round of batches
+                    // otherwise after 10 (or what ever the max. is) another request would be sent to that topic
+                    if (serialId == 0) {
+                        topics.addAll(TokenLoaderUtils.extractGCMTopics(criteria, variant.getVariantID()));
+
+                        // topics are handled as a first extra batch,
+                        // therefore we have to adjust the number by adding this extra batch
+                        batchesToLoad = batchesToLoad + 1;
+                    }
+
+                    // 2) always load the legacy tokens, for all number of batch iterations
+                    tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
+                            .fetchSize(configuration.batchSize())
+                            .executeQuery();
+                } else {
+                    tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
+                            .fetchSize(configuration.batchSize())
+                            .executeQuery();
+                }
+
                 String lastTokenInBatch = null;
                 int tokensLoaded = 0;
-                for (int batchNumber = 0; batchNumber < configuration.batchesToLoad(); batchNumber++) {
-                    Set<String> tokens = new TreeSet<String>();
-                    for (int i = 0; i < configuration.batchSize() && tokenStream.next(); i++) {
-                        lastTokenInBatch = tokenStream.get();
-                        tokens.add(lastTokenInBatch);
-                        tokensLoaded += 1;
+                for (int batchNumber = 0; batchNumber < batchesToLoad; batchNumber++) {
+
+                    // increasing the serial ID,
+                    // to make sure it's properly read from all block
+                    ++serialId;
+
+                    final Set<String> tokens = new TreeSet<>();
+
+                    // On Android, the first batch is for GCM3 topics
+                    // legacy tokens are submitted in the batch #2 and later
+                    if (isAndroid && batchNumber == 0 && ! topics.isEmpty()) {
+                        tokens.addAll(topics);
+                    } else {
+                        for (int i = 0; i < configuration.batchSize() && tokenStream.next(); i++) {
+                            lastTokenInBatch = tokenStream.get();
+                            tokens.add(lastTokenInBatch);
+                            tokensLoaded += 1;
+                        }
                     }
+
                     if (tokens.size() > 0) {
-                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId))) {
+                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
                             logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
                         } else {
                             logger.fine(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
@@ -149,17 +196,18 @@ public class TokenLoader {
                             return;
                         }
 
-
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                         if (serialId == MessageHolderWithVariants.INITIAL_SERIAL_ID) {
                             triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(msg.getPushMessageInformation(), variant));
                         }
                     } else {
+                        logger.fine(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
                         break;
                     }
                 }
-                // should we load next batch ?
+
+                // should we trigger next transaction?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
                     logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
@@ -172,6 +220,8 @@ public class TokenLoader {
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
+                        logger.warning("Check your push query: Not a single token was loaded from the DB!");
+
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
                         variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
                         variantMetricInformation.setVariantID(variant.getVariantID());

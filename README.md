@@ -1,5 +1,8 @@
-# UnifiedPush Server [![Build Status](https://travis-ci.org/C-B4/unifiedpush-server.svg?branch=master)](https://travis-ci.org/C-B4/unifiedpush-server)
-The _UnifiedPush Server_ is a free and open source mobile application server that allows sending push notifications to different (mobile) platforms and has support for:
+# UnifiedPush Server
+
+[![Build Status](https://travis-ci.org/C-B4/unifiedpush-server.svg?branch=master)](https://travis-ci.org/C-B4/unifiedpush-server)
+[![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Google Cloud Messaging (GCM)](http://developer.android.com/google/gcm/index.html)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
@@ -39,6 +42,20 @@ For the on-premise version, execute the following steps to get going!
 Now go to ``http://localhost/unifiedpush-server`` and enjoy the UnifiedPush Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
+#### Getting Started with Clustered Servers
+
+In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
+
+And in a second terminal:
+
+    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
+
+Note: on OS X, you need to enable multicast first:
+
+    # Adds a multicast route for 224.0.0.1-231.255.255.254
+    sudo route add -net 224.0.0.0/5 127.0.0.1
 
 #### Getting Started with Clustered Servers
 
@@ -72,23 +89,55 @@ Up to date generated REST endpoint documentation can be found in `jaxrs/target/m
 
 We have a list of users in our [wiki](https://github.com/C-B4/unifiedpush-server/wiki/Users-of-the-UnifiedPush-Server). If you are using the UnifiedPush Server, please add yourself to the list!
 
-## Development 
+## Development
 
 The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
 
 
-### Deployment 
+### Deployment
 
-For deployment of the `master branch` to a specific server (Wildfly or EAP 6.3), you need to build the WAR files and deploy them to a running and configured server.
+For deployment of the `master branch` to a specific server (Wildfly-10 or EAP7), you need to build the WAR files and deploy them to a running and configured server.
 
 First build the entire project:
 ```
 mvn clean install
 ```
 
+Note, this will build the also the WAR files for both, WildFly-10 and EAP7.
+
+#### Deployment to WildFly/EAP7
+
+For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
+
+```
+cd servers
+mvn wildfly:deploy -Pwildfly
+```
+
+### AdminUI and its release
+
+The sources for administration console UI are placed under `admin-ui`.
+
+For a build of the `admin-ui` during release, you can just run a Maven build, the `admin-ui` will be compiled by `frontend-maven-plugin` during `admin-ui` module build.
+
+For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/C-B4/unifiedpush-server/blob/master/admin-ui/README.md).
+
+These instructions contains also specific instructions how to upgrade NPM package dependencies.
+
+Note that the {{frontend-maven-plugin}} may fail if you killed the build during its work - it may leave the downloaded modules in inconsistent state, see [`admin-ui/README.md`](https://github.com/C-B4/unifiedpush-server/blob/master/admin-ui/README.md#build-errors).
+
+#### Cleaning the Admin UI build
+
+In order to clean the state of Admin UI build caches, run maven build with the following parameter
+
+    mvn clean install -Dfrontend.clean.force
+
+Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
+
+
 ## Deprecation Notices
 
-###  1.1.0
+###  1.1.x
 
 *Chrome Packaged Apps*
 

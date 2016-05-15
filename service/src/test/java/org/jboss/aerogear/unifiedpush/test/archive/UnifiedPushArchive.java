@@ -34,19 +34,19 @@ public abstract class UnifiedPushArchive <T extends Archive<T>> extends WebConta
     }
 
     public abstract T addMavenDependencies(String... deps);
-    
+
     /**
      * Add maven Dependency Library, include transitive dependencies.
      * Find resource (findR) is replaced eith new resource.
      */
     public abstract T addAsLibrary(String mavenDependency, String[] findR, String[] replaceR);
-    
+
     public abstract T withMockito();
-    
+
     public abstract T withAssertj();
-    
+
     public abstract T withLang();
-    
+
     public abstract T withHttpclient();
 
     public abstract T withServices();
@@ -54,4 +54,5 @@ public abstract class UnifiedPushArchive <T extends Archive<T>> extends WebConta
     public abstract T withDAOs();
 
     public abstract T withApi();
+
 }

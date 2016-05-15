@@ -23,6 +23,7 @@ import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
  * or user-agent (SimplePush)

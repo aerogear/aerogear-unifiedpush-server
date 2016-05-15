@@ -56,7 +56,6 @@
             <artifactId>hibernate-core</artifactId>
             <scope>provided</scope>
         </dependency>
-
 	</dependencies>
 
 	<repositories>
@@ -205,5 +204,4 @@
 			</dependencies>
 		</profile>
 	</profiles>
-
 </project>

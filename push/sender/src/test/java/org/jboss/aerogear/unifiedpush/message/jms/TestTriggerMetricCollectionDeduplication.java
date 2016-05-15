@@ -43,6 +43,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
 
     @Deployment
     public static WebArchive archive() {
+
         return UnifiedPushSenderArchive.forTestClass(TestTriggerMetricCollectionDeduplication.class)
                 .withMessaging()
                 .withMessageDrivenBeans()

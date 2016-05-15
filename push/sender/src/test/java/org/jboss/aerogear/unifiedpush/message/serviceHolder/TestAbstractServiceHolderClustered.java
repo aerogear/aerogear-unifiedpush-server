@@ -30,6 +30,10 @@ import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
+
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
+import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.TargetsContainer;

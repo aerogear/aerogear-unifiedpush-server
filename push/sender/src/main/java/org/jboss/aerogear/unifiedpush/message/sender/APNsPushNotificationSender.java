@@ -117,16 +117,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             builder.localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
 
-        //this kind of check should belong in java-apns
-        if(apns.getLocalizedKey() != null) {
-            builder.localizedKey(apns.getLocalizedKey()); // Localized Key;
-        }
-
-        //this kind of check should belong in java-apns
-        if(apns.getLocalizedArguments() != null) {
-            builder.localizedArguments(apns.getLocalizedArguments()); // Localized Arguments;
-        }
-
        // apply the 'content-available:1' value:
         if (apns.isContentAvailable()) {
             // content-available is for 'silent' notifications and Newsstand
@@ -175,7 +165,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             service.push(tokens, apnsMessage, expireDate);
 
             logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
-
             apnsServiceHolder.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {
                 @Override
                 public void destroy(ApnsService instance) {

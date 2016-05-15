@@ -27,6 +27,19 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 /**
  *
  * Class for serializing Priority enums.
+=======
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.jboss.aerogear.unifiedpush.message.Priority;
+
+/**
+ *
+ * Class for serializing Priority enums.
+ *
+ * @author Summers Pittman
+>>>>>>> upstream/master
  */
 public final class PrioritySerializer extends JsonSerializer<Priority> {
 

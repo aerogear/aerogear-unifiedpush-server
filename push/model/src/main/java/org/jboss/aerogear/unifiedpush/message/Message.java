@@ -55,6 +55,7 @@ public class Message implements Serializable {
     @JsonSerialize(using=PrioritySerializer.class)
     @JsonDeserialize(using=PriorityDeserializer.class)
     private Priority priority = NORMAL;
+
     private String consolidationKey;
 
     private Windows windows = new Windows();

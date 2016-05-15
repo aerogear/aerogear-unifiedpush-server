@@ -246,7 +246,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      * @param pushApplicationID id of {@link PushApplication}
      * @return                  updated {@link PushApplication}
      *
-     * @statuscode 204 The MasterSecret for Push Application reset successfully
+     * @statuscode 200 The MasterSecret for Push Application reset successfully
      * @statuscode 404 The requested PushApplication resource does not exist
      */
     @PUT

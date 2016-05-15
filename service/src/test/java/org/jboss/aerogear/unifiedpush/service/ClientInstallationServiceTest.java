@@ -488,13 +488,31 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device3);
 
+        Installation device4 = new Installation();
+        device4.setDeviceToken("01234567891:" + TestUtils.generateFakedDeviceTokenString());
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
+        device4.setCategories(categories);
+        clientInstallationService.addInstallationSynchronously(androidVariant, device4);
+
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
 
-        assertThat(queriedTokens).hasSize(3);
+        assertThat(queriedTokens).hasSize(4);
         assertThat(queriedTokens).contains(
                 device1.getDeviceToken(),
                 device2.getDeviceToken(),
+                device3.getDeviceToken(),
+                device4.getDeviceToken()
+        );
+        final List<String> legacyTokenz = findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
+
+        assertThat(legacyTokenz).hasSize(3);
+        assertThat(legacyTokenz).contains(
+                device1.getDeviceToken(),
+                device2.getDeviceToken(),
                 device3.getDeviceToken()
+        );
+        assertThat(legacyTokenz).doesNotContain(
+                device4.getDeviceToken()
         );
     }
 
@@ -643,6 +661,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
             ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            List<String> list = new ArrayList<String>();
+            while (tokenStream.next()) {
+                list.add(tokenStream.get());
+            }
+            return list;
+        } catch (ResultStreamException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private List<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+        try {
+            ResultsStream<String> tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
             List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());

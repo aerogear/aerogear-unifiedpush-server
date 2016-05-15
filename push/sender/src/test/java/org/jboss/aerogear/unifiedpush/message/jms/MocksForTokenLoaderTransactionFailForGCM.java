@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,12 +49,13 @@ public class MocksForTokenLoaderTransactionFailForGCM  {
      *
      * @return mock {@link ClientInstallationService} that generates fake unique Android tokens
      */
-    @Produces
+    @SuppressWarnings("unchecked")
+	@Produces
     public ClientInstallationService getClientInstallationService() {
 
         ClientInstallationService mock = mock(ClientInstallationService.class);
 
-        when(mock.findAllDeviceTokenForVariantIDByCriteria(Mockito.anyString(), Mockito.anyList(), Mockito.anyList(), Mockito.anyList(), Mockito.anyInt(), Mockito.anyString())).thenAnswer(new Answer<QueryBuilder<String>>() {
+        when(mock.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(Mockito.anyString(), Mockito.anyList(), Mockito.anyList(), Mockito.anyList(), Mockito.anyInt(), Mockito.anyString())).thenAnswer(new Answer<QueryBuilder<String>>() {
             @Override
             public QueryBuilder<String> answer(InvocationOnMock invocation) throws Throwable {
                 return new QueryBuilder<String>() {
@@ -72,7 +74,7 @@ public class MocksForTokenLoaderTransactionFailForGCM  {
                             @Override
                             public String get() throws ResultStreamException {
                                 if (counter >= 0) {
-                                    return "eHlfnI0__dI:APA91bEhtHefML2lr_sBQ-bdXIyEn5owzkZg_p_y7SRyNKRMZ3XuzZhBpTOYIh46tqRYQIc-7RTADk4nM5H-ONgPDWHodQDS24O5GuKP8EZEKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-" + counter;
+                                    return "APA91bEhtHefML2lr_sBQ-bdXIyEn5owzkZg_p_y7SRyNKRMZ3XuzZhBpTOYIh46tqRYQIc-7RTADk4nM5H-ONgPDWHodQDS24O5GuKP8EZEKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-" + counter;
                                 }
                                 return null;
                             }

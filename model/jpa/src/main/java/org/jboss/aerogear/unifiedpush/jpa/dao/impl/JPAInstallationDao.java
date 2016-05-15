@@ -16,17 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.persistence.TypedQuery;
-
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -37,12 +26,29 @@ import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
+import javax.persistence.TypedQuery;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
     private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
                     + " from Installation installation"
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
+
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY = "select distinct installation.deviceToken"
+                    + " from Installation installation"
+                    + " left join installation.categories c "
+                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true AND locate(':', installation.deviceToken) = 0";
+
+
 
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
                     + " JOIN installation.variant v"
@@ -146,15 +152,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
         TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
         query.setParameter("variantID", variantID);
-        return new HashSet<String>(query.getResultList());
+        return new HashSet<>(query.getResultList());
     }
 
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch) {
+    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
-        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        final StringBuilder jpqlString = oldGCM ? new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY) : new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
+        final Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("variantID", variantID);
 
         // apend query conditions based on specified message parameters
