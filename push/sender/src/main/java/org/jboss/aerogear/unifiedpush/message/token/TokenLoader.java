@@ -129,7 +129,6 @@ public class TokenLoader {
 
         logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
         for (Variant variant : variants) {
-
             try {
 
                 ResultsStream<String> tokenStream;
@@ -207,7 +206,7 @@ public class TokenLoader {
                     }
                 }
 
-                // should we trigger next transaction?
+                // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
                     logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
@@ -270,3 +269,4 @@ public class TokenLoader {
         return false;
     }
 }
+

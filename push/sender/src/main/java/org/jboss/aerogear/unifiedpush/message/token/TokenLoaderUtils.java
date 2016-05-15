@@ -16,12 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.token;
 
-import com.google.android.gcm.server.Constants;
-import org.jboss.aerogear.unifiedpush.message.Criteria;
-
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.jboss.aerogear.unifiedpush.message.Criteria;
+
+import com.google.android.gcm.server.Constants;
 
 public final class TokenLoaderUtils {
 
@@ -86,8 +87,7 @@ public final class TokenLoaderUtils {
     /**
      * Checks if the list is empty, and not null
      */
-    private static boolean isEmpty(List list) {
+    private static boolean isEmpty(List<?> list) {
         return (list == null || list.isEmpty());
     }
-
 }

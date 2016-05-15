@@ -106,13 +106,32 @@
 				    <archive>
 				        <manifest>
                             <addClasspath>true</addClasspath>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
 				        <manifestEntries>
+					        <Implementation-Build>${buildNumber}</Implementation-Build>
+                            <Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
 				            <Dependencies>org.infinispan export</Dependencies>
 				        </manifestEntries>
 				    </archive>
 				</configuration>
 			</plugin>
+
+            <!-- To make the current git hash, we use the buildnumber-maven-plugin. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 			<!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
 			<!-- To use, set the JBOSS_HOME environment variable and run: mvn package
 				jboss-as:deploy -->

@@ -48,8 +48,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " left join installation.categories c "
                     + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true AND locate(':', installation.deviceToken) = 0";
 
-
-
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
                     + " JOIN installation.variant v"
                     + " WHERE v.variantID = :variantID";
@@ -152,7 +150,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
         TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
         query.setParameter("variantID", variantID);
-        return new HashSet<>(query.getResultList());
+        return new HashSet<String>(query.getResultList());
     }
 
     @Override

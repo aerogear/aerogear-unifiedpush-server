@@ -146,7 +146,7 @@ public class InstallationDaoTest {
     public void findNoDeviceTokensForAliasOfVariant() {
         String[] alias = { "bar@foo.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-         assertThat(tokens).hasSize(0);
+        assertThat(tokens).hasSize(0);
     }
 
     @Test
