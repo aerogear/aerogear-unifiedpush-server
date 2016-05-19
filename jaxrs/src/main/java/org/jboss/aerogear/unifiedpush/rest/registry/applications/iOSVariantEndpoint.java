@@ -162,7 +162,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      * @param iOSID                 id of {@link iOSVariant}
      * @param updatedForm           new info of {@link iOSVariant}
      *
-     * @statuscode 204 The iOS Variant updated successfully
+     * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested iOS Variant resource does not exist
      */

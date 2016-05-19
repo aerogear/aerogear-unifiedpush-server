@@ -105,7 +105,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
      * @param androidID                 id of {@link AndroidVariant}
      * @param updatedAndroidApplication new info of {@link AndroidVariant}
      *
-     * @statuscode 204 The Android Variant updated successfully
+     * @statuscode 200 The Android Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested Android Variant resource does not exist
      */
