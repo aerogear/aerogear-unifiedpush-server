@@ -104,7 +104,7 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
      * @param androidID             id of {@link AdmVariant}
      * @param updatedAdmApplication new info of {@link AdmVariant}
      *
-     * @statuscode 204 The ADM Variant updated successfully
+     * @statuscode 200 The ADM Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested ADM Variant resource does not exist
      */
