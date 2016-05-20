@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import java.util.UUID;
 public abstract class Variant extends BaseModel {
     private static final long serialVersionUID = -5028062942838899201L;
 
+    @NotNull
     @Size(min = 1, max = 255)
     private String name;
 

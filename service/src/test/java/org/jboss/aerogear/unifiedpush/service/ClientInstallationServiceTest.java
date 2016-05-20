@@ -63,6 +63,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         byte[] certificate= toByteArray(getClass().getResourceAsStream("/cert/certificate.p12"));
         iOSVariant.setCertificate(certificate);
         iOSVariant.setPassphrase("12345678");
+        iOSVariant.setName("iOS Variant Name");
         variantService.addVariant(iOSVariant);
 
         Installation device = new Installation();
