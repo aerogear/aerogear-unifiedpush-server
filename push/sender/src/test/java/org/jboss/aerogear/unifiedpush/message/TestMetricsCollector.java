@@ -134,7 +134,9 @@ public class TestMetricsCollector extends AbstractJMSTest {
         return pmi.getVariantInformations().stream()
                 .filter(v -> vmi.getVariantID().equals(v.getVariantID()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() ->
+                        new IllegalArgumentException("No variant metric found for given id")
+                );
     }
 
     public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {
