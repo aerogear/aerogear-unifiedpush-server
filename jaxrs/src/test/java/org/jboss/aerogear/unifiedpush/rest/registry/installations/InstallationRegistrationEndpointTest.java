@@ -111,7 +111,8 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     public void enableDeviceTest() {
     	// Prepare installation
     	Installation iosInstallation = getDefaultInstallation();
-    	iosInstallation.setAlias("support@test.com");
+    	// Also check case sensitive aliases
+    	iosInstallation.setAlias("SupporT@test.com");
     	try {
 			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
@@ -127,7 +128,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 			// Register alias
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
 			ArrayList<String> aliases = new ArrayList<String>();
-			aliases.add(inst.getAlias());
+			aliases.add("Support@Test.com");
 			applicationService.updateAliasesAndInstallations(app, aliases);
 
 			// ReEnable device
