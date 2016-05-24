@@ -33,9 +33,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
@@ -130,15 +131,11 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     }
 
     protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
-        Set<T> variants = new HashSet<>();
-
-        application.getVariants().forEach(variant -> {
-            if (variant.getClass().equals(type)) {
-                variants.add((T) variant);
-            }
-        });
-
-        return variants;
+        Objects.requireNonNull(type, "type");
+        return application.getVariants().stream()
+                .filter(variant -> variant.getClass().equals(type))
+                .map(variant -> (T) variant)
+                .collect(Collectors.toSet());
     }
 
 }
