@@ -156,7 +156,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     }
 
     /**
-     * Update ADM Variant
+     * Update iOS Variant
      *
      * @param pushApplicationId     id of {@link PushApplication}
      * @param iOSID                 id of {@link iOSVariant}
