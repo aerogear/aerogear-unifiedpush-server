@@ -22,16 +22,25 @@ public class JPAAliasDao extends JPABaseDao<Alias, Long> implements AliasDao {
 	}
 
 	@Override
+	/**
+	 * Match alias by name ignore case
+	 */
 	public Alias findByName(String alias) {
 		List<Alias> results = entityManager
 				.createQuery("select a from Alias a where a.name = :name", Alias.class)
-				.setParameter("name", alias).getResultList();
-		
+				.setParameter("name", alias.toLowerCase()).getResultList();
+
 		if (results.isEmpty()) {
 			return null;
 		}
-		
+
 		return results.get(0);
 	}
 
+	@Override
+	public void create(Alias entity) {
+		// Keep aliases as lower case so we can later match ignore case.
+		entity.setName(entity.getName().toLowerCase());
+		super.create(entity);
+	}
 }
