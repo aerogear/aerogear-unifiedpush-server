@@ -102,7 +102,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 # merge
                 p = v.copy()
                 p.update(v2)
-                p["_id"] = v['VARIANT_TYPE'] + str(p["id"])
+                p["_id"] = str(p["id"])
                 del p["id"]
                 p["type"] = int(p["type"])
                 all_variants.append(p)
@@ -114,7 +114,7 @@ def move_db(mysql_server, mysql_user, mysql_password, mongo_server):
                 # merge
                 p = v.copy()
                 p.update(v2)
-                p["_id"] = v['VARIANT_TYPE'] + str(p["id"])
+                p["_id"] = str(p["id"])
                 del p["id"]
                 if "production" in p:
                     if p["production"] == '\x01':
