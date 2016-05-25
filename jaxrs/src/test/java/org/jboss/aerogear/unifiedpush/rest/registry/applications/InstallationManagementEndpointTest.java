@@ -69,13 +69,10 @@ public class InstallationManagementEndpointTest {
     }
 
     private Link findLinkByRel(LinkHeader linkHeader, String rel) {
-        for (Link link : linkHeader.getLinks()) {
-            if (link.getRelationship().equals(rel)) {
-                return link;
-            }
-        }
-        return null;
-
+        return linkHeader.getLinks().stream()
+                .filter(link -> link.getRelationship().equals(rel))
+                .findFirst()
+                .orElse(null);
     }
 
     private UriInfoImpl getUriInfo() throws URISyntaxException {

@@ -226,9 +226,9 @@ public class InstallationDaoTest {
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
         assertThat(list).hasSize(2);
 
-        for (Installation installation : list) {
+        list.forEach(installation -> {
             installationDao.delete(installation);
-        }
+        });
 
         list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
         assertThat(list).hasSize(0);

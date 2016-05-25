@@ -25,7 +25,6 @@ import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.UpdateStatement;
-import net.iharder.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -33,6 +32,7 @@ import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class CertificateBlobToBase64 implements CustomSqlChange {
@@ -57,7 +57,7 @@ public class CertificateBlobToBase64 implements CustomSqlChange {
                 while ((bytesRead = certificate.read(buffer)) != -1) {
                     stream.write(buffer, 0, bytesRead);
                 }
-                String certificateData = Base64.encodeBytes(stream.toByteArray());
+                final String certificateData = Base64.getEncoder().encodeToString(stream.toByteArray());
 
                 UpdateStatement updateStatement = new UpdateStatement(null, null, "ios_variant")
                         .addNewColumnValue("cert_data", certificateData)

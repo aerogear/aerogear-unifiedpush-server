@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
 import com.notnoop.apns.ApnsService;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -29,9 +28,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -71,9 +70,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
     public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {
         if (msg.getVariantType() == VariantType.IOS) {
-            for (Variant variant : msg.getVariants()) {
-                this.initialize(msg.getPushMessageInformation().getId(), variant.getVariantID());
-            }
+            msg.getVariants().forEach(variant -> initialize(msg.getPushMessageInformation().getId(), variant.getVariantID()));
         }
     }
 
@@ -120,10 +117,6 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
      * LOWER CASE format. This helper method performs a transformation
      */
     private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
-        final Set<String> lowerCaseTokens = new HashSet<String>();
-        for (String token : inactiveTokens) {
-            lowerCaseTokens.add(token.toLowerCase());
-        }
-        return lowerCaseTokens;
+        return inactiveTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
     }
 }

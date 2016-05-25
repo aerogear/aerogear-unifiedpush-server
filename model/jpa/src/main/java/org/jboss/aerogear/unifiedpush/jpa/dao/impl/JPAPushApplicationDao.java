@@ -89,13 +89,13 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
         }
         final TypedQuery<Object[]> query = createQuery(jpql, Object[].class)
                 .setParameter("pushApplicationID", pushApplicationID);
-        final List<Object[]> resultList = query.getResultList();
-        for (Object[] objects : resultList) {
-            final Long value = (Long) objects[2];
-            final VariantType variantType = (VariantType) objects[0];
+
+        query.getResultList().forEach(result -> {
+            final Long value = (Long) result[2];
+            final VariantType variantType = (VariantType) result[0];
             results.put(variantType.getTypeName(), results.get(variantType.getTypeName()) + value);
-            results.put((String) objects[1], value);
-        }
+            results.put((String) result[1], value);
+        });
 
         return results;
     }

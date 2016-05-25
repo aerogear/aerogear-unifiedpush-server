@@ -99,10 +99,8 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     .title(message.getAlert()).build();
         }
 
-        for (String identifier : clientIdentifiers) {
-            mpnsService.push(identifier, notification);
-        }
-
+        // send all out:
+        clientIdentifiers.forEach(clientIdentifier -> mpnsService.push(clientIdentifier, notification));
         logger.info(String.format("Sent push notification to MPNs for %d tokens",clientIdentifiers.size()));
 
         senderCallback.onSuccess();

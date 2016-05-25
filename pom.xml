@@ -149,6 +149,23 @@
 
 
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- Override the actual checkstyle version to support Java 1.8 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${version.checkstyle.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>6.18</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <properties>
@@ -162,9 +179,8 @@
             Options to override the compiler arguments directly on the compiler arument line to separate between what
             the IDE understands as the source level and what the Maven compiler actually use.
         -->
-        <maven.compiler.argument.target>1.8</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.8</maven.compiler.argument.source>
-
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
         <wildfly-maven-plugin.version>1.1.0.Alpha7</wildfly-maven-plugin.version>
 
         <aerogear.bom.version>0.2.20</aerogear.bom.version>
