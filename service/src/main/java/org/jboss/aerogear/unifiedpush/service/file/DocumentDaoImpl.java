@@ -200,7 +200,7 @@ public class DocumentDaoImpl implements DocumentDao {
 		public boolean accept(String pushApp, DocumentType type, String alias, String qualifier, String time,
 				String id) {
 			if (!documentMetadata.getAlias().equalsIgnoreCase(DocumentMetadata.NULL_ALIAS)
-					&& !documentMetadata.getAlias().equals(alias))
+					&& !documentMetadata.getAlias().equalsIgnoreCase(alias))
 				return false;
 			if (documentMetadata.getPushApplication() != null
 					&& !documentMetadata.getPushApplication().getPushApplicationID().equals(pushApp))

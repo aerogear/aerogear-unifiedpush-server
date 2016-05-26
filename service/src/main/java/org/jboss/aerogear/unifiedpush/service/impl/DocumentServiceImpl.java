@@ -102,7 +102,9 @@ public class DocumentServiceImpl implements DocumentService {
 		DocumentMetadata meta = new DocumentMetadata();
 		meta.setPushApplication(pushApplication);
 		meta.setPublisher(publisher);
-		meta.setAlias(alias);
+
+		// Alias is always stored as lowercase, and matched insensitively.
+		meta.setAlias(alias != null && !alias.equalsIgnoreCase(DocumentMetadata.NULL_ALIAS) ? alias.toLowerCase() : alias);
 		meta.setQualifier(qualifier);
 		meta.setId(id);
 		message.setMetadata(meta);
@@ -114,7 +116,9 @@ public class DocumentServiceImpl implements DocumentService {
 		DocumentMetadata message = new DocumentMetadata();
 		message.setPushApplication(pushApplication);
 		message.setPublisher(publisher);
-		message.setAlias(alias);
+
+		// Alias is always stored as lowercase, and matched insensitively.
+		message.setAlias(alias != null && !alias.equalsIgnoreCase(DocumentMetadata.NULL_ALIAS) ? alias.toLowerCase() : alias);
 		message.setQualifier(qualifier);
 		message.setLatest(latest);
 		message.setId(id);
