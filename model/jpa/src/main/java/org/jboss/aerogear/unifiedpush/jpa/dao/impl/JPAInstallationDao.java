@@ -16,6 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.persistence.TypedQuery;
+
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -25,16 +37,6 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
-
-import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
@@ -136,17 +138,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     }
 
     @Override
-	public List<Installation> findInstallationsForVariantsByAlias(List<String> variantIDs, String alias) {
-		return createQuery("select installation from Installation installation " +
-			" join installation.variant abstractVariant " +
-			" where abstractVariant.variantID IN :variantIDs " +
-			" and installation.alias = :alias")
-			.setParameter("variantIDs", variantIDs)
-			.setParameter("alias", alias)
-			.getResultList();
-	}
-
-    @Override
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
         TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
         query.setParameter("variantID", variantID);
@@ -237,25 +228,33 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 .getSingleResult();
     }
 
+    /**
+     * Return list of installations not in aliases list.
+     * Match is case insensitive and expect aliases list to be lowercase letters.
+     */
     @Override
 	public List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
     	return createQuery("select installation from Installation installation " +
     			" join installation.variant abstractVariant " +
     			" where abstractVariant.variantID IN :variantIDs " +
-    			" and installation.alias NOT IN :aliases")
+    			" and LOWER(installation.alias) NOT IN :aliases")
     			.setParameter("variantIDs", variantIDs)
-    			.setParameter("aliases", aliases)
+    			.setParameter("aliases", getAliases(aliases))
     			.getResultList();
 	}
 
+    /**
+     * Return list of installations by aliases list.
+     * Match is case insensitive and expect aliases list to be lowercase letters.
+     */
     @Override
 	public List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases) {
     	return createQuery("select installation from Installation installation " +
     			" join installation.variant abstractVariant " +
     			" where abstractVariant.variantID IN :variantIDs " +
-    			" and installation.alias IN :aliases")
+    			" and LOWER(installation.alias) IN :aliases")
     			.setParameter("variantIDs", variantIDs)
-    			.setParameter("aliases", aliases)
+    			.setParameter("aliases", getAliases(aliases))
     			.getResultList();
 	}
 
@@ -263,20 +262,10 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 	public int removeInstallationsByAlias(String alias) {
 		return entityManager.createQuery(
 				" delete from Installation "
-				+ "where alias = :alias ")
-				.setParameter("alias", alias)
+				+ "where LOWER(alias) = :alias ")
+				.setParameter("alias", alias.toLowerCase())
 				.executeUpdate();
 	}
-
-    @Override
-	public Set<String> filterDisabledDevices(Set<String> aliases) {
-		return new HashSet<>(createQuery("select alias from Installation "
-				+ "where enabled = true "
-				+ "and alias in :aliases", String.class)
-				.setParameter("aliases", aliases)
-				.getResultList());
-	}
-
 
     /**
      *
@@ -293,9 +282,9 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         // are aliases present ??
         if (isListNotEmpty(aliases)) {
             // append the string:
-            jpqlString.append(" AND installation.alias IN :aliases");
+            jpqlString.append(" AND LOWER(installation.alias) IN :aliases");
             // add the params:
-            parameters.put("aliases", aliases);
+            parameters.put("aliases", getAliases(aliases));
         }
 
         // are devices present ??
@@ -324,6 +313,23 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 " join installation.variant abstractVariant" +
                 " where abstractVariant.variantID = :variantID" +
                 " and installation.deviceToken = :deviceToken");
+    }
+
+    /**
+     * Transform alias list to lowercase aliases
+     */
+    private List<String> getAliases(List<String> aliases){
+    	if (!isListNotEmpty(aliases)){
+    		return aliases;
+    	}
+
+    	List<String> lowerAliases = new ArrayList<>();
+
+    	for (String alias: aliases){
+    		lowerAliases.add(alias.toLowerCase());
+    	}
+
+    	return lowerAliases;
     }
 
 }
