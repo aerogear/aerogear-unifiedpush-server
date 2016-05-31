@@ -33,7 +33,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
@@ -83,9 +82,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     }
 
     private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
-        for (Entry<String, Object> entry : parameters.entrySet()) {
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
+        parameters.forEach((k,v) -> query.setParameter(k, v));
         return query;
     }
 
@@ -183,15 +180,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             public ResultsStream<String> executeQuery() {
                 Query hibernateQuery = JPAInstallationDao.this.createHibernateQuery(jpqlString.toString());
                 hibernateQuery.setMaxResults(maxResults);
-                for (Entry<String, Object> parameter : parameters.entrySet()) {
-                    Object value = parameter.getValue();
-                    if (value instanceof Collection<?>) {
-                        hibernateQuery.setParameterList(parameter.getKey(), (Collection<?>) parameter.getValue());
-                    } else {
-                        hibernateQuery.setParameter(parameter.getKey(), parameter.getValue());
-                    }
 
-                }
+                parameters.forEach((k,v) -> {
+					if (v  instanceof Collection<?>) {
+                        hibernateQuery.setParameterList(k, (Collection<?>) v);
+                    } else {
+                        hibernateQuery.setParameter(k, v);
+                    }
+                 });
+
                 hibernateQuery.setReadOnly(true);
                 if (fetchSize != null) {
                     hibernateQuery.setFetchSize(fetchSize);

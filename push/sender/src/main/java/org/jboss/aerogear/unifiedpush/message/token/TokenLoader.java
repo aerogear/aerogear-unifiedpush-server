@@ -128,6 +128,7 @@ public class TokenLoader {
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
         logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
+
         for (Variant variant : variants) {
             try {
 
@@ -139,7 +140,8 @@ public class TokenLoader {
                 int batchesToLoad= configuration.batchesToLoad();
 
                 // Some checks for GCM, because of GCM-3 topics
-                if (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria)) {
+                boolean gcmTopicRequest = (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria));
+                if (gcmTopicRequest) {
 
                     // If we are able to do push for GCM topics...
 
@@ -219,7 +221,11 @@ public class TokenLoader {
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
-                        logger.warning("Check your push query: Not a single token was loaded from the DB!");
+                        if (gcmTopicRequest) {
+                            logger.fine("No legacy(non-InstanceID) tokens found. Just pure GCM topic requests");
+                        } else {
+                            logger.warning("Check your push query: Not a single token was loaded from the DB!");
+                        }
 
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
                         variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
@@ -269,4 +275,3 @@ public class TokenLoader {
         return false;
     }
 }
-

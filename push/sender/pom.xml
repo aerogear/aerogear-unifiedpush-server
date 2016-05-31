@@ -91,11 +91,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.iharder</groupId>
-            <artifactId>base64</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.notnoop.apns</groupId>
             <artifactId>apns</artifactId>
             <exclusions>
@@ -197,6 +192,112 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/TestAbstractServiceHolderClustered.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.aerogear.unifiedpush</groupId>
+                    <artifactId>unifiedpush-service</artifactId>
+                    <type>test-jar</type>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.arquillian.container</groupId>
+                    <artifactId>arquillian-container-chameleon</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.wildfly.extras.creaper</groupId>
+                    <artifactId>creaper-core</artifactId>
+                    <version>1.0.0</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.as</groupId>
+                            <artifactId>jboss-as-controller-client</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.as</groupId>
+                            <artifactId>jboss-as-cli</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.extras.creaper</groupId>
+                    <artifactId>creaper-commands</artifactId>
+                    <version>1.0.0</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.wildfly</groupId>
+                            <artifactId>wildfly-patching</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-controller-client</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-cli</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.core</groupId>
+                    <artifactId>wildfly-patching</artifactId>
+                    <version>2.0.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>cluster</id>
 
             <dependencies>
                 <dependency>

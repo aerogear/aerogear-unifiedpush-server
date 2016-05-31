@@ -66,15 +66,12 @@ public class InstallationManagementEndpointTest {
 		assertThat(findLinkByRel(linkHeader, "last")).isNull();
 	}
 
-	private Link findLinkByRel(LinkHeader linkHeader, String rel) {
-		for (Link link : linkHeader.getLinks()) {
-			if (link.getRelationship().equals(rel)) {
-				return link;
-			}
-		}
-		return null;
-
-	}
+    private Link findLinkByRel(LinkHeader linkHeader, String rel) {
+        return linkHeader.getLinks().stream()
+                .filter(link -> link.getRelationship().equals(rel))
+                .findFirst()
+                .orElse(null);
+    }
 
 	private ResteasyUriInfo getUriInfo() throws URISyntaxException {
 		return new ResteasyUriInfo(new URI("/"), new URI("http://localhost"));

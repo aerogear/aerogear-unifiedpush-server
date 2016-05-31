@@ -16,11 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import net.iharder.Base64;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +31,7 @@ public class HttpBasicHelperTest {
     @Test
     public void extractUsernameAndPasswordFromBasicHeader() {
         final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        final String encodedUserPassword = Base64.encodeBytes("user:password".getBytes());
+        final String encodedUserPassword = Base64.getEncoder().encodeToString("user:password".getBytes(StandardCharsets.UTF_8));
         Mockito.when(request.getHeader("Authorization")).thenReturn("Basic " + encodedUserPassword);
 
         final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);

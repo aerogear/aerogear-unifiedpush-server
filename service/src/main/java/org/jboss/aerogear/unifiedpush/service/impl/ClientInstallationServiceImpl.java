@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.DependsOn;
@@ -198,10 +199,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     public void removeInstallations(List<Installation> installations) {
-        // uh... :)
-        for (Installation installation : installations) {
-            removeInstallation(installation);
-        }
+
+        // uh..., fancy method reference :)
+        installations.forEach(this::removeInstallation);
     }
 
     public void updateInstallation(Installation installation) {
@@ -340,11 +340,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     private List<String> convertToNames(Set<Category> categories) {
-        List<String> result = new ArrayList<String>();
-        for (Category category : categories) {
-            result.add(category.getName());
-        }
-        return result;
+        return categories.stream().map(Category::getName).collect(Collectors.toList());
     }
 
     /*

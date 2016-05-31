@@ -17,18 +17,17 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 
+import org.jboss.aerogear.adm.ADM;
+import org.jboss.aerogear.adm.AdmService;
+import org.jboss.aerogear.adm.PayloadBuilder;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.jboss.aerogear.adm.ADM;
-import org.jboss.aerogear.adm.AdmService;
-import org.jboss.aerogear.adm.PayloadBuilder;
 
 import java.util.Collection;
-import java.util.Set;
 
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
@@ -56,16 +55,15 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         //Handle consolidation key
         builder.consolidationKey(pushMessage.getMessage().getConsolidationKey());
 
-        Set<String> keys = pushMessage.getMessage().getUserData().keySet();
-        for (String key : keys) {
-            builder.dataField(key, pushMessage.getMessage().getUserData().get(key));
-        }
+        pushMessage.getMessage().getUserData().keySet()
+                .forEach(key -> builder.dataField(key, pushMessage.getMessage().getUserData().get(key)));
 
         //add the aerogear-push-id
         builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         final AdmVariant admVariant = (AdmVariant) variant;
-        for(String token : clientIdentifiers) {
+
+        clientIdentifiers.forEach(token -> {
             try {
                 admService.sendMessageToDevice(token, admVariant.getClientId(), admVariant.getClientSecret(),  builder.build());
                 senderCallback.onSuccess();
@@ -73,8 +71,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
                 logger.severe("Error sending payload to ADM server", e);
                 senderCallback.onError(e.getMessage());
             }
-        }
-
+        });
         logger.info(String.format("Sent push notification to Amazon's ADM Server for %d tokens",clientIdentifiers.size()));
     }
 }

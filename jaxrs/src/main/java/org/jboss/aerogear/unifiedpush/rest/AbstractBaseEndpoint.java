@@ -29,10 +29,10 @@ import javax.validation.Validator;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
@@ -73,12 +73,8 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
      * @return 400 Bad Request response, containing details on the constraint violations
      */
     protected ResponseBuilder createBadRequestResponse(Set<ConstraintViolation<?>> violations) {
-        final Map<String, String> responseObj = new HashMap<String, String>();
-
-        for (ConstraintViolation<?> violation : violations) {
-            responseObj.put(violation.getPropertyPath().toString(),
-                                violation.getMessage());
-        }
+        final Map<String, String> responseObj = violations.stream()
+                .collect(Collectors.toMap(v -> v.getPropertyPath().toString(), ConstraintViolation::getMessage));
 
         return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);

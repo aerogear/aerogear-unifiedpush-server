@@ -44,7 +44,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 
 /**
- * An archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An archive for specifying Arquillian micro-deployments with selected parts of
+ * UPS
  */
 public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPushSenderArchive> {
 

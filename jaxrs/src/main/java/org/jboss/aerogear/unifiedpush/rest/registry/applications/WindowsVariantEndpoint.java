@@ -102,7 +102,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
      * @param windowsID             id of {@link WindowsVariant}
      * @param updatedWindowsVariant new info of {@link WindowsVariant}
      *
-     * @statuscode 204 The Windows Variant updated successfully
+     * @statuscode 200 The Windows Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested Windows Variant resource does not exist
      */

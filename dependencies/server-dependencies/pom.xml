@@ -98,11 +98,6 @@
             <artifactId>keycloak-jboss-adapter-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>net.iharder</groupId>
-            <artifactId>base64</artifactId>
-        </dependency>
-
         <!-- resteasy -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>

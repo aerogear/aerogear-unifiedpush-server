@@ -16,19 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import net.iharder.Base64;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.IOException;
-
 public final class HttpBasicHelper {
+
+    private static final String HTTP_BASIC_SCHEME = "Basic ";
 
 	private HttpBasicHelper() {
 	}
 
 	private static boolean isBasic(String authorizationHeader) {
-		return authorizationHeader.startsWith("Basic ");
+        return authorizationHeader.startsWith(HTTP_BASIC_SCHEME);
 	}
 
 	private static String getAuthorizationHeader(HttpServletRequest request) {
@@ -52,20 +54,16 @@ public final class HttpBasicHelper {
 		return new String[] { username, password };
 	}
 
-	public static String extractBasic(String str) {
-		String base64Token = str.substring(6);
-		return decodeBase64(base64Token);
+	public static String extractBasic(String authorizationHeader) {
+		final String base64Token = authorizationHeader.substring(HTTP_BASIC_SCHEME.length());
+		return new String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8);
 	}
 
 	public static String decodeBase64(String str) {
-		try {
-			return new String(Base64.decode(str));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return new String(Base64.getDecoder().decode(str));
 	}
 
 	public static String encodeBase64(String str) {
-		return new String(Base64.encodeBytes(str.getBytes()));
+		return new String(Base64.getEncoder().encode(str.getBytes()));
 	}
 }

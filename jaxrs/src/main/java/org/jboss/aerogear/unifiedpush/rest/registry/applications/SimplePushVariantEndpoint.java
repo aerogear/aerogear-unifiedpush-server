@@ -106,7 +106,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
      * @param simplePushID                  id of {@link SimplePushVariant}
      * @param updatedSimplePushApplication  new info of {@link SimplePushVariant}
      *
-     * @statuscode 204 The SimplePush Variant updated successfully
+     * @statuscode 200 The SimplePush Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested SimplePush Variant resource does not exist
      */

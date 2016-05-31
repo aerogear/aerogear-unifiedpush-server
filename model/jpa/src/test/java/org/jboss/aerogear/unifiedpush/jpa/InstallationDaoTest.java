@@ -226,9 +226,9 @@ public class InstallationDaoTest {
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
         assertThat(list).hasSize(2);
 
-        for (Installation installation : list) {
+        list.forEach(installation -> {
             installationDao.delete(installation);
-        }
+        });
 
         list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
         assertThat(list).hasSize(0);
@@ -246,6 +246,7 @@ public class InstallationDaoTest {
     public void mergeCategories() {
         //given
         final SimplePushVariant variant = new SimplePushVariant();
+        variant.setName("SimplePush Variant Name");
         entityManager.persist(variant);
 
         final Installation installation = new Installation();
@@ -338,6 +339,7 @@ public class InstallationDaoTest {
         installation.setDeviceToken("invalid");
 
         final iOSVariant variant = new iOSVariant();
+        variant.setName("iOS Variant Name");
         variant.setPassphrase("12");
         variant.setCertificate("12".getBytes());
         entityManager.persist(variant);
@@ -365,6 +367,7 @@ public class InstallationDaoTest {
         final Installation installation = new Installation();
         installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");
         final iOSVariant variant = new iOSVariant();
+        variant.setName("iOS Variant Name");
         variant.setPassphrase("12");
         variant.setCertificate("12".getBytes());
 
@@ -381,6 +384,7 @@ public class InstallationDaoTest {
                 + "615fPox8bwoxrTU%3d");
 
         final WindowsWNSVariant variant = new WindowsWNSVariant();
+        variant.setName("Windows Variant Name");
         variant.setClientSecret("12");
         variant.setSid("12");
 
@@ -401,6 +405,7 @@ public class InstallationDaoTest {
                 "VFM2bml3PT0hQVcwQ2puM3g2THgvaWJ0cE9nMzBEUT09");
 
         final AdmVariant variant = new AdmVariant();
+        variant.setName("ADM variant Name");
         variant.setClientSecret("12");
         variant.setClientId("12");
 
@@ -415,6 +420,7 @@ public class InstallationDaoTest {
         installation.setDeviceToken("htp://invalid");
 
         final SimplePushVariant variant = new SimplePushVariant();
+        variant.setName("SimplePush Variant Name");
 
         // when
         deviceTokenTest(installation, variant);
@@ -429,6 +435,7 @@ public class InstallationDaoTest {
                 + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
 
         WindowsMPNSVariant variant = new WindowsMPNSVariant();
+        variant.setName("Windows MPNS Variant Name");
 
         // when
         deviceTokenTest(installation, variant);
@@ -441,6 +448,7 @@ public class InstallationDaoTest {
         installation.setDeviceToken("http://valid/but/you/should/use/https");
 
         final SimplePushVariant variant = new SimplePushVariant();
+        variant.setName("SimplePush Variant Name");
 
         // when
         deviceTokenTest(installation, variant);
@@ -455,6 +463,7 @@ public class InstallationDaoTest {
                 + "T6hcF5unYt965PDwRTRss8");
 
         final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
 
@@ -471,6 +480,24 @@ public class InstallationDaoTest {
                 "EKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-");
 
         final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
+
+        // when
+        deviceTokenTest(installation, variant);
+    }
+
+    @Test
+    public void shouldSaveWhitAndroidInstanceIDtoken() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("cKNPkyd7HBU:APA91bH-GxYBT08qeltVLhFcPxvoT4MN1uRfhR-Q" +
+                "Zns-0KLcZ159tQ14YXPOe4JjemCsGHLQNAqmFZrDNV-wcDqanGXWjHNG9ftNyBEj" +
+                "7RqUOtpP1BEjTxWE4Hk7i1vKT3pyMV_7F8xF");
+
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
 
@@ -501,6 +528,7 @@ public class InstallationDaoTest {
         final String id = android1.getId();
 
         final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
         entityManager.persist(variant);
@@ -581,6 +609,7 @@ public class InstallationDaoTest {
     @Test(expected = PersistenceException.class)
     public void testTooLongDeviceToken() {
         AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Name");
         variant.setGoogleKey("123");
         variant.setProjectNumber("123");
 
@@ -599,6 +628,7 @@ public class InstallationDaoTest {
     @Test
     public void testLongDeviceToken() {
         AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Name");
         variant.setGoogleKey("123");
         variant.setProjectNumber("123");
 

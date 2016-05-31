@@ -38,6 +38,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
@@ -97,11 +98,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
             logger.info(String.format("Sent push notification to WNS for %d  tokens", channelUris.size()));
 
-            for (WnsNotificationResponse response : responses) {
-                if (response.code == HttpServletResponse.SC_GONE) {
-                    expiredClientIdentifiers.add(response.channelUri);
-                }
-            }
+            expiredClientIdentifiers.addAll(responses.stream().filter(response -> response.code == HttpServletResponse.SC_GONE).map(response -> response.channelUri).collect(Collectors.toList()));
             if (!expiredClientIdentifiers.isEmpty()) {
                 logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
@@ -197,9 +194,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
         final UriBuilder uriBuilder = UriBuilder.fromPath("");
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-            uriBuilder.queryParam(entry.getKey(), entry.getValue());
-        }
+
+        data.forEach((k,v) -> uriBuilder.queryParam(k, v));
         if (message != null) {
             uriBuilder.queryParam("message", message);
         }
