@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -110,6 +111,15 @@ public interface ClientInstallationService {
      * @return the installation entity
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+
+
+    /**
+     * Used for Android installations which have less/other categories on repeated registration
+     *
+     * @param installation Installation object containing correct variant property of AndroidVariant class
+     * @param oldCategories categories that device is no longer registered for
+     */
+    void unsubscribeOldTopics(Installation installation, Set<Category> oldCategories);
 
     // ===================   SENDER API   ===================
 
