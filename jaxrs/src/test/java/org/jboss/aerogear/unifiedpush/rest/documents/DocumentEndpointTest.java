@@ -78,7 +78,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// Store document @Path("/{alias}/{qualifier}")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/installation/"
-					+ newInstallation.getAlias() + "/status/null");
+					+ newInstallation.getAlias().toUpperCase() + "/status/null");
 
 			response = target.request()
 					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
@@ -97,7 +97,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			// Update parameter and post again
 			newInstallation.setOperatingSystem("TTT");
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/installation/"
-					+ newInstallation.getAlias() + "/status/null");
+					+ newInstallation.getAlias().toLowerCase() + "/status/null");
 
 			response = target.request()
 					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
@@ -112,7 +112,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// get document @Path("/{publisher}/{alias}/{qualifier}/latest")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
-					+ newInstallation.getAlias() + "/STATUS/null");
+					+ newInstallation.getAlias().toLowerCase() + "/STATUS/null");
 
 			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
@@ -151,7 +151,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 			// Store document @Path("/{alias}/{qualifier}{id}")
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/"
-					+ newInstallation.getAlias() + "/STATUS/55");
+					+ newInstallation.getAlias().toLowerCase() + "/STATUS/55");
 
 			response = target.request()
 					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,

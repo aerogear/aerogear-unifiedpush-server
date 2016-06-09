@@ -140,7 +140,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		try {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
-			documentService.saveForPushApplication(pushApp, alias, entity,
+			documentService.saveForPushApplication(pushApp, DocumentMetadata.getAlias(alias), entity,
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
@@ -169,8 +169,8 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		try {
 			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
-					DocumentMetadata.NULL_ID);
+					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
+					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);
@@ -204,8 +204,8 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		try {
 			// TODO - support snapshot other then latest
 			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
-					DocumentMetadata.NULL_ID);
+					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
+					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);
@@ -241,8 +241,8 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		try {
 			// TODO - support snapshot other then latest
 			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), alias, DocumentMetadata.getQualifier(qualifier),
-					DocumentMetadata.getId(id));
+					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
+					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id));
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
 			logger.severe("Cannot retrieve files for alias", e);
