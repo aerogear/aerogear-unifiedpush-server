@@ -148,7 +148,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
         // copy the "updateable" values:
-        Set<Category> oldCategories = installationToUpdate.getCategories();
         mergeCategories(installationToUpdate, postedInstallation.getCategories());
 
         installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
@@ -165,8 +164,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
         // unsubscribe Android devices from topics that device should no longer be subscribed to
         if (installationToUpdate.getVariant().getType() == VariantType.ANDROID) {
-            oldCategories.removeAll(installationToUpdate.getCategories());
-            unsubscribeOldTopics(installationToUpdate, oldCategories);
+            unsubscribeOldTopics(installationToUpdate);
         }
     }
 
@@ -202,10 +200,17 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     @Asynchronous
-    public void unsubscribeOldTopics(Installation installation, Set<Category> oldCategories) {
+    public void unsubscribeOldTopics(Installation installation) {
         GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());
-        for (Category category : oldCategories) {
-            topicManager.unsubscribe(installation, category);
+        Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
+        // Remove current categories from the set of old ones
+        oldCategories.removeAll(convertToNames(installation.getCategories()));
+
+        // Remove global variant topic because we don't want to unsubscribe it
+        oldCategories.remove(installation.getVariant().getVariantID());
+
+        for (String categoryName : oldCategories) {
+            topicManager.unsubscribe(installation, categoryName);
         }
     }
 

@@ -16,16 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.service.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *  Utility used for Android installations which need to be unsubscribed from topics
@@ -43,17 +49,40 @@ public class GCMTopicManager {
         this.variant = variant;
     }
 
+    public Set<String> getSubscribedCategories(Installation installation) {
+        String url = IIDURL + "info/" + installation.getDeviceToken() + "?details=true";
+        String deviceInfo;
+        try {
+            deviceInfo = get(url);
+        } catch (IOException e) {
+            logger.fine("Couldn't get list of subscribed topics from Instance ID service.");
+            return new HashSet<String>(0);
+        }
+        JSONParser parser = new JSONParser();
+        JSONObject info;
+        try {
+            info = (JSONObject) parser.parse(deviceInfo);
+        } catch (ParseException e) {
+            logger.fine("Couldn't parse list of subscribed topics from Instance ID service.");
+            return new HashSet<String>(0);
+        }
+        JSONObject rel = (JSONObject) info.get("rel");
+        JSONObject topics = (JSONObject) rel.get("topics");
+        return topics.keySet();
+    }
+
+
     /**
      * Unsubscribes device from single category(topic)
      *
      * @param installation Installation object containing correct variant property of AndroidVariant class
      * @param categoryToUnsubscribe category(topic) that device should be unsubscribed from
      */
-    public void unsubscribe(Installation installation, Category categoryToUnsubscribe) {
+    public void unsubscribe(Installation installation, String categoryToUnsubscribe) {
 
         String url = "";
         try {
-            url = IIDURL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe.getName(), "UTF-8");
+            url = IIDURL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             //
         }
@@ -70,15 +99,40 @@ public class GCMTopicManager {
      *
      * @param urlS target URL string
      */
-    protected int delete(String urlS) throws IOException {
+    private int delete(String urlS) throws IOException {
         URL url = new URL(urlS);
+        HttpURLConnection conn = prepareAuthorizedConnection(url);
+        conn.setRequestMethod("DELETE");
+        conn.connect();
+        return conn.getResponseCode();
+    }
+
+    /**
+     * Sends GET HTTP request to provided URL. Request is authorized using Google API key.
+     *
+     * @param urlS target URL string
+     */
+    private String get(String urlS) throws IOException {
+        URL url = new URL(urlS);
+        HttpURLConnection conn = prepareAuthorizedConnection(url);
+        conn.setRequestMethod("GET");
+        // Read response
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder result = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+           result.append(line);
+        }
+        rd.close();
+        return result.toString();
+    }
+
+    private HttpURLConnection prepareAuthorizedConnection(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
         conn.setRequestProperty("Authorization", "key=" + variant.getGoogleKey());
-        conn.setRequestMethod("DELETE");
-        conn.connect();
-        return conn.getResponseCode();
+        return conn;
     }
 
 }
