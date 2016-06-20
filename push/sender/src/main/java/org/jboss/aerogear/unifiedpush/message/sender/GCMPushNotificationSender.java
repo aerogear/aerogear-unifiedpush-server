@@ -130,7 +130,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.
+     * Process the HTTP POST to the GCM infrastructure for the given list of registrationIDs.
      */
     private void processGCM(AndroidVariant androidVariant, List<String> pushTargets, Message gcmMessage, Sender sender) throws IOException {
 
