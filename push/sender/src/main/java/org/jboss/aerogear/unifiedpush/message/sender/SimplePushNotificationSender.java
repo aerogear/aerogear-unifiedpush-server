@@ -43,8 +43,9 @@ public class SimplePushNotificationSender implements PushNotificationSender {
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
-        if (tokens.isEmpty()) {
-            return;
+        if (tokens.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        	logger.fine(String.format("Simple Push message batch to dev/null has been submitted to %s devices.",  tokens.size()));
+        	return;
         }
 
         String payload = pushMessage.getMessage().getSimplePush();

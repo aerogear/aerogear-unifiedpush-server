@@ -15,33 +15,65 @@
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
         <hashTree>
-          <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
-            </elementProp>
-            <stringProp name="HTTPSampler.domain">${SERVER_HOST}</stringProp>
-            <stringProp name="HTTPSampler.port"></stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
-            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path"></stringProp>
-            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-            <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
-          </ConfigTestElement>
-          <hashTree/>
-          <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - Random Alias" enabled="true">
-            <stringProp name="scriptLanguage">groovy</stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="script">def generator = { String alphabet, int n -&gt;
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition"></stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - IOS Token" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">def generator = { String alphabet, int n -&gt;
+  new Random().with {
+    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
+  }
+}
+
+vars.put(&quot;IOS_TOKENID&quot;, generator( ((&apos;a&apos;..&apos;f&apos;)+(&apos;0&apos;..&apos;9&apos;)+(&apos;-&apos;)).join(), 64))</stringProp>
+            </BSFPreProcessor>
+            <hashTree/>
+            <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - Android Token" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">def generator = { String alphabet, int n -&gt;
+  new Random().with {
+    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
+  }
+}
+
+vars.put(&quot;AND_TOKENID&quot;, generator(((&apos;a&apos;..&apos;z&apos;)+(&apos;0&apos;..&apos;9&apos;)+&apos;-_&apos;).join(), 101))</stringProp>
+            </BSFPreProcessor>
+            <hashTree/>
+            <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - Random Alias" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">def generator = { String alphabet, int n -&gt;
   new Random().with {
     (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
   }
 }
 
 vars.put(&quot;ALIAS&quot;, generator( ((&apos;a&apos;..&apos;z&apos;)+(&apos;A&apos;..&apos;Z&apos;)+(&apos;@&apos;)).join(), 16))</stringProp>
-          </BSFPreProcessor>
+            </BSFPreProcessor>
+            <hashTree/>
+          </hashTree>
+          <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${SERVER_HOST}</stringProp>
+            <stringProp name="HTTPSampler.port">${SERVER_PORT}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol">${SERVER_PROTOCOL}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path"></stringProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+          </ConfigTestElement>
           <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Register IOS" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -61,7 +93,7 @@ vars.put(&quot;ALIAS&quot;, generator( ((&apos;a&apos;..&apos;z&apos;)+(&apos;A&
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
-            <stringProp name="HTTPSampler.port">80</stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
@@ -89,19 +121,6 @@ vars.put(&quot;ALIAS&quot;, generator( ((&apos;a&apos;..&apos;z&apos;)+(&apos;A&
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree/>
-            <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - IOS Token" enabled="true">
-              <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="parameters"></stringProp>
-              <stringProp name="filename"></stringProp>
-              <stringProp name="script">def generator = { String alphabet, int n -&gt;
-  new Random().with {
-    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
-  }
-}
-
-vars.put(&quot;IOS_TOKENID&quot;, generator( ((&apos;a&apos;..&apos;f&apos;)+(&apos;0&apos;..&apos;9&apos;)+(&apos;-&apos;)).join(), 64))</stringProp>
-            </BSFPreProcessor>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Register Android" enabled="true">
@@ -150,19 +169,6 @@ vars.put(&quot;IOS_TOKENID&quot;, generator( ((&apos;a&apos;..&apos;f&apos;)+(&a
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree/>
-            <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - Android Token" enabled="true">
-              <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="parameters"></stringProp>
-              <stringProp name="filename"></stringProp>
-              <stringProp name="script">def generator = { String alphabet, int n -&gt;
-  new Random().with {
-    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
-  }
-}
-
-vars.put(&quot;AND_TOKENID&quot;, generator(((&apos;a&apos;..&apos;z&apos;)+(&apos;0&apos;..&apos;9&apos;)+&apos;-_&apos;).join(), 101))</stringProp>
-            </BSFPreProcessor>
             <hashTree/>
           </hashTree>
         </hashTree>

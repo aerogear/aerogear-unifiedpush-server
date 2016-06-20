@@ -113,15 +113,19 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            logger.fine("Sending transformed GCM payload: " + gcmMessage);
+        	if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
+	            logger.fine("Sending transformed GCM payload: " + gcmMessage);
 
-            final Sender sender = new Sender(androidVariant.getGoogleKey());
+	            final Sender sender = new Sender(androidVariant.getGoogleKey());
 
-            // send out a message to a batch of devices...
-            processGCM(androidVariant, pushTargets, gcmMessage, sender);
+	            // send out a message to a batch of devices...
+	            processGCM(androidVariant, pushTargets, gcmMessage, sender);
 
-            logger.fine("Message batch to GCM has been submitted");
-            callback.onSuccess();
+	            logger.fine("Message batch to GCM has been submitted");
+	            callback.onSuccess();
+			} else {
+				logger.fine(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
+			}
 
         } catch (Exception e) {
             // GCM exceptions:
