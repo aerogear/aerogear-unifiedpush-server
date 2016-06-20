@@ -111,6 +111,14 @@ public interface ClientInstallationService {
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
+
+    /**
+     * Used for Android installations which have less/other categories on repeated registration
+     *
+     * @param installation Installation object containing correct variant property of AndroidVariant class
+     */
+    void unsubscribeOldTopics(Installation installation);
+
     // ===================   SENDER API   ===================
 
     /**

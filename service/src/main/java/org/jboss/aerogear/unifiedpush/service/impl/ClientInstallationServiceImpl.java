@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -25,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.ejb.Asynchronous;
@@ -74,6 +76,10 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
                 logger.finest("Updating received metadata for an 'enabled' installation");
+
+                // fix variant property of installation object
+                installation.setVariant(variant);
+
                 // update the entity:
                 this.updateInstallation(installation, entity);
             }
@@ -152,6 +158,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
         // update it:
         updateInstallation(installationToUpdate);
+
+        // unsubscribe Android devices from topics that device should no longer be subscribed to
+        if (installationToUpdate.getVariant().getType() == VariantType.ANDROID) {
+            unsubscribeOldTopics(installationToUpdate);
+        }
     }
 
     @Override
@@ -182,6 +193,22 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
+    }
+
+    @Override
+    @Asynchronous
+    public void unsubscribeOldTopics(Installation installation) {
+        FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
+        Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
+        // Remove current categories from the set of old ones
+        oldCategories.removeAll(convertToNames(installation.getCategories()));
+
+        // Remove global variant topic because we don't want to unsubscribe it
+        oldCategories.remove(installation.getVariant().getVariantID());
+
+        for (String categoryName : oldCategories) {
+            topicManager.unsubscribe(installation, categoryName);
+        }
     }
 
     // =====================================================================
