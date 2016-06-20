@@ -61,6 +61,12 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         //add the aerogear-push-id
         builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
+        // no need to send dev/null requests
+        if (DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        	senderCallback.onSilent(variant.getType().getTypeName());
+        	return;
+        }
+
         final AdmVariant admVariant = (AdmVariant) variant;
 
         clientIdentifiers.forEach(token -> {

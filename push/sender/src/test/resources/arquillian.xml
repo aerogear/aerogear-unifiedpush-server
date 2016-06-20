@@ -28,7 +28,7 @@
     <group qualifier="chameleon-cluster" default="true">
         <container qualifier="container-1" default="true">
             <configuration>
-                <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->>
+                <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->
                 <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
                 <property name="chameleonTarget">wildfly:10.0.0.Final:managed</property>
 

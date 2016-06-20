@@ -135,6 +135,13 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             return;
         }
 
+        // support for dev/null messages. this is useful for automation tests.
+        if (DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+            // invoke the silent callback and return, as it is pointless to send something out.
+            callback.onSilent(variant.getType().getTypeName());
+            return;
+        }
+
         // all good, let's build the JSON payload for APNs
         final String apnsMessage  =  builder.build();
 

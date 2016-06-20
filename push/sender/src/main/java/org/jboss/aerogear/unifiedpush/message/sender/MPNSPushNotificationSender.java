@@ -40,8 +40,9 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         // no need to send empty list
-        if (clientIdentifiers.isEmpty()) {
-            return;
+        if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        	logger.fine(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
+        	return;
         }
 
         MpnsService mpnsService = MPNS.newService().build();

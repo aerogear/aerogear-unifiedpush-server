@@ -37,12 +37,6 @@
 
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-common</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-model-jpa</artifactId>
             <scope>compile</scope>
             <exclusions>

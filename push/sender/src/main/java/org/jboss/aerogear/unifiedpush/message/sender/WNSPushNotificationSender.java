@@ -57,8 +57,9 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         setPushMessageInformationId(pushMessageInformationId);
 
         // no need to send empty list
-        if (clientIdentifiers.isEmpty()) {
-            return;
+        if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        	logger.fine(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
+        	return;
         }
 
         final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
@@ -73,7 +74,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
-        	
+
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {
                 switch (message.getWindows().getType()) {

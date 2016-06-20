@@ -38,4 +38,8 @@ public interface NotificationSenderCallback {
      */
     void onError(String reason);
 
+    /**
+     * Silent indicator which will be called when variant name is NULL-NOTIFICATIONS-VARIANT.
+     */
+    void onSilent(String variantType);
 }
