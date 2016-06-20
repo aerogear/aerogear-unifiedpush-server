@@ -20,6 +20,8 @@ public class Configuration {
 	public static final String PROPERTIES_FILE_KEY = "aerogear.config";
 	public static final String PROPERTIES_DOCUMENTS_KEY = "aerogear.config.document.path.root";
 	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
+	public static final String PROP_MASTER_VERIFICATION = "aerogear.config.verification.master_code";
+
 
 	private Properties properties;
 	private PropertyPlaceholderConfigurer configurer;
