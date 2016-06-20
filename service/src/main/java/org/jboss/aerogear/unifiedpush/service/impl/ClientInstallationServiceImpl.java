@@ -26,7 +26,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
+import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import javax.ejb.Asynchronous;
@@ -198,7 +198,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     @Asynchronous
     public void unsubscribeOldTopics(Installation installation) {
-        GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());
+        FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
         Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
         // Remove current categories from the set of old ones
         oldCategories.removeAll(convertToNames(installation.getCategories()));

@@ -16,6 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.service.util;
 
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,31 +33,24 @@ import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 /**
  *  Utility used for Android installations which need to be unsubscribed from topics
  */
-public class GCMTopicManager {
+public class FCMTopicManager {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMTopicManager.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(FCMTopicManager.class);
 
     // Instance ID API URL
-    public static final String IIDURL = "https://iid.googleapis.com/iid/v1/";
+    public static final String IID_URL = "https://iid.googleapis.com/iid/v1/";
 
     private AndroidVariant variant;
 
-    public GCMTopicManager(AndroidVariant variant) {
+    public FCMTopicManager(AndroidVariant variant) {
         this.variant = variant;
     }
 
     public Set<String> getSubscribedCategories(Installation installation) {
-        String url = IIDURL + "info/" + installation.getDeviceToken() + "?details=true";
+        String url = IID_URL + "info/" + installation.getDeviceToken() + "?details=true";
         String deviceInfo;
         try {
             deviceInfo = get(url);
@@ -82,7 +82,7 @@ public class GCMTopicManager {
 
         String url = "";
         try {
-            url = IIDURL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, "UTF-8");
+            url = IID_URL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             //
         }
