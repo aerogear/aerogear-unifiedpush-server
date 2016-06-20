@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,7 +83,7 @@ public class FCMTopicManager {
 
         String url = "";
         try {
-            url = IID_URL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, "UTF-8");
+            url = IID_URL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e1) {
             //
         }
