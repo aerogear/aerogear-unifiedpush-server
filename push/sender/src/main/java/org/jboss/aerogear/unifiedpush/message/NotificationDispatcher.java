@@ -104,7 +104,7 @@ public class NotificationDispatcher {
 
         @Override
         public void onError(final String reason) {
-            logger.warning(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
+            logger.warning(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
         }
     }
