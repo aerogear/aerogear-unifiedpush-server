@@ -36,12 +36,13 @@ import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(PushNotificationSenderEndpoint.class);
+    private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
@@ -105,7 +106,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to EJB:
         notificationRouter.submit(pushApplication, message);
-        logger.fine(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
+        logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }

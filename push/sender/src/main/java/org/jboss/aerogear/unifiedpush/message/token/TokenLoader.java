@@ -34,7 +34,8 @@ import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -57,7 +58,7 @@ import java.util.TreeSet;
 @Stateless
 public class TokenLoader {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(TokenLoader.class);
+    private final Logger logger = LoggerFactory.getLogger(TokenLoader.class);
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -105,7 +106,7 @@ public class TokenLoader {
         final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
         int serialId = msg.getLastSerialId();
 
-        logger.fine("Received message from queue: " + message.getMessage().getAlert());
+        logger.debug("Received message from queue: " + message.getMessage().getAlert());
 
         final Criteria criteria = message.getCriteria();
         final List<String> categories = criteria.getCategories();
@@ -181,16 +182,16 @@ public class TokenLoader {
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
-                        logger.fine(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
+                        logger.debug(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
                         break;
                     }
                 }
                 // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
+                    logger.debug(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
 
                     // using combined key of variant and PMI (AGPUSH-1585):
                     allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
@@ -198,9 +199,9 @@ public class TokenLoader {
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
                         if (gcmTopicRequest) {
-                            logger.fine("No legacy(non-InstanceID) tokens found. Just pure GCM topic requests");
+                            logger.debug("No legacy(non-InstanceID) tokens found. Just pure GCM topic requests");
                         } else {
-                            logger.warning("Check your push query: Not a single token was loaded from the DB!");
+                            logger.warn("Check your push query: Not a single token was loaded from the DB!");
                         }
 
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
@@ -211,7 +212,7 @@ public class TokenLoader {
                     }
                 }
             } catch (ResultStreamException e) {
-                logger.severe("Failed to load batch of tokens", e);
+                logger.error("Failed to load batch of tokens", e);
             }
         }
     }
