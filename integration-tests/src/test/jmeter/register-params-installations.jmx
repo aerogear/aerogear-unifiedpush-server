@@ -49,7 +49,7 @@
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
@@ -103,29 +103,45 @@ import java.io.FileReader;
 import java.util.*;
 
 String baseDir = FileServer.getFileServer().getBaseDir();
-String fileName = baseDir + &quot;/&quot; + vars.get(&quot;USERS_CSV&quot;);
-
-log.info(&quot;Reading CSV file from &quot; + fileName);
-
-FileReader fileReader = new FileReader(fileName);
-BufferedReader bufReader = new BufferedReader(fileReader);
-
-// Prepare file writers array according to number of threads
-// All files are stored under OS temp dir.
+int numOfThreads = Integer.parseInt(vars.get(&quot;NUMBER_OF_THREADS&quot;));
 String outDir = System.getProperty(&quot;java.io.tmpdir&quot;);
 
-int counter = 0;        
-// for(String line; counter&lt;vars.get(&quot;NUMBER_OF_THREADS&quot;) ; counter++ ) {
-// 	
-//}
-
-counter = 0;        
-for(String line; (line = bufReader.readLine()) != null; ) {
-    counter++;
+// Decide rather file path is absolute or relative. (file:// is absolute)
+if (vars.get(&quot;USERS_CSV&quot;).startsWith(&quot;file://&quot;)){
+	usersCsv = vars.get(&quot;USERS_CSV&quot;).replaceAll(&quot;file://&quot;, &quot;&quot;); 
+}else{
+	usersCsv = baseDir + &quot;/&quot; + vars.get(&quot;USERS_CSV&quot;);
 }
-bufReader.close(); 
 
-log.info(&quot;CSV file contain &quot; + counter + &quot; Rows&quot;);
+log.info(&quot;Reading CSV file from &quot; + usersCsv);
+
+// Open CSV file for read
+FileServer.getFileServer().reserveFile(usersCsv);
+	
+// Open file writers array according to number of threads
+// All files are stored under OS temp dir.
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+ 	FileServer.getFileServer().reserveFile(outDir + &quot;/&quot; + &quot;THREAD_&quot; + threadCounter); 	
+}
+
+// Loop over all csv lines. Lines are diverged according to number of threads.
+int lineCounter = 1;  
+String iosToken;
+String androidToken;
+for(String line; (line = FileServer.getFileServer().readLine(usersCsv, false, true)) != null; lineCounter++) {
+    	String threadFile = outDir + &quot;/&quot; + &quot;THREAD_&quot; + (lineCounter % numOfThreads);
+
+	// Create iOs/Android Token
+     
+    	FileServer.getFileServer().write(threadFile, iosToken + &quot;,&quot; + androidToken + &quot;,&quot; + line + &quot;\n&quot;);
+}
+log.info(&quot;CSV file contain &quot; + lineCounter + &quot; Rows&quot;);
+
+// Close all files
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+	FileServer.getFileServer().closeFile(outDir + &quot;/&quot; + &quot;THREAD_&quot; + threadCounter); 	
+}
+FileServer.getFileServer().closeFile(usersCsv);
 </stringProp>
             <stringProp name="BeanShellSampler.filename"></stringProp>
             <stringProp name="BeanShellSampler.parameters"></stringProp>
