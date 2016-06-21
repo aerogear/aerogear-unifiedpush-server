@@ -34,7 +34,7 @@
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">demo2.c-b4.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
@@ -90,7 +90,7 @@ vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword
       </ThreadGroup>
       <hashTree>
         <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller - register installations" enabled="true">
-          <stringProp name="IncludeController.includepath">./register-installations-fregment.jmx</stringProp>
+          <stringProp name="IncludeController.includepath">./register-random-installations-fregment.jmx</stringProp>
         </IncludeController>
         <hashTree/>
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
