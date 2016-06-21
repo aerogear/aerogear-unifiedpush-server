@@ -7,7 +7,8 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
  * Service used to manage installation verification cycle.
  */
 public interface VerificationService {
-	
+	public static final String DEVNULL_NOTIFICATIONS_VARIANT = "NULL-NOTIFICATIONS-VARIANT";
+
 	/**
 	 * Sends a verification request to the device represented by the installation.
 	 * @param installation device to verify
@@ -15,9 +16,9 @@ public interface VerificationService {
 	 * @return the verification code issued to the installation.
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
-	
+
 	String retryDeviceVerification(String deviceToken, Variant variant);
-	
+
 	/**
 	 * Attempts to verify the device (after a verification request has been issued prior to this point).
 	 * @param variantID variant ID of the installation
@@ -26,7 +27,7 @@ public interface VerificationService {
 	 * @return a {@link VerificationResult} signaling the outcome of the verification attempt.
 	 */
 	VerificationResult verifyDevice(Installation installation, Variant variant, String verificationCode);
-	
+
 	public enum VerificationResult {
 		/**
 		 * Verification succeeded
