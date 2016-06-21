@@ -102,18 +102,31 @@ import org.apache.jmeter.util.JMeterUtils;
 import java.io.FileReader;
 import java.util.*;
 
+// Generate random string for iOS/Android tokens
+public static String generateString(Random rng, int length, String characters) {
+    char[] text = new char[length];
+    for (int i = 0; i &lt; length; i++)
+    {
+        text[i] = characters.charAt(rng.nextInt(characters.length()));
+    }
+    return new String(text);
+}
+
+// Decide rather file path is absolute or relative. (file:// is absolute)
+public static String getCsvPath(){
+	if (vars.get(&quot;USERS_CSV&quot;).startsWith(&quot;file://&quot;)){
+		return vars.get(&quot;USERS_CSV&quot;).replaceAll(&quot;file://&quot;, &quot;&quot;); 
+	}else{
+		return baseDir + &quot;/&quot; + vars.get(&quot;USERS_CSV&quot;);
+	}
+	log.info(&quot;Reading CSV file from &quot; + usersCsv);
+}
+
+final static String THREAD_FILE_PREFIX = &quot;THREAD_&quot;;
 String baseDir = FileServer.getFileServer().getBaseDir();
 int numOfThreads = Integer.parseInt(vars.get(&quot;NUMBER_OF_THREADS&quot;));
 String outDir = System.getProperty(&quot;java.io.tmpdir&quot;);
-
-// Decide rather file path is absolute or relative. (file:// is absolute)
-if (vars.get(&quot;USERS_CSV&quot;).startsWith(&quot;file://&quot;)){
-	usersCsv = vars.get(&quot;USERS_CSV&quot;).replaceAll(&quot;file://&quot;, &quot;&quot;); 
-}else{
-	usersCsv = baseDir + &quot;/&quot; + vars.get(&quot;USERS_CSV&quot;);
-}
-
-log.info(&quot;Reading CSV file from &quot; + usersCsv);
+String usersCsv = this.getCsvPath();
 
 // Open CSV file for read
 FileServer.getFileServer().reserveFile(usersCsv);
@@ -121,31 +134,32 @@ FileServer.getFileServer().reserveFile(usersCsv);
 // Open file writers array according to number of threads
 // All files are stored under OS temp dir.
 for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
- 	FileServer.getFileServer().reserveFile(outDir + &quot;/&quot; + &quot;THREAD_&quot; + threadCounter); 	
+ 	FileServer.getFileServer().reserveFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
 }
 
 // Loop over all csv lines. Lines are diverged according to number of threads.
 int lineCounter = 1;  
-String iosToken;
-String androidToken;
+String androidToken, iosToken;
+
 for(String line; (line = FileServer.getFileServer().readLine(usersCsv, false, true)) != null; lineCounter++) {
-    	String threadFile = outDir + &quot;/&quot; + &quot;THREAD_&quot; + (lineCounter % numOfThreads);
+	iosToken = this.generateString(new Random(), 64,&quot;abcdefghigklmnopqrstuvwxyz0123456789-&quot;);
+	androidToken = this.generateString(new Random(), 101,&quot;abcdefghigklmnopqrstuvwxyz0123456789-_&quot;);
+    	String threadFile = outDir + &quot;/&quot; + THREAD_FILE_PREFIX + (lineCounter % numOfThreads);
 
 	// Create iOs/Android Token
-     
     	FileServer.getFileServer().write(threadFile, iosToken + &quot;,&quot; + androidToken + &quot;,&quot; + line + &quot;\n&quot;);
 }
-log.info(&quot;CSV file contain &quot; + lineCounter + &quot; Rows&quot;);
 
 // Close all files
 for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
-	FileServer.getFileServer().closeFile(outDir + &quot;/&quot; + &quot;THREAD_&quot; + threadCounter); 	
+	FileServer.getFileServer().closeFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
 }
 FileServer.getFileServer().closeFile(usersCsv);
+ 
 </stringProp>
             <stringProp name="BeanShellSampler.filename"></stringProp>
             <stringProp name="BeanShellSampler.parameters"></stringProp>
-            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
           </BeanShellSampler>
           <hashTree/>
         </hashTree>
