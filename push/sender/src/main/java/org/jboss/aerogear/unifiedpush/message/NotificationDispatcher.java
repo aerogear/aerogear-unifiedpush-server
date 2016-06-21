@@ -36,7 +36,8 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
@@ -46,7 +47,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @Stateless
 public class NotificationDispatcher {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(NotificationDispatcher.class);
+    private final Logger logger = LoggerFactory.getLogger(NotificationDispatcher.class);
 
     @Inject
     @Any
@@ -98,13 +99,13 @@ public class NotificationDispatcher {
 
         @Override
         public void onSuccess() {
-            logger.fine(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
 
         @Override
         public void onError(final String reason) {
-            logger.warning(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
+            logger.warn(String.format("Error on '%s' delivery", variant.getType().getTypeName()));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
         }
     }

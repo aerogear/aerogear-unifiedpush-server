@@ -27,7 +27,8 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base for message driven beans that receives a {@link javax.jms.ObjectMessage} from a queue, validates its type, cast it to a generic type T and pass for processing to abstract method {@link #onMessage(Object)}
@@ -37,7 +38,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(AbstractJMSMessageListener.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageListener.class);
 
     public abstract void onMessage(T message);
 
@@ -54,7 +55,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
                     throw new IllegalStateException("Received message of wrong payload type " + messageObject.getClass() + " to destination " + getDestinationName(jmsMessage));
                 }
             } else {
-                logger.warning("Received message of wrong type " + jmsMessage.getClass().getName() + " to destination " + getDestinationName(jmsMessage));
+                logger.warn("Received message of wrong type " + jmsMessage.getClass().getName() + " to destination " + getDestinationName(jmsMessage));
             }
         } catch (JMSException e) {
             throw new MessageDeliveryException("Failed to handle message from destination " + getDestinationName(jmsMessage), e);

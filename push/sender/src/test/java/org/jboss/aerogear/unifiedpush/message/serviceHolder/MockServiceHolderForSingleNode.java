@@ -25,7 +25,8 @@ import javax.annotation.Resource;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Integer> {
 
@@ -35,7 +36,7 @@ public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Intege
 
     private AtomicInteger counter = new AtomicInteger(0);
 
-    private AeroGearLogger log = AeroGearLogger.getInstance(MockServiceHolderForSingleNode.class);
+    private Logger log = LoggerFactory.getLogger(MockServiceHolderForSingleNode.class);
 
     @Resource(mappedName = "java:/queue/FreeServiceSlotQueue")
     private Queue queue;
@@ -54,13 +55,13 @@ public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Intege
         assertEquals("Counter has to be zero before initialize", 0, counter.get());
         super.initialize(pushMessageInformationId, variantID);
         counter.set(INSTANCE_LIMIT);
-        log.fine("initialized: " + counter);
+        log.debug("initialized: " + counter);
     }
 
     @Override
     public void destroy(String pushMessageInformationId, String variantID) {
         super.destroy(pushMessageInformationId, variantID);
-        log.fine("destroyed: " + counter);
+        log.debug("destroyed: " + counter);
         assertEquals("Counter has to be zero after destroy", 0, counter.get());
     }
 
@@ -69,7 +70,7 @@ public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Intege
         Object serviceSlot = super.borrowServiceSlotFromQueue(pushMessageInformationId, variantID);
         if (serviceSlot != null) {
             counter.decrementAndGet();
-            log.fine(counter.toString());
+            log.debug(counter.toString());
             assertTrue("Instance count can't be never lesser than zero", counter.get() >= 0);
         }
         return serviceSlot;
@@ -78,7 +79,7 @@ public class MockServiceHolderForSingleNode extends AbstractServiceHolder<Intege
     @Override
     protected void returnServiceSlotToQueue(String pushMessageInformationId, String variantID) {
         counter.incrementAndGet();
-        log.fine(counter.toString());
+        log.debug(counter.toString());
         assertTrue("Instance count can't be never greater than limit", counter.get() <= INSTANCE_LIMIT);
         super.returnServiceSlotToQueue(pushMessageInformationId, variantID);
     }

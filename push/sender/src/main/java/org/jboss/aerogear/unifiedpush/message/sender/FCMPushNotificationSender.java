@@ -30,7 +30,8 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(FCMPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
     /**
      * Sends FCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
@@ -109,14 +110,14 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            logger.fine("Sending transformed FCM payload: " + fcmMessage );
+            logger.debug("Sending transformed FCM payload: " + fcmMessage );
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
             processFCM(androidVariant, pushTargets, fcmMessage , sender);
 
-            logger.fine("Message batch to FCM has been submitted");
+            logger.debug("Message batch to FCM has been submitted");
             callback.onSuccess();
 
         } catch (Exception e) {
@@ -140,13 +141,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to FCM topic: %s", topic));
                 Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.finest("Response from FCM topic request: " + result);
+                logger.trace("Response from FCM topic request: " + result);
             }
         } else {
             logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.finest("Response from FCM request: " + multicastResult);
+            logger.trace("Response from FCM request: " + multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);

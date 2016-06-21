@@ -21,7 +21,8 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceHolder.class);
+    private final Logger logger = LoggerFactory.getLogger(ApnsServiceHolder.class);
 
     public static final int INSTANCE_LIMIT = 10;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 7500;
@@ -97,12 +98,12 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
                         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
                     }
                 } catch (Exception e) {
-                    logger.severe("Unable to detect and delete inactive devices", e);
+                    logger.error("Unable to detect and delete inactive devices", e);
                 }
                 // kill the service
                 service.stop();
             } catch (Exception e) {
-                logger.severe("Unable to stop ApnsService", e);
+                logger.error("Unable to stop ApnsService", e);
             } finally {
                 // we will free up a slot anyway
                 this.freeUpSlot(pushMessageInformationId, variantID);

@@ -33,7 +33,6 @@ import org.jboss.aerogear.unifiedpush.message.token.TokenLoaderUtils;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -41,6 +40,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.enterprise.event.Event;
@@ -63,7 +64,7 @@ import static org.junit.Assert.fail;
 @RunWith(Arquillian.class)
 public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(TestTokenLoaderTransactionFailForGCM.class);
+    private final Logger logger = LoggerFactory.getLogger(TestTokenLoaderTransactionFailForGCM.class);
 
     private static final int CONCURRENT_WORKERS = 15; // specified by maxSession MDB config in jboss-ejb.xml
     public static final int BATCH_SIZE = 1000; // maximum number of tokens in one batch for Android/GCM
@@ -154,10 +155,10 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
         if (msg.getPushMessageInformation().getId().equals(messageId)) {
             int concurrency = currentConcurrency.incrementAndGet();
             maxConcurrency.set(Math.max(concurrency, maxConcurrency.get()));
-            logger.fine("started processing: " + msg.getSerialId());
+            logger.debug("started processing: " + msg.getSerialId());
             Thread.sleep(TIME_TO_DELIVER_BATCH);
             deliveredSerials.add(msg.getSerialId());
-            logger.fine("finished processing: " + msg.getSerialId());
+            logger.debug("finished processing: " + msg.getSerialId());
             currentConcurrency.decrementAndGet();
             waitToDeliverAllBatches.countDown();
         }
