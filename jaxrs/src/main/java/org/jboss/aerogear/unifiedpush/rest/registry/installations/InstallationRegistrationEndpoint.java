@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -30,6 +31,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -72,7 +74,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private PushMessageMetricsService metricsService;
     @Inject
     private VerificationService verificationService;
-
     /**
      * Cross Origin for Installations
      *
@@ -162,6 +163,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
     public Response registerInstallation(
             Installation entity,
+            @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
             @Context HttpServletRequest request) {
 
         // find the matching variation:
@@ -182,8 +184,12 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // otherwise we register a new installation:
         logger.finest("Mobile Application on device was launched");
 
-        // async:
-        clientInstallationService.addInstallation(variant, entity);
+        // In some cases (mostly automation & registration verification), we need to
+        // make sure device is synchronously registered.
+        if (synchronously)
+        	clientInstallationService.addInstallationSynchronously(variant, entity);
+        else
+        	clientInstallationService.addInstallation(variant, entity);
 
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
