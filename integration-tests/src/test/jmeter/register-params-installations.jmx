@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.8" jmeter="2.13 r1665067">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="register-installations" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="register-installations-from-csv" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ANDROID_USERNAME" elementType="Argument">
@@ -34,7 +34,7 @@
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">demo2.c-b4.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
@@ -49,7 +49,7 @@
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
@@ -57,24 +57,114 @@
             <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="USERS_CSV" elementType="Argument">
+            <stringProp name="Argument.name">USERS_CSV</stringProp>
+            <stringProp name="Argument.value">users.csv</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor - Prepare Basic Authentication" enabled="true">
-        <boolProp name="resetInterpreter">false</boolProp>
-        <stringProp name="parameters"></stringProp>
-        <stringProp name="filename"></stringProp>
-        <stringProp name="script">import org.apache.commons.codec.binary.Base64;
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - Prepare CVSs According to ${NUMBER_OF_THREADS}" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1466491978000</longProp>
+        <longProp name="ThreadGroup.end_time">1466491978000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor - Prepare Basic Authentication" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">import org.apache.commons.codec.binary.Base64;
 byte[] iosUsernamePassword = Base64.encodeBase64(&quot;${IOS_USERNAME}:${IOS_PASSWORD}&quot;.getBytes());
 vars.put(&quot;base64IosHeaderValue&quot;,new String(iosUsernamePassword));
 
 byte[] androidUsernamePassword = Base64.encodeBase64(&quot;${ANDROID_USERNAME}:${ANDROID_PASSWORD}&quot;.getBytes());
 vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword));</stringProp>
-      </BeanShellPreProcessor>
-      <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler" enabled="true">
+            <stringProp name="BeanShellSampler.query">import org.apache.jmeter.services.FileServer;
+import org.apache.jmeter.util.JMeterUtils; 
+import java.io.FileReader;
+import java.util.*;
+
+// Generate random string for iOS/Android tokens
+public static String generateString(Random rng, int length, String characters) {
+    char[] text = new char[length];
+    for (int i = 0; i &lt; length; i++)
+    {
+        text[i] = characters.charAt(rng.nextInt(characters.length()));
+    }
+    return new String(text);
+}
+
+// Decide rather file path is absolute or relative. (file:// is absolute)
+public static String getCsvPath(){
+	if (vars.get(&quot;USERS_CSV&quot;).startsWith(&quot;file://&quot;)){
+		return vars.get(&quot;USERS_CSV&quot;).replaceAll(&quot;file://&quot;, &quot;&quot;); 
+	}else{
+		return baseDir + &quot;/&quot; + vars.get(&quot;USERS_CSV&quot;);
+	}
+	log.info(&quot;Reading CSV file from &quot; + usersCsv);
+}
+
+final static String THREAD_FILE_PREFIX = &quot;THREAD_&quot;;
+String baseDir = FileServer.getFileServer().getBaseDir();
+int numOfThreads = Integer.parseInt(vars.get(&quot;NUMBER_OF_THREADS&quot;));
+String outDir = System.getProperty(&quot;java.io.tmpdir&quot;);
+String usersCsv = this.getCsvPath();
+
+// Open CSV file for read
+FileServer.getFileServer().reserveFile(usersCsv);
+	
+// Open file writers array according to number of threads
+// All files are stored under OS temp dir.
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+ 	FileServer.getFileServer().reserveFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
+}
+
+// Loop over all csv lines. Lines are diverged according to number of threads.
+int lineCounter = 1;  
+String androidToken, iosToken;
+
+for(String line; (line = FileServer.getFileServer().readLine(usersCsv, false, true)) != null; lineCounter++) {
+	iosToken = this.generateString(new Random(), 64,&quot;abcdefghigklmnopqrstuvwxyz0123456789-&quot;);
+	androidToken = this.generateString(new Random(), 101,&quot;abcdefghigklmnopqrstuvwxyz0123456789-_&quot;);
+    	String threadFile = outDir + &quot;/&quot; + THREAD_FILE_PREFIX + (lineCounter % numOfThreads);
+
+	// Create iOs/Android Token
+    	FileServer.getFileServer().write(threadFile, iosToken + &quot;,&quot; + androidToken + &quot;,&quot; + line + &quot;\n&quot;);
+}
+
+// Close all files
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+	FileServer.getFileServer().closeFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
+}
+FileServer.getFileServer().closeFile(usersCsv);
+ 
+</stringProp>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+          </BeanShellSampler>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -89,11 +179,25 @@ vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller - register installations" enabled="true">
-          <stringProp name="IncludeController.includepath">./register-installations-fregment.jmx</stringProp>
-        </IncludeController>
-        <hashTree/>
-        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="false">
+          <stringProp name="ForeachController.inputVal"></stringProp>
+          <stringProp name="ForeachController.returnVal"></stringProp>
+          <boolProp name="ForeachController.useSeparator">true</boolProp>
+        </ForeachController>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="false">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script"></stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller" enabled="false">
+            <stringProp name="IncludeController.includepath">./register-params-installations-fregment.jmx</stringProp>
+          </IncludeController>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="false">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -126,7 +230,7 @@ vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>

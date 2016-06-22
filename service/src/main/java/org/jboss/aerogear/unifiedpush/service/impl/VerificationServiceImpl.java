@@ -33,7 +33,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
 	@Inject
-	private VerificationGatewayService smsService;
+	private VerificationGatewayService verificationService;
     @Inject
     private InstallationDao installationDao;
     @Inject
@@ -65,7 +65,12 @@ public class VerificationServiceImpl implements VerificationService {
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
-		smsService.sendVerificationMessage(installation.getAlias(), verificationCode);
+
+		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
+		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+			verificationService.sendVerificationMessage(installation.getAlias(), verificationCode);
+		}
+
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		Set<Object> codes;
 
