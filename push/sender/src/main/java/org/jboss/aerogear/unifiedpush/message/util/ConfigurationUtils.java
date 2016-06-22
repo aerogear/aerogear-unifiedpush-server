@@ -17,11 +17,12 @@
 package org.jboss.aerogear.unifiedpush.message.util;
 
 
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ConfigurationUtils {
 
-    private final static AeroGearLogger logger = AeroGearLogger.getInstance(ConfigurationUtils.class);
+    private final static Logger logger = LoggerFactory.getLogger(ConfigurationUtils.class);
 
     private ConfigurationUtils() {
         // no-op
@@ -50,7 +51,7 @@ public final class ConfigurationUtils {
         try {
             return System.getProperty(key, defaultValue);
         } catch (SecurityException e) {
-            logger.severe("Could not get value of property " + key + " due to SecurityManager. Using null value.");
+            logger.error("Could not get value of property " + key + " due to SecurityManager. Using null value.");
             return null;
         }
     }
@@ -77,7 +78,7 @@ public final class ConfigurationUtils {
         try {
             return Integer.getInteger(key, defaultValue);
         } catch (SecurityException e) {
-            logger.severe("Could not get value of property " + key + " due to SecurityManager. Using null value.");
+            logger.error("Could not get value of property " + key + " due to SecurityManager. Using null value.");
             return defaultValue;
         }
     }

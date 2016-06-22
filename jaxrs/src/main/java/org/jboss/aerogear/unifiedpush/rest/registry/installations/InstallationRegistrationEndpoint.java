@@ -26,11 +26,12 @@ import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(InstallationRegistrationEndpoint.class);
+    private final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
@@ -165,14 +166,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // Poor up-front validation for required token
         final String deviceToken = entity.getDeviceToken();
         if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
-            logger.finest(String.format("Invalid device token was delivered: %s for variant type: %s", deviceToken, variant.getType()));
+            logger.trace(String.format("Invalid device token was delivered: %s for variant type: %s", deviceToken, variant.getType()));
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 
         // The 'mobile application' on the device/client was launched.
         // If the installation is already in the DB, let's update the metadata,
         // otherwise we register a new installation:
-        logger.finest("Mobile Application on device was launched");
+        logger.trace("Mobile Application on device was launched");
 
         // async:
         clientInstallationService.addInstallation(variant, entity);
@@ -346,7 +347,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         try {
             devices = mapper.readValue(form.getJsonFile(), new TypeReference<List<Installation>>() {});
         } catch (IOException e) {
-            logger.severe("Error when parsing importer json file", e);
+            logger.error("Error when parsing importer json file", e);
 
             return Response.status(Status.BAD_REQUEST).build();
         }

@@ -23,7 +23,8 @@ import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -38,7 +39,7 @@ import javax.jms.Queue;
 @Stateless
 public class MetricsCollector extends AbstractJMSMessageConsumer {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricsCollector.class);
+    private final Logger logger = LoggerFactory.getLogger(MetricsCollector.class);
 
     @Inject
     private PushMessageMetricsService metricsService;
@@ -102,11 +103,11 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
             if (areAllBatchesLoaded(variantPushMessageID)) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
-                logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+                logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
                 variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
 
                 if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
-                    logger.fine(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
+                    logger.debug(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
                     pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
                 }
             }

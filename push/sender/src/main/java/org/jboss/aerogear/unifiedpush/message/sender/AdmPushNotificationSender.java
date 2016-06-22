@@ -22,17 +22,18 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.adm.ADM;
 import org.jboss.aerogear.adm.AdmService;
 import org.jboss.aerogear.adm.PayloadBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Set;
 
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(AdmPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
@@ -70,7 +71,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
                 admService.sendMessageToDevice(token, admVariant.getClientId(), admVariant.getClientSecret(),  builder.build());
                 senderCallback.onSuccess();
             } catch (Exception e) {
-                logger.severe("Error sending payload to ADM server", e);
+                logger.error("Error sending payload to ADM server", e);
                 senderCallback.onError(e.getMessage());
             }
         }

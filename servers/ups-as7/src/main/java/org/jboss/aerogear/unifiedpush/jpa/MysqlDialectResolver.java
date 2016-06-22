@@ -20,7 +20,8 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.service.jdbc.dialect.spi.DialectResolver;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.DatabaseMetaData;
 
@@ -30,7 +31,7 @@ import java.sql.DatabaseMetaData;
  * @see Mysql5BitBooleanDialect
  */
 public class MysqlDialectResolver implements DialectResolver {
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MysqlDialectResolver.class);
+    private final Logger logger = LoggerFactory.getLogger(MysqlDialectResolver.class);
 
     @Override
     public Dialect resolveDialect(final DatabaseMetaData databaseMetaData) throws JDBCConnectionException {
@@ -39,7 +40,7 @@ public class MysqlDialectResolver implements DialectResolver {
                 return databaseMetaData.getDatabaseMajorVersion() >= 5 ? new Mysql5BitBooleanDialect() : new MySQLDialect();
             }
         } catch (final Exception e) {
-            logger.severe("Could not get database name/version", e);
+            logger.error("Could not get database name/version", e);
         }
         return null;
     }

@@ -27,7 +27,8 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
@@ -35,7 +36,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(JPAPushMessageInformationDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JPAPushMessageInformationDao.class);
 
 
     @Override

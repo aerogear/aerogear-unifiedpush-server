@@ -77,8 +77,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     @Override
     public UnifiedPushArchive withUtils() {
-        return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage())
-                .addClasses(ConfigurationUtils.class);
+        return addClasses(ConfigurationUtils.class);
     }
 
     @Override
