@@ -29,7 +29,8 @@ import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 @SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
 
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/aerogear-cordova-push/P.xaml";
@@ -103,7 +104,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
-            logger.fine("Message to WNS has been submitted");
+            logger.debug("Message to WNS has been submitted");
             senderCallback.onSuccess();
         } catch (WnsException exception) {
             senderCallback.onError(exception.getMessage());

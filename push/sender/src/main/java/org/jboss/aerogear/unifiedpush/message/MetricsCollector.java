@@ -24,7 +24,8 @@ import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -41,7 +42,7 @@ import javax.jms.Queue;
 @Stateless
 public class MetricsCollector {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricsCollector.class);
+    private final Logger logger = LoggerFactory.getLogger(MetricsCollector.class);
 
     @Inject
     private PushMessageMetricsService metricsService;
@@ -87,13 +88,13 @@ public class MetricsCollector {
                 .filter(variantMetricInformation -> areAllBatchesLoaded(variantMetricInformation))
                 .forEach(variantMetricInformation -> {
                     pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
-                    logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+                    logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
 
                 });
 
         if (areAllVariantsServed(pushMessageInformation)) {
             event.markAllVariantsProcessed();
-            logger.fine(String.format("All variants for application %s were processed", pushMessageInformation.getId()));
+            logger.debug(String.format("All variants for application %s were processed", pushMessageInformation.getId()));
             pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
         }
 

@@ -22,7 +22,8 @@ import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStartedEven
 import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -44,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Stateless
 public class MetricCollectionTrigger {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MetricCollectionTrigger.class);
+    private final Logger logger = LoggerFactory.getLogger(MetricCollectionTrigger.class);
 
     /**
      * Stores pushMessageInformationIds for the push messages that the metrics collection process was already started for
@@ -72,14 +73,14 @@ public class MetricCollectionTrigger {
 
         if (!METRICS_PROCESSING_STARTED_FOR_IDS.contains(pushMessageInformationId)) {
             if (detectMetricsProcessingStartedFromDB(pushMessageInformationId)) {
-                logger.fine(String.format("Detected that metrics collection already started from DB state for push message %s", pushMessageInformationId));
+                logger.debug(String.format("Detected that metrics collection already started from DB state for push message %s", pushMessageInformationId));
                 METRICS_PROCESSING_STARTED_FOR_IDS.add(pushMessageInformationId);
             } else {
                 if (!METRICS_PROCESSING_STARTED_FOR_IDS.contains(pushMessageInformationId)) { // re-check after DB read
                     METRICS_PROCESSING_STARTED_FOR_IDS.add(pushMessageInformationId);
-                    logger.fine(String.format("Broadcasting information that metrics processing started for push message %s", pushMessageInformationId));
+                    logger.debug(String.format("Broadcasting information that metrics processing started for push message %s", pushMessageInformationId));
                     broadcastMetricsProcessingStarted.fire(new MetricsProcessingStartedEvent(pushMessageInformationId));
-                    logger.fine(String.format("Trigger metric collection process for push message %s", pushMessageInformationId));
+                    logger.debug(String.format("Trigger metric collection process for push message %s", pushMessageInformationId));
                     triggerMetricCollection.fire(new TriggerMetricCollectionEvent(pushMessageInformationId));
                 }
             }
@@ -100,7 +101,7 @@ public class MetricCollectionTrigger {
     }
 
     public void markMetricsProcessingAsStarted(@Observes @Dequeue MetricsProcessingStartedEvent event) throws JMSException {
-        logger.fine(String.format("Received signal that metrics collection started for push message %s", event.getPushMessageInformationId()));
+        logger.debug(String.format("Received signal that metrics collection started for push message %s", event.getPushMessageInformationId()));
         METRICS_PROCESSING_STARTED_FOR_IDS.add(event.getPushMessageInformationId());
     }
 }
