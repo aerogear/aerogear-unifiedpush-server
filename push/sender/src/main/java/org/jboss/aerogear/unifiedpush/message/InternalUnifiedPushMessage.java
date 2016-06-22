@@ -21,15 +21,16 @@ package org.jboss.aerogear.unifiedpush.message;
  * like analytics tracking.
  */
 public class InternalUnifiedPushMessage extends UnifiedPushMessage {
+	private static final long serialVersionUID = -2385370347086780641L;
 
-    /**
+	/**
      * Constant for the "push payload id" key
      */
     public static final String PUSH_MESSAGE_ID = "aerogear-push-id";
 
     private String ipAddress;
     private String clientIdentifier;
-    
+
     public InternalUnifiedPushMessage() {}
 
     public InternalUnifiedPushMessage(UnifiedPushMessage pushMessage) {

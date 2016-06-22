@@ -65,6 +65,7 @@ public abstract class AbstractBaseServiceTest {
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-model")
 				.addMavenDependencies("commons-io:commons-io")
 				.addMavenDependencies("org.keycloak:keycloak-core")
+				.addMavenDependencies("com.googlecode.json-simple:json-simple")
 				.addPackages(true, Configuration.class.getPackage())
 				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
 						new String[] { "META-INF/persistence.xml", "test-data.sql" },

@@ -42,11 +42,11 @@ import java.util.List;
 import java.util.Set;
 
 @SenderType(VariantType.ANDROID)
-public class GCMPushNotificationSender implements PushNotificationSender {
+public class FCMPushNotificationSender implements PushNotificationSender {
 
-    // collection of error codes we check for in the GCM response
+    // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
-    private static final Set<String> GCM_ERROR_CODES =
+    private static final Set<String> FCM_ERROR_CODES =
             new HashSet<String>(Arrays.asList(
                     Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
                     Constants.ERROR_NOT_REGISTERED,        // The user has uninstalled the application or turned off notifications.
@@ -56,10 +56,10 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMPushNotificationSender.class);
+    private final AeroGearLogger logger = AeroGearLogger.getInstance(FCMPushNotificationSender.class);
 
     /**
-     * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
+     * Sends FCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      */
     @Override
@@ -74,65 +74,64 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
-        Builder gcmBuilder = new Message.Builder();
+        Builder fcmBuilder = new Message.Builder();
 
         org.jboss.aerogear.unifiedpush.message.Message message = pushMessage.getMessage();
         // add the "recognized" keys...
-        gcmBuilder.addData("alert", message.getAlert());
-        gcmBuilder.addData("sound", message.getSound());
-        gcmBuilder.addData("badge", "" + message.getBadge());
+        fcmBuilder.addData("alert", message.getAlert());
+        fcmBuilder.addData("sound", message.getSound());
+        fcmBuilder.addData("badge", "" + message.getBadge());
 
         /*
         The Message defaults to a Normal priority.  High priority is used
-        by GCM to wake up devices in Doze mode as well as apps in AppStandby
+        by FCM to wake up devices in Doze mode as well as apps in AppStandby
         mode.  This has no effect on devices older than Android 6.0
         */
-        gcmBuilder.priority(
-                message.getPriority() == Priority.HIGH ?
-                                                         Message.Priority.HIGH :
-                                                         Message.Priority.NORMAL
+        fcmBuilder.priority(
+                message.getPriority() ==  Priority.HIGH ?
+                                          Message.Priority.HIGH :
+                                          Message.Priority.NORMAL
                            );
 
         // if present, apply the time-to-live metadata:
         int ttl = pushMessage.getConfig().getTimeToLive();
         if (ttl != -1) {
-            gcmBuilder.timeToLive(ttl);
+            fcmBuilder.timeToLive(ttl);
         }
 
         // iterate over the missing keys:
-        message.getUserData().keySet().forEach(key -> gcmBuilder.addData(key, "" + message.getUserData().get(key)));
+        message.getUserData().keySet().forEach(key -> fcmBuilder.addData(key, "" + message.getUserData().get(key)));
 
         //add the aerogear-push-id
-        gcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
+        fcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
-        Message gcmMessage = gcmBuilder.build();
+        Message fcmMessage = fcmBuilder.build();
 
         // send it out.....
         try {
-        	if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
-	            logger.fine("Sending transformed GCM payload: " + gcmMessage);
+            if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
+                logger.fine("Sending transformed FCM payload: " + fcmMessage );
 
 	            final Sender sender = new Sender(androidVariant.getGoogleKey());
 
 	            // send out a message to a batch of devices...
-	            processGCM(androidVariant, pushTargets, gcmMessage, sender);
+	            processFCM(androidVariant, pushTargets, fcmMessage, sender);
 
-	            logger.fine("Message batch to GCM has been submitted");
+	            logger.fine("Message batch to FCM has been submitted");
 	            callback.onSuccess();
-			} else {
-				logger.fine(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
-			}
-
+	    } else {
+		logger.fine(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
+	    }
         } catch (Exception e) {
-            // GCM exceptions:
-            callback.onError(String.format("Error sending payload to GCM server: %s", e.getMessage()));
+            // FCM exceptions:
+            callback.onError(String.format("Error sending payload to FCM server: %s", e.getMessage()));
         }
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.
+     * Process the HTTP POST to the FCM infrastructure for the given list of registrationIDs.
      */
-    private void processGCM(AndroidVariant androidVariant, List<String> pushTargets, Message gcmMessage, Sender sender) throws IOException {
+    private void processFCM(AndroidVariant androidVariant, List<String> pushTargets, Message fcmMessage, Sender sender) throws IOException {
 
 
         // push targets can be registration IDs OR topics (starting /topic/), but they can't be mixed.
@@ -141,24 +140,24 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             // perform the topic delivery
 
             for (String topic : pushTargets) {
-                logger.info(String.format("Sent push notification to GCM topic: %s", topic));
-                Result result = sender.sendNoRetry(gcmMessage, topic);
+                logger.info(String.format("Sent push notification to FCM topic: %s", topic));
+                Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.finest("Response from GCM topic request: " + result);
+                logger.finest("Response from FCM topic request: " + result);
             }
         } else {
-            logger.info(String.format("Sent push notification to GCM Server for %d registrationIDs", pushTargets.size()));
-            MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, pushTargets);
+            logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
+            MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.finest("Response from GCM request: " + multicastResult);
+            logger.finest("Response from FCM request: " + multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);
         }
     }
 
-/**
-     * <p>Walks over the {@code MulticastResult} from the GCM call and identifies the <code>index</code> of all {@code Result} objects that
+    /**
+     * <p>Walks over the {@code MulticastResult} from the FCM call and identifies the <code>index</code> of all {@code Result} objects that
      * indicate an <code>InvalidRegistration</code> error.
      *
      * <p>This <code>index</code> is used to find the matching <code>registration ID</code> in the List of all used <code>registrationIDs</code>.
@@ -167,11 +166,11 @@ public class GCMPushNotificationSender implements PushNotificationSender {
      *
      * @param variantID id of the actual {@code AndroidVariantEntity}.
      * @param multicastResult the results from the HTTP request to the Google Cloud.
-     * @param registrationIDs list of all tokens that we submitted to GCM.
+     * @param registrationIDs list of all tokens that we submitted to FCM.
      */
     private void cleanupInvalidRegistrationIDsForVariant(String variantID, MulticastResult multicastResult, List<String> registrationIDs) {
 
-        // get the GCM send results for all of the client devices:
+        // get the FCM send results for all of the client devices:
         final List<Result> results = multicastResult.getResults();
 
         // storage for all the invalid registration IDs:
@@ -184,11 +183,11 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
             final String errorCodeName = result.getErrorCodeName();
             if (errorCodeName != null) {
-                logger.info(String.format("Processing [%s] error code from GCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
+                logger.info(String.format("Processing [%s] error code from FCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
             }
 
             //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
-            //according to gcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
+            //according to fcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
             //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
             //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
             //been changed to this canonical id, so change it on your server side as well.
@@ -212,14 +211,13 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                     installation.setDeviceToken(canonicalRegId);
 
                     //update installation with the new token
-                    logger.info(String.format("Based on returned canonical id from GCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
+                    logger.info(String.format("Based on returned canonical id from FCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
                     clientInstallationService.updateInstallation(installation);
                 }
 
             } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
-                if (GCM_ERROR_CODES.contains(errorCodeName)) {
-
+                if (FCM_ERROR_CODES.contains(errorCodeName)) {
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
 
                     // Now use the INDEX of the _that_ result object, and look
@@ -232,7 +230,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
 
         if (! inactiveTokens.isEmpty()) {
             // trigger asynchronous deletion:
-            logger.info(String.format("Based on GCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
+            logger.info(String.format("Based on FCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
             clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
         }
     }
