@@ -31,11 +31,11 @@
           </ConfigTestElement>
           <hashTree/>
           <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include IOS Registraion" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-ios-installation-fregment.jmx</stringProp>
+            <stringProp name="IncludeController.includepath">register-ios-installation-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
           <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Android Registraion" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-android-installation-fregment.jmx</stringProp>
+            <stringProp name="IncludeController.includepath">register-android-installation-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
         </hashTree>
