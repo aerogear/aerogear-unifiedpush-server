@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="2.8" jmeter="2.13 r1665067">
+<jmeterTestPlan version="1.2" properties="2.9" jmeter="3.0 r1743807">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="register-installations-from-csv" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -9,57 +9,57 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="ANDROID_USERNAME" elementType="Argument">
             <stringProp name="Argument.name">ANDROID_USERNAME</stringProp>
-            <stringProp name="Argument.value">eff6812f-199e-409a-8b9e-67ac83c0ec90</stringProp>
+            <stringProp name="Argument.value">${__P(ANDROID_USERNAME,eff6812f-199e-409a-8b9e-67ac83c0ec90)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="ANDROID_PASSWORD" elementType="Argument">
             <stringProp name="Argument.name">ANDROID_PASSWORD</stringProp>
-            <stringProp name="Argument.value">096521ec-19d8-4bc8-8ce5-a7134c9c8ab1</stringProp>
+            <stringProp name="Argument.value">${__P(ANDROID_PASSWORD,096521ec-19d8-4bc8-8ce5-a7134c9c8ab1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="IOS_USERNAME" elementType="Argument">
             <stringProp name="Argument.name">IOS_USERNAME</stringProp>
-            <stringProp name="Argument.value">060a2339-7bd6-42df-9bd6-977886589c8f</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_USERNAME,060a2339-7bd6-42df-9bd6-977886589c8f)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="IOS_PASSWORD" elementType="Argument">
             <stringProp name="Argument.name">IOS_PASSWORD</stringProp>
-            <stringProp name="Argument.value">16d5d803-49f4-4163-a242-173663668169</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_PASSWORD,16d5d803-49f4-4163-a242-173663668169)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PROTOCOL" elementType="Argument">
             <stringProp name="Argument.name">SERVER_PROTOCOL</stringProp>
-            <stringProp name="Argument.value">https</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_PROTOCOL,https)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">demo2.c-b4.com</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_HOST,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
             <stringProp name="Argument.name">SERVER_PORT</stringProp>
-            <stringProp name="Argument.value">443</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_PORT,443)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="CONTEXT_ROOT" elementType="Argument">
             <stringProp name="Argument.name">CONTEXT_ROOT</stringProp>
-            <stringProp name="Argument.value">unifiedpush-server</stringProp>
+            <stringProp name="Argument.value">${__P(CONTEXT_ROOT,unifiedpush-server)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
+            <stringProp name="Argument.value">${__P(NUMBER_OF_THREADS,50)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
             <stringProp name="Argument.name">LOOP_COUNT</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">${__P(LOOP_COUNT,20)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="USERS_CSV" elementType="Argument">
             <stringProp name="Argument.name">USERS_CSV</stringProp>
-            <stringProp name="Argument.value">users.csv</stringProp>
+            <stringProp name="Argument.value">${__P(USERS_CSV,users.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -84,16 +84,16 @@
       <hashTree>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
         <hashTree>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor - Prepare Basic Authentication" enabled="true">
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BS PreProcessor - Prepare Basic Authentication" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="script">import org.apache.commons.codec.binary.Base64;
 byte[] iosUsernamePassword = Base64.encodeBase64(&quot;${IOS_USERNAME}:${IOS_PASSWORD}&quot;.getBytes());
-vars.put(&quot;base64IosHeaderValue&quot;,new String(iosUsernamePassword));
+props.put(&quot;base64IosHeaderValue&quot;, new String(iosUsernamePassword));
 
 byte[] androidUsernamePassword = Base64.encodeBase64(&quot;${ANDROID_USERNAME}:${ANDROID_PASSWORD}&quot;.getBytes());
-vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword));</stringProp>
+props.put(&quot;base64AndroidHeaderValue&quot;, new String(androidUsernamePassword));</stringProp>
           </BeanShellPreProcessor>
           <hashTree/>
           <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler" enabled="true">
@@ -141,13 +141,14 @@ for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
 int lineCounter = 1;  
 String androidToken, iosToken;
 
+FileServer.getFileServer().readLine(usersCsv, false, true);
 for(String line; (line = FileServer.getFileServer().readLine(usersCsv, false, true)) != null; lineCounter++) {
-	iosToken = this.generateString(new Random(), 64,&quot;abcdefghigklmnopqrstuvwxyz0123456789-&quot;);
-	androidToken = this.generateString(new Random(), 101,&quot;abcdefghigklmnopqrstuvwxyz0123456789-_&quot;);
+	iosToken = this.generateString(new Random(), 64,&quot;abcdef0123456789-&quot;);
+	androidToken = this.generateString(new Random(), 101,&quot;abcdefghigklmnopqrstuvwxyz-_&quot;);
     	String threadFile = outDir + &quot;/&quot; + THREAD_FILE_PREFIX + (lineCounter % numOfThreads);
 
 	// Create iOs/Android Token
-    	FileServer.getFileServer().write(threadFile, iosToken + &quot;,&quot; + androidToken + &quot;,&quot; + line + &quot;\n&quot;);
+    	FileServer.getFileServer().write(threadFile, lineCounter + &quot;,&quot; + iosToken + &quot;,&quot; + androidToken + &quot;,&quot; + line + &quot;\n&quot;);
 }
 
 // Close all files
@@ -164,7 +165,48 @@ FileServer.getFileServer().closeFile(usersCsv);
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1467017036000</longProp>
+        <longProp name="ThreadGroup.end_time">1467017036000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BS Sampler - Open files" enabled="true">
+            <stringProp name="BeanShellSampler.query">import org.apache.jmeter.services.FileServer;
+import org.apache.jmeter.util.JMeterUtils; 
+import java.io.FileReader;
+import java.util.*;
+
+
+final static String THREAD_FILE_PREFIX = &quot;THREAD_&quot;;
+String baseDir = FileServer.getFileServer().getBaseDir();
+int numOfThreads = Integer.parseInt(vars.get(&quot;NUMBER_OF_THREADS&quot;));
+String outDir = System.getProperty(&quot;java.io.tmpdir&quot;);
+	
+// Open file writers array according to number of threads
+// All files are stored under OS temp dir.
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+ 	FileServer.getFileServer().reserveFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
+}</stringProp>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+          </BeanShellSampler>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -179,25 +221,39 @@ FileServer.getFileServer().closeFile(usersCsv);
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="false">
-          <stringProp name="ForeachController.inputVal"></stringProp>
-          <stringProp name="ForeachController.returnVal"></stringProp>
-          <boolProp name="ForeachController.useSeparator">true</boolProp>
-        </ForeachController>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
         <hashTree>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="false">
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BS PreProcessor - Read next line" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
-            <stringProp name="script"></stringProp>
+            <stringProp name="script">import org.apache.jmeter.services.FileServer;
+import java.io.FileReader;
+import java.util.*;
+
+String THREAD_FILE_PREFIX = &quot;THREAD_&quot;;
+String baseDir = FileServer.getFileServer().getBaseDir();
+int threamNum = ctx.getThreadNum();
+String fileName = System.getProperty(&quot;java.io.tmpdir&quot;) + &quot;/&quot; + THREAD_FILE_PREFIX + threamNum;
+
+int lineCounter = 0; 
+String line = FileServer.getFileServer().readLine(fileName, false, false);
+if  (line != null) {
+	String[] words = line.split(&quot;,&quot;);
+
+	vars.put(&quot;IOS_TOKENID&quot;, words[1]);
+	vars.put(&quot;AND_TOKENID&quot;, words[2]);
+	vars.put(&quot;ALIAS&quot;, words[5]);
+	log.info(&quot;Reading CSV line (&quot; + words[0] + &quot;) from &quot; + fileName);
+}</stringProp>
           </BeanShellPreProcessor>
           <hashTree/>
-          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller" enabled="false">
+          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="IC - Register installation" enabled="true">
             <stringProp name="IncludeController.includepath">./register-params-installations-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="false">
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -230,7 +286,7 @@ FileServer.getFileServer().closeFile(usersCsv);
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -263,6 +319,46 @@ FileServer.getFileServer().closeFile(usersCsv);
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1467017036000</longProp>
+        <longProp name="ThreadGroup.end_time">1467017036000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BS Sampler - Close files" enabled="true">
+            <stringProp name="BeanShellSampler.query">import org.apache.jmeter.services.FileServer;
+import org.apache.jmeter.util.JMeterUtils; 
+import java.io.FileReader;
+import java.util.*;
+
+final static String THREAD_FILE_PREFIX = &quot;THREAD_&quot;;
+String baseDir = FileServer.getFileServer().getBaseDir();
+int numOfThreads = Integer.parseInt(vars.get(&quot;NUMBER_OF_THREADS&quot;));
+String outDir = System.getProperty(&quot;java.io.tmpdir&quot;);
+	
+// Open file writers array according to number of threads
+// All files are stored under OS temp dir.
+for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
+ 	FileServer.getFileServer().closeFile(outDir + &quot;/&quot; + THREAD_FILE_PREFIX + threadCounter); 	
+}</stringProp>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+          </BeanShellSampler>
+          <hashTree/>
+        </hashTree>
       </hashTree>
     </hashTree>
   </hashTree>
