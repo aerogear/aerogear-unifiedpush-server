@@ -22,7 +22,7 @@
             <input type="radio" name="variantType" id="optionAndroid" value="android" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-android">
                   <strong>Android</strong><br>
-                  using Google Cloud Messaging
+                  using Firebase Cloud Messaging
                 </span>
           </label>
         </div>
@@ -111,16 +111,16 @@
 
       <div ng-show="variant.type == 'android'">
         <div class="form-group">
-          <label class="col-sm-3 control-label" for="gcmApiKey">Push Network</label>
-          <div class="col-sm-7"><em>Google Cloud Messaging</em> Key<br>
-            <input type="text" placeholder="e.g. AIza5a448c2f31700a466fbc9d33d33942b043a27596" id="gcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
+          <label class="col-sm-3 control-label" for="fcmApiKey">Push Network</label>
+          <div class="col-sm-7">Server Key<br>
+            <input type="text" placeholder="e.g. AIza5a448c2f31700a466fbc9d33d33942b043a27596" id="fcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label" for="gcmProjectNumber"></label>
+          <label class="col-sm-3 control-label" for="fcmProjectNumber"></label>
           <div class="col-sm-7">
-            Project Number<br>
-            <input type="text" placeholder="e.g. 42" id="gcmProjectNumber" class="form-control" ng-model="variant.projectNumber">
+            Sender ID<br>
+            <input type="text" placeholder="e.g. 42" id="fcmProjectNumber" class="form-control" ng-model="variant.projectNumber">
           </div>
         </div>
       </div>

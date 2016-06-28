@@ -20,24 +20,24 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * The Android variant class encapsulates GCM specific behavior.
+ * The Android variant class encapsulates FCM specific behavior.
  */
 public class AndroidVariant extends Variant {
     private static final long serialVersionUID = -4473752252296190311L;
 
     @NotNull
-    @Size(min = 1, max = 255, message = "Google Cloud Messaging Key must be max. 255 chars long")
+    @Size(min = 1, max = 255, message = "Server Key must be max. 255 chars long")
     private String googleKey;
 
-    @Size(max = 255, message = "Project Number must be max. 255 chars long")
+    @Size(max = 255, message = "Sender ID must be max. 255 chars long")
     private String projectNumber;
 
     /**
-     * The "Google Project Number" from the API Console is <i>not</i> needed for sending push messages, but it is a convenience to "see" it on
-     * the Admin UI as well, since the Android applications require it (called Sender ID there). That way all informations are stored on the
+     * The "Google Project Number" (or Sender ID) from the API Console is <i>not</i> needed for sending push messages, but it is a convenience to "see" it on
+     * the Admin UI as well, since the Android applications require it (called Sender ID there). That way all information is stored on the
      * same object.
      *
-     * @return the Google project number string
+     * @return the Sender ID string
      */
     public String getProjectNumber() {
         return projectNumber;
@@ -48,9 +48,9 @@ public class AndroidVariant extends Variant {
     }
 
     /**
-     * The Google API Key from the Google API project, which has been enabled for Android-based GCM.
+     * The Server Key from the Firebase Console of a project which has been enabled for FCM.
      *
-      @return the Google API key
+      @return the Server key
      */
     public String getGoogleKey() {
         return this.googleKey;
