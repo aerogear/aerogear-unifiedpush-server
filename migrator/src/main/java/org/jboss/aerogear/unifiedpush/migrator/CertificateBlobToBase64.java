@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -42,11 +43,11 @@ public class CertificateBlobToBase64 implements CustomSqlChange {
     public SqlStatement[] generateStatements(Database database) throws CustomChangeException {
         List<SqlStatement> statements = new ArrayList<>();
 
-        Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
+        try(Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT id, certificate from ios_variant");) {
 
-        try {
             conn.setAutoCommit(false);
-            ResultSet resultSet = conn.createStatement().executeQuery("SELECT id, certificate from ios_variant");
             while (resultSet.next()) {
                 String id = resultSet.getString("id");
                 Blob blob = resultSet.getBlob("certificate");

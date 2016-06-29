@@ -53,51 +53,49 @@ public class CategoriesMigration implements CustomTaskChange {
 
     @Override
     public void execute(Database database) throws CustomChangeException {
-        try {
-            Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
-
+        try (Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet tables = metaData.getTables(null, null, null, null);
             boolean hasTable = false;
-            while (tables.next()) {
-                String tableName = tables.getString(3);
-                if ("Installation_categories".equals(tableName) || "installation_categories".equals(tableName)) {
-                    hasTable = true;
+            try (ResultSet tables = metaData.getTables(null, null, null, null)) {
+                while (tables.next()) {
+                    String tableName = tables.getString(3);
+                    if ("Installation_categories".equals(tableName) || "installation_categories".equals(tableName)) {
+                        hasTable = true;
+                    }
                 }
             }
-
             if (!hasTable) {
                 this.confirmationMessage = "table doesn't exists, skipping";
                 return;
             }
-
-            ResultSet rs = conn.createStatement().executeQuery("select distinct categories from Installation_categories");
-            List<String> categories = new ArrayList<>();
-            while (rs.next()) {
-                String category = rs.getString(1);
-                categories.add(category);
+            List<String> categories = new ArrayList<String>();
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("select distinct categories from Installation_categories")) {
+                while (rs.next()) {
+                    String category = rs.getString(1);
+                    categories.add(category);
+                }
             }
-            rs.close();
             conn.setAutoCommit(false);
-            PreparedStatement categoriesStatement = conn.prepareStatement("insert into category (id, name) values (?, ?)");
             long categoryCounter = 1;
-            for (String category : categories) {
-                categoriesStatement.setLong(1, categoryCounter);
-                categoriesStatement.setString(2, category);
-                categoriesStatement.executeUpdate();
-                categoryCounter++;
+            try (PreparedStatement categoriesStatement = conn.prepareStatement("insert into category (id, name) values (?, ?)")) {
+                for (String category : categories) {
+                    categoriesStatement.setLong(1, categoryCounter);
+                    categoriesStatement.setString(2, category);
+                    categoriesStatement.executeUpdate();
+                    categoryCounter++;
+                }
             }
-            categoriesStatement.close();
             if ("mysql".equals(database.getShortName())) {
-                PreparedStatement sequenceStatement = conn.prepareStatement("update category_seq set next_val = ? where next_val = ?");
-                sequenceStatement.setLong(1, categoryCounter + 1);
-                sequenceStatement.setLong(2, categoryCounter);
-                sequenceStatement.executeUpdate();
-                sequenceStatement.close();
+                try (PreparedStatement sequenceStatement = conn.prepareStatement("update category_seq set next_val = ? where next_val = ?")) {
+                    sequenceStatement.setLong(1, categoryCounter + 1);
+                    sequenceStatement.setLong(2, categoryCounter);
+                    sequenceStatement.executeUpdate();
+                }
             } else if ("postgresql".equals(database.getShortName())) {
-                Statement statement = conn.createStatement();
-                statement.executeUpdate("alter sequence category_seq restart with " + categoryCounter + 1);
-                statement.close();
+                try (Statement statement = conn.createStatement()) {
+                    statement.executeUpdate("alter sequence category_seq restart with " + categoryCounter + 1);
+                }
             }
             conn.commit();
             this.confirmationMessage = categoryCounter + " categories migrated successfully";
