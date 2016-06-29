@@ -37,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
  */
 public abstract class AbstractServiceHolder<T> {
 
-    private final ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>>();
+    private final ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<>();
 
     private final int instanceLimit;
     private final long instanceAcquiringTimeoutInMillis;
@@ -151,7 +151,7 @@ public abstract class AbstractServiceHolder<T> {
                 returnServiceSlotToQueue(pushMessageInformationId, variantID);
             };
         };
-        DisposableReference<T> disposableReference = new DisposableReference<T>(service, destroyAndReturnServiceSlot);
+        DisposableReference<T> disposableReference = new DisposableReference<>(service, destroyAndReturnServiceSlot);
         serviceDisposalScheduler.scheduleForDisposal(disposableReference, serviceDisposalDelayInMillis);
         getCache(pushMessageInformationId, variantID).add(disposableReference);
     }
@@ -183,7 +183,7 @@ public abstract class AbstractServiceHolder<T> {
     private ConcurrentLinkedQueue<DisposableReference<T>> getOrCreateQueue(Key key) {
         ConcurrentLinkedQueue<DisposableReference<T>> queue = queueMap.get(key);
         if (queue == null) {
-            queue = queueMap.putIfAbsent(key, new ConcurrentLinkedQueue<DisposableReference<T>>());
+            queue = queueMap.putIfAbsent(key, new ConcurrentLinkedQueue<>());
             queue = queueMap.get(key);
         }
         return queue;

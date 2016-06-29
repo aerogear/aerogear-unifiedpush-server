@@ -65,8 +65,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
-        Set<String> expiredClientIdentifiers = new HashSet<String>(clientIdentifiers.size());
-        ArrayList<String> channelUris = new ArrayList<String>(clientIdentifiers);
+        Set<String> expiredClientIdentifiers = new HashSet<>(clientIdentifiers.size());
+        ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
         	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
@@ -150,7 +150,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private void createMessage(Message message, String type, WnsAbstractBuilder builder) {
         Windows windows = message.getWindows();
-        List<String> param = new ArrayList<String>(windows.getImages());
+        List<String> param = new ArrayList<>(windows.getImages());
         param.add(message.getAlert());
         param.addAll(windows.getTextFields());
 

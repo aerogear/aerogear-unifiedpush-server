@@ -59,7 +59,7 @@ public class UnifiedPushMessageTest {
         message.getWindows().setTileType(TileType.TileWideBlockAndText01);
         message.getApns().setContentAvailable(true);
 
-        final HashMap<String, Object> data = new HashMap<String, Object>();
+        final HashMap<String, Object> data = new HashMap<>();
         data.put("key", "value");
         data.put("key2", "other value");
         message.setUserData(data);
@@ -105,13 +105,13 @@ public class UnifiedPushMessageTest {
     @Test
     public void createBroadcastMessage() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -143,13 +143,13 @@ public class UnifiedPushMessageTest {
     @Test
     public void createBroadcastMessageWithSimplePush() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -178,13 +178,13 @@ public class UnifiedPushMessageTest {
     @Test(expected = UnrecognizedPropertyException.class)
     public void createBroadcastMessageWithIncorrectSimplePush() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -198,12 +198,12 @@ public class UnifiedPushMessageTest {
     @Test
     public void noBadgePayload() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -219,14 +219,14 @@ public class UnifiedPushMessageTest {
     @Test
     public void contentAvailable() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -245,12 +245,12 @@ public class UnifiedPushMessageTest {
     @Test
     public void noContentAvailable() throws IOException {
 
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -266,13 +266,13 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testAliasCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -280,7 +280,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("simple-push", "version=123");
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("alias", Arrays.asList("foo@bar.org"));
         container.put("criteria", criteria);
 
@@ -293,9 +293,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testAction() throws IOException{
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         apnsObject.put("action", "View");
 
@@ -311,9 +311,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testUrlArgs() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
         final String[] urlArgs = { "Arg1", "Arg2" };
 
         apnsObject.put("title", "I'm a Title");
@@ -330,9 +330,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testActionCategory() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         apnsObject.put("action-category", "POSTS");
         messageObject.put("alert", "Howdy");
@@ -346,9 +346,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testLocalizedKey() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         apnsObject.put("localized-key", "myLocalizedKey");
         messageObject.put("alert", "Howdy");
@@ -362,9 +362,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testLocalizedArguments() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
         String[] arguments = {"Jambon","ham"};
         apnsObject.put("localized-arguments", arguments);
         messageObject.put("alert", "Howdy");
@@ -378,9 +378,9 @@ public class UnifiedPushMessageTest {
 	
     @Test
     public void testLocalizedTitleKey() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         apnsObject.put("localized-title-key", "myLocalizedTitle");
         messageObject.put("alert", "Howdy");
@@ -394,9 +394,9 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testLocalizedTitleArguments() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
         String[] arguments = {"Jambon","ham"};
         apnsObject.put("localized-title-arguments", arguments);
         messageObject.put("alert", "Howdy");
@@ -410,13 +410,13 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testMultipleAliasCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -424,7 +424,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("simple-push", "version=123");
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("alias", Arrays.asList("foo@bar.org", "bar@foo.com"));
         container.put("criteria", criteria);
 
@@ -438,13 +438,13 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testDeviceTypeCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -452,7 +452,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("simple-push", "version=123");
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("deviceType", Arrays.asList("iPad"));
         container.put("criteria", criteria);
 
@@ -465,8 +465,8 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testDeviceTypesCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
@@ -476,7 +476,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("simple-push", "version=123");
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("deviceType", Arrays.asList("iPad", "Android"));
         container.put("criteria", criteria);
 
@@ -490,8 +490,8 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testCategoriesCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
@@ -500,7 +500,7 @@ public class UnifiedPushMessageTest {
         container.put("message", messageObject);
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("categories", Arrays.asList("football"));
         container.put("criteria", criteria);
 
@@ -513,8 +513,8 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testMultipleCategoriesCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
@@ -523,7 +523,7 @@ public class UnifiedPushMessageTest {
         container.put("message", messageObject);
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("categories", Arrays.asList("soccer", "olympics"));
         container.put("criteria", criteria);
 
@@ -537,8 +537,8 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testVariantsCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
@@ -547,7 +547,7 @@ public class UnifiedPushMessageTest {
         container.put("message", messageObject);
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("variants", Arrays.asList("abc-123-def-456"));
         container.put("criteria", criteria);
 
@@ -560,8 +560,8 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testMultipleVariantsCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
@@ -570,7 +570,7 @@ public class UnifiedPushMessageTest {
         container.put("message", messageObject);
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
         container.put("criteria", criteria);
 
@@ -584,13 +584,13 @@ public class UnifiedPushMessageTest {
 
     @Test
     public void testAllCriteria() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "Howdy");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         data.put("someKey", "someValue");
         messageObject.put("user-data", data);
 
@@ -598,7 +598,7 @@ public class UnifiedPushMessageTest {
         messageObject.put("simple-push", "version=123");
 
         // criteria:
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("variants", Arrays.asList("abc-123-def-456", "456-abc-123-def-bar"));
         criteria.put("categories", Arrays.asList("soccer", "olympics"));
         criteria.put("deviceType", Arrays.asList("iPad", "Android"));
@@ -628,8 +628,8 @@ public class UnifiedPushMessageTest {
 
     @Test(expected = JsonMappingException.class)
     public void testVariantCriteriaParseError() throws IOException {
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        Map<String, Object> criteria = new HashMap<>();
         criteria.put("variants", "abc-123-def-456");
         container.put("criteria", criteria);
         parsePushMessage(container);
@@ -638,21 +638,21 @@ public class UnifiedPushMessageTest {
     @Test
     public void testMessageToStrippedJson() throws IOException, URISyntaxException {
         //given
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "HELLO!");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("key", "value");
         data.put("key2", "value");
         messageObject.put("user-data", data);
         apnsObject.put("action-category", "category");
         apnsObject.put("content-available", "true");
         messageObject.put("simple-push", "version=123");
-        Map<String, Object> windows = new HashMap<String, Object>();
+        Map<String, Object> windows = new HashMap<>();
         windows.put("type", "tile");
         windows.put("tileType", "TileWideBlockAndText01");
         windows.put("page", "cordova");
@@ -675,21 +675,21 @@ public class UnifiedPushMessageTest {
     @Test
     public void testMessageToJson() throws IOException, URISyntaxException {
         //given
-        final Map<String, Object> container = new LinkedHashMap<String, Object>();
-        final Map<String, Object> messageObject = new LinkedHashMap<String, Object>();
-        final Map<String, Object> apnsObject = new LinkedHashMap<String, Object>();
+        final Map<String, Object> container = new LinkedHashMap<>();
+        final Map<String, Object> messageObject = new LinkedHashMap<>();
+        final Map<String, Object> apnsObject = new LinkedHashMap<>();
 
         messageObject.put("alert", "HELLO!");
         messageObject.put("sound", "default");
         messageObject.put("badge", 2);
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("key", "value");
         data.put("key2", "value");
         messageObject.put("user-data", data);
         apnsObject.put("action-category", "category");
         apnsObject.put("content-available", "true");
         messageObject.put("simple-push", "version=123");
-        Map<String, Object> windows = new HashMap<String, Object>();
+        Map<String, Object> windows = new HashMap<>();
         windows.put("type", "tile");
         windows.put("tileType", "TileWideBlockAndText01");
         windows.put("page", "cordova");

@@ -35,7 +35,7 @@ public class InstallationTest {
 
         deviceInstallation.setDeviceType("iPhone");
         deviceInstallation.setAlias("matzew");
-        final HashSet<Category> categories = new HashSet<Category>();
+        final HashSet<Category> categories = new HashSet<>();
         categories.add(sports);
         categories.add(soccer);
         deviceInstallation.setCategories(categories);

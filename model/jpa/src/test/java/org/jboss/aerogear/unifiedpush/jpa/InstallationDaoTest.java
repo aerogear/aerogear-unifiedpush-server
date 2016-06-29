@@ -112,7 +112,7 @@ public class InstallationDaoTest {
         Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
         assertThat(one.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
 
-        final Set<String> tokenz = new HashSet<String>();
+        final Set<String> tokenz = new HashSet<>();
         tokenz.add(DEVICE_TOKEN_1);
         tokenz.add("foobar223");
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
@@ -203,7 +203,7 @@ public class InstallationDaoTest {
 
     @Test
     public void findAndDeleteOneInstallation() {
-        final Set<String> tokenz = new HashSet<String>();
+        final Set<String> tokenz = new HashSet<>();
         tokenz.add(DEVICE_TOKEN_1);
         tokenz.add("foobar223");
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
@@ -220,7 +220,7 @@ public class InstallationDaoTest {
 
     @Test
     public void findAndDeleteTwoInstallations() {
-        final Set<String> tokenz = new HashSet<String>();
+        final Set<String> tokenz = new HashSet<>();
         tokenz.add(DEVICE_TOKEN_1);
         tokenz.add(DEVICE_TOKEN_2);
         List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
@@ -251,11 +251,11 @@ public class InstallationDaoTest {
 
         final Installation installation = new Installation();
         installation.setDeviceToken("http://test");
-        installation.setCategories(new HashSet<Category>(Arrays.asList(new Category("one"), new Category("two"))));
+        installation.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("two"))));
 
         final Installation installation2 = new Installation();
         installation2.setDeviceToken("http://test2");
-        installation2.setCategories(new HashSet<Category>(Arrays.asList(new Category("one"), new Category("three"))));
+        installation2.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("three"))));
 
         installation.setVariant(variant);
         installation2.setVariant(variant);
@@ -519,7 +519,7 @@ public class InstallationDaoTest {
         android1.setAlias("foo@bar.org");
         android1.setDeviceToken(DEVICE_TOKEN_1);
         android1.setDeviceType("Android Phone");
-        final Set<Category> categoriesOne = new HashSet<Category>();
+        final Set<Category> categoriesOne = new HashSet<>();
         final Category category = entityManager.createQuery("from Category where name = :name", Category.class)
                 .setParameter("name", "soccer").getSingleResult();
         categoriesOne.add(category);
@@ -652,7 +652,7 @@ public class InstallationDaoTest {
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, boolean oldGCM) {
         try {
             ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null, oldGCM).executeQuery();
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
             }

@@ -63,7 +63,7 @@ public abstract class AbstractBaseEndpoint {
         // in case of an invalid model, we throw a ConstraintViolationException, containing the violations:
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<?>>(violations));
+                    new HashSet<>(violations));
         }
     }
 

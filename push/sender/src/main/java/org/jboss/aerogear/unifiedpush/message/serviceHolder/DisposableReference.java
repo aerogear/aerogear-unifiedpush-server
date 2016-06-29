@@ -37,7 +37,7 @@ public class DisposableReference<T> {
      * @param destroyer the service destroyer
      */
     public DisposableReference(T instance, ServiceDestroyer<T> destroyer) {
-        this.reference = new AtomicReference<T>(instance);
+        this.reference = new AtomicReference<>(instance);
         this.destroyer = destroyer;
     }
 

@@ -43,7 +43,7 @@ public class Message implements Serializable {
     private int badge = -1;
 
     @JsonProperty("user-data")
-    private Map<String, Object> userData = new HashMap<String, Object>();
+    private Map<String, Object> userData = new HashMap<>();
 
     @JsonProperty("simple-push")
     private String simplePush;

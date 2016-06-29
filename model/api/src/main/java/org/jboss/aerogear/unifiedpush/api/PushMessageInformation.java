@@ -46,7 +46,7 @@ public class PushMessageInformation extends BaseModel {
     private Integer servedVariants = 0;
     private Integer totalVariants = 0;
 
-    private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
+    private Set<VariantMetricInformation> variantInformations = new HashSet<>();
 
     /**
      * The raw JSON payload of the push message request

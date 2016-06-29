@@ -47,7 +47,7 @@ public class PushApplication extends BaseModel {
     @Size(min = 1, max = 255)
     private String developer;
 
-    private List<Variant> variants = new ArrayList<Variant>();
+    private List<Variant> variants = new ArrayList<>();
 
     /**
      * The name of the application.

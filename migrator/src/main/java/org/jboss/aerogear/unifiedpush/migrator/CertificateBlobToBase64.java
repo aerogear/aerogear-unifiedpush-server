@@ -40,7 +40,7 @@ public class CertificateBlobToBase64 implements CustomSqlChange {
 
     @Override
     public SqlStatement[] generateStatements(Database database) throws CustomChangeException {
-        List<SqlStatement> statements = new ArrayList<SqlStatement>();
+        List<SqlStatement> statements = new ArrayList<>();
 
         Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
 

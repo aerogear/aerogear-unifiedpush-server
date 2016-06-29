@@ -141,7 +141,7 @@ public class TestAbstractServiceHolderClustered {
     @Test @OperateOnDeployment("war-2") @InSequence(5)
     public void testReturnAndLease() throws InterruptedException {
         returnServiceSlot(5);
-        Set<Integer> leased = new HashSet<Integer>(Arrays.asList(borrowServiceSlot(), borrowServiceSlot()));
+        Set<Integer> leased = new HashSet<>(Arrays.asList(borrowServiceSlot(), borrowServiceSlot()));
         assertTrue("leased tokens should contain 1", leased.contains(1));
         assertTrue("leased tokens should contain 5", leased.contains(5));
         assertEquals("the borrow operation should fail when no slots are available", 0, borrowServiceSlot());

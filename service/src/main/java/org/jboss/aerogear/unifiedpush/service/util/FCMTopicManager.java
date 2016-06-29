@@ -58,7 +58,7 @@ public class FCMTopicManager {
             deviceInfo = get(url);
         } catch (IOException e) {
             logger.debug("Couldn't get list of subscribed topics from Instance ID service.");
-            return new HashSet<String>(0);
+            return new HashSet<>(0);
         }
         JSONParser parser = new JSONParser();
         JSONObject info;
@@ -66,7 +66,7 @@ public class FCMTopicManager {
             info = (JSONObject) parser.parse(deviceInfo);
         } catch (ParseException e) {
             logger.debug("Couldn't parse list of subscribed topics from Instance ID service.");
-            return new HashSet<String>(0);
+            return new HashSet<>(0);
         }
         JSONObject rel = (JSONObject) info.get("rel");
         JSONObject topics = (JSONObject) rel.get("topics");

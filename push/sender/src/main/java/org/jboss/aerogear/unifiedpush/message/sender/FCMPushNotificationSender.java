@@ -48,7 +48,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
     private static final Set<String> FCM_ERROR_CODES =
-            new HashSet<String>(Arrays.asList(
+            new HashSet<>(Arrays.asList(
                     Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
                     Constants.ERROR_NOT_REGISTERED,        // The user has uninstalled the application or turned off notifications.
                     Constants.ERROR_MISMATCH_SENDER_ID)    // incorrect token, from a different project/sender ID
@@ -71,7 +71,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final List<String> pushTargets = new ArrayList<String>(tokens);
+        final List<String> pushTargets = new ArrayList<>(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
@@ -172,7 +172,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         final List<Result> results = multicastResult.getResults();
 
         // storage for all the invalid registration IDs:
-        final Set<String> inactiveTokens = new HashSet<String>();
+        final Set<String> inactiveTokens = new HashSet<>();
 
         // read the results:
         for (int i = 0; i < results.size(); i++) {
