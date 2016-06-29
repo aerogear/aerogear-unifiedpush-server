@@ -49,12 +49,12 @@
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">${__P(NUMBER_OF_THREADS,50)}</stringProp>
+            <stringProp name="Argument.value">${__P(NUMBER_OF_THREADS,2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
             <stringProp name="Argument.name">LOOP_COUNT</stringProp>
-            <stringProp name="Argument.value">${__P(LOOP_COUNT,20)}</stringProp>
+            <stringProp name="Argument.value">${__P(LOOP_COUNT,2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="USERS_CSV" elementType="Argument">
@@ -223,11 +223,15 @@ for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
         <hashTree>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BS PreProcessor - Read next line" enabled="true">
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BS PreProcessor - Read next line" enabled="false">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
-            <stringProp name="script">import org.apache.jmeter.services.FileServer;
+            <stringProp name="script"></stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler" enabled="true">
+            <stringProp name="BeanShellSampler.query">import org.apache.jmeter.services.FileServer;
 import java.io.FileReader;
 import java.util.*;
 
@@ -246,10 +250,13 @@ if  (line != null) {
 	vars.put(&quot;ALIAS&quot;, words[5]);
 	log.info(&quot;Reading CSV line (&quot; + words[0] + &quot;) from &quot; + fileName);
 }</stringProp>
-          </BeanShellPreProcessor>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+          </BeanShellSampler>
           <hashTree/>
           <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="IC - Register installation" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-params-installations-fregment.jmx</stringProp>
+            <stringProp name="IncludeController.includepath">register-params-installations-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
         </hashTree>
