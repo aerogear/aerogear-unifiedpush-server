@@ -122,11 +122,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         if (installation == null) {
             logger.finest("Performing new device/client registration");
 
-        	// Prevent a device (with alias) to registered multiple times
-        	// using different tokens.
-            if (entity.getAlias() != null && entity.getAlias().length() != 0)
-            	removePreviousInstallations(entity.getAlias());
-
             // Verification process required, disable device.
             if (shouldVerifiy)
             	entity.setEnabled(false);
@@ -363,10 +358,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
-
-    private void removePreviousInstallations(String alias) {
-		installationDao.removeInstallationsByAlias(alias);
-	}
 
     private void disableInstallations(List<Installation> installations) {
         for (Installation installation : installations) {

@@ -137,11 +137,4 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
 	List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases);
 
-	/**
-	 * Remove any installations with the given alias.
-	 *
-	 * @param alias alias of installations
-	 * @return the number of installations that have been disabled
-	 */
-	int removeInstallationsByAlias(String alias);
 }
