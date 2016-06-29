@@ -49,7 +49,7 @@
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">${__P(NUMBER_OF_THREADS,2)}</stringProp>
+            <stringProp name="Argument.value">${__P(NUMBER_OF_THREADS,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
@@ -223,14 +223,7 @@ for(int threadCounter = 0; threadCounter&lt;numOfThreads ; threadCounter++ ) {
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
         <hashTree>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BS PreProcessor - Read next line" enabled="false">
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="script"></stringProp>
-          </BeanShellPreProcessor>
-          <hashTree/>
-          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler" enabled="true">
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BS Sampler - Read next line" enabled="true">
             <stringProp name="BeanShellSampler.query">import org.apache.jmeter.services.FileServer;
 import java.io.FileReader;
 import java.util.*;
