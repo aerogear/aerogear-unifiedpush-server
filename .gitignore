@@ -25,3 +25,4 @@ release.properties
 .metadata
 
 .DS_Store
+*.checkstyle

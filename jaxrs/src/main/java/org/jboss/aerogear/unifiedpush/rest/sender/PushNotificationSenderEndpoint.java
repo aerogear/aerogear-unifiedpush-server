@@ -40,7 +40,8 @@ import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
@@ -48,7 +49,7 @@ import com.qmino.miredot.annotations.ReturnType;
 @Path("/sender")
 public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(PushNotificationSenderEndpoint.class);
+    private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
@@ -114,7 +115,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 
         // submitted to EJB:
         notificationRouter.submit(pushApplication, message);
-        logger.fine(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
+        logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }
@@ -186,7 +187,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 			}
 
 		} catch (Exception e) {
-			logger.severe("Cannot store payload and send notification", e);
+			logger.error("Cannot store payload and send notification", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 

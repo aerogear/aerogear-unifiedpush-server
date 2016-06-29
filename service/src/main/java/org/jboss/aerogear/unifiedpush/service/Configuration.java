@@ -9,13 +9,14 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.jboss.aerogear.unifiedpush.spring.utils.ResourceUtils;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
 public class Configuration {
 
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(Configuration.class);
+	private final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
 	public static final String PROPERTIES_FILE_KEY = "aerogear.config";
 	public static final String PROPERTIES_DOCUMENTS_KEY = "aerogear.config.document.path.root";
@@ -39,7 +40,7 @@ public class Configuration {
 
 				loadPropertiesFromStream(is);
 			} catch (IOException e) {
-				logger.severe("cannot open file " + propertiesFilePath);
+				logger.error("cannot open file " + propertiesFilePath);
 			} finally {
 				if (is != null) {
 					try {
@@ -59,10 +60,10 @@ public class Configuration {
 	private void loadDefaultProperties() {
 		InputStream inp = getClass().getClassLoader().getResourceAsStream("default.properties");
 		if (inp == null) {
-			logger.warning("default properties not found");
+			logger.warn("default properties not found");
 		} else {
-			logger.warning("loading default properties from class path resource default.properties!");
-			logger.warning("use -Daerogear.config=/PATH inorder to prevent this warning!");
+			logger.warn("loading default properties from class path resource default.properties!");
+			logger.warn("use -Daerogear.config=/PATH inorder to prevent this warning!");
 			loadPropertiesFromStream(inp);
 		}
 	}
@@ -71,7 +72,7 @@ public class Configuration {
 		try (InputStream in = inp) {
 			properties.load(in);
 		} catch (IOException e) {
-			logger.severe("Cannot load configuration", e);
+			logger.error("Cannot load configuration", e);
 		}
 	}
 

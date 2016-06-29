@@ -25,9 +25,10 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 import com.notnoop.apns.ApnsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -44,7 +45,7 @@ import com.notnoop.apns.ApnsService;
 @ApplicationScoped
 public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(ApnsServiceCache.class);
+    private final Logger logger = LoggerFactory.getLogger(ApnsServiceCache.class);
 
     public static final int INSTANCE_LIMIT = 10;
     public static final long INSTANCE_ACQUIRING_TIMEOUT = 5000;
@@ -75,12 +76,12 @@ public class ApnsServiceCache extends AbstractServiceCache<ApnsService> {
                         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
                     }
                 } catch (Exception e) {
-                    logger.severe("Unable to detect and delete inactive devices", e);
+                    logger.error("Unable to detect and delete inactive devices", e);
                 }
                 // kill the service
                 service.stop();
             } catch (Exception e) {
-                logger.severe("Unable to stop ApnsService", e);
+                logger.error("Unable to stop ApnsService", e);
             } finally {
                 // we will free up a slot anyway
                 this.freeUpSlot(pushMessageInformationId, variantID);

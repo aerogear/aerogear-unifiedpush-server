@@ -32,6 +32,12 @@
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-push-model</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

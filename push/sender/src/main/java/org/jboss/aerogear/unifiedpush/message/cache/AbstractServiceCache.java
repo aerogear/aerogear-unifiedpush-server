@@ -16,11 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 
 /**
  * Abstract cache holds queue of services with upper-bound limit of created instances.
@@ -33,7 +35,7 @@ public abstract class AbstractServiceCache<T> {
 
     private final ConcurrentHashMap<Key, Holder> holderMap = new ConcurrentHashMap<Key, Holder>();
 
-    private final AeroGearLogger logger;
+    private final Logger logger;
     private final int instanceLimit;
     private final long timeout;
 
@@ -44,7 +46,7 @@ public abstract class AbstractServiceCache<T> {
      * @param instanceAcquiringTimeoutInMillis what is a timeout before the cache can return null
      */
     public AbstractServiceCache(int instanceLimit, long instanceAcquiringTimeoutInMillis) {
-        this.logger = AeroGearLogger.getInstance(this.getClass());
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.instanceLimit = instanceLimit;
         this.timeout = instanceAcquiringTimeoutInMillis;
     }
@@ -93,7 +95,7 @@ public abstract class AbstractServiceCache<T> {
     public void queueFreedUpService(final String pushMessageInformationId, final String variantID, T service) {
         Holder holder = getOrCreateHolder(new Key(pushMessageInformationId, variantID));
         holder.queue(service);
-        logger.fine("Freed up service returned to the queue");
+        logger.debug("Freed up service returned to the queue");
     }
 
     /**
@@ -113,7 +115,7 @@ public abstract class AbstractServiceCache<T> {
         } else if (newInstanceCount < 0) {
             throw new IllegalStateException("Instance counter cant be less than zero");
         }
-        logger.fine("Freed up a slot so that new services can be created within the limits");
+        logger.debug("Freed up a slot so that new services can be created within the limits");
     }
 
     private Holder getHolder(Key key) {
@@ -174,27 +176,27 @@ public abstract class AbstractServiceCache<T> {
         private T dequeueOrCreate(ServiceConstructor<T> constructor) {
             // try to use existing queued instance
             if (!queue.isEmpty()) {
-                logger.fine("Service available in a queue, taking it from there");
+                logger.debug("Service available in a queue, taking it from there");
                 return queue.poll();
             }
             int count = counter.get();
             // create new instance
             if (count < instanceLimit) {
                 if (counter.compareAndSet(count, count + 1)) {
-                    logger.fine("No existing service available, creating new one");
+                    logger.debug("No existing service available, creating new one");
                     T service = null;
                     try {
                         service = constructor.construct();
                     } finally {
                         if (service == null) {
-                            logger.warning("Failed to create service, will try later");
+                            logger.warn("Failed to create service, will try later");
                             // service construction failed, we need to free up a slot
                             counter.decrementAndGet();
                         }
                     }
                     return service;
                 } else {
-                    logger.fine("No existing service available and ran out of limit, waiting for services to free up");
+                    logger.debug("No existing service available and ran out of limit, waiting for services to free up");
                 }
             }
             return null;

@@ -13,13 +13,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sends SMS over Clickatell's HTTP API.
  */
 public class ClickatellSMSSender implements VerificationPublisher {
-	private final static AeroGearLogger logger = AeroGearLogger.getInstance(ClickatellSMSSender.class);
+	private final Logger logger = LoggerFactory.getLogger(ClickatellSMSSender.class);
 
 	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
@@ -56,7 +57,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 
 		try {
 			if (apiId==null || username==null || password==null || encoding ==null){
-				logger.warning("Configuraiton peoperties are missing, unable to send SMS request");
+				logger.warn("Configuraiton peoperties are missing, unable to send SMS request");
 				return;
 			}
 
@@ -116,7 +117,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 				int status = response.getStatusLine().getStatusCode();
 				String responseText = EntityUtils.toString(entity);
 				if (status != org.apache.http.HttpStatus.SC_OK || isError(responseText)) {
-					logger.warning("Using clickatell api format: " + apiCall);
+					logger.warn("Using clickatell api format: " + apiCall);
 					throw new RuntimeException("Received status code " + status + " from clickatell, with response " +
 							responseText);
 				}
@@ -143,7 +144,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 	private String getProperty(Properties properties, String key) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-			logger.warning("cannot find property " + key + " in configuration");
+			logger.warn("cannot find property " + key + " in configuration");
 		}
 		return value;
 	}

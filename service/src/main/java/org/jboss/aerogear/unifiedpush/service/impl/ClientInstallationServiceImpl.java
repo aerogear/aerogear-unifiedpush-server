@@ -27,6 +27,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -41,7 +42,9 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -50,7 +53,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @Stateless
 @DependsOn(value={"Configuration", "VerificationServiceImpl"})
 public class ClientInstallationServiceImpl implements ClientInstallationService {
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(ClientInstallationServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
 
     @Inject
     private InstallationDao installationDao;
@@ -77,7 +80,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	@Override
 	public Variant associateInstallation(Installation installation, Variant currentVariant) {
 		if (installation.getAlias() == null) {
-			logger.warning("Unable to associate, installation alias is missing!");
+			logger.warn("Unable to associate, installation alias is missing!");
 			return null;
 		}
 
@@ -120,7 +123,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
         // new device/client ?
         if (installation == null) {
-            logger.finest("Performing new device/client registration");
+            logger.trace("Performing new device/client registration");
 
             // Verification process required, disable device.
             if (shouldVerifiy)
@@ -131,7 +134,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         } else {
             // We only update the metadata, if the device is enabled:
             if (installation.isEnabled()) {
-                logger.finest("Updating received metadata for an 'enabled' installation");
+                logger.trace("Updating received metadata for an 'enabled' installation");
+
+                // fix variant property of installation object
+                installation.setVariant(variant);
+
                 // update the entity:
                 this.updateInstallation(installation, entity);
             }
@@ -170,7 +177,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
             if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
-                logger.finest("Importing device with token: " + current.getDeviceToken());
+                logger.trace("Importing device with token: " + current.getDeviceToken());
 
                 storeInstallationAndSetReferences(variant, current);
 
@@ -179,12 +186,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
                 // some tunings, ever 10k devices releasing resources
                 if (i % 10000 == 0) {
-                    logger.finest("releasing some resources during import");
+                    logger.trace("releasing some resources during import");
                     installationDao.flushAndClear();
                 }
             } else {
                 // for now, we ignore them.... no update applied!
-                logger.finest("Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
+                logger.trace("Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
             }
         }
         // clear out:
@@ -219,6 +226,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
         // update it:
         updateInstallation(installationToUpdate);
+
+        // unsubscribe Android devices from topics that device should no longer be subscribed to
+        if (installationToUpdate.getVariant().getType() == VariantType.ANDROID) {
+            unsubscribeOldTopics(installationToUpdate);
+    }
     }
 
     @Override
@@ -287,6 +299,22 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			}
 		}
 	}
+
+    @Override
+    @Asynchronous
+    public void unsubscribeOldTopics(Installation installation) {
+        GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());
+        Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
+        // Remove current categories from the set of old ones
+        oldCategories.removeAll(convertToNames(installation.getCategories()));
+
+        // Remove global variant topic because we don't want to unsubscribe it
+        oldCategories.remove(installation.getVariant().getVariantID());
+
+        for (String categoryName : oldCategories) {
+            topicManager.unsubscribe(installation, categoryName);
+        }
+    }
 
     // =====================================================================
     // ======== Various finder services for the Sender REST API ============

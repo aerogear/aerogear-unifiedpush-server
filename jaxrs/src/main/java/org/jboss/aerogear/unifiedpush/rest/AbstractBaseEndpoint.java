@@ -17,9 +17,10 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ import java.util.Set;
  */
 public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 
-    protected final AeroGearLogger logger = AeroGearLogger.getInstance(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     private Validator validator;

@@ -30,7 +30,8 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(GCMPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(GCMPushNotificationSender.class);
 
     /**
      * Sends GCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
@@ -114,17 +115,17 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         // send it out.....
         try {
         	if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
-	            logger.fine("Sending transformed GCM payload: " + gcmMessage);
+            logger.debug("Sending transformed GCM payload: " + gcmMessage);
 
 	            final Sender sender = new Sender(androidVariant.getGoogleKey());
 
 	            // send out a message to a batch of devices...
 	            processGCM(androidVariant, pushTargets, gcmMessage, sender);
 
-	            logger.fine("Message batch to GCM has been submitted");
+            logger.debug("Message batch to GCM has been submitted");
 	            callback.onSuccess();
 			} else {
-				logger.fine(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
+				logger.info(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
 			}
 
         } catch (Exception e) {
@@ -134,7 +135,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     }
 
     /**
-     * Process the HTTP POST to the GCM infrastructor for the given list of registrationIDs.
+     * Process the HTTP POST to the GCM infrastructure for the given list of registrationIDs.
      */
     private void processGCM(AndroidVariant androidVariant, List<String> pushTargets, Message gcmMessage, Sender sender) throws IOException {
 
@@ -148,13 +149,13 @@ public class GCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to GCM topic: %s", topic));
                 Result result = sender.sendNoRetry(gcmMessage, topic);
 
-                logger.finest("Response from GCM topic request: " + result);
+                logger.trace("Response from GCM topic request: " + result);
             }
         } else {
             logger.info(String.format("Sent push notification to GCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(gcmMessage, pushTargets);
 
-            logger.finest("Response from GCM request: " + multicastResult);
+            logger.trace("Response from GCM request: " + multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);

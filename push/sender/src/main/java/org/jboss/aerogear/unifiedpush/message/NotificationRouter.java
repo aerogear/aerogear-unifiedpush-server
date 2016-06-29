@@ -21,11 +21,12 @@ import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -53,7 +54,7 @@ import java.util.Map.Entry;
 @Stateless
 public class NotificationRouter {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(NotificationRouter.class);
+    private final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
 
     @Inject
     private GenericVariantService genericVariantService;
@@ -74,7 +75,7 @@ public class NotificationRouter {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
-        logger.fine("Processing send request with '" + message.getMessage().toString() + "' payload");
+        logger.debug("Processing send request with '" + message.getMessage().toString() + "' payload");
 
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();

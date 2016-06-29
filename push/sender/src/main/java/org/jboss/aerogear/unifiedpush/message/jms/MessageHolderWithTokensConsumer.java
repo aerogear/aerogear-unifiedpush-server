@@ -25,7 +25,8 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Consumes {@link MessageHolderWithTokens} from queue and pass them as a CDI event for further processing.
@@ -36,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MessageHolderWithTokensConsumer extends AbstractJMSMessageListener<MessageHolderWithTokens> {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MessageHolderWithTokensConsumer.class);
+    private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensConsumer.class);
 
     @Inject
     @Dequeue
@@ -49,7 +50,7 @@ public class MessageHolderWithTokensConsumer extends AbstractJMSMessageListener<
         } catch (DispatchInitiationException e) {
             throw e;
         } catch (Exception e) {
-            logger.severe("NotificationDispatcher or PushNotificationSender unexpectedly failed, the message won't be redelivered", e);
+            logger.error("NotificationDispatcher or PushNotificationSender unexpectedly failed, the message won't be redelivered", e);
         }
     }
 }

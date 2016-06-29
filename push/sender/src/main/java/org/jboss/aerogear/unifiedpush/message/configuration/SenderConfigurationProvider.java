@@ -22,7 +22,8 @@ import javax.enterprise.inject.Produces;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -42,7 +43,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 public class SenderConfigurationProvider {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(SenderConfigurationProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(SenderConfigurationProvider.class);
 
     @Produces @ApplicationScoped @SenderType(VariantType.ANDROID)
     public SenderConfiguration produceAndroidConfiguration() {
@@ -88,7 +89,7 @@ public class SenderConfigurationProvider {
         switch (type) {
             case ANDROID:
                 if (configuration.batchSize() > 1000) {
-                    logger.warning(String
+                    logger.warn(String
                             .format("Sender configuration -D%s=%s is invalid: at most 1000 tokens can be submitted to GCM in one batch",
                                     getSystemPropertyName(type, ConfigurationProperty.batchSize), configuration.batchSize()));
                     configuration.setBatchSize(1000);

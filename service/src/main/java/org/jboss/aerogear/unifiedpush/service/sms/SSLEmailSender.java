@@ -8,13 +8,14 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sends SMS over Clickatell's HTTP API.
  */
 public class SSLEmailSender implements VerificationPublisher {
-	private final static AeroGearLogger logger = AeroGearLogger.getInstance(SSLEmailSender.class);
+	private final Logger logger = LoggerFactory.getLogger(SSLEmailSender.class);
 
 	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
 
@@ -46,7 +47,7 @@ public class SSLEmailSender implements VerificationPublisher {
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
 					|| alias == null) {
-				logger.warning("Configuraiton peoperties are missing, unable to send Email request");
+				logger.warn("Configuraiton peoperties are missing, unable to send Email request");
 				return;
 			}
 
@@ -82,13 +83,13 @@ public class SSLEmailSender implements VerificationPublisher {
 		builder.append(", fromaddr: ").append(fromaddr);
 		builder.append(", toaddres: ").append(toaddres);
 
-		logger.severe(builder.toString() , e);
+		logger.error(builder.toString() , e);
 	}
 
 	private String getProperty(Properties properties, String key) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-			logger.warning("cannot find property " + key + " in configuration");
+			logger.warn("cannot find property " + key + " in configuration");
 		}
 		return value;
 	}

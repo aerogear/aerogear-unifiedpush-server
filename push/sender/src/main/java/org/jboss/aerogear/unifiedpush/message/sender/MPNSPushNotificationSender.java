@@ -21,12 +21,13 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.windows.mpns.MPNS;
 import org.jboss.aerogear.windows.mpns.MpnsNotification;
 import org.jboss.aerogear.windows.mpns.MpnsService;
 import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,13 +36,13 @@ import java.util.Map;
 @SenderType(VariantType.WINDOWS_MPNS)
 public class MPNSPushNotificationSender implements PushNotificationSender {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(MPNSPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(MPNSPushNotificationSender.class);
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         // no need to send empty list
         if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-        	logger.fine(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
+        	logger.info(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
         	return;
         }
 

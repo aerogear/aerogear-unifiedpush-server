@@ -38,7 +38,8 @@ import org.jboss.aerogear.unifiedpush.message.cache.ApnsServiceCache;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
@@ -61,7 +62,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
     private static final String customAerogearApnsFeedbackHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_HOST);
     private static final Integer customAerogearApnsFeedbackPort  = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_FEEDBACK_PORT);
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(APNsPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(APNsPushNotificationSender.class);
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -164,7 +165,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     callback.onError("No certificate was found. Could not send messages to APNs");
                     throw new IllegalStateException("No certificate was found. Could not send messages to APNs");
                 } else {
-                    logger.fine("Starting APNs service");
+                    logger.debug("Starting APNs service");
                     try {
                         service.start();
                     } catch (Exception e) {
@@ -178,7 +179,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             throw new SenderResourceNotAvailableException("Unable to obtain a ApnsService instance");
         }
         try {
-            logger.fine("Sending transformed APNs payload: " + apnsMessage);
+            logger.debug("Sending transformed APNs payload: " + apnsMessage);
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
 
@@ -189,15 +190,15 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 service = null; // we don't want a failure in onSuccess stop the APNs service
                 callback.onSuccess();
             } catch (Exception e) {
-                logger.severe("Failed to call onSuccess after successful push", e);
+                logger.error("Failed to call onSuccess after successful push", e);
             }
         } catch (Exception e) {
             try {
-                logger.warning("APNs service died in the middle of sending, stopping it");
+                logger.warn("APNs service died in the middle of sending, stopping it");
                 try {
                     service.stop();
                 } catch (Exception ex) {
-                    logger.severe("Failed to stop the APNs service after failure", ex);
+                    logger.error("Failed to stop the APNs service after failure", ex);
                 }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
@@ -239,7 +240,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
                     // Invoked for EVERY devicetoken:
-                    logger.finest("Sending APNs message to: " + message.getDeviceToken());
+                    logger.trace("Sending APNs message to: " + message.getDeviceToken());
                 }
 
                 @Override
@@ -248,7 +249,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     // message not found in Java-APNs cache
                     if (message == null) {
                         // Notification has been rejected by Apple, and it was removed from the java-apns cache
-                        logger.severe("Error sending payload to APNs server", e);
+                        logger.error("Error sending payload to APNs server", e);
                         return;
                     }
 
@@ -260,14 +261,14 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases
-                            logger.severe("Error sending payload to APNs server", e);
+                            logger.error("Error sending payload to APNs server", e);
                         }
                     }
                 }
 
                 @Override
                 public void cacheLengthExceeded(int newCacheLength) {
-                    logger.warning("Internal cache size exceeded, new size is: " + newCacheLength);
+                    logger.warn("Internal cache size exceeded, new size is: " + newCacheLength);
 
                 }
             });
@@ -280,7 +281,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 // release the stream
                 stream.close();
             } catch (Exception e) {
-                logger.severe("Error reading certificate", e);
+                logger.error("Error reading certificate", e);
 
                 // indicating an incomplete service
                 return null;
