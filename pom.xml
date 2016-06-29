@@ -337,7 +337,6 @@
 
         <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
-        <keycloak.version>1.9.1.Final</keycloak.version>
         <hibernate.version>4.3.7.Final</hibernate.version>
         <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
         <gcm-server.version>1.0.0</gcm-server.version>
