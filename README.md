@@ -86,7 +86,7 @@ mvn clean install
 
 Note, this will build the also the WAR files for both, WildFly-10 and EAP7.
 
-#### Deployment to WildFly/EAP7
+#### Deployment to WildFly-10/EAP7
 
 For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
 
