@@ -57,7 +57,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
 
         final StringBuilder jpqlBase = new StringBuilder(FIND_INSTALLATIONS);
-        final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+        final Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("variantID", variantID);
         if (developer != null) {
             jpqlBase.append(" AND v.developer = :developer");
@@ -80,7 +80,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         List<Installation> resultList = setParameters(query, parameters).getResultList();
         Long count = setParameters(countQuery, parameters).getSingleResult();
 
-        return new PageResult<Installation, Count>(resultList, new Count(count));
+        return new PageResult<>(resultList, new Count(count));
     }
 
     private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {

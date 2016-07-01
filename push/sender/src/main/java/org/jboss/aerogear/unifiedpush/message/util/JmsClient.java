@@ -212,7 +212,7 @@ public class JmsClient {
 
         private Serializable message;
         private boolean transacted = false;
-        private Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        private Map<String, Object> properties = new LinkedHashMap<>();
         private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 
         public JmsSender(Serializable message) {

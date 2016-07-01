@@ -28,7 +28,7 @@ public class HealthStatus {
     private static final String ERROR_MESSAGE = "There are %d errors found";
 
     private Status status = Status.OK;
-    private List<HealthDetails> details = new ArrayList<HealthDetails>();
+    private List<HealthDetails> details = new ArrayList<>();
 
     public void add(HealthDetails healthDetails) {
         if (status.ordinal() < healthDetails.getTestStatus().ordinal()) {

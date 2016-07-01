@@ -81,7 +81,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         }
         MessageMetrics messageMetrics = (MessageMetrics) metricsQuery.getSingleResult();
 
-        return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList, messageMetrics);
+        return new PageResult<>(pushMessageInformationList, messageMetrics);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class MetricCollectionTrigger {
     /**
      * Stores pushMessageInformationIds for the push messages that the metrics collection process was already started for
      */
-    private static final Set<String> METRICS_PROCESSING_STARTED_FOR_IDS = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    private static final Set<String> METRICS_PROCESSING_STARTED_FOR_IDS = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Inject @DispatchToQueue
     private Event<MetricsProcessingStartedEvent> broadcastMetricsProcessingStarted;

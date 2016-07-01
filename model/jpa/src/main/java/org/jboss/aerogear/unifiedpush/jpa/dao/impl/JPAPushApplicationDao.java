@@ -52,7 +52,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 .setFirstResult(page * pageSize).setMaxResults(pageSize)
                 .setParameter("developer", loginName).getResultList();
 
-        return new PageResult<PushApplication, Count>(entities, new Count(count));
+        return new PageResult<>(entities, new Count(count));
     }
 
 
@@ -82,7 +82,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 + "(select v.variantID from PushApplication pa join pa.variants v where pa.pushApplicationID = :pushApplicationID) "
                 + "group by v.type, v.variantID";
 
-        final HashMap<String, Long> results = new HashMap<String, Long>();
+        final HashMap<String, Long> results = new HashMap<>();
 
         for (VariantType type : VariantType.values()) {
             results.put(type.getTypeName(), 0L);
@@ -129,7 +129,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
         List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
 
-        return new PageResult<PushApplication, Count>(entities, new Count(count));
+        return new PageResult<>(entities, new Count(count));
     }
 
     @Override

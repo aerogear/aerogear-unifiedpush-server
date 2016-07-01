@@ -38,7 +38,7 @@ public class EmbeddedMysqlDatabase {
         FileUtils.deleteQuietly(baseDir);
         int port = getFreePort();
 
-        Map<String, String> databaseOptions = new HashMap<String, String>();
+        Map<String, String> databaseOptions = new HashMap<>();
         databaseOptions.put(MysqldResourceI.PORT, Integer.toString(port));
 
         mysqldResource = new MysqldResource(baseDir);
