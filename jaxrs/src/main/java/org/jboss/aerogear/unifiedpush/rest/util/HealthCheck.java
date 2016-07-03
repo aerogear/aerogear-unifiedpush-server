@@ -26,6 +26,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -65,6 +66,18 @@ public class HealthCheck {
         });
 
         return status;
+    }
+
+    /**
+     * Simple Ping endpoint to check if the UPS is running as expected
+     *
+     * @return simple OK string if the server is running
+     */
+    @GET
+    @Path("/ping")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response ping() {
+        return Response.ok("OK").build();
     }
 
 }

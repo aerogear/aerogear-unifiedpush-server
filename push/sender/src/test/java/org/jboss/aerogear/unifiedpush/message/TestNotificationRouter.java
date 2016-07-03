@@ -150,7 +150,7 @@ public class TestNotificationRouter {
 
     @RequestScoped
     public static class VariantTypesHolder {
-        private Set<VariantType> variantTypes = new HashSet<VariantType>();
+        private Set<VariantType> variantTypes = new HashSet<>();
 
         public void addVariantType(VariantType variantType) {
             this.variantTypes.add(variantType);
@@ -161,7 +161,7 @@ public class TestNotificationRouter {
     }
 
     private Set<VariantType> variants(VariantType... types) {
-        return new HashSet<VariantType>(Arrays.asList(types));
+        return new HashSet<>(Arrays.asList(types));
     }
 
 

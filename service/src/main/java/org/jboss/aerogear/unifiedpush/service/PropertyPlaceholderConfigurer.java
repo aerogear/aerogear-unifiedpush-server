@@ -3,11 +3,12 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.Properties;
 
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyPlaceholderConfigurer {
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(PropertyPlaceholderConfigurer.class);
-	
+	private final Logger logger = LoggerFactory.getLogger(PropertyPlaceholderConfigurer.class);
+
 	/** Never check system properties. */
 	public static final int SYSTEM_PROPERTIES_MODE_NEVER = 0;
 
@@ -24,8 +25,8 @@ public class PropertyPlaceholderConfigurer {
 	public static final int SYSTEM_PROPERTIES_MODE_OVERRIDE = 2;
 
 	private int systemPropertiesMode = SYSTEM_PROPERTIES_MODE_FALLBACK;
-	
-	
+
+
 	public void setSystemPropertiesMode(int systemPropertiesMode) {
 		this.systemPropertiesMode = systemPropertiesMode;
 	}
@@ -61,11 +62,11 @@ public class PropertyPlaceholderConfigurer {
 			return value;
 		}
 		catch (Throwable ex) {
-			logger.warning("Could not access system property '" + key + "': " + ex);
+			logger.warn("Could not access system property '" + key + "': " + ex);
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Resolve the given placeholder using the given properties, performing
 	 * a system properties check according to the given mode.

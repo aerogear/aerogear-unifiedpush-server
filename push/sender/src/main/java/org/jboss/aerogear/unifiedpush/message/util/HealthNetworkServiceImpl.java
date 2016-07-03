@@ -47,7 +47,7 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
 
     private static final String GCM_SEND_ENDPOINT = Constants.GCM_SEND_ENDPOINT.substring("https://".length(), Constants.GCM_SEND_ENDPOINT.indexOf('/', "https://".length()));
     public static final String WNS_SEND_ENDPOINT = "db3.notify.windows.com";
-    private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<PushNetwork>(Arrays.asList(
+    private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<>(Arrays.asList(
             new PushNetwork[]{
                     new PushNetwork("Google Cloud Messaging", GCM_SEND_ENDPOINT, 443),
                     new PushNetwork("Apple Push Network Sandbox", Utilities.SANDBOX_GATEWAY_HOST, Utilities.SANDBOX_GATEWAY_PORT),

@@ -32,7 +32,7 @@ public class GetRidOfApiKeysMigration implements CustomTaskChange {
         Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
         try {
             conn.setAutoCommit(false);
-            List<InstallationData> list = new ArrayList<InstallationData>();
+            List<InstallationData> list = new ArrayList<>();
             String query = "select installation.id as installation_id," +
                     " installation.variant_id as installation_variant_id," +
                     " variant.id as variant_id," +

@@ -45,15 +45,16 @@ import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/applicationsData")
 public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(PushApplicationDataEndpoint.class);
+	private final Logger logger = LoggerFactory.getLogger(PushApplicationDataEndpoint.class);
 
 	@Inject
 	private PushApplicationService pushAppService;
@@ -103,7 +104,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			pushAppService.updateAliasesAndInstallations(pushApp, aliasData);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
-			logger.severe("Cannot update aliases", e);
+			logger.error("Cannot update aliases", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -149,11 +150,11 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 				mdo.addFormData("file" + i, documents.get(i), MediaType.TEXT_PLAIN_TYPE);
 			}
 
-			logger.fine(String.format("%s documents found for push applicaiton %s", documents != null ? documents.size() : 0,  pushApp.getPushApplicationID()));
+			logger.info(String.format("%s documents found for push applicaiton %s", documents != null ? documents.size() : 0,  pushApp.getPushApplicationID()));
 
 			return Response.ok(mdo).build();
 		} catch (Exception e) {
-			logger.severe("Cannot retrieve documents for push app", e);
+			logger.error("Cannot retrieve documents for push app", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -181,7 +182,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			DocumentDeployRequest deployRequest, @Context HttpServletRequest request,
 			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite) {
 
-		logger.warning("method call to @deprecated API /applicationsData/{pushAppID}/document");
+		logger.warn("method call to @deprecated API /applicationsData/{pushAppID}/document");
 
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
@@ -210,7 +211,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 					notificationRouter.submit(pushApplication, message);
 				}
 			} catch (Exception e) {
-				logger.severe("Cannot deploy file for alias", e);
+				logger.error("Cannot deploy file for alias", e);
 				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}

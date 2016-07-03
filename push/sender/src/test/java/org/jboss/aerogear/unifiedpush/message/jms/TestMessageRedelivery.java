@@ -81,7 +81,7 @@ public class TestMessageRedelivery {
     public void setUp() {
         information = new PushMessageInformation();
         message = new UnifiedPushMessage();
-        deviceTokens = new ArrayList<String>();
+        deviceTokens = new ArrayList<>();
     }
 
     @Test

@@ -6,12 +6,13 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientAuthHelper {
 	public static final String DEVICE_TOKEN_HEADER = "device-token";
 
-	private final static AeroGearLogger logger = AeroGearLogger.getInstance(ClientAuthHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(ClientAuthHelper.class);
 
 	/**
 	 * Returns the variant if the master secret is valid for the request and the

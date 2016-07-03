@@ -71,7 +71,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder implements 
     public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {
         super(pushMessageInformation, unifiedPushMessage);
         this.variantType = variantType;
-        this.variants = new ArrayList<Variant>(variants);
+        this.variants = new ArrayList<>(variants);
         this.lastSerialId = lastSerialId;
         this.lastTokenFromPreviousBatch = lastTokenFromPreviousBatch;
     }

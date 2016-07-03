@@ -34,7 +34,7 @@ public class WNSPushNotificationSenderTest {
     public void shouldWorkWithEmptyNullUserData() {
         //given
         Message message = getUnifiedPushMessage();
-        message.setUserData(new HashMap<String, Object>());
+        message.setUserData(new HashMap<>());
 
         //when
         WnsToast toastMessage = sender.createSimpleToastMessage(message);
@@ -121,7 +121,7 @@ public class WNSPushNotificationSenderTest {
 
     private Message getUnifiedPushMessage() {
         Message message = new Message();
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("key", "value");
         data.put("ke2", "value2");
         message.getWindows().setPage("/Root.xaml");

@@ -22,13 +22,14 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationServiceImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
 
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
@@ -49,7 +50,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			deviceToToken = container.getCache("verification");
 		} catch (NamingException e) {
-			logger.warning("Unable to locate infinispan cache installation-verification, rolling back to ConcurrentHashMap impl!");
+			logger.warn("Unable to locate infinispan cache installation-verification, rolling back to ConcurrentHashMap impl!");
 			deviceToToken = new ConcurrentHashMap<>();
 		}
 
@@ -100,7 +101,7 @@ public class VerificationServiceImpl implements VerificationService {
 				return VerificationResult.SUCCESS;
 			}
 
-			logger.warning("Verification attempt was made without calling /registry/device, installation id: " + installation.getId());
+			logger.warn("Verification attempt was made without calling /registry/device, installation id: " + installation.getId());
 			return VerificationResult.UNKNOWN;
 		} else if (codes.contains(verificationCode) || (StringUtils.isNotEmpty(masterCode) && masterCode.equals(verificationCode))) {
 			installation.setEnabled(true);

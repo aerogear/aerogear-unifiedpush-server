@@ -72,7 +72,7 @@ public class CategoriesMigration implements CustomTaskChange {
             }
 
             ResultSet rs = conn.createStatement().executeQuery("select distinct categories from Installation_categories");
-            List<String> categories = new ArrayList<String>();
+            List<String> categories = new ArrayList<>();
             while (rs.next()) {
                 String category = rs.getString(1);
                 categories.add(category);

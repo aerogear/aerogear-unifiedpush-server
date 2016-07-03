@@ -18,10 +18,11 @@ package org.jboss.aerogear.unifiedpush.service.util;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +40,7 @@ import java.util.Set;
  */
 public class FCMTopicManager {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(FCMTopicManager.class);
+    private final Logger logger = LoggerFactory.getLogger(FCMTopicManager.class);
 
     // Instance ID API URL
     public static final String IID_URL = "https://iid.googleapis.com/iid/v1/";
@@ -56,16 +57,16 @@ public class FCMTopicManager {
         try {
             deviceInfo = get(url);
         } catch (IOException e) {
-            logger.fine("Couldn't get list of subscribed topics from Instance ID service.");
-            return new HashSet<String>(0);
+            logger.debug("Couldn't get list of subscribed topics from Instance ID service.");
+            return new HashSet<>(0);
         }
         JSONParser parser = new JSONParser();
         JSONObject info;
         try {
             info = (JSONObject) parser.parse(deviceInfo);
         } catch (ParseException e) {
-            logger.fine("Couldn't parse list of subscribed topics from Instance ID service.");
-            return new HashSet<String>(0);
+            logger.debug("Couldn't parse list of subscribed topics from Instance ID service.");
+            return new HashSet<>(0);
         }
         JSONObject rel = (JSONObject) info.get("rel");
         JSONObject topics = (JSONObject) rel.get("topics");
@@ -91,7 +92,7 @@ public class FCMTopicManager {
         try {
             delete(url);
         } catch (IOException e) {
-            logger.fine("Unregistering device from topic was unsuccessfull");
+            logger.debug("Unregistering device from topic was unsuccessfull");
         }
     }
 

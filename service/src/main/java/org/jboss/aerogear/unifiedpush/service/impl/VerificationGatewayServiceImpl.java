@@ -14,7 +14,8 @@ import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@link VerificationGatewayService}. Note that this class does not implement the underlying
@@ -24,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
  */
 @Singleton
 public class VerificationGatewayServiceImpl implements VerificationGatewayService {
-	private final AeroGearLogger logger = AeroGearLogger.getInstance(VerificationGatewayServiceImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(VerificationGatewayServiceImpl.class);
 
 	public final static String VERIFICATION_IMPL_KEY = "aerogear.config.verification.impl.class";
 	private final static String IMPL_SPLITTER_TOKEN = ";";
@@ -44,7 +45,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		final String validationMap = configuration.getProperty(VERIFICATION_IMPL_KEY);
 
 		if (validationMap == null || validationMap.length() == 0) {
-			logger.warning("Cannot find validation implementation class, using log based validation class!");
+			logger.warn("Cannot find validation implementation class, using log based validation class!");
 
 			publishers = new HashMap<>();
 			publishers.put(new AlwaysTrueValidator(), new MockLogSender());
@@ -117,7 +118,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		for (@SuppressWarnings("rawtypes")
 		ConstraintValidator validator : publishers.keySet()) {
 			if (validator.isValid(alias, null)) {
-				logger.fine(String.format("Sending '%s' message using '%s' publisher", message, publishers.get(validator).getClass().getName()));
+				logger.info(String.format("Sending '%s' message using '%s' publisher", message, publishers.get(validator).getClass().getName()));
 				publishers.get(validator).send(alias, message, configuration.getProperties());
 			}
 		}

@@ -32,8 +32,8 @@ public class Windows implements Serializable {
     private BadgeType badge;
     private TileType tileType;
     private ToastType toastType;
-    private List<String> images = new ArrayList<String>();
-    private List<String> textFields = new ArrayList<String>();
+    private List<String> images = new ArrayList<>();
+    private List<String> textFields = new ArrayList<>();
     private String page;
 
     public Type getType() {

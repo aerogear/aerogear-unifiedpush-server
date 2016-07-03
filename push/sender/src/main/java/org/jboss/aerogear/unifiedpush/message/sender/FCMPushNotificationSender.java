@@ -30,7 +30,8 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
     private static final Set<String> FCM_ERROR_CODES =
-            new HashSet<String>(Arrays.asList(
+            new HashSet<>(Arrays.asList(
                     Constants.ERROR_INVALID_REGISTRATION,  // Bad registration_id.
                     Constants.ERROR_NOT_REGISTERED,        // The user has uninstalled the application or turned off notifications.
                     Constants.ERROR_MISMATCH_SENDER_ID)    // incorrect token, from a different project/sender ID
@@ -56,7 +57,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(FCMPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
     /**
      * Sends FCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
@@ -70,7 +71,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             return;
         }
 
-        final List<String> pushTargets = new ArrayList<String>(tokens);
+        final List<String> pushTargets = new ArrayList<>(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
@@ -110,17 +111,17 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         // send it out.....
         try {
             if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
-                logger.fine("Sending transformed FCM payload: " + fcmMessage );
+            logger.debug("Sending transformed FCM payload: " + fcmMessage );
 
 	            final Sender sender = new Sender(androidVariant.getGoogleKey());
 
 	            // send out a message to a batch of devices...
 	            processFCM(androidVariant, pushTargets, fcmMessage, sender);
 
-	            logger.fine("Message batch to FCM has been submitted");
+            logger.debug("Message batch to FCM has been submitted");
 	            callback.onSuccess();
 	    } else {
-		logger.fine(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
+		logger.info(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
 	    }
         } catch (Exception e) {
             // FCM exceptions:
@@ -143,13 +144,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to FCM topic: %s", topic));
                 Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.finest("Response from FCM topic request: " + result);
+                logger.trace("Response from FCM topic request: " + result);
             }
         } else {
             logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.finest("Response from FCM request: " + multicastResult);
+            logger.trace("Response from FCM request: " + multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);
@@ -174,7 +175,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         final List<Result> results = multicastResult.getResults();
 
         // storage for all the invalid registration IDs:
-        final Set<String> inactiveTokens = new HashSet<String>();
+        final Set<String> inactiveTokens = new HashSet<>();
 
         // read the results:
         for (int i = 0; i < results.size(); i++) {

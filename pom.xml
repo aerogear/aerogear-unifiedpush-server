@@ -253,6 +253,19 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${fasterxml.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slfj4.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slfj4.version}</version>
+				<scope>test</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -356,6 +369,7 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
         <gcm-server.version>1.0.0</gcm-server.version>
+        <slfj4.version>1.7.21</slfj4.version>
 
         <!-- Code coverage -->
         <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>

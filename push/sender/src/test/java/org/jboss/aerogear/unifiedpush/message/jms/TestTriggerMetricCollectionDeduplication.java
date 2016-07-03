@@ -57,7 +57,7 @@ public class TestTriggerMetricCollectionDeduplication extends AbstractJMSTest {
     @Resource(mappedName = "java:/queue/TriggerMetricCollectionQueue")
     private Queue triggerMetricCollectionQueue;
 
-    private static final ConcurrentLinkedQueue<TriggerMetricCollectionEvent> receivedTriggers = new ConcurrentLinkedQueue<TriggerMetricCollectionEvent>();
+    private static final ConcurrentLinkedQueue<TriggerMetricCollectionEvent> receivedTriggers = new ConcurrentLinkedQueue<>();
     private static final CountDownLatch firstMessageLatch = new CountDownLatch(1);
     private static String messageId;
 

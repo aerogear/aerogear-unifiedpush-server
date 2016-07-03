@@ -67,7 +67,7 @@ public class TestMessageHolderWithTokens {
     public void setUp() {
         information = new PushMessageInformation();
         message = new UnifiedPushMessage();
-        deviceTokens = new ArrayList<String>();
+        deviceTokens = new ArrayList<>();
         delivered = new CountDownLatch(5);
     }
 

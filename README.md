@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
-* [Google Cloud Messaging (GCM)](http://developer.android.com/google/gcm/index.html)
+* [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
 * [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
 * [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/)
@@ -105,7 +105,7 @@ mvn clean install
 
 Note, this will build the also the WAR files for both, WildFly-10 and EAP7.
 
-#### Deployment to WildFly/EAP7
+#### Deployment to WildFly-10/EAP7
 
 For WildFly, invoke the following commands afer the build has been completed. This will deploy both WAR files to a running and configured Wildfly server.
 

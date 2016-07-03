@@ -19,7 +19,8 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.Collection;
 @SenderType(VariantType.SIMPLE_PUSH)
 public class SimplePushNotificationSender implements PushNotificationSender {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(SimplePushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(SimplePushNotificationSender.class);
 
     /*
      * Sends SimplePush notifications to all connected clients, that are represented by
@@ -42,7 +43,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
 
         // no need to send empty list
         if (tokens.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-        	logger.fine(String.format("Simple Push message batch to dev/null has been submitted to %s devices.",  tokens.size()));
+        	logger.info(String.format("Simple Push message batch to dev/null has been submitted to %s devices.",  tokens.size()));
         	return;
         }
 
@@ -60,17 +61,17 @@ public class SimplePushNotificationSender implements PushNotificationSender {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.finest("Sending out SimplePush payload: " + payload);
+                logger.trace("Sending out SimplePush payload: " + payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
-                logger.finest("SimplePush Status: " + simplePushStatusCode);
+                logger.trace("SimplePush Status: " + simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
                     hasWarning = true;
                 }
             } catch (Exception e) {
                 // any error while performing the PUT
-                logger.severe("Error delivering SimplePush payload", e);
+                logger.error("Error delivering SimplePush payload", e);
                 hasWarning = true;
             } finally {
                 // tear down

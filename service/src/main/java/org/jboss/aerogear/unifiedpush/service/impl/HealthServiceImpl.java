@@ -48,6 +48,6 @@ public class HealthServiceImpl implements HealthDBService {
             details.setResult(e.getMessage());
         }
         details.stop();
-        return new AsyncResult<HealthDetails>(details);
+        return new AsyncResult<>(details);
     }
 }

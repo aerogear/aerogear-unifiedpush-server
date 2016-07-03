@@ -30,13 +30,14 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/document")
 public class DocumentEndpoint extends AbstractEndpoint {
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(DocumentEndpoint.class);
+	private final Logger logger = LoggerFactory.getLogger(DocumentEndpoint.class);
 
 	@Inject
     private ClientInstallationService clientInstallationService;
@@ -103,7 +104,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Overwrite is @Deprecated, this method should always use overwrite false - will be removed on 1.3.0
 		if (overwrite)
-			logger.warning("method call to @deprecated API /applicationsData/{pushAppID}/document");
+			logger.warn("method call to @deprecated API /applicationsData/{pushAppID}/document");
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
@@ -144,7 +145,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
-			logger.severe("Cannot deploy file for push application", e);
+			logger.error("Cannot deploy file for push application", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -173,7 +174,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
-			logger.severe("Cannot retrieve files for alias", e);
+			logger.error("Cannot retrieve files for alias", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -208,7 +209,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
-			logger.severe("Cannot retrieve files for alias", e);
+			logger.error("Cannot retrieve files for alias", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -245,7 +246,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id));
 			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
 		} catch (Exception e) {
-			logger.severe("Cannot retrieve files for alias", e);
+			logger.error("Cannot retrieve files for alias", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}

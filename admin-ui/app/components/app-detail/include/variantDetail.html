@@ -6,8 +6,8 @@
   or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
 <p ng-if="variant.type == 'android'">
-  Google's Cloud Messaging Network (GCM) will be used.
-  To learn more about GCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
+  Firebase's Cloud Messaging Network (FCM) will be used.
+  To learn more about FCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
 <p ng-if="variant.type == 'simplePush'">
   A Server implementing the <em>SimplePush</em> protocol will be used.
@@ -42,9 +42,9 @@
 
 
 <dl class="dl-horizontal" ng-if="variant.type == 'android'">
-  <dt>Project Number:</dt>
+  <dt>Sender ID:</dt>
   <dd class="project-number">{{ variant.projectNumber }}</dd>
-  <dt>Google API Key:</dt>
+  <dt>Server Key:</dt>
   <dd class="google-key">
     {{ variant.googleKey }}<br />
     <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>

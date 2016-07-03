@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,11 +24,13 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DocumentDaoImpl implements DocumentDao {
-	private static final Logger logger = Logger.getLogger(DocumentDao.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(DocumentDao.class.getName());
 
 	private static final String DOCUMENT_TOKEN = "__";
 
@@ -138,7 +139,7 @@ public class DocumentDaoImpl implements DocumentDao {
 				}
 			});
 		} catch (FileNotFoundException e) {
-			logger.warning("Unable to find directory path, " + directoryPath);
+			logger.warn("Unable to find directory path, " + directoryPath);
 
 			// Initialize an empty list.
 			files = new ArrayList<>();

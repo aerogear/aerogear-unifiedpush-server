@@ -36,7 +36,7 @@ public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRe
     }
 
     public UnifiedPushRestArchive withUtils() {
-        return addPackage(org.jboss.aerogear.unifiedpush.utils.AeroGearLogger.class.getPackage());
+        return addPackage(org.jboss.aerogear.unifiedpush.utils.DateUtils.class.getPackage());
     }
 
     @Override

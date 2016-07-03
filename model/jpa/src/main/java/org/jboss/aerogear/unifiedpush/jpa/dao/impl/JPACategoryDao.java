@@ -26,7 +26,7 @@ public class JPACategoryDao extends JPABaseDao<Category, Integer> implements Cat
 
     @Override
     public List<Category> findByNames(List<String> names) {
-        List<Category> categoryList = new ArrayList<Category>();
+        List<Category> categoryList = new ArrayList<>();
         if(!names.isEmpty()){
             categoryList = entityManager.createQuery("select c from Category c where c.name in :names", Category.class)
                     .setParameter("names", names).getResultList();

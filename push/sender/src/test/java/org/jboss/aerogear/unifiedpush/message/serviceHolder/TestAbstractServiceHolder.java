@@ -33,14 +33,14 @@ public class TestAbstractServiceHolder {
 
     @Test
     public void test_that_get_nulls_the_reference() throws InterruptedException {
-        DisposableReference<Object> disposableReference = new DisposableReference<Object>(instance, mockDestroyer);
+        DisposableReference<Object> disposableReference = new DisposableReference<>(instance, mockDestroyer);
         assertEquals(instance, disposableReference.get());
         assertNull(disposableReference.get());;
     }
 
     @Test
     public void test_that_disposal_nulls_the_reference() throws InterruptedException {
-        DisposableReference<Object> disposableReference = new DisposableReference<Object>(instance, mockDestroyer);
+        DisposableReference<Object> disposableReference = new DisposableReference<>(instance, mockDestroyer);
         disposableReference.dispose();
         assertNull(disposableReference.get());;
     }
@@ -53,7 +53,7 @@ public class TestAbstractServiceHolder {
                 latch.countDown();
             };
         };
-        DisposableReference<Object> disposableReference = new DisposableReference<Object>(instance, serviceDestroyer);
+        DisposableReference<Object> disposableReference = new DisposableReference<>(instance, serviceDestroyer);
         scheduler.scheduleForDisposal(disposableReference, 1000);
         latch.await();
         assertNull(disposableReference.get());
@@ -69,7 +69,7 @@ public class TestAbstractServiceHolder {
             };
         };
         for (int i = 0; i < numberOfInstances; i++) {
-            scheduler.scheduleForDisposal(new DisposableReference<Object>(instance, serviceDestroyer), 1000);
+            scheduler.scheduleForDisposal(new DisposableReference<>(instance, serviceDestroyer), 1000);
         }
         latch.await();
     }
@@ -84,7 +84,7 @@ public class TestAbstractServiceHolder {
             };
         };
         for (int i = 0; i < numberOfInstances; i++) {
-            scheduler.scheduleForDisposal(new DisposableReference<Object>(instance, serviceDestroyer), 100); // delay  is lesser than termination timeout
+            scheduler.scheduleForDisposal(new DisposableReference<>(instance, serviceDestroyer), 100); // delay  is lesser than termination timeout
         }
         scheduler.terminate();
         assertEquals("all instances should be terminated gracefully", numberOfInstances, numberOfInstancesTerminatedGracefully.get());

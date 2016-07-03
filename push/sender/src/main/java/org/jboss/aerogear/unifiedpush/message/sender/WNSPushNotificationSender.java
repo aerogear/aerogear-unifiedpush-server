@@ -29,7 +29,8 @@ import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 @SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
-    private final AeroGearLogger logger = AeroGearLogger.getInstance(WNSPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
 
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/aerogear-cordova-push/P.xaml";
@@ -58,15 +59,15 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
         // no need to send empty list
         if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-        	logger.fine(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
+        	logger.info(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
         	return;
         }
 
         final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
-        Set<String> expiredClientIdentifiers = new HashSet<String>(clientIdentifiers.size());
-        ArrayList<String> channelUris = new ArrayList<String>(clientIdentifiers);
+        Set<String> expiredClientIdentifiers = new HashSet<>(clientIdentifiers.size());
+        ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
         	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
@@ -104,7 +105,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
-            logger.fine("Message to WNS has been submitted");
+            logger.debug("Message to WNS has been submitted");
             senderCallback.onSuccess();
         } catch (WnsException exception) {
             senderCallback.onError(exception.getMessage());
@@ -150,7 +151,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private void createMessage(Message message, String type, WnsAbstractBuilder builder) {
         Windows windows = message.getWindows();
-        List<String> param = new ArrayList<String>(windows.getImages());
+        List<String> param = new ArrayList<>(windows.getImages());
         param.add(message.getAlert());
         param.addAll(windows.getTextFields());
 
