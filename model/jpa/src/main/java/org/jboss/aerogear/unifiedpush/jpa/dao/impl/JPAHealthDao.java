@@ -27,6 +27,6 @@ public class JPAHealthDao {
     private EntityManager entityManager;
 
     public boolean dbCheck() {
-        return entityManager.createNativeQuery("select 1 from PushApplication").getFirstResult() == 1;
+        return entityManager.createNativeQuery("SELECT 1").getResultList() != null;
     }
 }
