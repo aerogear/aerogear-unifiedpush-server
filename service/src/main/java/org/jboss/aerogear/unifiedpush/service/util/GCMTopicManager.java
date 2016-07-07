@@ -68,6 +68,10 @@ public class GCMTopicManager {
             return new HashSet<String>(0);
         }
         JSONObject rel = (JSONObject) info.get("rel");
+        if (rel == null){
+        	logger.debug("Couldn't parse rel object Instance ID service.");
+            return new HashSet<String>(0);
+        }
         JSONObject topics = (JSONObject) rel.get("topics");
         return topics.keySet();
     }
