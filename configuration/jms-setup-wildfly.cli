@@ -35,6 +35,11 @@ batch
 /subsystem=messaging-activemq/server=default/jms-queue=WNSTokenBatchQueue:add(entries=[queue/WNSTokenBatchQueue])
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
 
+/subsystem=messaging-activemq/server=default/jms-queue=FirefoxPushMessageQueue:add(entries=[queue/FirefoxPushMessageQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.FirefoxPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
+/subsystem=messaging-activemq/server=default/jms-queue=FirefoxTokenBatchQueue:add(entries=[queue/FirefoxTokenBatchQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.FirefoxTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
+
 
 
 /subsystem=messaging-activemq/server=default/jms-queue=MetricsQueue:add(entries=[queue/MetricsQueue])

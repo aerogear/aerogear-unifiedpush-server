@@ -70,6 +70,7 @@ public class Installation extends BaseModel {
      * <li> APNs: <code>deviceToken</code>
      * <li> GCM: <code>registrationId</code>
      * <li> SimplePush: <code>pushEndpoint</code>
+     * <li> Firefox: <code>endpoint</code>
      * </ul>
      *
      * @param deviceToken unique string to identify an Installation with its PushNetwork

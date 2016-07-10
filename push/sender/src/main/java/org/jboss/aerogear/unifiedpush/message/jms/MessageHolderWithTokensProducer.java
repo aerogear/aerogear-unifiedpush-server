@@ -52,6 +52,9 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
 
     @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
     private Queue wnsTokenBatchQueue;
+    
+    @Resource(mappedName = "java:/queue/FirefoxTokenBatchQueue")
+    private Queue firefoxTokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
         String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
@@ -72,6 +75,8 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
                 return mpnsTokenBatchQueue;
             case WINDOWS_WNS:
                 return wnsTokenBatchQueue;
+            case FIREFOX:
+                return firefoxTokenBatchQueue;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }

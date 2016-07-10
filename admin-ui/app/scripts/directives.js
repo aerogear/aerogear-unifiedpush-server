@@ -151,7 +151,8 @@ angular.module('upsConsole')
           windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
           windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova', 'push_config'] },
-          adm:          { name: 'ADM',        snippets: ['adm'] }
+          adm:          { name: 'ADM',        snippets: ['adm'] },
+          firefox:      { name: 'Firefox',    snippets: ['push_config'] }
         };
         $scope.state = {
           activeSnippet: $scope.typeEnum[$scope.variant.type].snippets[0]

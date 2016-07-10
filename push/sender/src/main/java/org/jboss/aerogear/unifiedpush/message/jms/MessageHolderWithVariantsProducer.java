@@ -53,6 +53,9 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     @Resource(mappedName = "java:/queue/WNSPushMessageQueue")
     private Queue wnsPushMessageQueue;
+    
+    @Resource(mappedName = "java:/queue/FirefoxPushMessageQueue")
+    private Queue firefoxPushMessageQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         sendTransacted(selectQueue(msg.getVariantType()), msg);
@@ -72,6 +75,8 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
                 return mpnsPushMessageQueue;
             case WINDOWS_WNS:
                 return wnsPushMessageQueue;
+            case FIREFOX:
+                return firefoxPushMessageQueue;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }
