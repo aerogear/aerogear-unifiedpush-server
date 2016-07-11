@@ -34,7 +34,7 @@
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">${__P(SERVER_HOST,localhost)}</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_HOST,demo2.c-b4.com)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
@@ -54,7 +54,7 @@
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
             <stringProp name="Argument.name">LOOP_COUNT</stringProp>
-            <stringProp name="Argument.value">${__P(LOOP_COUNT,2)}</stringProp>
+            <stringProp name="Argument.value">${__P(LOOP_COUNT,5)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="USERS_CSV" elementType="Argument">

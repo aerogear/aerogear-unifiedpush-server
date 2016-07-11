@@ -34,7 +34,7 @@
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">demo2.c-b4.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
@@ -49,7 +49,7 @@
           </elementProp>
           <elementProp name="NUMBER_OF_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUMBER_OF_THREADS</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOP_COUNT" elementType="Argument">
