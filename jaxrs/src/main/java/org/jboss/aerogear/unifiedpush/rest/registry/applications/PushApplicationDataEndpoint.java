@@ -150,7 +150,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 				mdo.addFormData("file" + i, documents.get(i), MediaType.TEXT_PLAIN_TYPE);
 			}
 
-			logger.error(String.format("%s documents found for push applicaiton %s", documents != null ? documents.size() : 0,  pushApp.getPushApplicationID()));
+			logger.debug(String.format("%s documents found for push applicaiton %s", documents != null ? documents.size() : 0,  pushApp.getPushApplicationID()));
 
 			return Response.ok(mdo).build();
 		} catch (Exception e) {
