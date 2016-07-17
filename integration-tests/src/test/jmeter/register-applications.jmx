@@ -47,6 +47,11 @@
             <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="APPLICATION_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">APPLICATION_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(APPLICATION_RESONSE_FILE_PATH,/tmp/response)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -228,9 +233,9 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
           </HeaderManager>
           <hashTree/>
           <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
-            <stringProp name="FileSaver.filename">/tmp/noam-1.txt</stringProp>
+            <stringProp name="FileSaver.filename">${APPLICATION_RESONSE_FILE_PATH}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
-            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
             <boolProp name="FileSaver.skipsuffix">false</boolProp>
             <boolProp name="FileSaver.successonly">true</boolProp>
           </ResultSaver>
