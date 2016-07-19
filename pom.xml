@@ -358,6 +358,12 @@
 
     <profiles>
         <profile>
+            <id>integration-tests</id>
+            <modules>
+                <module>integration-tests</module>
+            </modules>
+        </profile>
+        <profile>
             <id>test</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
