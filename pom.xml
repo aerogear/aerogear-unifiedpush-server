@@ -252,8 +252,37 @@
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slfj4.version}</version>
             </dependency>
+            <!-- AeroGear Test Dependencies BOM Imports -->
+            <dependency>
+                <groupId>org.jboss.aerogear</groupId>
+                <artifactId>aerogear-test-bom</artifactId>
+                <version>${aerogear.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.6.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.arquillian.container</groupId>
+                <artifactId>arquillian-container-chameleon</artifactId>
+                <version>1.0.0.Alpha6</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-transaction-jta</artifactId>
+                <version>1.0.2.Final</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>
@@ -362,46 +391,6 @@
             <modules>
                 <module>integration-tests</module>
             </modules>
-        </profile>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <dependencyManagement>
-                <dependencies>
-                    <!-- AeroGear Test Dependencies BOM Imports -->
-                    <dependency>
-                        <groupId>org.jboss.aerogear</groupId>
-                        <artifactId>aerogear-test-bom</artifactId>
-                        <version>${aerogear.bom.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                        <version>1.6.1</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.arquillian.container</groupId>
-                        <artifactId>arquillian-container-chameleon</artifactId>
-                        <version>1.0.0.Alpha6</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-	                    <groupId>org.jboss.arquillian.extension</groupId>
-	                    <artifactId>arquillian-transaction-jta</artifactId>
-	                    <version>1.0.2.Final</version>
-                    	<scope>test</scope>
-                	</dependency>
-                </dependencies>
-            </dependencyManagement>
         </profile>
         <profile>
             <!-- Make sure that you also activate 'test' profile if you activate
