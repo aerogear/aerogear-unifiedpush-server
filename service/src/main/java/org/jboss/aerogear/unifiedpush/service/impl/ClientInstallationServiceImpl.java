@@ -91,6 +91,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
+		if (application == null) {
+			logger.warn(String.format("Unable to find application for alias %s, this behaviour "
+					+ "might occur when application is deleted and orphans aliases exists. "
+					+ "Use DELETE /rest/alias/THE-ALIAS in order to remove orphans.", alias.getName()));
+			return null;
+		}
+
 		List<Variant> variants = application.getVariants();
 
 		for (Variant variant : variants) {
