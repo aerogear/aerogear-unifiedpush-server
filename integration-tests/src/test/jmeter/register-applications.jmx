@@ -47,6 +47,26 @@
             <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="APPLICATION_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">APPLICATION_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(APPLICATION_RESONSE_FILE_PATH,/tmp/response)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="IOS_DEPLOYMENT_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">IOS_DEPLOYMENT_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_DEPLOYMENT_FILE_PATH,../resorces/development.p12)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="ANDROID_VARIANT_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">ANDROID_VARIANT_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(ANDROID_VARIANT_RESONSE_FILE_PATH,/tmp/android)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="IOS_VARIANT_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">IOS_VARIANT_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_VARIANT_RESONSE_FILE_PATH,/tmp/ios)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -228,9 +248,9 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
           </HeaderManager>
           <hashTree/>
           <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
-            <stringProp name="FileSaver.filename">/tmp/noam-1.txt</stringProp>
+            <stringProp name="FileSaver.filename">${APPLICATION_RESONSE_FILE_PATH}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
-            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
             <boolProp name="FileSaver.skipsuffix">false</boolProp>
             <boolProp name="FileSaver.successonly">true</boolProp>
           </ResultSaver>
@@ -287,12 +307,20 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             </collectionProp>
           </HeaderManager>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename">${ANDROID_VARIANT_RESONSE_FILE_PATH}</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Create IOS Variant" enabled="true">
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="${BASE_PATH}/../resources/development.p12" elementType="HTTPFileArg">
-                <stringProp name="File.path">${BASE_PATH}/../resources/development.p12</stringProp>
+              <elementProp name="${IOS_DEPLOYMENT_FILE_PATH}" elementType="HTTPFileArg">
+                <stringProp name="File.path">${IOS_DEPLOYMENT_FILE_PATH}</stringProp>
                 <stringProp name="File.paramname">certificate</stringProp>
                 <stringProp name="File.mimetype">application/x-pkcs12 </stringProp>
               </elementProp>
@@ -371,6 +399,14 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             <stringProp name="RegexExtractor.match_number">1</stringProp>
             <stringProp name="Scope.variable">KEY_TOKEN</stringProp>
           </RegexExtractor>
+          <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename">${IOS_VARIANT_RESONSE_FILE_PATH}</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">true</boolProp>
+          </ResultSaver>
           <hashTree/>
         </hashTree>
         <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="BSF Sampler - Prepare Basic authetication for devices" enabled="true">
