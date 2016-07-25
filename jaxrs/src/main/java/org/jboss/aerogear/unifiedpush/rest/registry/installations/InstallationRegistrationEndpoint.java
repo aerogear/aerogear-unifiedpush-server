@@ -478,7 +478,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					.entity("deviceToken header required"), request);
 		}
 
-        verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
+        String code = verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
+        if (code == null){
+        	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
+					.entity("Unable to find installation for device-token"), request);
+        }
 
         return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
     }
