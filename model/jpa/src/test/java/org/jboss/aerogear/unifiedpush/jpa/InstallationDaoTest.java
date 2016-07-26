@@ -38,6 +38,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
@@ -461,6 +462,32 @@ public class InstallationDaoTest {
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
 
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
+    @Test(expected = ConstraintViolationException.class)
+    public void shouldNotSaveWhenWebPushTokenDoesNotUseHttps() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("too_short_invalid_endpoint");
+        
+        final WebPushVariant variant = new WebPushVariant();
+        variant.setName("WebPush Variant Name");
+        
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
+    @Test
+    public void shouldSaveWhenWebPushTokenValid() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
+        
+        final WebPushVariant variant = new WebPushVariant();
+        variant.setName("WebPush Variant Name");
+        
         // when
         deviceTokenTest(installation, variant);
     }

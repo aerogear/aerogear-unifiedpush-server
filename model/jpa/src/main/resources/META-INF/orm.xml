@@ -115,5 +115,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </basic>
         </attributes>
     </entity>
+    <entity class="WebPushVariant" access="FIELD">
+        <table name="webpush_variant"/>
+        <discriminator-value>webPush</discriminator-value>
+    </entity>
 
 </entity-mappings>

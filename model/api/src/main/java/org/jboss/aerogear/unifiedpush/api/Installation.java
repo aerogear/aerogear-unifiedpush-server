@@ -68,6 +68,7 @@ public class Installation extends BaseModel {
      * <ul>
      * <li> APNs: <code>deviceToken</code>
      * <li> GCM: <code>registrationId</code>
+     * <li> WebPush: <code>endpoint</code>
      * </ul>
      *
      * @param deviceToken unique string to identify an Installation with its PushNetwork

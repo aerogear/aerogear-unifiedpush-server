@@ -44,6 +44,12 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      */
     private static final Pattern WINDOWS_DEVICE_TOKEN = Pattern.compile("https?://.{0,1024}");
 
+    /**
+     * Pattern for WebPush is harder to define that is why we kept it lenient it is at least 100 characters long and can
+     * consist of digits, alphas, - , _ and . and all have one of these separators
+     */
+    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("[0-9A-Za-z\\-_.]{100,}");
+
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {
     }
@@ -75,6 +81,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
             case WINDOWS_WNS:
                 return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case WEB_PUSH:
+                return WEB_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
         }
         return false;
     }
