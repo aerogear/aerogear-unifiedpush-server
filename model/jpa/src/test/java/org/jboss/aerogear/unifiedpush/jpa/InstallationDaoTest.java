@@ -470,7 +470,7 @@ public class InstallationDaoTest {
     public void shouldNotSaveWhenWebPushTokenDoesNotUseHttps() {
         // given
         final Installation installation = new Installation();
-        installation.setDeviceToken("too_short_invalid_endpoint");
+        installation.setDeviceToken("http://updates.push.services.mozilla.com/wpush/v1/gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
         
         final WebPushVariant variant = new WebPushVariant();
         variant.setName("WebPush Variant Name");
@@ -483,10 +483,11 @@ public class InstallationDaoTest {
     public void shouldSaveWhenWebPushTokenValid() {
         // given
         final Installation installation = new Installation();
-        installation.setDeviceToken("gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
+        installation.setDeviceToken("https://updates.push.services.mozilla.com/wpush/v1/gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
         
         final WebPushVariant variant = new WebPushVariant();
         variant.setName("WebPush Variant Name");
+        variant.setFcmServerKey("FCM Server Key");
         
         // when
         deviceTokenTest(installation, variant);

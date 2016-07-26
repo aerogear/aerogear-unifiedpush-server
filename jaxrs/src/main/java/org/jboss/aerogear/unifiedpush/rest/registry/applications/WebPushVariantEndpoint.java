@@ -103,9 +103,9 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
     /**
      * Update WebPush Variant
      *
-     * @param id                        id of {@link PushApplication}
-     * @param webPushID                 id of {@link WebPushVariant}
-     * @param updatedWebPushApplication new info of {@link WebPushVariant}
+     * @param id                    id of {@link PushApplication}
+     * @param webPushID             id of {@link WebPushVariant}
+     * @param updatedWebPushVariant new info of {@link WebPushVariant}
      *
      * @statuscode 200 The WebPush Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -119,14 +119,14 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
     public Response updateWebPushVariation(
             @PathParam("pushAppID") String id,
             @PathParam("webPushID") String webPushID,
-            WebPushVariant updatedWebPushApplication) {
+            WebPushVariant updatedWebPushVariant) {
 
         WebPushVariant webPushVariant = (WebPushVariant) variantService.findByVariantID(webPushID);
         if (webPushVariant != null) {
 
             // some validation
             try {
-                validateModelClass(updatedWebPushApplication);
+                validateModelClass(updatedWebPushVariant);
             } catch (ConstraintViolationException cve) {
 
                 // Build and return the 400 (Bad Request) response
@@ -136,8 +136,12 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
             }
 
             // apply updated data:
-            webPushVariant.setName(updatedWebPushApplication.getName());
-            webPushVariant.setDescription(updatedWebPushApplication.getDescription());
+            webPushVariant.setName(updatedWebPushVariant.getName());
+            webPushVariant.setDescription(updatedWebPushVariant.getDescription());
+            // update FCM info:
+            webPushVariant.setFcmServerKey(updatedWebPushVariant.getFcmServerKey());
+            webPushVariant.setFcmSenderID(updatedWebPushVariant.getFcmSenderID());
+            
             variantService.updateVariant(webPushVariant);
             return Response.ok(webPushVariant).build();
         }

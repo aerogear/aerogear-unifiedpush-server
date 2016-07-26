@@ -16,11 +16,48 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
- * The WebPush variant class encapsulates WebPush specific behavior.
+ * The WebPush variant class encapsulates specific behavior for different WebPush providers.
  */
 public class WebPushVariant extends Variant {
     private static final long serialVersionUID = 1142847851407493017L;
+    
+    @NotNull
+    @Size(min = 1, max = 255, message = "Server Key must be max. 255 chars long")
+    private String fcmServerKey;
+    
+    @Size(max = 255, message = "Sender ID must be max. 255 chars long")
+    private String fcmSenderID;
+    
+    /**
+     * The Server Key from the Firebase Cloud Messaging Console of a project which has been enabled for FCM.
+     *
+     @return the Server key
+     */
+    public String getFcmServerKey() {
+        return fcmServerKey;
+    }
+    
+    public void setFcmServerKey(final String fcmServerKey) {
+        this.fcmServerKey = fcmServerKey;
+    }
+    
+    /**
+     * The Sender ID from the Firebase Cloud Messaging Console is <i>not</i> needed for sending push messages,
+     * but it is a convenience to "see" it on the Admin UI as well, since the web applications require it.
+     *
+     * @return the Sender ID
+     */
+    public String getFcmSenderID() {
+        return fcmSenderID;
+    }
+    
+    public void setFcmSenderID(final String fcmSenderID) {
+        this.fcmSenderID = fcmSenderID;
+    }
 
     @Override
     public VariantType getType() {
