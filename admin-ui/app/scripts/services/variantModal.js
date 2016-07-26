@@ -163,7 +163,7 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
       properties = properties.concat(['clientId', 'clientSecret']);
       break;
     case 'webPush':
-      properties = properties.concat([]);
+      properties = properties.concat(['fcmServerKey', 'fcmSenderID']);
       break;
     default:
       throw 'Unknown variant type ' + variant.type;
