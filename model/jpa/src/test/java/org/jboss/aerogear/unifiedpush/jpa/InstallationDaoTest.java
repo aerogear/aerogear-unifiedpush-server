@@ -16,29 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -57,6 +42,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class InstallationDaoTest {
@@ -500,6 +499,32 @@ public class InstallationDaoTest {
         variant.setGoogleKey("12");
         variant.setProjectNumber("12");
 
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
+    @Test(expected = ConstraintViolationException.class)
+    public void shouldNotSaveWhenWebPushTokenDoesNotUseHttps() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("too_short_invalid_endpoint");
+        
+        final WebPushVariant variant = new WebPushVariant();
+        variant.setName("WebPush Variant Name");
+        
+        // when
+        deviceTokenTest(installation, variant);
+    }
+    
+    @Test
+    public void shouldSaveWhenWebPushTokenValid() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
+        
+        final WebPushVariant variant = new WebPushVariant();
+        variant.setName("WebPush Variant Name");
+        
         // when
         deviceTokenTest(installation, variant);
     }

@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -73,6 +73,11 @@ public class SenderConfigurationProvider {
     @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_WNS)
     public SenderConfiguration produceWindowsWnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));
+    }
+    
+    @Produces @ApplicationScoped @SenderType(VariantType.WEB_PUSH)
+    public SenderConfiguration produceWebPushConfiguration() {
+        return loadConfigurationFor(VariantType.WEB_PUSH, new SenderConfiguration(10, 1000));
     }
 
     private SenderConfiguration loadConfigurationFor(VariantType type, SenderConfiguration defaultConfiguration) {

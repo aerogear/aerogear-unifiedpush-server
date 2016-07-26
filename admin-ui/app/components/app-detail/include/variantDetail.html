@@ -20,6 +20,9 @@
 <p ng-if="variant.type == 'windows_mpns'">Microsoft's Push Notification Service (MPNS) in Windows Phone will be used.
   <i>This type of Push Network is deprecated and will be removed in future versions</i>.
 </p>
+<p ng-if="variant.type == 'webPush'">Mozilla Push Service (MPS) for Firefox will be used.
+  <i>This is experimental support of Push API for web browsers</i>.
+</p>
 
 
 <!--
@@ -98,6 +101,12 @@
   <dt>Network Type:</dt>
   <dd>
     SimplePush<br/>
+  </dd>
+</dl>
+<dl class="dl-horizontal" ng-if="variant.type == 'webPush'">
+  <dt>Network Type:</dt>
+  <dd>
+    WebPush<br/>
   </dd>
 </dl>
 

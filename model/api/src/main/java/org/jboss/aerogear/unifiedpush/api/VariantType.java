@@ -51,8 +51,12 @@ public enum VariantType {
     /**
      * The type identifier for our Amazon Device Messaging (ADM) variants.
      */
-    ADM("adm");
+    ADM("adm"),
 
+    /**
+     * The type identifier for WebPush variants.
+     */
+    WEB_PUSH("webPush");
 
     private final String typeName;
 
