@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 
 import java.util.Collection;
 
@@ -37,5 +38,5 @@ public interface PushNotificationSender {
      * @param senderCallback invoked after submitting the request to the underlying push network to indicate the status
      *                       of the request (<code>success</code> or <code>error</code>
      */
-    void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback);
+    void sendPushMessage(Variant variant, Collection<Token> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback);
 }

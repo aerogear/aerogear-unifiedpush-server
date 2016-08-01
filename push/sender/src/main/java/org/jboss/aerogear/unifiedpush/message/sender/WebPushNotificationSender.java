@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,24 +35,24 @@ import java.util.Collection;
 
 @SenderType(VariantType.WEB_PUSH)
 public class WebPushNotificationSender implements PushNotificationSender {
-    
+
     private final Logger logger = LoggerFactory.getLogger(WebPushNotificationSender.class);
-    
+
     private enum WebPushProvider {
-        
+
         MPS("https://updates.push.services.mozilla.com/wpush/v1/"),
         FCM("https://fcm.googleapis.com/fcm/send");
-        
+
         private final String url;
-        
+
         WebPushProvider(String url) {
             this.url = url;
         }
-        
+
         public String getUrl() {
             return url;
         }
-        
+
         public static WebPushProvider defineProvider(String endpoint) {
             if (endpoint.startsWith(MPS.getUrl())) {
                 return MPS;
@@ -62,25 +63,25 @@ public class WebPushNotificationSender implements PushNotificationSender {
     }
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage,
+    public void sendPushMessage(Variant variant, Collection<Token> clientIdentifiers, UnifiedPushMessage pushMessage,
             String pushMessageInformationId, NotificationSenderCallback senderCallback) {
-        
+
         int ttl = pushMessage.getConfig().getTimeToLive();
         if (ttl == -1) {
             ttl = 0;
         }
 
         int successCount = 0;
-        for (String endpoint : clientIdentifiers) {
+        for (String endpoint : Token.toEndpoints(clientIdentifiers)) {
             try {
                 final WebPushProvider wpp = WebPushProvider.defineProvider(endpoint);
-    
+
                 final String postUrl = getPostUrl(endpoint, wpp);
-                
+
                 final Request request = Request
                         .Post(postUrl)
                         .addHeader("TTL", String.valueOf(ttl));
-    
+
                 switch (wpp) {
                     case MPS:
                         // nothing to do
@@ -89,7 +90,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
                         final JSONObject jsonObject = new JSONObject();
                         jsonObject.put("to", extractSubscriptionId(endpoint));
                         final String body = jsonObject.toJSONString();
-                        
+
                         WebPushVariant wpVariant = (WebPushVariant) variant;
                         request.addHeader(HttpHeaders.AUTHORIZATION, "key=" + wpVariant.getFcmServerKey())
                                 .bodyString(body, ContentType.APPLICATION_JSON);
@@ -97,13 +98,13 @@ public class WebPushNotificationSender implements PushNotificationSender {
                     default:
                         throw new IllegalArgumentException("Unsupported WebPush provider: " + wpp);
                 }
-                
+
                 logger.debug("WebPush request to {}: {}", wpp, request);
-                
+
                 final HttpResponse response = request
                         .execute()
                         .returnResponse();
-                
+
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode >= HttpStatus.SC_OK && statusCode <= HttpStatus.SC_NO_CONTENT) {
                     senderCallback.onSuccess();
@@ -121,7 +122,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
         }
         logger.info("Sent {} web push notification of {}", successCount, clientIdentifiers.size());
     }
-    
+
     private static String getPostUrl(String endpoint, WebPushProvider wpp) {
         final String postUrl;
         switch (wpp) {
@@ -136,7 +137,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
         }
         return postUrl;
     }
-    
+
     private static String extractSubscriptionId(String endpoint) {
         final int idx = endpoint.lastIndexOf('/');
         if (idx < 0) {

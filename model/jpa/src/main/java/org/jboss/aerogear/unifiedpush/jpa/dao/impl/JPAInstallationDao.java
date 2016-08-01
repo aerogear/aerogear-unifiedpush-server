@@ -25,6 +25,8 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.dto.Token;
+import org.jboss.aerogear.unifiedpush.dto.WebPushToken;
 
 import javax.persistence.TypedQuery;
 import java.util.Collection;
@@ -37,16 +39,21 @@ import java.util.Set;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
-    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
-                    + " from Installation installation"
-                    + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
 
-    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY = "select distinct installation.deviceToken"
-                    + " from Installation installation"
-                    + " left join installation.categories c "
-                    + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true AND locate(':', installation.deviceToken) = 0";
+    private static final String FROM_INSTALLATION_FOR_VARIANT_QUERY
+            = " from Installation installation"
+            + " left join installation.categories c "
+            + " join installation.variant abstractVariant where abstractVariant.variantID = :variantID AND installation.enabled = true";
 
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken, installation.publicKey, installation.authSecret"
+                    + FROM_INSTALLATION_FOR_VARIANT_QUERY;
+
+    private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY = "select distinct installation.deviceToken, installation.publicKey, installation.authSecret"
+                    + FROM_INSTALLATION_FOR_VARIANT_QUERY
+                    + " AND locate(':', installation.deviceToken) = 0";
+
+    private static final String FIND_ALL_DEVICE_TOKENS_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
+            + FROM_INSTALLATION_FOR_VARIANT_QUERY;
 
 
     private static final String FIND_INSTALLATIONS = "FROM Installation installation"
@@ -125,16 +132,17 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     @Override
     public Set<String> findAllDeviceTokenForVariantID(String variantID) {
-        TypedQuery<String> query = createQuery(FIND_ALL_DEVICES_FOR_VARIANT_QUERY, String.class);
+        TypedQuery<String> query = createQuery(FIND_ALL_DEVICE_TOKENS_FOR_VARIANT_QUERY, String.class);
         query.setParameter("variantID", variantID);
         return new HashSet<>(query.getResultList());
     }
 
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM) {
+    public ResultsStream.QueryBuilder<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM) {
         // the required part: Join + all tokens for variantID;
 
-        final StringBuilder jpqlString = oldGCM ? new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY) : new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
+        final StringBuilder jpqlString = new StringBuilder(
+                oldGCM ? FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY : FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
         final Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("variantID", variantID);
 
@@ -149,15 +157,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
         jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
-        return new ResultsStream.QueryBuilder<String>() {
+        return new ResultsStream.QueryBuilder<Token>() {
             private Integer fetchSize = null;
             @Override
-            public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
+            public ResultsStream.QueryBuilder<Token> fetchSize(int fetchSize) {
                 this.fetchSize = fetchSize;
                 return this;
             }
             @Override
-            public ResultsStream<String> executeQuery() {
+            public ResultsStream<Token> executeQuery() {
                 Query hibernateQuery = JPAInstallationDao.this.createHibernateQuery(jpqlString.toString());
                 hibernateQuery.setMaxResults(maxResults);
 
@@ -174,14 +182,23 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     hibernateQuery.setFetchSize(fetchSize);
                 }
                 final ScrollableResults results = hibernateQuery.scroll(ScrollMode.FORWARD_ONLY);
-                return new ResultsStream<String>() {
+                return new ResultsStream<Token>() {
                     @Override
                     public boolean next() throws ResultStreamException {
                         return results.next();
                     }
                     @Override
-                    public String get() throws ResultStreamException {
-                        return (String) results.get()[0];
+                    public Token get() throws ResultStreamException {
+                        Object[] row = results.get();
+                        String endpoint = (String) row[0];
+                        String publicKey = (String) row[1];
+                        String authSercret = (String) row[2];
+
+                        if (publicKey != null && authSercret != null) {
+                            return new WebPushToken(endpoint, publicKey, authSercret);
+                        } else {
+                            return new Token(endpoint);
+                        }
                     }
                 };
             }

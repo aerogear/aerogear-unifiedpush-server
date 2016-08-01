@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.dao;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      *
      * @return list of device tokens that matches this filter
      */
-    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM);
+    ResultsStream.QueryBuilder<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM);
 
     Set<String> findAllDeviceTokenForVariantID(String variantID);
 

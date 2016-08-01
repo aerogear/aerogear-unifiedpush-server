@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      * Sends SimplePush notifications to all connected clients, that are represented by
      * the {@link Collection} of channelIDs, for the given SimplePush network.
      */
-    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
+    public void sendPushMessage(Variant variant, Collection<Token> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
         if (tokens.isEmpty()) {
@@ -55,7 +56,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
 
         // iterate over all the given channels, if there are channels:
         boolean hasWarning = false;
-        for (String clientURL : tokens) {
+        for (String clientURL : Token.toEndpoints(tokens)) {
 
             HttpURLConnection conn = null;
             try {

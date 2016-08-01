@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
@@ -225,12 +226,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android, iOS and SimplePush clients
      */
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+    public ResultsStream.QueryBuilder<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
         return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, false);
     }
 
     @Override
-    public ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+    public ResultsStream.QueryBuilder<Token> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
         return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, true);
     }
 

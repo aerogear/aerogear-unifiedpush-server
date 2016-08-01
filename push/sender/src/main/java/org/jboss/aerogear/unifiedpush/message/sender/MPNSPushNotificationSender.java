@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.windows.mpns.MPNS;
 import org.jboss.aerogear.windows.mpns.MpnsNotification;
@@ -39,7 +40,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
     private final Logger logger = LoggerFactory.getLogger(MPNSPushNotificationSender.class);
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<Token> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         // no need to send empty list
         if (clientIdentifiers.isEmpty()) {
             return;
@@ -101,7 +102,8 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
         }
 
         // send all out:
-        clientIdentifiers.forEach(clientIdentifier -> mpnsService.push(clientIdentifier, notification));
+        Token.toEndpoints(clientIdentifiers)
+                .forEach(clientIdentifier -> mpnsService.push(clientIdentifier, notification));
         logger.info(String.format("Sent push notification to MPNs for %d tokens",clientIdentifiers.size()));
 
         senderCallback.onSuccess();
