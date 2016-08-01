@@ -157,6 +157,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installationToUpdate.setEnabled(postedInstallation.isEnabled());
         installationToUpdate.setPlatform(postedInstallation.getPlatform());
 
+        if (installationToUpdate.getVariant().getType() == VariantType.WEB_PUSH) {
+            installationToUpdate.setPublicKey(postedInstallation.getPublicKey());
+            installationToUpdate.setAuthSecret(postedInstallation.getAuthSecret());
+        }
+
         // update it:
         updateInstallation(installationToUpdate);
 
@@ -271,6 +276,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         if (variant.getType().equals(VariantType.IOS)) {
             entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
         }
+        // do not save publicKey and authSecret if it's not a WebPushVariant
+        if (variant.getType() != VariantType.WEB_PUSH) {
+            entity.setPublicKey(null);
+            entity.setAuthSecret(null);
+        }
+
         // set reference
         entity.setVariant(variant);
         // update attached categories
