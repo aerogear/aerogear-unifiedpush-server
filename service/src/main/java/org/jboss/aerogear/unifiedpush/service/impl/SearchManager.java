@@ -34,6 +34,8 @@ import java.io.Serializable;
 @RequestScoped
 public class SearchManager implements Serializable {
 
+    private static final long serialVersionUID = -6665967856424444078L;
+
     private HttpServletRequest httpServletRequest;
 
     @Inject

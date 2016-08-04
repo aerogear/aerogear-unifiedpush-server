@@ -21,6 +21,8 @@ import javax.validation.constraints.Size;
 
 public class WindowsWNSVariant extends WindowsVariant {
 
+    private static final long serialVersionUID = -3392470254420650234L;
+
     @NotNull
     @Size(max = 255, message = "Package SID must be max. 255 chars long")
     private String sid;

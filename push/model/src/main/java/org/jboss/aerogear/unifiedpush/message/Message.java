@@ -18,17 +18,18 @@ package org.jboss.aerogear.unifiedpush.message;
 
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.json.PriorityDeserializer;
+import org.jboss.aerogear.unifiedpush.message.json.PrioritySerializer;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import static org.jboss.aerogear.unifiedpush.message.Priority.NORMAL;
-import org.jboss.aerogear.unifiedpush.message.json.PriorityDeserializer;
-import org.jboss.aerogear.unifiedpush.message.json.PrioritySerializer;
 
 /**
  * The message part of the Unifieh message.
@@ -37,6 +38,8 @@ import org.jboss.aerogear.unifiedpush.message.json.PrioritySerializer;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Message implements Serializable {
+
+    private static final long serialVersionUID = -4467505284880930113L;
 
     private String alert;
     private String sound;
@@ -51,7 +54,7 @@ public class Message implements Serializable {
     @JsonSerialize(using=PrioritySerializer.class)
     @JsonDeserialize(using=PriorityDeserializer.class)
     private Priority priority = NORMAL;
-    
+
     private String consolidationKey;
 
     private Windows windows = new Windows();

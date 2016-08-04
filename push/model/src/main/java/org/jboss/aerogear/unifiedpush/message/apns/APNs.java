@@ -27,6 +27,8 @@ import java.io.Serializable;
 @JsonRootName("apns")
 public class APNs implements Serializable {
 
+    private static final long serialVersionUID = 1721248899064332647L;
+
     @JsonProperty("action-category")
     private String actionCategory;
     private String title;
