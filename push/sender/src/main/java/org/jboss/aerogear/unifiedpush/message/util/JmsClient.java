@@ -70,8 +70,8 @@ public class JmsClient {
      */
     public class JmsReceiver {
 
-        private boolean transacted = false;
-        private String selector = null;
+        private boolean transacted;
+        private String selector;
         private Wait wait = new WaitIndefinitely();
         private int acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
         private boolean autoClose = true;
@@ -211,7 +211,7 @@ public class JmsClient {
     public class JmsSender {
 
         private Serializable message;
-        private boolean transacted = false;
+        private boolean transacted;
         private Map<String, Object> properties = new LinkedHashMap<>();
         private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 

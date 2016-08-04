@@ -150,7 +150,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
         return new ResultsStream.QueryBuilder<String>() {
-            private Integer fetchSize = null;
+            private Integer fetchSize;
             @Override
             public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
                 this.fetchSize = fetchSize;
