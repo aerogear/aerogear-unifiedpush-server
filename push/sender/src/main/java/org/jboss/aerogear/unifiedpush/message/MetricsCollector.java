@@ -112,7 +112,7 @@ public class MetricsCollector {
         }
     }
 
-    private boolean areAllVariantsServed(PushMessageInformation pushMessageInformation) {
+    private static boolean areAllVariantsServed(PushMessageInformation pushMessageInformation) {
         return areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants());
     }
 
@@ -153,7 +153,7 @@ public class MetricsCollector {
         return false;
     }
 
-    private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
+    private static void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
         existing.setReceivers(existing.getReceivers() + update.getReceivers());
         existing.setServedBatches(existing.getServedBatches() + update.getServedBatches());
         existing.setTotalBatches(existing.getTotalBatches() + update.getTotalBatches());
@@ -168,7 +168,7 @@ public class MetricsCollector {
         }
     }
 
-    private boolean areIntegersEqual(int i1, int i2) {
+    private static boolean areIntegersEqual(int i1, int i2) {
         return i1 == i2;
     }
 

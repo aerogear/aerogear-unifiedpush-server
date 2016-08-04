@@ -16,6 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.resteasy.spi.Link;
+import org.jboss.resteasy.spi.LinkHeader;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,16 +38,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.spi.Link;
-import org.jboss.resteasy.spi.LinkHeader;
-
-import com.qmino.miredot.annotations.ReturnType;
 
 
 @Path("/applications/{variantID}/installations/")
@@ -105,7 +104,7 @@ public class InstallationManagementEndpoint {
                 .build();
     }
 
-    LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
+    static LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
         LinkHeader header = new LinkHeader();
 
         if (page != 0) {
@@ -120,7 +119,7 @@ public class InstallationManagementEndpoint {
         return header;
     }
 
-    private Link buildLink(String rel, long pageNo, UriInfo uri) {
+    private static Link buildLink(String rel, long pageNo, UriInfo uri) {
         Link link = new Link();
         link.setHref(uri.getAbsolutePathBuilder().queryParam("page", pageNo).build().toASCIIString());
         link.setRelationship(rel);
