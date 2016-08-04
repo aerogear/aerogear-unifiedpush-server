@@ -16,13 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Holds instances of given service &lt;T&gt; and allows their instantiation, reuse and disposal.
@@ -37,7 +37,7 @@ import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
  */
 public abstract class AbstractServiceHolder<T> {
 
-    private final ConcurrentHashMap<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<>();
+    private final Map<Key, ConcurrentLinkedQueue<DisposableReference<T>>> queueMap = new ConcurrentHashMap<>();
 
     private final int instanceLimit;
     private final long instanceAcquiringTimeoutInMillis;
