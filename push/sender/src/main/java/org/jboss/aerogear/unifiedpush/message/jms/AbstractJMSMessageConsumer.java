@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.jms.Connection;
@@ -32,6 +34,8 @@ import java.io.Serializable;
  * Allows its implementations to simply receive messages from JMS queues in non-blocking way
  */
 public abstract class AbstractJMSMessageConsumer {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageConsumer.class);
 
     @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory xaConnectionFactory;
@@ -82,7 +86,7 @@ public abstract class AbstractJMSMessageConsumer {
                 try {
                     connection.close();
                 } catch (JMSException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to close JMS connection: ", e);
                 }
             }
         }
