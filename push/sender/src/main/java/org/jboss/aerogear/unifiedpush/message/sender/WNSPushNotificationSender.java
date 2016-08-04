@@ -69,12 +69,12 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
-        	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
-        	int ttl = pushMessage.getConfig().getTimeToLive();
+            WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
+            int ttl = pushMessage.getConfig().getTimeToLive();
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
-        	
+
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {
                 switch (message.getWindows().getType()) {

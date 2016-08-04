@@ -164,7 +164,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 hibernateQuery.setMaxResults(maxResults);
 
                 parameters.forEach((k,v) -> {
-					if (v  instanceof Collection<?>) {
+                    if (v  instanceof Collection<?>) {
                         hibernateQuery.setParameterList(k, (Collection<?>) v);
                     } else {
                         hibernateQuery.setParameter(k, v);

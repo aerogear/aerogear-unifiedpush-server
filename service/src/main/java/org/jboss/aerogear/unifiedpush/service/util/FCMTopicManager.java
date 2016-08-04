@@ -70,7 +70,7 @@ public class FCMTopicManager {
         }
         JSONObject rel = (JSONObject) info.get("rel");
         if (rel == null){
-        	logger.debug("Couldn't parse rel object Instance ID service.");
+            logger.debug("Couldn't parse rel object Instance ID service.");
             return Collections.emptySet();
         }
         JSONObject topics = (JSONObject) rel.get("topics");
