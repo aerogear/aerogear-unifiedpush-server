@@ -109,17 +109,9 @@ public class SimplePushNotificationSender implements PushNotificationSender {
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Accept", "*/*");
         conn.setRequestMethod("PUT");
-        OutputStream out = null;
-        try {
-            out = conn.getOutputStream();
+        try (OutputStream out = conn.getOutputStream()) {
             out.write(bytes);
             out.flush();
-        } finally {
-            // in case something blows up, while writing
-            // the payload, we wanna close the stream:
-            if (out != null) {
-                out.close();
-            }
         }
         return conn;
     }
