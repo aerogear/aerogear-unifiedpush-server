@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.message.Criteria;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public final class TokenLoaderUtils {
 
@@ -47,9 +48,9 @@ public final class TokenLoaderUtils {
 
         } else if (isCategoryOnlyCriteria(criteria)) {
             // use the given categories
-            for (String category : criteria.getCategories()) {
-                topics.add(Constants.TOPIC_PREFIX + category);
-            }
+            topics.addAll(criteria.getCategories().stream()
+                    .map(category -> Constants.TOPIC_PREFIX + category)
+                    .collect(Collectors.toList()));
         }
         return topics;
     }

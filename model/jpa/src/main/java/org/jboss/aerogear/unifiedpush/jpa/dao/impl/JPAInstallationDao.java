@@ -87,7 +87,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     }
 
     private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
-        parameters.forEach((k,v) -> query.setParameter(k, v));
+        parameters.forEach(query::setParameter);
         return query;
     }
 

@@ -206,7 +206,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
         final UriBuilder uriBuilder = UriBuilder.fromPath("");
 
-        data.forEach((k,v) -> uriBuilder.queryParam(k, v));
+        data.forEach(uriBuilder::queryParam);
         if (message != null) {
             uriBuilder.queryParam("message", message);
         }

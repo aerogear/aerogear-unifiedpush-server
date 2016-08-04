@@ -85,7 +85,7 @@ public class MetricsCollector {
         receiveVariantMetricsRemainingInQueues(pushMessageInformation);
 
         pushMessageInformation.getVariantInformations().stream()
-                .filter(variantMetricInformation -> areAllBatchesLoaded(variantMetricInformation))
+                .filter(this::areAllBatchesLoaded)
                 .forEach(variantMetricInformation -> {
                     pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
                     logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
