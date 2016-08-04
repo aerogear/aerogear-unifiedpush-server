@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public final class ConfigurationUtils {
 
-    private final static Logger logger = LoggerFactory.getLogger(ConfigurationUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtils.class);
 
     private ConfigurationUtils() {
         // no-op

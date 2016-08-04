@@ -136,7 +136,7 @@ public class TokenLoader {
 
                 ResultsStream<String> tokenStream;
                 final Set<String> topics = new TreeSet<>();
-                final boolean isAndroid = variantType.equals(VariantType.ANDROID);
+                final boolean isAndroid = variantType == VariantType.ANDROID;
 
                 // the entire batch size
                 int batchesToLoad= configuration.batchesToLoad();
@@ -155,7 +155,7 @@ public class TokenLoader {
 
                         // topics are handled as a first extra batch,
                         // therefore we have to adjust the number by adding this extra batch
-                        batchesToLoad = batchesToLoad + 1;
+                        batchesToLoad += 1;
                     }
 
                     // 2) always load the legacy tokens, for all number of batch iterations

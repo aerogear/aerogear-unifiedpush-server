@@ -268,7 +268,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private void storeInstallationAndSetReferences(Variant variant, Installation entity) {
 
         // ensure lower case for iOS
-        if (variant.getType().equals(VariantType.IOS)) {
+        if (variant.getType() == VariantType.IOS) {
             entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
         }
         // set reference

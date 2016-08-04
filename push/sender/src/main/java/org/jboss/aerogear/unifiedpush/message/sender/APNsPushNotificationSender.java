@@ -228,7 +228,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
-                        if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
+                        if (deliveryError.getDeliveryError() == DeliveryError.INVALID_TOKEN) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
                             logger.info("Removing invalid (not allowed) token: " + invalidToken);
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
