@@ -160,7 +160,7 @@ public class MetricsCollector {
         if (existing.getDeliveryStatus() == null) {
             existing.setDeliveryStatus(update.getDeliveryStatus());
         }
-        if (existing.getDeliveryStatus() == Boolean.TRUE && update.getDeliveryStatus() == Boolean.FALSE) {
+        if (Boolean.TRUE.equals(existing.getDeliveryStatus()) && Boolean.FALSE.equals(update.getDeliveryStatus())) {
             existing.setDeliveryStatus(Boolean.FALSE);
         }
         if (existing.getReason() == null && update.getReason() != null) {
