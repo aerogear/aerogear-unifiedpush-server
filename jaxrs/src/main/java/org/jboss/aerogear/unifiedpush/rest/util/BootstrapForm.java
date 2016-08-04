@@ -47,10 +47,10 @@ public class BootstrapForm {
     private String windowsVariantName;
     private String windowsSid;
     private String windowsClientSecret;
-    
+
     // SimplePush details
     private String simplePushVariantName;
-    
+
     // ADM details
     private String admVariantName;
     private String admClientId;
@@ -58,7 +58,6 @@ public class BootstrapForm {
 
 
     public BootstrapForm() {
-
     }
 
     public String getPushApplicationName() {
@@ -170,7 +169,7 @@ public class BootstrapForm {
     public void setWindowsClientSecret(String windowsClientSecret) {
         this.windowsClientSecret = windowsClientSecret;
     }
-    
+
     public String getSimplePushVariantName() {
         return simplePushVariantName;
     }
@@ -179,7 +178,7 @@ public class BootstrapForm {
     public void setSimplePushVariantName(String simplePushVariantName) {
         this.simplePushVariantName = simplePushVariantName;
     }
-    
+
     public String getAdmVariantName() {
         return admVariantName;
     }
@@ -188,7 +187,7 @@ public class BootstrapForm {
     public void setAdmVariantName(String admVariantName) {
         this.admVariantName = admVariantName;
     }
-    
+
     public String getAdmClientId() {
         return admClientId;
     }
@@ -197,7 +196,7 @@ public class BootstrapForm {
     public void setAdmClientId(String admClientId) {
         this.admClientId = admClientId;
     }
-    
+
     public String getAdmClientSecret() {
         return admClientSecret;
     }

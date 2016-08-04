@@ -87,7 +87,6 @@ public final class TokenLoaderUtils {
      * Checks if the list is empty, and not null
      */
     private static boolean isEmpty(List list) {
-        return (list == null || list.isEmpty());
+        return list == null || list.isEmpty();
     }
-
 }

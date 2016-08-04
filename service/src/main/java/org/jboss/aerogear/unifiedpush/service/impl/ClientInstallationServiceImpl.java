@@ -233,7 +233,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * A simple validation util that checks if a token is present
      */
     private boolean hasTokenValue(Installation installation) {
-        return (installation.getDeviceToken() != null && (!installation.getDeviceToken().isEmpty()));
+        return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
     }
 
     /**

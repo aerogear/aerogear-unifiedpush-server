@@ -35,7 +35,7 @@ import java.io.IOException;
  * The goal is to provide multiple views between admin and developer
  * Unfortunately the version of WELD on AS7 does not support HTTPServletContext injection
  */
-@WebFilter(filterName = "HttpContextHolderFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "HttpContextHolderFilter", urlPatterns = "/*")
 public class HttpContextFilter implements Filter {
 
     @Inject

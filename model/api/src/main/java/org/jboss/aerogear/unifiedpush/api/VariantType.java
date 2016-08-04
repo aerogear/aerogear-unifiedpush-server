@@ -24,17 +24,17 @@ import org.codehaus.jackson.annotate.JsonValue;
 public enum VariantType {
 
     /**
-     * The type identifier for our Android variants. 
+     * The type identifier for our Android variants.
      */
     ANDROID("android"),
 
     /**
-     * The type identifier for our iOS variants. 
+     * The type identifier for our iOS variants.
      */
     IOS("ios"),
 
     /**
-     * The type identifier for our SimplePush variants. 
+     * The type identifier for our SimplePush variants.
      */
     SIMPLE_PUSH("simplePush"),
 
@@ -56,7 +56,7 @@ public enum VariantType {
 
     private final String typeName;
 
-    private VariantType(String typeName) {
+    VariantType(String typeName) {
         this.typeName = typeName;
     }
 

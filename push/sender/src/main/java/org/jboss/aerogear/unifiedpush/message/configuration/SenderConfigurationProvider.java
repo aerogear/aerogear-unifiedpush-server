@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -121,8 +121,8 @@ public class SenderConfigurationProvider {
      * Configuration properties are matching the properties of {@link SenderConfiguration} fields / accessors.
      * The enum members intentionally use camel-case to avoid need for name conversion.
      */
-    private static enum ConfigurationProperty {
+    private enum ConfigurationProperty {
         batchesToLoad,
-        batchSize;
+        batchSize
     }
 }

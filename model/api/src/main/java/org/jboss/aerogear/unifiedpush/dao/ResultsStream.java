@@ -40,7 +40,7 @@ public interface ResultsStream<T> {
     /**
      * Allow to build new {@link ResultsStream} with customized fetching strategy.
      */
-    public static interface QueryBuilder<T> {
+    interface QueryBuilder<T> {
 
         /**
          * Set a fetch size for the underlying JDBC query. See org.hibernate.Query.setFetchSize(int).

@@ -73,9 +73,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("search", "%" + search + "%");
         }
 
-
-        TypedQuery<Long> countQuery = createQuery("SELECT COUNT(installation) " + jpqlBase.toString(), Long.class);
-        TypedQuery<Installation> query = createQuery("SELECT installation " + jpqlBase.toString() + " ORDER BY installation.id").setFirstResult(page * pageSize).setMaxResults(pageSize);
+        String jpqlStr = jpqlBase.toString();
+        TypedQuery<Long> countQuery = createQuery("SELECT COUNT(installation) " + jpqlStr, Long.class);
+        TypedQuery<Installation> query = createQuery("SELECT installation " + jpqlStr + " ORDER BY installation.id")
+                .setFirstResult(page * pageSize)
+                .setMaxResults(pageSize);
 
         List<Installation> resultList = setParameters(query, parameters).getResultList();
         Long count = setParameters(countQuery, parameters).getSingleResult();
@@ -252,6 +254,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
      * Checks if the list is empty, and not null
      */
     private boolean isListEmpty(List list) {
-        return (list != null && !list.isEmpty());
+        return list != null && !list.isEmpty();
     }
 }

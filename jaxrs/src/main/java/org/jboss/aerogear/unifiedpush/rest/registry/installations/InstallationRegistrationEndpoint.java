@@ -258,11 +258,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
-        } else {
-            logger.info("Deleting metadata Installation");
-            // remove
-            clientInstallationService.removeInstallation(installation);
         }
+
+        logger.info("Deleting metadata Installation");
+        // remove
+        clientInstallationService.removeInstallation(installation);
 
         return appendAllowOriginHeader(Response.noContent(), request);
     }

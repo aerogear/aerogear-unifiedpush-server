@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
@@ -221,7 +222,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
                     // Invoked for EVERY devicetoken:
-                    logger.trace("Sending APNs message to: " + message.getDeviceToken());
+                    logger.trace("Sending APNs message to: " + Arrays.toString(message.getDeviceToken()));
                 }
 
                 @Override

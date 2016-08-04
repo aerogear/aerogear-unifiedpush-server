@@ -106,10 +106,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             }
             logger.debug("Message to WNS has been submitted");
             senderCallback.onSuccess();
-        } catch (WnsException exception) {
+        } catch (WnsException | IllegalArgumentException exception) {
             senderCallback.onError(exception.getMessage());
-        } catch (IllegalArgumentException iae) {
-            senderCallback.onError(iae.getMessage());
         }
     }
 

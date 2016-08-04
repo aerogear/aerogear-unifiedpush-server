@@ -149,7 +149,7 @@ public abstract class AbstractServiceHolder<T> {
             public void destroy(T instance) {
                 destroyer.destroy(instance);
                 returnServiceSlotToQueue(pushMessageInformationId, variantID);
-            };
+            }
         };
         DisposableReference<T> disposableReference = new DisposableReference<>(service, destroyAndReturnServiceSlot);
         serviceDisposalScheduler.scheduleForDisposal(disposableReference, serviceDisposalDelayInMillis);

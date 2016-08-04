@@ -142,7 +142,7 @@ public class TokenLoader {
                 int batchesToLoad= configuration.batchesToLoad();
 
                 // Some checks for GCM, because of GCM-3 topics
-                boolean gcmTopicRequest = (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria));
+                boolean gcmTopicRequest = isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria);
                 if (gcmTopicRequest) {
 
                     // If we are able to do push for GCM topics...
