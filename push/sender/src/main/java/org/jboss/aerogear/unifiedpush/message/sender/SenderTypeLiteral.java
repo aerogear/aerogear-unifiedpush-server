@@ -23,6 +23,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 public class SenderTypeLiteral extends AnnotationLiteral<SenderType> implements SenderType {
     private final VariantType value;
 
+    @Override
     public VariantType value() {
         return value;
     }

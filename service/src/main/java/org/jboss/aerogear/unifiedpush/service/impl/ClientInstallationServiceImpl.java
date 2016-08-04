@@ -138,6 +138,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installations.forEach(this::removeInstallation);
     }
 
+    @Override
     public void updateInstallation(
             Installation installation) {
         installationDao.update(installation);

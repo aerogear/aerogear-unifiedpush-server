@@ -53,8 +53,9 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " JOIN installation.variant v"
                     + " WHERE v.variantID = :variantID";
 
-    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
-
+    @Override
+    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(
+            String variantID, String developer, Integer page, Integer pageSize, String search) {
 
         final StringBuilder jpqlBase = new StringBuilder(FIND_INSTALLATIONS);
         final Map<String, Object> parameters = new LinkedHashMap<>();
@@ -90,6 +91,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         return query;
     }
 
+    @Override
     public PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize, String search) {
         return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize, search);
     }

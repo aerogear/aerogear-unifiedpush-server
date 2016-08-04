@@ -92,6 +92,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
      * @param callback that will be invoked after the sending.
      */
+    @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {

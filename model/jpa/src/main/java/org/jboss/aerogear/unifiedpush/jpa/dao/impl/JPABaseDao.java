@@ -62,14 +62,17 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     //because you can't do T.class
     public abstract Class<T> getType();
 
+    @Override
     public T find(K id) {
         return entityManager.find(getType(), id);
     }
 
+    @Override
     public void create(T entity) {
         entityManager.persist(entity);
     }
 
+    @Override
     public void update(T entity) {
         entityManager.merge(entity);
         entityManager.flush();
@@ -78,10 +81,12 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     /**
      * Pessimistic write lock on entity
      */
+    @Override
     public void lock(T entity) {
         entityManager.lock(entity, LockModeType.PESSIMISTIC_WRITE);
     }
 
+    @Override
     public void delete(T entity) {
         if (entity != null) {
             // making sure the entity in question,
@@ -98,6 +103,7 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
      * Write pending objects to the database and
      * clear session-scoped cache
      */
+    @Override
     public void flushAndClear() {
         entityManager.flush();
         entityManager.clear();
