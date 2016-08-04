@@ -1,13 +1,12 @@
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Allows to scheduled instantiated services for disposal.
@@ -58,7 +57,7 @@ public class ServiceDisposalScheduler {
 
         private DisposableReference<?> reference;
 
-        public DisposeTask(DisposableReference<?> reference) {
+        DisposeTask(DisposableReference<?> reference) {
             this.reference = reference;
         }
 

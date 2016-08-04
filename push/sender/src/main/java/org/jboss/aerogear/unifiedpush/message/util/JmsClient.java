@@ -344,7 +344,7 @@ public class JmsClient {
     private static class WaitSpecificTime implements Wait {
         private long time;
 
-        public WaitSpecificTime(long time) {
+        WaitSpecificTime(long time) {
             super();
             this.time = time;
         }
