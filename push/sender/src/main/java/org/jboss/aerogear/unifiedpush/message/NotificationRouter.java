@@ -74,7 +74,7 @@ public class NotificationRouter {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
-        logger.debug("Processing send request with '" + message.getMessage() + "' payload");
+        logger.debug("Processing send request with '{}' payload", message.getMessage());
 
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();

@@ -94,7 +94,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
                     // trigger asynchronous deletion:
                     if (! transformedTokens.isEmpty()) {
-                        logger.info("Deleting '" + inactiveTokens.size() + "' inactive iOS installations");
+                        logger.info("Deleting '{}' inactive iOS installations", inactiveTokens.size());
                         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
                     }
                 } catch (Exception e) {

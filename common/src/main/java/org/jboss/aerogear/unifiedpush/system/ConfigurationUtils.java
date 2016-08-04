@@ -51,7 +51,7 @@ public final class ConfigurationUtils {
         try {
             return System.getProperty(key, defaultValue);
         } catch (SecurityException e) {
-            logger.error("Could not get value of property " + key + " due to SecurityManager. Using null value.");
+            logger.error("Could not get value of property {} due to SecurityManager. Using null value.", key);
             return null;
         }
     }
@@ -78,7 +78,7 @@ public final class ConfigurationUtils {
         try {
             return Integer.getInteger(key, defaultValue);
         } catch (SecurityException e) {
-            logger.error("Could not get value of property " + key + " due to SecurityManager. Using null value.");
+            logger.error("Could not get value of property {} due to SecurityManager. Using null value.", key, e);
             return defaultValue;
         }
     }

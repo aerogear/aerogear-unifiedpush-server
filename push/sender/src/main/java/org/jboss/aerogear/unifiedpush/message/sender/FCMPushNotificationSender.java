@@ -111,7 +111,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            logger.debug("Sending transformed FCM payload: " + fcmMessage );
+            logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
@@ -142,13 +142,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to FCM topic: %s", topic));
                 Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.trace("Response from FCM topic request: " + result);
+                logger.trace("Response from FCM topic request: {}", result);
             }
         } else {
             logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.trace("Response from FCM request: " + multicastResult);
+            logger.trace("Response from FCM request: {}", multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);

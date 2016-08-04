@@ -161,7 +161,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             throw new SenderResourceNotAvailableException("Unable to obtain a ApnsService instance");
         }
         try {
-            logger.debug("Sending transformed APNs payload: " + apnsMessage);
+            logger.debug("Sending transformed APNs payload: {}", apnsMessage);
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
 
@@ -223,7 +223,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
                     // Invoked for EVERY devicetoken:
-                    logger.trace("Sending APNs message to: " + Arrays.toString(message.getDeviceToken()));
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Sending APNs message to: {}", Arrays.toString(message.getDeviceToken()));
+                    }
                 }
 
                 @Override
@@ -232,7 +234,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (deliveryError.getDeliveryError() == DeliveryError.INVALID_TOKEN) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
-                            logger.info("Removing invalid (not allowed) token: " + invalidToken);
+                            logger.info("Removing invalid (not allowed) token: {}", invalidToken);
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases

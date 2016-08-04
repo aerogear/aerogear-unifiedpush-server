@@ -109,7 +109,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
             if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
-                logger.trace("Importing device with token: " + current.getDeviceToken());
+                logger.trace("Importing device with token: {}", current.getDeviceToken());
 
                 storeInstallationAndSetReferences(variant, current);
 
@@ -123,7 +123,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 }
             } else {
                 // for now, we ignore them.... no update applied!
-                logger.trace("Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
+                logger.trace("Device with token '{}' already exists. Ignoring it ", current.getDeviceToken());
             }
         }
         // clear out:

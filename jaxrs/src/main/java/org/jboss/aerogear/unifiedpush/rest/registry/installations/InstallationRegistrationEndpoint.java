@@ -337,7 +337,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        logger.info("Devices to import: " + devices.size());
+        logger.info("Devices to import: {}", devices.size());
 
         clientInstallationService.addInstallations(variant, devices);
 

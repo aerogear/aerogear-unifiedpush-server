@@ -121,7 +121,7 @@ public class TokenLoader {
         final PushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
         int serialId = msg.getLastSerialId();
 
-        logger.debug("Received message from queue: " + message.getMessage().getAlert());
+        logger.debug("Received message from queue: {}", message.getMessage().getAlert());
 
         final Criteria criteria = message.getCriteria();
         final List<String> categories = criteria.getCategories();

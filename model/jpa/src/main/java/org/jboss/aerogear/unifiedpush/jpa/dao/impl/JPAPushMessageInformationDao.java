@@ -120,7 +120,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        logger.info("Deleting ['" + affectedRows + "'] outdated PushMessageInformation objects");
+        logger.info("Deleting ['{}'] outdated PushMessageInformation objects", affectedRows);
     }
 
     //Admin queries

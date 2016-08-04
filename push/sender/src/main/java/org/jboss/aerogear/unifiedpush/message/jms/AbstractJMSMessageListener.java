@@ -55,7 +55,8 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
                     throw new IllegalStateException("Received message of wrong payload type " + messageObject.getClass() + " to destination " + getDestinationName(jmsMessage));
                 }
             } else {
-                logger.warn("Received message of wrong type " + jmsMessage.getClass().getName() + " to destination " + getDestinationName(jmsMessage));
+                logger.warn("Received message of wrong type {} to destination {}",
+                        jmsMessage.getClass().getName(), getDestinationName(jmsMessage));
             }
         } catch (JMSException e) {
             throw new MessageDeliveryException("Failed to handle message from destination " + getDestinationName(jmsMessage), e);
