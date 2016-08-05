@@ -141,7 +141,9 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
             // update FCM info:
             webPushVariant.setFcmServerKey(updatedWebPushVariant.getFcmServerKey());
             webPushVariant.setFcmSenderID(updatedWebPushVariant.getFcmSenderID());
-            
+            // update custom server info:
+            webPushVariant.setCustomServerUrl(updatedWebPushVariant.getCustomServerUrl());
+
             variantService.updateVariant(webPushVariant);
             return Response.ok(webPushVariant).build();
         }

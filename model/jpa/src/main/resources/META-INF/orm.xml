@@ -125,6 +125,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <basic name="fcmSenderID">
                 <column name="fcm_sender_id" length="255"/>
             </basic>
+            <basic name="customServerUrl">
+                <column name="custom_server_url" length="255"/>
+            </basic>
         </attributes>
     </entity>
 
