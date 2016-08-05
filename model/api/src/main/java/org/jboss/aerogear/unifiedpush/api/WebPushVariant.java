@@ -24,14 +24,17 @@ import javax.validation.constraints.Size;
  */
 public class WebPushVariant extends Variant {
     private static final long serialVersionUID = 1142847851407493017L;
-    
+
     @NotNull
     @Size(min = 1, max = 255, message = "Server Key must be max. 255 chars long")
     private String fcmServerKey;
-    
+
     @Size(max = 255, message = "Sender ID must be max. 255 chars long")
     private String fcmSenderID;
-    
+
+    @Size(max = 255, message = "Custom server URL must be max. 255 chars long")
+    private String customServerUrl;
+
     /**
      * The Server Key from the Firebase Cloud Messaging Console of a project which has been enabled for FCM.
      *
@@ -40,11 +43,11 @@ public class WebPushVariant extends Variant {
     public String getFcmServerKey() {
         return fcmServerKey;
     }
-    
+
     public void setFcmServerKey(final String fcmServerKey) {
         this.fcmServerKey = fcmServerKey;
     }
-    
+
     /**
      * The Sender ID from the Firebase Cloud Messaging Console is <i>not</i> needed for sending push messages,
      * but it is a convenience to "see" it on the Admin UI as well, since the web applications require it.
@@ -54,9 +57,23 @@ public class WebPushVariant extends Variant {
     public String getFcmSenderID() {
         return fcmSenderID;
     }
-    
+
     public void setFcmSenderID(final String fcmSenderID) {
         this.fcmSenderID = fcmSenderID;
+    }
+
+    /**
+     * The URL to the custom WebPush Server, which could be used for WebPush notification in intranet
+     * or for IoT devices.
+     *
+     * @return the custom server URL
+     */
+    public String getCustomServerUrl() {
+        return customServerUrl;
+    }
+
+    public void setCustomServerUrl(String customServerUrl) {
+        this.customServerUrl = customServerUrl;
     }
 
     @Override
