@@ -67,6 +67,11 @@
             <stringProp name="Argument.value">${__P(IOS_VARIANT_RESONSE_FILE_PATH,/tmp/ios)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="EXIT_CODE_1_ON_ERROR" elementType="Argument">
+            <stringProp name="Argument.name">EXIT_CODE_1_ON_ERROR</stringProp>
+            <stringProp name="Argument.value">${__P(EXIT_CODE_1_ON_ERROR,true)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -421,6 +426,31 @@ byte[] androidUsernamePassword = Base64.encodeBase64(&quot;${ANDROID_USERNAME}:$
 vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword));</stringProp>
           <stringProp name="scriptLanguage">groovy</stringProp>
         </BSFSampler>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response 200 Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-1447184279">200|201</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+          <stringProp name="BeanShellAssertion.query">boolean shouldExitOnError = Boolean.parseBoolean(vars.get(&quot;EXIT_CODE_1_ON_ERROR&quot;));
+if(shouldExitOnError){
+	for (a: SampleResult.getAssertionResults()) {
+		if (a.isError() || a.isFailure()) {
+			log.error(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Assertion failed for response code &quot;+ResponseCode+&quot; : &quot; + new String((byte[]) ResponseData));
+			Thread.sleep(5);
+			System.exit(1);	
+		}
+	}
+}</stringProp>
+          <stringProp name="BeanShellAssertion.filename"></stringProp>
+          <stringProp name="BeanShellAssertion.parameters"></stringProp>
+          <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+        </BeanShellAssertion>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
