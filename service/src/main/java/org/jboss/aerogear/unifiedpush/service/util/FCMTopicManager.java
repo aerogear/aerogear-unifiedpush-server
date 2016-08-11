@@ -32,7 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -58,7 +58,7 @@ public class FCMTopicManager {
             deviceInfo = get(url);
         } catch (IOException e) {
             logger.debug("Couldn't get list of subscribed topics from Instance ID service.");
-            return new HashSet<>(0);
+            return Collections.emptySet();
         }
         JSONParser parser = new JSONParser();
         JSONObject info;
@@ -66,9 +66,13 @@ public class FCMTopicManager {
             info = (JSONObject) parser.parse(deviceInfo);
         } catch (ParseException e) {
             logger.debug("Couldn't parse list of subscribed topics from Instance ID service.");
-            return new HashSet<>(0);
+            return Collections.emptySet();
         }
         JSONObject rel = (JSONObject) info.get("rel");
+        if (rel == null){
+        	logger.debug("Couldn't parse rel object Instance ID service.");
+            return Collections.emptySet();
+        }
         JSONObject topics = (JSONObject) rel.get("topics");
         return topics.keySet();
     }
