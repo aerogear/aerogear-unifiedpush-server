@@ -39,7 +39,22 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-wildfly-adapter</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
+
+        <!-- Override dependencies from unifiedpush-server-dependencies, -->
+        <!-- else we have multiple versions on class pass -->
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-core</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-adapter-core</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

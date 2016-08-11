@@ -28,11 +28,23 @@
     <packaging>war</packaging>
     <name>UnifiedPush Auth Server</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-dependencies-server-min</artifactId>
+				<version>${keycloak.version}</version>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
     <dependencies>
 
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-dependencies-server-min</artifactId>
+            <version>${keycloak.version}</version>
             <type>pom</type>
         </dependency>
 
@@ -41,6 +53,7 @@
             <artifactId>resteasy-jaxrs</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -49,31 +62,25 @@
 
         <dependency>
             <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-connections-jpa</artifactId>
+            <artifactId>keycloak-core</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-             <artifactId>keycloak-connections-jpa-liquibase</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-model-jpa</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
+
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-saml-core</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
+
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-connections-infinispan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-model-sessions-infinispan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-invalidation-cache-infinispan</artifactId>
         </dependency>
 
         <dependency>
