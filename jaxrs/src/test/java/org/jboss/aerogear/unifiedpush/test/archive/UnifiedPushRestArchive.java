@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -36,7 +37,7 @@ public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRe
     }
 
     public UnifiedPushRestArchive withUtils() {
-        return addPackage(org.jboss.aerogear.unifiedpush.utils.DateUtils.class.getPackage());
+        return addPackage(DateUtils.class.getPackage());
     }
 
     @Override

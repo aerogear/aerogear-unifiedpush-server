@@ -33,6 +33,13 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+
+import com.notnoop.apns.ApnsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
  * per given push message and variant. This allows for 10 concurrent connections to the APNs push network.
@@ -47,7 +54,6 @@ import java.util.stream.Collectors;
  */
 @ApplicationScoped
 public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
-
     private final Logger logger = LoggerFactory.getLogger(ApnsServiceHolder.class);
 
     public static final int INSTANCE_LIMIT = 10;

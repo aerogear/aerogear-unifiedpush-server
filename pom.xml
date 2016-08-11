@@ -248,6 +248,7 @@
                 <version>${fasterxml.version}</version>
             </dependency>
 
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -264,9 +265,38 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slfj4.version}</version>
+			</dependency>
+			<!-- AeroGear Test Dependencies BOM Imports -->
+			<dependency>
+				<groupId>org.jboss.aerogear</groupId>
+				<artifactId>aerogear-test-bom</artifactId>
+				<version>${aerogear.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.1</version>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.arquillian.container</groupId>
+				<artifactId>arquillian-container-chameleon</artifactId>
+				<version>1.0.0.Alpha6</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.arquillian.extension</groupId>
+				<artifactId>arquillian-transaction-jta</artifactId>
+				<version>1.0.2.Final</version>
+				<scope>test</scope>
+	       </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>
@@ -365,9 +395,10 @@
 
         <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
-        <keycloak.version>1.9.1.Final</keycloak.version>
+        <keycloak.version>1.9.8.Final</keycloak.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+
         <gcm-server.version>1.0.0</gcm-server.version>
         <slfj4.version>1.7.21</slfj4.version>
 
@@ -601,7 +632,6 @@
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
     </profiles>
 

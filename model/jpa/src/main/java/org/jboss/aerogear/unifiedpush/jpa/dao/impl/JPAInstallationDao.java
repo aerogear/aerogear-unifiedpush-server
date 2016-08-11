@@ -255,15 +255,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     			.getResultList();
 	}
 
-    @Override
-	public int removeInstallationsByAlias(String alias) {
-		return entityManager.createQuery(
-				" delete from Installation "
-				+ "where LOWER(alias) = :alias ")
-				.setParameter("alias", alias.toLowerCase())
-				.executeUpdate();
-	}
-
     /**
      *
      * A dynamic finder for all sorts of queries around selecting Device-Token, based on different criterias.

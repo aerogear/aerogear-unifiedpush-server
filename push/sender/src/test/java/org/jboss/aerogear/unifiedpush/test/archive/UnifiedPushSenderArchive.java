@@ -39,6 +39,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProdu
 import org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -87,7 +88,7 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
     }
 
     public UnifiedPushSenderArchive withUtils() {
-        return addPackage(org.jboss.aerogear.unifiedpush.utils.DateUtils.class.getPackage())
+        return addPackage(DateUtils.class.getPackage())
                 .addClasses(ConfigurationUtils.class);
     }
 

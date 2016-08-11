@@ -135,6 +135,22 @@ public class MetricsCollector {
         if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
+
+        metricsService.updatePushMessageInformation(pushMessageInformation);
+
+        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
+
+            if (areAllBatchesLoaded(variantMetricInformation)) {
+                pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
+                logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
+
+                if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
+                    logger.debug(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
+                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
+                }
+            }
+        }
     }
 
     private int countLoadedBatches(VariantMetricInformation variantMetricInformation) {

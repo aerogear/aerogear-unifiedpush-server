@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.9" jmeter="3.0 r1743807">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="register-installations-and-applications" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="register-application" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -9,27 +9,27 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="SERVER_PROTOCOL" elementType="Argument">
             <stringProp name="Argument.name">SERVER_PROTOCOL</stringProp>
-            <stringProp name="Argument.value">https</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_PROTOCOL,https)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_HOST" elementType="Argument">
             <stringProp name="Argument.name">SERVER_HOST</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_HOST,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SERVER_PORT" elementType="Argument">
             <stringProp name="Argument.name">SERVER_PORT</stringProp>
-            <stringProp name="Argument.value">443</stringProp>
+            <stringProp name="Argument.value">${__P(SERVER_PORT,443)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="CONTEXT_ROOT" elementType="Argument">
             <stringProp name="Argument.name">CONTEXT_ROOT</stringProp>
-            <stringProp name="Argument.value">unifiedpush-server</stringProp>
+            <stringProp name="Argument.value">${__P(CONTEXT_ROOT,unifiedpush-server)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="UPS_PASSWORD" elementType="Argument">
             <stringProp name="Argument.name">UPS_PASSWORD</stringProp>
-            <stringProp name="Argument.value">password</stringProp>
+            <stringProp name="Argument.value">${__P(UPS_PASSWORD,password)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="APPLICATION_THREADS_COUNT" elementType="Argument">
@@ -45,6 +45,26 @@
           <elementProp name="DEVICE_LOOP_COUNT" elementType="Argument">
             <stringProp name="Argument.name">DEVICE_LOOP_COUNT</stringProp>
             <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="APPLICATION_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">APPLICATION_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(APPLICATION_RESONSE_FILE_PATH,/tmp/response)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="IOS_DEPLOYMENT_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">IOS_DEPLOYMENT_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_DEPLOYMENT_FILE_PATH,../resorces/development.p12)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="ANDROID_VARIANT_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">ANDROID_VARIANT_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(ANDROID_VARIANT_RESONSE_FILE_PATH,/tmp/android)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="IOS_VARIANT_RESONSE_FILE_PATH" elementType="Argument">
+            <stringProp name="Argument.name">IOS_VARIANT_RESONSE_FILE_PATH</stringProp>
+            <stringProp name="Argument.value">${__P(IOS_VARIANT_RESONSE_FILE_PATH,/tmp/ios)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -144,18 +164,24 @@
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <BSFPreProcessor guiclass="TestBeanGUI" testclass="BSFPreProcessor" testname="BSF PreProcessor - Create Random Application Name" enabled="true">
-          <stringProp name="scriptLanguage">groovy</stringProp>
+        <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+          <boolProp name="resetInterpreter">false</boolProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
-          <stringProp name="script">def generator = { String alphabet, int n -&gt;
-  new Random().with {
-    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
-  }
+          <stringProp name="script">import java.util.*;
+
+// Generate random string for iOS/Android tokens
+public static String generateString(Random rng, int length, String characters) {
+    char[] text = new char[length];
+    for (int i = 0; i &lt; length; i++)
+    {
+        text[i] = characters.charAt(rng.nextInt(characters.length()));
+    }
+    return new String(text);
 }
 
-vars.put(&quot;RANDOM_APP_NAME&quot;, generator( ((&apos;a&apos;..&apos;z&apos;)+(&apos;A&apos;..&apos;Z&apos;)).join(), 10))</stringProp>
-        </BSFPreProcessor>
+vars.put(&quot;RANDOM_APP_NAME&quot;, &quot;C-B4-AUTO-&quot; + this.generateString(new Random(), 6,&quot;abcdef0123456789&quot;));</stringProp>
+        </BeanShellPreProcessor>
         <hashTree/>
         <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="BSF Sampler - Prepare Application / Variant data" enabled="true">
           <stringProp name="filename"></stringProp>
@@ -182,7 +208,7 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-     &quot;name&quot; : &quot;APPLICATION_${RANDOM_APP_NAME}&quot;,&#xd;
+     &quot;name&quot; : &quot;${RANDOM_APP_NAME}&quot;,&#xd;
      &quot;description&quot; : &quot;APPLICATION_${RANDOM_APP_NAME}&quot;,&#xd;
      &quot;pushApplicationID&quot; : &quot;${PUSH_APPLICATION_ID}&quot;,&#xd;
      &quot;masterSecret&quot; : &quot;${PUSH_APPLICATION_PASS}&quot;&#xd;
@@ -221,6 +247,14 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             </collectionProp>
           </HeaderManager>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename">${APPLICATION_RESONSE_FILE_PATH}</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Create Android Variant" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -229,8 +263,8 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-	&quot;name&quot;:&quot;DEFAULT&quot;,&#xd;
-	&quot;description&quot;:&quot;DEFAULT&quot;,&#xd;
+	&quot;name&quot;:&quot;NULL-NOTIFICATIONS-VARIANT&quot;,&#xd;
+	&quot;description&quot;:&quot;NULL-NOTIFICATIONS-VARIANT&quot;,&#xd;
 	&quot;variantID&quot;:&quot;${ANDROID_USERNAME}&quot;,&#xd;
 	&quot;secret&quot;:&quot;${ANDROID_PASSWORD}&quot;,&#xd;
 	&quot;developer&quot;:&quot;admin&quot;,&#xd;
@@ -273,12 +307,20 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             </collectionProp>
           </HeaderManager>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename">${ANDROID_VARIANT_RESONSE_FILE_PATH}</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Create IOS Variant" enabled="true">
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="${BASE_PATH}/../resources/development.p12" elementType="HTTPFileArg">
-                <stringProp name="File.path">${BASE_PATH}/../resources/development.p12</stringProp>
+              <elementProp name="${IOS_DEPLOYMENT_FILE_PATH}" elementType="HTTPFileArg">
+                <stringProp name="File.path">${IOS_DEPLOYMENT_FILE_PATH}</stringProp>
                 <stringProp name="File.paramname">certificate</stringProp>
                 <stringProp name="File.mimetype">application/x-pkcs12 </stringProp>
               </elementProp>
@@ -288,7 +330,7 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             <collectionProp name="Arguments.arguments">
               <elementProp name="name" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUSH_APPLICATION_ID}</stringProp>
+                <stringProp name="Argument.value">NULL-NOTIFICATIONS-VARIANT</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">name</stringProp>
@@ -358,6 +400,14 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
             <stringProp name="Scope.variable">KEY_TOKEN</stringProp>
           </RegexExtractor>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename">${IOS_VARIANT_RESONSE_FILE_PATH}</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
         </hashTree>
         <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="BSF Sampler - Prepare Basic authetication for devices" enabled="true">
           <stringProp name="filename"></stringProp>
@@ -372,16 +422,6 @@ vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword
           <stringProp name="scriptLanguage">groovy</stringProp>
         </BSFSampler>
         <hashTree/>
-        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">true</boolProp>
-          <stringProp name="LoopController.loops">${DEVICE_LOOP_COUNT}</stringProp>
-        </LoopController>
-        <hashTree>
-          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Controller" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-random-installations-fregment.jmx</stringProp>
-          </IncludeController>
-          <hashTree/>
-        </hashTree>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>

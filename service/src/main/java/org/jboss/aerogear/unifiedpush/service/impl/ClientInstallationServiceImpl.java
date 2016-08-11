@@ -92,6 +92,13 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 
 		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
+		if (application == null) {
+			logger.warn(String.format("Unable to find application for alias %s, this behaviour "
+					+ "might occur when application is deleted and orphans aliases exists. "
+					+ "Use DELETE /rest/alias/THE-ALIAS in order to remove orphans.", alias.getName()));
+			return null;
+		}
+
 		List<Variant> variants = application.getVariants();
 
 		for (Variant variant : variants) {
@@ -125,11 +132,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // new device/client ?
         if (installation == null) {
             logger.trace("Performing new device/client registration");
-
-        	// Prevent a device (with alias) to registered multiple times
-        	// using different tokens.
-            if (entity.getAlias() != null && entity.getAlias().length() != 0)
-            	removePreviousInstallations(entity.getAlias());
 
             // Verification process required, disable device.
             if (shouldVerifiy)
@@ -304,6 +306,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			}
 		}
 	}
+
     @Asynchronous
     public void unsubscribeOldTopics(Installation installation) {
         FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
@@ -318,6 +321,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             topicManager.unsubscribe(installation, categoryName);
         }
     }
+
 
     // =====================================================================
     // ======== Various finder services for the Sender REST API ============
@@ -385,10 +389,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         // store Installation entity
         installationDao.create(entity);
     }
-
-    private void removePreviousInstallations(String alias) {
-		installationDao.removeInstallationsByAlias(alias);
-	}
 
     private void disableInstallations(List<Installation> installations) {
         for (Installation installation : installations) {

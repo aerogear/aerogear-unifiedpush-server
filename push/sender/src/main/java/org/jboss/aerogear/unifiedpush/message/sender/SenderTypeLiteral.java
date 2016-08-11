@@ -21,7 +21,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 
 public class SenderTypeLiteral extends AnnotationLiteral<SenderType> implements SenderType {
-    private final VariantType value;
+	private static final long serialVersionUID = -3817730491246221850L;
+
+	private final VariantType value;
 
     public VariantType value() {
         return value;
