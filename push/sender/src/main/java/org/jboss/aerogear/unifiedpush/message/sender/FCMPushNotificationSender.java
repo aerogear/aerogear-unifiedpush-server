@@ -113,16 +113,17 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
             logger.debug("Sending transformed FCM payload: " + fcmMessage );
 
-	            final Sender sender = new Sender(androidVariant.getGoogleKey());
+	    final Sender sender = new Sender(androidVariant.getGoogleKey());
 
-	            // send out a message to a batch of devices...
-	            processFCM(androidVariant, pushTargets, fcmMessage, sender);
+	    // send out a message to a batch of devices...
+	    processFCM(androidVariant, pushTargets, fcmMessage, sender);
 
             logger.debug("Message batch to FCM has been submitted");
 	            callback.onSuccess();
 	    } else {
 		logger.info(String.format("Android message batch to dev/null has been submitted to %s devices.",  pushTargets.size()));
 	    }
+
         } catch (Exception e) {
             // FCM exceptions:
             callback.onError(String.format("Error sending payload to FCM server: %s", e.getMessage()));

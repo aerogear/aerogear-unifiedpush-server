@@ -49,7 +49,7 @@ import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/sender")
 public class PushNotificationSenderEndpoint extends AbstractEndpoint {
-	private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
+    private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
 
     @Inject
     private PushApplicationService pushApplicationService;

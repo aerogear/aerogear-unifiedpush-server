@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;

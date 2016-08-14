@@ -59,6 +59,12 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public String retryDeviceVerification(String deviceToken, Variant variant) {
 		Installation installation = installationDao.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+
+		if (installation==null){
+			logger.warn("Unable to find installation for variant:" + variant.getId() + ", DeviceToken: " + deviceToken);
+			return null;
+		}
+
 		return initiateDeviceVerification(installation, variant);
 	}
 

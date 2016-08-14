@@ -533,7 +533,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         otherDevice.setAlias("root");
         clientInstallationService.addInstallationSynchronously(androidVariant, otherDevice);
 
-        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(1);
+        assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"), null)).hasSize(2);
     }
 
     @Test

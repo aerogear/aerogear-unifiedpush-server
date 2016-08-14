@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="2.8" jmeter="2.13 r1665067">
+<jmeterTestPlan version="1.2" properties="2.9" jmeter="3.0 r1743807">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments">Requires parameters SERVER_HOST, SERVER_PORT, SERVER_PROTOCOL, CONTEXT_ROOT, IOS_TOKENID, AND_TOKENID, ALIAS</stringProp>
@@ -31,11 +31,19 @@
           </ConfigTestElement>
           <hashTree/>
           <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include IOS Registraion" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-ios-installation-fregment.jmx</stringProp>
+            <stringProp name="IncludeController.includepath">register-ios-installation-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
           <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="Include Android Registraion" enabled="true">
-            <stringProp name="IncludeController.includepath">./register-android-installation-fregment.jmx</stringProp>
+            <stringProp name="IncludeController.includepath">register-android-installation-fregment.jmx</stringProp>
+          </IncludeController>
+          <hashTree/>
+          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="IC - Enable Android" enabled="true">
+            <stringProp name="IncludeController.includepath">enable-android-installation-fregment.jmx</stringProp>
+          </IncludeController>
+          <hashTree/>
+          <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="IC - Enable IOS" enabled="true">
+            <stringProp name="IncludeController.includepath">enable-ios-installation-fregment.jmx</stringProp>
           </IncludeController>
           <hashTree/>
         </hashTree>

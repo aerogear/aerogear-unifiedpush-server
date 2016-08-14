@@ -1,6 +1,5 @@
 package org.jboss.aerogear.unifiedpush.service.sms;
 
-import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -14,21 +13,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Sends SMS over Clickatell's HTTP API.
  */
-public class SSLEmailSender implements VerificationPublisher {
+public class SSLEmailSender extends AbstractEmailSender implements VerificationPublisher {
 	private final Logger logger = LoggerFactory.getLogger(SSLEmailSender.class);
-
-	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
-
-	private final static String HOSTNAME_KEY = "aerogear.config.email.sender.hostname";
-	private final static String PORTNUMB_KEY = "aerogear.config.email.sender.portnumber";
-	private final static String USERNAME_KEY = "aerogear.config.email.sender.username";
-	private final static String PASSWORD_KEY = "aerogear.config.email.sender.password";
-	private final static String FROMADDR_KEY = "aerogear.config.email.sender.fromaddress";
-	private final static String SUBJECTT_KEY = "aerogear.config.email.sender.subject";
-
-	private final static String MESSAGE_TMPL = "aerogear.config.email.sender.template";
-
-	private String template;
 
 	/**
 	 * Sends off an email message to the alias address.
@@ -70,41 +56,4 @@ public class SSLEmailSender implements VerificationPublisher {
 			logError(hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 		}
 	}
-
-	private void logError(String hostname, String portnumb, String username, String password, String fromaddr,
-			String toaddres, String subjectt, Exception e) {
-
-		StringBuilder builder = new StringBuilder();
-		builder.append("Cannot send email message using");
-		builder.append(": hostname: ").append(hostname);
-		builder.append(", portnumb: ").append(portnumb);
-		builder.append(", username: ").append(username);
-		builder.append(", password: ").append(password);
-		builder.append(", fromaddr: ").append(fromaddr);
-		builder.append(", toaddres: ").append(toaddres);
-
-		logger.error(builder.toString() , e);
-	}
-
-	private String getProperty(Properties properties, String key) {
-		String value = properties.getProperty(key);
-		if (value == null) {
-			logger.warn("cannot find property " + key + " in configuration");
-		}
-		return value;
-	}
-
-	private String getVerificationTemplate(String verificationCode) {
-		return tlMessageFormat.get().format(new Object[] { verificationCode });
-	}
-
-    private ThreadLocal<MessageFormat> tlMessageFormat = new ThreadLocal<MessageFormat>() {
-    	@Override
-    	public MessageFormat initialValue() {
-    		if (template == null || template.isEmpty()) {
-    			template = DEFAULT_VERIFICATION_TEMPLATE;
-    		}
-			return new MessageFormat(template);
-    	}
-    };
 }

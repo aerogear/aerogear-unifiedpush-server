@@ -64,6 +64,7 @@ public abstract class AbstractBaseServiceTest {
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
 				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-model")
 				.addMavenDependencies("commons-io:commons-io")
+				.addMavenDependencies("com.googlecode.json-simple:json-simple")
 				.addMavenDependencies("org.keycloak:keycloak-core")
 				.addMavenDependencies("com.googlecode.json-simple:json-simple")
 				.addPackages(true, Configuration.class.getPackage())

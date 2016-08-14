@@ -264,9 +264,58 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slfj4.version}</version>
+			</dependency>
+
+			<!-- keycloak verison policy -->
+			<dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
+	        <dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-adapter-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
+	        <dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-jboss-adapter-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
+			<!-- AeroGear Test Dependencies BOM Imports -->
+			<dependency>
+				<groupId>org.jboss.aerogear</groupId>
+				<artifactId>aerogear-test-bom</artifactId>
+				<version>${aerogear.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.1</version>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.arquillian.container</groupId>
+				<artifactId>arquillian-container-chameleon</artifactId>
+				<version>1.0.0.Alpha6</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.arquillian.extension</groupId>
+				<artifactId>arquillian-transaction-jta</artifactId>
+				<version>1.0.2.Final</version>
+				<scope>test</scope>
+	       </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>
@@ -344,7 +393,7 @@
         <java.version>1.8</java.version>
 
         <!-- Override Areogear BOM -->
-        <resteasy.version>3.0.10.Final</resteasy.version>
+        <resteasy.version>3.0.14.Final</resteasy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -365,9 +414,10 @@
 
         <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
-        <keycloak.version>1.9.1.Final</keycloak.version>
+        <keycloak.version>1.9.8.Final</keycloak.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+
         <gcm-server.version>1.0.0</gcm-server.version>
         <slfj4.version>1.7.21</slfj4.version>
 
@@ -380,7 +430,7 @@
 
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mysql.version>5.1.36</mysql.version>
-        <fasterxml.version>2.4.1</fasterxml.version>
+        <fasterxml.version>2.5.4</fasterxml.version>
         <wildfly.version>10.0.0.Final</wildfly.version>
         <ups.ddl_value>validate</ups.ddl_value>
     </properties>
@@ -601,7 +651,6 @@
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
     </profiles>
 

@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message;
 
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,8 +136,6 @@ public class UnifiedPushMessage implements Serializable {
             return OBJECT_MAPPER.writeValueAsString(json);
         } catch (JsonProcessingException e) {
             return "[\"invalid json\"]";
-        } catch (IOException e) {
-            return "[\"invalid json\"]";
         }
     }
 
@@ -168,8 +165,6 @@ public class UnifiedPushMessage implements Serializable {
             return OBJECT_MAPPER.writeValueAsString(json);
         } catch (JsonProcessingException e) {
             return "[\"invalid json\"]";
-        } catch (IOException e) {
-            return "[\"invalid json\"]";
         }
     }
 
@@ -178,8 +173,6 @@ public class UnifiedPushMessage implements Serializable {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            return "[\"invalid json\"]";
-        } catch (IOException e) {
             return "[\"invalid json\"]";
         }
     }

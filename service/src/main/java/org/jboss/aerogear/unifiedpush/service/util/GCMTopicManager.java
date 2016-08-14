@@ -16,6 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.service.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Set;
+
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.json.simple.JSONObject;
@@ -24,35 +34,24 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Set;
-
 /**
  *  Utility used for Android installations which need to be unsubscribed from topics
  */
-public class FCMTopicManager {
+public class GCMTopicManager {
 
-    private final Logger logger = LoggerFactory.getLogger(FCMTopicManager.class);
+    private final Logger logger = LoggerFactory.getLogger(GCMTopicManager.class);
 
     // Instance ID API URL
-    public static final String IID_URL = "https://iid.googleapis.com/iid/v1/";
+    public static final String IIDURL = "https://iid.googleapis.com/iid/v1/";
 
     private AndroidVariant variant;
 
-    public FCMTopicManager(AndroidVariant variant) {
+    public GCMTopicManager(AndroidVariant variant) {
         this.variant = variant;
     }
 
     public Set<String> getSubscribedCategories(Installation installation) {
-        String url = IID_URL + "info/" + installation.getDeviceToken() + "?details=true";
+        String url = IIDURL + "info/" + installation.getDeviceToken() + "?details=true";
         String deviceInfo;
         try {
             deviceInfo = get(url);
@@ -88,7 +87,7 @@ public class FCMTopicManager {
 
         String url = "";
         try {
-            url = IID_URL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, StandardCharsets.UTF_8.toString());
+            url = IIDURL + installation.getDeviceToken() + "/rel/topics/" + URLEncoder.encode(categoryToUnsubscribe, "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             //
         }
