@@ -27,17 +27,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 /**
  * Class for deserializing Priority enums.
  *
-=======
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.jboss.aerogear.unifiedpush.message.Priority;
-
-/**
- * Class for deserializing Priority enums.
- *
->>>>>>> upstream/master
  * @author Summers Pittman
  */
 public final class PriorityDeserializer extends JsonDeserializer<Priority> {
