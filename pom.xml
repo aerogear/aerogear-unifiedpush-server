@@ -393,7 +393,7 @@
         <java.version>1.8</java.version>
 
         <!-- Override Areogear BOM -->
-        <resteasy.version>3.0.10.Final</resteasy.version>
+        <resteasy.version>3.0.14.Final</resteasy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
