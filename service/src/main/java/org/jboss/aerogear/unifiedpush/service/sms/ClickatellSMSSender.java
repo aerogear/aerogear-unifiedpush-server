@@ -46,7 +46,6 @@ public class ClickatellSMSSender implements VerificationPublisher {
 	 * @param alias the phone number to send to.
 	 * @param code text to send.
 	 * @param properties list of implementation properties.
-	 * @properties configuration
 	 */
 	@Override
 	public void send(String alias, String code, Properties properties) {

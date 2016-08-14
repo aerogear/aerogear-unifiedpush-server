@@ -84,7 +84,7 @@ public class Application {
     /**
      * Set the number of active tokens that received the Push Message
      *
-     * @param totalReceivers, number of active tokens that received the Push Message
+     * @param totalReceivers number of active tokens that received the Push Message
      */
     public void setTotalReceivers(long totalReceivers) {
         this.totalReceivers = totalReceivers;
@@ -102,7 +102,7 @@ public class Application {
     /**
      * Set the timestamp of when the Push Message was submitted to the Push Networks
      *
-     * @param submittedDate, timestamp of when the Push Message was submitted to the Push Networks
+     * @param submittedDate timestamp of when the Push Message was submitted to the Push Networks
      */
     public void setSubmittedDate(Date submittedDate) {
         this.submittedDate = submittedDate;

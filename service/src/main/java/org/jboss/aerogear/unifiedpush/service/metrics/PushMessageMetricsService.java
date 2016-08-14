@@ -56,7 +56,7 @@ public class PushMessageMetricsService {
      * @param json the raw JSON data
      * @param ipAddress remote address of the job submitter
      * @param clientIdentifier the String representating who triggered the push message
-     * @param totalVariantCount.
+     * @param totalVariantCount variant count.
      *
      * @return the metadata object for the started push message request job
      */

@@ -331,6 +331,9 @@
                         <phase>none</phase>
                     </execution>
                 </executions>
+                <configuration>
+					<excludePackageNames>org.jboss.aerogear.unifiedpush.spring.utils</excludePackageNames>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
