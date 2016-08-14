@@ -27,7 +27,7 @@
     </servlet>
 
     <listener>
-        <listener-class>org.keycloak.services.listeners.KeycloakSessionDestroyListener</listener-class>
+        <listener-class>org.jboss.aerogear.unifiedpush.keycloak.KeycloakSessionDestroyListener</listener-class>
     </listener>
 
     <filter>

@@ -3,34 +3,48 @@
         "realm": "master"
     },
 
-    "audit": {
-        "provider": "jpa",
-        "jpa": {
-            "exclude-events": [ "REFRESH_TOKEN" ]
+    "eventsStore": {
+        "provider": "${keycloak.eventsStore.provider:jpa}"
+    },
+
+    "eventsListener": {
+        "jboss-logging" : {
+            "success-level": "debug",
+            "error-level": "warn"
         }
     },
 
     "realm": {
-        "provider": "jpa"
+        "provider": "${keycloak.realm.provider:jpa}"
     },
 
     "user": {
-        "provider": "jpa"
+        "provider": "${keycloak.user.provider:jpa}"
+    },
+
+    "userSessionPersister": {
+        "provider": "${keycloak.userSessionPersister.provider:jpa}"
+    },
+
+    "authorizationPersister": {
+        "provider": "${keycloak.authorization.provider:jpa}"
+    },
+
+    "userCache": {
+        "default" : {
+            "enabled": true
+        }
     },
 
     "timer": {
         "provider": "basic"
     },
 
-    "userSessionPersister": {
-        "provider": "jpa"
-    },
-
     "theme": {
         "default": "keycloak",
         "welcomeTheme": "aerogear",
-        "staticMaxAge": 2592000,
-        "cacheTemplates": true,
+        "staticMaxAge": "${keycloak.theme.staticMaxAge:2592000}",
+        "cacheTemplates": "${keycloak.theme.cacheTemplates:true}",
         "folder": {
             "dir": "${jboss.server.config.dir}/themes"
         }
@@ -52,12 +66,43 @@
         "interval": 900
     },
 
+    "connectionsHttpClient": {
+        "default": {}
+    },
+
     "connectionsJpa": {
         "default": {
             "dataSource": "java:jboss/datasources/KeycloakDS",
             "user": "${keycloak.connectionsJpa.user:keycloak}",
             "password": "${keycloak.connectionsJpa.password:keycloak}",
+            "showSql": "${keycloak.connectionsJpa.showSql:false}",
+            "formatSql": "${keycloak.connectionsJpa.formatSql:true}",
             "databaseSchema": "update"
         }
+    },
+
+    "realmCache": {
+        "default" : {
+            "enabled": true
+        }
+    },
+
+    "connectionsInfinispan": {
+        "default": {
+            "clustered": "${keycloak.connectionsInfinispan.clustered:false}",
+            "async": "${keycloak.connectionsInfinispan.async:false}",
+            "sessionsOwners": "${keycloak.connectionsInfinispan.sessionsOwners:2}"
+        }
+    },
+
+    "scripting": {
+    },
+
+    "jta-lookup": {
+        "provider": "${keycloak.jta.lookup.provider:jboss}",
+        "jboss" : {
+            "enabled": true
+        }
+
     }
 }

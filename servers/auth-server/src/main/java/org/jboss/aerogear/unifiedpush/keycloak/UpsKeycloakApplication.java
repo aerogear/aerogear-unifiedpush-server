@@ -20,6 +20,10 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
 import org.jboss.resteasy.core.Dispatcher;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserModel;
+import org.keycloak.services.managers.RealmManager;
 import org.keycloak.services.resources.KeycloakApplication;
 
 /**
@@ -27,27 +31,36 @@ import org.keycloak.services.resources.KeycloakApplication;
  * @version $Revision: 1 $
  */
 public class UpsKeycloakApplication extends KeycloakApplication {
-    public UpsKeycloakApplication(@Context ServletContext context, @Context Dispatcher dispatcher) {
-        super(context, dispatcher);
-    }
+	public UpsKeycloakApplication(@Context ServletContext context, @Context Dispatcher dispatcher) {
+		super(context, dispatcher);
+	}
 
-//    @Override
-//    public   void importRealmResources(ServletContext contextPath) {
-//        super.importRealmResources(contextPath);
-//
-//        KeycloakSession session = sessionFactory.create();
-//        session.getTransaction().begin();
-//
-//        // disable master realm by deleting the admin user.
-//        try {
-//            RealmManager manager = new RealmManager(session);
-//            RealmModel master = manager.getKeycloakAdminstrationRealm();
-//            UserModel admin = session.users().getUserByUsername("admin", master);
-//            if (admin != null) session.users().removeUser(master, admin);
-//            session.getTransaction().commit();
-//        } finally {
-//            session.close();
-//        }
-//
-//    }
+	@Override
+	public void importRealms() {
+		String files = System.getProperty("keycloak.import");
+
+		if (files == null) {
+			// keycloak.import wasn't specified
+			// Use default from WEB-INF
+			String relmPath = ApplicationUtil.getServletContext().getRealPath("/WEB-INF/ups-realm.json");
+			System.setProperty("keycloak.import", relmPath);
+
+			super.importRealms();
+		}
+
+		KeycloakSession session = sessionFactory.create();
+		session.getTransaction().begin();
+
+		// disable master realm by deleting the admin user.
+		try {
+			RealmManager manager = new RealmManager(session);
+			RealmModel master = manager.getKeycloakAdminstrationRealm();
+			UserModel admin = session.users().getUserByUsername("admin", master);
+			if (admin != null)
+				session.users().removeUser(master, admin);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+		}
+	}
 }
