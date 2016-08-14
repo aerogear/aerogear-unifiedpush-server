@@ -332,7 +332,8 @@
                     </execution>
                 </executions>
                 <configuration>
-					<excludePackageNames>org.jboss.aerogear.unifiedpush.spring.utils</excludePackageNames>
+                    <!-- Exclude copied resource from spring + jaxrs resources -->
+					<excludePackageNames>org.jboss.aerogear.unifiedpush.spring.utils:org.jboss.aerogear.unifiedpush.rest</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>

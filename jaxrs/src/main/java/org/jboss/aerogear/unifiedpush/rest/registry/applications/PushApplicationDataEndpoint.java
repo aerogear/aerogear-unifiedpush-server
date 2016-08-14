@@ -66,11 +66,11 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	private NotificationRouter notificationRouter;
 
 	/**
-	 * Overwrites existing categories and properties of the push application
+	 * Overwrites existing aliases and properties of the push application
 	 * with the given data
 	 *
-	 * @param categoryData
-	 *            map from category name to its list of property names
+	 * @param aliasData
+	 *            list of aliases
 	 */
 	@POST
 	@Path("/aliases")
@@ -165,10 +165,10 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	 * push application.
 	 *
 	 * @deprecated Use @Path("/sender/payload/")
-	 * @param pushAppId
+	 * @param pushApplicationID
 	 *            id of
 	 *            {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
-	 * @aliasToDocument a map between aliases and documents.
+	 * @param deployRequest a map between aliases and documents.
 	 *
 	 * @statuscode 401 if unauthorized for this push application
 	 * @statuscode 500 if request failed

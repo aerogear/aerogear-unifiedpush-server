@@ -87,8 +87,8 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		return deployDocument(entity, alias, qualifier, id, false, request);
 	}
 
-	/**
-	 * @Deprecated - publisher is always INSTALLATION for device documents.
+	/*
+	 * publisher is always INSTALLATION for device documents.
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -151,10 +151,12 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * Get latest (last-updated) document according to path parameters </br>
-	 * <b>Examples:</b></br>
+	 * <p>Get latest (last-updated) document according to path parameters</p>
+	 * <b>Examples:</b>
+	 * <ul>
 	 * <li>document/application/17327572923/test/latest - alias specific document
 	 * <li>document/application/null/test/latest - global scope document (for any alias).
+	 * </ul>
 	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -180,11 +182,13 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * Get latest (last-updated) document according to path parameters </br>
-	 * <b>Examples:</b></br>
+	 * <p>Get latest (last-updated) document according to path parameters </p>
+	 * <b>Examples:</b>
+	 * <ul>
 	 * <li>document/application/17327572923/test - alias specific document (latest snapshot)
 	 * <li>document/application/null/test - global scope document (for any alias).
 	 * <li>/document/application/null/test?snapshot=5 - global scope document (specific snapshot id).
+	 * </ul>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -215,12 +219,14 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * Get latest (last-updated) document according to path parameters </br>
-	 * <b>Examples:</b></br>
+	 * <p>Get latest (last-updated) document according to path parameters</p>
+	 * <b>Examples:</b>
+	 * <ul>
 	 * <li>/document/application/17327572923/test/1 - alias specific document (latest snapshot)
 	 * <li>/document/application/null/test/1 - global scope document (for any alias).
 	 * <li>/document/application/null/test/null - global scope document (for any alias).
 	 * <li>/document/application/null/test/null?snapshot=5 - global scope document (specific snapshot id).
+	 * </ul>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
