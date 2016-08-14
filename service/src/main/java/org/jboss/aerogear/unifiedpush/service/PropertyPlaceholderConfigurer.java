@@ -76,7 +76,6 @@ public class PropertyPlaceholderConfigurer {
 	 * including customized points for the system properties check.
 	 * @param placeholder the placeholder to resolve
 	 * @param props the merged properties of this configurer
-	 * @param systemPropertiesMode the system properties mode,
 	 * according to the constants in this class
 	 * @return the resolved value, of null if none
 	 * @see #resolvePlaceholder(String, java.util.Properties)

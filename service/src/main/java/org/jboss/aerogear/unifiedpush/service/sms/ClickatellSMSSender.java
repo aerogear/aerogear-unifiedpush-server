@@ -43,8 +43,9 @@ public class ClickatellSMSSender implements VerificationPublisher {
 	 * Sends off an sms message to the number.
 	 * It is assumed the message argument string is the concatenated country code and mobile number, where the mobile number is 10 digits long,
 	 * with '0' left padding if required. The country code need not have extra left padding.
-	 * @param phoneNumber the phone number to send to.
-	 * @param message text to send
+	 * @param alias the phone number to send to.
+	 * @param code text to send.
+	 * @param properties list of implementation properties.
 	 * @properties configuration
 	 */
 	@Override

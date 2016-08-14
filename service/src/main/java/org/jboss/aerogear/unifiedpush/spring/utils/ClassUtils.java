@@ -365,6 +365,7 @@ public abstract class ClassUtils {
 	 * i.e. whether it is loaded by the given ClassLoader or a parent of it.
 	 * @param clazz the class to analyze
 	 * @param classLoader the ClassLoader to potentially cache metadata in
+	 * @return boolean indication.
 	 */
 	public static boolean isCacheSafe(Class<?> clazz, ClassLoader classLoader) {
 		Assert.notNull(clazz, "Class must not be null");
@@ -550,6 +551,7 @@ public abstract class ClassUtils {
 	 * Check whether the given class matches the user-specified type name.
 	 * @param clazz the class to check
 	 * @param typeName the type name to match
+	 * @return boolean indication.
 	 */
 	public static boolean matchesTypeName(Class<?> clazz, String typeName) {
 		return (typeName != null &&

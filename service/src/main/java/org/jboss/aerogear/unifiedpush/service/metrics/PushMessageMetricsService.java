@@ -56,6 +56,7 @@ public class PushMessageMetricsService {
      * @param json the raw JSON data
      * @param ipAddress remote address of the job submitter
      * @param clientIdentifier the String representating who triggered the push message
+     * @param totalVariantCount.
      *
      * @return the metadata object for the started push message request job
      */
@@ -97,6 +98,7 @@ public class PushMessageMetricsService {
      * Returns a list of metadata objects for the given Push Application
      *
      * @param pushApplicationID the push app ID
+     * @param search the search criteria
      * @param sorting do we want sorting?
      * @param page number of the actual page in the pagination
      * @param pageSize number of items

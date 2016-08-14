@@ -66,17 +66,17 @@ public interface PushApplicationService {
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 
     /**
-	 * Creates <b>distinct</b> (according to {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getName()}) aliases, 
+	 * Creates <b>distinct</b> (according to {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getName()}}) aliases,
 	 * mirroring the data received in {@code aliasData}, and associates them to the given application. Note that
 	 * this application's existing aliases will be overwritten by the newly created aliases.
-	 * 
+	 *
 	 * Any {@code Installation} that was previously installed under this application and whose alias
 	 * does not match one of the aliases provided in {@code aliases} will be deleted.
-	 * 
+	 *
 	 * @param pushApp push application to associate the aliases to.
 	 * @param aliases aliases list to match against.
 	 */
     void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases);
-    
+
     PushApplication findByVariantID(String variantID);
 }

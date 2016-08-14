@@ -12,7 +12,7 @@ public interface VerificationService {
 	/**
 	 * Sends a verification request to the device represented by the installation.
 	 * @param installation device to verify
-	 * @param installation the installation's variant
+	 * @param variant the installation's variant
 	 * @return the verification code issued to the installation.
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
@@ -21,8 +21,8 @@ public interface VerificationService {
 
 	/**
 	 * Attempts to verify the device (after a verification request has been issued prior to this point).
-	 * @param variantID variant ID of the installation
-	 * @param deviceToken device token of the installation trying to verify itself
+	 * @param installation The device installation.
+	 * @param variant device Variant.
 	 * @param verificationCode verification code sent back by the device
 	 * @return a {@link VerificationResult} signaling the outcome of the verification attempt.
 	 */

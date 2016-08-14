@@ -90,6 +90,7 @@ public interface PushSearchService {
      * @param variantID the id of the variant to find the installations for
      * @param page the page number
      * @param pageSize the size of the pages
+     * @param search Search criteria
      *
      * @return page result containing the list plus a total number of rows
      */

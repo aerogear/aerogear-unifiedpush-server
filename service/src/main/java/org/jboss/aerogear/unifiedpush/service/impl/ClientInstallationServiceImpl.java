@@ -284,8 +284,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Synchronize installations according to alias list.
      * Disable any installation not in alias list
      * Enable any existing installation is alias list.
-     * @param application
-     * @param aliases
+     * @param application - Push Application
+     * @param aliases - List of Aliases
      */
     @Override
 	public void syncInstallationByAliasList(PushApplication application, List<String> aliases) {
