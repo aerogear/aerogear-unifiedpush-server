@@ -248,7 +248,6 @@
                 <version>${fasterxml.version}</version>
             </dependency>
 
-
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -266,6 +265,26 @@
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slfj4.version}</version>
 			</dependency>
+
+			<!-- keycloak verison policy -->
+			<dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
+	        <dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-adapter-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
+	        <dependency>
+	            <groupId>org.keycloak</groupId>
+	            <artifactId>keycloak-jboss-adapter-core</artifactId>
+	            <version>${keycloak.version}</version>
+	        </dependency>
+
 			<!-- AeroGear Test Dependencies BOM Imports -->
 			<dependency>
 				<groupId>org.jboss.aerogear</groupId>
@@ -411,7 +430,7 @@
 
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mysql.version>5.1.36</mysql.version>
-        <fasterxml.version>2.4.1</fasterxml.version>
+        <fasterxml.version>2.5.4</fasterxml.version>
         <wildfly.version>10.0.0.Final</wildfly.version>
         <ups.ddl_value>validate</ups.ddl_value>
     </properties>

@@ -46,7 +46,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -83,6 +83,11 @@
 			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.infinispan</groupId>
@@ -178,12 +183,6 @@
 				<dependency>
 					<groupId>org.jboss.spec.javax.servlet</groupId>
 					<artifactId>jboss-servlet-api_3.1_spec</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.keycloak</groupId>
-					<artifactId>keycloak-core</artifactId>
 					<scope>provided</scope>
 				</dependency>
 
