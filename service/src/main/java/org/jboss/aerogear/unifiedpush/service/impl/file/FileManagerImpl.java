@@ -38,7 +38,7 @@ public class FileManagerImpl implements FileManager {
 		}
 	}
 
-	@Override
+	@Override 
 	public void delete(Path path) {
 		File directory = path.toFile();
 		if (directory.exists()) {
