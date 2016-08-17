@@ -27,21 +27,22 @@ public class UnifiedPushServiceArchive extends UnifiedPushArchiveBase<UnifiedPus
 
     public UnifiedPushServiceArchive(Archive<?> delegate) {
         super(UnifiedPushServiceArchive.class, delegate);
- 
+
         addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+
     }
-    
+
     public static UnifiedPushServiceArchive forTestClass(Class<?> clazz) {
         return ShrinkWrap.create(UnifiedPushServiceArchive.class, String.format("%s.war", clazz.getSimpleName()));
     }
-    
-  
+
+
     @Override
     public UnifiedPushServiceArchive withApi() {
         return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
     }
-    
-	
+
+
     @Override
     public UnifiedPushServiceArchive withDAOs() {
         return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())

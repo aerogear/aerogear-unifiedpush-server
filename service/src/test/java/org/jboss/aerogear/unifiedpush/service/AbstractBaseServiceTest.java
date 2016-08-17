@@ -72,7 +72,7 @@ public abstract class AbstractBaseServiceTest {
 						new String[] { "META-INF/persistence.xml", "test-data.sql" },
 						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
 				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml").addAsResource("cert/certificate.p12")
-				.addAsResource("default.properties").withMockito().withAssertj().withLang().withHttpclient()
+				.addAsResource("default.properties").withMockito().withAssertj().withLang().withIo().withHttpclient()
 				.as(WebArchive.class);
 	}
 

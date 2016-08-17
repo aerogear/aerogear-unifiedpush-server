@@ -30,6 +30,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -46,6 +47,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+
+	@Inject
+	private DocumentDao documentDao;
 
     @Inject
     @LoggedIn
@@ -85,6 +89,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     @Override
     public void removePushApplication(PushApplication pushApp) {
         pushApplicationDao.delete(pushApp);
+
+        // Delete any application documents
+        documentDao.delete(pushApp);
     }
 
 	@Override

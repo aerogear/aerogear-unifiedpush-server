@@ -11,12 +11,17 @@ import java.util.List;
  */
 public interface FileManager {
 
-	/**
+	/** 
 	 * Saves (overwrites, if exists) the byte array to the file denoted in the path.
 	 * @param path path where to save
 	 * @param data file data
 	 */
 	void save(Path path, byte[] data);
+
+	/**
+	 * @param path Path to delete
+	 */
+	public void delete(Path path);
 
 	/**
 	 * Returns a byte array of the contents in the file denoted in the path.

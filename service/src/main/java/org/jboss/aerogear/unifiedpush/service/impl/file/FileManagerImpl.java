@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.service.file.FileManager;
 
 /**
@@ -18,7 +19,6 @@ import org.jboss.aerogear.unifiedpush.service.file.FileManager;
  */
 @Stateless
 public class FileManagerImpl implements FileManager {
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -38,6 +38,18 @@ public class FileManagerImpl implements FileManager {
 		}
 	}
 
+	@Override
+	public void delete(Path path) {
+		File directory = path.toFile();
+		if (directory.exists()) {
+			try {
+				FileUtils.forceDelete(directory);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -51,7 +63,8 @@ public class FileManagerImpl implements FileManager {
 	}
 
 	/**
-	 * Throw Checked exception to prevent transaction rollback when used from service layer.
+	 * Throw Checked exception to prevent transaction rollback when used from
+	 * service layer.
 	 */
 	@Override
 	public List<File> list(Path path, FileFilter filter) throws FileNotFoundException {
