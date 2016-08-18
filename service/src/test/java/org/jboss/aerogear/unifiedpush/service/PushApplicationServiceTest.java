@@ -18,14 +18,25 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
 
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
+
+	@Inject
+	private DocumentService documentService;
+
+	@Inject
+	private AliasDao aliasDao;
 
     @Override
     protected void specificSetup() {}
@@ -142,7 +153,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
-    public void deleteApplication() {
+    public void removeApplicationAndDocuments() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -150,11 +161,18 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pa.setDeveloper("admin");
 
         pushApplicationService.addPushApplication(pa);
+        documentService.saveForPushApplication(pa, "TEST@X.com", "{SIMPLE}", "TASKS", "1", true);
+        List<String> documents = documentService.getLatestDocumentsForApplication(pa, "TEST@X.com", "1");
+        assertThat(documents.size() == 1);
 
-        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
-        assertThat(queried).isNotNull();
-        assertThat(uuid).isEqualTo(queried.getPushApplicationID());
+        aliasDao.create(new Alias("TEST@X.com", pa.getPushApplicationID()));
+        assertThat(aliasDao.findByName("TEST@X.com") != null);
 
-        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
+        pushApplicationService.removePushApplication(pa);
+        documents = documentService.getLatestDocumentsForApplication(pa, "TEST@X.com", "1");
+        assertThat(documents.size() == 0);
+        assertThat(aliasDao.findByName("TEST@X.com") == null);
+
+
     }
 }
