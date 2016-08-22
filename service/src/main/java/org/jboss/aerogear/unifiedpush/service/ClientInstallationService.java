@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 
 import java.util.List;
 import java.util.Set;
@@ -133,7 +134,7 @@ public interface ClientInstallationService {
      *
      * @return list of device tokens that matches this filter
      */
-    ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    ResultsStream.QueryBuilder<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
     /**
      * Used to query all old GCM tokens, which do not contain a ':' char.
@@ -148,5 +149,5 @@ public interface ClientInstallationService {
      *
      * @return list of old GCM device tokens that matches this filter
      */
-    ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
+    ResultsStream.QueryBuilder<Token> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 }

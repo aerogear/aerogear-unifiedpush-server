@@ -35,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
@@ -91,7 +92,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
      * @param callback that will be invoked after the sending.
      */
-    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
+    public void sendPushMessage(final Variant variant, final Collection<Token> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
@@ -161,7 +162,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         try {
             logger.debug("Sending transformed APNs payload: " + apnsMessage);
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
-            service.push(tokens, apnsMessage, expireDate);
+            service.push(Token.toEndpoints(tokens), apnsMessage, expireDate);
 
             logger.info(String.format("Sent push notification to the Apple APNs Server for %d tokens",tokens.size()));
             apnsServiceHolder.queueFreedUpService(pushMessageInformationId, iOSVariant.getVariantID(), service, new ServiceDestroyer<ApnsService>() {

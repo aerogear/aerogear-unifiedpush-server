@@ -39,5 +39,11 @@
                 <column name="category_id" not-null="true" />
             </many-to-many>
         </set>
+        <property name="publicKey" type="java.lang.String">
+            <column name="public_key" />
+        </property>
+        <property name="authSecret" type="java.lang.String">
+            <column name="auth_secret" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -389,10 +390,10 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setVariant(androidVariant);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
+        final List<Token> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
 
         assertThat(queriedTokens).hasSize(2);
-        assertThat(queriedTokens).contains(
+        assertThat(Token.toEndpoints(queriedTokens)).contains(
                 device1.getDeviceToken(),
                 device2.getDeviceToken()
         );
@@ -422,10 +423,10 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device3.setVariant(androidVariant);
         clientInstallationService.addInstallation(androidVariant, device3);
 
-        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
+        final List<Token> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer", "football"), null, null);
 
         assertThat(queriedTokens).hasSize(3);
-        assertThat(queriedTokens).contains(
+        assertThat(Token.toEndpoints(queriedTokens)).contains(
                 device1.getDeviceToken(),
                 device2.getDeviceToken(),
                 device3.getDeviceToken()
@@ -459,24 +460,25 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device4.setCategories(categories);
         clientInstallationService.addInstallation(androidVariant, device4);
 
-        final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
+        final List<Token> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
 
         assertThat(queriedTokens).hasSize(4);
-        assertThat(queriedTokens).contains(
+        assertThat(Token.toEndpoints(queriedTokens)).contains(
                 device1.getDeviceToken(),
                 device2.getDeviceToken(),
                 device3.getDeviceToken(),
                 device4.getDeviceToken()
         );
-        final List<String> legacyTokenz = findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
+        final List<Token> legacyTokenz = findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
 
-        assertThat(legacyTokenz).hasSize(3);
-        assertThat(legacyTokenz).contains(
+        List<String> legacyEndpoints = Token.toEndpoints(legacyTokenz);
+        assertThat(legacyEndpoints).hasSize(3);
+        assertThat(legacyEndpoints).contains(
                 device1.getDeviceToken(),
                 device2.getDeviceToken(),
                 device3.getDeviceToken()
         );
-        assertThat(legacyTokenz).doesNotContain(
+        assertThat(legacyEndpoints).doesNotContain(
                 device4.getDeviceToken()
         );
     }
@@ -509,10 +511,10 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         return sb.toString();
     }
 
-    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    private List<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
-            ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
-            List<String> list = new ArrayList<>();
+            ResultsStream<Token> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            List<Token> list = new ArrayList<>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
             }
@@ -522,10 +524,10 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         }
     }
 
-    private List<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    private List<Token> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
-            ResultsStream<String> tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
-            List<String> list = new ArrayList<>();
+            ResultsStream<Token> tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
+            List<Token> list = new ArrayList<>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
             }

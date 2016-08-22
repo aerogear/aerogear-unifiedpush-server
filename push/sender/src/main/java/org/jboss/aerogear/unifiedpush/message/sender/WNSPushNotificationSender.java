@@ -27,6 +27,7 @@ import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(Variant variant, Collection<Token> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         setPushMessageInformationId(pushMessageInformationId);
 
         // no need to send empty list
@@ -66,7 +67,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
         Set<String> expiredClientIdentifiers = new HashSet<>(clientIdentifiers.size());
-        ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
+        List<String> channelUris = Token.toEndpoints(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
         	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
@@ -74,7 +75,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
-        	
+
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {
                 switch (message.getWindows().getType()) {

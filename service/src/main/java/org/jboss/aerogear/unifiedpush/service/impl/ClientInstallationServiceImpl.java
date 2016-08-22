@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
@@ -157,6 +158,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installationToUpdate.setEnabled(postedInstallation.isEnabled());
         installationToUpdate.setPlatform(postedInstallation.getPlatform());
 
+        if (installationToUpdate.getVariant().getType() == VariantType.WEB_PUSH) {
+            installationToUpdate.setPublicKey(postedInstallation.getPublicKey());
+            installationToUpdate.setAuthSecret(postedInstallation.getAuthSecret());
+        }
+
         // update it:
         updateInstallation(installationToUpdate);
 
@@ -220,12 +226,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
      * Finder for 'send', used for Android, iOS and SimplePush clients
      */
     @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+    public ResultsStream.QueryBuilder<Token> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
         return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, false);
     }
 
     @Override
-    public ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
+    public ResultsStream.QueryBuilder<Token> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
         return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, true);
     }
 
@@ -271,6 +277,12 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         if (variant.getType().equals(VariantType.IOS)) {
             entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
         }
+        // do not save publicKey and authSecret if it's not a WebPushVariant
+        if (variant.getType() != VariantType.WEB_PUSH) {
+            entity.setPublicKey(null);
+            entity.setAuthSecret(null);
+        }
+
         // set reference
         entity.setVariant(variant);
         // update attached categories

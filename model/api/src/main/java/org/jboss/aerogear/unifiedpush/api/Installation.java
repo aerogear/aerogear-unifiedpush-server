@@ -42,6 +42,10 @@ public class Installation extends BaseModel {
     @JsonIgnore
     private Variant variant;
 
+    // for WebPushVariant:
+    private String publicKey;
+    private String authSecret;
+
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -171,5 +175,32 @@ public class Installation extends BaseModel {
 
     public void setVariant(Variant variant) {
         this.variant = variant;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    /**
+     * A elliptic curve Diffie-Hellman (ECDH) public key from the User Agent for push message encryption.
+     *
+     * @param publicKey the string representation of a public key
+     */
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public String getAuthSecret() {
+        return authSecret;
+    }
+
+    /**
+     * The authentication secret ensures that exposure or leakage of the DH public key - which, as a public key,
+     * is not necessarily treated as a secret - does not enable an adversary to generate valid push messages.
+     *
+     * @param authSecret the string representation of an authentication secret
+     */
+    public void setAuthSecret(String authSecret) {
+        this.authSecret = authSecret;
     }
 }

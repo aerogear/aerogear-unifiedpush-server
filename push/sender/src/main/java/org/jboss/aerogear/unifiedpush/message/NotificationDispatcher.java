@@ -16,20 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
@@ -38,6 +30,14 @@ import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
@@ -72,7 +72,7 @@ public class NotificationDispatcher {
     public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
-        final Collection<String> deviceTokens = msg.getDeviceTokens();
+        final Collection<Token> deviceTokens = msg.getDeviceTokens();
 
         logger.info(String.format("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
 
