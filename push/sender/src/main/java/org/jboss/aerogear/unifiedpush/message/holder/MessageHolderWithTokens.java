@@ -16,12 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-import java.util.Collection;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Holds push message details together with information what specific variant and which device tokens should be notifications sent to.
@@ -34,9 +35,9 @@ public class MessageHolderWithTokens extends AbstractMessageHolder implements Se
 
     private int serialId;
     private Variant variant;
-    private Collection<String> deviceTokens;
+    private Collection<Token> deviceTokens;
 
-    public MessageHolderWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, Collection<String> deviceTokens, int serialId) {
+    public MessageHolderWithTokens(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, Variant variant, Collection<Token> deviceTokens, int serialId) {
         super(pushMessageInformation, unifiedPushMessage);
         if (!(deviceTokens instanceof Serializable)) {
             throw new IllegalArgumentException("deviceTokens must be a serializable collection");
@@ -50,7 +51,7 @@ public class MessageHolderWithTokens extends AbstractMessageHolder implements Se
         return variant;
     }
 
-    public Collection<String> getDeviceTokens() {
+    public Collection<Token> getDeviceTokens() {
         return deviceTokens;
     }
 

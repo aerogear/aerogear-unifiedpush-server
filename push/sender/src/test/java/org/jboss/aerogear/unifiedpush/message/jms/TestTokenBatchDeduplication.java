@@ -16,23 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Resource;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
@@ -42,6 +28,20 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.annotation.Resource;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
 public class TestTokenBatchDeduplication extends AbstractJMSTest {
@@ -102,7 +102,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
     }
 
     private void sendBatchWithSerialId(int serialId) {
-        List<String> tokenBatch = new ArrayList<>();
+        List<Token> tokenBatch = new ArrayList<>();
         PushMessageInformation pmi = new PushMessageInformation();
         pmi.setId(uuid);
         AndroidVariant variant = new AndroidVariant();

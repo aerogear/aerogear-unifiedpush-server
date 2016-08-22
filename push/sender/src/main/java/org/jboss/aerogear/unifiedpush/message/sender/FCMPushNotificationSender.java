@@ -29,13 +29,13 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.dto.Token;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,14 +64,14 @@ public class FCMPushNotificationSender implements PushNotificationSender {
      * the {@link List} of tokens for the given {@link AndroidVariant}.
      */
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
+    public void sendPushMessage(Variant variant, Collection<Token> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
         }
 
-        final List<String> pushTargets = new ArrayList<>(tokens);
+        final List<String> pushTargets = Token.toEndpoints(tokens);
         final AndroidVariant androidVariant = (AndroidVariant) variant;
 
         // payload builder:
@@ -183,13 +183,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             if (errorCodeName != null) {
                 logger.info(String.format("Processing [%s] error code from FCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
             }
-            
+
             //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
             //according to fcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
             //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
-            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has 
+            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
             //been changed to this canonical id, so change it on your server side as well.
-            
+
             //check if current index of result has canonical id
             String canonicalRegId = result.getCanonicalRegistrationId();
             if (canonicalRegId != null) {
@@ -216,9 +216,9 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (FCM_ERROR_CODES.contains(errorCodeName)) {
-    
+
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
-    
+
                     // Now use the INDEX of the _that_ result object, and look
                     // for the matching registrationID inside of the List that contains
                     // _all_ the used registration IDs and store it:

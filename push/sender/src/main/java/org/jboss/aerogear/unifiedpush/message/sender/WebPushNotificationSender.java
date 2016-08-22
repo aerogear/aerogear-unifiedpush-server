@@ -16,42 +16,52 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
-import org.apache.http.util.EntityUtils;
+import nl.martijndwars.webpush.GcmNotification;
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.ECPointUtil;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
+import org.jboss.aerogear.unifiedpush.dto.Token;
+import org.jboss.aerogear.unifiedpush.dto.WebPushToken;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.spec.ECPoint;
+import java.security.spec.ECPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.Collection;
 
 @SenderType(VariantType.WEB_PUSH)
 public class WebPushNotificationSender implements PushNotificationSender {
-    
+
     private final Logger logger = LoggerFactory.getLogger(WebPushNotificationSender.class);
-    
+
     private enum WebPushProvider {
-        
+
         MPS("https://updates.push.services.mozilla.com/wpush/v1/"),
         FCM("https://fcm.googleapis.com/fcm/send");
-        
+
         private final String url;
-        
+
         WebPushProvider(String url) {
             this.url = url;
         }
-        
+
         public String getUrl() {
             return url;
         }
-        
+
         public static WebPushProvider defineProvider(String endpoint) {
             if (endpoint.startsWith(MPS.getUrl())) {
                 return MPS;
@@ -62,86 +72,65 @@ public class WebPushNotificationSender implements PushNotificationSender {
     }
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage,
+    public void sendPushMessage(Variant variant, Collection<Token> tokens, UnifiedPushMessage pushMessage,
             String pushMessageInformationId, NotificationSenderCallback senderCallback) {
-        
-        int ttl = pushMessage.getConfig().getTimeToLive();
-        if (ttl == -1) {
-            ttl = 0;
-        }
 
-        int successCount = 0;
-        for (String endpoint : clientIdentifiers) {
+        final PushService pushService = new PushService(((WebPushVariant) variant).getFcmServerKey());
+
+        final byte[] payload = pushMessage.getMessage().getAlert().getBytes();
+        final int ttl = pushMessage.getConfig().getTimeToLive() > 0 ? pushMessage.getConfig().getTimeToLive() : 0;
+
+        for (Token token : tokens) {
             try {
-                final WebPushProvider wpp = WebPushProvider.defineProvider(endpoint);
-    
-                final String postUrl = getPostUrl(endpoint, wpp);
-                
-                final Request request = Request
-                        .Post(postUrl)
-                        .addHeader("TTL", String.valueOf(ttl));
-    
-                switch (wpp) {
+                final WebPushToken wpToken = (WebPushToken) token;
+                final PublicKey publicKey = loadP256Dh(wpToken.getPublicKey());
+                final byte[] authSecret = Base64.getUrlDecoder().decode(wpToken.getAuthSercret());
+                final Notification notification;
+
+                final WebPushProvider provider = WebPushProvider.defineProvider(token.getEndpoint());
+                switch (provider) {
                     case MPS:
-                        // nothing to do
+                        notification = new Notification(
+                                wpToken.getEndpoint(),
+                                publicKey,
+                                authSecret,
+                                payload,
+                                ttl
+                        );
                         break;
                     case FCM:
-                        final JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("to", extractSubscriptionId(endpoint));
-                        final String body = jsonObject.toJSONString();
-                        
-                        WebPushVariant wpVariant = (WebPushVariant) variant;
-                        request.addHeader(HttpHeaders.AUTHORIZATION, "key=" + wpVariant.getFcmServerKey())
-                                .bodyString(body, ContentType.APPLICATION_JSON);
+                        notification = new GcmNotification(
+                                wpToken.getEndpoint(),
+                                publicKey,
+                                authSecret,
+                                payload
+                        );
                         break;
                     default:
-                        throw new IllegalArgumentException("Unsupported WebPush provider: " + wpp);
+                        throw new IllegalArgumentException("Unsupported WebPush provider: " + provider);
                 }
-                
-                logger.debug("WebPush request to {}: {}", wpp, request);
-                
-                final HttpResponse response = request
-                        .execute()
-                        .returnResponse();
-                
-                final int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode >= HttpStatus.SC_OK && statusCode <= HttpStatus.SC_NO_CONTENT) {
-                    senderCallback.onSuccess();
-                    successCount++;
-                } else {
-                    String content = EntityUtils.toString(response.getEntity());
-                    logger.error("Error sending payload to {}. Response status {}, content: {}",
-                            wpp, statusCode, content);
-                    senderCallback.onError(content);
-                }
+
+                pushService.send(notification);
             } catch (Exception e) {
                 logger.error("Error sending push message", e);
                 senderCallback.onError(e.getMessage());
             }
         }
-        logger.info("Sent {} web push notification of {}", successCount, clientIdentifiers.size());
+        logger.info("Sent {} web push notification(s)", tokens.size());
     }
-    
-    private static String getPostUrl(String endpoint, WebPushProvider wpp) {
-        final String postUrl;
-        switch (wpp) {
-            case MPS:
-                postUrl = endpoint;
-                break;
-            case FCM:
-                postUrl = wpp.getUrl();
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported WebPush provider: " + wpp);
-        }
-        return postUrl;
-    }
-    
-    private static String extractSubscriptionId(String endpoint) {
-        final int idx = endpoint.lastIndexOf('/');
-        if (idx < 0) {
-            throw new IllegalArgumentException("Can not extract subscriptionId from the endpoint: " + endpoint);
-        }
-        return endpoint.substring(idx + 1);
+
+    public PublicKey loadP256Dh(final String p256dh)
+            throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+        final byte[] p256dhBytes = Base64.getUrlDecoder().decode(p256dh);
+
+        KeyFactory _keyFactory = KeyFactory.getInstance("ECDH", "BC");
+        ECNamedCurveParameterSpec _ecNamedCurveParameterSpec = ECNamedCurveTable.getParameterSpec("prime256v1"); // P256 curve
+        ECNamedCurveSpec _ecNamedCurveSpec = new ECNamedCurveSpec("prime256v1", _ecNamedCurveParameterSpec.getCurve(), _ecNamedCurveParameterSpec
+                .getG(), _ecNamedCurveParameterSpec.getN());
+
+        final ECPoint point = ECPointUtil.decodePoint(_ecNamedCurveSpec.getCurve(), p256dhBytes);
+        ECPublicKeySpec pubKeySpec = new ECPublicKeySpec(point, _ecNamedCurveSpec);
+        return _keyFactory.generatePublic(pubKeySpec);
     }
 }
