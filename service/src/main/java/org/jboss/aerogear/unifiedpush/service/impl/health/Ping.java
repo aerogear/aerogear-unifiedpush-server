@@ -19,24 +19,16 @@ package org.jboss.aerogear.unifiedpush.service.impl.health;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Ping {
+public final class Ping {
+
+    private Ping() {}
 
     public static boolean isReachable(String host, int port) {
-        Socket socket = null;
         boolean reachable;
-        try {
-            socket = new Socket(host, port);
+        try (Socket socket = new Socket(host, port)) {
             reachable = true;
         } catch (IOException e) {
             reachable = false;
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    //ignore
-                }
-            }
         }
         return reachable;
     }

@@ -21,6 +21,8 @@ import java.util.UUID;
 
 public abstract class BaseModel implements Serializable {
 
+    private static final long serialVersionUID = -4123402116687584512L;
+
     private String id = UUID.randomUUID().toString();
 
     /**

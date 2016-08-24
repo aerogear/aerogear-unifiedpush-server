@@ -121,7 +121,7 @@ public class TokenLoader {
         final PushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
         int serialId = msg.getLastSerialId();
 
-        logger.debug("Received message from queue: " + message.getMessage().getAlert());
+        logger.debug("Received message from queue: {}", message.getMessage().getAlert());
 
         final Criteria criteria = message.getCriteria();
         final List<String> categories = criteria.getCategories();
@@ -136,13 +136,13 @@ public class TokenLoader {
 
                 ResultsStream<String> tokenStream;
                 final Set<String> topics = new TreeSet<>();
-                final boolean isAndroid = variantType.equals(VariantType.ANDROID);
+                final boolean isAndroid = variantType == VariantType.ANDROID;
 
                 // the entire batch size
                 int batchesToLoad= configuration.batchesToLoad();
 
                 // Some checks for GCM, because of GCM-3 topics
-                boolean gcmTopicRequest = (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria));
+                boolean gcmTopicRequest = isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria);
                 if (gcmTopicRequest) {
 
                     // If we are able to do push for GCM topics...
@@ -155,7 +155,7 @@ public class TokenLoader {
 
                         // topics are handled as a first extra batch,
                         // therefore we have to adjust the number by adding this extra batch
-                        batchesToLoad = batchesToLoad + 1;
+                        batchesToLoad += 1;
                     }
 
                     // 2) always load the legacy tokens, for all number of batch iterations
@@ -268,7 +268,7 @@ public class TokenLoader {
      * @param e throwable thrown when JMS message delivery fails
      * @return true if exceptions represents state when queue is full; false otherwise
      */
-    private boolean isQueueFullException(Throwable e) {
+    private static boolean isQueueFullException(Throwable e) {
         if (e instanceof JMSException && e.getCause() != null) {
             if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
                 return true;

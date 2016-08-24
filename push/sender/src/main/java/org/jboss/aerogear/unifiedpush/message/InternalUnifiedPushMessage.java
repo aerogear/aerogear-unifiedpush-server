@@ -22,6 +22,8 @@ package org.jboss.aerogear.unifiedpush.message;
  */
 public class InternalUnifiedPushMessage extends UnifiedPushMessage {
 
+    private static final long serialVersionUID = -4220526899054802147L;
+
     /**
      * Constant for the "push payload id" key
      */

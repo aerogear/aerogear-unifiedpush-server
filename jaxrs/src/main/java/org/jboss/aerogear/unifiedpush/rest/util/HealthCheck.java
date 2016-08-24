@@ -61,9 +61,7 @@ public class HealthCheck {
         final Future<List<HealthDetails>> networkStatus = healthNetworkService.networkStatus();
 
         status.add(dbStatus.get());
-        networkStatus.get().forEach(healthDetails -> {
-            status.add(healthDetails);
-        });
+        networkStatus.get().forEach(status::add);
 
         return status;
     }

@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
@@ -31,10 +31,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -91,7 +88,7 @@ public class PushMetricsEndpoint {
                 .build();
     }
 
-    private Integer parsePageSize(Integer pageSize) {
+    private static Integer parsePageSize(Integer pageSize) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {

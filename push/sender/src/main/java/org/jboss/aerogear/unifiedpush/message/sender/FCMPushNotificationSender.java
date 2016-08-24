@@ -81,7 +81,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         // add the "recognized" keys...
         fcmBuilder.addData("alert", message.getAlert());
         fcmBuilder.addData("sound", message.getSound());
-        fcmBuilder.addData("badge", "" + message.getBadge());
+        fcmBuilder.addData("badge", String.valueOf(message.getBadge()));
 
         /*
         The Message defaults to a Normal priority.  High priority is used
@@ -101,7 +101,8 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         }
 
         // iterate over the missing keys:
-        message.getUserData().keySet().forEach(key -> fcmBuilder.addData(key, "" + message.getUserData().get(key)));
+        message.getUserData().keySet()
+                .forEach(key -> fcmBuilder.addData(key, String.valueOf(message.getUserData().get(key))));
 
         //add the aerogear-push-id
         fcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
@@ -110,7 +111,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
         // send it out.....
         try {
-            logger.debug("Sending transformed FCM payload: " + fcmMessage );
+            logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
             final Sender sender = new Sender(androidVariant.getGoogleKey());
 
@@ -141,13 +142,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to FCM topic: %s", topic));
                 Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.trace("Response from FCM topic request: " + result);
+                logger.trace("Response from FCM topic request: {}", result);
             }
         } else {
             logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.trace("Response from FCM request: " + multicastResult);
+            logger.trace("Response from FCM request: {}", multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);
@@ -183,13 +184,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             if (errorCodeName != null) {
                 logger.info(String.format("Processing [%s] error code from FCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
             }
-            
+
             //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
             //according to fcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
             //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
-            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has 
+            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
             //been changed to this canonical id, so change it on your server side as well.
-            
+
             //check if current index of result has canonical id
             String canonicalRegId = result.getCanonicalRegistrationId();
             if (canonicalRegId != null) {
@@ -216,9 +217,9 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (FCM_ERROR_CODES.contains(errorCodeName)) {
-    
+
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
-    
+
                     // Now use the INDEX of the _that_ result object, and look
                     // for the matching registrationID inside of the List that contains
                     // _all_ the used registration IDs and store it:

@@ -17,6 +17,9 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 public class WindowsMPNSVariant extends WindowsVariant {
+
+    private static final long serialVersionUID = 5019381368377460984L;
+
     @Override
     public VariantType getType() {
         return VariantType.WINDOWS_MPNS;

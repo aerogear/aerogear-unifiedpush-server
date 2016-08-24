@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.jms.Connection;
@@ -32,6 +34,8 @@ import java.io.Serializable;
  * Simplifies sending of messages to a destination
  */
 public abstract class AbstractJMSMessageProducer {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageProducer.class);
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
@@ -114,7 +118,7 @@ public abstract class AbstractJMSMessageProducer {
                 try {
                     connection.close();
                 } catch (JMSException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to close JMS connection: ", e);
                 }
             }
         }

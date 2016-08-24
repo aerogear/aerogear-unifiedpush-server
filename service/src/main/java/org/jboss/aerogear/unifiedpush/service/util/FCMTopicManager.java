@@ -70,7 +70,7 @@ public class FCMTopicManager {
         }
         JSONObject rel = (JSONObject) info.get("rel");
         if (rel == null){
-        	logger.debug("Couldn't parse rel object Instance ID service.");
+            logger.debug("Couldn't parse rel object Instance ID service.");
             return Collections.emptySet();
         }
         JSONObject topics = (JSONObject) rel.get("topics");
@@ -123,13 +123,13 @@ public class FCMTopicManager {
         HttpURLConnection conn = prepareAuthorizedConnection(url);
         conn.setRequestMethod("GET");
         // Read response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuilder result = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-           result.append(line);
+        try (BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
         }
-        rd.close();
         return result.toString();
     }
 

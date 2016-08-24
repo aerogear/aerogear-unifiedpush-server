@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class Criteria implements Serializable {
 
+    private static final long serialVersionUID = -3393123279151223615L;
+
     @JsonProperty("alias")
     private List<String> aliases;
     @JsonProperty("deviceType")

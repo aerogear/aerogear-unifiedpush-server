@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.message.util;
 
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -39,6 +41,8 @@ import java.util.Map.Entry;
  */
 @Stateless
 public class JmsClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(JmsClient.class);
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
@@ -70,8 +74,8 @@ public class JmsClient {
      */
     public class JmsReceiver {
 
-        private boolean transacted = false;
-        private String selector = null;
+        private boolean transacted;
+        private String selector;
         private Wait wait = new WaitIndefinitely();
         private int acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
         private boolean autoClose = true;
@@ -198,7 +202,7 @@ public class JmsClient {
                     try {
                         connection.close();
                     } catch (JMSException e) {
-                        e.printStackTrace();
+                        logger.error("Failed to close JMS connection: ", e);
                     }
                 }
             }
@@ -211,7 +215,7 @@ public class JmsClient {
     public class JmsSender {
 
         private Serializable message;
-        private boolean transacted = false;
+        private boolean transacted;
         private Map<String, Object> properties = new LinkedHashMap<>();
         private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 
@@ -325,7 +329,7 @@ public class JmsClient {
                     try {
                         connection.close();
                     } catch (JMSException e) {
-                        e.printStackTrace();
+                        logger.error("Failed to close JMS connection: ", e);
                     }
                 }
             }
@@ -344,7 +348,7 @@ public class JmsClient {
     private static class WaitSpecificTime implements Wait {
         private long time;
 
-        public WaitSpecificTime(long time) {
+        WaitSpecificTime(long time) {
             super();
             this.time = time;
         }

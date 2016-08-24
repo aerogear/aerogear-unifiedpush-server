@@ -109,7 +109,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
             // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
             if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
-                logger.trace("Importing device with token: " + current.getDeviceToken());
+                logger.trace("Importing device with token: {}", current.getDeviceToken());
 
                 storeInstallationAndSetReferences(variant, current);
 
@@ -123,7 +123,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 }
             } else {
                 // for now, we ignore them.... no update applied!
-                logger.trace("Device with token '" + current.getDeviceToken() + "' already exists. Ignoring it ");
+                logger.trace("Device with token '{}' already exists. Ignoring it ", current.getDeviceToken());
             }
         }
         // clear out:
@@ -138,6 +138,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         installations.forEach(this::removeInstallation);
     }
 
+    @Override
     public void updateInstallation(
             Installation installation) {
         installationDao.update(installation);
@@ -232,8 +233,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     /**
      * A simple validation util that checks if a token is present
      */
-    private boolean hasTokenValue(Installation installation) {
-        return (installation.getDeviceToken() != null && (!installation.getDeviceToken().isEmpty()));
+    private static boolean hasTokenValue(Installation installation) {
+        return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
     }
 
     /**
@@ -258,7 +259,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
     }
 
-    private List<String> convertToNames(Set<Category> categories) {
+    private static List<String> convertToNames(Set<Category> categories) {
         return categories.stream().map(Category::getName).collect(Collectors.toList());
     }
 
@@ -268,7 +269,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     private void storeInstallationAndSetReferences(Variant variant, Installation entity) {
 
         // ensure lower case for iOS
-        if (variant.getType().equals(VariantType.IOS)) {
+        if (variant.getType() == VariantType.IOS) {
             entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
         }
         // set reference

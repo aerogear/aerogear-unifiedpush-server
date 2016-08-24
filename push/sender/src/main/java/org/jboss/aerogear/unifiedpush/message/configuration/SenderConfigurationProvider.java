@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -102,7 +102,8 @@ public class SenderConfigurationProvider {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue, Class<T> expectedType) {
+    private static <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue,
+            Class<T> expectedType) {
         String systemPropertyName = getSystemPropertyName(type, property);
         if (expectedType == String.class) {
             return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
@@ -113,7 +114,7 @@ public class SenderConfigurationProvider {
         }
     }
 
-    private String getSystemPropertyName(VariantType type, ConfigurationProperty property) {
+    private static String getSystemPropertyName(VariantType type, ConfigurationProperty property) {
         return String.format("aerogear.%s.%s", type.getTypeName(), property.toString());
     }
 
@@ -121,8 +122,8 @@ public class SenderConfigurationProvider {
      * Configuration properties are matching the properties of {@link SenderConfiguration} fields / accessors.
      * The enum members intentionally use camel-case to avoid need for name conversion.
      */
-    private static enum ConfigurationProperty {
+    private enum ConfigurationProperty {
         batchesToLoad,
-        batchSize;
+        batchSize
     }
 }

@@ -16,12 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.Queue;
-import javax.jms.Topic;
-
 import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
@@ -29,6 +23,12 @@ import org.jboss.aerogear.unifiedpush.message.event.MetricsProcessingStartedEven
 import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+
+import javax.annotation.Resource;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.Queue;
+import javax.jms.Topic;
 
 /**
  * A CDI-to-JMS bridge takes selected CDI events with {@link DispatchToQueue} stereotype and passes them to JMS queue or topic so that they can be handled asynchronously.
@@ -91,10 +91,10 @@ public class CdiJmsBridge {
      * @param event indicates that push message metric collection should be started
      */
     public void queueMessage(@Observes @DispatchToQueue TriggerMetricCollectionEvent event) {
-    	jmsClient.send(event)
-    	    .withDuplicateDetectionId(event.getPushMessageInformationId())
-    	    .withDelayedDelivery(500L)
-    	    .to(triggerMetricCollectionQueue);
+        jmsClient.send(event)
+            .withDuplicateDetectionId(event.getPushMessageInformationId())
+            .withDelayedDelivery(500L)
+            .to(triggerMetricCollectionQueue);
     }
 
     /**

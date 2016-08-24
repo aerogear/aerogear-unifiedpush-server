@@ -16,19 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-import java.util.Collection;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Holds push message details together with information what specific variant and which device tokens should be notifications sent to.
  *
  * Holder is used as a payload in messaging subsystem.
  */
-public class MessageHolderWithTokens extends AbstractMessageHolder implements Serializable {
+public class MessageHolderWithTokens extends AbstractMessageHolder {
 
     private static final long serialVersionUID = -7955411139315335655L;
 

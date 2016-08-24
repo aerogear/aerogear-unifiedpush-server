@@ -85,7 +85,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @OPTIONS
     @Path("{token: .*}")
     @ReturnType("java.lang.Void")
-    public Response crossOriginForInstallations(
+    public static Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
 
@@ -108,7 +108,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      */
     @OPTIONS
     @ReturnType("java.lang.Void")
-    public Response crossOriginForInstallations(@Context HttpHeaders headers) {
+    public static Response crossOriginForInstallations(@Context HttpHeaders headers) {
 
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
@@ -258,11 +258,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         if (installation == null) {
             return appendAllowOriginHeader(Response.status(Status.NOT_FOUND), request);
-        } else {
-            logger.info("Deleting metadata Installation");
-            // remove
-            clientInstallationService.removeInstallation(installation);
         }
+
+        logger.info("Deleting metadata Installation");
+        // remove
+        clientInstallationService.removeInstallation(installation);
 
         return appendAllowOriginHeader(Response.noContent(), request);
     }
@@ -337,7 +337,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        logger.info("Devices to import: " + devices.size());
+        logger.info("Devices to import: {}", devices.size());
 
         clientInstallationService.addInstallations(variant, devices);
 
@@ -345,7 +345,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return Response.ok(EmptyJSON.STRING).build();
     }
 
-    private ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
+    private static ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
         // required
         response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
@@ -358,14 +358,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return response;
     }
 
-    private Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
+    private static Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
 
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
                  .build();
     }
 
-    private Response create401Response(final HttpServletRequest request) {
+    private static Response create401Response(final HttpServletRequest request) {
         return appendAllowOriginHeader(
                 Response.status(Status.UNAUTHORIZED)
                         .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")

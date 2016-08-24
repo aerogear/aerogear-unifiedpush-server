@@ -53,8 +53,9 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                     + " JOIN installation.variant v"
                     + " WHERE v.variantID = :variantID";
 
-    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(String variantID, String developer, Integer page, Integer pageSize, String search) {
-
+    @Override
+    public PageResult<Installation, Count> findInstallationsByVariantForDeveloper(
+            String variantID, String developer, Integer page, Integer pageSize, String search) {
 
         final StringBuilder jpqlBase = new StringBuilder(FIND_INSTALLATIONS);
         final Map<String, Object> parameters = new LinkedHashMap<>();
@@ -73,9 +74,11 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
             parameters.put("search", "%" + search + "%");
         }
 
-
-        TypedQuery<Long> countQuery = createQuery("SELECT COUNT(installation) " + jpqlBase.toString(), Long.class);
-        TypedQuery<Installation> query = createQuery("SELECT installation " + jpqlBase.toString() + " ORDER BY installation.id").setFirstResult(page * pageSize).setMaxResults(pageSize);
+        String jpqlStr = jpqlBase.toString();
+        TypedQuery<Long> countQuery = createQuery("SELECT COUNT(installation) " + jpqlStr, Long.class);
+        TypedQuery<Installation> query = createQuery("SELECT installation " + jpqlStr + " ORDER BY installation.id")
+                .setFirstResult(page * pageSize)
+                .setMaxResults(pageSize);
 
         List<Installation> resultList = setParameters(query, parameters).getResultList();
         Long count = setParameters(countQuery, parameters).getSingleResult();
@@ -83,11 +86,12 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         return new PageResult<>(resultList, new Count(count));
     }
 
-    private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
-        parameters.forEach((k,v) -> query.setParameter(k, v));
+    private static <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
+        parameters.forEach(query::setParameter);
         return query;
     }
 
+    @Override
     public PageResult<Installation, Count> findInstallationsByVariant(String variantID, Integer page, Integer pageSize, String search) {
         return findInstallationsByVariantForDeveloper(variantID, null, page, pageSize, search);
     }
@@ -150,7 +154,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         jpqlString.append(" ORDER BY installation.deviceToken ASC");
 
         return new ResultsStream.QueryBuilder<String>() {
-            private Integer fetchSize = null;
+            private Integer fetchSize;
             @Override
             public ResultsStream.QueryBuilder<String> fetchSize(int fetchSize) {
                 this.fetchSize = fetchSize;
@@ -162,7 +166,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
                 hibernateQuery.setMaxResults(maxResults);
 
                 parameters.forEach((k,v) -> {
-					if (v  instanceof Collection<?>) {
+                    if (v  instanceof Collection<?>) {
                         hibernateQuery.setParameterList(k, (Collection<?>) v);
                     } else {
                         hibernateQuery.setParameter(k, v);
@@ -223,7 +227,8 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
      *
      * TODO: perhaps moving to Criteria API for this later
      */
-    private void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters, List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    private static void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters,
+            List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??
@@ -251,7 +256,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     /**
      * Checks if the list is empty, and not null
      */
-    private boolean isListEmpty(List list) {
-        return (list != null && !list.isEmpty());
+    private static boolean isListEmpty(List list) {
+        return list != null && !list.isEmpty();
     }
 }

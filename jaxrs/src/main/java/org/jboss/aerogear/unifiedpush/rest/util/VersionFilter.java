@@ -74,16 +74,17 @@ public class VersionFilter implements Filter {
         private final String path;
         private final String version;
 
-        public TransformHttpServletRequestWrapper(String version, HttpServletRequest httpRequest) throws IOException {
+        TransformHttpServletRequestWrapper(String version, HttpServletRequest httpRequest) throws IOException {
             super(httpRequest);
 
-            final BufferedReader reader = httpRequest.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonRequest.append(line);
+            try (BufferedReader reader = httpRequest.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonRequest.append(line);
+                }
             }
 
-            final String contextPath = httpRequest.getContextPath();
+            String contextPath = httpRequest.getContextPath();
             this.path = httpRequest.getRequestURI().substring(contextPath.length());
             this.version = version;
         }

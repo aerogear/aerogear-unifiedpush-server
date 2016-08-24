@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -30,7 +29,7 @@ import java.util.Collection;
  *
  * Holder is used as a payload in messaging subsystem.
  */
-public class MessageHolderWithVariants extends AbstractMessageHolder implements Serializable {
+public class MessageHolderWithVariants extends AbstractMessageHolder {
 
     private static final long serialVersionUID = -7955411139315335655L;
 

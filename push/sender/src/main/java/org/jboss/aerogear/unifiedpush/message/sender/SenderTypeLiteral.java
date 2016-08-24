@@ -16,13 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import javax.enterprise.util.AnnotationLiteral;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 
+import javax.enterprise.util.AnnotationLiteral;
+
 public class SenderTypeLiteral extends AnnotationLiteral<SenderType> implements SenderType {
+
+    private static final long serialVersionUID = 9146818573535310172L;
+
     private final VariantType value;
 
+    @Override
     public VariantType value() {
         return value;
     }
