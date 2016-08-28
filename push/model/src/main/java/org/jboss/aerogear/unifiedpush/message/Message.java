@@ -40,7 +40,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Message implements Serializable {
-	private static final long serialVersionUID = -8627598387293896616L;
+
+	private static final long serialVersionUID = -4467505284880930113L;
 
 	private String alert;
     private String sound;

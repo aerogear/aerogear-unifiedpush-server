@@ -4,8 +4,8 @@
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0">
 
-	<module-name>auth</module-name>
-    
+  <module-name>auth</module-name>
+
     <context-param>
         <param-name>keycloak.import.realm.resources</param-name>
         <param-value>/WEB-INF/ups-realm.json</param-value>

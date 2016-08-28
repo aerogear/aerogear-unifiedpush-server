@@ -21,7 +21,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class AdmVariant extends Variant {
-	private static final long serialVersionUID = -3054427980009094135L;
+
+    private static final long serialVersionUID = -5343197341772916741L;
 
 	@NotNull
     @Size(min = 1, max = 255, message = "ClientId must be max. 255 chars long")

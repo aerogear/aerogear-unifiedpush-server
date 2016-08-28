@@ -27,6 +27,9 @@ import java.util.List;
  * and ignored by other message senders.
  */
 public class Windows implements Serializable {
+
+    private static final long serialVersionUID = 5622394435736364361L;
+
     private Type type;
     private DurationType duration;
     private BadgeType badge;

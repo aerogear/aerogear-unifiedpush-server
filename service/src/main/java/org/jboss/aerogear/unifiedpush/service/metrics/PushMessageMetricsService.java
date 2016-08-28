@@ -21,7 +21,6 @@ import java.util.Date;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;

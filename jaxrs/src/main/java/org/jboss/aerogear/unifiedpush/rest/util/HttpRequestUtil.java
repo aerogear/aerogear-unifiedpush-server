@@ -38,7 +38,7 @@ public final class HttpRequestUtil {
      */
     public static Boolean extractSortingQueryParamValue(String sorting) {
 
-        if (sorting != null && sorting.equalsIgnoreCase("desc")) {
+        if ("desc".equalsIgnoreCase(sorting)) {
             return Boolean.FALSE;
         } else {
             return Boolean.TRUE;

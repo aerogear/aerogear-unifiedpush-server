@@ -56,7 +56,7 @@ public enum VariantType {
 
     private final String typeName;
 
-    private VariantType(String typeName) {
+    VariantType(String typeName) {
         this.typeName = typeName;
     }
 

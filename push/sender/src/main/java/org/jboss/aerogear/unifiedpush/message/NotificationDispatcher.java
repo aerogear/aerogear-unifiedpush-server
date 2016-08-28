@@ -90,7 +90,7 @@ public class NotificationDispatcher {
         private final int tokenSize;
         private final PushMessageInformation pushMessageInformation;
 
-        public SenderServiceCallback(Variant variant, int tokenSize, PushMessageInformation pushMessageInformation) {
+        SenderServiceCallback(Variant variant, int tokenSize, PushMessageInformation pushMessageInformation) {
             this.variant = variant;
             this.tokenSize = tokenSize;
             this.pushMessageInformation = pushMessageInformation;

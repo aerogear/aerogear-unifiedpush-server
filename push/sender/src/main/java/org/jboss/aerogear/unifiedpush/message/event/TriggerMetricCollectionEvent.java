@@ -33,7 +33,7 @@ public class TriggerMetricCollectionEvent implements Serializable {
     public static final long REDELIVERY_DELAY_MS = 1000L;
 
     private String pushMessageInformationId;
-    private boolean allVariantsProcessed = false;
+    private boolean allVariantsProcessed;
 
     public TriggerMetricCollectionEvent(PushMessageInformation pushMessageInformation) {
         this.pushMessageInformationId = pushMessageInformation.getId();

@@ -124,22 +124,11 @@
                 <version>${hibernate-validator.version}</version>
             </dependency>
 
-			<dependency>
-				<groupId>javax.el</groupId>
-				<artifactId>javax.el-api</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.web</groupId>
-				<artifactId>javax.el</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-
             <!-- using latest of OpenEJB -->
             <dependency>
                 <groupId>org.apache.openejb</groupId>
                 <artifactId>openejb-core-hibernate</artifactId>
-                <version>4.7.0</version>
+                <version>4.7.4</version>
                 <type>pom</type>
             </dependency>
 
@@ -177,12 +166,6 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jackson2-provider</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxrs</artifactId>
                 <version>${resteasy.version}</version>
             </dependency>
 
@@ -284,36 +267,6 @@
 	            <artifactId>keycloak-jboss-adapter-core</artifactId>
 	            <version>${keycloak.version}</version>
 	        </dependency>
-
-			<!-- AeroGear Test Dependencies BOM Imports -->
-			<dependency>
-				<groupId>org.jboss.aerogear</groupId>
-				<artifactId>aerogear-test-bom</artifactId>
-				<version>${aerogear.bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.1</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.arquillian.container</groupId>
-				<artifactId>arquillian-container-chameleon</artifactId>
-				<version>1.0.0.Alpha6</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.arquillian.extension</groupId>
-				<artifactId>arquillian-transaction-jta</artifactId>
-				<version>1.0.2.Final</version>
-				<scope>test</scope>
-	       </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -397,14 +350,14 @@
         <java.version>1.8</java.version>
 
         <!-- Override Areogear BOM -->
-        <resteasy.version>3.0.14.Final</resteasy.version>
+        <resteasy.version>3.0.19.Final</resteasy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Define the version of JBoss' Java EE 6 APIs we want to import.
             Any dependencies from org.jboss.spec will have their version defined by this
             BOM -->
-        <jboss-javaee-7.0.version>1.0.2.Final</jboss-javaee-7.0.version>
+        <jboss-javaee-7.0.version>1.0.3.Final</jboss-javaee-7.0.version>
 
         <!--
             Options to override the compiler arguments directly on the compiler arument line to separate between what
@@ -412,14 +365,14 @@
         -->
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <wildfly-maven-plugin.version>1.1.0.Alpha7</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>1.1.0.Alpha11</wildfly-maven-plugin.version>
 
         <aerogear.bom.version>0.2.20</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
         <keycloak.version>1.9.8.Final</keycloak.version>
-        <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate.version>5.0.10.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
         <gcm-server.version>1.0.0</gcm-server.version>
@@ -434,8 +387,8 @@
 
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mysql.version>5.1.36</mysql.version>
-        <fasterxml.version>2.5.4</fasterxml.version>
-        <wildfly.version>10.0.0.Final</wildfly.version>
+        <fasterxml.version>2.7.4</fasterxml.version>
+        <wildfly.version>10.1.0.Final</wildfly.version>
         <ups.ddl_value>validate</ups.ddl_value>
     </properties>
 
@@ -467,7 +420,7 @@
                     <dependency>
                         <groupId>org.arquillian.container</groupId>
                         <artifactId>arquillian-container-chameleon</artifactId>
-                        <version>1.0.0.Alpha6</version>
+                        <version>1.0.0.Alpha7</version>
                         <scope>test</scope>
                     </dependency>
 
@@ -484,7 +437,72 @@
 						<version>2.2.2</version>
 						<scope>test</scope>
 					</dependency>
-                </dependencies>
+
+					<!-- Hibernate Validator also requires an implementation of the Unified Expression Language (JSR 341).
+						http://hibernate.org/validator/documentation/getting-started/ -->
+					<dependency>
+						<groupId>javax.el</groupId>
+						<artifactId>javax.el-api</artifactId>
+						<version>2.2.4</version>
+                        <scope>test</scope>
+					</dependency>
+
+					<dependency>
+						<groupId>org.glassfish.web</groupId>
+						<artifactId>javax.el</artifactId>
+						<version>2.2.4</version>
+                        <scope>test</scope>
+					</dependency>
+
+		            <dependency>
+		                <groupId>org.wildfly.extras.creaper</groupId>
+		                <artifactId>creaper-core</artifactId>
+		                <version>1.4.0</version>
+		                <exclusions>
+		                    <exclusion>
+		                        <groupId>org.jboss.as</groupId>
+		                        <artifactId>jboss-as-controller-client</artifactId>
+		                    </exclusion>
+		                    <exclusion>
+		                        <groupId>org.jboss.as</groupId>
+		                        <artifactId>jboss-as-cli</artifactId>
+		                    </exclusion>
+		                </exclusions>
+		                <scope>test</scope>
+		            </dependency>
+
+		            <dependency>
+		                <groupId>org.wildfly.extras.creaper</groupId>
+		                <artifactId>creaper-commands</artifactId>
+		                <version>1.4.0</version>
+		                <exclusions>
+		                    <exclusion>
+		                        <groupId>org.wildfly</groupId>
+		                        <artifactId>wildfly-patching</artifactId>
+		                    </exclusion>
+		                </exclusions>
+		                <scope>test</scope>
+		            </dependency>
+
+		            <dependency>
+		                <groupId>org.wildfly.core</groupId>
+		                <artifactId>wildfly-controller-client</artifactId>
+		                <version>2.2.0.Final</version>
+		                <scope>test</scope>
+		            </dependency>
+		            <dependency>
+		                <groupId>org.wildfly.core</groupId>
+		                <artifactId>wildfly-cli</artifactId>
+		                <version>2.2.0.Final</version>
+		                <scope>test</scope>
+		            </dependency>
+		            <dependency>
+		                <groupId>org.wildfly.core</groupId>
+		                <artifactId>wildfly-patching</artifactId>
+		                <version>2.2.0.Final</version>
+		                <scope>test</scope>
+		            </dependency>
+			    </dependencies>
             </dependencyManagement>
         </profile>
         <profile>

@@ -62,7 +62,7 @@ public class RequestTransformer {
         }
     }
 
-    private boolean patchHasDynamicTransformer(JsonNode operations) {
+    private static boolean patchHasDynamicTransformer(JsonNode operations) {
         return !operations.isMissingNode();
     }
 
@@ -85,11 +85,11 @@ public class RequestTransformer {
         return jsonNode;
     }
 
-    private JsonNode convertToJsonNode(StringBuilder json) throws IOException {
+    private static JsonNode convertToJsonNode(StringBuilder json) throws IOException {
         return JacksonUtils.getReader().readTree(json.toString());
     }
 
-    private StringBuilder convertToStringBuilder(JsonNode dynamicTransformedNode) {
+    private static StringBuilder convertToStringBuilder(JsonNode dynamicTransformedNode) {
         return new StringBuilder(dynamicTransformedNode.toString());
     }
 

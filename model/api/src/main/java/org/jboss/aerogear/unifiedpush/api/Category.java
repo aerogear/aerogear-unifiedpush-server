@@ -18,11 +18,16 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
+
 /**
  * A category of a specific installation.
  * @see Installation
  */
-public class Category {
+public class Category implements Serializable {
+
+    private static final long serialVersionUID = -126833234893240181L;
+
     private Long id;
     private String name;
 

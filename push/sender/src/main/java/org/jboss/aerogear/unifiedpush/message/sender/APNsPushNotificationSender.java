@@ -20,6 +20,7 @@ import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetInt
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
@@ -93,6 +94,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param pushMessageInformationId the id of the PushMessageInformation instance associated with this send.
      * @param callback that will be invoked after the sending.
      */
+    @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback callback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
@@ -168,7 +170,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             throw new SenderResourceNotAvailableException("Unable to obtain a ApnsService instance");
         }
         try {
-            logger.debug("Sending transformed APNs payload: " + apnsMessage);
+            logger.debug("Sending transformed APNs payload: {}", apnsMessage);
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             service.push(tokens, apnsMessage, expireDate);
 
@@ -204,7 +206,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
      * If no TTL was provided, we use the max date from the APNs library
      */
-    private Date createFutureDateBasedOnTTL(int ttl) {
+    private static Date createFutureDateBasedOnTTL(int ttl) {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
@@ -231,7 +233,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 @Override
                 public void messageSent(ApnsNotification message, boolean resent) {
                     // Invoked for EVERY devicetoken:
-                    logger.trace("Sending APNs message to: " + message.getDeviceToken());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Sending APNs message to: {}", Arrays.toString(message.getDeviceToken()));
+                    }
                 }
 
                 @Override
@@ -246,9 +250,9 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
-                        if (DeliveryError.INVALID_TOKEN.equals(deliveryError.getDeliveryError())) {
+                        if (deliveryError.getDeliveryError() == DeliveryError.INVALID_TOKEN) {
                             final String invalidToken = Utilities.encodeHex(message.getDeviceToken()).toLowerCase();
-                            logger.info("Removing invalid (not allowed) token: " + invalidToken);
+                            logger.info("Removing invalid (not allowed) token: {}", invalidToken);
                             clientInstallationService.removeInstallationForVariantByDeviceToken(iOSVariant.getVariantID(), invalidToken);
                         } else {
                             // for now, we just log the other cases
@@ -300,7 +304,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param iOSVariant
      * @param builder
      */
-    private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
+    private static void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
         // pick the destination, based on submitted profile:
         builder.withAppleDestination(iOSVariant.isProduction());
 

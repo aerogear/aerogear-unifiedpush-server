@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.token;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 
@@ -48,10 +49,10 @@ public final class TokenLoaderUtils {
 
         } else if (isCategoryOnlyCriteria(criteria)) {
             // use the given categories
-            for (String category : criteria.getCategories()) {
-                topics.add(Constants.TOPIC_PREFIX + category);
+            topics.addAll(criteria.getCategories().stream()
+                    .map(category -> Constants.TOPIC_PREFIX + category)
+                    .collect(Collectors.toList()));
             }
-        }
         return topics;
     }
 
@@ -88,6 +89,6 @@ public final class TokenLoaderUtils {
      * Checks if the list is empty, and not null
      */
     private static boolean isEmpty(List<?> list) {
-        return (list == null || list.isEmpty());
+        return list == null || list.isEmpty();
     }
 }

@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response.Status;
 
 public class AbstractEndpoint {
 
-	protected ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
+	protected static ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
         // required
         response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin

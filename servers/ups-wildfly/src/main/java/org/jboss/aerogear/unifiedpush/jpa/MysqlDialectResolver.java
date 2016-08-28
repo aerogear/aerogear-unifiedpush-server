@@ -27,7 +27,8 @@ import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
  * @see Mysql5BitBooleanDialect
  */
 public class MysqlDialectResolver implements DialectResolver {
-	private static final long serialVersionUID = 809745459149545607L;
+	
+	private static final long serialVersionUID = 7892182989480846213L;
 
 	@Override
     public Dialect resolveDialect(DialectResolutionInfo dialectResolutionInfo) {

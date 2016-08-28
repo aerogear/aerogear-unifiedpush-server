@@ -85,7 +85,7 @@ public class MetricsCollector {
         receiveVariantMetricsRemainingInQueues(pushMessageInformation);
 
         pushMessageInformation.getVariantInformations().stream()
-                .filter(variantMetricInformation -> areAllBatchesLoaded(variantMetricInformation))
+                .filter(this::areAllBatchesLoaded)
                 .forEach(variantMetricInformation -> {
                     pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
                     logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
@@ -112,7 +112,7 @@ public class MetricsCollector {
         }
     }
 
-    private boolean areAllVariantsServed(PushMessageInformation pushMessageInformation) {
+    private static boolean areAllVariantsServed(PushMessageInformation pushMessageInformation) {
         return areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants());
     }
 
@@ -169,14 +169,14 @@ public class MetricsCollector {
         return false;
     }
 
-    private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
+    private static void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
         existing.setReceivers(existing.getReceivers() + update.getReceivers());
         existing.setServedBatches(existing.getServedBatches() + update.getServedBatches());
         existing.setTotalBatches(existing.getTotalBatches() + update.getTotalBatches());
         if (existing.getDeliveryStatus() == null) {
             existing.setDeliveryStatus(update.getDeliveryStatus());
         }
-        if (existing.getDeliveryStatus() == Boolean.TRUE && update.getDeliveryStatus() == Boolean.FALSE) {
+        if (Boolean.TRUE.equals(existing.getDeliveryStatus()) && Boolean.FALSE.equals(update.getDeliveryStatus())) {
             existing.setDeliveryStatus(Boolean.FALSE);
         }
         if (existing.getReason() == null && update.getReason() != null) {
@@ -184,7 +184,7 @@ public class MetricsCollector {
         }
     }
 
-    private boolean areIntegersEqual(int i1, int i2) {
+    private static boolean areIntegersEqual(int i1, int i2) {
         return i1 == i2;
     }
 

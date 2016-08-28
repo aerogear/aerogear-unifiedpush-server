@@ -19,9 +19,9 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -125,7 +125,7 @@ public class UnifiedPushMessage implements Serializable {
      */
     public String toStrippedJsonString() {
         try {
-            final HashMap<String, Object> json = new LinkedHashMap<>();
+            final Map<String, Object> json = new LinkedHashMap<>();
             json.put("alert", this.message.getAlert());
             json.put("priority", this.message.getPriority().toString());
             if (this.getMessage().getBadge()>0) {
@@ -149,7 +149,7 @@ public class UnifiedPushMessage implements Serializable {
      */
     public String toMinimizedJsonString() {
         try {
-            final HashMap<String, Object> json = new LinkedHashMap<>();
+            final Map<String, Object> json = new LinkedHashMap<>();
             json.put("alert", this.message.getAlert());
             if (this.getMessage().getBadge()>0) {
                 json.put("badge", Integer.toString(this.getMessage().getBadge()));
@@ -157,7 +157,7 @@ public class UnifiedPushMessage implements Serializable {
             json.put("config", this.config);
 
             // we strip down the criteria too, as alias/category can be quite long, based on use-case
-            final HashMap<String, Object> shrinkedCriteriaJSON = new LinkedHashMap<>();
+            final Map<String, Object> shrinkedCriteriaJSON = new LinkedHashMap<>();
             shrinkedCriteriaJSON.put("variants", this.criteria.getVariants());
             shrinkedCriteriaJSON.put("deviceType", this.criteria.getDeviceTypes());
             json.put("criteria", shrinkedCriteriaJSON);

@@ -27,7 +27,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Config implements Serializable {
-	private static final long serialVersionUID = 3082419142618843583L;
+
+	 private static final long serialVersionUID = 7189231609377694233L;
 
 	@JsonProperty("ttl")
     private int timeToLive = -1;

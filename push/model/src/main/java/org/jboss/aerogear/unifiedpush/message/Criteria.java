@@ -29,7 +29,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
  */
 public class Criteria implements Serializable {
-	private static final long serialVersionUID = -798832013729311816L;
+
+	private static final long serialVersionUID = -3393123279151223615L;
 
 	@JsonProperty("alias")
     private List<String> aliases;

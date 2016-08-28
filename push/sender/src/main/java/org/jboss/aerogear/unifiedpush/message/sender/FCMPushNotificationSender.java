@@ -81,7 +81,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         // add the "recognized" keys...
         fcmBuilder.addData("alert", message.getAlert());
         fcmBuilder.addData("sound", message.getSound());
-        fcmBuilder.addData("badge", "" + message.getBadge());
+        fcmBuilder.addData("badge", String.valueOf(message.getBadge()));
 
         /*
         The Message defaults to a Normal priority.  High priority is used
@@ -101,7 +101,8 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         }
 
         // iterate over the missing keys:
-        message.getUserData().keySet().forEach(key -> fcmBuilder.addData(key, "" + message.getUserData().get(key)));
+        message.getUserData().keySet()
+                .forEach(key -> fcmBuilder.addData(key, String.valueOf(message.getUserData().get(key))));
 
         //add the aerogear-push-id
         fcmBuilder.addData(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
@@ -111,7 +112,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         // send it out.....
         try {
             if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())){
-            logger.debug("Sending transformed FCM payload: " + fcmMessage );
+            logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
 	    final Sender sender = new Sender(androidVariant.getGoogleKey());
 
@@ -145,13 +146,13 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 logger.info(String.format("Sent push notification to FCM topic: %s", topic));
                 Result result = sender.sendNoRetry(fcmMessage, topic);
 
-                logger.trace("Response from FCM topic request: " + result);
+                logger.trace("Response from FCM topic request: {}", result);
             }
         } else {
             logger.info(String.format("Sent push notification to FCM Server for %d registrationIDs", pushTargets.size()));
             MulticastResult multicastResult = sender.sendNoRetry(fcmMessage, pushTargets);
 
-            logger.trace("Response from FCM request: " + multicastResult);
+            logger.trace("Response from FCM request: {}", multicastResult);
 
             // after sending, let's identify the inactive/invalid registrationIDs and trigger their deletion:
             cleanupInvalidRegistrationIDsForVariant(androidVariant.getVariantID(), multicastResult, pushTargets);

@@ -39,6 +39,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      * Sends SimplePush notifications to all connected clients, that are represented by
      * the {@link Collection} of channelIDs, for the given SimplePush network.
      */
+    @Override
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
@@ -61,10 +62,10 @@ public class SimplePushNotificationSender implements PushNotificationSender {
             HttpURLConnection conn = null;
             try {
                 // PUT the version payload to the SimplePushServer
-                logger.trace("Sending out SimplePush payload: " + payload);
+                logger.trace("Sending out SimplePush payload: {}", payload);
                 conn = put(clientURL, payload);
                 int simplePushStatusCode = conn.getResponseCode();
-                logger.trace("SimplePush Status: " + simplePushStatusCode);
+                logger.trace("SimplePush Status: {}", simplePushStatusCode);
 
                 if (Status.OK.getStatusCode() != simplePushStatusCode) {
                     hasWarning = true;
@@ -109,17 +110,9 @@ public class SimplePushNotificationSender implements PushNotificationSender {
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Accept", "*/*");
         conn.setRequestMethod("PUT");
-        OutputStream out = null;
-        try {
-            out = conn.getOutputStream();
+        try (OutputStream out = conn.getOutputStream()) {
             out.write(bytes);
             out.flush();
-        } finally {
-            // in case something blows up, while writing
-            // the payload, we wanna close the stream:
-            if (out != null) {
-                out.close();
-            }
         }
         return conn;
     }
@@ -128,7 +121,6 @@ public class SimplePushNotificationSender implements PushNotificationSender {
      * Convenience method to open/establish a HttpURLConnection.
      */
     protected HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        return conn;
+        return (HttpURLConnection) new URL(url).openConnection();
     }
 }

@@ -18,9 +18,17 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 
 import ar.com.fernandospr.wns.WnsService;
 import ar.com.fernandospr.wns.exceptions.WnsException;
-import ar.com.fernandospr.wns.model.*;
-import ar.com.fernandospr.wns.model.builders.*;
-
+import ar.com.fernandospr.wns.model.WnsBadge;
+import ar.com.fernandospr.wns.model.WnsNotificationRequestOptional;
+import ar.com.fernandospr.wns.model.WnsNotificationResponse;
+import ar.com.fernandospr.wns.model.WnsRaw;
+import ar.com.fernandospr.wns.model.WnsTile;
+import ar.com.fernandospr.wns.model.WnsToast;
+import ar.com.fernandospr.wns.model.builders.WnsAbstractBuilder;
+import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
+import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
+import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
+import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -35,10 +43,14 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriBuilder;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @SenderType(VariantType.WINDOWS_WNS)
@@ -70,8 +82,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
         Message message = pushMessage.getMessage();
         try {
-        	WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
-        	int ttl = pushMessage.getConfig().getTimeToLive();
+            WnsNotificationRequestOptional optional = new WnsNotificationRequestOptional();
+            int ttl = pushMessage.getConfig().getTimeToLive();
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
@@ -107,10 +119,8 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             }
             logger.debug("Message to WNS has been submitted");
             senderCallback.onSuccess();
-        } catch (WnsException exception) {
+        } catch (WnsException | IllegalArgumentException exception) {
             senderCallback.onError(exception.getMessage());
-        } catch (IllegalArgumentException iae) {
-            senderCallback.onError(iae.getMessage());
         }
     }
 
@@ -126,7 +136,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private WnsBadge createBadgeMessage(Message message) {
+    private static WnsBadge createBadgeMessage(Message message) {
         final WnsBadgeBuilder builder = new WnsBadgeBuilder();
         Windows windows = message.getWindows();
         if (windows.getBadge() != null) {
@@ -137,7 +147,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private WnsRaw createRawMessage(Message message) {
+    private static WnsRaw createRawMessage(Message message) {
         final WnsRawBuilder builder = new WnsRawBuilder();
         builder.stream(message.getAlert().getBytes());
         return builder.build();
@@ -149,7 +159,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private void createMessage(Message message, String type, WnsAbstractBuilder builder) {
+    private static void createMessage(Message message, String type, WnsAbstractBuilder builder) {
         Windows windows = message.getWindows();
         List<String> param = new ArrayList<>(windows.getImages());
         param.add(message.getAlert());
@@ -158,7 +168,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         createTemplate(builder, type, param);
     }
 
-    private void createTemplate(WnsAbstractBuilder builder, String type, List<String> param) {
+    private static void createTemplate(WnsAbstractBuilder builder, String type, List<String> param) {
         try {
             Method[] methods = builder.getClass().getMethods();
             for (Method method : methods) {
@@ -197,7 +207,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     static String createLaunchParam(String page, String message, Map<String, Object> data, String pushMessageInformationId) {
         final UriBuilder uriBuilder = UriBuilder.fromPath("");
 
-        data.forEach((k,v) -> uriBuilder.queryParam(k, v));
+        data.forEach(uriBuilder::queryParam);
         if (message != null) {
             uriBuilder.queryParam("message", message);
         }

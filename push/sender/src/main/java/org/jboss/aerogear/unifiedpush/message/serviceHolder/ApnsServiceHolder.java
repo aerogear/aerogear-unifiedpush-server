@@ -100,7 +100,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
 
                     // trigger asynchronous deletion:
                     if (! transformedTokens.isEmpty()) {
-                        logger.info("Deleting '" + inactiveTokens.size() + "' inactive iOS installations");
+                        logger.info("Deleting '{}' inactive iOS installations", inactiveTokens.size());
                         clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, transformedTokens);
                     }
                 } catch (Exception e) {
@@ -123,7 +123,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
      * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
      * LOWER CASE format. This helper method performs a transformation
      */
-    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
+    private static Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
         return inactiveTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
     }
 }
