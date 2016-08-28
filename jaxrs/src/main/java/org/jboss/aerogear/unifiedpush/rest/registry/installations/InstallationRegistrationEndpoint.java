@@ -93,7 +93,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @OPTIONS
     @Path("{token: .*}")
     @ReturnType("java.lang.Void")
-    public Response crossOriginForInstallations(
+    public static Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
 
@@ -117,7 +117,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      */
     @OPTIONS
     @ReturnType("java.lang.Void")
-    public Response crossOriginForInstallations(@Context HttpHeaders headers) {
+    public static Response crossOriginForInstallations(@Context HttpHeaders headers) {
 
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
