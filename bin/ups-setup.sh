@@ -34,13 +34,13 @@ EOF
 # Function for Keycloak subsystem setup (optional)
 function subsystem_setup()
 {
-    KEYCLOAK_WILDFLY_ADAPTER="keycloak-wildfly-adapter-dist-1.7.0.Final"
+    KEYCLOAK_WILDFLY_ADAPTER="keycloak-wildfly-adapter-dist-2.1.0.Final"
     if [ ! "$WILDFLY_HOME" ]; then
         printf "Error: Please configure the installation path for WildFly\n"
         printf "   >>> Ex: WILDFLY_HOME=/path/to/your/wildfly-ups-installation\n"
     else
         cd $WILDFLY_HOME
-        curl -O "http://downloads.jboss.org/keycloak/1.7.0.Final/adapters/keycloak-oidc/$KEYCLOAK_WILDFLY_ADAPTER.zip"
+        curl -O "http://downloads.jboss.org/keycloak/2.1.0.Final/adapters/keycloak-oidc/$KEYCLOAK_WILDFLY_ADAPTER.zip"
         unzip $KEYCLOAK_WILDFLY_ADAPTER
     fi
     exit 0
