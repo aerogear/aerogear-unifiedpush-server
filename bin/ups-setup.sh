@@ -42,6 +42,8 @@ function subsystem_setup()
         cd $WILDFLY_HOME
         curl -O "http://downloads.jboss.org/keycloak/2.1.0.Final/adapters/keycloak-oidc/$KEYCLOAK_WILDFLY_ADAPTER.zip"
         unzip $KEYCLOAK_WILDFLY_ADAPTER
+        $WILDFLY_HOME/bin/jboss-cli.sh --file=$WILDFLY_HOME/bin/adapter-install-offline.cli
+
     fi
     exit 0
 }
@@ -95,7 +97,3 @@ if [[ ! -z "$UPS_HOST" && ! -z "$REALM_NAME" && ! -z $AUTH_SERVER ]]; then
 else
     usage;
 fi
-
-
-
-

@@ -17,7 +17,7 @@
       auth.logout = function() {
         auth.loggedIn = false;
         auth.keycloak = null;
-        window.location = keycloak.authServerUrl + '/realms/' + keycloak.realm + '/tokens/logout?redirect_uri=' + window.location.href;
+        window.location = keycloak.createLogoutUrl();
       };
       app.factory('Auth', function () {
         return auth;
