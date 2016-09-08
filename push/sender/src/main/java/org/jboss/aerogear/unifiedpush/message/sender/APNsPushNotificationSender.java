@@ -196,7 +196,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
      * If no TTL was provided, we use the max date from the APNs library
      */
-    private static Date createFutureDateBasedOnTTL(int ttl) {
+    private Date createFutureDateBasedOnTTL(int ttl) {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
@@ -280,7 +280,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param iOSVariant
      * @param builder
      */
-    private static void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
+    private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
         // pick the destination, based on submitted profile:
         builder.withAppleDestination(iOSVariant.isProduction());
 

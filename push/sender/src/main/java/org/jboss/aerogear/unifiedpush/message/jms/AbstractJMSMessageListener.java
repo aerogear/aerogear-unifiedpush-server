@@ -16,10 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -29,6 +25,10 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Topic;
+
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base for message driven beans that receives a {@link javax.jms.ObjectMessage} from a queue, validates its type, cast it to a generic type T and pass for processing to abstract method {@link #onMessage(Object)}
@@ -63,7 +63,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
         }
     }
 
-    private static String getDestinationName(Message message) {
+    private String getDestinationName(Message message) {
         try {
             Destination destination = message.getJMSDestination();
             if (destination instanceof Queue) {
