@@ -12,13 +12,12 @@ Before you begin:
     Please make sure to have WILDFLY_HOME environment variable properly configured
 
     Example: export WILDFLY_HOME=/path/to/your/wildfly/ups/server/installation
-             export JBOSS_HOME=$WILDFLY_HOME (not mandatory)
 
 Usage:
     $(basename $0) [options]
 
 Example:
-    $(basename $0) --subsystem-setup
+    $(basename $0) --adapter-setup
 
     $(basename $0) --ups-host=localhost:9992 --realm=aerogear --auth-server=http://localhost:8083
 
@@ -26,13 +25,13 @@ Options:
     -s, --ups-host          UnifiedPush server controller host
     -r, --realm             Realm name
     -k, --auth-server       Keycloak server
-        --subsystem-setup   Keycloak subsystem setup
+        --adapter-setup     Keycloak adapter setup
     -h, --help              Help
 EOF
 }
 
-# Function for Keycloak subsystem setup (optional)
-function subsystem_setup()
+# Function for Keycloak adapter setup (optional)
+function adapter_setup()
 {
     KEYCLOAK_WILDFLY_ADAPTER="keycloak-wildfly-adapter-dist-2.1.0.Final"
     if [ ! "$WILDFLY_HOME" ]; then
@@ -78,8 +77,8 @@ while true ; do
                 *) AUTH_SERVER=$2; shift 2 ;;
           esac ;;
 
-        --subsystem-setup)
-          subsystem_setup; break;;
+        --adapter-setup)
+          adapter_setup; break;;
 
         -h|--help)
           usage; shift;;
