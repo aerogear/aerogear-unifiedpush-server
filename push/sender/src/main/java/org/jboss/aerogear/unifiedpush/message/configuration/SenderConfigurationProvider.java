@@ -102,8 +102,7 @@ public class SenderConfigurationProvider {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue,
-            Class<T> expectedType) {
+    private <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue, Class<T> expectedType) {
         String systemPropertyName = getSystemPropertyName(type, property);
         if (expectedType == String.class) {
             return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
@@ -114,7 +113,7 @@ public class SenderConfigurationProvider {
         }
     }
 
-    private static String getSystemPropertyName(VariantType type, ConfigurationProperty property) {
+    private String getSystemPropertyName(VariantType type, ConfigurationProperty property) {
         return String.format("aerogear.%s.%s", type.getTypeName(), property.toString());
     }
 
