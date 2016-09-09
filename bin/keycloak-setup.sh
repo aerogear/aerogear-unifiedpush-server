@@ -9,10 +9,9 @@ Setup Keycloak for usage with UnifiedPush Server
 
 Before you begin:
 
-    Please make sure to have WILDFLY_HOME environment variable properly configured
+    Please make sure to have KEYCLOAK_HOME environment variable properly configured
 
-    Example: export WILDFLY_HOME=/path/to/your/keycloak/server/installation
-             export JBOSS_HOME=$WILDFLY_HOME (not mandatory)
+    Example: export KEYCLOAK_HOME=/path/to/your/keycloak/server/installation
 
 Usage:
     $(basename $0) [options]
@@ -23,7 +22,7 @@ Example:
 Options:
     -s, --ups-host          UnifiedPush HTTP server host
     -i, --realm-import      Import Realm file
-    -o, --offset            Port offset from WildFly
+    -o, --offset            Port offset from Keycloak Server
     -h, --help              Help
 EOF
 }
@@ -75,12 +74,10 @@ if [[ ! -z "$UPS_HOST" && ! -z "$REALM_JSON_FILE" ]]; then
     IFS=
 
     if [ ! "$WILDFLY_OFFSET" ]; then
-        $WILDFLY_HOME/bin/standalone.sh -Dkeycloak.import=$REALM_JSON_FILE
+        $KEYCLOAK_HOME/bin/standalone.sh -Dkeycloak.import=$REALM_JSON_FILE
     else
-        $WILDFLY_HOME/bin/standalone.sh -Djboss.socket.binding.port-offset=$WILDFLY_OFFSET -Dkeycloak.import=$REALM_JSON_FILE
+        $KEYCLOAK_HOME/bin/standalone.sh -Djboss.socket.binding.port-offset=$WILDFLY_OFFSET -Dkeycloak.import=$REALM_JSON_FILE
     fi
 else
     usage;
 fi
-
-
