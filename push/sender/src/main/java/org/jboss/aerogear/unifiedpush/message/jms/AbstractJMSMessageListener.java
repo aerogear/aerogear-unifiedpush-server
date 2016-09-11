@@ -63,7 +63,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
         }
     }
 
-    private String getDestinationName(Message message) {
+    private static String getDestinationName(Message message) {
         try {
             Destination destination = message.getJMSDestination();
             if (destination instanceof Queue) {
