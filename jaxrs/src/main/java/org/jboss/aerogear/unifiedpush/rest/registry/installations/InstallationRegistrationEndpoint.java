@@ -51,6 +51,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.HeaderParam;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -141,6 +143,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @param entity    {@link Installation} for Device registration
      * @return          registered {@link Installation}
      *
+     * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM).  
+     * If present these tokens will be forcefully unregistered before the new token is registered.
+     * 
      * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
      * @responseheader Access-Control-Allow-Credentials true
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
@@ -154,6 +159,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
     public Response registerInstallation(
+            @DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
             Installation entity,
             @Context HttpServletRequest request) {
 
@@ -174,6 +180,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // If the installation is already in the DB, let's update the metadata,
         // otherwise we register a new installation:
         logger.trace("Mobile Application on device was launched");
+
+        //The token has changed, remove the old one
+        if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
+            clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
+        }
 
         // async:
         clientInstallationService.addInstallation(variant, entity);
