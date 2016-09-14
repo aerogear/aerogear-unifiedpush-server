@@ -133,7 +133,7 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
         return pushApplicationDao.getNumberOfPushApplicationsForDeveloper(loginName.get());
     }
 
-    private List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
+    private static List<ApplicationVariant> wrapApplicationVariant(List<PushApplication> applications) {
         final List<ApplicationVariant> applicationVariants = new ArrayList<>(applications.size());
 
         applications.forEach(application -> {

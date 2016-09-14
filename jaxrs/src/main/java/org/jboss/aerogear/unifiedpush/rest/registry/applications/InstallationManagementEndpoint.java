@@ -105,7 +105,7 @@ public class InstallationManagementEndpoint {
                 .build();
     }
 
-    LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
+    static LinkHeader getLinkHeader(Integer page, long totalPages, UriInfo uri) {
         LinkHeader header = new LinkHeader();
 
         if (page != 0) {
@@ -120,7 +120,7 @@ public class InstallationManagementEndpoint {
         return header;
     }
 
-    private Link buildLink(String rel, long pageNo, UriInfo uri) {
+    private static Link buildLink(String rel, long pageNo, UriInfo uri) {
         Link link = new Link();
         link.setHref(uri.getAbsolutePathBuilder().queryParam("page", pageNo).build().toASCIIString());
         link.setRelationship(rel);
