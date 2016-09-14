@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
