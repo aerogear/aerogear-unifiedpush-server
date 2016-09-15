@@ -42,6 +42,7 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param admVariant        new {@link AdmVariant}
      * @param pushApplicationID id of {@link PushApplication}
+     * @param uriInfo           the uri
      * @return                  created {@link AdmVariant}
      *
      * @statuscode 201 The ADM Variant created successfully
@@ -103,6 +104,7 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
      * @param id                    id of {@link PushApplication}
      * @param androidID             id of {@link AdmVariant}
      * @param updatedAdmApplication new info of {@link AdmVariant}
+     * @return                      updated {@link AdmVariant}
      *
      * @statuscode 200 The ADM Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect

@@ -16,7 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import java.util.List;
+import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
+import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
+import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +32,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
-import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
-import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import java.util.List;
 
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
@@ -43,6 +42,8 @@ public class DashboardEndpoint {
 
     /**
      * GET dashboard data
+     *
+     * @param request the request
      *
      * @return  {@link DashboardData} for the given user
      */
@@ -58,6 +59,8 @@ public class DashboardEndpoint {
     /**
      * GET application variants
      *
+     * @param request the request
+     *
      * @return  list of {@link ApplicationVariant}s
      */
     @GET
@@ -72,6 +75,8 @@ public class DashboardEndpoint {
 
     /**
      * GET active applications
+     *
+     * @param request the request
      *
      * @param count number of active applications, default value = 3
      * @return      list of active {@link Application}s

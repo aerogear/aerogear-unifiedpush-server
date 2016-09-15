@@ -16,6 +16,15 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.resteasy.spi.Link;
+import org.jboss.resteasy.spi.LinkHeader;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,16 +38,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.spi.Link;
-import org.jboss.resteasy.spi.LinkHeader;
-
-import com.qmino.miredot.annotations.ReturnType;
 
 
 @Path("/applications/{variantID}/installations/")
@@ -59,6 +58,7 @@ public class InstallationManagementEndpoint {
      * @param page      page number
      * @param pageSize  number of items per page
      * @param search    search query
+     * @param uri       uri
      * @return          list of {@link Installation}s
      *
      * @responseheader Link     Links to "prev", "first", "next" and "last" pages
@@ -157,6 +157,7 @@ public class InstallationManagementEndpoint {
      * @param entity            new info of {@link Installation}
      * @param variantId         id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
      * @param installationId    id of {@link Installation}
+     * @return          updated {@link Installation}
      *
      * @statuscode 204 The Installation updated successfully
      * @statuscode 404 The requested Installation resource does not exist
@@ -185,6 +186,7 @@ public class InstallationManagementEndpoint {
      *
      * @param variantId         id of {@link org.jboss.aerogear.unifiedpush.api.Variant}
      * @param installationId    id of {@link Installation}
+     * @return no content
      *
      * @statuscode 204 The Installation successfully deleted
      * @statuscode 404 The requested Installation resource does not exist
