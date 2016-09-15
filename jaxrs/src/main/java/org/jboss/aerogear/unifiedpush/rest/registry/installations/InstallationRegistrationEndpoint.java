@@ -140,6 +140,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 400 (Bad Request) The format of the client request was incorrect (e.g. missing required values).
      * @HTTP 401 (Unauthorized) The request requires authentication.
      *
+     * @param oldToken  The previously registered deviceToken or an empty String.  Provided by the header x-ag-old-token.
      * @param entity    {@link Installation} for Device registration
      * @return          registered {@link Installation}
      *
@@ -183,6 +184,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //The token has changed, remove the old one
         if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
+            logger.info(String.format("Deleting old device token %s", oldToken));
             clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
         }
 
