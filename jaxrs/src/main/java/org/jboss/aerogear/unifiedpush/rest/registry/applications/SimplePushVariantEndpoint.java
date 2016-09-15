@@ -43,6 +43,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param simplePushVariant new {@link SimplePushVariant}
      * @param pushApplicationID id of {@link PushApplication}
+     * @param uriInfo           the uri
      * @return                  created {@link SimplePushVariant}
      *
      * @statuscode 201 The SimplePush Variant created successfully
@@ -105,6 +106,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
      * @param id                            id of {@link PushApplication}
      * @param simplePushID                  id of {@link SimplePushVariant}
      * @param updatedSimplePushApplication  new info of {@link SimplePushVariant}
+     * @return         upated simplepush object
      *
      * @statuscode 200 The SimplePush Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect

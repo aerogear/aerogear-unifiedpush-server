@@ -23,12 +23,12 @@ import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
-import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -51,8 +53,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.HeaderParam;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -138,10 +138,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * @param oldToken  The previously registered deviceToken or an empty String.  Provided by the header x-ag-old-token.
      * @param entity    {@link Installation} for Device registration
+     * @param request   the request object
      * @return          registered {@link Installation}
      *
-     * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM).  
-     * If present these tokens will be forcefully unregistered before the new token is registered.
+     * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM). If present these tokens will be forcefully unregistered before the new token is registered.
      * 
      * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
      * @responseheader Access-Control-Allow-Credentials true
@@ -151,6 +151,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
      * @statuscode 401 The request requires authentication
      */
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -202,6 +203,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * </pre>
      *
      * @param pushMessageId push message identifier
+     * @param request the request
      * @return              empty JSON body
      *
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
@@ -243,6 +245,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * </pre>
      *
      * @param token device token
+     * @param request the request
+     * @return empty json
      *
      * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
      * @responseheader Access-Control-Allow-Credentials true
@@ -316,6 +320,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * </pre>
      *
      * @param form  JSON file to import
+     * @param request the request
      * @return      empty JSON body
      *
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)

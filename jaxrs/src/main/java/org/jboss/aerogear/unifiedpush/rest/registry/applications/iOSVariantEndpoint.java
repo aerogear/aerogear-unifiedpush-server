@@ -47,6 +47,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param form              new iOS Variant
      * @param pushApplicationID id of {@link PushApplication}
+     * @param uriInfo           uri
      * @return                  created {@link iOSVariant}
      *
      * @statuscode 201 The iOS Variant created successfully
@@ -110,6 +111,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      * List iOS Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
+     * @return                  updated {@link iOSVariant}
      * @return                  list of {@link iOSVariant}s
      */
     @GET
@@ -126,6 +128,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      * @param pushApplicationId id of {@link PushApplication}
      * @param iOSID             id of {@link iOSVariant}
      * @param updatediOSVariant updated version of {@link iOSVariant}
+     * @return                  updated {@link iOSVariant}
      *
      * @statuscode 204 The iOS Variant updated successfully
      * @statuscode 404 The requested Variant resource does not exist
@@ -161,6 +164,8 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      * @param pushApplicationId     id of {@link PushApplication}
      * @param iOSID                 id of {@link iOSVariant}
      * @param updatedForm           new info of {@link iOSVariant}
+     *
+     * @return                  updated {@link iOSVariant}
      *
      * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
