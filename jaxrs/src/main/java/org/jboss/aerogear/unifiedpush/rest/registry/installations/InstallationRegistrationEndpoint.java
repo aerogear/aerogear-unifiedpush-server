@@ -136,6 +136,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * Details about JSON format can be found HERE!
      *
+     * @param oldToken  The previously registered deviceToken or an empty String.  Provided by the header x-ag-old-token.
      * @param entity    {@link Installation} for Device registration
      * @return          registered {@link Installation}
      *
@@ -179,6 +180,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //The token has changed, remove the old one
         if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
+            logger.info(String.format("Deleting old device token %s", oldToken));
             clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
         }
 
