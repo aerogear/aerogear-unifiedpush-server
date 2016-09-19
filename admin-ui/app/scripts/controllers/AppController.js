@@ -70,11 +70,12 @@ angular.module('upsConsole')
     }
     updateWarnings();
 
-    var updateWarningsInterval = $interval(updateWarnings, 30000);
-    $scope.$on('$destroy', function() {
-      $log.debug('cancelling updateWarnings interval');
-      $interval.cancel( updateWarningsInterval );
-    });
+    // For AGPUSH-1895: temporarrly we disable the polling
+    // var updateWarningsInterval = $interval(updateWarnings, 30000);
+    // $scope.$on('$destroy', function() {
+    //   $log.debug('cancelling updateWarnings interval');
+    //   $interval.cancel( updateWarningsInterval );
+    // });
     $scope.$on('upsNotificationSent', function() {
       var timer1 = $timeout(updateWarnings, 1500);
       var timer2 = $timeout(updateWarnings, 5000);
