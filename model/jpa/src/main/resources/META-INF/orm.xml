@@ -77,7 +77,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         </attributes>
     </entity>
     <entity class="PushApplication" access="FIELD">
-        <table name="push_application"/>
+        <table name="push_application">
+            <index name="push_application_developer_idx" column-list="developer" />
+        </table>
         <attributes>
             <basic name="name">
                 <column name="name" length="255" nullable="false"/>
