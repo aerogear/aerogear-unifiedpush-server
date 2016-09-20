@@ -86,8 +86,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
-        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
-                "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
+        return createQuery("select count(pmi) from PushMessageInformation pmi, PushApplication pa " +
+                "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer)", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
     }
 
