@@ -102,8 +102,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public List<PushMessageInformation> findLatestActivity(String loginName, int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi where pmi.pushApplicationId" +
-                " IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)" +
+        return createQuery("select pmi from PushMessageInformation pmi, PushApplication pa" +
+                " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
                 .setMaxResults(maxResults)
