@@ -2,5 +2,9 @@
     "themes": [{
         "name" : "aerogear",
         "types": [ "admin", "account", "login", "welcome" ]
+    },
+    {
+        "name" : "unifiedpush-installations",
+        "types": [ "account", "login" ]
     }]
 }

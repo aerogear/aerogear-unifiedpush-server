@@ -17,7 +17,7 @@
       auth.logout = function() {
         auth.loggedIn = false;
         auth.keycloak = null;
-        window.location = keycloak.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=' + window.location.href;
+        window.location = keycloak.authServerUrl + '/realms/unifiedpush/tokens/logout?redirect_uri=' + window.location.href;
       };
       app.factory('Auth', function () {
         return auth;

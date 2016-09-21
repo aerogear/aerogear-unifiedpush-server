@@ -89,6 +89,33 @@
             <artifactId>keycloak-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-jaxrs</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+		<dependency>
+	        <groupId>org.jboss.resteasy</groupId>
+	        <artifactId>resteasy-jackson-provider</artifactId>
+	        <version>${resteasy.version}</version>
+	        <scope>provided</scope>
+	    </dependency>
+
+
 		<dependency>
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-core</artifactId>

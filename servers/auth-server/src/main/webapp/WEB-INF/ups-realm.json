@@ -1,5 +1,5 @@
 {
-    "realm": "aerogear",
+    "realm": "unifiedpush",
     "enabled": true,
     "accessTokenLifespan": 60,
     "accessCodeLifespan": 60,

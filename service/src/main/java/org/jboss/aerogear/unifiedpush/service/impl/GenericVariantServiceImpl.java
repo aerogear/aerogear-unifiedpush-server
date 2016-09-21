@@ -16,17 +16,26 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.slf4j.Logger;
 
 @Stateless
 public class GenericVariantServiceImpl implements GenericVariantService {
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GenericVariantServiceImpl.class);
+	@Inject
+	private KeycloakService keycloakService;
 
     @Inject
     private VariantDao variantDao;
@@ -34,6 +43,8 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Inject
     @LoggedIn
     private Instance<String> loginName;
+
+    private final Map<String, Variant> variantIdFromClientIdCache = new ConcurrentHashMap<>();
 
     @Override
     public void addVariant(Variant variant) {
@@ -44,6 +55,32 @@ public class GenericVariantServiceImpl implements GenericVariantService {
     @Override
     public Variant findByVariantID(String variantID) {
         return variantDao.findByVariantID(variantID);
+    }
+
+    @Override
+    public Variant findVariantByKeycloakClientID(String clientID) {
+    	Variant variant = variantIdFromClientIdCache.get(clientID);
+    	if (variant == null){
+    		Iterable<String> clientVariants = keycloakService.getVariantIdsFromClient(clientID);
+
+    		if(clientVariants != null){
+        		for (String clientVariantId : clientVariants){
+        			Variant clientVariant = findByVariantID(clientVariantId);
+        			if (clientVariant != null && (clientVariant.getType() == VariantType.SIMPLE_PUSH)) {
+        				// TODO - Support case of several Variants.
+        				variant = clientVariant;
+        				variantIdFromClientIdCache.put(clientID, variant);
+        				break;
+        			}
+        		}
+    		}
+    	}
+
+    	if (variant == null) {
+    		logger.info("unable to resolve variant for clientID={}", clientID);
+    	}
+
+    	return variant;
     }
 
     @Override

@@ -31,6 +31,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @DeviceTokenCheck
 public class Installation extends BaseModel {
     private static final long serialVersionUID = 7177135979544758234L;
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_ALIAS = "alias";
 
     private boolean enabled = true;
     private String deviceToken;

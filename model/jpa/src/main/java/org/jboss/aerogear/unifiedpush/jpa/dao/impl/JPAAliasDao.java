@@ -22,6 +22,21 @@ public class JPAAliasDao extends JPABaseDao<Alias, Long> implements AliasDao {
 	}
 
 	@Override
+	public List<Alias> findAliasesByPushApplicationID(String pushApplicationID) {
+		List<Alias> results = entityManager
+				.createQuery(
+						"select a from Alias a where a.pushApplicationID = :pushApplicationID",
+						Alias.class)
+				.getResultList();
+
+		if (results.isEmpty()) {
+			return null;
+		}
+
+		return results;
+	}
+
+	@Override
 	/**
 	 * Match alias by name ignore case
 	 */

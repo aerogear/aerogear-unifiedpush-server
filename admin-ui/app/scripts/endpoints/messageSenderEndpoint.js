@@ -8,7 +8,7 @@ upsServices.factory('messageSenderEndpoint', function ($resource, apiPrefix) {
       send: {
         method: 'POST',
         headers: {
-          'aerogear-sender': 'AeroGear UnifiedPush Console',
+          'aerogear-sender': 'UnifiedPush Server Console',
           'Authorization': 'Basic ' + btoa(applicationID + ':' + masterSecret)
         }
       }

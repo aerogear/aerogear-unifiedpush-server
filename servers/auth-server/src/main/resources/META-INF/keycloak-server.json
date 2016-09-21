@@ -45,6 +45,7 @@
         "welcomeTheme": "aerogear",
         "staticMaxAge": "${keycloak.theme.staticMaxAge:2592000}",
         "cacheTemplates": "${keycloak.theme.cacheTemplates:true}",
+        "cacheThemes": false,
         "folder": {
             "dir": "${jboss.server.config.dir}/themes"
         }

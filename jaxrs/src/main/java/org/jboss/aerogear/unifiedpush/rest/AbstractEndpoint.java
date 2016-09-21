@@ -13,8 +13,8 @@ public class AbstractEndpoint {
         // add response headers for the preflight request
         // required
         response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
-                .header("Access-Control-Allow-Methods", "POST, DELETE") // only POST/DELETE are allowed
-                .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization") // explicit Headers!
+                .header("Access-Control-Allow-Methods", "POST, DELETE, OPTIONS") // only POST/DELETE are allowed
+                .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization, device-token") // explicit Headers!
                 .header("Access-Control-Allow-Credentials", "true")
                 // indicates how long the results of a preflight request can be cached (in seconds)
                 .header("Access-Control-Max-Age", "604800"); // for now, we keep it for seven days
@@ -23,9 +23,14 @@ public class AbstractEndpoint {
     }
 
 	protected Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
-        return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-                .header("Access-Control-Allow-Credentials", "true").type(MediaType.APPLICATION_JSON)
-                 .build();
+		// "enable-cors" : true, is available at upsi.json, therefore we want to
+		// prevent duplicated cors when using /rest/upsi context
+		if (request.getRequestURI().toString().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) == -1)
+			return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
+					.header("Access-Control-Allow-Credentials", "true").type(MediaType.APPLICATION_JSON)
+					.build();
+		else
+			return rb.build();
     }
 
 	protected Response create401Response(final HttpServletRequest request) {

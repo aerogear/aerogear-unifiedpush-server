@@ -23,6 +23,17 @@ public class Configuration {
 	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
 	public static final String PROP_MASTER_VERIFICATION = "aerogear.config.verification.master_code";
 
+	// DONOT expose this property as public.
+	private static final String PROP_OAUTH2_ENABLE = "aerogear.config.oauth2.enable";
+
+	public static final String PROP_OAUTH2_USERNAME = "aerogear.config.oauth2.username";
+	public static final String PROP_OAUTH2_PASSWORD = "aerogear.config.oauth2.password";
+
+	public static final String PROP_OAUTH2_KEYCLOAK_PATH = "aerogear.config.oauth2.keycloak.path";
+	public static final String PROP_OAUTH2_REALM_ID = "aerogear.config.oauth2.realm_id";
+	public static final String PROP_OAUTH2_CLIENT_ID = "aerogear.config.oauth2.client_id";
+	public static final String PROP_OAUTH2_DOMAIN = "aerogear.config.oauth2.webapp.domain";
+	public static final String PROP_OAUTH2_PROTOCOL = "aerogear.config.oauth2.webapp.protocol";
 
 	private Properties properties;
 	private PropertyPlaceholderConfigurer configurer;
@@ -110,4 +121,9 @@ public class Configuration {
 			return configurer.resolvePlaceholder(key, properties);
 		}
 	}
+
+	public boolean isOauth2Enabled(){
+		return getProperty(Configuration.PROP_OAUTH2_ENABLE, false);
+	}
+
 }

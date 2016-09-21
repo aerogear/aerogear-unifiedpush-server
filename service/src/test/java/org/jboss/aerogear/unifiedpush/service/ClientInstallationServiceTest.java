@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -54,6 +53,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
     @Inject
     private PushApplicationService applicationService;
+    @Inject
+    private AliasService aliasService;
 
     private AndroidVariant androidVariant;
 
@@ -72,9 +73,9 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     public void testLowerCaseForIOS() throws IOException {
         iOSVariant iOSVariant = new iOSVariant();
         byte[] certificate= toByteArray(getClass().getResourceAsStream("/cert/certificate.p12"));
+        iOSVariant.setName("TEST-VARIANT");
         iOSVariant.setCertificate(certificate);
         iOSVariant.setPassphrase("12345678");
-        iOSVariant.setName("iOS Variant Name");
         variantService.addVariant(iOSVariant);
 
         Installation device = new Installation();
@@ -119,7 +120,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         Installation device = new Installation();
         String deviceToken = TestUtils.generateFakedDeviceTokenString().toUpperCase();
         device.setDeviceToken(deviceToken);
-        final Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("football")));
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
         device.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
 
@@ -133,7 +134,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         String deviceToken = TestUtils.generateFakedDeviceTokenString();
         device.setDeviceToken(deviceToken);
 
-        Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
@@ -145,7 +146,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device = new Installation();
         deviceToken = TestUtils.generateFakedDeviceTokenString().toUpperCase();
         device.setDeviceToken(deviceToken);
-        categories = new HashSet<>(Arrays.asList(new Category("lame"), new Category("football")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("lame"), new Category("football")));
         device.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
         assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(2);
@@ -164,7 +165,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         String deviceToken = TestUtils.generateFakedDeviceTokenString();
         device.setDeviceToken(deviceToken);
 
-        Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
@@ -175,7 +176,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         // same device, with slightly different metadata
         device = new Installation();
         device.setDeviceToken(deviceToken);
-        categories = new HashSet<>(Arrays.asList(new Category("football")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
         assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(),deviceToken).getCategories()).hasSize(1);
@@ -200,7 +201,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         device = new Installation();
         device.setDeviceToken(deviceToken);
-        final Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("football")));
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("football")));
         device.setCategories(categories);
 
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
@@ -233,7 +234,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     public void importDevicesWithAndWithoutTokenDuplicates() {
         // generate some devices with token:
         final int NUMBER_OF_INSTALLATIONS = 5;
-        final List<Installation> devices = new ArrayList<>();
+        final List<Installation> devices = new ArrayList<Installation>();
         for (int i = 0; i < NUMBER_OF_INSTALLATIONS; i++) {
             Installation device = new Installation();
             device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -288,7 +289,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     public void importDevicesWithoutDuplicates() {
         // generate some devices:
         final int NUMBER_OF_INSTALLATIONS = 5;
-        final List<Installation> devices = new ArrayList<>();
+        final List<Installation> devices = new ArrayList<Installation>();
         for (int i = 0; i < NUMBER_OF_INSTALLATIONS; i++) {
             Installation device = new Installation();
             device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -314,7 +315,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     public void importDevices() {
         // generate some devices:
         final int NUMBER_OF_INSTALLATIONS = 100000;
-        final List<Installation> devices = new ArrayList<>();
+        final List<Installation> devices = new ArrayList<Installation>();
         for (int i = 0; i < NUMBER_OF_INSTALLATIONS; i++) {
             Installation device = new Installation();
             device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -334,11 +335,12 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         String deviceToken = TestUtils.generateFakedDeviceTokenString();
         device.setDeviceToken(deviceToken);
 
-        final Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device);
+
         clientInstallationService.addInstallationSynchronously(androidVariant, device);
 
         assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("football", "soccer"), null, null)).hasSize(1);
@@ -353,7 +355,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setDeviceToken(deviceToken);
         device.setAlias("root");
 
-        final Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
@@ -373,7 +375,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         device.setDeviceToken(deviceToken);
         device.setAlias("root");
 
-        final Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        final Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device.setCategories(categories);
 
         device.setVariant(androidVariant);
@@ -397,27 +399,30 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         Installation device1 = new Installation();
         device1.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device1);
         clientInstallationService.addInstallationSynchronously(androidVariant, device1);
 
+
         Installation device2 = new Installation();
         device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("soccer")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device2);
         clientInstallationService.addInstallationSynchronously(androidVariant, device2);
 
+
         Installation device3 = new Installation();
         device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("football")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         device3.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device3);
         clientInstallationService.addInstallationSynchronously(androidVariant, device3);
+
 
         final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), Arrays.asList("soccer"), null, null);
 
@@ -434,7 +439,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         Installation device1 = new Installation();
         device1.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         device1.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device1);
@@ -442,7 +447,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         Installation device2 = new Installation();
         device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("soccer")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         device2.setVariant(androidVariant);
         clientInstallationService.updateInstallation(device2);
@@ -450,7 +455,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         Installation device3 = new Installation();
         device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("football")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
 
         device3.setVariant(androidVariant);
@@ -473,25 +478,25 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         Installation device1 = new Installation();
         device1.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        Set<Category> categories = new HashSet<>(Arrays.asList(new Category("football"), new Category("soccer")));
+        Set<Category> categories = new HashSet<Category>(Arrays.asList(new Category("football"), new Category("soccer")));
         device1.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device1);
 
         Installation device2 = new Installation();
         device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("soccer")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
         device2.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device2);
 
         Installation device3 = new Installation();
         device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("football")));
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device3.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device3);
 
         Installation device4 = new Installation();
-        device4.setDeviceToken("01234567891:" + TestUtils.generateFakedDeviceTokenString());
-        categories = new HashSet<>(Arrays.asList(new Category("football")));
+        device4.setDeviceToken("01234567891:"+TestUtils.generateFakedDeviceTokenString());
+        categories = new HashSet<Category>(Arrays.asList(new Category("football")));
         device4.setCategories(categories);
         clientInstallationService.addInstallationSynchronously(androidVariant, device4);
 
@@ -504,6 +509,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
                 device3.getDeviceToken(),
                 device4.getDeviceToken()
         );
+
         final List<String> legacyTokenz = findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null);
 
         assertThat(legacyTokenz).hasSize(3);
@@ -555,7 +561,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         List<String> aliases = Arrays.asList("a", "b", "p1");
 
-        pushApplicationService.updateAliasesAndInstallations(application, aliases);
+        aliasService.updateAliasesAndInstallations(application, aliases, false);
 
         Installation device = new Installation();
         String deviceToken = TestUtils.generateFakedDeviceTokenString();
@@ -593,17 +599,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
         clientInstallationService.addInstallationSynchronously(variant, device);
 
-        pushApplicationService.updateAliasesAndInstallations(application, aliases);
+        aliasService.updateAliasesAndInstallations(application, aliases, false);
+        aliasService.flushAndClear();
 
         Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
         assertNotNull(installation);
 
-        pushApplicationService.updateAliasesAndInstallations(application, Arrays.asList("a", "b"));
+        aliasService.updateAliasesAndInstallations(application, Arrays.asList("a", "b"), false);
+        aliasService.flushAndClear();
 
         installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
         assertThat(installation.isEnabled()==false);
 
-        pushApplicationService.updateAliasesAndInstallations(application, aliases);
+        aliasService.updateAliasesAndInstallations(application, aliases, false);
         installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 
         assertThat(installation.isEnabled()==true);
@@ -659,10 +667,47 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         assertNotNull(installation);
     }
 
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    public void testRemoveInstallationByAlias() {
+    	AndroidVariant variant = new AndroidVariant();
+        variant.setGoogleKey("Key");
+        variant.setName("NewVaraint");
+        variant.setDeveloper("me");
+        variantService.addVariant(variant);
+
+        PushApplication application = new PushApplication();
+        application.setName("NewApp");
+        applicationService.addPushApplication(application);
+        applicationService.addVariant(application, variant);
+
+        String alias = "p1";
+
+        Installation device1 = new Installation();
+        String deviceToken1 = TestUtils.generateFakedDeviceTokenString();
+        device1.setDeviceToken(deviceToken1);
+        device1.setAlias(alias);
+
+        Installation device2 = new Installation();
+        String deviceToken2 = TestUtils.generateFakedDeviceTokenString();
+        device2.setDeviceToken(deviceToken2);
+        device2.setAlias(alias);
+
+        clientInstallationService.addInstallationSynchronously(variant, device1);
+        clientInstallationService.addInstallationSynchronously(variant, device2);
+
+        List<Installation> installations = clientInstallationService.findByAlias(alias);
+        assertThat(installations.size() == 2);
+
+        clientInstallationService.removeInstallations(alias);
+        installations = clientInstallationService.findByAlias(alias);
+        assertThat(installations.size() == 0);
+    }
+
     private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
             ResultsStream<String> tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
-            List<String> list = new ArrayList<>();
+            List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
             }
@@ -675,7 +720,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     private List<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
         try {
             ResultsStream<String> tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null).executeQuery();
-            List<String> list = new ArrayList<>();
+            List<String> list = new ArrayList<String>();
             while (tokenStream.next()) {
                 list.add(tokenStream.get());
             }

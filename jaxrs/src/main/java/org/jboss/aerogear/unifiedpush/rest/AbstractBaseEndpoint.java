@@ -90,4 +90,10 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
         return searchManager.getSearchService();
     }
 
+    // Append double quotes to strings, used to overcome jax-rs issue with simple stings.
+    // http://stackoverflow.com/questions/7705081/jax-rs-resteasy-service-return-json-string-without-double-quote
+    protected static String quote(String value) {
+    	return new StringBuilder(value.length() + 2).append('"' + value + '"').toString();
+    }
+
 }

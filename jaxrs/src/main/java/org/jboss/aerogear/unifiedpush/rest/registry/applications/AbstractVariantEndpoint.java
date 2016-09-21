@@ -130,7 +130,8 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
+    @SuppressWarnings("unchecked")
+	protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
         Objects.requireNonNull(type, "type");
         return application.getVariants().stream()
                 .filter(variant -> variant.getClass().equals(type))

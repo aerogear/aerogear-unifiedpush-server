@@ -16,11 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.dto.Count;
-
 import java.util.List;
 import java.util.Set;
+
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
+import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public interface InstallationDao extends GenericBaseDao<Installation, String> {
 
@@ -129,7 +130,7 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param aliases aliases the aliases the installation do not match against.
      * @return all the matching installations
      */
-	List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases);
+	List<InstallationAlias> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases);
 
 	/**
      * Find all installations matching the given variant IDs whose alias is in the {@code aliases} list.
@@ -137,6 +138,17 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      * @param aliases aliases the aliases the installation do not match against.
      * @return all the matching installations
      */
-	List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases);
+	List<InstallationAlias> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases);
 
+    /**
+     * Loads all installations matching the given alias.
+     *
+     * @param alias the alias for the filter
+     *
+     * @return list of intallation objects.
+     */
+    List<Installation> findInstallationsByAlias(String alias);
+
+
+	void updateEnabled(String id, Boolean enabled);
 }

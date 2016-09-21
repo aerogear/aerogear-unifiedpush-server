@@ -38,7 +38,7 @@ angular.module('upsConsole')
     };
 
     this.goToAccountManagement = function() {
-      window.location = Auth.keycloak.authServerUrl + '/realms/aerogear/account?referrer=unified-push-server-js';
+      window.location = Auth.keycloak.authServerUrl + '/realms/unifiedpush/account?referrer=unified-push-server-js';
     };
 
     this.havePendingRequests = function() {

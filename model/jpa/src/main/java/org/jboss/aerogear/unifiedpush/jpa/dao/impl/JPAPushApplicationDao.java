@@ -111,10 +111,17 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     }
 
     @Override
-    public List<PushApplication> findByVariantIds(List<String> variantIDs) {
+    public List<PushApplication> findByVariantIds(List<String> variantIds) {
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
 
-        return createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
+        return createQuery(jpql).setParameter("variantIDs", variantIds).getResultList();
+    }
+
+    @Override
+    public PushApplication findByVariantId(String variantId) {
+        final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID =:variantId";
+
+        return createQuery(jpql).setParameter("variantId", variantId).getSingleResult();
     }
 
     @Override

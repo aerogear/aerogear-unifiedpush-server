@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.rest.RestWebApplication;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.slf4j.Logger;
@@ -26,17 +27,23 @@ public class ClientAuthHelper {
 			logger.info("API request missing " + DEVICE_TOKEN_HEADER + " header! URI - > " + request.getRequestURI());
 			return null;
 		}
+
 		Variant variant = loadVariantWhenAuthorized(genericVariantService, request);
-		if (variant == null) {
-			logger.info("API request to non-existing variant " + request.getRequestURI());
-			return null;
+
+		if (variant == null && request.getRequestURI().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) > -1) {
+			variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
+			if (variant == null) {
+				logger.info("API request using bearer to non-existing variant {}", request.getRequestURI());
+				return null;
+			}
+			logger.debug("API request using bearer to exising variant id: {} API: {}", variant.getVariantID(), request.getRequestURI());
 		}
 
 		Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(
 				variant.getVariantID(), HttpBasicHelper.decodeBase64(deviceToken));
-
+		// Installation should always be present.
 		if (installation == null) {
-			logger.info("API request to non-existing / disabled installation " + request.getRequestURI());
+			logger.info("API request to non-existing / disabled installation variant id: {} API: {}", variant.getVariantID(), request.getRequestURI());
 			return null;
 		}
 
@@ -57,6 +64,22 @@ public class ClientAuthHelper {
 
 		final Variant variant = genericVariantService.findByVariantID(variantID);
 		if (variant != null && variant.getSecret().equals(secret)) {
+			return variant;
+		}
+
+		// unauthorized...
+		return null;
+	}
+
+	/**
+	 * returns variant from the bearer token if it is valid for the request
+	 */
+	public static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
+			HttpServletRequest request) {
+		// extract the pushApplicationID from the Authorization header:
+		final Variant variant = BearerHelper.extractVariantFromBearerHeader(genericVariantService, request);
+
+		if (variant != null) {
 			return variant;
 		}
 

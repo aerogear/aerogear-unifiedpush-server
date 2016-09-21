@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,9 +17,9 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.DependsOn;
@@ -39,11 +39,13 @@ import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
+import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,30 +54,30 @@ import org.slf4j.LoggerFactory;
  * Delegates work to an injected DAO object.
  */
 @Stateless
-@DependsOn(value={"Configuration", "VerificationServiceImpl"})
+@DependsOn(value = { "Configuration", "VerificationServiceImpl" })
 public class ClientInstallationServiceImpl implements ClientInstallationService {
-    private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
 
-    @Inject
-    private InstallationDao installationDao;
+	@Inject
+	private InstallationDao installationDao;
 
-    @Inject
-    private CategoryDao categoryDao;
+	@Inject
+	private CategoryDao categoryDao;
 
-    @Inject
-    private AliasDao aliasDao;
+	@Inject
+	private AliasDao aliasDao;
 
-    @Inject
-    private PushApplicationDao pushApplicationDao;
+	@Inject
+	private PushApplicationDao pushApplicationDao;
 
-    @Inject
-    @LoggedIn
-    private Instance<String> developer;
+	@Inject
+	@LoggedIn
+	private Instance<String> developer;
 
 	@Inject
 	private VerificationService verificationService;
 
-    @Inject
+	@Inject
 	private Configuration configuration;
 
 	@Override
@@ -103,7 +105,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 		for (Variant variant : variants) {
 			// Match variant type according to previous variant.
-			if(variant.getType().equals(currentVariant.getType())){
+			if (variant.getType().equals(currentVariant.getType())) {
 				installation.setVariant(variant);
 				updateInstallation(installation);
 				return variant;
@@ -118,290 +120,345 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		this.addInstallation(variant, entity);
 	}
 
-    @Override
-    @Asynchronous
-    public void addInstallation(Variant variant, Installation entity) {
-    	boolean shouldVerifiy = configuration.getProperty(Configuration.PROP_ENABLE_VERIFICATION, false);
+	@Override
+	@Asynchronous
+	public void addInstallation(Variant variant, Installation entity) {
+		boolean shouldVerifiy = configuration.getProperty(Configuration.PROP_ENABLE_VERIFICATION, false);
 
-    	// does it already exist ?
-        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
+		// does it already exist ?
+		Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(),
+				entity.getDeviceToken());
 
-        // Needed for the Admin UI Only. Help for setting up Routes
-        entity.setPlatform(variant.getType().getTypeName());
+		// Needed for the Admin UI Only. Help for setting up Routes
+		entity.setPlatform(variant.getType().getTypeName());
 
-        // new device/client ?
-        if (installation == null) {
-            logger.trace("Performing new device/client registration");
+		// new device/client ?
+		if (installation == null) {
+			logger.trace("Performing new device/client registration");
 
-            // Verification process required, disable device.
-            if (shouldVerifiy)
-            	entity.setEnabled(false);
+			// Verification process required, disable device.
+			if (shouldVerifiy)
+				entity.setEnabled(false);
 
-            // store the installation:
-            storeInstallationAndSetReferences(variant, entity);
-        } else {
-            // We only update the metadata, if the device is enabled:
-            if (installation.isEnabled()) {
-                logger.trace("Updating received metadata for an 'enabled' installation");
+			// store the installation:
+			storeInstallationAndSetReferences(variant, entity);
+		} else {
+			// We only update the metadata, if the device is enabled:
+			if (installation.isEnabled()) {
+				logger.trace("Updating received metadata for an 'enabled' installation");
 
-                // fix variant property of installation object
-                installation.setVariant(variant);
+				// fix variant property of installation object
+				installation.setVariant(variant);
 
-                // update the entity:
-                this.updateInstallation(installation, entity);
-            }
-        }
+				// update the entity:
+				this.updateInstallation(installation, entity);
+			}
+		}
 
-        // A better implementation would initiate a new REST call when registration is done.
-        if (shouldVerifiy)
-        	verificationService.initiateDeviceVerification(entity, variant);
-    }
+		// A better implementation would initiate a new REST call when
+		// registration is done.
+		if (shouldVerifiy)
+			verificationService.initiateDeviceVerification(entity, variant);
+	}
 
 	@Override
-    public void addInstallationsSynchronously(Variant variant, List<Installation> installations){
-    	this.addInstallations(variant, installations);
-    }
+	public void addInstallationsSynchronously(Variant variant, List<Installation> installations) {
+		this.addInstallations(variant, installations);
+	}
 
-    @Override
-    @Asynchronous
-    public void addInstallations(Variant variant, List<Installation> installations) {
+	@Override
+	@Asynchronous
+	public void addInstallations(Variant variant, List<Installation> installations) {
 
-        // don't bother
-        if (installations == null || installations.isEmpty()) {
-            return;
-        }
+		// don't bother
+		if (installations == null || installations.isEmpty()) {
+			return;
+		}
 
-        // TODO - On a large scale database, we can't load entire device list.
-        Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getVariantID());
+		// TODO - On a large scale database, we can't load entire device list.
+		Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getVariantID());
 
-        // clear out:
-        installationDao.flushAndClear();
+		// clear out:
+		installationDao.flushAndClear();
 
-        for (int i = 0; i < installations.size(); i++) {
+		for (int i = 0; i < installations.size(); i++) {
 
-            Installation current = installations.get(i);
+			Installation current = installations.get(i);
 
-            // let's avoid duplicated tokens/devices per variant
-            // For devices without a token, let's also not bother the DAO layer to throw BeanValidation exception
-            if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
+			// let's avoid duplicated tokens/devices per variant
+			// For devices without a token, let's also not bother the DAO layer
+			// to throw BeanValidation exception
+			if (!existingTokens.contains(current.getDeviceToken()) && hasTokenValue(current)) {
 
-                logger.trace("Importing device with token: {}", current.getDeviceToken());
+				logger.trace("Importing device with token: {}", current.getDeviceToken());
 
-                storeInstallationAndSetReferences(variant, current);
+				storeInstallationAndSetReferences(variant, current);
 
-                // and add a reference to the existing tokens set, to ensure the JSON file contains no duplicates:
-                existingTokens.add(current.getDeviceToken());
+				// and add a reference to the existing tokens set, to ensure the
+				// JSON file contains no duplicates:
+				existingTokens.add(current.getDeviceToken());
 
-                // some tunings, ever 10k devices releasing resources
-                if (i % 10000 == 0) {
-                    logger.trace("releasing some resources during import");
-                    installationDao.flushAndClear();
-                }
-            } else {
-                // for now, we ignore them.... no update applied!
-                logger.trace("Device with token '{}' already exists. Ignoring it ", current.getDeviceToken());
-            }
-        }
-        // clear out:
-        installationDao.flushAndClear();
-    }
+				// some tunings, ever 10k devices releasing resources
+				if (i % 10000 == 0) {
+					logger.trace("releasing some resources during import");
+					installationDao.flushAndClear();
+				}
+			} else {
+				// for now, we ignore them.... no update applied!
+				logger.trace("Device with token '{}' already exists. Ignoring it ", current.getDeviceToken());
+			}
+		}
+		// clear out:
+		installationDao.flushAndClear();
+	}
 
-    @Override
-    public void removeInstallations(List<Installation> installations) {
+	@Override
+	public void removeInstallations(List<Installation> installations) {
+		// uh... :)
+		for (Installation installation : installations) {
+			removeInstallation(installation);
+		}
+	}
 
-        // uh..., fancy method reference :)
-        installations.forEach(this::removeInstallation);
-    }
+	@Override
+	public void updateInstallation(Installation installation) {
+		installationDao.update(installation);
+	}
 
-    @Override
-    public void updateInstallation(Installation installation) {
-        installationDao.update(installation);
-    }
+	@Override
+	public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
+		// copy the "updateable" values:
+		mergeCategories(installationToUpdate, postedInstallation.getCategories());
 
-    @Override
-    public void updateInstallation(Installation installationToUpdate, Installation postedInstallation) {
-        // copy the "updateable" values:
-        mergeCategories(installationToUpdate, postedInstallation.getCategories());
+		installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
+		installationToUpdate.setAlias(postedInstallation.getAlias());
+		installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
+		installationToUpdate.setOperatingSystem(postedInstallation.getOperatingSystem());
+		installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
+		installationToUpdate.setEnabled(postedInstallation.isEnabled());
+		installationToUpdate.setPlatform(postedInstallation.getPlatform());
 
-        installationToUpdate.setDeviceToken(postedInstallation.getDeviceToken());
-        installationToUpdate.setAlias(postedInstallation.getAlias());
-        installationToUpdate.setDeviceType(postedInstallation.getDeviceType());
-        installationToUpdate.setOperatingSystem(postedInstallation
-                .getOperatingSystem());
-        installationToUpdate.setOsVersion(postedInstallation.getOsVersion());
-        installationToUpdate.setEnabled(postedInstallation.isEnabled());
-        installationToUpdate.setPlatform(postedInstallation.getPlatform());
+		// update it:
+		updateInstallation(installationToUpdate);
 
-        // update it:
-        updateInstallation(installationToUpdate);
+		// unsubscribe Android devices from topics that device should no longer
+		// be subscribed to
+		if (installationToUpdate.getVariant().getType() == VariantType.ANDROID) {
+			unsubscribeOldTopics(installationToUpdate);
+		}
+	}
 
-        // unsubscribe Android devices from topics that device should no longer be subscribed to
-        if (installationToUpdate.getVariant().getType() == VariantType.ANDROID) {
-            unsubscribeOldTopics(installationToUpdate);
-        }
-    }
+	@Override
+	public Installation findById(String primaryKey) {
+		return installationDao.find(primaryKey);
+	}
 
-    @Override
-    public Installation findById(String primaryKey) {
-        return installationDao.find(primaryKey);
-    }
+	@Override
+	public void removeInstallation(Installation installation) {
+		installationDao.delete(installation);
+	}
 
-    @Override
-    public void removeInstallation(Installation installation) {
-        installationDao.delete(installation);
-    }
+	@Override
+	@Asynchronous
+	public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
+		// collect inactive installations for the given variant:
+		List<Installation> inactiveInstallations = installationDao.findInstallationsForVariantByDeviceTokens(variantID,
+				deviceTokens);
+		// get rid of them
+		this.removeInstallations(inactiveInstallations);
+	}
 
-    @Override
-    @Asynchronous
-    public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
-        // collect inactive installations for the given variant:
-        List<Installation> inactiveInstallations = installationDao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
-        // get rid of them
-        this.removeInstallations(inactiveInstallations);
-    }
+	@Override
+	public void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken) {
+		this.removeInstallationForVariantByDeviceToken(variantID, deviceToken);
+	}
 
-    @Override
-    public void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken) {
-    	this.removeInstallationForVariantByDeviceToken(variantID, deviceToken);
-    }
+	@Override
+	@Asynchronous
+	public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+		removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
+	}
 
-    @Override
-    @Asynchronous
-    public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-        removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
-    }
+	@Override
+	public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+		return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
+	}
 
-    @Override
-    public Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-        return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
-    }
+	@Override
+	public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+		return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
+	}
 
-    @Override
-    public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-        return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
-    }
+	/**
+	 * Synchronize installations according to alias list. Disable any
+	 * installation not in alias list Enable any existing installation is alias
+	 * list.
+	 *
+	 * @param application
+	 *            - Push Application
+	 * @param aliases
+	 *            - List of Aliases
+	 */
+	@Override
+	public MergeResponse syncInstallationByAliasList(PushApplication application, List<String> aliases) {
+		MergeResponse mergeResponse = new MergeResponse();
 
-    /**
-     * Synchronize installations according to alias list.
-     * Disable any installation not in alias list
-     * Enable any existing installation is alias list.
-     * @param application - Push Application
-     * @param aliases - List of Aliases
-     */
-    @Override
-	public void syncInstallationByAliasList(PushApplication application, List<String> aliases) {
 		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
 		for (Variant variant : application.getVariants()) {
 			variantIDs.add(variant.getVariantID());
 		}
 
 		if (!aliases.isEmpty()) {
-			final List<Installation> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs, aliases);
+			final List<InstallationAlias> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs,
+					aliases);
 			if (!installations.isEmpty()) {
+				mergeResponse.setToDisable(getAliasesFromInstallations(installations));
 				disableInstallations(installations);
 			}
 
-			final List<Installation> existingInstallations = installationDao.findByVariantIDsInAliasList(variantIDs, aliases);
+			final List<InstallationAlias> existingInstallations = installationDao
+					.findByVariantIDsInAliasList(variantIDs, aliases);
 			if (!existingInstallations.isEmpty()) {
+				mergeResponse.setToEnable(getAliasesFromInstallations(existingInstallations));
 				enableInstallations(existingInstallations);
 			}
 		}
+
+		return mergeResponse;
 	}
 
-    @Asynchronous
-    public void unsubscribeOldTopics(Installation installation) {
-        FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
-        Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
-        // Remove current categories from the set of old ones
-        oldCategories.removeAll(convertToNames(installation.getCategories()));
+	/**
+	 * Return distinct aliases list.
+	 */
+	private List<String> getAliasesFromInstallations(List<InstallationAlias> installations) {
+		Set<String> aliases = new HashSet<String>();
 
-        // Remove global variant topic because we don't want to unsubscribe it
-        oldCategories.remove(installation.getVariant().getVariantID());
+		for (InstallationAlias installation : installations) {
+			aliases.add(installation.getAlias());
+		}
 
-        for (String categoryName : oldCategories) {
-            topicManager.unsubscribe(installation, categoryName);
-        }
-    }
+		return new ArrayList<String>(aliases);
+	}
 
+	@Override
+	@Asynchronous
+	public void unsubscribeOldTopics(Installation installation) {
+		GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());
+		Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
+		// Remove current categories from the set of old ones
+		oldCategories.removeAll(convertToNames(installation.getCategories()));
 
-    // =====================================================================
-    // ======== Various finder services for the Sender REST API ============
-    // =====================================================================
+		// Remove global variant topic because we don't want to unsubscribe it
+		oldCategories.remove(installation.getVariant().getVariantID());
 
-    /**
-     * Finder for 'send', used for Android, iOS and SimplePush clients
-     */
-    @Override
-    public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
-        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, false);
-    }
+		for (String categoryName : oldCategories) {
+			topicManager.unsubscribe(installation, categoryName);
+		}
+	}
 
-    @Override
-    public ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {
-        return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, maxResults, lastTokenFromPreviousBatch, true);
-    }
+	// =====================================================================
+	// ======== Various finder services for the Sender REST API ============
+	// =====================================================================
 
-    /**
-     * A simple validation util that checks if a token is present
-     */
-    private static boolean hasTokenValue(Installation installation) {
-        return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
-    }
+	/**
+	 * Finder for 'send', used for Android, iOS and SimplePush clients
+	 */
+	@Override
+	public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID,
+			List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults,
+			String lastTokenFromPreviousBatch) {
+		return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes,
+				maxResults, lastTokenFromPreviousBatch, false);
+	}
 
-    /**
-     * When an installation is created or updated, the categories are passed without IDs.
-     * This method solve this issue by checking for existing categories and updating them (otherwise it would
-     * persist a new object).
-     * @param entity to merge the categories for
-     * @param categoriesToMerge are the categories to merge with the existing one
-     */
-    private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
-        if (entity.getCategories() != null) {
-            final List<String> categoryNames = convertToNames(categoriesToMerge);
-            final List<Category> existingCategoriesFromDB = categoryDao.findByNames(categoryNames);
+	@Override
+	public ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(
+			String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults,
+			String lastTokenFromPreviousBatch) {
+		return installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes,
+				maxResults, lastTokenFromPreviousBatch, true);
+	}
 
-            // Replace json dematerialised categories with their persistent counter parts (see Category.equals),
-            // by remove existing/persistent categories from the new collection, and adding them back in (with their PK).
-            categoriesToMerge.removeAll(existingCategoriesFromDB);
-            categoriesToMerge.addAll(existingCategoriesFromDB);
+	/**
+	 * A simple validation util that checks if a token is present
+	 */
+	private static boolean hasTokenValue(Installation installation) {
+		return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
+	}
 
-            // and apply the passed in ones.
-            entity.setCategories(categoriesToMerge);
-        }
-    }
+	/**
+	 * When an installation is created or updated, the categories are passed
+	 * without IDs. This method solve this issue by checking for existing
+	 * categories and updating them (otherwise it would persist a new object).
+	 *
+	 * @param entity
+	 *            to merge the categories for
+	 * @param categoriesToMerge
+	 *            are the categories to merge with the existing one
+	 */
+	private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
+		if (entity.getCategories() != null) {
+			final List<String> categoryNames = convertToNames(categoriesToMerge);
+			final List<Category> existingCategoriesFromDB = categoryDao.findByNames(categoryNames);
 
-    private static List<String> convertToNames(Set<Category> categories) {
-        return categories.stream().map(Category::getName).collect(Collectors.toList());
-    }
+			// Replace json dematerialised categories with their persistent
+			// counter parts (see Category.equals),
+			// by remove existing/persistent categories from the new collection,
+			// and adding them back in (with their PK).
+			categoriesToMerge.removeAll(existingCategoriesFromDB);
+			categoriesToMerge.addAll(existingCategoriesFromDB);
 
-    /*
-     * Helper to set references and perform the actual storage
-     */
-    protected void storeInstallationAndSetReferences(Variant variant, Installation entity) {
+			// and apply the passed in ones.
+			entity.setCategories(categoriesToMerge);
+		}
+	}
 
-        // ensure lower case for iOS
-        if (variant.getType() == VariantType.IOS) {
-            entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
-        }
-        // set reference
-        entity.setVariant(variant);
-        // update attached categories
-        mergeCategories(entity, entity.getCategories());
-        // store Installation entity
-        installationDao.create(entity);
-    }
+	private static List<String> convertToNames(Set<Category> categories) {
+		List<String> result = new ArrayList<String>();
+		for (Category category : categories) {
+			result.add(category.getName());
+		}
+		return result;
+	}
 
-    private void disableInstallations(List<Installation> installations) {
-        for (Installation installation : installations) {
-        	installation.setEnabled(false);
-            updateInstallation(installation);
-        }
-    }
+	/*
+	 * Helper to set references and perform the actual storage
+	 */
+	protected void storeInstallationAndSetReferences(Variant variant, Installation entity) {
 
-    private void enableInstallations(List<Installation> installations) {
-        for (Installation installation : installations) {
-        	installation.setEnabled(true);
-            updateInstallation(installation);
-        }
-    }
+		// ensure lower case for iOS
+		if (variant.getType() == VariantType.IOS) {
+			entity.setDeviceToken(entity.getDeviceToken().toLowerCase());
+		}
+		// set reference
+		entity.setVariant(variant);
+		// update attached categories
+		mergeCategories(entity, entity.getCategories());
+		// store Installation entity
+		installationDao.create(entity);
+	}
+
+	private void disableInstallations(List<InstallationAlias> installations) {
+		for (InstallationAlias installation : installations) {
+			installationDao.updateEnabled(installation.getId(), false);
+		}
+	}
+
+	private void enableInstallations(List<InstallationAlias> installations) {
+		for (InstallationAlias installation : installations) {
+			installationDao.updateEnabled(installation.getId(), true);
+		}
+	}
+
+	@Override
+	public void removeInstallations(String alias) {
+		List<Installation> insts = installationDao.findInstallationsByAlias(alias);
+		if (insts != null) {
+			insts.forEach(item -> installationDao.delete(item));
+		}
+	}
+
+	public List<Installation> findByAlias(String alias){
+		return installationDao.findInstallationsByAlias(alias);
+	}
 }

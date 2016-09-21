@@ -413,7 +413,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		if (installation == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("installation not found for: " + verificationAttempt.getDeviceToken()),
+					.entity(quote("installation not found for: " + verificationAttempt.getDeviceToken())),
 					request);
 		}
 
@@ -460,13 +460,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         String basicDeviceToken = request.getHeader("device-token");
 		if (basicDeviceToken == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("deviceToken header required"), request);
+					.entity(quote("deviceToken header required")), request);
 		}
 
         String code = verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
         if (code == null){
         	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("Unable to find installation for device-token"), request);
+					.entity(quote("Unable to find installation for device-token")), request);
         }
 
         return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
@@ -476,7 +476,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Path("/associate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Variant")
     public Response associate(@Context HttpServletRequest request) {
 
         // find the matching variation:
@@ -488,7 +488,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         String basicDeviceToken = request.getHeader("device-token");
 		if (basicDeviceToken == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("deviceToken header required"), request);
+					.entity(quote("deviceToken header required")), request);
 		}
 
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
@@ -496,13 +496,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		if (installation == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("installation not found for: " + basicDeviceToken),
+					.entity(quote("installation not found for: " + basicDeviceToken)),
 					request);
 		}
 
 		if (installation.isEnabled() == false) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("unable to assosiate, device is disabled: " + basicDeviceToken),
+					.entity(quote("unable to assosiate, device is disabled: " + basicDeviceToken )),
 					request);
 		}
 
@@ -512,7 +512,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // Associate did not match to any alias
         if (newVariant == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity("unable to assosiate, either alias is missing or can't find equivalent variant!"),
+					.entity(quote("unable to assosiate, either alias is missing or can't find equivalent variant!")),
 					request);
         }
 

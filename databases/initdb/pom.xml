@@ -85,6 +85,13 @@
 			<version>${mysql.version}</version>
 		</dependency>
 
+        <!-- Required by hibernate -->
+		<dependency>
+		    <groupId>org.jboss.logging</groupId>
+		    <artifactId>jboss-logging</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

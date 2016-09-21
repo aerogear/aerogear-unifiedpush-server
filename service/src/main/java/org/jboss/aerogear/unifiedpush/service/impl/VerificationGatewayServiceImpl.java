@@ -94,7 +94,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 					validator = new AlwaysTrueValidator();
 
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				throw new RuntimeException("Cannot instantiate class " + validatorToPublisher[0]);
+				throw new RuntimeException("Cannot instantiate class " + validatorToPublisher[0], e);
 			}
 
 			publishers.put(validator, publisher);

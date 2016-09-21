@@ -16,6 +16,7 @@ import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -40,7 +41,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 
 @RunWith(Arquillian.class)
 public class InstallationRegistrationEndpointTest extends RestEndpointTest {
@@ -106,6 +106,8 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     private PushApplicationService applicationService;
     @Inject
     private VerificationService verificationService;
+    @Inject
+    private AliasService aliasService;
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
@@ -130,7 +132,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
 			ArrayList<String> aliases = new ArrayList<String>();
 			aliases.add("Support@Test.com");
-			applicationService.updateAliasesAndInstallations(app, aliases);
+			aliasService.updateAliasesAndInstallations(app, aliases, false);
 
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);

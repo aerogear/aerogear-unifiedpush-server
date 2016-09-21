@@ -35,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
@@ -233,31 +234,53 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     /**
      * Return list of installations not in aliases list.
      * Match is case insensitive and expect aliases list to be lowercase letters.
+     * TODO - Improvement - return distinct aliases list only, then diasable/enable
+     * installations by alias and not by installation id.
      */
-    @Override
-	public List<Installation> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
-    	return createQuery("select installation from Installation installation " +
-    			" join installation.variant abstractVariant " +
-    			" where abstractVariant.variantID IN :variantIDs " +
-    			" and LOWER(installation.alias) NOT IN :aliases")
-    			.setParameter("variantIDs", variantIDs)
-    			.setParameter("aliases", getAliases(aliases))
-    			.getResultList();
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<InstallationAlias> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
+    	javax.persistence.Query typedQuery = entityManager.createQuery("select i.id, i.alias from Installation i" + //
+    			" where i.variant.variantID IN :variantIDs " + //
+    			" and LOWER(i.alias) NOT IN :aliases") //
+    			.setParameter("variantIDs", variantIDs) //
+    			.setParameter("aliases", getAliases(aliases)); //
+
+    	return toInstallationAlias(typedQuery.getResultList());
 	}
 
     /**
      * Return list of installations by aliases list.
      * Match is case insensitive and expect aliases list to be lowercase letters.
      */
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<InstallationAlias> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases) {
+    	javax.persistence.Query typedQuery = entityManager.createQuery("select i.id, i.alias from Installation i" +
+    			" where i.variant.variantID IN :variantIDs " + //
+    			" and LOWER(i.alias) IN :aliases") //
+    			.setParameter("variantIDs", variantIDs) //
+    			.setParameter("aliases", getAliases(aliases));//
+
+    	return toInstallationAlias(typedQuery.getResultList());
+    }
+
+    private List<InstallationAlias> toInstallationAlias(List<Object[]> results){
+    	List<InstallationAlias> installations = new ArrayList<>();
+    	if (results != null && results.size() > 0){
+    		for (Object[] instlation: results){
+    			installations.add(new InstallationAlias((String)instlation[0], (String)instlation[1]));
+    		}
+    	}
+
+    	return installations;
+    }
+
     @Override
-	public List<Installation> findByVariantIDsInAliasList(List<String> variantIDs, List<String> aliases) {
-    	return createQuery("select installation from Installation installation " +
-    			" join installation.variant abstractVariant " +
-    			" where abstractVariant.variantID IN :variantIDs " +
-    			" and LOWER(installation.alias) IN :aliases")
-    			.setParameter("variantIDs", variantIDs)
-    			.setParameter("aliases", getAliases(aliases))
-    			.getResultList();
+	public void updateEnabled(String id, Boolean enabled) {
+    	entityManager.createQuery("UPDATE Installation i SET i.enabled=:enabled where i.id=:id ") //
+    			.setParameter("enabled", enabled) //
+    			.setParameter("id", id).executeUpdate();
 	}
 
     /**
@@ -325,5 +348,13 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     	return lowerAliases;
     }
+
+	@Override
+	public List<Installation> findInstallationsByAlias(String alias) {
+		StringBuilder queryString = new StringBuilder("select installation from Installation installation " +
+                " where installation.alias = :alias");
+
+		return createQuery(queryString.toString()).setParameter("alias", alias).getResultList();
+	}
 
 }

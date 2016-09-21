@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface FileManager {
 
-	/** 
+	/**
 	 * Saves (overwrites, if exists) the byte array to the file denoted in the path.
 	 * @param path path where to save
 	 * @param data file data
@@ -36,7 +36,7 @@ public interface FileManager {
 	 * @param filter predicate for files
 	 * @return list of files
 	 *
-	 * @throws FileNotFoundException
+	 * @throws FileNotFoundException Exception when path directory is missing.
 	 */
 	List<File> list(Path path, FileFilter filter) throws FileNotFoundException;
 }

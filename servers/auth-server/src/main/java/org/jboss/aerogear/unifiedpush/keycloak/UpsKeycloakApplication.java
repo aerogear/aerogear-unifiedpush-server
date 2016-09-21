@@ -43,7 +43,8 @@ public class UpsKeycloakApplication extends KeycloakApplication {
 			// keycloak.import wasn't specified
 			// Use default from WEB-INF
 			String relmPath = ApplicationUtil.getServletContext().getRealPath("/WEB-INF/ups-realm.json");
-			System.setProperty("keycloak.import", relmPath);
+			String instPath = ApplicationUtil.getServletContext().getRealPath("/WEB-INF/upsi-realm.json");
+			System.setProperty("keycloak.import", relmPath + "," + instPath);
 
 			super.importRealms();
 		}

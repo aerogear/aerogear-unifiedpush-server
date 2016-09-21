@@ -6,11 +6,6 @@
 
 	<module-name>auth</module-name>
 
-    <context-param>
-        <param-name>keycloak.import.realm.resources</param-name>
-        <param-value>/WEB-INF/ups-realm.json</param-value>
-    </context-param>
-
     <servlet>
         <servlet-name>Keycloak REST Interface</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher</servlet-class>

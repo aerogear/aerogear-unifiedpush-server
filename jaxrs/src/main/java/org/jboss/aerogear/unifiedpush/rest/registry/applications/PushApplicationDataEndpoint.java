@@ -43,6 +43,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
@@ -65,22 +66,36 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Inject
 	private NotificationRouter notificationRouter;
 
+	@Inject
+	private AliasService aliasService;
+
 	/**
-	 * Overwrites existing aliases and properties of the push application
-	 * with the given data
+	 * Overwrites existing aliases and properties of the push application with
+	 * the given data. Deprecated since 1.1.4 - moved to alias endpoint.
 	 *
 	 * @param aliasData
 	 *            list of aliases
+	 * @param request
+	 * @return
 	 */
 	@POST
 	@Path("/aliases")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
 	public Response updateAliases(List<String> aliasData, @Context HttpServletRequest request) {
 		return aliasesUpdate(aliasData, request);
 	}
 
+	/**
+	 * Deprecated since 1.1.4 - moved to alias endpoint.
+	 *
+	 * @param pushApplicationID
+	 * @param aliasData
+	 * @param request
+	 * @return
+	 */
 	@POST
 	@Path("c")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -89,22 +104,24 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@Deprecated
 	public Response updateAliases(@PathParam("pushAppID") String pushApplicationID, List<String> aliasData,
 			@Context HttpServletRequest request) {
-
+ 
 		logger.error("method call to @deprecated API /{pushAppID}/aliases");
 
 		return aliasesUpdate(aliasData, request);
 	}
 
 	private Response aliasesUpdate(List<String> aliasData, @Context HttpServletRequest request) {
-		final PushApplication pushApp = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
-		if (pushApp == null) {
+		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
+				pushAppService);
+		if (pushApplication == null) {
 			return Response.status(Status.UNAUTHORIZED)
 					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
 					.entity("Unauthorized Request").build();
 		}
 
 		try {
-			pushAppService.updateAliasesAndInstallations(pushApp, aliasData);
+			// TODO - change oauth2 flag to false
+			aliasService.updateAliasesAndInstallations(pushApplication, aliasData, true);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.error("Cannot update aliases", e);
@@ -131,8 +148,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	@Deprecated
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
-			@PathParam("qualifier") String qualifer, @PathParam("id") String id,
-			@Context HttpServletRequest request) {
+			@PathParam("qualifier") String qualifer, @PathParam("id") String id, @Context HttpServletRequest request) {
 
 		logger.error("method call to @deprecated API {pushAppID}/document/{qualifier}/{id}");
 
@@ -156,7 +172,8 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 				mdo.addFormData("file" + i, documents.get(i), MediaType.TEXT_PLAIN_TYPE);
 			}
 
-			logger.debug(String.format("%s documents found for push applicaiton %s", documents != null ? documents.size() : 0,  pushApp.getPushApplicationID()));
+			logger.debug(String.format("%s documents found for push applicaiton %s",
+					documents != null ? documents.size() : 0, pushApp.getPushApplicationID()));
 
 			return Response.ok(mdo).build();
 		} catch (Exception e) {
@@ -168,13 +185,14 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 
 	/**
 	 * POST deploys a file and stores it for later retrieval by a client of the
-	 * push application.
+	 * push application. Deprecated since 1.1.3 - moved to document endpoint
 	 *
 	 * @deprecated Use @Path("/sender/payload/")
 	 * @param pushApplicationID
 	 *            id of
 	 *            {@link org.jboss.aerogear.unifiedpush.api.PushApplication}
-	 * @param deployRequest a map between aliases and documents.
+	 * @param deployRequest
+	 *            a map between aliases and documents.
 	 *
 	 * @statuscode 401 if unauthorized for this push application
 	 * @statuscode 500 if request failed
@@ -188,7 +206,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 			DocumentDeployRequest deployRequest, @Context HttpServletRequest request,
 			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite) {
 
-		logger.error("method call to @deprecated API /applicationsData/{pushAppID}/document");
+		logger.warn("method call to @deprecated API /applicationsData/{pushAppID}/document");
 
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);

@@ -1,5 +1,5 @@
 {
-    "realm" : "aerogear",
+    "realm" : "unifiedpush",
     "auth-server-url" : "/auth",
     "ssl-required" : "external",
     "resource" : "unified-push-server-js",

@@ -69,10 +69,51 @@ public class DocumentEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Cross Origin for Installations
+     *
+     * @param headers   "Origin" header
+     * @return          "Access-Control-Allow-Origin" header for your response
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Methods     POST, DELETE
+     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader Access-Control-Max-Age           604800
+     *
+     * @statuscode 200 Successful response for your request
+     */
+    @OPTIONS
+    @Path("/{publisher}/{alias}/{qualifier}")    
+    @ReturnType("java.lang.Void")
+    public Response crossOriginForDocuments(@Context HttpHeaders headers) {
+        return appendPreflightResponseHeaders(headers, Response.ok()).build();
+    }
+    
+    /**
+     * Cross Origin for Installations
+     *
+     * @param headers   "Origin" header
+     * @return          "Access-Control-Allow-Origin" header for your response
+     *
+     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Methods     POST, DELETE
+     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader Access-Control-Max-Age           604800
+     *
+     * @statuscode 200 Successful response for your request
+     */
+    @OPTIONS
+    @Path("/{publisher}/{alias}/{qualifier}/{id}")    
+    @ReturnType("java.lang.Void")
+    public Response crossOriginForDocument(@Context HttpHeaders headers) {
+        return appendPreflightResponseHeaders(headers, Response.ok()).build();
+    }
+    
+    /**
      * POST deploys a file and stores it for later retrieval by the push application
      * of the client.
      */
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -143,10 +184,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
 			documentService.saveForPushApplication(pushApp, DocumentMetadata.getAlias(alias), entity,
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
-			return Response.ok(EmptyJSON.STRING).build();
+			
+			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
 		} catch (Exception e) {
 			logger.error("Cannot deploy file for push application", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
 
@@ -174,10 +216,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
-			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
+			
+			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
 
@@ -211,10 +254,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
-			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
+			
+			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
 
@@ -250,11 +294,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id));
-			return Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document).build();
+			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
-
 }

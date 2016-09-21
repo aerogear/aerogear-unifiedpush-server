@@ -17,9 +17,12 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.KeycloakService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.slf4j.Logger;
@@ -34,11 +37,15 @@ public class VerificationServiceImpl implements VerificationService {
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
 	@Inject
+	private Configuration configuration;
+	@Inject
 	private VerificationGatewayService verificationService;
     @Inject
     private InstallationDao installationDao;
     @Inject
-	private Configuration configuration;
+    private PushApplicationService pushApplicationService;
+	@Inject
+	private KeycloakService keycloakService;
 
 	@PostConstruct
 	private void startup() {
@@ -59,12 +66,6 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public String retryDeviceVerification(String deviceToken, Variant variant) {
 		Installation installation = installationDao.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-
-		if (installation==null){
-			logger.warn("Unable to find installation for variant:" + variant.getId() + ", DeviceToken: " + deviceToken);
-			return null;
-		}
-
 		return initiateDeviceVerification(installation, variant);
 	}
 
@@ -113,6 +114,13 @@ public class VerificationServiceImpl implements VerificationService {
 			installation.setEnabled(true);
 			installationDao.update(installation);
 			deviceToToken.remove(key);
+
+			// Enable OAuth2 User
+			if (keycloakService.isInitialized()){
+				PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+				keycloakService.updateUser(pushApplication, installation.getAlias(), verificationCode);
+			}
+
 			return VerificationResult.SUCCESS;
 		}
 		return VerificationResult.FAIL;

@@ -73,12 +73,20 @@ public interface ClientInstallationService {
      */
     Installation findById(String primaryKey);
 
+    List<Installation> findByAlias(String alias);
+
     /**
      * Removes the given installation entity.
      *
      * @param installation the installation
      */
     void removeInstallation(Installation installation);
+    /**
+     * Removes installations by alias.
+     *
+     * @param alias if the device installation
+     */
+    void removeInstallations(String alias);
 
     /**
      * Removes all the installation entities in the {@link List}.
@@ -171,6 +179,7 @@ public interface ClientInstallationService {
 	 * does not match any alias in the {@code aliases} list, Enable existing installations in the alias list.
 	 * @param application the application the installations belong to
 	 * @param aliases aliases to match against
+	 * @return list of aliases to enable/disable
 	 */
-	void syncInstallationByAliasList(PushApplication application, List<String> aliases);
+	MergeResponse syncInstallationByAliasList(PushApplication application, List<String> aliases);
 }
