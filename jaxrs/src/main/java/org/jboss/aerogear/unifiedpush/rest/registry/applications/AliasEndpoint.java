@@ -84,7 +84,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	public Response crossOriginForAlias(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
-	
+
 	@GET
 	@Path("/exists/{aliasId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -93,7 +93,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * Public API to validate alias doesn't exists
 	 */
 	public Response exists(@PathParam("aliasId") String aliasId, @Context HttpServletRequest request) {
-		if (aliasService.find(aliasId) != null)
+		if (aliasService.exists(aliasId) != null)
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
 
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);

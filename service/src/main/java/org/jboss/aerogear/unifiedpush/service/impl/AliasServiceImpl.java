@@ -19,11 +19,13 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
@@ -49,7 +51,7 @@ public class AliasServiceImpl implements AliasService {
 		logger.debug("synchronize aliases oauth2 flag is: " + oauth2);
 
 		// Create keycloak client if missing
-		if (oauth2){
+		if (oauth2) {
 			keycloakService.createClientIfAbsent(pushApplication);
 		}
 
@@ -63,7 +65,7 @@ public class AliasServiceImpl implements AliasService {
 		createAliases(pushApplication, aliases);
 
 		// synchronize aliases to keycloak
-		if (oauth2){
+		if (oauth2) {
 			keycloakService.synchronizeUsers(mergeResponse, pushApplication, aliases);
 		}
 	}
@@ -74,19 +76,40 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void remove(String alias){
+	public void remove(String alias) {
 		aliasDao.delete(aliasDao.findByName(alias));
 	}
 
 	@Override
-	public Alias find(String alias){
+	public Alias find(String alias) {
 		return aliasDao.findByName(alias);
+	}
+
+	@Override
+
+	/**
+	 * @param alias
+	 * Return first existing and enabled device according to a given alias.
+	 */
+	public Installation exists(String alias) {
+		List<Installation> devices = clientInstallationService.findByAlias(alias);
+
+		if (devices == null || devices.size() == 0)
+			return null;
+
+		List<Installation> enabledDevices = devices.stream().filter(device -> device.isEnabled())
+				.collect(Collectors.toList());
+
+		if (enabledDevices != null && enabledDevices.size() > 0) {
+			return enabledDevices.get(0);
+		}
+		return null;
 	}
 
 	/**
 	 * Exists for test reasons.
 	 */
-	public void flushAndClear(){
+	public void flushAndClear() {
 		aliasDao.flushAndClear();
 	}
 
