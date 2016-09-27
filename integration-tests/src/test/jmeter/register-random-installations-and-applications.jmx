@@ -121,7 +121,7 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/auth/realms/aerogear/protocol/openid-connect/token</stringProp>
+          <stringProp name="HTTPSampler.path">/auth/realms/unifiedpush/protocol/openid-connect/token</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -365,10 +365,12 @@ vars.put(&quot;BASE_PATH&quot;,FileServer.getFileServer().getBaseDir().toString(
           <stringProp name="script">import org.apache.commons.codec.binary.Base64;
 
 byte[] iosUsernamePassword = Base64.encodeBase64(&quot;${IOS_USERNAME}:${IOS_PASSWORD}&quot;.getBytes());
-vars.put(&quot;base64IosHeaderValue&quot;,new String(iosUsernamePassword));
+props.put(&quot;base64IosHeaderValue&quot;, new String(iosUsernamePassword));
 
 byte[] androidUsernamePassword = Base64.encodeBase64(&quot;${ANDROID_USERNAME}:${ANDROID_PASSWORD}&quot;.getBytes());
-vars.put(&quot;base64AndroidHeaderValue&quot;,new String(androidUsernamePassword));</stringProp>
+props.put(&quot;base64AndroidHeaderValue&quot;, new String(androidUsernamePassword));
+
+</stringProp>
           <stringProp name="scriptLanguage">groovy</stringProp>
         </BSFSampler>
         <hashTree/>
