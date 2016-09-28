@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Asynchronous;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.DependsOn;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -35,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @DependsOn(value = { "Configuration" })
 public class KeycloakServiceImpl implements KeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
@@ -90,7 +93,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 				.username(userName) //
 				.password(userPassword) //
 				.clientId(cliClientId) //
-				.resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()) //
+				.resteasyClient(new ResteasyClientBuilder().connectionPoolSize(25).build()) //
 				.build();
 
 		this.realm = this.kc.realm(realmId);

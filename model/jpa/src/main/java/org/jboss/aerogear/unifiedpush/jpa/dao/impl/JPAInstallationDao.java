@@ -111,16 +111,10 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     	final String query = getFindVariantByDeviceTokenQuery()
     			.append(" and installation.enabled = :enabled")
     			.toString();
-    	List<Installation> installation = createQuery(query)
+    	return  getSingleResultForQuery(createQuery(query)
     			.setParameter("variantID", variantID)
                 .setParameter("deviceToken", deviceToken)
-                .setParameter("enabled", true)
-                .getResultList();
-
-    	if (!isListNotEmpty(installation)) {
-    		return null;
-    	}
-    	return installation.get(0);
+                .setParameter("enabled", true));
     }
 
     @Override
