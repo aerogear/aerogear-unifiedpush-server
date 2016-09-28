@@ -17,6 +17,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -95,7 +96,7 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public VerificationResult verifyDevice(Installation installation, Variant variant, String verificationCode){
+	public VerificationResult verifyDevice(Installation installation, Variant variant, InstallationVerificationAttempt verificationAttempt){
 		final String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
 		Set<Object> codes = deviceToToken.get(key);
 
@@ -110,15 +111,15 @@ public class VerificationServiceImpl implements VerificationService {
 
 			logger.warn("Verification attempt was made without calling /registry/device, installation id: " + installation.getId());
 			return VerificationResult.UNKNOWN;
-		} else if (codes.contains(verificationCode) || (StringUtils.isNotEmpty(masterCode) && masterCode.equals(verificationCode))) {
+		} else if (codes.contains(verificationAttempt.getCode()) || (StringUtils.isNotEmpty(masterCode) && masterCode.equals(verificationAttempt.getCode()))) {
 			installation.setEnabled(true);
 			installationDao.update(installation);
 			deviceToToken.remove(key);
 
 			// Enable OAuth2 User
-			if (keycloakService.isInitialized()){
+			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()){
 				PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-				keycloakService.updateUser(pushApplication, installation.getAlias(), verificationCode);
+				keycloakService.updateUser(pushApplication, installation.getAlias(), verificationAttempt.getCode());
 			}
 
 			return VerificationResult.SUCCESS;

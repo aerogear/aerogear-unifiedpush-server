@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
@@ -88,7 +89,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
-			VerificationResult results = verificationService.verifyDevice(inst, variant, code);
+			VerificationResult results = verificationService.verifyDevice(inst, variant, new InstallationVerificationAttempt(code, inst.getDeviceToken()));
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			// Re-save device

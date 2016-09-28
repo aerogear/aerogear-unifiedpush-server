@@ -417,7 +417,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					request);
 		}
 
-        VerificationResult result = verificationService.verifyDevice(installation, variant, verificationAttempt.getCode());
+        VerificationResult result = verificationService.verifyDevice(installation, variant, verificationAttempt);
 
         return appendAllowOriginHeader(Response.ok(result), request);
     }

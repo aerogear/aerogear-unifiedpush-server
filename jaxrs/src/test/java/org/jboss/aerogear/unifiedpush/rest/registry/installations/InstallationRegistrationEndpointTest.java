@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
@@ -136,7 +137,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
-			VerificationResult results = verificationService.verifyDevice(inst, variant, code);
+			VerificationResult results = verificationService.verifyDevice(inst, variant, new InstallationVerificationAttempt(code, inst.getDeviceToken()));
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			Variant var = installationService.associateInstallation(inst, variant);
