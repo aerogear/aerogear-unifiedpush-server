@@ -71,7 +71,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
         // no need to send empty list
         if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-        	logger.info(String.format("MPNS message batch to dev/null has been submitted to %s devices.",  clientIdentifiers.size()));
+        	senderCallback.onSilent(VariantType.WINDOWS_WNS.name());
         	return;
         }
 

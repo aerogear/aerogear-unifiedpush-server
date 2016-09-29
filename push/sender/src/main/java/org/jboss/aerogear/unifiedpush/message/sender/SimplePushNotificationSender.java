@@ -44,7 +44,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
 
         // no need to send empty list
         if (tokens.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-        	logger.info(String.format("Simple Push message batch to dev/null has been submitted to %s devices.",  tokens.size()));
+        	callback.onSilent(VariantType.SIMPLE_PUSH.name());
         	return;
         }
 
