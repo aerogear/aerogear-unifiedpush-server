@@ -44,7 +44,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 	private static final String CLIENT_PREFIX = "ups-installation-";
 	private static final String KEYCLOAK_ROLE_USER = "installation";
-	private static final String ROLE_NAME_SUFIX = "-role";
 	private static final String SUBDOMAIN_SEPERATOR = "-";
 	private static final String UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD";
 
@@ -123,7 +122,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 			clientRepresentation.setId(applicationName);
 			clientRepresentation.setClientId(applicationName);
 			clientRepresentation.setEnabled(true);
-			clientRepresentation.setDefaultRoles(new String[] { getRoleName(pushApplication) });
 
 			String domain = configuration.getProperty(Configuration.PROP_OAUTH2_DOMAIN);
 			String protocol = configuration.getProperty(Configuration.PROP_OAUTH2_PROTOCOL);
@@ -157,7 +155,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 		for (String alias : aliases) {
 			// Create user with random passowrd
-			createUser(pushApplication, alias);
+			createUserIfAbsent(pushApplication, alias);
 		}
 	}
 
@@ -181,7 +179,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 	}
 
-	private void createUser(PushApplication pushApplication, String userName) {
+	private void createUserIfAbsent(PushApplication pushApplication, String userName) {
 		UserRepresentation user = getUser(userName);
 
 		if (user == null) {
@@ -207,7 +205,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 			return;
 		}
 
-		createUser(pushApplication, userName);
+		createUserIfAbsent(pushApplication, userName);
 		updateUser(userName, password, true);
 	}
 
@@ -323,9 +321,5 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 
 		return attributes;
-	}
-
-	private String getRoleName(PushApplication PushApplication) {
-		return PushApplication.getName().toLowerCase() + ROLE_NAME_SUFIX;
 	}
 }
