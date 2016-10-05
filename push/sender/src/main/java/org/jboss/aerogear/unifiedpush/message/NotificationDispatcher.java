@@ -111,6 +111,7 @@ public class NotificationDispatcher {
         @Override
         public void onSilent(String variantType) {
             logger.warn(String.format("%s message batch to dev/null has been submitted to %s devices.", variantType, tokenSize));
+            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
     }
 
