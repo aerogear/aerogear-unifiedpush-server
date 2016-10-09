@@ -37,7 +37,13 @@ public class AbstractEndpoint {
         return appendAllowOriginHeader(
                 Response.status(Status.UNAUTHORIZED)
                         .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                        .entity("Unauthorized Request"),
+                        .entity(quote("Unauthorized Request")),
                 request);
+    }
+
+    // Append double quotes to strings, used to overcome jax-rs issue with simple stings.
+    // http://stackoverflow.com/questions/7705081/jax-rs-resteasy-service-return-json-string-without-double-quote
+    protected static String quote(String value) {
+    	return new StringBuilder(value.length() + 2).append('"' + value + '"').toString();
     }
 }
