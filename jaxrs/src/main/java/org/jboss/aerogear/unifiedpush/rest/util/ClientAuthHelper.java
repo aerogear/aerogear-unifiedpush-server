@@ -60,26 +60,28 @@ public class ClientAuthHelper {
 	 * PushApplicationEntity
 	 */
 	public static Variant loadVariantWhenAuthorized(GenericVariantService genericVariantService,
-			HttpServletRequest request) {
-		// extract the pushApplicationID and its secret from the HTTP Basic
-		// header:
-		String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-		String variantID = credentials[0];
-		String secret = credentials[1];
+		HttpServletRequest request) {
+        // extract the pushApplicationID and its secret from the HTTP Basic
+        // header:
+        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+        String variantID = credentials[0];
+        String secret = credentials[1];
 
-		final Variant variant = genericVariantService.findByVariantID(variantID);
-		if (variant != null && variant.getSecret().equals(secret)) {
-			return variant;
-		}
+        final Variant variant = genericVariantService.findByVariantID(variantID);
+        if (variant != null && variant.getSecret().equals(secret)) {
+            return variant;
+        }
 
-		// unauthorized...
-		return null;
-	}
+        logger.warn("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
+        // unauthorized...
+        return null;
+    }
+
 
 	/**
 	 * returns variant from the bearer token if it is valid for the request
 	 */
-	public static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
+	private static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
 			HttpServletRequest request) {
 		// extract the pushApplicationID from the Authorization header:
 		final Variant variant = BearerHelper.extractVariantFromBearerHeader(genericVariantService, request);

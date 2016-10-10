@@ -164,7 +164,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -219,7 +219,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
                            @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -261,7 +261,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -337,7 +337,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -451,7 +451,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response resendVerificationCode(@Context HttpServletRequest request) {
 
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -480,7 +480,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public Response associate(@Context HttpServletRequest request) {
 
         // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
+        final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
         if (variant == null) {
             return create401Response(request);
         }
@@ -519,25 +519,4 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendAllowOriginHeader(Response.ok(newVariant), request);
     }
 
-    /**
-     * returns application if the masterSecret is valid for the request
-     * PushApplicationEntity
-     */
-    private Variant loadVariantWhenAuthorized(
-            HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic
-        // header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String variantID = credentials[0];
-        String secret = credentials[1];
-
-        final Variant variant = genericVariantService.findByVariantID(variantID);
-        if (variant != null && variant.getSecret().equals(secret)) {
-            return variant;
-        }
-
-        logger.warn("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
-        // unauthorized...
-        return null;
-    }
 }
