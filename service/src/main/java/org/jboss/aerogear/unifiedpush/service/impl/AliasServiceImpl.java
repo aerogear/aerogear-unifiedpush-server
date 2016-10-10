@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -89,7 +91,8 @@ public class AliasServiceImpl implements AliasService {
 
 	/**
 	 * @param alias
-	 * Return first existing and enabled device according to a given alias.
+	 *            Return first existing and enabled device according to a given
+	 *            alias.
 	 */
 	public Installation exists(String alias) {
 		List<Installation> devices = clientInstallationService.findByAlias(alias);
@@ -119,7 +122,25 @@ public class AliasServiceImpl implements AliasService {
 			Alias alias = new Alias();
 			alias.setName(name);
 			alias.setPushApplicationID(pushApp.getPushApplicationID());
-			aliasDao.create(alias);
+
+			try {
+				aliasDao.create(alias);
+			} catch (EJBTransactionRolledbackException e) {
+				isConstraintViolationException(e, alias.getName());
+			}
 		}
+	}
+
+	public void isConstraintViolationException(Throwable e, String entityId) throws RuntimeException {
+		Throwable t = e.getCause();
+		while ((t != null) && !(t instanceof ConstraintViolationException)) {
+			t = t.getCause();
+		}
+		if (t instanceof ConstraintViolationException) {
+			// ConstraintViolationException, try to translate exception.
+			throw new ServiceConstraintViolationException(t, entityId);
+		}
+
+		throw new RuntimeException(e);
 	}
 }

@@ -45,6 +45,7 @@ import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.impl.ServiceConstraintViolationException;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,8 +202,11 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		try {
 			aliasService.updateAliasesAndInstallations(pushApplication, aliasData, oauth2);
 			return Response.ok(EmptyJSON.STRING).build();
+		} catch (ServiceConstraintViolationException e) {
+				logger.warn("ConstraintViolationException, alias {} already exists in db.", e.getEntityId());
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(quote("Error, alias " + e.getEntityId() + " already exists in db.")).build();
 		} catch (Exception e) {
-			logger.error("Cannot update aliases", e);
+			logger.error("Cannot update aliases, {}", e.getCause());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}

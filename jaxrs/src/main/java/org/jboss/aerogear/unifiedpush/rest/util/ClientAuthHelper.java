@@ -39,6 +39,11 @@ public class ClientAuthHelper {
 			logger.debug("API request using bearer to exising variant id: {} API: {}", variant.getVariantID(), request.getRequestURI());
 		}
 
+		if (variant == null) {
+			logger.warn("API request to non-existing variant {}", request.getRequestURI());
+			return null;
+		}
+
 		Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(
 				variant.getVariantID(), HttpBasicHelper.decodeBase64(deviceToken));
 		// Installation should always be present.
