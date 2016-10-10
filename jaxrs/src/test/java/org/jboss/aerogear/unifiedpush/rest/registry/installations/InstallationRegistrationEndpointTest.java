@@ -16,6 +16,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
+import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -55,7 +56,9 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
         				"test-data.sql"}, new String[] {"META-INF/test-persistence.xml", "META-INF/test-data.sql"})
                 .addPackage(RestApplication.class.getPackage())
                 .addPackage(InstallationRegistrationEndpoint.class.getPackage())
-                .addClasses(RestEndpointTest.class, InstallationRegistrationEndpoint.class, RestApplication.class, HttpBasicHelper.class, Authenticator.class)
+                .addPackage(InstallationRegistrationEndpoint.class.getPackage())
+                .addClasses(RestEndpointTest.class, InstallationRegistrationEndpoint.class, RestApplication.class,
+                		HttpBasicHelper.class, Authenticator.class, ClientAuthHelper.class)
                 .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
                 .addAsResource("test.properties", "default.properties")
                 .as(WebArchive.class);
