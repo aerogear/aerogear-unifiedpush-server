@@ -477,6 +477,23 @@ public class InstallationDaoTest {
         deviceTokenTest(installation, variant);
     }
 
+    @Test
+    public void shouldSaveWhenValidateDeviceIdFromFirebase() {
+        // given
+        final Installation installation = new Installation();
+        installation.setDeviceToken("ckK-6WYMBXQ:APA91bEvCK_37qM89h5nKNOQTRz0rIjAMqP01hOi7QANlDDRpsDrB7w" +
+                "382l_NB_6mNr_4l3Zx96IuL-dq9O4VdQnx8AM1-hquE2t4VkprbDrJ" +
+                "2784ndbtAnt3FNg7J5aQcPPPO5g19An");
+
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
+
+        // when
+        deviceTokenTest(installation, variant);
+    }
+
     private void deviceTokenTest(Installation installation, Variant variant) {
         entityManager.persist(variant);
         installation.setVariant(variant);
