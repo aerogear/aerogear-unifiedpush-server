@@ -83,12 +83,12 @@ public class DocumentEndpoint extends AbstractEndpoint {
      * @statuscode 200 Successful response for your request
      */
     @OPTIONS
-    @Path("/{publisher}/{alias}/{qualifier}")    
+    @Path("/{publisher}/{alias}/{qualifier}")
     @ReturnType("java.lang.Void")
     public Response crossOriginForDocuments(@Context HttpHeaders headers) {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
-    
+
     /**
      * Cross Origin for Installations
      *
@@ -104,12 +104,12 @@ public class DocumentEndpoint extends AbstractEndpoint {
      * @statuscode 200 Successful response for your request
      */
     @OPTIONS
-    @Path("/{publisher}/{alias}/{qualifier}/{id}")    
+    @Path("/{publisher}/{alias}/{qualifier}/{id}")
     @ReturnType("java.lang.Void")
     public Response crossOriginForDocument(@Context HttpHeaders headers) {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
-    
+
     /**
      * POST deploys a file and stores it for later retrieval by the push application
      * of the client.
@@ -145,7 +145,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Overwrite is @Deprecated, this method should always use overwrite false - will be removed on 1.3.0
 		if (overwrite)
-			logger.warn("method call to @deprecated API /applicationsData/{pushAppID}/document");
+			logger.warn("method call to @deprecated API /document/{pushAppID}/document");
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
@@ -184,7 +184,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
 			documentService.saveForPushApplication(pushApp, DocumentMetadata.getAlias(alias), entity,
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
-			
+
 			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
 		} catch (Exception e) {
 			logger.error("Cannot deploy file for push application", e);
@@ -216,7 +216,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
-			
+
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
@@ -254,7 +254,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			String document = documentService.getLatestDocumentForAlias(variant,
 					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
 					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
-			
+
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);

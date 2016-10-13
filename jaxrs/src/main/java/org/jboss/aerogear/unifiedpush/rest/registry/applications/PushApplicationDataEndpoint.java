@@ -97,14 +97,14 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	 * @return
 	 */
 	@POST
-	@Path("c")
+	@Path("/{pushAppID}/aliases")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	@Deprecated
 	public Response updateAliases(@PathParam("pushAppID") String pushApplicationID, List<String> aliasData,
 			@Context HttpServletRequest request) {
- 
+
 		logger.error("method call to @deprecated API /{pushAppID}/aliases");
 
 		return aliasesUpdate(aliasData, request);
