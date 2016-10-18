@@ -110,6 +110,13 @@ public class DocumentEndpoint extends AbstractEndpoint {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
+    @OPTIONS
+	@Path("/{alias}/{qualifier}{id : (/[^/]+?)?}")
+    @ReturnType("java.lang.Void")
+    public Response crossOriginForDocumentSave(@Context HttpHeaders headers) {
+        return appendPreflightResponseHeaders(headers, Response.ok()).build();
+    }
+    
     /**
      * POST deploys a file and stores it for later retrieval by the push application
      * of the client.
