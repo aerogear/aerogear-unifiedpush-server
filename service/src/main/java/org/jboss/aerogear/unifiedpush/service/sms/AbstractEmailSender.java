@@ -22,21 +22,6 @@ public abstract class AbstractEmailSender {
 
 	protected String template;
 
-	protected void logError(String hostname, String portnumb, String username, String password, String fromaddr,
-			String toaddres, String subjectt, Exception e) {
-
-		StringBuilder builder = new StringBuilder();
-		builder.append("Cannot send email message using");
-		builder.append(": hostname: ").append(hostname);
-		builder.append(", portnumb: ").append(portnumb);
-		builder.append(", username: ").append(username);
-		builder.append(", password: ").append(password);
-		builder.append(", fromaddr: ").append(fromaddr);
-		builder.append(", toaddres: ").append(toaddres);
-
-		logger.error(builder.toString() , e);
-	}
-
 	protected String getProperty(Properties properties, String key) {
 		String value = properties.getProperty(key);
 		if (value == null) {

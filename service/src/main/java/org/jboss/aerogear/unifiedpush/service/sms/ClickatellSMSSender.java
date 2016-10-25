@@ -83,9 +83,9 @@ public class ClickatellSMSSender implements VerificationPublisher {
 
 			invokeAPI(apiCall.toString());
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("failed to encode api call", e);
+			VerificationPublisher.logError(logger, "SMS", API_URL, "443", username, password, username, alias, code, e);
 		} catch (IOException e) {
-			throw new RuntimeException("api call failed", e);
+			VerificationPublisher.logError(logger, "SMS", API_URL, "443", username, password, username, alias, code, e);
 		}
 	}
 

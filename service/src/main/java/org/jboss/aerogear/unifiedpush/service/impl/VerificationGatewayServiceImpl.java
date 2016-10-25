@@ -118,7 +118,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		for (@SuppressWarnings("rawtypes")
 		ConstraintValidator validator : publishers.keySet()) {
 			if (validator.isValid(alias, null)) {
-				logger.info(String.format("Sending '%s' message using '%s' publisher", message, publishers.get(validator).getClass().getName()));
+				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", message, alias, publishers.get(validator).getClass().getName()));
 				publishers.get(validator).send(alias, message, configuration.getProperties());
 			}
 		}

@@ -50,10 +50,10 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 
 				email.send();
 			} catch (EmailException e) {
-				logError(hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
+				VerificationPublisher.logError(logger, "Email",hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 			}
 		} catch (Exception e) {
-			logError(hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
+			VerificationPublisher.logError(logger, "Email",hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 		}
 	}
 }

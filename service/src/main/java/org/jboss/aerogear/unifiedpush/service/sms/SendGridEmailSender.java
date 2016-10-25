@@ -74,16 +74,16 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 				Response response = sg.api(request);
 
 				if (response.statusCode != 200 & response.statusCode != 202) {
-					logError(hostname, portnumb, username, password, fromaddr, alias, subjectt,
+					VerificationPublisher.logError(logger, "Email", hostname, portnumb, username, password, fromaddr, alias, subjectt,
 							new Exception("Unable to send email!"));
 					logger.error("Response body: " + response.body + ", Response headers: " + request.headers);
 				}
 
 			} catch (Exception e) {
-				logError(hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
+				VerificationPublisher.logError(logger, "Email", hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 			}
 		} catch (Exception e) {
-			logError(hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
+			VerificationPublisher.logError(logger, "Email", hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 		}
 	}
 

@@ -105,7 +105,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	public Response updateAliases(@PathParam("pushAppID") String pushApplicationID, List<String> aliasData,
 			@Context HttpServletRequest request) {
 
-		logger.error("method call to @deprecated API /{pushAppID}/aliases");
+		logger.error("method call to @deprecated API /applicationsData/{pushAppID}/aliases");
 
 		return aliasesUpdate(aliasData, request);
 	}
@@ -150,7 +150,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	public Response retrieveDocumentsForPushApp(@PathParam("pushAppID") String pushApplicationID,
 			@PathParam("qualifier") String qualifer, @PathParam("id") String id, @Context HttpServletRequest request) {
 
-		logger.error("method call to @deprecated API {pushAppID}/document/{qualifier}/{id}");
+		logger.error("method call to @deprecated API /applicationsData/{pushAppID}/document/{qualifier}/{id}");
 
 		return getDocumentsForPushApp(qualifer, id, request);
 	}
