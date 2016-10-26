@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral; 
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 

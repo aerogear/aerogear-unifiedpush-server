@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
+/** 
  * Configuration options of the UnifiedPush Message.
  *
  * <p>

@@ -32,7 +32,7 @@ import org.keycloak.KeycloakSecurityContext;
  * Responsible for switch between different types of search
  * Depending on the role of the current logged in user
  */
-@RequestScoped
+@RequestScoped 
 public class SearchManager implements Serializable {
 
 	private static final long serialVersionUID = -6665967856424444078L;

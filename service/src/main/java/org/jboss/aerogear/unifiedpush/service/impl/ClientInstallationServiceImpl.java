@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.DependsOn;
@@ -413,13 +414,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 	}
 
-	private static List<String> convertToNames(Set<Category> categories) {
-		List<String> result = new ArrayList<String>();
-		for (Category category : categories) {
-			result.add(category.getName());
-		}
-		return result;
-	}
+    private static List<String> convertToNames(Set<Category> categories) {
+        return categories.stream().map(Category::getName).collect(Collectors.toList());
+    }
 
 	/*
 	 * Helper to set references and perform the actual storage

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -24,10 +25,8 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
 import org.jboss.aerogear.unifiedpush.rest.util.transform.DynamicTransformer;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -36,7 +35,7 @@ import javax.enterprise.context.RequestScoped;
  */
 @RequestScoped
 public class RequestTransformer {
-    private final Logger logger = Logger.getLogger(RequestTransformer.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(RequestTransformer.class);
 
     private static final String OPERATIONS = "operations";
     private static final String TRANSFORMER = "dynamicTransformer";
@@ -55,7 +54,7 @@ public class RequestTransformer {
             final JsonNode patched = transformJson(patch, json);
             return convertToStringBuilder(applyDynamicTransformer(patched, node));
         } catch (IOException e) {
-            logger.log(Level.SEVERE, String.format("could not find/load path file for version '%s' and path '%s'", version, path), e);
+            logger.error(String.format("could not find/load path file for version '%s' and path '%s'", version, path), e);
             return json;
         } catch (JsonPatchException e) {
             throw new RuntimeException("Error in json patch file", e);
@@ -79,7 +78,7 @@ public class RequestTransformer {
                 JsonPatch patchOperation = JsonPatch.fromJson(nodes);
                 jsonNode = patchOperation.apply(jsonNode);
             } catch (JsonPatchException e) {
-                logger.log(Level.FINEST, "ignore field not found");
+                logger.trace("ignore field not found");
             }
         }
         return jsonNode;

@@ -42,6 +42,8 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param windowsVariant    new {@link WindowsVariant}
      * @param pushApplicationID id of {@link PushApplication}
+     * @param uriInfo           the uri
+     *
      * @return                  created {@link WindowsVariant}
      *
      * @statuscode 201 The Windows Variant created successfully
@@ -101,6 +103,8 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param windowsID             id of {@link WindowsVariant}
      * @param updatedWindowsVariant new info of {@link WindowsVariant}
+     *
+     * @return                     updated {@link WindowsVariant}
      *
      * @statuscode 200 The Windows Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect

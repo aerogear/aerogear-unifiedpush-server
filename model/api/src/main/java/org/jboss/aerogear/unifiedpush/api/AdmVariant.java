@@ -20,7 +20,7 @@ package org.jboss.aerogear.unifiedpush.api;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class AdmVariant extends Variant {
+public class AdmVariant extends Variant { 
 
     private static final long serialVersionUID = -5343197341772916741L;
 

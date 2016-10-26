@@ -110,6 +110,8 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      *
      * @param variantId id of {@link Variant}
      *
+     * @return no content or 404
+     *
      * @statuscode 204 The Variant successfully deleted
      * @statuscode 404 The requested Variant resource does not exist
      */

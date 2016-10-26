@@ -237,7 +237,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                         logger.trace("Sending APNs message to: {}", Arrays.toString(message.getDeviceToken()));
                     }
                 }
-
+ 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
 

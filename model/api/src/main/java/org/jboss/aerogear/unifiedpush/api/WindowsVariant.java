@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonSubTypes({
         @JsonSubTypes.Type(value=WindowsWNSVariant.class, name="wns"),
         @JsonSubTypes.Type(value=WindowsMPNSVariant.class, name="mpns")
-})
+}) 
 public abstract class WindowsVariant extends Variant {
 
 	private static final long serialVersionUID = 4116027822443177838L;

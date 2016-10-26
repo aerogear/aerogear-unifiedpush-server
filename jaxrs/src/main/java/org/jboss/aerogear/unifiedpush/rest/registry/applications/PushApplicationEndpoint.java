@@ -201,6 +201,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      *
      * @param pushApplicationID id of {@link PushApplication}
      * @param updatedPushApp    new info of {@link PushApplication}
+     * @return          updated {@link PushApplication}
      *
      * @statuscode 204 The PushApplication updated successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -274,6 +275,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      * Delete Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
+     * @return          no content
      *
      * @statuscode 204 The PushApplication successfully deleted
      * @statuscode 404 The requested PushApplication resource does not exist

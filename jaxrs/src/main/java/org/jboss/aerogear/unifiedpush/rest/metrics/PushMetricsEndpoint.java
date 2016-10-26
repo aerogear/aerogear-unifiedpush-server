@@ -36,7 +36,7 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/metrics/messages")
-public class PushMetricsEndpoint {
+public class PushMetricsEndpoint { 
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 25;
 

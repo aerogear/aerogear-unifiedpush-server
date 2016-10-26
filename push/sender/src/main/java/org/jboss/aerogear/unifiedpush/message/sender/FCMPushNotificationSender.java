@@ -218,7 +218,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                     clientInstallationService.updateInstallation(installation);
                 }
 
-            } else {
+            } else { 
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (FCM_ERROR_CODES.contains(errorCodeName)) {
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID

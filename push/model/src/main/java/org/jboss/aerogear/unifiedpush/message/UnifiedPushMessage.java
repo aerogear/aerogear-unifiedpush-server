@@ -174,7 +174,7 @@ public class UnifiedPushMessage implements Serializable {
             return OBJECT_MAPPER.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             return "[\"invalid json\"]";
-        }
+        } 
     }
 
     @Override

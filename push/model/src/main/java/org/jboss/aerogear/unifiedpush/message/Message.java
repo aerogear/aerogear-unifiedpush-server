@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import static org.jboss.aerogear.unifiedpush.message.Priority.NORMAL;
 
-import java.io.Serializable;
+import java.io.Serializable; 
 import java.util.HashMap;
 import java.util.Map;
 

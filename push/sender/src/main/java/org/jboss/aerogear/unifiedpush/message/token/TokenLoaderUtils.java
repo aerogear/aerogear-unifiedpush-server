@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
+ 
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 
 import com.google.android.gcm.server.Constants;

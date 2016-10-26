@@ -23,7 +23,7 @@ public abstract class BaseModel implements Serializable {
 
     private static final long serialVersionUID = -4123402116687584512L;
 
-    private String id = UUID.randomUUID().toString();;
+    private String id = UUID.randomUUID().toString();
 
     /**
      * Key identifying the model object in the underlying database (primary key)

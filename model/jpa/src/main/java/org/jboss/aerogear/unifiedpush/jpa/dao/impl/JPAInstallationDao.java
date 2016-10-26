@@ -313,7 +313,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         }
     }
     /**
-     * Checks if the list is empty, and not null
+     * Checks if the list is empty, and not null 
      */
     private static boolean isListNotEmpty(List<?> list) {
         return (list != null && !list.isEmpty());

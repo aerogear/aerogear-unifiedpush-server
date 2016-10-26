@@ -16,17 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
@@ -44,6 +34,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
 public class PushMessageInformationDaoTest {
@@ -153,7 +151,7 @@ public class PushMessageInformationDaoTest {
         long number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
         assertThat(number).isEqualTo(3);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             PushMessageInformation pmi = new PushMessageInformation();
             pmi.setPushApplicationId("231231231");
@@ -162,10 +160,10 @@ public class PushMessageInformationDaoTest {
         }
 
         number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
-        assertThat(number).isEqualTo(103);
+        assertThat(number).isEqualTo(1003);
 
         // a few more for different PushApplication...
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             PushMessageInformation pmi = new PushMessageInformation();
             pmi.setPushApplicationId("231231232");
@@ -174,10 +172,10 @@ public class PushMessageInformationDaoTest {
         }
 
         number = pushMessageInformationDao.getNumberOfPushMessagesForLoginName(loginName);
-        assertThat(number).isEqualTo(203);
+        assertThat(number).isEqualTo(2003);
 
         // check for all
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForApplications()).isEqualTo(203);
+        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForApplications()).isEqualTo(2003);
     }
 
     @Test

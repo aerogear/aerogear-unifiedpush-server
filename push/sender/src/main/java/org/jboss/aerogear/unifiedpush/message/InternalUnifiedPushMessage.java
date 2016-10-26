@@ -24,7 +24,7 @@ public class InternalUnifiedPushMessage extends UnifiedPushMessage {
 
 	private static final long serialVersionUID = -4220526899054802147L;
 
-	/**
+	/** 
      * Constant for the "push payload id" key
      */
     public static final String PUSH_MESSAGE_ID = "aerogear-push-id";

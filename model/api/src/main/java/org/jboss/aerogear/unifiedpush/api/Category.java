@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 
+import java.io.Serializable;
+
 /**
  * A category of a specific installation.
  * @see Installation

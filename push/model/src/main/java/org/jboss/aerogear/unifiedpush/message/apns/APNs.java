@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.apns;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonRootName; 
 
 /**
  * iOS specific settings for Push Notifications

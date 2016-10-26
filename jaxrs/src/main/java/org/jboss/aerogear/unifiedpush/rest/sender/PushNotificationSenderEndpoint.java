@@ -85,6 +85,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
      * <b>Request Header</b> {@code aerogear-sender} uses to identify the used client. If the header is not present, the standard "user-agent" header is used.
      *
      * @param message   message to send
+     * @param request the request
      * @return          empty JSON body
      *
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
