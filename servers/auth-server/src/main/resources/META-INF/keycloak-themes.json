@@ -5,6 +5,6 @@
     },
     {
         "name" : "unifiedpush-installations",
-        "types": [ "account", "login" ]
+        "types": [ "account", "login", "email" ]
     }]
 }
