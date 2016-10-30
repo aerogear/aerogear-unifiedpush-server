@@ -18,7 +18,6 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 * Store & forward JSON documents.
 * Silent Push Notifications (Notification without payload) 
 
-<img src="https://raw.githubusercontent.com/C-B4/unifiedpush-server/master/ups-home-ui-screenshot.png" height="427px" width="550px" />
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
 ## Project Info
