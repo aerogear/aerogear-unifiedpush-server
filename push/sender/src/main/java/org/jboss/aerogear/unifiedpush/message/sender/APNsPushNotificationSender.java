@@ -139,7 +139,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         }
 
         // support for dev/null messages. this is useful for automation tests.
-        if (DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        if (PushNotificationSender.isDevNullVariant(variant.getName())) {
             // invoke the silent callback and return, as it is pointless to send something out.
             callback.onSilent(variant.getType().getTypeName());
             return;
@@ -197,7 +197,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
-                apnsServiceHolder.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
+            	apnsServiceHolder.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
             }
         }
     }
@@ -237,7 +237,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                         logger.trace("Sending APNs message to: {}", Arrays.toString(message.getDeviceToken()));
                     }
                 }
- 
+
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
 

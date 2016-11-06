@@ -43,7 +43,7 @@ public class SimplePushNotificationSender implements PushNotificationSender {
     public void sendPushMessage(Variant variant, Collection<String> tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
 
         // no need to send empty list
-        if (tokens.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        if (tokens.isEmpty() || PushNotificationSender.isDevNullVariant(variant.getName())) {
         	callback.onSilent(VariantType.SIMPLE_PUSH.name());
         	return;
         }

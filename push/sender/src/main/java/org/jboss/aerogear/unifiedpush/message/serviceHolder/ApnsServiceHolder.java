@@ -16,29 +16,25 @@
  */
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
-import com.notnoop.apns.ApnsService;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-
-import com.notnoop.apns.ApnsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.notnoop.apns.ApnsService;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -76,9 +72,11 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
     }
 
     public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {
-        if (msg.getVariantType() == VariantType.IOS) {
-            msg.getVariants().forEach(variant -> initialize(msg.getPushMessageInformation().getId(), variant.getVariantID()));
-        }
+		if (msg.getVariantType() == VariantType.IOS) {
+			// Filter DevNull variants if exists before initialize
+			msg.getVariants().stream().filter(variant -> !PushNotificationSender.isDevNullVariant(variant.getName()))
+					.forEach(variant -> initialize(msg.getPushMessageInformation().getId(), variant.getVariantID()));
+		}
     }
 
     /**

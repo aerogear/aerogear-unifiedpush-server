@@ -41,7 +41,7 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         // no need to send empty list
-        if (clientIdentifiers.isEmpty() || DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        if (clientIdentifiers.isEmpty() || PushNotificationSender.isDevNullVariant(variant.getName())) {
         	senderCallback.onSilent(VariantType.WINDOWS_MPNS.name());
         	return;
         }

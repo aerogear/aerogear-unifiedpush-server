@@ -29,6 +29,10 @@ public class PushMessageInformation extends BaseModel {
 
     private static final long serialVersionUID = -3855047068913784279L;
 
+    public PushMessageInformation(){
+
+    }
+
     @NotNull
     private String pushApplicationId;
 

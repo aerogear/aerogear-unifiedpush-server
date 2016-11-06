@@ -111,7 +111,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
 		// send it out.....
 		try {
-			if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+			if (!PushNotificationSender.isDevNullVariant(variant.getName())) {
 				logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
 				final Sender sender = new Sender(androidVariant.getGoogleKey());
@@ -218,7 +218,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                     clientInstallationService.updateInstallation(installation);
                 }
 
-            } else { 
+            } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (FCM_ERROR_CODES.contains(errorCodeName)) {
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID

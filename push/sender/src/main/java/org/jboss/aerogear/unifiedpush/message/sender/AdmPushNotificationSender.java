@@ -63,7 +63,7 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         // no need to send dev/null requests
-        if (DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
+        if (PushNotificationSender.isDevNullVariant(variant.getName())) {
         	senderCallback.onSilent(variant.getType().getTypeName());
         	return;
         }

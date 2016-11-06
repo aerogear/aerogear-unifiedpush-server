@@ -27,7 +27,6 @@ import java.util.Collection;
  * {@link org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage} to the proper message format of the actual push network and maintaining the connection to it.
  */
 public interface PushNotificationSender {
-	static final String DEVNULL_NOTIFICATIONS_VARIANT = VerificationService.DEVNULL_NOTIFICATIONS_VARIANT;
     /**
      * Sends the {@link UnifiedPushMessage} to the given clients, identified by a collection of tokens, the underlying push network.
      *
@@ -39,4 +38,8 @@ public interface PushNotificationSender {
      *                       of the request (<code>success</code> or <code>error</code>
      */
     void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback);
+
+    static boolean isDevNullVariant(String variantName){
+    	return VerificationService.DEVNULL_NOTIFICATIONS_VARIANT.equals(variantName);
+    }
 }
