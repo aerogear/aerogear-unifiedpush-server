@@ -100,6 +100,18 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
 	}
 
+
+	@POST
+	@Path("/{aliasId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
+	public Response setAliasPassword(@PathParam("aliasId") String aliasId, PasswordContainer passwordContainer,
+			@Context HttpServletRequest request) {
+		return updateAliasPassword(aliasId, passwordContainer, request);
+	}
+
 	/**
 	 * RESTful API for updating alias password. The Endpoint is protected using
 	 * <code>HTTP Basic</code> (credentials
@@ -120,13 +132,15 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
 	 */
-	// TODO - Find a way to validate current user password.
+	/*
+	 * TODO - Find a way to validate current user password.
+	 */
 	@POST
-	@Path("/{aliasId}")
+	@Path("/{aliasId}/password")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response setAliasPassword(@PathParam("aliasId") String aliasId, PasswordContainer passwordContainer,
+	public Response updateAliasPassword(@PathParam("aliasId") String aliasId, PasswordContainer passwordContainer,
 			@Context HttpServletRequest request) {
 		try {
 			AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request);
