@@ -90,7 +90,7 @@ public class PushMetricsEndpoint {
                 .build();
     }
 
-    private static Integer parsePageSize(Integer pageSize) {
+    private Integer parsePageSize(Integer pageSize) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {

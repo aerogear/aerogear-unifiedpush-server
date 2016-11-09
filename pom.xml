@@ -51,9 +51,9 @@
         <module>push</module>
         <module>service</module>
         <module>jaxrs</module>
-        <module>admin-ui</module>
         <module>dependencies</module>
         <module>servers</module>
+        <module>package</module>
     </modules>
 
     <dependencyManagement>
@@ -366,7 +366,7 @@
 
         <!-- Override versions of AeroGear BOMs -->
         <junit.version>4.11</junit.version>
-        <keycloak.version>1.9.8.Final</keycloak.version>
+        <keycloak.version>2.3.0.Final</keycloak.version>
         <hibernate.version>5.0.10.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 

@@ -1,0 +1,7 @@
+.navbar-pf .navbar-brand {
+    background-image: url('../img/logo.png') !important;
+    padding: 0;
+    height: 56px;
+    line-height: 45px;
+    background-repeat: no-repeat;
+}

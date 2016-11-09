@@ -23,6 +23,7 @@ public class ClientAuthHelper {
 	public static Variant loadVariantWhenInstalled(GenericVariantService genericVariantService,
 			ClientInstallationService clientInstallationService, HttpServletRequest request) {
 		String deviceToken = request.getHeader(DEVICE_TOKEN_HEADER);
+
 		if (deviceToken == null) {
 			logger.info("API request missing " + DEVICE_TOKEN_HEADER + " header! URI - > " + request.getRequestURI());
 			return null;

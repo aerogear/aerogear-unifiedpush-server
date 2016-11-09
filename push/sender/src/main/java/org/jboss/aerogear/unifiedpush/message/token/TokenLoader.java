@@ -267,7 +267,7 @@ public class TokenLoader {
      * @param e throwable thrown when JMS message delivery fails
      * @return true if exceptions represents state when queue is full; false otherwise
      */
-    private static boolean isQueueFullException(Throwable e) {
+    private boolean isQueueFullException(Throwable e) {
         if (e instanceof JMSException && e.getCause() != null) {
             if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
                 return true;

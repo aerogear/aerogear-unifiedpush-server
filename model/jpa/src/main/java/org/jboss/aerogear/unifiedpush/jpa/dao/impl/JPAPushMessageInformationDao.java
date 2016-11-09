@@ -17,17 +17,18 @@
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.util.Date;
-import java.util.List;
 
 
 public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
@@ -147,7 +148,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     /**
      * Helper that returns 'ASC' when true and 'DESC' when false.
      */
-    private static String ascendingOrDescending(boolean asc) {
+    private String ascendingOrDescending(boolean asc) {
         if (asc) {
             return ASC;
         } else {

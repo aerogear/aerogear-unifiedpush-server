@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jboss.aerogear.unifiedpush.ApplicationUtil;
 import org.jboss.aerogear.unifiedpush.rest.RestWebApplication;
 import org.jboss.logging.Logger;
-import org.keycloak.adapters.AdapterDeploymentContext;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.spi.HttpFacade.Request;
@@ -59,7 +58,6 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 			String baseUrl = getBaseBuilder(deployment, request, deployment.getAuthServerBaseUrl()).build().toString();
 			KeycloakUriBuilder serverBuilder = KeycloakUriBuilder.fromUri(baseUrl);
 			resolveUrls(deployment, serverBuilder);
-			new AdapterDeploymentContext(deployment).resolveRealmKey(deployment);
 
 			cache.put(realm, deployment);
 		}

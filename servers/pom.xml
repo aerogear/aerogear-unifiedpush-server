@@ -41,7 +41,6 @@
     </build>
 
     <modules>
-        <module>auth-server</module>
         <module>ups-wildfly</module>
     </modules>
 

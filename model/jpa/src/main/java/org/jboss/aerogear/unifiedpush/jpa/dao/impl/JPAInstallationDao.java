@@ -88,7 +88,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         return new PageResult<>(resultList, new Count(count));
     }
 
-    private static <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
+    private <X> TypedQuery<X> setParameters(TypedQuery<X> query, Map<String, Object> parameters) {
         parameters.forEach(query::setParameter);
         return query;
     }
@@ -286,8 +286,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
      *
      * TODO: perhaps moving to Criteria API for this later
      */
-    private static void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters,
-            List<String> categories, List<String> aliases, List<String> deviceTypes) {
+    private void appendDynamicQuery(final StringBuilder jpqlString, final Map<String, Object> parameters, List<String> categories, List<String> aliases, List<String> deviceTypes) {
 
         // OPTIONAL query arguments, as provided.....
         // are aliases present ??

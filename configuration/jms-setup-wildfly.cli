@@ -1,9 +1,4 @@
-connect
-
-#/subsystem=logging/console-handler=AEROGEAR:add(formatter="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n",autoflush=true)
-#/subsystem=logging/logger=org.jboss.aerogear.unifiedpush:add(level=FINEST,use-parent-handlers=false,handlers=["AEROGEAR"])
-
-batch
+embed-server --server-config=standalone-full-ha.xml
 
 /subsystem=messaging-activemq/server=default/jms-queue=AdmPushMessageQueue:add(entries=[queue/AdmPushMessageQueue])
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
@@ -36,7 +31,6 @@ batch
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
 
 
-
 /subsystem=messaging-activemq/server=default/jms-queue=MetricsQueue:add(entries=[queue/MetricsQueue])
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.MetricsQueue:add(max-delivery-attempts=-1)
 
@@ -44,7 +38,6 @@ batch
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:add(redelivery-delay=1000, max-delivery-attempts=-1)
 
 /subsystem=messaging-activemq/server=default/jms-queue=TriggerVariantMetricCollectionQueue:add(entries=[queue/TriggerVariantMetricCollectionQueue])
-
 
 
 /subsystem=messaging-activemq/server=default/jms-queue=BatchLoadedQueue:add(entries=[queue/BatchLoadedQueue])
@@ -61,7 +54,5 @@ batch
 /subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:add(entries=[queue/FreeServiceSlotQueue])
 
 
-
 /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:add(entries=[topic/MetricsProcessingStartedTopic])
 
-run-batch

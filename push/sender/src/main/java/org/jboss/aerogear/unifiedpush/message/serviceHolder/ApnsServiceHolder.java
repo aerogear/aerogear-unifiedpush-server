@@ -121,7 +121,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
      * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
      * LOWER CASE format. This helper method performs a transformation
      */
-    private static Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
+    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
         return inactiveTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
     }
 }

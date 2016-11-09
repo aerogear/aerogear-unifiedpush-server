@@ -48,13 +48,6 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>unifiedpush-auth-server</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <destFileName>unifiedpush-auth-server.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
                                     <artifactId>unifiedpush-server-wildfly</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>

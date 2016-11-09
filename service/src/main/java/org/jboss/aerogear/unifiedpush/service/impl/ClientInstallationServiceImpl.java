@@ -383,7 +383,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	/**
 	 * A simple validation util that checks if a token is present
 	 */
-	private static boolean hasTokenValue(Installation installation) {
+    private boolean hasTokenValue(Installation installation) {
 		return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
 	}
 
@@ -414,7 +414,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 	}
 
-    private static List<String> convertToNames(Set<Category> categories) {
+    private List<String> convertToNames(Set<Category> categories) {
         return categories.stream().map(Category::getName).collect(Collectors.toList());
     }
 
