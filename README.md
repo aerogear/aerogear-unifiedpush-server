@@ -12,10 +12,10 @@
 
 _UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
-* SSL Suuport, embeded NGINX, embeded postgresql.
-* Centralized configuration/managment. 
+* SSL Suuport, embeded NGINX, PostgreSQL, Wildfly 10 & KeyCloak 2.3.
+* Centralized configuration/managment using Chef Omnibus. 
 * Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Store & forward JSON documents.
+* Collections DB - Can be ccessed from both the server and the client.
 * Silent Push Notifications (Notification without payload) 
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
