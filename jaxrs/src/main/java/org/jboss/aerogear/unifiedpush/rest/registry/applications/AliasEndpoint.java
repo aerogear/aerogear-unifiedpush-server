@@ -100,18 +100,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
 	}
 
-
-	@POST
-	@Path("/{aliasId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	@Deprecated
-	public Response setAliasPassword(@PathParam("aliasId") String aliasId, PasswordContainer passwordContainer,
-			@Context HttpServletRequest request) {
-		return updateAliasPassword(aliasId, passwordContainer, request);
-	}
-
 	/**
 	 * RESTful API for updating alias password. The Endpoint is protected using
 	 * <code>HTTP Basic</code> (credentials
