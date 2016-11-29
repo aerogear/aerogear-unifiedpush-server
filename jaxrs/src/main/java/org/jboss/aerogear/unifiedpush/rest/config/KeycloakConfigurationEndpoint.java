@@ -1,12 +1,15 @@
 package org.jboss.aerogear.unifiedpush.rest.config;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.spring.utils.StringUtils;
+import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.util.SystemPropertiesJsonParserFactory;
 
@@ -15,20 +18,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/keycloak/config")
-public class KeycloakConfigurationEndpoint implements IKCConfig {
+public class KeycloakConfigurationEndpoint {
+
+	@Inject
+	private Configuration configuration;
+
+	@PostConstruct
+	public void build() {
+		OAuth2ConfigurationBuilder.build(configuration);
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response configurationFile() {
 
-		String realmName = System.getProperty(KEY_AUTHENTICATION_UPS_REALM);
-		String upsAuthServer = System.getProperty(KEY_AUTHENTICATION_SERVER_URL);
-
 		ObjectMapper mapper = new ObjectMapper(new SystemPropertiesJsonParserFactory());
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 		AdapterConfig adapterConfig = new AdapterConfig();
-		adapterConfig.setRealm(StringUtils.isEmpty(realmName) ? DEFAULT_AUTHENTICATION_UPS_REALM : realmName);
-		adapterConfig.setAuthServerUrl(StringUtils.isEmpty(upsAuthServer) ? DEFAULT_AUTHENTICATION_SERVER_URL : upsAuthServer);
+		adapterConfig.setRealm(OAuth2ConfigurationBuilder.getUpsRealm());
+		adapterConfig.setAuthServerUrl(OAuth2ConfigurationBuilder.getOAuth2Url());
 		adapterConfig.setSslRequired("external");
 		adapterConfig.setPublicClient(true);
 		adapterConfig.setResource("unified-push-server-js");

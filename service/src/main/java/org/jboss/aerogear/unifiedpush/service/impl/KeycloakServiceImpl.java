@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Asynchronous;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -21,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.MergeResponse;
+import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -57,8 +59,13 @@ public class KeycloakServiceImpl implements KeycloakService {
 	private Keycloak kc;
 	private RealmResource realm;
 
+	@PostConstruct
+	public void build() {
+		OAuth2ConfigurationBuilder.build(configuration);
+	}
+
 	public boolean isInitialized() {
-		if (!configuration.isOauth2Enabled()) {
+		if (!OAuth2ConfigurationBuilder.isOAuth2Enabled()) {
 			return false;
 		}
 
@@ -66,11 +73,11 @@ public class KeycloakServiceImpl implements KeycloakService {
 			synchronized (this) {
 				if (oauth2Enabled == null) {
 
-					if (configuration.isOauth2Enabled()) {
+					if (OAuth2ConfigurationBuilder.isOAuth2Enabled()) {
 						this.initialize();
 					}
 
-					oauth2Enabled = configuration.isOauth2Enabled();
+					oauth2Enabled = OAuth2ConfigurationBuilder.isOAuth2Enabled();
 				}
 			}
 		}
@@ -79,23 +86,23 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	private void initialize() {
-		String keycloakPath = configuration.getProperty(Configuration.PROP_OAUTH2_KEYCLOAK_PATH);
+		String keycloakPath = OAuth2ConfigurationBuilder.getOAuth2Url();
 
-		String realmId = configuration.getProperty(Configuration.PROP_OAUTH2_REALM_ID);
-		String cliClientId = configuration.getProperty(Configuration.PROP_OAUTH2_CLIENT_ID);
-		String userName = configuration.getProperty(Configuration.PROP_OAUTH2_USERNAME);
-		String userPassword = configuration.getProperty(Configuration.PROP_OAUTH2_PASSWORD);
+		String upsiRealmId = OAuth2ConfigurationBuilder.getUpsiRealm();
+		String cliClientId = OAuth2ConfigurationBuilder.getAdminClient();
+		String userName = OAuth2ConfigurationBuilder.getAdminUserName();
+		String userPassword = OAuth2ConfigurationBuilder.getAdminPassword();
 
 		this.kc = KeycloakBuilder.builder() //
 				.serverUrl(keycloakPath) //
-				.realm(realmId)//
+				.realm(upsiRealmId)//
 				.username(userName) //
 				.password(userPassword) //
 				.clientId(cliClientId) //
 				.resteasyClient(new ResteasyClientBuilder().connectionPoolSize(25).build()) //
 				.build();
 
-		this.realm = this.kc.realm(realmId);
+		this.realm = this.kc.realm(upsiRealmId);
 
 		setRealmConfiguration();
 	}
@@ -123,8 +130,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 			clientRepresentation.setClientId(applicationName);
 			clientRepresentation.setEnabled(true);
 
-			String domain = configuration.getProperty(Configuration.PROP_OAUTH2_DOMAIN);
-			String protocol = configuration.getProperty(Configuration.PROP_OAUTH2_PROTOCOL);
+			String domain = configuration.getProperty(OAuth2ConfigurationBuilder.getRooturlDomain());
+			String protocol = configuration.getProperty(OAuth2ConfigurationBuilder.getRooturlProtocol());
 			clientRepresentation.setRootUrl(protocol + "://" + simpleApplicationName + SUBDOMAIN_SEPERATOR + domain);
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");
