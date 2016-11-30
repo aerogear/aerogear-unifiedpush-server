@@ -13,12 +13,10 @@ import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.DependsOn;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
@@ -39,6 +37,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+// Still depends on Configuration service to static initialize OAuth2ConfigurationBuilder
 @DependsOn(value = { "Configuration" })
 public class KeycloakServiceImpl implements KeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
@@ -50,9 +49,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 	private static final String ATTRIBUTE_VARIANT_SUFFIX = "_variantid";
 	private static final String ATTRIBUTE_SECRET_SUFFIX = "_secret";
-
-	@Inject
-	private Configuration configuration;
 
 	private volatile Boolean oauth2Enabled;
 	private Keycloak kc;
@@ -125,8 +121,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 			clientRepresentation.setClientId(applicationName);
 			clientRepresentation.setEnabled(true);
 
-			String domain = configuration.getProperty(OAuth2ConfigurationBuilder.getRooturlDomain());
-			String protocol = configuration.getProperty(OAuth2ConfigurationBuilder.getRooturlProtocol());
+			String domain = OAuth2ConfigurationBuilder.getRooturlDomain();
+			String protocol = OAuth2ConfigurationBuilder.getRooturlProtocol();
 			clientRepresentation.setRootUrl(protocol + "://" + simpleApplicationName + SUBDOMAIN_SEPERATOR + domain);
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");

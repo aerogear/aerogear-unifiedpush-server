@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
-Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-2.3.0.Final.ja
- r keycloak-common-2.3.0.Final.jar bcprov-jdk15on-1.52.jar bcpkix-jdk1
+Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-2.4.0.Final.ja
+ r keycloak-common-2.4.0.Final.jar bcprov-jdk15on-1.52.jar bcpkix-jdk1
  5on-1.52.jar jackson-core-2.7.4.jar jackson-databind-2.7.4.jar jackso
- n-annotations-2.7.4.jar keycloak-adapter-core-2.3.0.Final.jar keycloa
- k-jboss-adapter-core-2.3.0.Final.jar keycloak-adapter-spi-2.3.0.Final
+ n-annotations-2.7.4.jar keycloak-adapter-core-2.4.0.Final.jar keycloa
+ k-jboss-adapter-core-2.4.0.Final.jar keycloak-adapter-spi-2.4.0.Final
  .jar httpclient-4.3.6.jar httpcore-4.3.3.jar commons-logging-1.1.1.ja
  r commons-codec-1.6.jar unifiedpush-model-jpa.jar unifiedpush-model-a
  pi.jar base64-2.3.8.jar slf4j-nop-1.6.4.jar unifiedpush-service.jar u
  nifiedpush-common.jar unifiedpush-push-model.jar commons-lang-2.6.jar
-  keycloak-admin-client-2.3.0.Final.jar validation-api-1.1.0.Final.jar
+  keycloak-admin-client-2.4.0.Final.jar validation-api-1.1.0.Final.jar
   commons-email-1.4.jar javax.mail-1.5.3.jar activation-1.1.1.jar comm
  ons-io-2.4.jar libphonenumber-7.3.1.jar sendgrid-java-3.0.5.jar java-
  http-client-2.3.2.jar unifiedpush-push-sender.jar apns-1.0.0.Beta6.ja
@@ -23,6 +23,6 @@ Class-Path: pom.xml bcprov-jdk16-1.46.jar keycloak-core-2.3.0.Final.ja
  1.47.0.3.jar sc-light-jdk15on-1.47.0.3.jar json-patch-1.7.jar jackson
  -coreutils-1.6.jar msg-simple-1.1.jar btf-1.2.jar jsr305-2.0.1.jar gu
  ava-16.0.1.jar miredot-annotations-1.4.0.jar unifiedpush-admin-ui.jar
-  keycloak-wildfly-adapter-2.3.0.Final.jar keycloak-undertow-adapter-s
- pi-2.3.0.Final.jar keycloak-undertow-adapter-2.3.0.Final.jar
+  keycloak-wildfly-adapter-2.4.0.Final.jar keycloak-undertow-adapter-s
+ pi-2.4.0.Final.jar keycloak-undertow-adapter-2.4.0.Final.jar
 
