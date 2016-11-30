@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Asynchronous;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -59,10 +58,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 	private Keycloak kc;
 	private RealmResource realm;
 
-	@PostConstruct
-	public void build() {
-		OAuth2ConfigurationBuilder.build(configuration);
-	}
 
 	public boolean isInitialized() {
 		if (!OAuth2ConfigurationBuilder.isOAuth2Enabled()) {

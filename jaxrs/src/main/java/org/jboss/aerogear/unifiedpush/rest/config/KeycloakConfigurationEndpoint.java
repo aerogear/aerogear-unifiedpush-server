@@ -1,14 +1,11 @@
 package org.jboss.aerogear.unifiedpush.rest.config;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.util.SystemPropertiesJsonParserFactory;
@@ -19,14 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/keycloak/config")
 public class KeycloakConfigurationEndpoint {
-
-	@Inject
-	private Configuration configuration;
-
-	@PostConstruct
-	public void build() {
-		OAuth2ConfigurationBuilder.build(configuration);
-	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

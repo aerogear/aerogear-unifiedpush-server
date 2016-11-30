@@ -27,6 +27,10 @@ public class OAuth2ConfigurationBuilder {
 	private static final OAuth2ConfigurationBuilder OAUTH2 = new OAuth2ConfigurationBuilder();
 	private static Configuration conf;
 
+	public static OAuth2ConfigurationBuilder get(){
+		return OAUTH2;
+	}
+
 	public static OAuth2ConfigurationBuilder build(Configuration conf) {
 		OAuth2ConfigurationBuilder.conf = conf;
 		return OAUTH2;

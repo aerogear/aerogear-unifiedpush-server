@@ -31,6 +31,10 @@ public class Configuration {
 		final String propertiesFilePath = System.getProperty(PROPERTIES_FILE_KEY);
 		properties = new Properties();
 		configurer = new PropertyPlaceholderConfigurer();
+		configurer.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
+
+		OAuth2ConfigurationBuilder.build(this);
+
 		InputStream is = null;
 
 		if (propertiesFilePath != null) {
