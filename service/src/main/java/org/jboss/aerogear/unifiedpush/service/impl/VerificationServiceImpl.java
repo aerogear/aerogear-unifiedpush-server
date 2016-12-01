@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.DependsOn;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
+@DependsOn(value = { "Configuration" })
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);

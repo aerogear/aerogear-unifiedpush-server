@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sends SMS over Clickatell's HTTP API.
+ * Sends Email over SMTP API.
  */
 public class SSLEmailSender extends AbstractEmailSender implements VerificationPublisher {
 	private final Logger logger = LoggerFactory.getLogger(SSLEmailSender.class);
@@ -33,7 +33,7 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
 					|| alias == null) {
-				logger.warn("Configuraiton peoperties are missing, unable to send Email request");
+				logger.warn("SSLEmail Configuraiton peoperties are missing, unable to send Email request");
 				return;
 			}
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.DependsOn;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
  * @see VerificationPublisher
  */
 @Singleton
+@DependsOn(value = { "Configuration" })
 public class VerificationGatewayServiceImpl implements VerificationGatewayService {
 	private final Logger logger = LoggerFactory.getLogger(VerificationGatewayServiceImpl.class);
 

@@ -16,7 +16,7 @@ import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 
 /**
- * Sends SMS over Clickatell's HTTP API.
+ * Sends Email over SendGrid API.
  */
 public class SendGridEmailSender extends AbstractEmailSender implements VerificationPublisher {
 	private final Logger logger = LoggerFactory.getLogger(SendGridEmailSender.class);
@@ -38,7 +38,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
 					|| alias == null) {
-				logger.warn("Configuraiton peoperties are missing, unable to send Email request");
+				logger.warn("SendGrid Configuraiton peoperties are missing, unable to send Email request");
 				return;
 			}
 
