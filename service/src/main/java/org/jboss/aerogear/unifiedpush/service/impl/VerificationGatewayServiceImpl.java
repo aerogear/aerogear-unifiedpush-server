@@ -1,8 +1,8 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
@@ -19,8 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation of {@link VerificationGatewayService}. Note that this class does not implement the underlying
- * SMS sending mechanism. Rather, it uses an implementation of {@link VerificationPublisher} to do so.
+ * Default implementation of {@link VerificationGatewayService}. Note that this
+ * class does not implement the underlying SMS sending mechanism. Rather, it
+ * uses an implementation of {@link VerificationPublisher} to do so.
  *
  * @see VerificationPublisher
  */
@@ -36,11 +38,12 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	@Inject
 	private Configuration configuration;
 
-	private Map<ConstraintValidator<? extends Annotation, ?>, VerificationPublisher> publishers;
+	private List<VerificationPart> chain;
 
 	/**
-	 * Initializes the SMS sender. We cache the sender since an implementation might set up
-	 * its own (being, currently, outside of JBoss's resource management scope) resource upkeep.
+	 * Initializes the SMS sender. We cache the sender since an implementation
+	 * might set up its own (being, currently, outside of JBoss's resource
+	 * management scope) resource upkeep.
 	 */
 	@PostConstruct
 	public void initializeSender() {
@@ -49,25 +52,25 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		if (validationMap == null || validationMap.length() == 0) {
 			logger.warn("Cannot find validation implementation class, using log based validation class!");
 
-			publishers = new HashMap<>();
-			publishers.put(new AlwaysTrueValidator(), new MockLogSender());
+			chain = new LinkedList<>();
+			chain.add(new VerificationPart(new AlwaysTrueValidator(), new MockLogSender()));
 		}
 
-		if (publishers == null) {
+		if (chain == null) {
 			synchronized (this) {
-				if (publishers == null)
-					publishers = buildMap(validationMap);
+				if (chain == null)
+					chain = buildMap(validationMap);
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<ConstraintValidator<? extends Annotation, ?>, VerificationPublisher> buildMap(String validationMap) {
+	private List<VerificationPart> buildMap(String validationMap) {
 		String[] impls = validationMap.split(IMPL_SPLITTER_TOKEN);
 		String[] validatorToPublisher;
 		boolean isValidationProvided;
 
-		publishers = new HashMap<>();
+		chain = new LinkedList<>();
 		VerificationPublisher publisher;
 		ConstraintValidator<? extends Annotation, ?> validator;
 
@@ -99,29 +102,38 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 				throw new RuntimeException("Cannot instantiate class " + validatorToPublisher[0], e);
 			}
 
-			publishers.put(validator, publisher);
+			chain.add(new VerificationPart(validator, publisher));
 		}
 
-		return publishers;
+		return chain;
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(String alias, String message) {
-		if (publishers == null) {
+	public void sendVerificationMessage(Variant variant, String alias, String message) {
+		VerificationPublisher publisher;
+
+		if (chain == null) {
 			// Retry initialization
 			initializeSender();
 		}
 
-		for (@SuppressWarnings("rawtypes")
-		ConstraintValidator validator : publishers.keySet()) {
+		for (VerificationPart part : chain) {
+			@SuppressWarnings("rawtypes")
+			ConstraintValidator validator = part.getValidator();
+			publisher = part.getPublisher();
+
 			if (validator.isValid(alias, null)) {
-				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", message, alias, publishers.get(validator).getClass().getName()));
-				publishers.get(validator).send(alias, message, configuration.getProperties());
+				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", message, alias,
+						publisher.getClass().getName()));
+				publisher.send(alias, message, configuration.getProperties());
+			}
+
+			if (!publisher.chain()) {
+				break;
 			}
 		}
 	}
@@ -130,7 +142,28 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 		this.configuration = configuration;
 	}
 
-	public Map<ConstraintValidator<? extends Annotation, ?>, VerificationPublisher> getPublishers() {
-		return publishers;
+	public List<VerificationPart> getChain() {
+		return chain;
+	}
+
+	public class VerificationPart {
+		private final ConstraintValidator<? extends Annotation, ?> validator;
+		private final VerificationPublisher publisher;
+
+		public VerificationPart(ConstraintValidator<? extends Annotation, ?> validator,
+				VerificationPublisher publisher) {
+			super();
+			this.validator = validator;
+			this.publisher = publisher;
+		}
+
+		public ConstraintValidator<? extends Annotation, ?> getValidator() {
+			return validator;
+		}
+
+		public VerificationPublisher getPublisher() {
+			return publisher;
+		}
+
 	}
 }

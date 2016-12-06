@@ -22,7 +22,6 @@ import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.PropertyPlaceholderConfigurer;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
@@ -121,7 +120,6 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     	// Also check case sensitive aliases
     	iosInstallation.setAlias("SupporT@test.com");
     	try {
-			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
 
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);

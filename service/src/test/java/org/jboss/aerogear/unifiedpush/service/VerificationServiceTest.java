@@ -1,17 +1,20 @@
 package org.jboss.aerogear.unifiedpush.service;
 
-import java.lang.annotation.Annotation;
-
 import javax.validation.ConstraintValidator;
 
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl.VerificationPart;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
+import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * TODO - Convert into Spring based test.
+ */
 public class VerificationServiceTest {
 
 	private VerificationGatewayServiceImpl vService;
@@ -20,7 +23,6 @@ public class VerificationServiceTest {
 		vService = new VerificationGatewayServiceImpl();
 		Configuration conf = new Configuration();
 		conf.loadProperties();
-		conf.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 		vService.setConfiguration(conf);
 		vService.initializeSender();
 	}
@@ -34,15 +36,15 @@ public class VerificationServiceTest {
 	public void singleImplTest() {
 		init();
 
-		Assert.assertTrue(vService.getPublishers().keySet().size() != 0);
+		Assert.assertTrue(vService.getChain().size() != 0);
 	}
 
 	@Test
 	public void singleImplWithDefaultType() {
 		init();
 
-		for (ConstraintValidator<? extends Annotation, ?> validator : vService.getPublishers().keySet()) {
-			Assert.assertTrue(AlwaysTrueValidator.class.isAssignableFrom(validator.getClass()));
+		for (VerificationPart part : vService.getChain()) {
+			Assert.assertTrue(AlwaysTrueValidator.class.isAssignableFrom(part.getValidator().getClass()));
 		}
 	}
 
@@ -53,10 +55,11 @@ public class VerificationServiceTest {
 
 		init();
 
-		for (ConstraintValidator validator : vService.getPublishers().keySet()) {
-			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(validator.getClass()));
-			Assert.assertTrue(ClickatellSMSSender.class.isAssignableFrom(vService.getPublishers().get(validator).getClass()));
+		for (VerificationPart part : vService.getChain()) {
+			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
+			Assert.assertTrue(ClickatellSMSSender.class.isAssignableFrom(part.getPublisher().getClass()));
 
+			ConstraintValidator validator = part.getValidator();
 
 			Assert.assertTrue(validator.isValid("+13216549877", null));
 			Assert.assertTrue(validator.isValid("+0013216549877", null));
@@ -68,31 +71,36 @@ public class VerificationServiceTest {
 	}
 
 
-	@SuppressWarnings("rawtypes" )
 	@Test
 	public void singleImplWithType1() {
 		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;");
 
 		init();
 
-		for (ConstraintValidator validator : vService.getPublishers().keySet()) {
-			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(validator.getClass()));
-			Assert.assertTrue(ClickatellSMSSender.class.isAssignableFrom(vService.getPublishers().get(validator).getClass()));
+		for (VerificationPart part : vService.getChain()) {
+			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
+			Assert.assertTrue(ClickatellSMSSender.class.isAssignableFrom(part.getPublisher().getClass()));
 		}
 	}
 
-	@SuppressWarnings("rawtypes" )
 	@Test
 	public void multipleImplWithType() {
-		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender");
+		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
 
 		init();
 
-		Assert.assertTrue(vService.getPublishers().size() == 2);
+		Assert.assertTrue(vService.getChain().size() == 2);
 
-		for (ConstraintValidator validator : vService.getPublishers().keySet()) {
-			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(validator.getClass()));
-			Assert.assertTrue(ClickatellSMSSender.class.isAssignableFrom(vService.getPublishers().get(validator).getClass()));
+		int counter = 0;
+
+		for (VerificationPart part : vService.getChain()) {
+			if (counter == 0) // First in order
+				Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
+
+			if (counter == 1) // Second in order
+				Assert.assertTrue(SendGridEmailSender.class.isAssignableFrom(part.getPublisher().getClass()));
+
+			counter++;
 		}
 	}
 

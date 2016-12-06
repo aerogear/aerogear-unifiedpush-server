@@ -66,7 +66,6 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		iosInstallation.setAlias(DEFAULT_DEVICE_ALIAS);
 
 		try {
-			configuration.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
 			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
 
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);

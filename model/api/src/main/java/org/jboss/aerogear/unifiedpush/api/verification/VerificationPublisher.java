@@ -17,6 +17,11 @@ public interface VerificationPublisher {
 	 */
 	void send(String phoneNumber, String message, Properties properties);
 
+	/**
+	 * Indicates rather next validation in chain should be validated.
+	 */
+	default boolean chain() {return true;};
+
 	static void logError(Logger logger, String type, String hostname, String portnumb, String username, String password, String fromaddr,
 			String toaddres, String subjectt, Exception e) {
 

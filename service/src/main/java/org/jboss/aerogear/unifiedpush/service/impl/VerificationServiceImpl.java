@@ -79,7 +79,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-			verificationService.sendVerificationMessage(installation.getAlias(), verificationCode);
+			verificationService.sendVerificationMessage(variant, installation.getAlias(), verificationCode);
 		}
 
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());
