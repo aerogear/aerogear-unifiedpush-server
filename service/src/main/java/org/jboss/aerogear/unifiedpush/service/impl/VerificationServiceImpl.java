@@ -17,11 +17,13 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.infinispan.manager.CacheContainer;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -47,6 +49,8 @@ public class VerificationServiceImpl implements VerificationService {
     private InstallationDao installationDao;
     @Inject
     private PushApplicationService pushApplicationService;
+    @Inject
+    private AliasService aliasService;
 	@Inject
 	private KeycloakService keycloakService;
 
@@ -76,10 +80,11 @@ public class VerificationServiceImpl implements VerificationService {
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
+		Alias alias = aliasService.find(installation.getAlias());
 
 		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-			verificationService.sendVerificationMessage(variant, installation.getAlias(), verificationCode);
+			verificationService.sendVerificationMessage(alias == null? null: alias.getPushApplicationID(), installation.getAlias(), verificationCode);
 		}
 
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());

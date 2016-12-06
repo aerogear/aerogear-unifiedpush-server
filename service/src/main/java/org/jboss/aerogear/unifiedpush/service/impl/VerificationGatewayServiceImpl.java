@@ -10,12 +10,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
 import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
+import org.jboss.aerogear.unifiedpush.service.validation.ConstraintValidatorContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +113,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(Variant variant, String alias, String message) {
+	public void sendVerificationMessage(String pushApplicationId, String alias, String message) {
 		VerificationPublisher publisher;
 
 		if (chain == null) {
@@ -126,7 +126,8 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 			ConstraintValidator validator = part.getValidator();
 			publisher = part.getPublisher();
 
-			if (validator.isValid(alias, null)) {
+
+			if (validator.isValid(alias, new ConstraintValidatorContextImpl(pushApplicationId, configuration.getProperties()))) {
 				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", message, alias,
 						publisher.getClass().getName()));
 				publisher.send(alias, message, configuration.getProperties());
