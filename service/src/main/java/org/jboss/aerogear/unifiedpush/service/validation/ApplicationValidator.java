@@ -4,7 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class ApplicationValidator implements ConstraintValidator<ApplicationValidation, String> {
-	private static final String APP_VALIDATION_KEY = "aerogear.config.application.specific.validation.ids";
+	public static final String APP_VALIDATION_KEY = "aerogear.config.application.specific.validation.ids";
 	private static final String APPLICATION_SEPERATOR = ";";
 
 	@Override

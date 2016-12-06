@@ -15,7 +15,7 @@ public interface VerificationPublisher {
 	 * @param message text message
 	 * @param properties any additional properties required to configure this sms sender
 	 */
-	void send(String phoneNumber, String message, Properties properties);
+	void send(String phoneNumber, String code, Properties properties);
 
 	/**
 	 * Indicates rather next validation in chain should be validated.

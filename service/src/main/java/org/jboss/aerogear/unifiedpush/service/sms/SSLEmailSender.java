@@ -45,7 +45,7 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 				email.setStartTLSEnabled(true);
 				email.setFrom(fromaddr);
 				email.setSubject(subjectt);
-				email.setMsg(getVerificationTemplate(code));
+				email.setMsg(getVerificationMessage(code));
 				email.addTo(alias);
 
 				email.send();
@@ -55,5 +55,10 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 		} catch (Exception e) {
 			VerificationPublisher.logError(logger, "Email",hostname, portnumb, username, password, fromaddr, alias, subjectt, e);
 		}
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return logger;
 	}
 }

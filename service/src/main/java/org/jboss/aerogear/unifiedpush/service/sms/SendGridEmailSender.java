@@ -55,7 +55,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 
 				Content content = new Content();
 				content.setType("text/html");
-				content.setValue(getVerificationTemplate(code));
+				content.setValue(getVerificationMessage(code));
 				mail.addContent(content);
 
 				Personalization personalization = new Personalization();
@@ -100,5 +100,10 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 
 		SendGridEmailSender sender = new SendGridEmailSender();
 		sender.send("test@example.com", "123456", props);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return logger;
 	}
 }

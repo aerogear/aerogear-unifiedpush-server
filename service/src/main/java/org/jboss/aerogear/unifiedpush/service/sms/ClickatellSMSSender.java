@@ -3,7 +3,6 @@ package org.jboss.aerogear.unifiedpush.service.sms;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.apache.http.HttpEntity;
@@ -19,14 +18,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Sends SMS over Clickatell's HTTP API.
  */
-public class ClickatellSMSSender implements VerificationPublisher {
+public class ClickatellSMSSender extends AbstractSender implements VerificationPublisher {
 	private final Logger logger = LoggerFactory.getLogger(ClickatellSMSSender.class);
 
 	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final String COUNTRY_CODE_KEY_PREFIX = "aerogear.config.sms.sender.clickatell.countrycode";
 
-
-	private final static String DEFAULT_VERIFICATION_TEMPLATE = "{0}";
 	private final static String ERROR_PREFIX = "ERR";
 
 	private final static String API_ID_KEY = "aerogear.config.sms.sender.clickatell.api_id";
@@ -36,8 +33,6 @@ public class ClickatellSMSSender implements VerificationPublisher {
 	private final static String MESSAGE_TMPL = "aerogear.config.sms.sender.clickatell.template";
 
 	private final static String API_URL = "https://api.clickatell.com/http/sendmsg";
-
-	private String template;
 
 	/**
 	 * Sends off an sms message to the number.
@@ -53,6 +48,7 @@ public class ClickatellSMSSender implements VerificationPublisher {
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String encoding = getProperty(properties, ENCODING_KEY);
+
 		template = getProperty(properties, MESSAGE_TMPL);
 
 		try {
@@ -141,28 +137,6 @@ public class ClickatellSMSSender implements VerificationPublisher {
 		return response.startsWith(ERROR_PREFIX);
 	}
 
-	private String getProperty(Properties properties, String key) {
-		String value = properties.getProperty(key);
-		if (value == null) {
-			logger.warn("cannot find property " + key + " in configuration");
-		}
-		return value;
-	}
-
-	private String getVerificationMessage(String verificationCode) {
-		return tlMessageFormat.get().format(new Object[] { verificationCode });
-	}
-
-    private ThreadLocal<MessageFormat> tlMessageFormat = new ThreadLocal<MessageFormat>() {
-    	@Override
-    	public MessageFormat initialValue() {
-    		if (template == null || template.isEmpty()) {
-    			template = DEFAULT_VERIFICATION_TEMPLATE;
-    		}
-			return new MessageFormat(template);
-    	}
-    };
-
     private class PhoneNumber {
     	private final String number;
     	private final String countryCode;
@@ -181,5 +155,10 @@ public class ClickatellSMSSender implements VerificationPublisher {
 		}
 
     }
+
+	@Override
+	protected Logger getLogger() {
+		return logger;
+	}
 
 }

@@ -113,7 +113,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(String pushApplicationId, String alias, String message) {
+	public void sendVerificationMessage(String pushApplicationId, String alias, String code) {
 		VerificationPublisher publisher;
 
 		if (chain == null) {
@@ -128,13 +128,13 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 
 
 			if (validator.isValid(alias, new ConstraintValidatorContextImpl(pushApplicationId, configuration.getProperties()))) {
-				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", message, alias,
+				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", code, alias,
 						publisher.getClass().getName()));
-				publisher.send(alias, message, configuration.getProperties());
-			}
+				publisher.send(alias, code, configuration.getProperties());
 
-			if (!publisher.chain()) {
-				break;
+				if (!publisher.chain()) {
+					break;
+				}
 			}
 		}
 	}

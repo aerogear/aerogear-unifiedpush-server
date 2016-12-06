@@ -13,8 +13,8 @@ public class MockLogSender implements VerificationPublisher {
 	private static final Logger logger = LoggerFactory.getLogger(MockLogSender.class);
 
 	@Override
-	public void send(String alias, String message, Properties properties) {
-		logger.info("Logging validation message: \"" + message + "\" for alias: " + alias);
+	public void send(String alias, String code, Properties properties) {
+		logger.info("Logging validation message: \"" + code + "\" for alias: " + alias);
 	}
 
 }

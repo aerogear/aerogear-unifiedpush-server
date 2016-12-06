@@ -1,12 +1,19 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl.VerificationPart;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
+import org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;
 import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
+import org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
 import org.junit.After;
 import org.junit.Assert;
@@ -101,6 +108,31 @@ public class VerificationServiceTest {
 				Assert.assertTrue(SendGridEmailSender.class.isAssignableFrom(part.getPublisher().getClass()));
 
 			counter++;
+		}
+	}
+
+	@Test
+	public void applicationSpecificConfig() {
+		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY,
+				"org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator::org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;" +
+				"org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;" +
+				"org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
+		System.setProperty(ApplicationValidator.APP_VALIDATION_KEY, "231231231");
+		System.setProperty(HtmlFileSender.HTMLFILE_KEY, "/tmp/otp.html");
+		System.setProperty(HtmlFileSender.MESSAGE_TMPL, "{1} - Your CB4 verification code is: {0}");
+
+		init();
+
+		Assert.assertTrue(vService.getChain().size() == 3);
+
+		vService.sendVerificationMessage("231231231", "test@ups.com", "12345");
+
+		List<String> lines;
+		try {
+			lines = FileUtils.readLines(new File("/tmp/otp.html"), "UTF-8");
+			Assert.assertTrue(lines.get(lines.size()-1).contains("12345"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
