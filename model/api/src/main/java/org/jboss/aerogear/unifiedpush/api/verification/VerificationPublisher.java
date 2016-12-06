@@ -12,7 +12,7 @@ public interface VerificationPublisher {
 	/**
 	 * Sends the message to number.
 	 * @param phoneNumber number to send to
-	 * @param message text message
+	 * @param code OTP verification code.
 	 * @param properties any additional properties required to configure this sms sender
 	 */
 	void send(String phoneNumber, String code, Properties properties);
