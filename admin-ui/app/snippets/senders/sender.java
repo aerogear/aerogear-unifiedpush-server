@@ -9,11 +9,7 @@ final UnifiedMessage unifiedMessage = UnifiedMessage.
         .alert("Hello from Java Sender API!")
     .build();
 
-
-sender.send(unifiedMessage, new MessageResponseCallback() {
-
-    @Override
-    public void onComplete() {
-        //do cool stuff
-    }
+ 
+sender.send(unifiedMessage, () -> {
+    //do cool stuff
 });
