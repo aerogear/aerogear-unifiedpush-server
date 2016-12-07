@@ -89,7 +89,7 @@ public class MetricsCollector {
                 .forEach(variantMetricInformation -> {
                     pushMessageInformation.setServedVariants(1 + pushMessageInformation.getServedVariants());
                     logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
-
+                    variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
                 });
 
         if (areAllVariantsServed(pushMessageInformation)) {
