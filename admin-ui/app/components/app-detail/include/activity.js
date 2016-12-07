@@ -74,9 +74,11 @@ angular.module('upsConsole')
       fetchMetrics( self.currentPage, self.searchString )
         .then(function() {
           $log.debug('refreshed');
-          var isPending = self.metrics.some(function(metric) {
-            return metric.servedVariants < metric.totalVariants;
-          });
+          // is the _last_ push job pending?
+          var isPending = self.metrics[0].servedVariants < self.metrics[0].totalVariants;
+          // var isPending = self.metrics.some(function(metric) {
+          //   return metric.servedVariants < metric.totalVariants;
+          // });
           if (isPending) {
             if (!refreshInterval) {
               $log.debug('scheduling refresh');
