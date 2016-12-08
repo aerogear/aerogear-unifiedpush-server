@@ -73,6 +73,7 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public String retryDeviceVerification(String deviceToken, Variant variant) {
 		Installation installation = installationDao.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+
 		return initiateDeviceVerification(installation, variant);
 	}
 
@@ -80,6 +81,12 @@ public class VerificationServiceImpl implements VerificationService {
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
+
+		if(installation == null){
+			logger.warn("Missing installation, unable to send verification code!");
+			return verificationCode;
+		}
+
 		Alias alias = aliasService.find(installation.getAlias());
 
 		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
