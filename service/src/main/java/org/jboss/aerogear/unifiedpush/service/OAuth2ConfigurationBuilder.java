@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 
 /**
  * Serve system properties either from Configuration or from System.getProperty.
@@ -25,13 +26,13 @@ public class OAuth2ConfigurationBuilder {
 	public static final String DEFAULT_OAUTH2_UPSI_REALM = "unifiedpush-installations";
 
 	private static final OAuth2ConfigurationBuilder OAUTH2 = new OAuth2ConfigurationBuilder();
-	private static Configuration conf;
+	private static ConfigurationEnvironment conf;
 
 	public static OAuth2ConfigurationBuilder get(){
 		return OAUTH2;
 	}
 
-	public static OAuth2ConfigurationBuilder build(Configuration conf) {
+	public static OAuth2ConfigurationBuilder build(ConfigurationEnvironment conf) {
 		OAuth2ConfigurationBuilder.conf = conf;
 		return OAUTH2;
 	}

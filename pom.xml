@@ -384,7 +384,9 @@
         <mysql.version>5.1.36</mysql.version>
         <fasterxml.version>2.7.4</fasterxml.version>
         <wildfly.version>10.1.0.Final</wildfly.version>
+        <springframework.version>4.2.5.RELEASE</springframework.version>
         <ups.ddl_value>validate</ups.ddl_value>
+
     </properties>
 
     <profiles>

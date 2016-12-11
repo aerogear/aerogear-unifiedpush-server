@@ -20,11 +20,11 @@ import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -100,8 +100,6 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     }
 
     @Inject
-    private Configuration configuration;
-    @Inject
     private GenericVariantService genericVariantService;
     @Inject
     private ClientInstallationService installationService;
@@ -115,13 +113,13 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     public void enableDeviceTest() {
+		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
+
     	// Prepare installation
     	Installation iosInstallation = getDefaultInstallation();
     	// Also check case sensitive aliases
     	iosInstallation.setAlias("SupporT@test.com");
     	try {
-			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
-
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
@@ -146,8 +144,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}finally{
-			// Rest system property to false
-			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "false");
+			System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
 		}
     }
 }

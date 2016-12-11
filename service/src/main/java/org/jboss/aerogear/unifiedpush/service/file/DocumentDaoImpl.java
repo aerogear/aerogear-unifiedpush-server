@@ -24,9 +24,9 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -39,7 +39,7 @@ public class DocumentDaoImpl implements DocumentDao {
 	private FileManager fileManager;
 
 	@Inject
-	private Configuration configuration;
+    private ConfigurationService env;
 
 	@Override
 	public void create(DocumentMessage message, boolean overwrite) {
@@ -176,8 +176,7 @@ public class DocumentDaoImpl implements DocumentDao {
 	}
 
 	private Path getFullDirectoryPath(Path path) {
-		String pathRoot = configuration.getProperty(Configuration.PROPERTIES_DOCUMENTS_KEY);
-		return Paths.get(pathRoot, path.toString());
+		return Paths.get(env.getDocumentsRootPath(), path.toString());
 	}
 
 	private String getDocumentFileName(DocumentMetadata metadata, boolean overwrite) {

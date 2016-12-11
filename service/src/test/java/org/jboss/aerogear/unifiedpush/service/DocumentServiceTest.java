@@ -18,9 +18,11 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class DocumentServiceTest extends AbstractBaseServiceTest {
@@ -33,7 +35,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	@Inject
 	private DocumentService documentService;
 	@Inject
-	private Configuration configuration;
+	private ConfigurationService configuration;
 	@Inject
 	private GenericVariantService genericVariantService;
 	@Inject
@@ -46,7 +48,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	@Override
 	protected void specificSetup() {
 		// Clean old documents
-		String pathRoot = configuration.getProperty(Configuration.PROPERTIES_DOCUMENTS_KEY);
+		String pathRoot = configuration.getDocumentsRootPath();
 		try {
 			FileUtils.deleteDirectory(new File(pathRoot));
 		} catch (IOException e) {
@@ -54,9 +56,16 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		}
 	}
 
+	@Before
+	public void cleanup(){
+		System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
+	}
+
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
 	public void saveDocumentTest() {
+		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
+
 		// Prepare installation
 		Installation iosInstallation = new Installation();
 		iosInstallation.setDeviceType("iPhone7,2");
@@ -66,8 +75,6 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		iosInstallation.setAlias(DEFAULT_DEVICE_ALIAS);
 
 		try {
-			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "true");
-
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
@@ -99,9 +106,6 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
-		} finally {
-			// Rest system property to false
-			System.setProperty(Configuration.PROP_ENABLE_VERIFICATION, "false");
 		}
 	}
 

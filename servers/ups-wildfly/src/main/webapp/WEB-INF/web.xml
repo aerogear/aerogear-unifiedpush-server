@@ -64,11 +64,12 @@
     <security-role>
         <role-name>admin</role-name>
     </security-role>
+
     <security-role>
         <role-name>developer</role-name>
     </security-role>
+
     <security-role>
         <role-name>installation</role-name>
     </security-role>
-
 </web-app>

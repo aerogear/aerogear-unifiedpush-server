@@ -37,8 +37,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-// Still depends on Configuration service to static initialize OAuth2ConfigurationBuilder
-@DependsOn(value = { "Configuration" })
+@DependsOn(value = { "ConfigurationServiceImpl" })
 public class KeycloakServiceImpl implements KeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 

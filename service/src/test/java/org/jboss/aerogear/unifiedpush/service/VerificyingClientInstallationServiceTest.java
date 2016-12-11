@@ -13,7 +13,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
 
-//@RunWith(MockitoJUnitRunner.class)
 public class VerificyingClientInstallationServiceTest extends AbstractBaseServiceTest {
 
 	@Inject

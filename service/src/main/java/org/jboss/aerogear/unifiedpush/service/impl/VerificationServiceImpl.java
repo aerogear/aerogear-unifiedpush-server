@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
@@ -34,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
-@DependsOn(value = { "Configuration" })
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
@@ -42,7 +40,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
 	@Inject
-	private Configuration configuration;
+	private ConfigurationService configuration;
 	@Inject
 	private VerificationGatewayService verificationService;
     @Inject
@@ -115,7 +113,7 @@ public class VerificationServiceImpl implements VerificationService {
 		Set<Object> codes = deviceToToken.get(key);
 
 		// Support master code verification, should be used only for QA/Automation.
-		String masterCode = configuration.getProperty(Configuration.PROP_MASTER_VERIFICATION);
+		String masterCode = configuration.getMasterCode();
 
 		if (codes == null) {
 			// Installation was already enabled

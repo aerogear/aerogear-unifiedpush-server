@@ -42,7 +42,7 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * Delegates work to an injected DAO object.
  */
 @Stateless
-@DependsOn(value = { "Configuration", "VerificationServiceImpl" })
+@DependsOn(value={"VerificationServiceImpl"})
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 	private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
 
@@ -79,7 +79,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private VerificationService verificationService;
 
 	@Inject
-	private Configuration configuration;
+	private ConfigurationService configuration;
 
 	@Override
 	public Variant associateInstallation(Installation installation, Variant currentVariant) {
@@ -124,7 +124,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	@Override
 	@Asynchronous
 	public void addInstallation(Variant variant, Installation entity) {
-		boolean shouldVerifiy = configuration.getProperty(Configuration.PROP_ENABLE_VERIFICATION, false);
+    	boolean shouldVerifiy = configuration.isVerificationEnabled();
 
 		// does it already exist ?
 		Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(),

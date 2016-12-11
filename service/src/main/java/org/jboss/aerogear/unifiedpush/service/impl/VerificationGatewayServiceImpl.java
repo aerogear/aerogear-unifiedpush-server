@@ -12,7 +12,7 @@ import javax.validation.ConstraintValidator;
 
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
-import org.jboss.aerogear.unifiedpush.service.Configuration;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ConstraintValidatorContextImpl;
@@ -36,9 +36,18 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	private final static String IMPL_CLASS_TOKEN = "::";
 
 	@Inject
-	private Configuration configuration;
+	private ConfigurationService configuration;
 
 	private List<VerificationPart> chain;
+
+	public VerificationGatewayServiceImpl(){}
+
+	/**
+	 * Used for testing & mock services.
+	 */
+	public VerificationGatewayServiceImpl(ConfigurationService configuration){
+		this.configuration = configuration;
+	}
 
 	/**
 	 * Initializes the SMS sender. We cache the sender since an implementation
@@ -47,7 +56,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	 */
 	@PostConstruct
 	public void initializeSender() {
-		final String validationMap = configuration.getProperty(VERIFICATION_IMPL_KEY);
+		final String validationMap = configuration.getVerificationClassImpl();
 
 		if (validationMap == null || validationMap.length() == 0) {
 			logger.warn("Cannot find validation implementation class, using log based validation class!");
@@ -137,10 +146,6 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 				}
 			}
 		}
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
 	}
 
 	public List<VerificationPart> getChain() {

@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidator;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
+import org.jboss.aerogear.unifiedpush.service.impl.ConfigurationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl.VerificationPart;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
@@ -15,22 +17,34 @@ import org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;
 import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
+import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-/**
- * TODO - Convert into Spring based test.
- */
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
+@ContextConfiguration(classes = { ServiceConfig.class })
 public class VerificationServiceTest {
 
+	@Autowired
+	private ConfigurationEnvironment environment;
+
+	private ConfigurationServiceImpl cService;
 	private VerificationGatewayServiceImpl vService;
 
+	@PostConstruct
 	public void init() {
-		vService = new VerificationGatewayServiceImpl();
-		Configuration conf = new Configuration();
-		conf.loadProperties();
-		vService.setConfiguration(conf);
+		cService =  new ConfigurationServiceImpl(environment);
+		vService = new VerificationGatewayServiceImpl(cService);
+
 		vService.initializeSender();
 	}
 

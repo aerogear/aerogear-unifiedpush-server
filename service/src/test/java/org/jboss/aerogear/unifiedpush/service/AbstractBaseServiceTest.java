@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -68,11 +69,16 @@ public abstract class AbstractBaseServiceTest {
 				.addMavenDependencies("org.keycloak:keycloak-core")
 				.addMavenDependencies("org.keycloak:keycloak-admin-client")
 				.addMavenDependencies("com.googlecode.json-simple:json-simple")
-				.addPackages(true, Configuration.class.getPackage())
+				.addMavenDependencies("org.springframework:spring-core")
+				.addPackages(true, ConfigurationService.class.getPackage())
+				.addPackages(true, ServiceConfig.class.getPackage())
 				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
 						new String[] { "META-INF/persistence.xml", "test-data.sql" },
 						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
-				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml").addAsResource("cert/certificate.p12")
+				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
+				.addAsResource("applicationContext.xml")
+				.addAsResource("beanRefContext.xml")
+				.addAsResource("cert/certificate.p12")
 				.addAsResource("default.properties").withMockito().withAssertj().withLang().withIo().withHttpclient()
 				.as(WebArchive.class);
 	}
