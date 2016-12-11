@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @see VerificationPublisher
  */
 @Singleton
-@DependsOn(value = { "Configuration" })
+@DependsOn(value = { "ConfigurationServiceImpl" })
 public class VerificationGatewayServiceImpl implements VerificationGatewayService {
 	private final Logger logger = LoggerFactory.getLogger(VerificationGatewayServiceImpl.class);
 
@@ -43,7 +43,8 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	public VerificationGatewayServiceImpl(){}
 
 	/**
-	 * Used for testing & mock services.
+	 * Used for testing and mock services.
+	 * @param configuration EJB wrapper to spring Environment.
 	 */
 	public VerificationGatewayServiceImpl(ConfigurationService configuration){
 		this.configuration = configuration;

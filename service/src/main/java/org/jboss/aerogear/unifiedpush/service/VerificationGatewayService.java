@@ -7,6 +7,7 @@ public interface VerificationGatewayService {
 
 	/**
 	 * Sends a message to the specified alias
+	 * @param pushApplicationId push application id.
 	 * @param alias phone number / email to send to.
 	 * @param message text message to be sent
 	 */
