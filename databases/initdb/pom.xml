@@ -21,10 +21,6 @@
 	<packaging>jar</packaging>
 	<name>UnifiedPush Create DB Schema</name>
 
-	<properties>
-		<springframework.version>4.3.4.RELEASE</springframework.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>

@@ -16,36 +16,35 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import org.jboss.aerogear.unifiedpush.service.AbstractBaseServiceTest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 
 /**
- * An archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An archive for specifying Arquillian micro-deployments with selected parts of
+ * UPS
  */
 public class UnifiedPushServiceArchive extends UnifiedPushArchiveBase<UnifiedPushServiceArchive> {
 
-    public UnifiedPushServiceArchive(Archive<?> delegate) {
-        super(UnifiedPushServiceArchive.class, delegate);
+	public UnifiedPushServiceArchive(Archive<?> delegate) {
+		super(UnifiedPushServiceArchive.class, delegate);
 
-        addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+		addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-    }
+	}
 
-    public static UnifiedPushServiceArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushServiceArchive.class, String.format("%s.war", clazz.getSimpleName()));
-    }
+	public static UnifiedPushServiceArchive forTestClass(Class<?> clazz) {
+		return ShrinkWrap.create(UnifiedPushServiceArchive.class, String.format("%s.war", clazz.getSimpleName()));
+	}
 
+	@Override
+	public UnifiedPushServiceArchive withServices() {
+		return super.withServices().addPackage(AbstractBaseServiceTest.class.getPackage());
+	}
 
-    @Override
-    public UnifiedPushServiceArchive withApi() {
-        return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
-    }
+	public UnifiedPushServiceArchive withTestResources() {
+		return super.withTestResources().addAsResource("cert/certificate.p12");
+	}
 
-
-    @Override
-    public UnifiedPushServiceArchive withDAOs() {
-        return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
-    }
 }

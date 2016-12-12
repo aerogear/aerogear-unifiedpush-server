@@ -47,7 +47,7 @@ public class APNsPushNotificationSenderTest {
 
         final iOSVariant iosVariant = mock(iOSVariant.class);
         when(iosVariant.getVariantID()).thenReturn(UUID.randomUUID().toString());
-        when(iosVariant.getCertificate()).thenReturn(readCertificate());
+        when(iosVariant.getCertificate()).thenReturn(readCertificate("/cert/certificate.p12"));
         when(iosVariant.getPassphrase()).thenReturn("123456");
 
         sender.sendPushMessage(iosVariant, Arrays.asList("token"), new UnifiedPushMessage(), "123", callback);
@@ -59,8 +59,8 @@ public class APNsPushNotificationSenderTest {
      * The store read by this method was copied from
      * https://github.com/notnoop/java-apns/tree/master/src/test/resources
      */
-    private static byte[] readCertificate() throws Exception {
-        return asByteArray(APNsPushNotificationSenderTest.class.getResourceAsStream("/clientStore.p12"));
+    public static byte[] readCertificate(String cert) throws Exception {
+        return asByteArray(APNsPushNotificationSenderTest.class.getResourceAsStream(cert));
     }
 
     private static byte[] asByteArray(final InputStream is) throws IOException {

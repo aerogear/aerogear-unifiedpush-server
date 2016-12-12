@@ -43,18 +43,7 @@ public abstract class UnifiedPushArchive <T extends Archive<T>> extends WebConta
 
     public abstract T withMockito();
 
-    public abstract T withAssertj();
-
-    public abstract T withLang();
-
-    public abstract T withIo();
-
-    public abstract T withHttpclient();
-
     public abstract T withServices();
 
-    public abstract T withDAOs();
-
-    public abstract T withApi();
-
+    public abstract T withModelJPA();
 }

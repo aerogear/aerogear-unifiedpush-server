@@ -40,9 +40,6 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                     .setParameter("variants", variants).executeUpdate();
         }
 
-        entityManager.createQuery("delete from Alias a where a.pushApplicationID in :id")
-                    .setParameter("id", pushApplication.getId()).executeUpdate();
-
         super.delete(entity);
     }
 

@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -38,7 +39,6 @@ public interface AliasService {
 
     void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases, boolean oauth2);
 
-
     /**
      * updates specific user password
      *
@@ -48,14 +48,13 @@ public interface AliasService {
      */
     void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
 
-	void remove(String alias);
+	Installation exists(String alias);
 
 	Alias find(String alias);
 
-	Installation exists(String alias);
+	void remove(String alias);
 
-    /**
-     * Flush hibernate session for test cases.
-     */
-    void flushAndClear();
+	void removeAll(UUID pushApplicationId);
+
+	void create(Alias alias);
 }

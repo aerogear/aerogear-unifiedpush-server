@@ -16,8 +16,6 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
-import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -25,7 +23,7 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -47,21 +45,13 @@ import org.junit.runner.RunWith;
 public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value().substring(1);
 
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushServiceArchive.forTestClass(InstallationRegistrationEndpointTest.class)
-        		.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-service")
-        		.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa", new String[]{"META-INF/persistence.xml",
-        				"test-data.sql"}, new String[] {"META-INF/test-persistence.xml", "META-INF/test-data.sql"})
-                .addPackage(RestApplication.class.getPackage())
-                .addPackage(InstallationRegistrationEndpoint.class.getPackage())
-                .addPackage(InstallationRegistrationEndpoint.class.getPackage())
-                .addClasses(RestEndpointTest.class, InstallationRegistrationEndpoint.class, RestApplication.class,
-                		HttpBasicHelper.class, Authenticator.class, ClientAuthHelper.class)
-                .addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-                .addAsResource("test.properties", "default.properties")
-                .as(WebArchive.class);
-    }
+	@Deployment
+	public static WebArchive archive() {
+		return UnifiedPushRestArchive.forTestClass(InstallationRegistrationEndpointTest.class) //
+				.withRest() //
+				.addPackage(InstallationRegistrationEndpoint.class.getPackage()) //
+				.as(WebArchive.class);
+	}
 
     @BeforeClass
     public static void initResteasyClient() {

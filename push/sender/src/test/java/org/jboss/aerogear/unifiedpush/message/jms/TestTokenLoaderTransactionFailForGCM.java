@@ -103,7 +103,6 @@ public class TestTokenLoaderTransactionFailForGCM extends AbstractJMSTest {
                 .addClasses(TokenLoaderUtils.class, TokenLoader.class, ClientInstallationService.class, SenderTypeLiteral.class, SenderType.class)
 
                 .addClasses(SenderConfiguration.class, SenderConfigurationProvider.class)
-                .withMockito()
                     .addClass(MocksForTokenLoaderTransactionFailForGCM.class)
                 .addAsWebInfResource("test-jms.xml")
                 .as(WebArchive.class);

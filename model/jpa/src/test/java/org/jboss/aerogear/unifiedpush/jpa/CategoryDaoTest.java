@@ -16,7 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
@@ -27,18 +33,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
 @RunWith(Arquillian.class)
 public class CategoryDaoTest {
 
-    @Inject
-    private EntityManager entityManager;
     @Inject
     private JPACategoryDao categoryDao;
 

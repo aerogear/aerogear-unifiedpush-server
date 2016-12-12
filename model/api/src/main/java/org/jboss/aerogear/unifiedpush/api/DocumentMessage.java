@@ -2,16 +2,21 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import java.io.Serializable;
 
+
 public class DocumentMessage implements Serializable {
-	
+
 	public static final String NULL_PART = "NULL";
 
 	private static final long serialVersionUID = 1345771671978529056L;
-	
+
 	private String content;
 	private DocumentMetadata metadata;
 
 	public DocumentMessage() {
+	}
+
+	public DocumentMessage(String content, String pushApplicationId, String database) {
+		this.metadata = new DocumentMetadata(pushApplicationId, database);
 	}
 
 	public DocumentMessage(String content, DocumentMetadata metadata) {

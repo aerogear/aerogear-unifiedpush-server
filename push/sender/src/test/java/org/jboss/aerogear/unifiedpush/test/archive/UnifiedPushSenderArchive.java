@@ -21,11 +21,14 @@ import java.io.File;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
@@ -38,8 +41,7 @@ import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsu
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
-import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -50,62 +52,49 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
  */
 public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPushSenderArchive> {
 
-    public UnifiedPushSenderArchive(Archive<?> delegate) {
-        super(UnifiedPushSenderArchive.class, delegate);
+	public UnifiedPushSenderArchive(Archive<?> delegate) {
+		super(UnifiedPushSenderArchive.class, delegate);
 
-        addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
-
-    public static UnifiedPushSenderArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushSenderArchive.class, String.format("%s.war", clazz.getSimpleName()));
-    }
-
-    public UnifiedPushSenderArchive withMessaging() {
-        return withApi()
-            .withUtils()
-            .withMessageModel()
-            .withDAOs()
-            .withServices()
-            .addPackage(org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent.class.getPackage())
-            .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
-            .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
-            .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
-            .addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)
-            .addClasses(DispatchToQueue.class, Dequeue.class);
-    }
-
-    public UnifiedPushSenderArchive withMessageDrivenBeans() {
-        return addClasses(AbstractJMSMessageListener.class)
-                .addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
-                .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
-                .addClasses(TriggerMetricCollectionConsumer.class)
-                .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/jboss-ejb3.xml"), "jboss-ejb3.xml");
-    }
-
-    @Override
-    public UnifiedPushSenderArchive withApi() {
-        return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
-    }
-
-    public UnifiedPushSenderArchive withUtils() {
-        return addPackage(DateUtils.class.getPackage())
-                .addClasses(ConfigurationUtils.class);
-    }
-
-    public UnifiedPushSenderArchive withMessageModel() {
-        return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class, Priority.class)
-                .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
-                .addMavenDependencies("org.codehaus.jackson:jackson-mapper-asl");
-    }
-
-	public UnifiedPushSenderArchive withAllServices() {
-		return addPackages(true, HealthNetworkService.class.getPackage());
+		addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 	}
 
-    @Override
-    public UnifiedPushSenderArchive withDAOs() {
-        return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
-    }
+	public static UnifiedPushSenderArchive forTestClass(Class<?> clazz) {
+		return ShrinkWrap.create(UnifiedPushSenderArchive.class, String.format("%s.war", clazz.getSimpleName()));
+	}
+
+	public UnifiedPushSenderArchive withMessaging() {
+		return withServices() //
+				.withModelJPA() //
+				.withTestDS() //
+				.withTestResources() //
+				.withMockito() //
+				.withMessageModel() //
+				.addPackage(BatchLoadedEvent.class.getPackage()) //
+				.addPackage(AbstractMessageHolder.class.getPackage()) //
+				.addPackage(MessageDeliveryException.class.getPackage()) //
+				.addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class,
+						AbstractJMSMessageConsumer.class) //
+				.addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)//
+				.addClasses(DispatchToQueue.class, Dequeue.class);
+	}
+
+	public UnifiedPushSenderArchive withMessageDrivenBeans() {
+		return addClasses(AbstractJMSMessageListener.class)
+				.addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
+				.addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
+				.addClasses(TriggerMetricCollectionConsumer.class).addAsWebInfResource(
+						new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/jboss-ejb3.xml"), "jboss-ejb3.xml");
+	}
+
+	public UnifiedPushSenderArchive withMessageModel() {
+		return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class,
+				Message.class, Priority.class)
+						.addPackage(Windows.class.getPackage())
+						.addPackage(APNs.class.getPackage());
+	}
+
+	@Override
+	public UnifiedPushSenderArchive withTestResources() {
+		return super.withTestResources().addAsResource("cert/certificate.p12");
+	}
 }

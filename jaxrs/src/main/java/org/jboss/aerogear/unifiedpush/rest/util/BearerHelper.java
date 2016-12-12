@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.impl.KeycloakServiceImpl;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 
 public final class BearerHelper {
@@ -53,28 +53,28 @@ public final class BearerHelper {
 		if (StringUtils.isNotBlank(clientId)){
 			return genericVariantService.findVariantByKeycloakClientID(clientId);
 		}
-		
+
 		return null;
 	}
-	
+
 	public static String extractClientId(HttpServletRequest request) {
 		String clientId = null;
 
         AccessToken token = getTokenDataFromBearer(request);
         if (token != null){
-        	clientId = token.getIssuedFor();	
+        	clientId = token.getIssuedFor();
         }
-		
+
 		return clientId;
 	}
-	
+
 	public static AccessToken getTokenDataFromBearer(HttpServletRequest request){
 		AccessToken accessToken = null;
 		String authorizationHeader = getAuthorizationHeader(request);
 
 		if (authorizationHeader != null && isBearer(authorizationHeader)) {
 			String tokenString = extractBearerToken(authorizationHeader);
-	        
+
 			try {
 	        	JWSInput input = new JWSInput(tokenString);
 	        	accessToken = input.readJsonContent(AccessToken.class);
@@ -82,10 +82,10 @@ public final class BearerHelper {
 	        	logger.debug("could not parse token: ", e);
 	        }
 		}
-        
+
         return accessToken;
 	}
-	
+
 	public static String extractBearerToken(String authorizationHeader) {
 		return authorizationHeader.substring(BEARER_SCHEME.length());
 	}

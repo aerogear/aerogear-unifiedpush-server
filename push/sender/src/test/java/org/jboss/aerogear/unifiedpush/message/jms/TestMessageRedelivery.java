@@ -32,7 +32,6 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
@@ -44,9 +43,12 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Arquillian.class)
 public class TestMessageRedelivery {
+	private static final Logger logger =  LoggerFactory.getLogger(TestMessageRedelivery.class);
 
     private static final int NUMBER_OF_MESSAGES = 10;
     private static final int RESOURCE_NOT_AVAILABLE = 3;
@@ -57,8 +59,6 @@ public class TestMessageRedelivery {
         return UnifiedPushSenderArchive.forTestClass(TestMessageRedelivery.class)
                 .withMessaging()
                 .withMessageDrivenBeans()
-                .withMockito()
-                    .addClasses(MockProviders.class)
                 .as(WebArchive.class);
     }
 
@@ -135,17 +135,17 @@ public class TestMessageRedelivery {
         if (msg.getVariant() instanceof AndroidVariant) {
             int count = counter.incrementAndGet();
 
-            System.out.println("starting #" + count);
+            logger.info("starting #" + count);
             if (count <= RESOURCE_NOT_AVAILABLE) {
-                System.out.println("resource not available #" + count);
+            	logger.info("resource not available #" + count);
                 resourceNotAvailable.countDown();
                 throw new SenderResourceNotAvailableException("Resource not available");
             } else if (count <= PUSH_NETWORK_UNREACHABLE + RESOURCE_NOT_AVAILABLE) {
-                System.out.println("communication failure #" + count);
+            	logger.info("communication failure #" + count);
                 pushNetworkUnreachable.countDown();
                 throw new PushNetworkUnreachableException("Communication failure");
             } else {
-                System.out.println("sent #" + count);
+            	logger.info("sent #" + count);
                 delivered.countDown();
             }
         }
@@ -154,7 +154,7 @@ public class TestMessageRedelivery {
     public void emulateNonRedeliverableMessageProcessing(@Observes @Dequeue MessageHolderWithTokens msg) {
         if (msg.getVariant() instanceof SimplePushVariant) {
             int count = counter.incrementAndGet();
-            System.out.println("fail #" + count);
+            logger.info("fail #" + count);
             failed.countDown();
             throw new IllegalStateException("The messaging should not try to re-deliver this message");
         }

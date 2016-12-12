@@ -1,21 +1,21 @@
 package org.jboss.aerogear.unifiedpush.dao;
 
 import java.util.List;
+import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.api.IDocument;
 
-public interface DocumentDao {
+public interface DocumentDao<T, ID> {
 
-	void create(DocumentMessage document, boolean overwrite);
+	void create(IDocument<ID> document);
 
-	void delete(PushApplication app);
+	void delete(UUID pushApplicationId);
 
-	DocumentMessage findLatestDocumentForAlias(DocumentMetadata message);
+	void delete(T doc);
 
-	List<DocumentMessage> findLatestDocumentsForApplication(DocumentMetadata message);
+	IDocument<ID> findOne(ID key);
+	IDocument<ID> findOne(ID key, String documentId);
 
-	List<DocumentMessage> findDocuments(DocumentMetadata message);
-
+	List<IDocument<ID>> findLatestForAliases(ID key, List<Alias> aliases);
 }

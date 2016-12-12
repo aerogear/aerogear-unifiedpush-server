@@ -38,8 +38,7 @@ public class TestSenderConfigurationProducer {
     @Deployment
     public static WebArchive archive() {
         return UnifiedPushSenderArchive.forTestClass(TestSenderConfigurationProducer.class)
-                    .withApi()
-                    .withUtils()
+                    .withMessaging()
                     .addPackage(SenderConfiguration.class.getPackage())
                     .addClasses(SenderType.class, SenderTypeLiteral.class)
                 .as(WebArchive.class);

@@ -57,10 +57,9 @@ public class TestAbstractServiceHolderOnSingleNode {
     public static WebArchive archive() {
         return UnifiedPushSenderArchive.forTestClass(TestAbstractServiceHolderOnSingleNode.class)
                 .withMessaging()
-                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder.class.getPackage())
+                    .addPackage(AbstractServiceHolder.class.getPackage())
                     .deleteClass(ApnsServiceHolder.class)
                     .addClasses(MockServiceHolderForSingleNode.class)
-                .withMockito()
                 .as(WebArchive.class);
     }
 

@@ -27,54 +27,62 @@ import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Responsible for switch between different types of search
- * Depending on the role of the current logged in user
+ * Responsible for switch between different types of search Depending on the
+ * role of the current logged in user
  */
-@RequestScoped 
+@RequestScoped
 public class SearchManager implements Serializable {
-
 	private static final long serialVersionUID = -6665967856424444078L;
-
+	private static final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
 	private HttpServletRequest httpServletRequest;
 
-    @Inject
-    private PushSearchServiceImpl searchAll;
-    @Inject
-    private PushSearchByDeveloperServiceImpl searchByDeveloper;
+	@Inject
+	private PushSearchServiceImpl searchAll;
+	@Inject
+	private PushSearchByDeveloperServiceImpl searchByDeveloper;
 
-    public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
-        this.httpServletRequest = httpServletRequest;
-    }
+	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
+		this.httpServletRequest = httpServletRequest;
+	}
 
-    /**
-     * Validate the current logged in role
-     *
-     * @return an implementation of the search service
-     */
-    public PushSearchService getSearchService() {
+	/**
+	 * Validate the current logged in role
+	 *
+	 * @return an implementation of the search service
+	 */
+	public PushSearchService getSearchService() {
 
-        boolean isAdmin = httpServletRequest.isUserInRole("admin");
+		boolean isAdmin = httpServletRequest.isUserInRole("admin");
 
-        if (isAdmin) {
-            return searchAll;
-        }
-        return searchByDeveloper;
-    }
+		if (isAdmin) {
+			return searchAll;
+		}
+		return searchByDeveloper;
+	}
 
-    /**
-     * Extract the username to be used in multiple queries
-     *
-     * @return current logged in user
-     */
-    @Produces
-    @LoggedIn
-    public String extractUsername() {
-        KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
-        KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
-        return kcSecurityContext.getToken().getPreferredUsername();
+	/**
+	 * Extract the username to be used in multiple queries
+	 *
+	 * @return current logged in user
+	 */
+	@Produces
+	@LoggedIn
+	public String extractUsername() {
+		KeycloakPrincipal<?> p = (KeycloakPrincipal<?>) httpServletRequest.getUserPrincipal();
 
-    }
+		// Null check for automation scenarios.
+		if (p != null) {
+			KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
+			return kcSecurityContext.getToken().getPreferredUsername();
+		}
+
+		logger.warn("Unable to extract KC username from http request, "
+				+ "if this message exists in production we have a security breach");
+		return "NULL";
+	}
 }

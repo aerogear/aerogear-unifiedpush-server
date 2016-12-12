@@ -16,38 +16,50 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import org.jboss.aerogear.unifiedpush.rest.RestApplication;
+import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
+import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
+import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 
 /**
- * An archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An archive for specifying Arquillian micro-deployments with selected parts of
+ * UPS
  */
 public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRestArchive> {
 
-    public UnifiedPushRestArchive(Archive<?> delegate) {
-        super(UnifiedPushRestArchive.class, delegate);
+	public UnifiedPushRestArchive(Archive<?> delegate) {
+		super(UnifiedPushRestArchive.class, delegate);
 
-        addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
+		addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+	}
 
-    public static UnifiedPushRestArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushRestArchive.class, String.format("%s.war", clazz.getSimpleName()));
-    }
+	public static UnifiedPushRestArchive forTestClass(Class<?> clazz) {
+		return ShrinkWrap.create(UnifiedPushRestArchive.class, String.format("%s.war", clazz.getSimpleName()));
+	}
 
-    public UnifiedPushRestArchive withUtils() {
-        return addPackage(DateUtils.class.getPackage());
-    }
+	public UnifiedPushRestArchive withUtils() {
+		return addPackage(DateUtils.class.getPackage());
+	}
 
-    @Override
-    public UnifiedPushRestArchive withApi() {
-        return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
-    }
+	public UnifiedPushRestArchive withPushSender() {
+		return addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-sender") //
+				.addMavenDependencies("com.github.fge:json-patch");
+	}
 
-    @Override
-    public UnifiedPushRestArchive withDAOs() {
-        return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
-                .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
-    }
+	public UnifiedPushRestArchive withRest() {
+		return withPushSender() // Push sender already include services module.
+				.withModelJPA() //
+				.withTestDS() //
+				.withTestResources() //
+				.withMockito() //
+				.addPackage(RestApplication.class.getPackage()) //
+				.addPackage(ClientAuthHelper.class.getPackage()) //
+				.addPackage(RestEndpointTest.class.getPackage()) //
+				.addPackage(Authenticator.class.getPackage());
+
+	}
 }

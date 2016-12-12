@@ -1,43 +1,60 @@
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.jacoco.core.internal.data.CRC64;
+import java.util.UUID;
 
 public class Alias {
-	private Long id;
-	private String name;
-	private String pushApplicationID;
+	private UUID pushApplicationId;
+	private UUID id;
+	private String email;
+	private String mobile;
 
 	public Alias() {
 	}
 
-	public Alias(String name, String pushApplicationID) {
+	private Alias(UUID pushApplicationId) {
 		super();
-		this.name = name;
-		this.pushApplicationID = pushApplicationID;
+		this.pushApplicationId = pushApplicationId;
 	}
 
-	public Long getId() {
+	public Alias(UUID pushApplicationId, UUID id) {
+		this(pushApplicationId);
+		this.id = id;
+	}
+
+	public Alias(UUID pushApplicationId, UUID id, String email) {
+		this(pushApplicationId, id);
+		this.email = email;
+	}
+
+	public UUID getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getName() {
-		return this.name;
+	public UUID getPushApplicationId() {
+		return pushApplicationId;
 	}
 
-    public void setName(String name) {
-		this.name = name;
-		setId(CRC64.checksum(name));
+    public void setPushApplicationId(UUID pushApplicationId) {
+		this.pushApplicationId = pushApplicationId;
 	}
 
-	public String getPushApplicationID() {
-		return pushApplicationID;
+	public String getEmail() {
+		return email;
 	}
 
-    public void setPushApplicationID(String pushApplicationID) {
-		this.pushApplicationID = pushApplicationID;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 }

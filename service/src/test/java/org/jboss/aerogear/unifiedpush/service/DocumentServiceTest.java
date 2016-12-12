@@ -1,16 +1,14 @@
 package org.jboss.aerogear.unifiedpush.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -25,17 +23,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.datastax.driver.core.utils.UUIDs;
+
 public class DocumentServiceTest extends AbstractBaseServiceTest {
 	private static final String DEFAULT_DEVICE_TOKEN = "c5106a4e97ecc8b8ab8448c2ebccbfa25938c0f9a631f96eb2dd5f16f0bedc40";
 	private static final String DEFAULT_DEVICE_ALIAS = "17327572923";
-	private static final String DEFAULT_DEVICE_QUALIFIER = "TEST";
+	private static final String DEFAULT_DEVICE_DATABASE = "TEST";
 
 	private static final String DEFAULT_VARIENT_ID = "d3f54c25-c3ce-4999-b7a8-27dc9bb01364";
 
 	@Inject
 	private DocumentService documentService;
-	@Inject
-	private ConfigurationService configuration;
 	@Inject
 	private GenericVariantService genericVariantService;
 	@Inject
@@ -44,21 +42,17 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	private PushApplicationService applicationService;
 	@Inject
 	private VerificationService verificationService;
+	@Inject
+	private AliasService aliasService;
+
+	@Before
+	public void cleanup() {
+		System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
+	}
 
 	@Override
 	protected void specificSetup() {
-		// Clean old documents
-		String pathRoot = configuration.getDocumentsRootPath();
-		try {
-			FileUtils.deleteDirectory(new File(pathRoot));
-		} catch (IOException e) {
-			// Fail to delete.
-		}
-	}
 
-	@Before
-	public void cleanup(){
-		System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
 	}
 
 	@Test
@@ -88,20 +82,21 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 			// Save alias should return without saving, device is not enabled.
 			MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-					"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
-			documentService.savePayload(pushApplication, msgPayload, false);
-			String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-					DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+					"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+			documentService.save(pushApplication, msgPayload, false);
+			String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+					DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
-			VerificationResult results = verificationService.verifyDevice(inst, variant, new InstallationVerificationAttempt(code, inst.getDeviceToken()));
+			VerificationResult results = verificationService.verifyDevice(inst, variant,
+					new InstallationVerificationAttempt(code, inst.getDeviceToken()));
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			// Re-save device
-			documentService.savePayload(pushApplication, msgPayload, false);
-			document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+			documentService.save(pushApplication, msgPayload, false);
+			document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+					DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 		} catch (Throwable e) {
@@ -120,16 +115,15 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			// Nothing to do
 		}
 
-		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON NEWEST}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+				"{TEST JSON NEWEST}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.savePayload(pushApplication, msgPayload, false);
-		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+		documentService.save(pushApplication, msgPayload, false);
+		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
 	}
@@ -137,20 +131,18 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
 	public void saveGlobalDocumentTest() {
-		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
-		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DocumentMetadata.NULL_ALIAS),
-				"{TEST JSON NULL_ALIAS}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DocumentMetadata.NULL_ALIAS.toString()),
+				"{TEST JSON NULL_ALIAS}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.savePayload(pushApplication, msgPayload, false);
-		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION, DocumentMetadata.NULL_ALIAS,
-				DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+		documentService.save(pushApplication, msgPayload, false);
+		String document = documentService.getLatestFromAlias(pushApplication, DocumentMetadata.NULL_ALIAS.toString(),
+				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NULL_ALIAS}"));
 	}
-
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
@@ -175,12 +167,12 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+				"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		// Save alias should return without saving, divice is not emabled.
-		documentService.savePayload(pushApplication, msgPayload, false);
-		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+		documentService.save(pushApplication, msgPayload, false);
+		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 	}
@@ -208,20 +200,20 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ID);
+				"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		// Save once
-		documentService.savePayload(pushApplication, msgPayload, true);
-		String document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+		documentService.save(pushApplication, msgPayload, true);
+		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 
 		msgPayload.setPayload("{TEST JSON 2}");
 		// save 2nd time and check that it was overwritten
-		documentService.savePayload(pushApplication, msgPayload, true);
-		document = documentService.getLatestDocumentForAlias(variant, DocumentType.APPLICATION,
-				DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_QUALIFIER, DocumentMetadata.NULL_ALIAS);
+		documentService.save(pushApplication, msgPayload, true);
+		document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
+				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON 2}"));
 	}
@@ -235,10 +227,13 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		String alias1 = "alias1";
 		String alias2 = "alias2";
 
-		documentService.saveForPushApplication(pushApp, alias1, "doc1", DEFAULT_DEVICE_QUALIFIER, "test_id", true);
-		documentService.saveForPushApplication(pushApp, alias2, "doc2", DEFAULT_DEVICE_QUALIFIER, "test_id", true);
+		aliasService.create(new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), alias1));
+		aliasService.create(new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), alias2));
 
-		List<String> docs = documentService.getLatestDocumentsForApplication(pushApp, DEFAULT_DEVICE_QUALIFIER, "test_id");
+		documentService.save(pushApp, alias1, "doc1", DEFAULT_DEVICE_DATABASE, "test_id", true);
+		documentService.save(pushApp, alias2, "doc2", DEFAULT_DEVICE_DATABASE, "test_id", true);
+
+		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "test_id");
 		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("doc1", "doc2")));
 	}
 }

@@ -1,379 +1,410 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  JBoss, Home of Professional Open Source
-  Copyright Red Hat, Inc., and individual contributors
+<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+	individual contributors Licensed under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+	Unless required by applicable law or agreed to in writing, software distributed
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jboss.aerogear.unifiedpush</groupId>
+		<artifactId>unifiedpush-push-parent</artifactId>
+		<version>1.2.0-SNAPSHOT</version>
+	</parent>
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+	<artifactId>unifiedpush-push-sender</artifactId>
+	<name>UnifiedPush Push Notification Networks</name>
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	<dependencies>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jboss.aerogear.unifiedpush</groupId>
-        <artifactId>unifiedpush-push-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-    </parent>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <artifactId>unifiedpush-push-sender</artifactId>
-    <name>UnifiedPush Push Notification Networks</name>
+		<dependency>
+			<groupId>org.jboss.spec.javax.servlet</groupId>
+			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<!-- Import the EJB API, we use provided scope as the API is included in
+			JBoss -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.spec.javax.jms</groupId>
+			<artifactId>jboss-jms-api_2.0_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-model-api</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
-        <!-- Import the EJB API, we use provided scope as the API is included
-            in JBoss -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-service</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.spec.javax.jms</groupId>
-            <artifactId>jboss-jms-api_2.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-push-model</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-common</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.notnoop.apns</groupId>
+			<artifactId>apns</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.jackson</groupId>
+					<artifactId>jackson-mapper-asl</artifactId>
+				</exclusion>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-model-api</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+					<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-model-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.google.gcm</groupId>
+			<artifactId>gcm-server</artifactId>
+			<version>${gcm-server.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-service</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<!-- Exclude old httpclient and make sure only one version is used -->
+		<!-- We Also exclude jersey because it is bundled with with old jaxrs classes -->
+		<!-- httpclient, jaxrs-api and resteasy-jaxrs are added because of the
+			above -->
+		<dependency>
+			<groupId>com.github.fernandospr</groupId>
+			<artifactId>java-wns</artifactId>
+			<version>1.3.1</version>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-push-model</artifactId>
-        </dependency>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-core</artifactId>
+				</exclusion>
 
-        <dependency>
-            <groupId>com.notnoop.apns</groupId>
-            <artifactId>apns</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.jackson</groupId>
-                    <artifactId>jackson-mapper-asl</artifactId>
-                </exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-apache-client</artifactId>
+				</exclusion>
 
-                <exclusion>
-                    <groupId>commons-httpclient</groupId>
-                    <artifactId>commons-httpclient</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-client</artifactId>
+				</exclusion>
 
-        <dependency>
-            <groupId>com.google.gcm</groupId>
-            <artifactId>gcm-server</artifactId>
-            <version>${gcm-server.version}</version>
-            <scope>compile</scope>
-        </dependency>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+					<artifactId>commons-httpclient</artifactId>
+				</exclusion>
 
-        <!-- Exclude old httpclient and make sure only one version is used -->
-        <!-- We Also exclude jersey because it is bundled with with old jaxrs classes -->
-        <!-- httpclient, jaxrs-api and resteasy-jaxrs are added because of the above -->
-        <dependency>
-            <groupId>com.github.fernandospr</groupId>
-            <artifactId>java-wns</artifactId>
-            <version>1.3.1</version>
+				<!-- Wildfly 8.2.x is bundled with fasterxml 2.4.1 -->
+				<!-- While java-wns is bundled with 2.5.1 -->
+				<exclusion>
+					<groupId>com.fasterxml.jackson.jaxrs</groupId>
+					<artifactId>jackson-jaxrs-xml-provider</artifactId>
+				</exclusion>
 
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
-                </exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.jaxrs</groupId>
+					<artifactId>jackson-jaxrs-json-provider</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-                <exclusion>
-                    <groupId>com.sun.jersey.contribs</groupId>
-                    <artifactId>jersey-apache-client</artifactId>
-                </exclusion>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
 
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-client</artifactId>
-                </exclusion>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-                <exclusion>
-                    <groupId>commons-httpclient</groupId>
-                    <artifactId>commons-httpclient</artifactId>
-                </exclusion>
+		<dependency>
+			<groupId>org.jboss.aerogear.windows</groupId>
+			<artifactId>java-mpns</artifactId>
+			<version>0.3.0</version>
+		</dependency>
 
-                <!-- Wildfly 8.2.x is bundled with fasterxml 2.4.1 -->
-                <!-- While java-wns is bundled with 2.5.1 -->
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                    <artifactId>jackson-jaxrs-xml-provider</artifactId>
-                </exclusion>
+		<dependency>
+			<groupId>org.jboss.aerogear</groupId>
+			<artifactId>java-adm</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                    <artifactId>jackson-jaxrs-json-provider</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+	</dependencies>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.bitstrings.maven.plugins</groupId>
+				<artifactId>dependencypath-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/filtered-resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+	</build>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <scope>provided</scope>
-        </dependency>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.windows</groupId>
-            <artifactId>java-mpns</artifactId>
-            <version>0.3.0</version>
-        </dependency>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.19.1</version>
+						<configuration>
+							<excludes>
+								<exclude>**/TestAbstractServiceHolderClustered.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>java-adm</artifactId>
-            <version>0.1.0</version>
-        </dependency>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.aerogear.unifiedpush</groupId>
+					<artifactId>unifiedpush-service</artifactId>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
 
-    </dependencies>
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/TestAbstractServiceHolderClustered.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+				<dependency>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-            <dependencies>
+				<dependency>
+					<groupId>org.jboss.arquillian.junit</groupId>
+					<artifactId>arquillian-junit-container</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.arquillian.container</groupId>
+					<artifactId>arquillian-container-chameleon</artifactId>
+					<scope>test</scope>
+				</dependency>
+
                 <dependency>
-                    <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                    <artifactId>unifiedpush-service</artifactId>
-                    <type>test-jar</type>
+                    <groupId>org.jboss.arquillian.extension</groupId>
+                    <artifactId>arquillian-transaction-jta</artifactId>
                     <scope>test</scope>
                 </dependency>
 
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-controller-client</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-cli</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-commands</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.wildfly</groupId>
+							<artifactId>wildfly-patching</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-controller-client</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-cli</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-patching</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>cluster</id>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.aerogear.unifiedpush</groupId>
+					<artifactId>unifiedpush-service</artifactId>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.arquillian.junit</groupId>
+					<artifactId>arquillian-junit-container</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.arquillian.container</groupId>
+					<artifactId>arquillian-container-chameleon</artifactId>
+					<scope>test</scope>
+				</dependency>
+
                 <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
+                    <groupId>org.jboss.arquillian.extension</groupId>
+                    <artifactId>arquillian-transaction-jta</artifactId>
                     <scope>test</scope>
                 </dependency>
 
-                <dependency>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-controller-client</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-cli</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-commands</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.wildfly</groupId>
+							<artifactId>wildfly-patching</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.jboss.arquillian.junit</groupId>
-                    <artifactId>arquillian-junit-container</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-container-chameleon</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-controller-client</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-core</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-controller-client</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-cli</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-commands</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.wildfly</groupId>
-                            <artifactId>wildfly-patching</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-cli</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-controller-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-cli</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-patching</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-patching</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
 
-        <profile>
-            <id>cluster</id>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                    <artifactId>unifiedpush-service</artifactId>
-                    <type>test-jar</type>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.junit</groupId>
-                    <artifactId>arquillian-junit-container</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-container-chameleon</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-core</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-controller-client</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-cli</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-commands</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.wildfly</groupId>
-                            <artifactId>wildfly-patching</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-controller-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-cli</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-patching</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-        </profile>
-    </profiles>
+		</profile>
+	</profiles>
 
 </project>

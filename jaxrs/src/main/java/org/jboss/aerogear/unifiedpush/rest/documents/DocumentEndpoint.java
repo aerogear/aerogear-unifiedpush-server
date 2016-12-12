@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -116,7 +116,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
     public Response crossOriginForDocumentSave(@Context HttpHeaders headers) {
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
-    
+
     /**
      * POST deploys a file and stores it for later retrieval by the push application
      * of the client.
@@ -172,7 +172,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		return deployDocument(entity, alias, qualifier, id, true, request);
 	}
 
-	private Response deployDocument(String entity, String alias, String qualifier, String id, boolean overwrite,
+	private Response deployDocument(String entity, String alias, String database, String id, boolean overwrite,
 			HttpServletRequest request) {
 
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
@@ -189,44 +189,12 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		try {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
-			documentService.saveForPushApplication(pushApp, DocumentMetadata.getAlias(alias), entity,
-					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id), overwrite);
+			documentService.save(pushApp, DocumentMetadata.getAlias(alias), entity,
+					DocumentMetadata.getDatabase(database), DocumentMetadata.getId(id), overwrite);
 
 			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
 		} catch (Exception e) {
 			logger.error("Cannot deploy file for push application", e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-	}
-
-	/**
-	 * <p>Get latest (last-updated) document according to path parameters</p>
-	 * <b>Examples:</b>
-	 * <ul>
-	 * <li>document/application/17327572923/test/latest - alias specific document
-	 * <li>document/application/null/test/latest - global scope document (for any alias).
-	 * </ul>
-	 */
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	@Path("/{publisher}/{alias}/{qualifier}/latest")
-	@Deprecated
-	public Response retrieveTextDocument(@PathParam("publisher") String publisher, @PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier, @Context HttpServletRequest request) {
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-		if (variant == null) {
-			return create401Response(request);
-		}
-
-		try {
-			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
-					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
-
-			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
-		} catch (Exception e) {
-			logger.error("Cannot retrieve files for alias", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
@@ -243,10 +211,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{publisher}/{alias}/{qualifier}")
-	public Response retrieveJsonDocument(@PathParam("publisher") String publisher,
-			@PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier,
-			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot,
+	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, //
+			@PathParam("alias") String alias, //
+			@PathParam("qualifier") String qualifier, //
+			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot, //
 			@Context HttpServletRequest request) {
 
 		// Authentication
@@ -258,9 +226,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		try {
 			// TODO - support snapshot other then latest
-			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
-					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.NULL_ID);
+			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+			String document = documentService.getLatestFromAlias(pushApplication,
+					DocumentMetadata.getAlias(alias).toString(),
+					DocumentMetadata.getDatabase(qualifier), DocumentMetadata.NULL_ID);
 
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
@@ -282,12 +251,12 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{publisher}/{alias}/{qualifier}/{id}")
-	public Response retrieveJsonDocument(@PathParam("publisher") String publisher,
-			@PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier,
-			@PathParam("id") String id,
-			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot,
-			@Context HttpServletRequest request) {
+	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, //
+			@PathParam("alias") String alias, //
+			@PathParam("qualifier") String qualifier, //
+			@PathParam("id") String id, //
+			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot, //
+			@Context HttpServletRequest request) { //
 
 		// Authentication
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
@@ -298,9 +267,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		try {
 			// TODO - support snapshot other then latest
-			String document = documentService.getLatestDocumentForAlias(variant,
-					DocumentMetadata.getPublisher(publisher), DocumentMetadata.getAlias(alias),
-					DocumentMetadata.getQualifier(qualifier), DocumentMetadata.getId(id));
+			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+			String document = documentService.getLatestFromAlias(pushApplication,
+					DocumentMetadata.getAlias(alias), //
+					DocumentMetadata.getDatabase(qualifier), //
+					DocumentMetadata.getId(id));
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);

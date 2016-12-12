@@ -3,7 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.sms;
 import java.text.MessageFormat;
 import java.util.Properties;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 
 public abstract class AbstractSender  {

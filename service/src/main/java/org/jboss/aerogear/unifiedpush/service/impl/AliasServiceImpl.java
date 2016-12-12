@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -28,20 +29,23 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.service.AliasCrudService;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.MergeResponse;
+import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.datastax.driver.core.utils.UUIDs;
 
 @Stateless
 public class AliasServiceImpl implements AliasService {
 	private final Logger logger = LoggerFactory.getLogger(AliasServiceImpl.class);
 
 	@Inject
-	private AliasDao aliasDao;
+	private AliasCrudService aliasCrudService;
 	@Inject
 	private KeycloakService keycloakService;
 	@Inject
@@ -57,7 +61,7 @@ public class AliasServiceImpl implements AliasService {
 		}
 
 		// Remove all aliases from Alias Table
-		aliasDao.deleteByPushApplicationID(pushApplication.getPushApplicationID());
+		removeAll(UUID.fromString(pushApplication.getPushApplicationID()));
 
 		// Enable existing aliases / Disable missing aliases (DB Only)
 		MergeResponse mergeResponse = clientInstallationService.syncInstallationByAliasList(pushApplication, aliases);
@@ -78,12 +82,12 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public void remove(String alias) {
-		aliasDao.delete(aliasDao.findByName(alias));
+		aliasCrudService.remove(alias);
 	}
 
 	@Override
 	public Alias find(String alias) {
-		return aliasDao.findByName(alias);
+		return aliasCrudService.find(alias);
 	}
 
 	@Override
@@ -108,25 +112,21 @@ public class AliasServiceImpl implements AliasService {
 		return null;
 	}
 
-	/**
-	 * Exists for test reasons.
-	 */
-	public void flushAndClear() {
-		aliasDao.flushAndClear();
-	}
-
 	private void createAliases(PushApplication pushApp, List<String> aliases) {
 		Set<String> aliasSet = new HashSet<>(aliases);
+		PhoneValidator validator = new PhoneValidator();
 		for (String name : aliasSet) {
-			Alias alias = new Alias();
-			alias.setName(name);
-			alias.setPushApplicationID(pushApp.getPushApplicationID());
-
+			Alias user = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased());
+			if (validator.isValid(name, null)){
+				user.setMobile(name);
+			}else{
+				user.setEmail(name);
+			}
 			try {
-				aliasDao.create(alias);
+				aliasCrudService.create(user);
 				aliasDao.flushAndClear();
 			} catch (Throwable e) {
-				isConstraintViolationException(e, alias.getName());
+				isConstraintViolationException(e, name);
 			}
 		}
 	}
@@ -142,5 +142,15 @@ public class AliasServiceImpl implements AliasService {
 		}
 
 		throw new RuntimeException(e);
+	}
+
+	@Override
+	public void removeAll(UUID pushApplicationId) {
+		aliasCrudService.removeAll(pushApplicationId);
+	}
+
+	@Override
+	public void create(Alias alias){
+		aliasCrudService.create(alias);
 	}
 }

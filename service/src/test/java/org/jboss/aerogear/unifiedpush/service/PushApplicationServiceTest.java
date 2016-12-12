@@ -25,10 +25,11 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
+
+import com.datastax.driver.core.utils.UUIDs;
 
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
@@ -36,14 +37,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 	private DocumentService documentService;
 
 	@Inject
-	private AliasDao aliasDao;
-
-    @Override
-    protected void specificSetup() {}
+	private AliasService aliasService;
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     public void addPushApplication() {
+
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
@@ -161,18 +160,22 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pa.setDeveloper("admin");
 
         pushApplicationService.addPushApplication(pa);
-        documentService.saveForPushApplication(pa, "TEST@X.com", "{SIMPLE}", "TASKS", "1", true);
-        List<String> documents = documentService.getLatestDocumentsForApplication(pa, "TEST@X.com", "1");
+        documentService.save(pa, "TEST@X.com", "{SIMPLE}", "TASKS", "1", true);
+        List<String> documents = documentService.getLatestFromAliases(pa, "TEST@X.com", "1");
         assertThat(documents.size() == 1);
 
-        aliasDao.create(new Alias("TEST@X.com", pa.getPushApplicationID()));
-        assertThat(aliasDao.findByName("TEST@X.com") != null);
+        aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
+        assertThat(aliasService.find("TEST@X.com") != null);
 
         pushApplicationService.removePushApplication(pa);
-        documents = documentService.getLatestDocumentsForApplication(pa, "TEST@X.com", "1");
+        documents = documentService.getLatestFromAliases(pa, "TEST@X.com", "1");
         assertThat(documents.size() == 0);
-        assertThat(aliasDao.findByName("TEST@X.com") == null);
+        assertThat(aliasService.find("TEST@X.com") == null);
 
 
     }
+
+	@Override
+	protected void specificSetup() {
+	}
 }

@@ -40,13 +40,17 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
+ * Takes a request for sending {@link UnifiedPushMessage} and submits it to
+ * messaging subsystem for further processing.
  *
- * Router splits messages to specific variant types (push network type) so that they can be processed separately,
- * giving attention to limitations and requirements of specific push networks.
+ * Router splits messages to specific variant types (push network type) so that
+ * they can be processed separately, giving attention to limitations and
+ * requirements of specific push networks.
  *
- * {@link NotificationRouter} receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in transaction.
- * The transactional behavior makes sure the request for sending notification is recorded and then asynchronously processed.
+ * {@link NotificationRouter} receives a request for sending a
+ * {@link UnifiedPushMessage} and queues one message per variant type, both in
+ * transaction. The transactional behavior makes sure the request for sending
+ * notification is recorded and then asynchronously processed.
  *
  * The further processing of the push message happens in {@link TokenLoader}.
  */
@@ -65,12 +69,16 @@ public class NotificationRouter {
     private Event<MessageHolderWithVariants> dispatchVariantMessageEvent;
 
     /**
-     * Receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in one transaction.
+	 * Receives a request for sending a {@link UnifiedPushMessage} and queues
+	 * one message per variant type, both in one transaction.
      *
-     * Once this method returns, message is recorded and will be eventually delivered in the future.
+	 * Once this method returns, message is recorded and will be eventually
+	 * delivered in the future.
      *
-     * @param pushApplication the push application
-     * @param message the message
+	 * @param pushApplication
+	 *            the push application
+	 * @param message
+	 *            the message
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
@@ -100,22 +108,19 @@ public class NotificationRouter {
         }
 
         // TODO: Not sure the transformation should be done here...
-        // There are likely better places to check if the metadata is way to long
+		// There are likely better places to check if the metadata is way to
+		// long
         String jsonMessageContent = message.toStrippedJsonString() ;
         if (jsonMessageContent != null && jsonMessageContent.length() >= 4500) {
             jsonMessageContent = message.toMinimizedJsonString();
         }
 
-        final PushMessageInformation pushMessageInformation =
-                metricsService.storeNewRequestFrom(
-                        pushApplication.getPushApplicationID(),
-                        jsonMessageContent,
-                        message.getIpAddress(),
-                        message.getClientIdentifier(),
-                        variants.getVariantCount()
-                        );
+		final PushMessageInformation pushMessageInformation = metricsService.storeNewRequestFrom(
+				pushApplication.getPushApplicationID(), jsonMessageContent, message.getIpAddress(),
+				message.getClientIdentifier(), variants.getVariantCount());
 
-        // we split the variants per type since each type may have its own configuration (e.g. batch size)
+		// we split the variants per type since each type may have its own
+		// configuration (e.g. batch size)
         variants.forEach((variantType, variant) -> {
             logger.info(String.format("Internal dispatching of push message for one %s variant (by %s)", variantType.getTypeName(), message.getClientIdentifier()));
             dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));

@@ -18,8 +18,6 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,129 +38,141 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSenderTest;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 @RunWith(Arquillian.class)
 public class TestNotificationRouter {
 
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushSenderArchive.forTestClass(TestNotificationRouter.class)
-                .withMessaging()
-                    .addClasses(NotificationRouter.class, PushNotificationSender.class)
-                    .addClasses(PushMessageMetricsService.class)
-                .withMockito()
-                    .addClasses(MockProviders.class)
-                .as(WebArchive.class);
-    }
+	@Deployment
+	public static WebArchive archive() {
+		return UnifiedPushSenderArchive.forTestClass(TestNotificationRouter.class) //
+				.withMessaging() //
+				.addClasses(NotificationRouter.class, //
+						PushNotificationSender.class, //
+						APNsPushNotificationSenderTest.class) //
+				.as(WebArchive.class); //
+	}
 
-    @Inject
-    private NotificationRouter router;
+	@Inject
+	private NotificationRouter router;
+	@Inject
+	private VariantTypesHolder variantTypeHolder;
 
-    @Inject
-    private VariantTypesHolder variantTypeHolder;
+	private static CountDownLatch countDownLatch;
 
-    private static CountDownLatch countDownLatch;
+	private PushApplication app;
+	private InternalUnifiedPushMessage message;
 
-    private PushApplication app;
-    private InternalUnifiedPushMessage message;
+	@Before
+	public void setUp() {
+		app = new PushApplication();
+		message = new InternalUnifiedPushMessage();
+	}
 
-    @Before
-    public void setUp() {
-        app = new PushApplication();
-        message = new InternalUnifiedPushMessage();
-    }
+	@Test
+	public void testNoVariants() {
+		countDownLatch = new CountDownLatch(1);
+		assertTrue("variants are empty", app.getVariants().isEmpty());
+		router.submit(app, message);
+		assertEquals(variants(), variantTypeHolder.getVariantTypes());
+	}
 
-    @Test
-    public void testNoVariants() {
-        countDownLatch = new CountDownLatch(1);
-        assertTrue("variants are empty", app.getVariants().isEmpty());
-        router.submit(app, message);
-        assertEquals(variants(), variantTypeHolder.getVariantTypes());
-    }
+	@Test
+	public void testTwoVariantsOfSameType() throws InterruptedException {
+		countDownLatch = new CountDownLatch(1);
+		app.getVariants().add(new SimplePushVariant());
+		app.getVariants().add(new SimplePushVariant());
+		router.submit(app, message);
+		countDownLatch.await(3, TimeUnit.SECONDS);
+		assertEquals(variants(VariantType.SIMPLE_PUSH), variantTypeHolder.getVariantTypes());
+	}
 
-    @Test
-    public void testTwoVariantsOfSameType() throws InterruptedException {
-        countDownLatch = new CountDownLatch(1);
-        app.getVariants().add(new SimplePushVariant());
-        app.getVariants().add(new SimplePushVariant());
-        router.submit(app, message);
-        countDownLatch.await(3, TimeUnit.SECONDS);
-        assertEquals(variants(VariantType.SIMPLE_PUSH), variantTypeHolder.getVariantTypes());
-    }
+	@Test
+	public void testThreeVariantsOfDifferentType() throws InterruptedException {
+		countDownLatch = new CountDownLatch(3);
+		app.getVariants().add(new AndroidVariant());
+		app.getVariants().add(new iOSVariant());
+		app.getVariants().add(new SimplePushVariant());
+		router.submit(app, message);
+		countDownLatch.await(3, TimeUnit.SECONDS);
+		assertEquals(variants(VariantType.ANDROID, VariantType.IOS, VariantType.SIMPLE_PUSH),
+				variantTypeHolder.getVariantTypes());
+	}
 
-    @Test
-    public void testThreeVariantsOfDifferentType() throws InterruptedException {
-        countDownLatch = new CountDownLatch(3);
-        app.getVariants().add(new AndroidVariant());
-        app.getVariants().add(new iOSVariant());
-        app.getVariants().add(new SimplePushVariant());
-        router.submit(app, message);
-        countDownLatch.await(3, TimeUnit.SECONDS);
-        assertEquals(variants(VariantType.ANDROID, VariantType.IOS, VariantType.SIMPLE_PUSH), variantTypeHolder.getVariantTypes());
-    }
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void testInvokesMetricsService(PushMessageInformationDao pushMessageInformationDao) {
+		router.submit(app, message);
+		PushMessageInformation messageInformation = new PushMessageInformation();
+		messageInformation.setPushApplicationId(app.getPushApplicationID());
+		pushMessageInformationDao.create(messageInformation);
+	}
 
-    @Test
-    public void testInvokesMetricsService(PushMessageInformationDao pushMessageInformationDao) {
-        router.submit(app, message);
-        verify(pushMessageInformationDao).create(Mockito.any(PushMessageInformation.class));
-    }
+	@Test
+	public void testVariantIDsSpecified(GenericVariantService variantService) throws InterruptedException {
+		// given
+		countDownLatch = new CountDownLatch(2);
 
-    @Test
-    public void testVariantIDsSpecified(GenericVariantService genericVariantService) throws InterruptedException {
-        // given
-        countDownLatch = new CountDownLatch(2);
-        SimplePushVariant simplePushVariant = new SimplePushVariant();
-        simplePushVariant.setId("id-simplepush-variant");
-        iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setId("id-ios-variant");
-        AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setId("id-android-variant");
+		SimplePushVariant simplePushVariant = new SimplePushVariant();
+		simplePushVariant.setName("simplepush-variant");
 
-        app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
-        message.getCriteria().setVariants(Arrays.asList("id-ios-variant", "id-android-variant"));
+		iOSVariant iOSVariant = new iOSVariant();
+		iOSVariant.setName("ios-variant");
+		try {
+			iOSVariant.setCertificate(APNsPushNotificationSenderTest.readCertificate("/cert/certificate.p12"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		iOSVariant.setPassphrase("123456");
 
-        when(genericVariantService.findByVariantID("id-ios-variant")).thenReturn(iOSVariant);
-        when(genericVariantService.findByVariantID("id-android-variant")).thenReturn(androidVariant);
-        when(genericVariantService.findByVariantID("id-simplepush-variant")).thenReturn(simplePushVariant);
+		AndroidVariant androidVariant = new AndroidVariant();
+		androidVariant.setName("android-variant");
+		androidVariant.setGoogleKey("xxx-xxx-xxx-xxx");
+		androidVariant.setProjectNumber("1234567890");
 
-        // when
-        router.submit(app, message);
-        countDownLatch.await(3, TimeUnit.SECONDS);
-        assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
+		variantService.addVariant(simplePushVariant);
+		variantService.addVariant(iOSVariant);
+		variantService.addVariant(androidVariant);
 
-    }
+		app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
+		message.getCriteria().setVariants(Arrays.asList(iOSVariant.getVariantID(), androidVariant.getVariantID()));
 
-    public void observeMessageHolderWithVariants(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
-        variantTypeHolder.addVariantType(msg.getVariantType());
-        countDownLatch.countDown();
-    }
+		router.submit(app, message);
+		countDownLatch.await(3, TimeUnit.SECONDS);
+		assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
+	}
 
-    @RequestScoped
-    public static class VariantTypesHolder {
-        private Set<VariantType> variantTypes = new HashSet<>();
+	public void observeMessageHolderWithVariants(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
+		variantTypeHolder.addVariantType(msg.getVariantType());
+		countDownLatch.countDown();
+	}
 
-        public void addVariantType(VariantType variantType) {
-            this.variantTypes.add(variantType);
-        }
-        public Set<VariantType> getVariantTypes() {
-            return variantTypes;
-        }
-    }
+	@RequestScoped
+	public static class VariantTypesHolder {
+		private Set<VariantType> variantTypes = new HashSet<>();
 
-    private Set<VariantType> variants(VariantType... types) {
-        return new HashSet<>(Arrays.asList(types));
-    }
+		public void addVariantType(VariantType variantType) {
+			this.variantTypes.add(variantType);
+		}
 
+		public Set<VariantType> getVariantTypes() {
+			return variantTypes;
+		}
+	}
+
+	private Set<VariantType> variants(VariantType... types) {
+		return new HashSet<>(Arrays.asList(types));
+	}
 
 }

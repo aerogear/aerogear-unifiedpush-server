@@ -12,7 +12,6 @@ import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
-import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -36,20 +35,10 @@ public class SenderEndpointTest extends RestEndpointTest {
 
 	@Deployment
 	public static WebArchive archive() {
-		return UnifiedPushRestArchive.forTestClass(SenderEndpointTest.class)
-				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-sender")
-				.addMavenDependencies("com.github.fge:json-patch")
-				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
-						new String[] { "META-INF/persistence.xml", "test-data.sql" },
-						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
-				.addPackage(RestApplication.class.getPackage())
-				.addPackage(PushNotificationSenderEndpoint.class.getPackage())
-				.addPackage(ClientAuthHelper.class.getPackage())
-				.addClasses(RestEndpointTest.class, RestApplication.class)
-				.addAsWebInfResource("jms-cleanup-wildfly.cli")
-				.addAsWebInfResource("jms-setup-wildfly.cli")
-				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-				.addAsResource("test.properties", "default.properties").as(WebArchive.class);
+		return UnifiedPushRestArchive.forTestClass(SenderEndpointTest.class) //
+				.withRest() //
+				.addPackage(PushNotificationSenderEndpoint.class.getPackage()) //
+				.as(WebArchive.class);
 	}
 
 	@BeforeClass

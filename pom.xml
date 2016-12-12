@@ -219,6 +219,12 @@
                 <version>2.4</version>
             </dependency>
 
+			<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-lang3</artifactId>
+			    <version>3.5</version>
+			</dependency>
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -267,8 +273,38 @@
 	            <artifactId>keycloak-jboss-adapter-core</artifactId>
 	            <version>${keycloak.version}</version>
 	        </dependency>
-        </dependencies>
 
+	        <!-- Cassandra driver and dependencies-->
+	        <dependency>
+	            <groupId>com.datastax.cassandra</groupId>
+	            <artifactId>cassandra-driver-core</artifactId>
+	            <version>${cassandra-driver-core.version}</version>
+	            <exclusions>
+	                <exclusion>
+	                    <artifactId>slf4j-log4j12</artifactId>
+	                    <groupId>org.slf4j</groupId>
+	                </exclusion>
+	                <exclusion>
+	                    <artifactId>log4j</artifactId>
+	                    <groupId>log4j</groupId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>com.google.guava</groupId>
+	                    <artifactId>guava</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>io.netty</groupId>
+	                    <artifactId>netty-handler</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+
+	        <dependency>
+	            <groupId>io.netty</groupId>
+	            <artifactId>netty-all</artifactId>
+	            <version>4.0.36.Final</version>
+	        </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <build>
@@ -325,8 +361,8 @@
 			    <artifactId>duplicate-finder-maven-plugin</artifactId>
 			    <version>1.2.1</version>
 			</plugin>
-
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <!-- Override the actual checkstyle version to support Java 1.8 -->
@@ -342,6 +378,42 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+
+	            <plugin>
+	                <groupId>org.bitstrings.maven.plugins</groupId>
+	                <artifactId>dependencypath-maven-plugin</artifactId>
+	                <version>1.1.1</version>
+	                <executions>
+	                    <execution>
+	                        <id>set-all</id>
+	                        <goals>
+	                            <goal>set</goal>
+	                        </goals>
+	                    </execution>
+	                </executions>
+	            </plugin>
+	            <plugin>
+	                <groupId>org.codehaus.mojo</groupId>
+	                <artifactId>build-helper-maven-plugin</artifactId>
+	                <version>1.8</version>
+	                <executions>
+	                    <execution>
+	                        <id>reserve-network-port</id>
+	                        <goals>
+	                            <goal>reserve-network-port</goal>
+	                        </goals>
+	                        <phase>process-resources</phase>
+	                        <configuration>
+	                            <portNames>
+	                                <portName>build.cassandra.native_transport_port</portName>
+	                                <portName>build.cassandra.rpc_port</portName>
+	                                <portName>build.cassandra.storage_port</portName>
+	                                <portName>build.cassandra.ssl_storage_port</portName>
+	                            </portNames>
+	                        </configuration>
+	                    </execution>
+	                </executions>
+	            </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -365,7 +437,7 @@
         <aerogear.bom.version>0.2.20</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs -->
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12</junit.version>
         <keycloak.version>2.4.0.Final</keycloak.version>
         <hibernate.version>5.0.10.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
@@ -384,9 +456,15 @@
         <mysql.version>5.1.36</mysql.version>
         <fasterxml.version>2.7.4</fasterxml.version>
         <wildfly.version>10.1.0.Final</wildfly.version>
-        <springframework.version>4.2.5.RELEASE</springframework.version>
-        <ups.ddl_value>validate</ups.ddl_value>
+        <springframework.version>5.0.0.M3</springframework.version>
 
+        <!-- Cassandra related properties -->
+        <failsafe.version>2.19.1</failsafe.version>
+        <cassandra.version>3.9</cassandra.version>
+        <cassandra-driver-core.version>3.1.1</cassandra-driver-core.version>
+        <cassandra-data.version>2.0.0.M1</cassandra-data.version>
+
+        <ups.ddl_value>validate</ups.ddl_value>
     </properties>
 
     <profiles>
@@ -419,6 +497,12 @@
                         <artifactId>arquillian-container-chameleon</artifactId>
                         <version>1.0.0.Alpha7</version>
                         <scope>test</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>commons-lang</groupId>
+                                <artifactId>commons-lang</artifactId>
+                            </exclusion>
+                        </exclusions>
                     </dependency>
 
                     <dependency>
@@ -431,7 +515,7 @@
 					<dependency>
 						<groupId>org.jboss.shrinkwrap.resolver</groupId>
 						<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
-						<version>2.2.2</version>
+						<version>2.2.4</version>
 						<scope>test</scope>
 					</dependency>
 
@@ -499,6 +583,20 @@
 		                <version>2.2.0.Final</version>
 		                <scope>test</scope>
 		            </dependency>
+
+					<!-- Cassandra related -->
+		            <dependency>
+						<groupId>org.hectorclient</groupId>
+						<artifactId>hector-core</artifactId>
+						<version>2.0-0</version>
+						<scope>test</scope>
+						<exclusions>
+                            <exclusion>
+                                <groupId>commons-lang</groupId>
+                                <artifactId>commons-lang</artifactId>
+                            </exclusion>
+                        </exclusions>
+					</dependency>
 			    </dependencies>
             </dependencyManagement>
         </profile>
@@ -653,5 +751,10 @@
             </build>
         </profile>
     </profiles>
-
+	<repositories>
+		<repository>
+			<id>alfresco-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
 </project>

@@ -2,48 +2,55 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.interceptor.Interceptors;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
+import org.jacoco.core.internal.data.NullUUID;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata.DocumentType;
+import org.jboss.aerogear.unifiedpush.api.IDocument;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Stateless
+@Interceptors(SpringContextInterceptor.class)
+@TransactionManagement(TransactionManagementType.BEAN)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class DocumentServiceImpl implements DocumentService {
 
-	@Inject
-	private DocumentDao documentDao;
-
-	@Inject
-	private PushApplicationService pushApplicationService;
+	/**
+	 * We can't mixup EJB and spring beans.
+	 * TODO - Change AliasDao To AliasService when mixing is supported.
+	 */
+	@Autowired
+	private DocumentDao<DocumentContent, DocumentKey> documentDao;
+	@Autowired
+	private AliasDao aliasDao;
 
 	@Override
-	public void saveForPushApplication(PushApplication pushApp, String alias, String content, String qualifier,
-			String id, boolean overwrite) {
-		documentDao.create(createMessage(content, pushApp, DocumentType.INSTALLATION, alias, qualifier, id), overwrite);
+	public void save(PushApplication pushApplication, String alias, String content, String databse, String id,
+			boolean overwrite) {
+		Alias user = aliasDao.findByAlias(alias);
+		documentDao.create(createDocument(content, pushApplication, user, databse, id));
 	}
 
 	@Override
-	public List<DocumentMessage> getDocuments(PushApplication pushApplication, DocumentType publisher) {
-		return documentDao.findDocuments(createMetadata(pushApplication, publisher, DocumentMetadata.NULL_ALIAS,
-				DocumentMetadata.NULL_QUALIFIER, null, false));
-	}
-
-	@Override
-	public String getLatestDocumentForAlias(Variant variant, DocumentType publisher, String alias, String qualifier,
-			String id) {
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		DocumentMessage document = documentDao
-				.findLatestDocumentForAlias(createMetadata(pushApplication, publisher, alias, qualifier, id, true));
+	public String getLatestFromAlias(PushApplication pushApplication, String alias, String databse, String id) {
+		Alias user = aliasDao.findByAlias(alias);
+		DocumentContent document = (DocumentContent) documentDao.findOne(createKey(pushApplication, user, databse, id));
 
 		if (document != null)
 			return document.getContent();
@@ -52,77 +59,81 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public List<String> getLatestDocumentsForApplication(PushApplication pushApp, String qualifier, String id) {
+	public List<String> getLatestFromAliases(PushApplication pushApp, String database, String id) {
 		List<String> contents = new ArrayList<>();
-		final List<DocumentMessage> docs = documentDao.findLatestDocumentsForApplication(
-				createMetadata(pushApp, DocumentType.INSTALLATION, DocumentMetadata.NULL_ALIAS, qualifier, id, true));
-		for (DocumentMessage doc : docs) {
-			contents.add(doc.getContent());
+		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApp.getPushApplicationID()));
+
+		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(createKey(pushApp, database, id),
+				aliases);
+
+		if (docs != null) {
+			docs.forEach((doc) -> {
+				contents.add(doc.getContent());
+			});
 		}
+
 		return contents;
 	}
 
 	@Override
-	public void savePayload(PushApplication pushApplication, MessagePayload message, boolean overwrite) {
+	public void save(PushApplication pushApplication, MessagePayload message, boolean overwrite) {
 		// Store documents according to aliases
 		if (message.getPushMessage() != null && message.getPushMessage().getCriteria() != null
 				&& message.getPushMessage().getCriteria().getAliases() != null) {
 
 			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
-				save(message.getPayload(), pushApplication, DocumentType.APPLICATION, DocumentMetadata.getAlias(alias),
-						DocumentMetadata.getQualifier(message.getQualifier()), DocumentMetadata.getId(message.getId()),
-						overwrite);
+				Alias user = aliasDao.findByAlias(alias);
+				save(message.getPayload(), pushApplication, user, DocumentMetadata.getDatabase(message.getQualifier()),
+						DocumentMetadata.getId(message.getId()), overwrite);
 			}
 			// Store payload without alias
 		} else {
-			save(message.getPayload(), pushApplication, DocumentType.APPLICATION, DocumentMetadata.NULL_ALIAS,
-					DocumentMetadata.getQualifier(message.getQualifier()), DocumentMetadata.getId(message.getId()),
+			save(message.getPayload(), pushApplication,
+					new Alias(UUID.fromString(pushApplication.getPushApplicationID()), NullUUID.NULL.getUuid()),
+					DocumentMetadata.getDatabase(message.getQualifier()), DocumentMetadata.getId(message.getId()),
 					overwrite);
 		}
 	}
 
+	private void save(String document, PushApplication pushApplication, Alias alias, String database, String id,
+			boolean overwrite) {
+		documentDao.create(createDocument(document, pushApplication, alias, database, id));
+	}
+
+	private DocumentContent createDocument(String content, PushApplication pushApplication, Alias alias,
+			String database, String id) {
+
+		DocumentMetadata meta = createMetadata(pushApplication, alias, database, id, null);
+		DocumentContent message = new DocumentContent(new DocumentKey(meta), content);
+
+		return message;
+	}
+
+	private DocumentKey createKey(PushApplication pushApplication, Alias alias, String database, String id) {
+		return new DocumentKey(createMetadata(pushApplication, alias, database, id, null));
+	}
+
+	private DocumentKey createKey(PushApplication pushApplication, String database, String id) {
+		return new DocumentKey(createMetadata(pushApplication, null, database, id, null));
+	}
+
+	private DocumentMetadata createMetadata(PushApplication pushApplication, Alias alias, String database, String id,
+			String snapshot) {
+		DocumentMetadata metadata = new DocumentMetadata();
+		metadata.setPushApplicationId(pushApplication.getPushApplicationID());
+
+		// Alias is always stored as lowercase, and matched insensitively.
+		metadata.setUserId(alias != null && //
+				!alias.equals(DocumentMetadata.NULL_ALIAS) ? alias.getId() : NullUUID.NULL.getUuid());
+		metadata.setDatabase(database);
+		metadata.setSnapshot(snapshot);
+		metadata.setId(id);
+		return metadata;
+	}
+
 	@Override
-	@Deprecated
-	public void saveForAliases(PushApplication pushApplication, Map<String, String> aliasToDocument, String qualifier,
-			String id, boolean overwrite) {
-		for (Map.Entry<String, String> entry : aliasToDocument.entrySet()) {
-			save(entry.getValue(), pushApplication, DocumentType.APPLICATION, entry.getKey(), qualifier, id, overwrite);
-		}
-	}
-
-	private void save(String document, PushApplication pushApplication, DocumentType publisher, String alias,
-			String qualifier, String id, boolean overwrite) {
-		documentDao.create(createMessage(document, pushApplication, publisher, alias, qualifier, id), overwrite);
-	}
-
-	private DocumentMessage createMessage(String content, PushApplication pushApplication, DocumentType publisher,
-			String alias, String qualifier, String id) {
-		DocumentMessage message = new DocumentMessage();
-		message.setContent(content);
-		DocumentMetadata meta = new DocumentMetadata();
-		meta.setPushApplication(pushApplication);
-		meta.setPublisher(publisher);
-
-		// Alias is always stored as lowercase, and matched insensitively.
-		meta.setAlias(alias != null && !alias.equalsIgnoreCase(DocumentMetadata.NULL_ALIAS) ? alias.toLowerCase() : alias);
-		meta.setQualifier(qualifier);
-		meta.setId(id);
-		message.setMetadata(meta);
-		return message;
-	}
-
-	private DocumentMetadata createMetadata(PushApplication pushApplication, DocumentType publisher, String alias,
-			String qualifier, String id, Boolean latest) {
-		DocumentMetadata message = new DocumentMetadata();
-		message.setPushApplication(pushApplication);
-		message.setPublisher(publisher);
-
-		// Alias is always stored as lowercase, and matched insensitively.
-		message.setAlias(alias != null && !alias.equalsIgnoreCase(DocumentMetadata.NULL_ALIAS) ? alias.toLowerCase() : alias);
-		message.setQualifier(qualifier);
-		message.setLatest(latest);
-		message.setId(id);
-		return message;
+	public void delete(String pushApplicationId) {
+		documentDao.delete(UUID.fromString(pushApplicationId));
 	}
 
 }

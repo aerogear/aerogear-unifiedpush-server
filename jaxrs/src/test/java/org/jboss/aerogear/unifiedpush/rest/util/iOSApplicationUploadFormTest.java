@@ -59,7 +59,7 @@ public class iOSApplicationUploadFormTest {
     public void testIsCertificatePassPhraseValid() throws Exception {
         //given
         iOSApplicationUploadForm form = new iOSApplicationUploadForm();
-        form.setCertificate(IOUtils.toByteArray(getClass().getResourceAsStream("/Certificates.p12")));
+        form.setCertificate(IOUtils.toByteArray(getClass().getResourceAsStream("/cert/certificate.p12")));
         form.setPassphrase("aero1gears");
 
         //when

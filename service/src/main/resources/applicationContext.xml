@@ -12,5 +12,6 @@
         <!-- first, define your individual @Configuration classes as beans -->
         <bean class="org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment"/>
         <bean class="org.jboss.aerogear.unifiedpush.spring.ServiceConfig"/>
+        <bean class="org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig"/>
 	</beans>
 </beans>

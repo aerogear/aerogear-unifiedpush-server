@@ -34,15 +34,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @PropertySource(value = { "classpath:db.properties", "file://${org.jboss.aerogear.unifiedpush.conf}/db.properties" }, ignoreResourceNotFound = true)
 public class PersistenceJPAConfig {
 	private static final Logger logger = LoggerFactory.getLogger(PersistenceJPAConfig.class);
-	private static String[] RESOURCES = new String[] { 
-			"META-INF/orm.xml", 
+	private static String[] RESOURCES = new String[] {
+			"META-INF/orm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml",
-			"org/jboss/aerogear/unifiedpush/api/Category.hbm.xml", 
+			"org/jboss/aerogear/unifiedpush/api/Category.hbm.xml",
 			"org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml",
-			"org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml", 
-			"org/jboss/aerogear/unifiedpush/api/Alias.hbm.xml"
+			"org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml"
 	};
-	
+
 	private static final String SYS_KEY_DB_NAME = "org.jboss.aerogear.unifiedpush.initdb.database";
 
 	@Autowired
@@ -52,21 +51,21 @@ public class PersistenceJPAConfig {
 	public DataSource dataSource() {
 		final ComboPooledDataSource dataSource = new ComboPooledDataSource();
 		String databaseName;
-		
+
 		try {
 			dataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
 		} catch (final PropertyVetoException e) {
 			logger.error("Error while loading datasource driver!", e);
 		}
-		
+
 		// Override databaseName from -D if exists
 		if (System.getProperties().contains(SYS_KEY_DB_NAME) && !StringUtils.isEmpty(System.getProperties().get(SYS_KEY_DB_NAME))){
 			databaseName = System.getProperties().getProperty(SYS_KEY_DB_NAME);
 		}else {
 			databaseName = env.getProperty("jdbc.database");
 		}
-		
-		
+
+
 		dataSource.setJdbcUrl(String.format(env.getProperty("jdbc.url"), databaseName));
 		dataSource.setUser(env.getProperty("jdbc.username"));
 
@@ -77,7 +76,7 @@ public class PersistenceJPAConfig {
 	public EntityManagerFactory entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setPersistenceUnitManager(persistenceUnitManager());
-		
+
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		((AbstractJpaVendorAdapter) vendorAdapter).setGenerateDdl(true);
 		em.setJpaVendorAdapter(vendorAdapter);
@@ -91,15 +90,15 @@ public class PersistenceJPAConfig {
 	public PersistenceUnitManager persistenceUnitManager(){
 		DefaultPersistenceUnitManager pm = new DefaultPersistenceUnitManager();
 		DataSource dataSource = dataSource();
-		
+
 		pm.setDataSourceLookup(new SingleDataSourceLookup(dataSource()));
 		pm.setDefaultDataSource(dataSource);
 		pm.setMappingResources(RESOURCES);
 		pm.setDefaultPersistenceUnitRootLocation(null);
-		
+
 		return pm;
 	}
-	
+
 	@Bean
 	public PlatformTransactionManager transactionManager() {
 		return new JpaTransactionManager(entityManagerFactory());

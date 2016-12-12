@@ -48,7 +48,7 @@ public class MessagingSetup {
     public void setupMessaging(@Observes AfterStart event) throws IOException, CommandFailedException, InterruptedException, TimeoutException {
         final OnlineManagementClient client = createClient();
         managementClient.set(client);
-        client.apply(new CliFile(new File("src/test/resources/jms-setup-wildfly.cli").getAbsoluteFile()));
+        client.apply(new CliFile(new File("src/test/resources/META-INF/jms/jms-setup-wildfly.cli").getAbsoluteFile()));
 
         Administration administration = new Administration(client);
         administration.reloadIfRequired();
@@ -56,7 +56,7 @@ public class MessagingSetup {
 
     public void teardownMessaging(@Observes BeforeStop event) throws CommandFailedException, IOException, InterruptedException, TimeoutException {
         final OnlineManagementClient client = managementClient.get();
-        client.apply(new CliFile(new File("src/test/resources/jms-cleanup-wildfly.cli")));
+        client.apply(new CliFile(new File("src/test/resources/META-INF/jms/jms-cleanup-wildfly.cli")));
 
         Administration administration = new Administration(client);
         administration.reloadIfRequired();

@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.junit.Test;

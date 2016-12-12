@@ -28,6 +28,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
@@ -35,12 +36,12 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.MergeResponse;
@@ -66,7 +67,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private CategoryDao categoryDao;
 
 	@Inject
-	private AliasDao aliasDao;
+	private AliasService aliasService;
 
 	@Inject
 	private PushApplicationDao pushApplicationDao;
@@ -88,17 +89,20 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			return null;
 		}
 
-		Alias alias = aliasDao.findByName(installation.getAlias());
+		Alias alias = aliasService.find(installation.getAlias());
 
 		if (alias == null) {
 			return null;
 		}
 
-		PushApplication application = pushApplicationDao.findByPushApplicationID(alias.getPushApplicationID());
+		PushApplication application = pushApplicationDao
+				.findByPushApplicationID(alias.getPushApplicationId().toString());
 		if (application == null) {
-			logger.warn(String.format("Unable to find application for alias %s, this behaviour "
-					+ "might occur when application is deleted and orphans aliases exists. "
-					+ "Use DELETE /rest/alias/THE-ALIAS in order to remove orphans.", alias.getName()));
+			logger.warn(String.format(
+					"Unable to find application for alias %s, this behaviour "
+							+ "might occur when application is deleted and orphans aliases exists. "
+							+ "Use DELETE /rest/alias/THE-ALIAS in order to remove orphans.",
+					StringUtils.isEmpty(alias.getEmail()) ? alias.getMobile() : alias.getEmail()));
 			return null;
 		}
 

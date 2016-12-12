@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
@@ -24,65 +25,71 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
+import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 
-
 @Stateless
 public class PushApplicationServiceImpl implements PushApplicationService {
-    @Inject
-    private PushApplicationDao pushApplicationDao;
+	@Inject
+	private PushApplicationDao pushApplicationDao;
 
-    @Inject
-	private DocumentDao documentDao;
+	@Inject
+	private DocumentService documentService;
+	@Inject
+	private AliasService aliasService;
 
-    @Inject
-    @LoggedIn
-    private Instance<String> loginName;
+	@Inject
+	@LoggedIn
+	private Instance<String> loginName;
 
-    public PushApplicationServiceImpl() {
-    }
+	public PushApplicationServiceImpl() {
+	}
 
-    @Override
-    public void addPushApplication(PushApplication pushApp) {
+	@Override
+	public void addPushApplication(PushApplication pushApp) {
 
-        pushApp.setDeveloper(loginName.get());
-        pushApplicationDao.create(pushApp);
-    }
+		pushApp.setDeveloper(loginName.get());
+		pushApplicationDao.create(pushApp);
+	}
 
-    @Override
-    public PushApplication findByPushApplicationID(String pushApplicationID) {
-        return pushApplicationDao.findByPushApplicationID(pushApplicationID);
-    }
+	@Override
+	public PushApplication findByPushApplicationID(String pushApplicationID) {
+		return pushApplicationDao.findByPushApplicationID(pushApplicationID);
+	}
 
-    @Override
-    public void addVariant(PushApplication pushApp, Variant variant) {
-        pushApp.getVariants().add(variant);
-        pushApplicationDao.update(pushApp);
-    }
+	@Override
+	public void addVariant(PushApplication pushApp, Variant variant) {
+		pushApp.getVariants().add(variant);
+		pushApplicationDao.update(pushApp);
+	}
 
-    @Override
-    public Map<String, Long> countInstallationsByType(String pushApplicationID) {
-        return pushApplicationDao.countInstallationsByType(pushApplicationID);
-    }
+	@Override
+	public Map<String, Long> countInstallationsByType(String pushApplicationID) {
+		return pushApplicationDao.countInstallationsByType(pushApplicationID);
+	}
 
-    @Override
-    public void updatePushApplication(PushApplication pushApp) {
-        pushApplicationDao.update(pushApp);
-    }
+	@Override
+	public void updatePushApplication(PushApplication pushApp) {
+		pushApplicationDao.update(pushApp);
+	}
 
-    @Override
-    public void removePushApplication(PushApplication pushApp) {
-        pushApplicationDao.delete(pushApp);
+	@Override
+	public void removePushApplication(PushApplication pushApp) {
+		// Delete push application
+		pushApplicationDao.delete(pushApp);
 
-        // Delete any application documents
-        documentDao.delete(pushApp);
-    }
+		// delete aliases
+		aliasService.removeAll(UUID.fromString(pushApp.getPushApplicationID()));
 
-    @Override
-    public PushApplication findByVariantID(String variantId) {
-        return pushApplicationDao.findByVariantId(variantId);
-    }
+		// Delete any application documents
+		documentService.delete(pushApp.getPushApplicationID());
+	}
+
+	@Override
+	public PushApplication findByVariantID(String variantId) {
+		return pushApplicationDao.findByVariantId(variantId);
+	}
 }

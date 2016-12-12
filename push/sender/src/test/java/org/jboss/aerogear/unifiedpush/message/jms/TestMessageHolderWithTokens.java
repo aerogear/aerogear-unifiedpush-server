@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
@@ -45,14 +44,11 @@ public class TestMessageHolderWithTokens {
 
     @Deployment
     public static WebArchive archive() {
-
-        return UnifiedPushSenderArchive.forTestClass(TestMessageHolderWithTokens.class)
-                .withMessaging()
-                .withMessageDrivenBeans()
-                .withMockito()
-                    .addClasses(MockProviders.class)
-                .as(WebArchive.class);
-    }
+		return UnifiedPushSenderArchive.forTestClass(TestMessageHolderWithTokens.class) //
+				.withMessaging() //
+				.withMessageDrivenBeans() //
+				.as(WebArchive.class); //
+	}
 
     private UnifiedPushMessage message;
     private PushMessageInformation information;

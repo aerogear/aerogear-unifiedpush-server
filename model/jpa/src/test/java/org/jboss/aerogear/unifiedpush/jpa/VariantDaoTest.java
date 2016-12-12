@@ -16,12 +16,18 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,12 +38,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
 @RunWith(Arquillian.class)
 public class VariantDaoTest {
@@ -46,7 +47,6 @@ public class VariantDaoTest {
     private EntityManager entityManager;
     @Inject
     private VariantDao variantDao;
-    private JPAInstallationDao installationDao;
 
     @Deployment
     public static JavaArchive createDeployment() {

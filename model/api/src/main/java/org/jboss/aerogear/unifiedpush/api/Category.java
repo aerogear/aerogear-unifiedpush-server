@@ -16,11 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.io.Serializable;
-
-import java.io.Serializable;
 
 /**
  * A category of a specific installation.

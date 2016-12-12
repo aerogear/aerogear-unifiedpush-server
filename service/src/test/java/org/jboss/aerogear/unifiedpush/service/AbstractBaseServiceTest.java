@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -46,7 +45,7 @@ public abstract class AbstractBaseServiceTest {
 	protected KeycloakSecurityContext context = Mockito.mock(KeycloakSecurityContext.class);
 
 	@Mock
-	protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);;
+	protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);
 
 	@Inject
 	protected SearchManager searchManager;
@@ -59,27 +58,12 @@ public abstract class AbstractBaseServiceTest {
 
 	@Deployment
 	public static WebArchive archive() {
-		return UnifiedPushServiceArchive
-				.forTestClass(AbstractBaseServiceTest.class)
-				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-common")
-				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa")
-				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-push-model")
-				.addMavenDependencies("commons-io:commons-io")
-				.addMavenDependencies("com.googlecode.json-simple:json-simple")
-				.addMavenDependencies("org.keycloak:keycloak-core")
-				.addMavenDependencies("org.keycloak:keycloak-admin-client")
-				.addMavenDependencies("com.googlecode.json-simple:json-simple")
-				.addMavenDependencies("org.springframework:spring-core")
-				.addPackages(true, ConfigurationService.class.getPackage())
-				.addPackages(true, ServiceConfig.class.getPackage())
-				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
-						new String[] { "META-INF/persistence.xml", "test-data.sql" },
-						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
-				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-				.addAsResource("applicationContext.xml")
-				.addAsResource("beanRefContext.xml")
-				.addAsResource("cert/certificate.p12")
-				.addAsResource("default.properties").withMockito().withAssertj().withLang().withIo().withHttpclient()
+		return UnifiedPushServiceArchive.forTestClass(AbstractBaseServiceTest.class) //
+				.withServices() //
+				.withModelJPA() //
+				.withTestDS() //
+				.withTestResources() //
+				.withMockito() //
 				.as(WebArchive.class);
 	}
 
@@ -110,4 +94,12 @@ public abstract class AbstractBaseServiceTest {
 	 */
 	protected abstract void specificSetup();
 
+	protected void sleepSilently(long milliseconds) {
+		// Wait to cassandra persistance.
+		try {
+			Thread.sleep(milliseconds);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

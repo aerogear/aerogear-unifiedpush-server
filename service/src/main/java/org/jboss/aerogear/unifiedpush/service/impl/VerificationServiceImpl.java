@@ -13,8 +13,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -89,7 +89,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
-			verificationService.sendVerificationMessage(alias == null? null: alias.getPushApplicationID(), installation.getAlias(), verificationCode);
+			verificationService.sendVerificationMessage(alias == null? null: alias.getPushApplicationId().toString(), installation.getAlias(), verificationCode);
 		}
 
 		String key = buildKey(variant.getVariantID(), installation.getDeviceToken());

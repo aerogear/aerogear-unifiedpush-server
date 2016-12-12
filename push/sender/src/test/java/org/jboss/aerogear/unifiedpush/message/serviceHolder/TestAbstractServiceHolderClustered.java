@@ -54,11 +54,10 @@ public class TestAbstractServiceHolderClustered {
     public static WebArchive archive() {
         return UnifiedPushSenderArchive.forTestClass(TestAbstractServiceHolderClustered.class)
                 .withMessaging()
-                    .addPackage(org.jboss.aerogear.unifiedpush.message.serviceHolder.AbstractServiceHolder.class.getPackage())
+                    .addPackage(AbstractServiceHolder.class.getPackage())
                     .deleteClass(ApnsServiceHolder.class)
                     .addClasses(MockServiceHolderForCluster.class)
                     .addAsWebInfResource("test-jms.xml")
-                .withMockito()
                 .as(WebArchive.class);
     }
 

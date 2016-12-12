@@ -35,23 +35,34 @@
 			<scope>compile</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-model-jpa</artifactId>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-model-jpa</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+				</exclusion>
+				<exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-nop</artifactId>
                 </exclusion>
-            </exclusions>
-        </dependency>
+			</exclusions>
+		</dependency>
 
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-model-nosql</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
@@ -64,11 +75,10 @@
 			<artifactId>httpclient</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -96,37 +106,37 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-admin-client</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
 
 		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>resteasy-jaxrs</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-core</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${resteasy.version}</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
 
 		<dependency>
-	        <groupId>org.jboss.resteasy</groupId>
-	        <artifactId>resteasy-jackson-provider</artifactId>
-	        <version>${resteasy.version}</version>
-	        <scope>provided</scope>
-	    </dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 
 		<dependency>
@@ -156,8 +166,8 @@
 			<artifactId>libphonenumber</artifactId>
 			<version>7.3.1</version>
 		</dependency>
-				
-        <dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${springframework.version}</version>
@@ -176,8 +186,46 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.bitstrings.maven.plugins</groupId>
+				<artifactId>dependencypath-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</testResource>
+			<testResource>
+                <directory>src/test/filtered-resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+		</testResources>
+	</build>
 
 	<profiles>
 		<profile>
@@ -187,7 +235,6 @@
 			</activation>
 
 			<dependencies>
-
 				<dependency>
 					<groupId>junit</groupId>
 					<artifactId>junit</artifactId>
@@ -248,11 +295,54 @@
 					<artifactId>arquillian-transaction-jta</artifactId>
 					<scope>test</scope>
 				</dependency>
+
+				<!-- Spring test -->
 				<dependency>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-test</artifactId>
 					<version>${springframework.version}</version>
 					<scope>test</scope>
+				</dependency>
+
+				<!-- Cassandra test -->
+				<dependency>
+					<groupId>org.springframework.data</groupId>
+					<artifactId>spring-cql</artifactId>
+					<version>${cassandra-data.version}</version>
+					<type>test-jar</type>
+				</dependency>
+
+				<dependency>
+					<groupId>org.apache.cassandra</groupId>
+					<artifactId>cassandra-all</artifactId>
+					<version>${cassandra.version}</version>
+					<exclusions>
+						<exclusion>
+							<artifactId>slf4j-log4j12</artifactId>
+							<groupId>org.slf4j</groupId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>org.hectorclient</groupId>
+					<artifactId>hector-core</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>compile</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 
@@ -261,7 +351,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jar-plugin</artifactId>
-						<version>2.2</version>
 						<executions>
 							<execution>
 								<goals>

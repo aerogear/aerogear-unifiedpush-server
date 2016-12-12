@@ -37,18 +37,11 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 	@Deployment
 	public static WebArchive archive() {
-		return UnifiedPushRestArchive.forTestClass(DocumentEndpointTest.class)
-				.addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-service")
-				.addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",
-						new String[] { "META-INF/persistence.xml", "test-data.sql" },
-						new String[] { "META-INF/test-persistence.xml", "META-INF/test-data.sql" })
-				.addPackage(RestApplication.class.getPackage())
-				.addPackage(InstallationRegistrationEndpoint.class.getPackage())
-				.addPackage(DocumentEndpoint.class.getPackage())
-				.addClasses(RestEndpointTest.class, RestApplication.class, HttpBasicHelper.class, Authenticator.class,
-						ClientAuthHelper.class)
-				.addAsWebInfResource("META-INF/test-ds.xml", "test-ds.xml")
-				.addAsResource("test.properties", "default.properties").as(WebArchive.class);
+		return UnifiedPushRestArchive.forTestClass(DocumentEndpointTest.class) //
+				.withRest() //
+				.addPackage(DocumentEndpoint.class.getPackage()) //
+				.addPackage(InstallationRegistrationEndpoint.class.getPackage()) //
+				.as(WebArchive.class);
 	}
 
 	@BeforeClass
