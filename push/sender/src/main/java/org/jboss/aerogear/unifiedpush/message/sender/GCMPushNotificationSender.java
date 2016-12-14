@@ -21,7 +21,6 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -29,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
         try {
             logger.debug("Sending transformed GCM payload: " + gcmMessage);
 
-            final Sender sender = new Sender(androidVariant.getGoogleKey());
+            final ConfigurableFCMSender sender = new ConfigurableFCMSender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
             processGCM(androidVariant, pushTargets, gcmMessage, sender);
@@ -133,8 +133,7 @@ public class GCMPushNotificationSender implements PushNotificationSender {
     /**
      * Process the HTTP POST to the GCM infrastructure for the given list of registrationIDs.
      */
-    private void processGCM(AndroidVariant androidVariant, List<String> pushTargets, Message gcmMessage, Sender sender) throws IOException {
-
+    private void processGCM(AndroidVariant androidVariant, List<String> pushTargets, Message gcmMessage, ConfigurableFCMSender sender) throws IOException {
 
         // push targets can be registration IDs OR topics (starting /topic/), but they can't be mixed.
         if (pushTargets.get(0).startsWith(Constants.TOPIC_PREFIX)) {
