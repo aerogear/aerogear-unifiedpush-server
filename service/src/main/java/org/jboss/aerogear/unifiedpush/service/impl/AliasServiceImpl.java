@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -125,7 +124,8 @@ public class AliasServiceImpl implements AliasService {
 
 			try {
 				aliasDao.create(alias);
-			} catch (EJBTransactionRolledbackException e) {
+				aliasDao.flushAndClear();
+			} catch (Throwable e) {
 				isConstraintViolationException(e, alias.getName());
 			}
 		}
