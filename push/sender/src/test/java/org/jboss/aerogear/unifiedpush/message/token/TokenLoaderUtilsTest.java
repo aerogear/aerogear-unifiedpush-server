@@ -118,4 +118,32 @@ public class TokenLoaderUtilsTest {
         assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isFalse();
     }
 
+    @Test
+    public void testGCMTopicForVariant() {
+        final Criteria criteria = new Criteria();
+        criteria.setVariants(Arrays.asList("variant1", "variant2"));
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
+    }
+
+    @Test
+    public void testGCMTopicForVariantAndCategory() {
+        final Criteria criteria = new Criteria();
+        criteria.setVariants(Arrays.asList("variant1", "variant2"));
+        criteria.setCategories(Arrays.asList("football"));
+
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+                Constants.TOPIC_PREFIX+"football"
+        );
+
+    }
+
+    @Test
+    public void testGCMTopicForVariantAndAlias() {
+        final Criteria criteria = new Criteria();
+        criteria.setVariants(Arrays.asList("variant1", "variant2"));
+        criteria.setAliases(Arrays.asList("foo@bar.org"));
+
+        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isFalse();
+    }
 }
