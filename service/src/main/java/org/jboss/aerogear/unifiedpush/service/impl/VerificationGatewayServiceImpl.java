@@ -44,7 +44,11 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 
 	/**
 	 * Used for testing and mock services.
+<<<<<<< 39b80a4e5cb8951d391af1d475d965bfd930ba33
 	 * @param configuration EJB wrapper to spring Environment.
+=======
+	 * @param configuration contractor method for unittests only.
+>>>>>>> Fix java docs errors
 	 */
 	public VerificationGatewayServiceImpl(ConfigurationService configuration){
 		this.configuration = configuration;
