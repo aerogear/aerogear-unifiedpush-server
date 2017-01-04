@@ -25,7 +25,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 	private static final String PROP_CONTACT_POINTS = "aerogear.config.cassandra.contactpoints";
 	private static final String PROP_CONTACP_DEFV = "127.0.0.1";
 	private static final String PROP_PORT = "aerogear.config.cassandra.port";
-	private static final String PROP_PORT_DEFV = "9142";
+	private static final String PROP_PORT_DEFV = "9042";
 
 	@Autowired
 	private ConfigurationEnvironment config;

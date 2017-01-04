@@ -56,14 +56,14 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	private User findByMobile(String mobile) {
-		Select select = QueryBuilder.select().from(super.tableName).allowFiltering();
+		Select select = QueryBuilder.select().from(super.tableName);
 		select.where(QueryBuilder.eq("email", mobile.toLowerCase()));
 
 		return operations.selectOne(select, domainClass);
 	}
 
 	public Stream<User> find(UUID pushApplicationId) {
-		Select select = QueryBuilder.select().from(super.tableName).allowFiltering();
+		Select select = QueryBuilder.select().from(super.tableName);
 		select.where(QueryBuilder.eq("push_application_id", pushApplicationId));
 
 		return operations.stream(select, domainClass);

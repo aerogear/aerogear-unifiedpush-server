@@ -75,7 +75,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	 * Return newest document according to DocumentKey.
 	 */
 	private DocumentContent findLatest(DocumentKey queryKey, String documentId) {
-		Select select = QueryBuilder.select().from(super.tableName).allowFiltering();
+		Select select = QueryBuilder.select().from(super.tableName);
 		select.where(QueryBuilder.eq("push_application_id", queryKey.getPushApplicationId()));
 		select.where(QueryBuilder.eq("database", queryKey.getDatabase()));
 		select.where(QueryBuilder.eq("user_id", queryKey.getUserId()));
@@ -110,7 +110,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	public Stream<DocumentContent> find(DocumentKey queryKey) {
-		Select select = QueryBuilder.select().from(super.tableName).allowFiltering();
+		Select select = QueryBuilder.select().from(super.tableName);
 		select.where(QueryBuilder.eq("push_application_id", queryKey.getPushApplicationId()));
 		select.where(QueryBuilder.eq("database", queryKey.getDatabase()));
 		select.where(QueryBuilder.eq("user_id", queryKey.getUserId()));

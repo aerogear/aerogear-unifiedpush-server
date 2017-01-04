@@ -11,6 +11,7 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jacoco.core.internal.data.NullUUID;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
@@ -43,14 +44,13 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public void save(PushApplication pushApplication, String alias, String content, String databse, String id,
 			boolean overwrite) {
-		Alias user = aliasDao.findByAlias(alias);
-		documentDao.create(createDocument(content, pushApplication, user, databse, id));
+
+		documentDao.create(createDocument(content, pushApplication, getAlias(alias), databse, id));
 	}
 
 	@Override
 	public String getLatestFromAlias(PushApplication pushApplication, String alias, String databse, String id) {
-		Alias user = aliasDao.findByAlias(alias);
-		DocumentContent document = (DocumentContent) documentDao.findOne(createKey(pushApplication, user, databse, id));
+		DocumentContent document = (DocumentContent) documentDao.findOne(createKey(pushApplication, getAlias(alias), databse, id));
 
 		if (document != null)
 			return document.getContent();
@@ -82,8 +82,7 @@ public class DocumentServiceImpl implements DocumentService {
 				&& message.getPushMessage().getCriteria().getAliases() != null) {
 
 			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
-				Alias user = aliasDao.findByAlias(alias);
-				save(message.getPayload(), pushApplication, user, DocumentMetadata.getDatabase(message.getQualifier()),
+				save(message.getPayload(), pushApplication, getAlias(alias), DocumentMetadata.getDatabase(message.getQualifier()),
 						DocumentMetadata.getId(message.getId()), overwrite);
 			}
 			// Store payload without alias
@@ -134,6 +133,13 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public void delete(String pushApplicationId) {
 		documentDao.delete(UUID.fromString(pushApplicationId));
+	}
+
+	private Alias getAlias(String alias){
+		if (StringUtils.isEmpty(alias))
+			return null;
+
+		return aliasDao.findByAlias(alias);
 	}
 
 }
