@@ -60,10 +60,9 @@ public final class TokenLoaderUtils {
      */
     public static boolean isCategoryOnlyCriteria(final Criteria criteria) {
 
-        return  isEmpty(criteria.getAliases()) &&
-                isEmpty(criteria.getDeviceTypes()) &&
-                isEmpty(criteria.getVariants()) &&
-                !isEmpty(criteria.getCategories());
+        return  isEmpty(criteria.getAliases()) &&      // we are not subscribing to alias topic (yet)
+                isEmpty(criteria.getDeviceTypes()) &&  // we are not subscribing to device type topic (yet)
+                !isEmpty(criteria.getCategories());    // BUT! categories are mapped to topics
     }
 
     /**
@@ -73,7 +72,6 @@ public final class TokenLoaderUtils {
 
         return  isEmpty(criteria.getAliases()) &&
                 isEmpty(criteria.getDeviceTypes()) &&
-                isEmpty(criteria.getVariants()) &&
                 isEmpty(criteria.getCategories());
     }
 
