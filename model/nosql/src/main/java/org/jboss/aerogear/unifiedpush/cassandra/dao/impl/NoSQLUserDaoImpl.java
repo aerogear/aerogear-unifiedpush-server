@@ -57,7 +57,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	private User findByMobile(String mobile) {
 		Select select = QueryBuilder.select().from(super.tableName);
-		select.where(QueryBuilder.eq("email", mobile.toLowerCase()));
+		select.where(QueryBuilder.eq("mobile", mobile.toLowerCase()));
 
 		return operations.selectOne(select, domainClass);
 	}

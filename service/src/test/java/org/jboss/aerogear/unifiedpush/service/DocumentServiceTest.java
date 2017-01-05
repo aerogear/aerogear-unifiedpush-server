@@ -258,4 +258,23 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 				DocumentMetadata.NULL_ID);
 		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD}"));
 	}
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void testBadPhoneNumberDocument() {
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
+
+		String alias1 = "9720525679037170105113810";
+		String alias2 = "9720521550826170105113810";
+
+		// Remove (Disable) 'p1' alias from aliases list.
+		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(alias1, alias2), false);
+
+		documentService.save(pushApp, alias1, "doc1", DEFAULT_DEVICE_DATABASE, "test_id", true);
+		documentService.save(pushApp, alias2, "doc2", DEFAULT_DEVICE_DATABASE, "test_id", true);
+
+		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "test_id");
+		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("doc1", "doc2")));
+	}
 }

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -114,34 +114,27 @@ public class AliasServiceImpl implements AliasService {
 
 	private void createAliases(PushApplication pushApp, List<String> aliases) {
 		Set<String> aliasSet = new HashSet<>(aliases);
-		PhoneValidator validator = new PhoneValidator();
+		EmailValidator validator = new EmailValidator();
 		for (String name : aliasSet) {
 			Alias user = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased());
-			if (validator.isValid(name, null)){
-				user.setMobile(name);
-			}else{
+			if (validator.isValid(name, null)) {
 				user.setEmail(name);
+			} else {
+				user.setMobile(name);
 			}
-			try {
-				aliasCrudService.create(user);
-				aliasDao.flushAndClear();
-			} catch (Throwable e) {
-				isConstraintViolationException(e, name);
-			}
+
+			aliasCrudService.create(user);
 		}
 	}
 
-	public void isConstraintViolationException(Throwable e, String entityId) throws RuntimeException {
-		Throwable t = e.getCause();
-		while ((t != null) && !(t instanceof ConstraintViolationException)) {
-			t = t.getCause();
-		}
-		if (t instanceof ConstraintViolationException) {
-			// ConstraintViolationException, try to translate exception.
-			throw new ServiceConstraintViolationException(t, entityId);
+	@Override
+	public void removeAll(UUID pushApplicationId) {
+		aliasCrudService.removeAll(pushApplicationId);
 		}
 
-		throw new RuntimeException(e);
+	@Override
+	public void create(Alias alias) {
+		aliasCrudService.create(alias);
 	}
 
 	@Override
