@@ -52,7 +52,9 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 
 	@Override
 	public void removeAll(UUID pushApplicationId) {
-		aliasDao.delete(pushApplicationId);
+		aliasDao.findAll(pushApplicationId).forEach((user) -> {
+			aliasDao.delete(user);
+		});
 	}
 
 	@Override

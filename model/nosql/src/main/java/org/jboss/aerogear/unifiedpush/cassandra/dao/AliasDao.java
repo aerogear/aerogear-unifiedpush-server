@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 public interface AliasDao {
@@ -13,8 +14,7 @@ public interface AliasDao {
 
 	List<Alias> findAll(UUID pushApplicationId);
 
-	void delete(UUID pushApplicationId);
-
+	@CacheEvict(value = CACHE_NAME)
 	void delete(Alias alias);
 
 	@Cacheable(value = CACHE_NAME, unless = "#result == null")

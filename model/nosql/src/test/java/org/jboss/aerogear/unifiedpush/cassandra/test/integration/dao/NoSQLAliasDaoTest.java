@@ -75,7 +75,9 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		Assert.isTrue(aliasDao.findAll(id).size() >= 2);
 
 		// Delete by application
-		aliasDao.delete(id);
+		aliasDao.findAll(id).forEach((user) -> {
+			aliasDao.delete(user);
+		});
 
 		Assert.isTrue(aliasDao.findAll(id).size() == 0);
 	}

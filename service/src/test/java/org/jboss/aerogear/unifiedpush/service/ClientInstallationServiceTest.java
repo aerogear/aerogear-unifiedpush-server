@@ -568,7 +568,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
 	public void findDeviceVariantByAlias() {
-
 		AndroidVariant variant = new AndroidVariant();
 		variant.setGoogleKey("Key");
 		variant.setName("NewVaraint");
@@ -580,8 +579,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		applicationService.addPushApplication(application);
 		applicationService.addVariant(application, variant);
 
-		String installationAlias = "p1";
-		List<String> aliases = Arrays.asList("a", "b", "p1");
+		String installationAlias = "alias2";
+		List<String> aliases = Arrays.asList("a", "b", "alias2");
 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
@@ -610,7 +609,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		applicationService.addPushApplication(application);
 		applicationService.addVariant(application, variant);
 
-		String installationAlias = "p1";
+		String installationAlias = "alias1";
 		List<String> aliases = Arrays.asList("a", "b", installationAlias);
 
 		Installation device = new Installation();

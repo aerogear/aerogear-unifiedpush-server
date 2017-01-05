@@ -75,14 +75,6 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	@Override
-	public void delete(UUID pushApplicationId) {
-		// First query all users.
-		find(pushApplicationId).forEach((user) -> {
-			delete(user);
-		});
-	}
-
-	@Override
 	public void delete(Alias alias) {
 		super.delete(new User().clone(alias));
 	}
