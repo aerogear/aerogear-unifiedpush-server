@@ -1,241 +1,242 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
-    individual contributors Licensed under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software distributed
-    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
-    OR CONDITIONS OF ANY KIND, either express or implied. See the License for
-    the specific language governing permissions and limitations under the License. -->
+	individual contributors Licensed under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+	Unless required by applicable law or agreed to in writing, software distributed
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jboss.aerogear</groupId>
-        <artifactId>aerogear-parent</artifactId>
-        <!-- NOTE: if updated for version of UPS dependencies, please update
-            the 'aerogear.bom.version' as well -->
-        <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-        <version>0.2.20</version>
-    </parent>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jboss.aerogear</groupId>
+		<artifactId>aerogear-parent</artifactId>
+		<!-- NOTE: if updated for version of UPS dependencies, please update the
+			'aerogear.bom.version' as well -->
+		<!-- NOTE: if updated for version of UPS dependencies, please update the
+			'aerogear.bom.version' as well -->
+		<version>0.2.20</version>
+	</parent>
 
-    <groupId>org.jboss.aerogear.unifiedpush</groupId>
-    <artifactId>unifiedpush-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<groupId>org.jboss.aerogear.unifiedpush</groupId>
+	<artifactId>unifiedpush-parent</artifactId>
+	<version>1.2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-    <name>UnifiedPush Server</name>
-    <url>http://aerogear.org/push</url>
+	<name>UnifiedPush Server</name>
+	<url>http://aerogear.org/push</url>
 
-    <scm>
-        <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
-        <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
-        <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
-        <tag>HEAD</tag>
-    </scm>
+	<scm>
+		<connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
+		<developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
+		<url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
+		<tag>HEAD</tag>
+	</scm>
 
-    <issueManagement>
-        <system>jira</system>
-        <url>https://issues.jboss.org/browse/AGPUSH</url>
-    </issueManagement>
+	<issueManagement>
+		<system>jira</system>
+		<url>https://issues.jboss.org/browse/AGPUSH</url>
+	</issueManagement>
 
-    <ciManagement>
-        <system>travis-ci</system>
-        <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
-    </ciManagement>
+	<ciManagement>
+		<system>travis-ci</system>
+		<url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
+	</ciManagement>
 
-    <modules>
-        <module>common</module>
-        <module>model</module>
-        <module>migrator</module>
-        <module>push</module>
-        <module>service</module>
-        <module>jaxrs</module>
-        <module>dependencies</module>
-        <module>servers</module>
-        <module>package</module>
-    </modules>
+	<modules>
+		<module>common</module>
+		<module>model</module>
+		<module>migrator</module>
+		<module>push</module>
+		<module>service</module>
+		<module>jaxrs</module>
+		<module>dependencies</module>
+		<module>servers</module>
+		<module>package</module>
+	</modules>
 
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-crypto</artifactId>
-                <version>${aerogear.crypto.version}</version>
-            </dependency>
-
-            <!-- We need to redefine few testing dependencies until JDF updates
-                -with-tools BOM -->
-            <!-- https://issues.jboss.org/browse/JDF-417 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- JBoss distributes a complete set of Java EE 7 APIs including
-                a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or
-                a collection) of artifacts. We use this here so that we always get the correct
-                versions of artifacts. Here we use the jboss-javaee-7.0 stack (you can read
-                this as the JBoss stack of the Java EE 7 APIs) -->
-            <dependency>
-                <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-javaee7</artifactId>
-                <version>${wildfly.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- AeroGear Dependencies BOM Imports -->
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-bom</artifactId>
-                <version>${aerogear.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- AeroGear Android Dependencies BOM Imports -->
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-android-bom</artifactId>
-                <version>${aerogear.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate-validator.version}</version>
-            </dependency>
-
-            <!-- using latest of OpenEJB -->
-            <dependency>
-                <groupId>org.apache.openejb</groupId>
-                <artifactId>openejb-core-hibernate</artifactId>
-                <version>4.7.4</version>
-                <type>pom</type>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.3.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.3.3</version>
-            </dependency>
-
-            <!-- Override resteasy version -->
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxrs</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>async-http-servlet-3.0</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>jaxrs-api</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jackson2-provider</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-multipart-provider</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <!-- Internal dependency managment -->
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-model-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-model-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-push-model</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-push-sender</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-service</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                <artifactId>unifiedpush-service</artifactId>
-                <type>test-jar</type>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.4</version>
-            </dependency>
+	<dependencyManagement>
+		<dependencies>
 
 			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-lang3</artifactId>
-			    <version>3.5</version>
+				<groupId>org.jboss.aerogear</groupId>
+				<artifactId>aerogear-crypto</artifactId>
+				<version>${aerogear.crypto.version}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${fasterxml.version}</version>
-            </dependency>
+			<!-- We need to redefine few testing dependencies until JDF updates -with-tools
+				BOM -->
+			<!-- https://issues.jboss.org/browse/JDF-417 -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${fasterxml.version}</version>
-            </dependency>
+			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill
+				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection)
+				of artifacts. We use this here so that we always get the correct versions
+				of artifacts. Here we use the jboss-javaee-7.0 stack (you can read this as
+				the JBoss stack of the Java EE 7 APIs) -->
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>wildfly-javaee7</artifactId>
+				<version>${wildfly.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- AeroGear Dependencies BOM Imports -->
+			<dependency>
+				<groupId>org.jboss.aerogear</groupId>
+				<artifactId>aerogear-bom</artifactId>
+				<version>${aerogear.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- AeroGear Android Dependencies BOM Imports -->
+			<dependency>
+				<groupId>org.jboss.aerogear</groupId>
+				<artifactId>aerogear-android-bom</artifactId>
+				<version>${aerogear.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator.version}</version>
+			</dependency>
+
+			<!-- using latest of OpenEJB -->
+			<dependency>
+				<groupId>org.apache.openejb</groupId>
+				<artifactId>openejb-core-hibernate</artifactId>
+				<version>4.7.4</version>
+				<type>pom</type>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.3.6</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>4.3.3</version>
+			</dependency>
+
+			<!-- Override resteasy version -->
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jaxrs</artifactId>
+				<version>${resteasy.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>async-http-servlet-3.0</artifactId>
+				<version>${resteasy.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>jaxrs-api</artifactId>
+				<version>${resteasy.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jackson2-provider</artifactId>
+				<version>${resteasy.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-multipart-provider</artifactId>
+				<version>${resteasy.version}</version>
+			</dependency>
+
+			<!-- Internal dependency managment -->
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-model-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-model-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-push-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-push-sender</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.aerogear.unifiedpush</groupId>
+				<artifactId>unifiedpush-service</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.5</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${fasterxml.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${fasterxml.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -257,260 +258,259 @@
 
 			<!-- keycloak verison policy -->
 			<dependency>
-	            <groupId>org.keycloak</groupId>
-	            <artifactId>keycloak-core</artifactId>
-	            <version>${keycloak.version}</version>
-	        </dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-core</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
 
-	        <dependency>
-	            <groupId>org.keycloak</groupId>
-	            <artifactId>keycloak-adapter-core</artifactId>
-	            <version>${keycloak.version}</version>
-	        </dependency>
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-adapter-core</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
 
-	        <dependency>
-	            <groupId>org.keycloak</groupId>
-	            <artifactId>keycloak-jboss-adapter-core</artifactId>
-	            <version>${keycloak.version}</version>
-	        </dependency>
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-jboss-adapter-core</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
 
-	        <!-- Cassandra driver and dependencies-->
-	        <dependency>
-	            <groupId>com.datastax.cassandra</groupId>
-	            <artifactId>cassandra-driver-core</artifactId>
-	            <version>${cassandra-driver-core.version}</version>
-	            <exclusions>
-	                <exclusion>
-	                    <artifactId>slf4j-log4j12</artifactId>
-	                    <groupId>org.slf4j</groupId>
-	                </exclusion>
-	                <exclusion>
-	                    <artifactId>log4j</artifactId>
-	                    <groupId>log4j</groupId>
-	                </exclusion>
-	                <exclusion>
-	                    <groupId>com.google.guava</groupId>
-	                    <artifactId>guava</artifactId>
-	                </exclusion>
-	                <exclusion>
-	                    <groupId>io.netty</groupId>
-	                    <artifactId>netty-handler</artifactId>
-	                </exclusion>
-	            </exclusions>
-	        </dependency>
+			<!-- Cassandra driver and dependencies -->
+			<dependency>
+				<groupId>com.datastax.cassandra</groupId>
+				<artifactId>cassandra-driver-core</artifactId>
+				<version>${cassandra-driver-core.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>slf4j-log4j12</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>log4j</artifactId>
+						<groupId>log4j</groupId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.guava</groupId>
+						<artifactId>guava</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.netty</groupId>
+						<artifactId>netty-handler</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-	        <dependency>
-	            <groupId>io.netty</groupId>
-	            <artifactId>netty-all</artifactId>
-	            <version>4.0.36.Final</version>
-	        </dependency>
-        </dependencies>
-    </dependencyManagement>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-all</artifactId>
+				<version>4.0.36.Final</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <build>
-        <plugins>
-            <!-- we really do not need javadocs for the server, there are
-                no Java APIs exposed -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Exclude copied resource from spring + jaxrs resources -->
+	<build>
+		<plugins>
+			<!-- we really do not need javadocs for the server, there are no Java
+				APIs exposed -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Exclude copied resource from spring + jaxrs resources -->
 					<excludePackageNames>org.jboss.aerogear.unifiedpush.spring.utils:org.jboss.aerogear.unifiedpush.rest</excludePackageNames>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${wildfly-maven-plugin.version}</version>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <wtpapplicationxml>true</wtpapplicationxml>
-                    <wtpversion>2.0</wtpversion>
-                    <manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
-                    <downloadSources>true</downloadSources>
-                    <ajdtVersion>none</ajdtVersion>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<version>${wildfly-maven-plugin.version}</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
 
 			<plugin>
-			    <groupId>org.basepom.maven</groupId>
-			    <artifactId>duplicate-finder-maven-plugin</artifactId>
-			    <version>1.2.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<wtpapplicationxml>true</wtpapplicationxml>
+					<wtpversion>2.0</wtpversion>
+					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
+					<downloadSources>true</downloadSources>
+					<ajdtVersion>none</ajdtVersion>
+				</configuration>
 			</plugin>
-        </plugins>
 
-        <pluginManagement>
-            <plugins>
-                <!-- Override the actual checkstyle version to support Java 1.8 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${version.checkstyle.plugin}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.18</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 
-	            <plugin>
-	                <groupId>org.bitstrings.maven.plugins</groupId>
-	                <artifactId>dependencypath-maven-plugin</artifactId>
-	                <version>1.1.1</version>
-	                <executions>
-	                    <execution>
-	                        <id>set-all</id>
-	                        <goals>
-	                            <goal>set</goal>
-	                        </goals>
-	                    </execution>
-	                </executions>
-	            </plugin>
-	            <plugin>
-	                <groupId>org.codehaus.mojo</groupId>
-	                <artifactId>build-helper-maven-plugin</artifactId>
-	                <version>1.8</version>
-	                <executions>
-	                    <execution>
-	                        <id>reserve-network-port</id>
-	                        <goals>
-	                            <goal>reserve-network-port</goal>
-	                        </goals>
-	                        <phase>process-resources</phase>
-	                        <configuration>
-	                            <portNames>
-	                                <portName>build.cassandra.native_transport_port</portName>
-	                                <portName>build.cassandra.rpc_port</portName>
-	                                <portName>build.cassandra.storage_port</portName>
-	                                <portName>build.cassandra.ssl_storage_port</portName>
-	                            </portNames>
-	                        </configuration>
-	                    </execution>
-	                </executions>
-	            </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+			<plugin>
+				<groupId>org.basepom.maven</groupId>
+				<artifactId>duplicate-finder-maven-plugin</artifactId>
+				<version>1.2.1</version>
+			</plugin>
+		</plugins>
 
-    <properties>
-        <java.version>1.8</java.version>
+		<pluginManagement>
+			<plugins>
+				<!-- Override the actual checkstyle version to support Java 1.8 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${version.checkstyle.plugin}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>6.18</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 
-        <!-- Override Areogear BOM -->
-        <resteasy.version>3.0.19.Final</resteasy.version>
+				<plugin>
+					<groupId>org.bitstrings.maven.plugins</groupId>
+					<artifactId>dependencypath-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<executions>
+						<execution>
+							<id>set-all</id>
+							<goals>
+								<goal>set</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.8</version>
+					<executions>
+						<execution>
+							<id>reserve-network-port</id>
+							<goals>
+								<goal>reserve-network-port</goal>
+							</goals>
+							<phase>process-resources</phase>
+							<configuration>
+								<portNames>
+									<portName>build.cassandra.native_transport_port</portName>
+									<portName>build.cassandra.rpc_port</portName>
+									<portName>build.cassandra.storage_port</portName>
+									<portName>build.cassandra.ssl_storage_port</portName>
+								</portNames>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<properties>
+		<java.version>1.8</java.version>
 
-        <!--
-            Options to override the compiler arguments directly on the compiler arument line to separate between what
-            the IDE understands as the source level and what the Maven compiler actually use.
-        -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <wildfly-maven-plugin.version>1.1.0.Alpha11</wildfly-maven-plugin.version>
+		<!-- Override Areogear BOM -->
+		<resteasy.version>3.0.19.Final</resteasy.version>
 
-        <aerogear.bom.version>0.2.20</aerogear.bom.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Override versions of AeroGear BOMs -->
-        <junit.version>4.12</junit.version>
-        <keycloak.version>2.4.0.Final</keycloak.version>
-        <hibernate.version>5.0.10.Final</hibernate.version>
-        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+		<!-- Options to override the compiler arguments directly on the compiler
+			arument line to separate between what the IDE understands as the source level
+			and what the Maven compiler actually use. -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<wildfly-maven-plugin.version>1.1.0.Alpha11</wildfly-maven-plugin.version>
 
-        <gcm-server.version>1.0.0</gcm-server.version>
-        <slfj4.version>1.7.21</slfj4.version>
+		<aerogear.bom.version>0.2.20</aerogear.bom.version>
 
-        <!-- Code coverage -->
-        <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
-        <org.jacoco.agent.version>0.6.3.201306030806</org.jacoco.agent.version>
-        <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
-        <ant.contrib.version>20020829</ant.contrib.version>
-        <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+		<!-- Override versions of AeroGear BOMs -->
+		<junit.version>4.12</junit.version>
+		<keycloak.version>2.4.0.Final</keycloak.version>
+		<hibernate.version>5.0.10.Final</hibernate.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
-        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
-        <mysql.version>5.1.36</mysql.version>
-        <fasterxml.version>2.7.4</fasterxml.version>
-        <wildfly.version>10.1.0.Final</wildfly.version>
-        <springframework.version>5.0.0.M3</springframework.version>
+		<gcm-server.version>1.0.0</gcm-server.version>
+		<slfj4.version>1.7.21</slfj4.version>
 
-        <!-- Cassandra related properties -->
-        <failsafe.version>2.19.1</failsafe.version>
-        <cassandra.version>3.9</cassandra.version>
-        <cassandra-driver-core.version>3.1.1</cassandra-driver-core.version>
-        <cassandra-data.version>2.0.0.M1</cassandra-data.version>
+		<!-- Code coverage -->
+		<org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
+		<org.jacoco.agent.version>0.6.3.201306030806</org.jacoco.agent.version>
+		<org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
+		<ant.contrib.version>20020829</ant.contrib.version>
+		<aerogear.crypto.version>0.1.5</aerogear.crypto.version>
 
-        <ups.ddl_value>validate</ups.ddl_value>
-    </properties>
+		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
+		<mysql.version>5.1.36</mysql.version>
+		<fasterxml.version>2.7.4</fasterxml.version>
+		<wildfly.version>10.1.0.Final</wildfly.version>
+		<springframework.version>5.0.0.M3</springframework.version>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+		<!-- Cassandra related properties -->
+		<failsafe.version>2.19.1</failsafe.version>
+		<cassandra.version>3.9</cassandra.version>
+		<cassandra-driver-core.version>3.1.1</cassandra-driver-core.version>
+		<cassandra-data.version>2.0.0.M1</cassandra-data.version>
 
-            <dependencyManagement>
-                <dependencies>
-                    <!-- AeroGear Test Dependencies BOM Imports -->
-                    <dependency>
-                        <groupId>org.jboss.aerogear</groupId>
-                        <artifactId>aerogear-test-bom</artifactId>
-                        <version>${aerogear.bom.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
+		<ups.ddl_value>validate</ups.ddl_value>
+	</properties>
 
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                        <version>1.6.1</version>
-                        <scope>test</scope>
-                    </dependency>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
-                    <dependency>
-                        <groupId>org.arquillian.container</groupId>
-                        <artifactId>arquillian-container-chameleon</artifactId>
-                        <version>1.0.0.Alpha7</version>
-                        <scope>test</scope>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>commons-lang</groupId>
-                                <artifactId>commons-lang</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
+			<dependencyManagement>
+				<dependencies>
+					<!-- AeroGear Test Dependencies BOM Imports -->
+					<dependency>
+						<groupId>org.jboss.aerogear</groupId>
+						<artifactId>aerogear-test-bom</artifactId>
+						<version>${aerogear.bom.version}</version>
+						<type>pom</type>
+						<scope>import</scope>
+					</dependency>
 
-                    <dependency>
-	                    <groupId>org.jboss.arquillian.extension</groupId>
-	                    <artifactId>arquillian-transaction-jta</artifactId>
-	                    <version>1.0.3.Final</version>
-                    	<scope>test</scope>
-                	</dependency>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-log4j12</artifactId>
+						<version>1.6.1</version>
+						<scope>test</scope>
+					</dependency>
+
+					<dependency>
+						<groupId>org.arquillian.container</groupId>
+						<artifactId>arquillian-container-chameleon</artifactId>
+						<version>1.0.0.Alpha7</version>
+						<scope>test</scope>
+						<exclusions>
+							<exclusion>
+								<groupId>commons-lang</groupId>
+								<artifactId>commons-lang</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+
+					<dependency>
+						<groupId>org.jboss.arquillian.extension</groupId>
+						<artifactId>arquillian-transaction-jta</artifactId>
+						<version>1.0.3.Final</version>
+						<scope>test</scope>
+					</dependency>
 
 					<dependency>
 						<groupId>org.jboss.shrinkwrap.resolver</groupId>
@@ -519,83 +519,105 @@
 						<scope>test</scope>
 					</dependency>
 
-					<!-- Hibernate Validator also requires an implementation of the Unified Expression Language (JSR 341).
-						http://hibernate.org/validator/documentation/getting-started/ -->
+					<!-- Hibernate Validator also requires an implementation of the Unified
+						Expression Language (JSR 341). http://hibernate.org/validator/documentation/getting-started/ -->
 					<dependency>
 						<groupId>javax.el</groupId>
 						<artifactId>javax.el-api</artifactId>
 						<version>2.2.4</version>
-                        <scope>test</scope>
+						<scope>test</scope>
 					</dependency>
 
 					<dependency>
 						<groupId>org.glassfish.web</groupId>
 						<artifactId>javax.el</artifactId>
 						<version>2.2.4</version>
-                        <scope>test</scope>
+						<scope>test</scope>
 					</dependency>
 
-		            <dependency>
-		                <groupId>org.wildfly.extras.creaper</groupId>
-		                <artifactId>creaper-core</artifactId>
-		                <version>1.4.0</version>
-		                <exclusions>
-		                    <exclusion>
-		                        <groupId>org.jboss.as</groupId>
-		                        <artifactId>jboss-as-controller-client</artifactId>
-		                    </exclusion>
-		                    <exclusion>
-		                        <groupId>org.jboss.as</groupId>
-		                        <artifactId>jboss-as-cli</artifactId>
-		                    </exclusion>
-		                </exclusions>
-		                <scope>test</scope>
-		            </dependency>
+					<dependency>
+						<groupId>org.wildfly.extras.creaper</groupId>
+						<artifactId>creaper-core</artifactId>
+						<version>1.4.0</version>
+						<exclusions>
+							<exclusion>
+								<groupId>org.jboss.as</groupId>
+								<artifactId>jboss-as-controller-client</artifactId>
+							</exclusion>
+							<exclusion>
+								<groupId>org.jboss.as</groupId>
+								<artifactId>jboss-as-cli</artifactId>
+							</exclusion>
+						</exclusions>
+						<scope>test</scope>
+					</dependency>
 
-		            <dependency>
-		                <groupId>org.wildfly.extras.creaper</groupId>
-		                <artifactId>creaper-commands</artifactId>
-		                <version>1.4.0</version>
-		                <exclusions>
-		                    <exclusion>
-		                        <groupId>org.wildfly</groupId>
-		                        <artifactId>wildfly-patching</artifactId>
-		                    </exclusion>
-		                </exclusions>
-		                <scope>test</scope>
-		            </dependency>
+					<dependency>
+						<groupId>org.wildfly.extras.creaper</groupId>
+						<artifactId>creaper-commands</artifactId>
+						<version>1.4.0</version>
+						<exclusions>
+							<exclusion>
+								<groupId>org.wildfly</groupId>
+								<artifactId>wildfly-patching</artifactId>
+							</exclusion>
+						</exclusions>
+						<scope>test</scope>
+					</dependency>
 
-		            <dependency>
-		                <groupId>org.wildfly.core</groupId>
-		                <artifactId>wildfly-controller-client</artifactId>
-		                <version>2.2.0.Final</version>
-		                <scope>test</scope>
-		            </dependency>
-		            <dependency>
-		                <groupId>org.wildfly.core</groupId>
-		                <artifactId>wildfly-cli</artifactId>
-		                <version>2.2.0.Final</version>
-		                <scope>test</scope>
-		            </dependency>
-		            <dependency>
-		                <groupId>org.wildfly.core</groupId>
-		                <artifactId>wildfly-patching</artifactId>
-		                <version>2.2.0.Final</version>
-		                <scope>test</scope>
-		            </dependency>
+					<dependency>
+						<groupId>org.wildfly.core</groupId>
+						<artifactId>wildfly-controller-client</artifactId>
+						<version>2.2.0.Final</version>
+						<scope>test</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.wildfly.core</groupId>
+						<artifactId>wildfly-cli</artifactId>
+						<version>2.2.0.Final</version>
+						<scope>test</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.wildfly.core</groupId>
+						<artifactId>wildfly-patching</artifactId>
+						<version>2.2.0.Final</version>
+						<scope>test</scope>
+					</dependency>
 
 					<!-- Cassandra related -->
-		            <dependency>
+					<dependency>
+						<groupId>org.apache.cassandra</groupId>
+						<artifactId>cassandra-all</artifactId>
+						<version>${cassandra.version}</version>
+						<scope>test</scope>
+						<exclusions>
+							<exclusion>
+								<artifactId>slf4j-log4j12</artifactId>
+								<groupId>org.slf4j</groupId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+
+					       <!-- Cassandra test -->
+			        <dependency>
+			            <groupId>org.springframework.data</groupId>
+			            <artifactId>spring-cql</artifactId>
+			            <version>${cassandra-data.version}</version>
+			            <type>test-jar</type>
+			            <scope>test</scope>
+			        </dependency>
+
+					<dependency>
 						<groupId>org.hectorclient</groupId>
 						<artifactId>hector-core</artifactId>
 						<version>2.0-0</version>
 						<scope>test</scope>
 						<exclusions>
-                            <exclusion>
-                                <groupId>commons-lang</groupId>
-                                <artifactId>commons-lang</artifactId>
-                            </exclusion>
-                        </exclusions>
+							<exclusion>
+								<groupId>commons-lang</groupId>
+								<artifactId>commons-lang</artifactId>
+							</exclusion>
+						</exclusions>
 					</dependency>
 			    </dependencies>
             </dependencyManagement>
@@ -751,6 +773,7 @@
             </build>
         </profile>
     </profiles>
+
 	<repositories>
 		<repository>
 			<id>alfresco-public</id>

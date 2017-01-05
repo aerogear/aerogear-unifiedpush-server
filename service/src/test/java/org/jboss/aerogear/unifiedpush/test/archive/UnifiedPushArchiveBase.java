@@ -223,6 +223,19 @@ public abstract class UnifiedPushArchiveBase<T extends Archive<T>> extends Unifi
 		return addMavenDependencies("org.jboss.aerogear.unifiedpush:unifiedpush-service");
 	}
 
+	public T withCassandra() {
+		return addMavenDependencies(new String[] { //
+				"org.apache.cassandra:cassandra-all", //
+				"io.netty:netty-all", //
+				"org.hectorclient:hector-core" }); //
+	}
+
+	public T withAssert() {
+		return addMavenDependencies(new String[] { //
+				"junit:junit", //
+				"org.assertj:assertj-core" }); //
+	}
+
 	@Override
 	public T withModelJPA() {
 		return addAsLibrary("org.jboss.aerogear.unifiedpush:unifiedpush-model-jpa",

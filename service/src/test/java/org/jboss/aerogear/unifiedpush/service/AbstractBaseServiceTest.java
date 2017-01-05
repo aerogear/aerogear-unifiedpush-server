@@ -60,6 +60,8 @@ public abstract class AbstractBaseServiceTest {
 	public static WebArchive archive() {
 		return UnifiedPushServiceArchive.forTestClass(AbstractBaseServiceTest.class) //
 				.withServices() //
+				.withCassandra() //
+				.withAssert() //
 				.withModelJPA() //
 				.withTestDS() //
 				.withTestResources() //

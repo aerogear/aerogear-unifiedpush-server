@@ -52,6 +52,8 @@ public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRe
 
 	public UnifiedPushRestArchive withRest() {
 		return withPushSender() // Push sender already include services module.
+				.withCassandra() //
+				.withAssert() //
 				.withModelJPA() //
 				.withTestDS() //
 				.withTestResources() //

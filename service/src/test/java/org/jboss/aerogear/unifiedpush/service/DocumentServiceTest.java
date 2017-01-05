@@ -268,7 +268,6 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		String alias1 = "9720525679037170105113810";
 		String alias2 = "9720521550826170105113810";
 
-		// Remove (Disable) 'p1' alias from aliases list.
 		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(alias1, alias2), false);
 
 		documentService.save(pushApp, alias1, "doc1", DEFAULT_DEVICE_DATABASE, "test_id", true);

@@ -64,6 +64,8 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
 
 	public UnifiedPushSenderArchive withMessaging() {
 		return withServices() //
+				.withCassandra() //
+				.withAssert() //
 				.withModelJPA() //
 				.withTestDS() //
 				.withTestResources() //
