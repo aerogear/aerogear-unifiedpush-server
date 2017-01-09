@@ -1,8 +1,11 @@
 package org.jboss.aerogear.unifiedpush.arquillian;
 
 import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.springframework.cassandra.core.SessionCallback;
 import org.springframework.cassandra.test.integration.CassandraRule;
 import org.springframework.cassandra.test.integration.KeyspaceRule;
+import org.springframework.dao.DataAccessException;
+import org.springframework.util.Assert;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
@@ -20,20 +23,58 @@ import com.datastax.driver.core.Session;
  * its cleanup after the test run.
  */
 public class FixedKeyspaceRule extends KeyspaceRule {
+	private final CassandraRule cassandraRule;
+	private Session session;
+	private final String keyspaceName;
+
 
 	public FixedKeyspaceRule(CassandraRule cassandraRule) {
 		super(cassandraRule, CassandraConfig.PROP_KEYSPACE_DEFV);
+
+		this.cassandraRule = cassandraRule;
+		this.keyspaceName = CassandraConfig.PROP_KEYSPACE_DEFV;
 	}
 
 	public FixedKeyspaceRule(CassandraRule cassandraRule, String keyspaceName) {
 		super(cassandraRule, keyspaceName);
+		this.cassandraRule = cassandraRule;
+		this.keyspaceName = keyspaceName;
 	}
 
 	public void beforeClass() throws Throwable {
-		super.before();
+		before();
 	}
 
 	public void afterClass() throws Throwable {
-		super.after();
+		after();
+	}
+
+	@Override
+	protected void before() throws Throwable {
+
+		// Support initialized and initializing CassandraRule.
+		if (cassandraRule.getCluster() != null) {
+			this.session = cassandraRule.getSession();
+		} else {
+			cassandraRule.before(new SessionCallback<Object>() {
+				@Override
+				public Object doInSession(Session session) throws DataAccessException {
+					FixedKeyspaceRule.this.session = cassandraRule.getSession();
+					return null;
+				}
+			});
+		}
+
+		Assert.state(session != null, "Session was not initialized");
+
+		session.execute(String.format("CREATE KEYSPACE IF NOT EXISTS %s WITH durable_writes = false AND "
+				+ "replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};", keyspaceName));
+		session.execute(String.format("USE %s;", keyspaceName));
+	}
+
+	@Override
+	protected void after() {
+		session.execute("USE system;");
+		session.execute(String.format("DROP KEYSPACE %s;", keyspaceName));
 	}
 }
