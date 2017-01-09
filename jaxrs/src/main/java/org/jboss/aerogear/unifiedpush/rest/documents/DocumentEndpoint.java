@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.documents;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -19,13 +21,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.aerogear.unifiedpush.api.DocumentMessage;
+import org.jacoco.core.internal.data.NullAlias;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -40,95 +44,105 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DocumentEndpoint.class);
 
 	@Inject
-    private ClientInstallationService clientInstallationService;
-    @Inject
-    private GenericVariantService genericVariantService;
-    @Inject
-    private DocumentService documentService;
-    @Inject
-    private PushApplicationService pushApplicationService;
+	private ClientInstallationService clientInstallationService;
+	@Inject
+	private GenericVariantService genericVariantService;
+	@Inject
+	private DocumentService documentService;
+	@Inject
+	private PushApplicationService pushApplicationService;
+	@Inject
+	private AliasService aliasService;
 
-    /**
-     * Cross Origin for Installations
-     *
-     * @param headers   "Origin" header
-     * @return          "Access-Control-Allow-Origin" header for your response
-     *
-     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
-     * @responseheader Access-Control-Allow-Methods     POST, DELETE
-     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
-     * @responseheader Access-Control-Allow-Credentials true
-     * @responseheader Access-Control-Max-Age           604800
-     *
-     * @statuscode 200 Successful response for your request
-     */
-    @OPTIONS
-    @ReturnType("java.lang.Void")
-    public Response crossOriginForInstallations(@Context HttpHeaders headers) {
-        return appendPreflightResponseHeaders(headers, Response.ok()).build();
-    }
+	/**
+	 * Cross Origin for Installations
+	 *
+	 * @param headers
+	 *            "Origin" header
+	 * @return "Access-Control-Allow-Origin" header for your response
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Methods POST, DELETE
+	 * @responseheader Access-Control-Allow-Headers accept, origin,
+	 *                 content-type, authorization
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader Access-Control-Max-Age 604800
+	 *
+	 * @statuscode 200 Successful response for your request
+	 */
+	@OPTIONS
+	@ReturnType("java.lang.Void")
+	public Response crossOriginForInstallations(@Context HttpHeaders headers) {
+		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
 
-    /**
-     * Cross Origin for Installations
-     *
-     * @param headers   "Origin" header
-     * @return          "Access-Control-Allow-Origin" header for your response
-     *
-     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
-     * @responseheader Access-Control-Allow-Methods     POST, DELETE
-     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
-     * @responseheader Access-Control-Allow-Credentials true
-     * @responseheader Access-Control-Max-Age           604800
-     *
-     * @statuscode 200 Successful response for your request
-     */
-    @OPTIONS
-    @Path("/{publisher}/{alias}/{qualifier}")
-    @ReturnType("java.lang.Void")
-    public Response crossOriginForDocuments(@Context HttpHeaders headers) {
-        return appendPreflightResponseHeaders(headers, Response.ok()).build();
-    }
+	/**
+	 * Cross Origin for Installations
+	 *
+	 * @param headers
+	 *            "Origin" header
+	 * @return "Access-Control-Allow-Origin" header for your response
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Methods POST, DELETE
+	 * @responseheader Access-Control-Allow-Headers accept, origin,
+	 *                 content-type, authorization
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader Access-Control-Max-Age 604800
+	 *
+	 * @statuscode 200 Successful response for your request
+	 */
+	@OPTIONS
+	@Path("/{publisher}/{alias}/{qualifier}")
+	@ReturnType("java.lang.Void")
+	public Response crossOriginForDocuments(@Context HttpHeaders headers) {
+		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
 
-    /**
-     * Cross Origin for Installations
-     *
-     * @param headers   "Origin" header
-     * @return          "Access-Control-Allow-Origin" header for your response
-     *
-     * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
-     * @responseheader Access-Control-Allow-Methods     POST, DELETE
-     * @responseheader Access-Control-Allow-Headers     accept, origin, content-type, authorization
-     * @responseheader Access-Control-Allow-Credentials true
-     * @responseheader Access-Control-Max-Age           604800
-     *
-     * @statuscode 200 Successful response for your request
-     */
-    @OPTIONS
-    @Path("/{publisher}/{alias}/{qualifier}/{id}")
-    @ReturnType("java.lang.Void")
-    public Response crossOriginForDocument(@Context HttpHeaders headers) {
-        return appendPreflightResponseHeaders(headers, Response.ok()).build();
-    }
+	/**
+	 * Cross Origin for Installations
+	 *
+	 * @param headers
+	 *            "Origin" header
+	 * @return "Access-Control-Allow-Origin" header for your response
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Methods POST, DELETE
+	 * @responseheader Access-Control-Allow-Headers accept, origin,
+	 *                 content-type, authorization
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader Access-Control-Max-Age 604800
+	 *
+	 * @statuscode 200 Successful response for your request
+	 */
+	@OPTIONS
+	@Path("/{publisher}/{alias}/{qualifier}/{id}")
+	@ReturnType("java.lang.Void")
+	public Response crossOriginForDocument(@Context HttpHeaders headers) {
+		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
 
-    @OPTIONS
+	@OPTIONS
 	@Path("/{alias}/{qualifier}{id : (/[^/]+?)?}")
-    @ReturnType("java.lang.Void")
-    public Response crossOriginForDocumentSave(@Context HttpHeaders headers) {
-        return appendPreflightResponseHeaders(headers, Response.ok()).build();
-    }
+	@ReturnType("java.lang.Void")
+	public Response crossOriginForDocumentSave(@Context HttpHeaders headers) {
+		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
 
-    /**
-     * POST deploys a file and stores it for later retrieval by the push application
-     * of the client.
-     */
+	/**
+	 * POST deploys a file and stores it for later retrieval by the push
+	 * application of the client.
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{alias}/{qualifier}{id : (/[^/]+?)?}")
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	public Response newDocument(String entity, @PathParam("alias") String alias,
-			@PathParam("qualifier") String qualifier, @PathParam("id") String id,
-			@Context HttpServletRequest request) {
+			@PathParam("qualifier") String qualifier, @PathParam("id") String id, @Context HttpServletRequest request) {
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
@@ -145,12 +159,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
 	@Deprecated
 	public Response newDocument(String entity, @PathParam("publisher") String publisher,
-			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier,
-			@PathParam("id") String id,
-			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite,
-			@Context HttpServletRequest request) {
+			@PathParam("alias") String alias, @PathParam("qualifier") String qualifier, @PathParam("id") String id,
+			@DefaultValue("false") @QueryParam("overwrite") boolean overwrite, @Context HttpServletRequest request) {
 
-		// Overwrite is @Deprecated, this method should always use overwrite false - will be removed on 1.3.0
+		// Overwrite is @Deprecated, this method should always use overwrite
+		// false - will be removed on 1.3.0
 		if (overwrite)
 			logger.warn("method call to @deprecated API /document/{pushAppID}/document");
 
@@ -172,25 +185,34 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		return deployDocument(entity, alias, qualifier, id, true, request);
 	}
 
-	private Response deployDocument(String entity, String alias, String database, String id, boolean overwrite,
+	private Response deployDocument(String content, String alias, String database, String id, boolean overwrite,
 			HttpServletRequest request) {
+		String deviceToken = request.getHeader(ClientAuthHelper.DEVICE_TOKEN_HEADER);
 
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
+				clientInstallationService, deviceToken, request);
 		if (variant == null) {
 			return create401Response(request);
 		}
 
 		if (StringUtils.isEmpty(id)) {
-			id = DocumentMessage.NULL_PART;
+			id = DocumentMetadata.NULL_ID;
 		} else {
 			id = id.substring(1); // remove first '/'
 		}
 
 		try {
 			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
-			documentService.save(pushApp, DocumentMetadata.getAlias(alias), entity,
-					DocumentMetadata.getDatabase(database), DocumentMetadata.getId(id), overwrite);
+			Alias user;
+
+			if (DocumentMetadata.getAlias(alias).equals(DocumentMetadata.NULL_ALIAS))
+				user = aliasService.find(alias);
+			else
+				user = NullAlias.getAlias(UUID.fromString(pushApp.getPushApplicationID()));
+
+			documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(),
+					DocumentMetadata.getDatabase(database), user, deviceToken, DocumentMetadata.getId(id), null),
+					content);
 
 			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
 		} catch (Exception e) {
@@ -200,12 +222,17 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * <p>Get latest (last-updated) document according to path parameters </p>
+	 * <p>
+	 * Get latest (last-updated) document according to path parameters
+	 * </p>
 	 * <b>Examples:</b>
 	 * <ul>
-	 * <li>document/application/17327572923/test - alias specific document (latest snapshot)
-	 * <li>document/application/null/test - global scope document (for any alias).
-	 * <li>/document/application/null/test?snapshot=5 - global scope document (specific snapshot id).
+	 * <li>document/application/17327572923/test - alias specific document
+	 * (latest snapshot)
+	 * <li>document/application/null/test - global scope document (for any
+	 * alias).
+	 * <li>/document/application/null/test?snapshot=5 - global scope document
+	 * (specific snapshot id).
 	 * </ul>
 	 */
 	@GET
@@ -214,7 +241,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	public Response retrieveJsonDocument(@PathParam("publisher") String publisher, //
 			@PathParam("alias") String alias, //
 			@PathParam("qualifier") String qualifier, //
-			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot, //
+			@DefaultValue("latest") @QueryParam("snapshot") String snapshot, //
 			@Context HttpServletRequest request) {
 
 		// Authentication
@@ -228,10 +255,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			// TODO - support snapshot other then latest
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String document = documentService.getLatestFromAlias(pushApplication,
-					DocumentMetadata.getAlias(alias).toString(),
-					DocumentMetadata.getDatabase(qualifier), DocumentMetadata.NULL_ID);
+					DocumentMetadata.getAlias(alias).toString(), DocumentMetadata.getDatabase(qualifier),
+					DocumentMetadata.NULL_ID);
 
-			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
+			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document),
+					request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
@@ -239,13 +267,19 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * <p>Get latest (last-updated) document according to path parameters</p>
+	 * <p>
+	 * Get latest (last-updated) document according to path parameters
+	 * </p>
 	 * <b>Examples:</b>
 	 * <ul>
-	 * <li>/document/application/17327572923/test/1 - alias specific document (latest snapshot)
-	 * <li>/document/application/null/test/1 - global scope document (for any alias).
-	 * <li>/document/application/null/test/null - global scope document (for any alias).
-	 * <li>/document/application/null/test/null?snapshot=5 - global scope document (specific snapshot id).
+	 * <li>/document/application/17327572923/test/1 - alias specific document
+	 * (latest snapshot)
+	 * <li>/document/application/null/test/1 - global scope document (for any
+	 * alias).
+	 * <li>/document/application/null/test/null - global scope document (for any
+	 * alias).
+	 * <li>/document/application/null/test/null?snapshot=5 - global scope
+	 * document (specific snapshot id).
 	 * </ul>
 	 */
 	@GET
@@ -255,7 +289,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			@PathParam("alias") String alias, //
 			@PathParam("qualifier") String qualifier, //
 			@PathParam("id") String id, //
-			@DefaultValue("latest") @QueryParam ("snapshot") String snapshot, //
+			@DefaultValue("latest") @QueryParam("snapshot") String snapshot, //
 			@Context HttpServletRequest request) { //
 
 		// Authentication
@@ -268,11 +302,11 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		try {
 			// TODO - support snapshot other then latest
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-			String document = documentService.getLatestFromAlias(pushApplication,
-					DocumentMetadata.getAlias(alias), //
+			String document = documentService.getLatestFromAlias(pushApplication, DocumentMetadata.getAlias(alias), //
 					DocumentMetadata.getDatabase(qualifier), //
 					DocumentMetadata.getId(id));
-			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document), request);
+			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document),
+					request);
 		} catch (Exception e) {
 			logger.error("Cannot retrieve files for alias", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);

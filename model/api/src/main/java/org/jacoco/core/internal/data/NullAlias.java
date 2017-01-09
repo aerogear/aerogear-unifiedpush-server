@@ -1,0 +1,12 @@
+package org.jacoco.core.internal.data;
+
+import java.util.UUID;
+
+import org.jboss.aerogear.unifiedpush.api.Alias;
+
+public class NullAlias {
+
+	public static Alias getAlias(UUID pushApplicationId) {
+		return new Alias(pushApplicationId, NullUUID.NULL.getUuid());
+	}
+}

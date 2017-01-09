@@ -33,8 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DocumentServiceImpl implements DocumentService {
 
 	/**
-	 * We can't mixup EJB and spring beans.
-	 * TODO - Change AliasDao To AliasService when mixing is supported.
+	 * We can't mixup EJB and spring beans. TODO - Change AliasDao To
+	 * AliasService when mixing is supported.
 	 */
 	@Autowired
 	private DocumentDao<DocumentContent, DocumentKey> documentDao;
@@ -42,15 +42,14 @@ public class DocumentServiceImpl implements DocumentService {
 	private AliasDao aliasDao;
 
 	@Override
-	public void save(PushApplication pushApplication, String alias, String content, String databse, String id,
-			boolean overwrite) {
-
-		documentDao.create(createDocument(content, pushApplication, getAlias(alias), databse, id));
+	public void save(DocumentMetadata metadate, String content) {
+		documentDao.create(createDocument(metadate, content));
 	}
 
 	@Override
 	public String getLatestFromAlias(PushApplication pushApplication, String alias, String databse, String id) {
-		DocumentContent document = (DocumentContent) documentDao.findOne(createKey(pushApplication, getAlias(alias), databse, id));
+		DocumentContent document = (DocumentContent) documentDao
+				.findOne(createKey(pushApplication.getPushApplicationID(), getAlias(alias), databse, id));
 
 		if (document != null)
 			return document.getContent();
@@ -59,12 +58,12 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public List<String> getLatestFromAliases(PushApplication pushApp, String database, String id) {
+	public List<String> getLatestFromAliases(PushApplication pushApplication, String database, String id) {
 		List<String> contents = new ArrayList<>();
-		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApp.getPushApplicationID()));
+		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApplication.getPushApplicationID()));
 
-		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(createKey(pushApp, database, id),
-				aliases);
+		final List<IDocument<DocumentKey>> docs = documentDao
+				.findLatestForAliases(createKey(pushApplication.getPushApplicationID(), database, id), aliases);
 
 		if (docs != null) {
 			docs.forEach((doc) -> {
@@ -82,8 +81,9 @@ public class DocumentServiceImpl implements DocumentService {
 				&& message.getPushMessage().getCriteria().getAliases() != null) {
 
 			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
-				save(message.getPayload(), pushApplication, getAlias(alias), DocumentMetadata.getDatabase(message.getQualifier()),
-						DocumentMetadata.getId(message.getId()), overwrite);
+				save(message.getPayload(), pushApplication, getAlias(alias),
+						DocumentMetadata.getDatabase(message.getQualifier()), DocumentMetadata.getId(message.getId()),
+						overwrite);
 			}
 			// Store payload without alias
 		} else {
@@ -96,38 +96,21 @@ public class DocumentServiceImpl implements DocumentService {
 
 	private void save(String document, PushApplication pushApplication, Alias alias, String database, String id,
 			boolean overwrite) {
-		documentDao.create(createDocument(document, pushApplication, alias, database, id));
+
+		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id, null);
+		documentDao.create(createDocument(meta, document));
 	}
 
-	private DocumentContent createDocument(String content, PushApplication pushApplication, Alias alias,
-			String database, String id) {
-
-		DocumentMetadata meta = createMetadata(pushApplication, alias, database, id, null);
-		DocumentContent message = new DocumentContent(new DocumentKey(meta), content);
-
-		return message;
+	private DocumentContent createDocument(DocumentMetadata metadata, String content) {
+		return new DocumentContent(new DocumentKey(metadata), content);
 	}
 
-	private DocumentKey createKey(PushApplication pushApplication, Alias alias, String database, String id) {
-		return new DocumentKey(createMetadata(pushApplication, alias, database, id, null));
+	private DocumentKey createKey(String pushApplicationId, Alias alias, String database, String id) {
+		return new DocumentKey(new DocumentMetadata(pushApplicationId, database, alias, id, null));
 	}
 
-	private DocumentKey createKey(PushApplication pushApplication, String database, String id) {
-		return new DocumentKey(createMetadata(pushApplication, null, database, id, null));
-	}
-
-	private DocumentMetadata createMetadata(PushApplication pushApplication, Alias alias, String database, String id,
-			String snapshot) {
-		DocumentMetadata metadata = new DocumentMetadata();
-		metadata.setPushApplicationId(pushApplication.getPushApplicationID());
-
-		// Alias is always stored as lowercase, and matched insensitively.
-		metadata.setUserId(alias != null && //
-				!alias.equals(DocumentMetadata.NULL_ALIAS) ? alias.getId() : NullUUID.NULL.getUuid());
-		metadata.setDatabase(database);
-		metadata.setSnapshot(snapshot);
-		metadata.setId(id);
-		return metadata;
+	private DocumentKey createKey(String pushApplicationId, String database, String id) {
+		return new DocumentKey(new DocumentMetadata(pushApplicationId, database, null, id, null));
 	}
 
 	@Override
@@ -135,7 +118,7 @@ public class DocumentServiceImpl implements DocumentService {
 		documentDao.delete(UUID.fromString(pushApplicationId));
 	}
 
-	private Alias getAlias(String alias){
+	private Alias getAlias(String alias) {
 		if (StringUtils.isEmpty(alias))
 			return null;
 

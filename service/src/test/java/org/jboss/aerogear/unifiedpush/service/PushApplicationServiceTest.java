@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -160,17 +161,21 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pa.setDeveloper("admin");
 
         pushApplicationService.addPushApplication(pa);
-        documentService.save(pa, "TEST@X.com", "{SIMPLE}", "TASKS", "1", true);
-        List<String> documents = documentService.getLatestFromAliases(pa, "TEST@X.com", "1");
+
+    	Alias alias = new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com");
+		aliasService.create(alias);
+
+        documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias, "1", null), "{SIMPLE}");
+        List<String> documents = documentService.getLatestFromAliases(pa, alias.getEmail(), "1");
         assertThat(documents.size() == 1);
 
         aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
-        assertThat(aliasService.find("TEST@X.com") != null);
+        assertThat(aliasService.find(alias.getEmail()) != null);
 
         pushApplicationService.removePushApplication(pa);
-        documents = documentService.getLatestFromAliases(pa, "TEST@X.com", "1");
+        documents = documentService.getLatestFromAliases(pa, alias.getEmail(), "1");
         assertThat(documents.size() == 0);
-        assertThat(aliasService.find("TEST@X.com") == null);
+        assertThat(aliasService.find(alias.getEmail()) == null);
 
 
     }

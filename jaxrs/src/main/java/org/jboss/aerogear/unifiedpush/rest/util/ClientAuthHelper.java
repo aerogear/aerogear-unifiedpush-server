@@ -16,13 +16,18 @@ public class ClientAuthHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientAuthHelper.class);
 
+	public static Variant loadVariantWhenInstalled(GenericVariantService genericVariantService,
+			ClientInstallationService clientInstallationService, HttpServletRequest request) {
+		String deviceToken = request.getHeader(DEVICE_TOKEN_HEADER);
+
+		return loadVariantWhenInstalled(genericVariantService, clientInstallationService, deviceToken, request);
+	}
 	/**
 	 * Returns the variant if the master secret is valid for the request and the
 	 * device token in the request is installed for that variant
 	 */
 	public static Variant loadVariantWhenInstalled(GenericVariantService genericVariantService,
-			ClientInstallationService clientInstallationService, HttpServletRequest request) {
-		String deviceToken = request.getHeader(DEVICE_TOKEN_HEADER);
+			ClientInstallationService clientInstallationService, String deviceToken , HttpServletRequest request) {
 
 		if (deviceToken == null) {
 			logger.info("API request missing " + DEVICE_TOKEN_HEADER + " header! URI - > " + request.getRequestURI());

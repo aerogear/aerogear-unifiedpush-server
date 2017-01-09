@@ -2,12 +2,13 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
 
+import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 
 public interface DocumentService {
 
-	void save(PushApplication pushApplication, String alias, String content, String databse, String id, boolean overwrite);
+	void save(DocumentMetadata metadate, String content);
 
 	String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id);
 

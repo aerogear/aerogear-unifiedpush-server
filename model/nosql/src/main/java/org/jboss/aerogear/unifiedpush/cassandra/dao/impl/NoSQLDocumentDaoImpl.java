@@ -97,7 +97,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			return docs;
 
 		aliases.forEach((alias) -> {
-			key.setUserId(alias.getId());
+			key.setUserId(alias.getId().toString());
 			// Query global documents for each database
 			DocumentContent doc = findOne(key);
 
@@ -127,6 +127,9 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			find(new DocumentKey(db)).forEach((doc) -> {
 				delete(doc);
 			});
+
+			// TODO - Delete user specific documents.
+
 
 			// Delete database
 			databaseDao.delete(db);

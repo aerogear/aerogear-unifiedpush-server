@@ -18,5 +18,4 @@ public enum NullUUID  {
     public UUID getUuid ( ) {
         return this.uuid;
     }
-
 }

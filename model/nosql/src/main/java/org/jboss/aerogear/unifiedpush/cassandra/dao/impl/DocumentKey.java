@@ -29,7 +29,7 @@ public class DocumentKey implements Serializable {
 
 	// User id can be NullUUID ('00000000-0000-0000-0000-000000000000') AKA global doc.
 	@PrimaryKeyColumn(name = "user_id", ordinal = 2, type = PrimaryKeyType.PARTITIONED)
-	private UUID userId;
+	private String userId;
 
 	@PrimaryKeyColumn(name = "snapshot", ordinal = 0, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
 	UUID snapshot;
@@ -48,10 +48,10 @@ public class DocumentKey implements Serializable {
 				this.userId = metadata.getInstallationId();
 			else {
 				// Global mode - Document doesn't belong to specific user/installation.
-				this.userId = NullUUID.NULL.getUuid();
+				this.userId = NullUUID.NULL.getUuid().toString();
 			}
 		} else {
-			this.userId = metadata.getUserId();
+			this.userId = metadata.getUserId().toString();
 		}
 	}
 
@@ -62,7 +62,7 @@ public class DocumentKey implements Serializable {
 	public DocumentKey(UUID pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
 		this.database = database;
-		this.userId = NullUUID.NULL.getUuid();
+		this.userId = NullUUID.NULL.getUuid().toString();
 	}
 
 	public UUID getPushApplicationId() {
@@ -81,11 +81,11 @@ public class DocumentKey implements Serializable {
 		this.database = database;
 	}
 
-	public UUID getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(UUID userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

@@ -26,6 +26,12 @@ public class Alias {
 		this.email = email;
 	}
 
+	public Alias(UUID pushApplicationId, UUID id, String email, String mobile) {
+		this(pushApplicationId, id);
+		this.email = email;
+		this.mobile = mobile;
+	}
+
 	public UUID getId() {
         return this.id;
     }
