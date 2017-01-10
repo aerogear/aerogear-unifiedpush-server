@@ -261,6 +261,29 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
+	public void testNullDocumentIds() {
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
+
+		UnifiedPushMessage message = new UnifiedPushMessage();
+		message.setCriteria(new Criteria());
+		message.getCriteria().setAliases(new ArrayList<>());
+		message.getCriteria().getAliases().add(null);
+		MessagePayload payload1 = new MessagePayload(message, "{TEST PAYLOAD1}", DocumentMetadata.NULL_DATABASE, DocumentMetadata.NULL_ID);
+		MessagePayload payload2 = new MessagePayload(message, "{TEST PAYLOAD2}", DocumentMetadata.NULL_DATABASE, null);
+
+		documentService.save(pushApp, payload1, true);
+		documentService.save(pushApp, payload2, true);
+
+		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE,
+				DocumentMetadata.NULL_ID);
+
+		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD2}"));
+	}
+
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
 	public void testBadPhoneNumberDocument() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());

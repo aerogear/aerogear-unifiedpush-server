@@ -15,7 +15,7 @@ public class DocumentMetadata implements Serializable {
 	}
 
 	public static String getId(String value) {
-		return value == null || value.equalsIgnoreCase(NULL_ID) ? NULL_ID : value;
+		return value == null || value.equalsIgnoreCase(NULL_ID) ? null : value;
 	}
 
 	public static final String NULL_DATABASE = "NULL";
