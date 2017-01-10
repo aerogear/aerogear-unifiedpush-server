@@ -91,7 +91,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	public List<IDocument<DocumentKey>> findLatestForAliases(DocumentKey key, List<Alias> aliases) {
+	public List<IDocument<DocumentKey>> findLatestForAliases(DocumentKey key, List<Alias> aliases, String logicalId) {
 		List<IDocument<DocumentKey>> docs = new ArrayList<>();
 		if (aliases == null)
 			return docs;
@@ -99,7 +99,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		aliases.forEach((alias) -> {
 			key.setUserId(alias.getId().toString());
 			// Query global documents for each database
-			DocumentContent doc = findOne(key);
+			DocumentContent doc = findOne(key, logicalId);
 
 			if (doc != null) {
 				docs.add(doc);

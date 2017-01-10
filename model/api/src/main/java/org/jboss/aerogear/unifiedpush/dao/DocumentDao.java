@@ -15,7 +15,8 @@ public interface DocumentDao<T, ID> {
 	void delete(T doc);
 
 	IDocument<ID> findOne(ID key);
+
 	IDocument<ID> findOne(ID key, String documentId);
 
-	List<IDocument<ID>> findLatestForAliases(ID key, List<Alias> aliases);
+	List<IDocument<ID>> findLatestForAliases(ID key, List<Alias> aliases, String documentId);
 }

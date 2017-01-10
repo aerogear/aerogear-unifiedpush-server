@@ -11,7 +11,7 @@ import org.springframework.data.cassandra.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Table(value="documents")
+@Table(value = "documents")
 public class DocumentContent implements IDocument<DocumentKey> {
 
 	@NotNull
@@ -19,31 +19,30 @@ public class DocumentContent implements IDocument<DocumentKey> {
 	@JsonIgnore
 	private DocumentKey key;
 
-	@Column (value = "document_id")
+	@Column(value = "document_id")
 	private String documentId;
 
 	@Column
 	private String content;
 
-	@Column (value = "content_type")
+	@Column(value = "content_type")
 	private String contentType;
 
 	public DocumentContent() {
 		super();
 	}
 
-
 	public DocumentContent(DocumentKey key, String content) {
+		this(key, content, null);
+
+	}
+
+	public DocumentContent(DocumentKey key, String content, String documentId) {
 		super();
 		this.key = key;
 		this.content = content;
 		this.contentType = "application/json";
-		this.documentId = DocumentMetadata.NULL_ID;
-	}
-
-	public DocumentContent(DocumentKey key, String content, String documentId) {
-		this(key, content);
-		this.documentId = documentId;
+		this.documentId = documentId == null ? DocumentMetadata.NULL_ID : documentId;
 	}
 
 	public DocumentKey getKey() {
@@ -61,7 +60,6 @@ public class DocumentContent implements IDocument<DocumentKey> {
 	public void setDocumentId(String documentId) {
 		this.documentId = documentId;
 	}
-
 
 	public String getContent() {
 		return content;

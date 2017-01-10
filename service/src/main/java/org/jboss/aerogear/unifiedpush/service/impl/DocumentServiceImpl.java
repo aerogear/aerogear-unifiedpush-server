@@ -47,9 +47,11 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public String getLatestFromAlias(PushApplication pushApplication, String alias, String databse, String id) {
-		DocumentContent document = (DocumentContent) documentDao
-				.findOne(createKey(pushApplication.getPushApplicationID(), getAlias(alias), databse, id));
+	public String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id) {
+		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database,
+				getAlias(alias), id);
+
+		DocumentContent document = (DocumentContent) documentDao.findOne(new DocumentKey(metadata), id);
 
 		if (document != null)
 			return document.getContent();
@@ -62,8 +64,9 @@ public class DocumentServiceImpl implements DocumentService {
 		List<String> contents = new ArrayList<>();
 		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApplication.getPushApplicationID()));
 
-		final List<IDocument<DocumentKey>> docs = documentDao
-				.findLatestForAliases(createKey(pushApplication.getPushApplicationID(), database, id), aliases);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null, id);
+
+		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases, id);
 
 		if (docs != null) {
 			docs.forEach((doc) -> {
@@ -81,36 +84,29 @@ public class DocumentServiceImpl implements DocumentService {
 				&& message.getPushMessage().getCriteria().getAliases() != null) {
 
 			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
-				save(message.getPayload(), pushApplication, getAlias(alias),
-						DocumentMetadata.getDatabase(message.getQualifier()), DocumentMetadata.getId(message.getId()),
-						overwrite);
+				save(pushApplication, getAlias(alias), //
+						DocumentMetadata.getDatabase(message.getQualifier()), //
+						DocumentMetadata.getId(message.getId()), //
+						message.getPayload());
 			}
 			// Store payload without alias
 		} else {
-			save(message.getPayload(), pushApplication,
+			save(pushApplication,
 					new Alias(UUID.fromString(pushApplication.getPushApplicationID()), NullUUID.NULL.getUuid()),
 					DocumentMetadata.getDatabase(message.getQualifier()), DocumentMetadata.getId(message.getId()),
-					overwrite);
+					message.getPayload());
 		}
 	}
 
-	private void save(String document, PushApplication pushApplication, Alias alias, String database, String id,
-			boolean overwrite) {
+	private void save(PushApplication pushApplication, Alias alias, String database, String id,
+			String document) {
 
-		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id, null);
+		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id);
 		documentDao.create(createDocument(meta, document));
 	}
 
 	private DocumentContent createDocument(DocumentMetadata metadata, String content) {
-		return new DocumentContent(new DocumentKey(metadata), content);
-	}
-
-	private DocumentKey createKey(String pushApplicationId, Alias alias, String database, String id) {
-		return new DocumentKey(new DocumentMetadata(pushApplicationId, database, alias, id, null));
-	}
-
-	private DocumentKey createKey(String pushApplicationId, String database, String id) {
-		return new DocumentKey(new DocumentMetadata(pushApplicationId, database, null, id, null));
+		return new DocumentContent(new DocumentKey(metadata), content, metadata.getDocumentId());
 	}
 
 	@Override

@@ -265,19 +265,46 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
 
+		String salias1 = "9720525679037170105113811";
+		String salias2 = "9720521550826170105113811";
+
+		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(salias1, salias2), false);
+
+		// Reload aliases
+		Alias alias1 = aliasService.find(salias1);
+		Alias alias2 = aliasService.find(salias2);
+
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1, "ID301"), "{CONTENT101}");
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2, "ID301"), "{CONTENT102}");
+
+		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "ID301");
+		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("{CONTENT101}", "{CONTENT102}")));
+	}
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void testDocumentsWithId() {
+		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
+		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
+
 		Alias alias1 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), null, "9720525679037170105113810");
 		Alias alias2 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), null, "9720521550826170105113810");
 
 		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(alias1.getMobile(), alias2.getMobile()), false);
 
-		// Reload aliases
-		alias1 = aliasService.find(alias1.getMobile());
-		alias2 = aliasService.find(alias2.getMobile());
+		// Save aliases
+		aliasService.create(alias1);
+		aliasService.create(alias2);
 
-		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1, "test_id"), "doc1");
-		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2, "test_id"), "doc2");
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1, "ID1"), "{CONTENT1}");
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1, "ID2"), "{CONTENT2}");
 
-		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "test_id");
-		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("doc1", "doc2")));
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2, "ID1"), "{CONTENT2}");
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2, "ID2"), "{CONTENT1000}");
+
+		String doc1 = documentService.getLatestFromAlias(pushApp, alias1.getMobile(), DEFAULT_DEVICE_DATABASE, "ID1");
+		String doc2 = documentService.getLatestFromAlias(pushApp, alias2.getMobile(), DEFAULT_DEVICE_DATABASE, "ID2");
+		Assert.assertEquals(doc1, "{CONTENT1}");
+		Assert.assertEquals(doc2, "{CONTENT1000}");
 	}
 }

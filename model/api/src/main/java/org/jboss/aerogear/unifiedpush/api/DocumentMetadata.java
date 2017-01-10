@@ -22,15 +22,15 @@ public class DocumentMetadata implements Serializable {
 	public static final String NULL_ALIAS = "NULL";
 	public static final String NULL_ID = "NULL";
 
-	private String id;
+	private String documentId;
 	private String pushApplicationId;
 	private String database;
+	private UUID userId;
 
 	/*
-	 * InstallationId is optional and should be used only when alias is null
-	 * (Anonymous mode)
+	 * InstallationId is optional and should be used only when userId (alias) is
+	 * null (Anonymous mode)
 	 */
-	private UUID userId;
 	private String installationId; // AKA anonymous
 
 	// None Persistence property
@@ -38,7 +38,6 @@ public class DocumentMetadata implements Serializable {
 
 	public DocumentMetadata() {
 	}
-
 
 	public DocumentMetadata(String pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
@@ -48,41 +47,41 @@ public class DocumentMetadata implements Serializable {
 	public DocumentMetadata(String pushApplicationId, //
 			String database, //
 			Alias alias, //
-			String id) {
+			String documentId) {
 
-		this(pushApplicationId, database, alias, null, id, null);
+		this(pushApplicationId, database, alias, null, documentId, null);
 	}
 
 	public DocumentMetadata(String pushApplicationId, //
 			String database, //
 			Alias alias, //
-			String id, //
+			String documentId, //
 			String snapshot) {
 
-		this(pushApplicationId, database, alias, null, id, snapshot);
+		this(pushApplicationId, database, alias, null, documentId, snapshot);
 	}
 
 	public DocumentMetadata(String pushApplicationId, //
 			String database, //
 			Alias alias, //
 			String installationId, //
-			String id, //
+			String documentId, //
 			String snapshot) {
 
 		this.setPushApplicationId(pushApplicationId);
 		this.setUserId(alias != null ? alias.getId() : null);
 		this.setInstallationId((installationId != null && installationId.length() > 0 ? installationId : null));
 		this.setDatabase(database);
+		this.setDocumentId(documentId);
 		this.setSnapshot(snapshot == null ? null : UUID.fromString(snapshot));
-		this.setId(id);
 	}
 
-	public String getId() {
-		return id;
+	public String getDocumentId() {
+		return documentId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setDocumentId(String documentId) {
+		this.documentId = documentId;
 	}
 
 	public String getPushApplicationId() {
