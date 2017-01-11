@@ -146,7 +146,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
-		return deployDocument(entity, alias, qualifier, id, false, request);
+		return deployDocument(entity, alias, qualifier, id, request);
 	}
 
 	/*
@@ -169,7 +169,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Store new document according to path params.
 		// If document exists a newer version will be stored.
-		return deployDocument(entity, alias, qualifier, id, overwrite, request);
+		return deployDocument(entity, alias, qualifier, id, request);
 	}
 
 	@PUT
@@ -182,10 +182,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 
 		// Store new document according to path params.
 		// If document exists update stored version.
-		return deployDocument(entity, alias, qualifier, id, true, request);
+		return deployDocument(entity, alias, qualifier, id, request);
 	}
 
-	private Response deployDocument(String content, String alias, String database, String id, boolean overwrite,
+	private Response deployDocument(String content, String alias, String database, String id,
 			HttpServletRequest request) {
 		String deviceToken = request.getHeader(ClientAuthHelper.DEVICE_TOKEN_HEADER);
 
@@ -211,7 +211,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 				user = NullAlias.getAlias(UUID.fromString(pushApp.getPushApplicationID()));
 
 			documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(),
-					DocumentMetadata.getDatabase(database), user, deviceToken, DocumentMetadata.getId(id)),
+					DocumentMetadata.getDatabase(database), user, deviceToken, DocumentMetadata.getId(id), null),
 					content);
 
 			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);

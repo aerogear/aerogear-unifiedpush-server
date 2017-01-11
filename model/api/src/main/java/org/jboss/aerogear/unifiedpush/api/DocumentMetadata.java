@@ -70,10 +70,10 @@ public class DocumentMetadata implements Serializable {
 
 		this.setPushApplicationId(pushApplicationId);
 		this.setUserId(alias != null ? alias.getId() : null);
-		this.setInstallationId((installationId != null && installationId.length() > 0 ? installationId : null));
+		this.setInstallationId((installationId == null || installationId.length() == 0 ? null : installationId));
 		this.setDatabase(database);
 		this.setDocumentId(documentId);
-		this.setSnapshot(snapshot == null ? null : UUID.fromString(snapshot));
+		this.setSnapshot(snapshot == null || installationId.length() == 0 ? null : UUID.fromString(snapshot));
 	}
 
 	public String getDocumentId() {
