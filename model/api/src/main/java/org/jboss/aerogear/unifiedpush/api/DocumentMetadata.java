@@ -20,7 +20,7 @@ public class DocumentMetadata implements Serializable {
 
 	public static final String NULL_DATABASE = "NULL";
 	public static final String NULL_ALIAS = "NULL";
-	public static final String NULL_ID = "NULL";
+	private static final String NULL_ID = "NULL";
 
 	private String documentId;
 	private String pushApplicationId;
@@ -42,6 +42,14 @@ public class DocumentMetadata implements Serializable {
 	public DocumentMetadata(String pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
 		this.database = database;
+	}
+
+
+	public DocumentMetadata(String pushApplicationId, //
+			String database, //
+			Alias alias){
+
+		this(pushApplicationId, database, alias, null, null, null);
 	}
 
 	public DocumentMetadata(String pushApplicationId, //

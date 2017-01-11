@@ -15,6 +15,14 @@ public class MessagePayload {
 	public MessagePayload() {
 	}
 
+	public MessagePayload(UnifiedPushMessage pushMessage, String payload) {
+		this(pushMessage, payload, null, null);
+	}
+
+	public MessagePayload(UnifiedPushMessage pushMessage, String payload, String qualifier) {
+		this(pushMessage, payload, qualifier, null);
+	}
+
 	public MessagePayload(UnifiedPushMessage pushMessage, String payload, String qualifier, String id) {
 		super();
 		this.pushMessage = pushMessage;
@@ -23,11 +31,6 @@ public class MessagePayload {
 		this.id = id;
 	}
 
-	public MessagePayload(UnifiedPushMessage pushMessage, String payload) {
-		super();
-		this.pushMessage = pushMessage;
-		this.payload = payload;
-	}
 
 	public UnifiedPushMessage getPushMessage() {
 		return pushMessage;

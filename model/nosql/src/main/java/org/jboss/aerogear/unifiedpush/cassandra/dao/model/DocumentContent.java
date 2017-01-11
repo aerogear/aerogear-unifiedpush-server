@@ -2,7 +2,6 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
 import javax.validation.constraints.NotNull;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.springframework.data.cassandra.mapping.Column;
@@ -42,7 +41,7 @@ public class DocumentContent implements IDocument<DocumentKey> {
 		this.key = key;
 		this.content = content;
 		this.contentType = "application/json";
-		this.documentId = documentId == null ? DocumentMetadata.NULL_ID : documentId;
+		this.documentId = documentId;
 	}
 
 	public DocumentKey getKey() {

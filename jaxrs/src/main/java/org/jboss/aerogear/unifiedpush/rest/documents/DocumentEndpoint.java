@@ -195,9 +195,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			return create401Response(request);
 		}
 
-		if (StringUtils.isEmpty(id)) {
-			id = DocumentMetadata.NULL_ID;
-		} else {
+		if (StringUtils.isNotEmpty(id)) {
 			id = id.substring(1); // remove first '/'
 		}
 
@@ -256,7 +254,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String document = documentService.getLatestFromAlias(pushApplication,
 					DocumentMetadata.getAlias(alias).toString(), DocumentMetadata.getDatabase(qualifier),
-					DocumentMetadata.NULL_ID);
+					null);
 
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document),
 					request);

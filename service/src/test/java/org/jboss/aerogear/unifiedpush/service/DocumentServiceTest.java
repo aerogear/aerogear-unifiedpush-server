@@ -84,10 +84,10 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 			// Save alias should return without saving, device is not enabled.
 			MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-					"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+					"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
 			documentService.save(pushApplication, msgPayload, false);
 			String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+					DEFAULT_DEVICE_DATABASE, null);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
@@ -98,7 +98,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			// Re-save device
 			documentService.save(pushApplication, msgPayload, false);
 			document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+					DEFAULT_DEVICE_DATABASE, null);
 
 			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 		} catch (Throwable e) {
@@ -120,12 +120,12 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON NEWEST}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				"{TEST JSON NEWEST}", DEFAULT_DEVICE_DATABASE);
 
 		// Save alias should return without saving, device is not enabled.
 		documentService.save(pushApplication, msgPayload, false);
 		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				DEFAULT_DEVICE_DATABASE, null);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
 	}
@@ -137,12 +137,12 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 		MessagePayload msgPayload = new MessagePayload(
 				UnifiedPushMessage.withAlias(DocumentMetadata.NULL_ALIAS.toString()), "{TEST JSON NULL_ALIAS}",
-				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				DEFAULT_DEVICE_DATABASE);
 
 		// Save alias should return without saving, device is not enabled.
 		documentService.save(pushApplication, msgPayload, false);
 		String document = documentService.getLatestFromAlias(pushApplication, DocumentMetadata.NULL_ALIAS.toString(),
-				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				DEFAULT_DEVICE_DATABASE, null);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON NULL_ALIAS}"));
 	}
@@ -170,12 +170,12 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
 
 		// Save alias should return without saving, divice is not emabled.
 		documentService.save(pushApplication, msgPayload, false);
 		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				DEFAULT_DEVICE_DATABASE, null);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 	}
@@ -203,20 +203,19 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
 
 		// Save once
 		documentService.save(pushApplication, msgPayload, true);
 		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, DocumentMetadata.NULL_ID);
+				DEFAULT_DEVICE_DATABASE, null);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
 
 		msgPayload.setPayload("{TEST JSON 2}");
 		// save 2nd time and check that it was overwritten
 		documentService.save(pushApplication, msgPayload, true);
-		document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE,
-				DocumentMetadata.NULL_ID);
+		document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE, null);
 
 		Assert.assertTrue(document != null && document.equals("{TEST JSON 2}"));
 	}
@@ -254,8 +253,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 		documentService.save(pushApp, payload, true);
 
-		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE,
-				DocumentMetadata.NULL_ID);
+		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE, null);
 		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD}"));
 	}
 
@@ -269,14 +267,13 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		message.setCriteria(new Criteria());
 		message.getCriteria().setAliases(new ArrayList<>());
 		message.getCriteria().getAliases().add(null);
-		MessagePayload payload1 = new MessagePayload(message, "{TEST PAYLOAD1}", DocumentMetadata.NULL_DATABASE, DocumentMetadata.NULL_ID);
-		MessagePayload payload2 = new MessagePayload(message, "{TEST PAYLOAD2}", DocumentMetadata.NULL_DATABASE, null);
+		MessagePayload payload1 = new MessagePayload(message, "{TEST PAYLOAD1}", DocumentMetadata.NULL_DATABASE);
+		MessagePayload payload2 = new MessagePayload(message, "{TEST PAYLOAD2}", DocumentMetadata.NULL_DATABASE);
 
 		documentService.save(pushApp, payload1, true);
 		documentService.save(pushApp, payload2, true);
 
-		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE,
-				DocumentMetadata.NULL_ID);
+		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE, null);
 
 		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD2}"));
 	}
