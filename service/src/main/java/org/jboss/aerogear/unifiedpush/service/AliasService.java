@@ -57,4 +57,6 @@ public interface AliasService {
 	void removeAll(UUID pushApplicationId);
 
 	void create(Alias alias);
+
+	Alias create(String pushApplicationId, String alias);
 }

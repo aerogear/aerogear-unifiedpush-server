@@ -11,7 +11,7 @@ public class DocumentMetadata implements Serializable {
 	}
 
 	public static String getAlias(String value) {
-		return value == null || value.equalsIgnoreCase(NULL_ALIAS) ? NULL_ALIAS : value;
+		return value == null || value.length() == 0 || value.equalsIgnoreCase(NULL_ALIAS) ? NULL_ALIAS : value;
 	}
 
 	public static String getId(String value) {

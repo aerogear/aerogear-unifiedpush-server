@@ -112,19 +112,32 @@ public class AliasServiceImpl implements AliasService {
 		return null;
 	}
 
-	private void createAliases(PushApplication pushApp, List<String> aliases) {
-		Set<String> aliasSet = new HashSet<>(aliases);
+	@Override
+	public Alias create(String pushApplicationId, String alias){
 		EmailValidator validator = new EmailValidator();
-		for (String name : aliasSet) {
-			Alias user = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased());
-			if (validator.isValid(name, null)) {
-				user.setEmail(name);
-			} else {
-				user.setMobile(name);
-			}
+		return createAlias(UUID.fromString(pushApplicationId), alias, validator);
+	}
 
-			aliasCrudService.create(user);
+	private void createAliases(PushApplication pushApp, List<String> aliases) {
+		EmailValidator validator = new EmailValidator();
+		Set<String> aliasSet = new HashSet<>(aliases);
+
+		for (String name : aliasSet) {
+			createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, validator);
 		}
+	}
+
+	private Alias createAlias(UUID pushApp, String alias, EmailValidator validator) {
+		Alias user = new Alias(pushApp, UUIDs.timeBased());
+		if (validator.isValid(alias, null)) {
+			user.setEmail(alias);
+		} else {
+			user.setMobile(alias);
+		}
+
+		aliasCrudService.create(user);
+
+		return user;
 	}
 
 	@Override
