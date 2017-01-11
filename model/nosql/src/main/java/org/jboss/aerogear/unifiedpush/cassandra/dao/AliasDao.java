@@ -8,17 +8,18 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 public interface AliasDao {
-	public static final String CACHE_NAME = "users";
+	public static final String CACHE_NAME = "aliases";
 
 	Alias create(Alias alias);
 
 	List<Alias> findAll(UUID pushApplicationId);
 
+	@CacheEvict(value = CACHE_NAME, allEntries = true)
+	void removeAll(UUID pushApplicationId);
+
 	@CacheEvict(value = CACHE_NAME)
-	void delete(Alias alias);
+	void remove(String alias);
 
 	@Cacheable(value = CACHE_NAME, unless = "#result == null")
 	Alias findByAlias(String alias);
-
-	Alias find(Alias alias);
 }

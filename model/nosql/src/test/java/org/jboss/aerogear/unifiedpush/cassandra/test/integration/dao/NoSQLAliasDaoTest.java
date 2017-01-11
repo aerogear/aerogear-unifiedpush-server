@@ -42,14 +42,18 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 	@Test
 	public void testDeleteUser() {
-		Alias alias = new Alias(UUID.randomUUID(), UUIDs.timeBased(), TEST_EMAIL);
-		aliasDao.create(alias);
+		String aliasx = "111@xxx.com";
+		Alias alias1 = new Alias(UUID.randomUUID(), UUIDs.timeBased(), aliasx);
+		aliasDao.create(alias1);
 
-		Alias aliasFromDb = aliasDao.findByAlias(TEST_EMAIL);
+		// Update record
+		aliasDao.create(alias1);
+
+		Alias aliasFromDb = aliasDao.findByAlias(aliasx);
 		Assert.isTrue(aliasFromDb != null);
 
-		aliasDao.delete(aliasFromDb);
-		Alias deletedFromDb = aliasDao.find(aliasFromDb);
+		aliasDao.remove(aliasx);
+		Alias deletedFromDb = aliasDao.findByAlias(aliasx);
 		Assert.isTrue(deletedFromDb == null);
 	}
 
@@ -65,20 +69,20 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 	@Test
 	public void testDeleteAll() {
-		UUID id = UUID.randomUUID();
-		Alias alias1 = new Alias(id, UUIDs.timeBased(), TEST_EMAIL);
-		Alias alias2 = new Alias(id, UUIDs.timeBased(), TEST_EMAIL);
+		UUID pushApplicationId = UUID.randomUUID();
+		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
+		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
 
 		// Create two users
 		aliasDao.create(alias1);
 		aliasDao.create(alias2);
-		Assert.isTrue(aliasDao.findAll(id).size() >= 2);
+		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() >= 2);
 
 		// Delete by application
-		aliasDao.findAll(id).forEach((user) -> {
-			aliasDao.delete(user);
+		aliasDao.findAll(pushApplicationId).forEach((user) -> {
+			aliasDao.removeAll(pushApplicationId);
 		});
 
-		Assert.isTrue(aliasDao.findAll(id).size() == 0);
+		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 0);
 	}
 }

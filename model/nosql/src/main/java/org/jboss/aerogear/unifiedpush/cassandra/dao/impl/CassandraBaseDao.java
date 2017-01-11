@@ -37,6 +37,10 @@ public abstract class CassandraBaseDao<T, ID extends Serializable> implements Ty
 		this.tableName = operations.getTableName(domainClass).toString();
 	}
 
+	public <S extends T> S update(S entity) {
+		return operations.update(entity);
+	}
+
 	@Override
 	public <S extends T> S save(S entity) {
 		return operations.insert(entity);

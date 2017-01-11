@@ -29,7 +29,18 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 			// Keep aliases as lower case so we can later match ignore case.
 			user.setEmail(user.getEmail().toLowerCase());
 		}
-		return super.save(user);
+		return save(user);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public User save(User entity) {
+		// Double check alias doesn't exists
+		User user = findOne(entity.getKey());
+		if (user == null)
+			return super.save(entity);
+
+		return update(entity);
 	}
 
 	@Override
@@ -37,6 +48,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		return find(pushApplicationId).collect(Collectors.toList());
 	}
 
+	@Override
 	public Alias findByAlias(String alias) {
 		// First query by email
 		User fromEmail = findByEmail(alias);
@@ -69,14 +81,17 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		return operations.stream(select, domainClass);
 	}
 
-	@Override
-	public Alias find(Alias alias) {
-		return super.findOne(new UserKey(alias.getPushApplicationId(), alias.getId()));
+	public void removeAll(UUID pushApplicationId) {
+		find(pushApplicationId).forEach((user) -> {
+			delete(user.getKey());
+		});
 	}
 
 	@Override
-	public void delete(Alias alias) {
-		super.delete(new User().clone(alias));
+	public void remove(String alias) {
+		Alias aliasObj = findByAlias(alias);
+		if (aliasObj != null)
+			delete(new UserKey(aliasObj.getPushApplicationId(), aliasObj.getId()));
 	}
 
 	@Override
