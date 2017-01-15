@@ -1,4 +1,4 @@
-package org.jacoco.core.internal.data;
+package org.jboss.aerogear.unifiedpush.cassandra.dao;
 
 import java.util.UUID;
 

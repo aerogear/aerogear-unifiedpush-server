@@ -3,8 +3,8 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.jacoco.core.internal.data.NullUUID;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.springframework.cassandra.core.Ordering;
 import org.springframework.cassandra.core.PrimaryKeyType;
@@ -27,9 +27,10 @@ public class DocumentKey implements Serializable {
 	@PrimaryKeyColumn(name = "database", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
 	private String database;
 
-	// User id can be NullUUID ('00000000-0000-0000-0000-000000000000') AKA global doc.
+	// User id can be NullUUID ('00000000-0000-0000-0000-000000000000') AKA
+	// global doc.
 	@PrimaryKeyColumn(name = "user_id", ordinal = 2, type = PrimaryKeyType.PARTITIONED)
-	private String userId;
+	private UUID userId;
 
 	@PrimaryKeyColumn(name = "snapshot", ordinal = 0, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
 	UUID snapshot;
@@ -42,16 +43,11 @@ public class DocumentKey implements Serializable {
 		this.database = metadata.getDatabase();
 
 		if (metadata.getUserId() == null) {
-
-			if (metadata.getInstallationId() != null)
-				// Anonymous mode use installation id as identifier
-				this.userId = metadata.getInstallationId();
-			else {
-				// Global mode - Document doesn't belong to specific user/installation.
-				this.userId = NullUUID.NULL.getUuid().toString();
-			}
+			// Global mode - Document doesn't belong to specific
+			// user/installation.
+			this.userId = NullUUID.NULL.getUuid();
 		} else {
-			this.userId = metadata.getUserId().toString();
+			this.userId = metadata.getUserId();
 		}
 	}
 
@@ -62,7 +58,16 @@ public class DocumentKey implements Serializable {
 	public DocumentKey(UUID pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
 		this.database = database;
-		this.userId = NullUUID.NULL.getUuid().toString();
+		this.userId = NullUUID.NULL.getUuid();
+	}
+
+	/**
+	 * Protected constructor, used only from dao layer.
+	 */
+	DocumentKey(UUID pushApplicationId, String database, UUID userId) {
+		this.pushApplicationId = pushApplicationId;
+		this.database = database;
+		this.userId = userId;
 	}
 
 	public UUID getPushApplicationId() {
@@ -81,11 +86,11 @@ public class DocumentKey implements Serializable {
 		this.database = database;
 	}
 
-	public String getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(UUID userId) {
 		this.userId = userId;
 	}
 

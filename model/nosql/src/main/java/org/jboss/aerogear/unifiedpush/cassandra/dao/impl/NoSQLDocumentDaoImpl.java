@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.IDocument;
@@ -15,6 +16,8 @@ import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.datastax.driver.core.SimpleStatement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.core.utils.UUIDs;
@@ -97,7 +100,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			return docs;
 
 		aliases.forEach((alias) -> {
-			key.setUserId(alias.getId().toString());
+			key.setUserId(alias.getId());
 			// Query global documents for each database
 			DocumentContent doc = findOne(key, logicalId);
 
@@ -128,16 +131,41 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 				delete(doc);
 			});
 
-			// TODO - Delete user specific documents.
-
+			delete(pushApplicaitonId, db.getDatabase());
 
 			// Delete database
 			databaseDao.delete(db);
 		});
 	}
 
+	/*
+	 * Delete application/database documents from all 12 partitions (by month).
+	 *
+	 * For a planet scale databse, we can also create MV by day (365
+	 * partitions).
+	 */
+	private void delete(UUID pushApplicationId, String database) {
+		String cql = "SELECT id FROM users_by_application where push_application_id=" + pushApplicationId
+				+ " AND month IN (1,2,3,4,5,6,7,8,9,10,11,12)";
+
+		StreamSupport
+				.stream(operations.getCqlOperations().queryForResultSet(new SimpleStatement(cql)).spliterator(), false)
+				.forEach(row -> {
+					delete(new DocumentKey(pushApplicationId, database, row.getUUID(0)));
+				});
+	}
+
 	@Override
 	public void delete(DocumentKey key) {
-		super.delete(key);
+		// Delete all documents by partition key
+		if (key.getSnapshot() == null) {
+			Delete delete = QueryBuilder.delete().from(super.tableName);
+			delete.where(QueryBuilder.eq("push_application_id", key.getPushApplicationId()));
+			delete.where(QueryBuilder.eq("database", key.getDatabase()));
+			delete.where(QueryBuilder.eq("user_id", key.getUserId()));
+			operations.getCqlOperations().execute(delete);
+		} else {
+			super.delete(key);
+		}
 	}
 }

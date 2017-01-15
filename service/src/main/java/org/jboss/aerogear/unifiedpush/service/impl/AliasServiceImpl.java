@@ -135,7 +135,7 @@ public class AliasServiceImpl implements AliasService {
 			user.setMobile(alias);
 		}
 
-		aliasCrudService.create(user);
+		create(user);
 
 		return user;
 	}

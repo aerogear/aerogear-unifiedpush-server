@@ -1,9 +1,13 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.jacoco.core.internal.data.UUIDToDate;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.cassandra.mapping.Column;
@@ -20,24 +24,35 @@ public class User extends Alias {
 	@JsonIgnore
 	private UserKey key;
 
+	@Column
+	private Byte month;
+
+	@Column
+	private Integer day;
+
 	public User() {
 		super();
 		this.key = new UserKey();
 	}
 
-	public User(UUID pushApplicationId) {
-		super();
-		this.key = new UserKey(pushApplicationId);
-	}
-
-	public User(UUID pushApplicationId, UUID id) {
-		super();
-		this.key = new UserKey(pushApplicationId, id);
-	}
-
 	public User(UserKey key) {
 		super();
 		this.key = key;
+
+		// Time zone is not important here, month/day are used only as MV
+		// partition key.
+		this.month = (byte) LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
+				.get(ChronoField.MONTH_OF_YEAR);
+		this.day = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
+				.get(ChronoField.DAY_OF_MONTH);
+	}
+
+	public User(UUID pushApplicationId) {
+		this(new UserKey(pushApplicationId));
+	}
+
+	public User(UUID pushApplicationId, UUID id) {
+		this(new UserKey(pushApplicationId, id));
 	}
 
 	public UserKey getKey() {
@@ -94,11 +109,18 @@ public class User extends Alias {
 		super.setMobile(mobile);
 	}
 
-	public User clone(Alias alias) {
-		this.key = new UserKey(alias.getPushApplicationId(), alias.getId());
-		this.setMobile(alias.getMobile());
-		this.setEmail(alias.getEmail());
+	public Byte getMonth() {
+		return month;
+	}
 
-		return this;
+	public Integer getDay() {
+		return day;
+	}
+
+	public static User copy(Alias alias) {
+		User user = new User(new UserKey(alias.getPushApplicationId(), alias.getId()));
+		user.setMobile(alias.getMobile());
+		user.setEmail(alias.getEmail());
+		return user;
 	}
 }

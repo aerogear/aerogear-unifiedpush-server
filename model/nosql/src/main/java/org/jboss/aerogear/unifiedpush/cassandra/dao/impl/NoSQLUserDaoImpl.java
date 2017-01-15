@@ -24,7 +24,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	@Override
 	public Alias create(Alias alias) {
-		User user = new User().clone(alias);
+		User user = User.copy(alias);
 		if (StringUtils.isNotEmpty(user.getEmail())) {
 			// Keep aliases as lower case so we can later match ignore case.
 			user.setEmail(user.getEmail().toLowerCase());
@@ -34,7 +34,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public User save(User entity) {
+	public User update(User entity) {
 		// Double check alias doesn't exists
 		User user = findOne(entity.getKey());
 		if (user == null)

@@ -12,12 +12,12 @@ import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jacoco.core.internal.data.NullUUID;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.IDocument;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.dao.DocumentDao;

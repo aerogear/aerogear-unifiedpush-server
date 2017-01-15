@@ -18,8 +18,6 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.Select;
 
 public abstract class CassandraBaseDao<T, ID extends Serializable> implements TypedIdCassandraRepository<T, ID> {
-	// private final AeroGearLogger logger = AeroGearLogger.getInstance(CassandraBaseDao.class);
-
 	@Autowired
 	protected CassandraOperations operations;
 
