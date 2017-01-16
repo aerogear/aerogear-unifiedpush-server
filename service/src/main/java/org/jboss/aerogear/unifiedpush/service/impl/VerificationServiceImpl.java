@@ -85,7 +85,7 @@ public class VerificationServiceImpl implements VerificationService {
 			return verificationCode;
 		}
 
-		Alias alias = aliasService.find(installation.getAlias());
+		Alias alias = aliasService.find(null, installation.getAlias());
 
 		// Send verification messages only if variant name is not DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {

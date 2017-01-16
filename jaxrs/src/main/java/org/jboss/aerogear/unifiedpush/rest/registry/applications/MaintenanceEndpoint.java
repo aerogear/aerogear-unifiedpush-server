@@ -39,7 +39,7 @@ public class MaintenanceEndpoint {
    	public Response removeAliad(@PathParam("aliasId") String aliasId) {
 
 		try {
-			aliasService.remove(aliasId);
+			aliasService.remove(null, aliasId);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (Exception e) {
 			logger.error("Cannot remove alias", e);

@@ -170,12 +170,12 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         assertThat(documents.size() == 1);
 
         aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
-        assertThat(aliasService.find(alias.getEmail()) != null);
+        assertThat(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) != null);
 
         pushApplicationService.removePushApplication(pa);
         documents = documentService.getLatestFromAliases(pa, alias.getEmail(), "1");
         assertThat(documents.size() == 0);
-        assertThat(aliasService.find(alias.getEmail()) == null);
+        assertThat(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
 
 
     }

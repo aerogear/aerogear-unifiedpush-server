@@ -206,13 +206,13 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			if (DocumentMetadata.getAlias(alias).equals(DocumentMetadata.NULL_ALIAS))
 				user = NullAlias.getAlias(UUID.fromString(pushApp.getPushApplicationID()));
 			else
-				user = aliasService.find(alias);
+				user = aliasService.find(pushApp.getPushApplicationID(), alias);
 
 			// Alias is not registered, create alias to current application
 			if (user == null)
 				user = aliasService.create(pushApp.getPushApplicationID(), alias);
 
-			documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(),
+			documentService.save(new DocumentMetadata(UUID.fromString(pushApp.getPushApplicationID()),
 					DocumentMetadata.getDatabase(database), user, deviceToken, DocumentMetadata.getId(id), null),
 					content);
 
@@ -257,8 +257,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			// TODO - support snapshot other then latest
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String document = documentService.getLatestFromAlias(pushApplication,
-					DocumentMetadata.getAlias(alias).toString(), DocumentMetadata.getDatabase(qualifier),
-					null);
+					DocumentMetadata.getAlias(alias).toString(), DocumentMetadata.getDatabase(qualifier), null);
 
 			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document),
 					request);

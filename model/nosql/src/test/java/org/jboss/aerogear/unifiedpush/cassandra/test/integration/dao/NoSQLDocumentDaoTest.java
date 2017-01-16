@@ -7,6 +7,7 @@ import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.cassandra.test.integration.FixedKeyspaceCreatingIntegrationTest;
@@ -38,14 +39,20 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 	@Test
 	public void testCreateGlobalDocuemnt() {
-		DocumentKey key = new DocumentKey(new DocumentMetadata(UUID.randomUUID().toString(), "STATUS"));
+		UUID pushApplicationId = UUID.randomUUID();
+
+		DocumentKey key = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 		documentDao.create(new DocumentContent(key, "{TEST CONTENT}"));
 		Assert.assertTrue(true);
 	}
 
 	@Test
 	public void testDeleteGlobalDocuemnt() {
-		DocumentKey key = new DocumentKey(new DocumentMetadata(UUID.randomUUID().toString(), "STATUS"));
+		UUID pushApplicationId = UUID.randomUUID();
+
+		DocumentKey key = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 		documentDao.create(new DocumentContent(key, "{TEST CONTENT}"));
 
 		IDocument<DocumentKey> doc = documentDao.findOne(key);
@@ -61,8 +68,10 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	public void testGlobalDocuemnt() {
 		UUID pushApplicationId = UUID.randomUUID();
 
-		DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
-		DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
+		DocumentKey key1 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
+		DocumentKey key2 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 		documentDao.create(new DocumentContent(key1, "{TEST CONTENT 1}"));
 		documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}"));
 
@@ -84,8 +93,10 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	public void testLatestGlobalDocuemntWithId() {
 		UUID pushApplicationId = UUID.randomUUID();
 
-		DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
-		DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
+		DocumentKey key1 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
+		DocumentKey key2 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 		documentDao.create(new DocumentContent(key1, "{TEST CONTENT 1}", "ID1"));
 		documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}", "ID2"));
 
@@ -112,8 +123,10 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		UUID pushApplicationId = UUID.randomUUID();
 
 		// Create global documents
-		DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
-		DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS"));
+		DocumentKey key1 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
+		DocumentKey key2 = new DocumentKey(
+				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 
 		// Create alias specific documents
 		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");

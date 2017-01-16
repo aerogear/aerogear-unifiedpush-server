@@ -41,13 +41,13 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 	private AliasDao aliasDao;
 
 	@Override
-	public void remove(String alias) {
-		aliasDao.remove(alias);
+	public void remove(String pushApplicationId, String alias) {
+		aliasDao.remove(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
 	}
 
 	@Override
-	public Alias find(String alias) {
-		return aliasDao.findByAlias(alias);
+	public Alias find(String pushApplicationId, String alias) {
+		return aliasDao.findByAlias(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
 	}
 
 	@Override

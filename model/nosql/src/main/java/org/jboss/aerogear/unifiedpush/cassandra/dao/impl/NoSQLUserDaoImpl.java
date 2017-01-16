@@ -1,9 +1,13 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
@@ -12,30 +16,51 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.springframework.stereotype.Repository;
 
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.SimpleStatement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.datastax.driver.core.querybuilder.Select;
 
 @Repository
 class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasDao {
+	private static final String MV_BY_PUSH_APPLICATION = "users_by_application";
+	private static final String MV_BY_ALIAS = "users_by_alias";
+	private static final List<Integer> months;
+
+	static {
+		months = Arrays.stream(Month.values()).map(month -> month.getValue()).collect(Collectors.toList());
+	}
 
 	public NoSQLUserDaoImpl() {
 		super(User.class);
 	}
 
 	@Override
-	public Alias create(Alias alias) {
-		User user = User.copy(alias);
-		if (StringUtils.isNotEmpty(user.getEmail())) {
-			// Keep aliases as lower case so we can later match ignore case.
-			user.setEmail(user.getEmail().toLowerCase());
+	public List<User> create(Alias alias) {
+		List<User> users = new ArrayList<User>();
+
+		if (StringUtils.isNotEmpty(alias.getEmail())) {
+			users.add(User.copy(alias, alias.getEmail()));
+
+			// Keep alias as lower case so we can later match ignore case.
+			addLowerCase(alias, users);
 		}
-		return save(user);
+
+		if (StringUtils.isNotEmpty(alias.getMobile())) {
+			users.add(User.copy(alias, alias.getMobile()));
+		}
+
+		users.stream().forEach(user -> {
+			super.save(user);
+		});
+
+		return users;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public User update(User entity) {
-		// Double check alias doesn't exists
+		// Read before write validation.
 		User user = findOne(entity.getKey());
 		if (user == null)
 			return super.save(entity);
@@ -45,57 +70,128 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	@Override
 	public List<Alias> findAll(UUID pushApplicationId) {
-		return find(pushApplicationId).collect(Collectors.toList());
+		return findUserIds(pushApplicationId).collect(ArrayList::new, (m, row) -> {
+			m.add(new Alias(pushApplicationId, row.getUUID(0)));
+		}, ArrayList::addAll);
 	}
 
 	@Override
-	public Alias findByAlias(String alias) {
-		// First query by email
-		User fromEmail = findByEmail(alias);
-		if (fromEmail != null) {
-			return fromEmail;
+	public Alias findByAlias(UUID pushApplicationId, String alias) {
+		// Always find latest alias assuming users_by_alias is sorted.
+		// pushApplicationId should be null only by associate/verify API.
+		List<UserKey> keys = findUserIds(alias, pushApplicationId).map(row -> getKey(row)).collect(Collectors.toList());
+		if (keys != null && !keys.isEmpty()) {
+			UserKey ukey = keys.get(keys.size() - 1);
+			return new Alias(ukey.getPushApplicationId(), ukey.getId(), ukey.getAlias());
 		}
 
-		// Then query by mobile
-		return findByMobile(alias);
+		return null;
 	}
 
-	private User findByEmail(String email) {
-		Select select = QueryBuilder.select().from(super.tableName).allowFiltering();
-		select.where(QueryBuilder.eq("email", email.toLowerCase()));
-
-		return operations.selectOne(select, domainClass);
-	}
-
-	private User findByMobile(String mobile) {
-		Select select = QueryBuilder.select().from(super.tableName);
-		select.where(QueryBuilder.eq("mobile", mobile.toLowerCase()));
-
-		return operations.selectOne(select, domainClass);
-	}
-
-	public Stream<User> find(UUID pushApplicationId) {
-		Select select = QueryBuilder.select().from(super.tableName);
-		select.where(QueryBuilder.eq("push_application_id", pushApplicationId));
-
-		return operations.stream(select, domainClass);
-	}
-
+	/*
+	 * Remove all aliases according to application id.
+	 */
 	public void removeAll(UUID pushApplicationId) {
-		find(pushApplicationId).forEach((user) -> {
-			delete(user.getKey());
+		findUserIds(pushApplicationId).forEach((row) -> {
+			delete(new UserKey(pushApplicationId, row.getUUID(0)));
+		});
+	}
+
+	/*
+	 * Select push_application_id, user_id according to optional aliases.
+	 */
+	private Stream<Row> findUserIds(String alias, UUID pushApplicationId) {
+		List<String> aliases = optionalAliases(alias, null);
+
+		StringBuffer cql = new StringBuffer("SELECT ") //
+				.append(UserKey.FIELD_PUSH_APPLICATION_ID).append(",") //
+				.append(UserKey.FIELD_USER_ID).append(",") //
+				.append(UserKey.FIELD_ALIAS) //
+				.append(" FROM ").append(MV_BY_ALIAS) //
+				.append(" WHERE alias IN ('").append(StringUtils.join(aliases, "','")).append("')");
+		if (pushApplicationId != null) {
+			cql.append(" AND ").append(UserKey.FIELD_PUSH_APPLICATION_ID).append("=").append(pushApplicationId);
+		}
+
+		return StreamSupport.stream(
+				operations.getCqlOperations().queryForResultSet(new SimpleStatement(cql.toString())).spliterator(),
+				false);
+	}
+
+	/*
+	 * Select user_id from all 12 partitions (by month). For a planet scale
+	 * sizing, we can also create MV by day (365 partitions).
+	 */
+	public Stream<Row> findUserIds(UUID pushApplicationId) {
+		StringBuffer cql = new StringBuffer("SELECT ") //
+				.append(UserKey.FIELD_USER_ID) //
+				.append(" FROM ").append(MV_BY_PUSH_APPLICATION) //
+				.append(" WHERE ").append(UserKey.FIELD_PUSH_APPLICATION_ID).append("=").append(pushApplicationId) //
+				.append(" AND month IN (").append(StringUtils.join(months, ",")).append(")");
+
+		return StreamSupport.stream(
+				operations.getCqlOperations().queryForResultSet(new SimpleStatement(cql.toString())).spliterator(),
+				false);
+	}
+
+	@Override
+	public void remove(UUID pushApplicationId, String alias) {
+		findUserIds(alias, pushApplicationId).forEach(row -> {
+			delete(getKey(row));
 		});
 	}
 
 	@Override
-	public void remove(String alias) {
-		Alias aliasObj = findByAlias(alias);
-		if (aliasObj != null)
-			delete(new UserKey(aliasObj.getPushApplicationId(), aliasObj.getId()));
+	public void delete(UserKey key) {
+		// Delete all aliases by partition key
+		// Future spring-cassandra versions might handle null clustering key.
+		if (key.getAlias() == null) {
+			Delete delete = QueryBuilder.delete().from(super.tableName);
+			delete.where(QueryBuilder.eq(UserKey.FIELD_PUSH_APPLICATION_ID, key.getPushApplicationId()));
+			delete.where(QueryBuilder.eq(UserKey.FIELD_USER_ID, key.getId()));
+			operations.getCqlOperations().execute(delete);
+		} else {
+			super.delete(key);
+		}
 	}
 
 	@Override
 	protected UserKey getId(User entity) {
 		return entity.getKey();
+	}
+
+	/*
+	 * If lower-case value equals current value, return both alias and
+	 * alias.lowerCase()
+	 */
+	private List<String> optionalAliases(String alias, List<String> aliases) {
+		if (aliases == null) {
+			aliases = new ArrayList<String>();
+		}
+
+		if (StringUtils.isNoneEmpty(alias)) {
+			aliases.add(alias);
+
+			if (isLowerCaseRequired(alias)) {
+				aliases.add(alias.toLowerCase());
+			}
+		}
+
+		return aliases;
+	}
+
+	private void addLowerCase(Alias alias, List<User> users) {
+		if (isLowerCaseRequired(alias.getEmail())) {
+			users.add(User.copy(alias, alias.getEmail().toLowerCase()));
+		}
+	}
+
+	private boolean isLowerCaseRequired(String alias) {
+		return !alias.equals(alias.toLowerCase());
+
+	}
+
+	private UserKey getKey(Row row) {
+		return new UserKey(row.getUUID(0), row.getUUID(1), row.getString(2));
 	}
 }

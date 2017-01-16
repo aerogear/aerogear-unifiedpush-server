@@ -14,10 +14,11 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
+import com.datastax.driver.core.utils.UUIDs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(value = "users")
-public class User extends Alias {
+public class User {
 
 	@NotNull
 	@PrimaryKey
@@ -31,8 +32,7 @@ public class User extends Alias {
 	private Integer day;
 
 	public User() {
-		super();
-		this.key = new UserKey();
+		this(new UserKey());
 	}
 
 	public User(UserKey key) {
@@ -41,18 +41,20 @@ public class User extends Alias {
 
 		// Time zone is not important here, month/day are used only as MV
 		// partition key.
-		this.month = (byte) LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
-				.get(ChronoField.MONTH_OF_YEAR);
-		this.day = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
-				.get(ChronoField.DAY_OF_MONTH);
+		if (key != null && key.getId() != null) {
+			this.month = (byte) LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
+					.get(ChronoField.MONTH_OF_YEAR);
+			this.day = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
+					.get(ChronoField.DAY_OF_MONTH);
+		}
 	}
 
-	public User(UUID pushApplicationId) {
-		this(new UserKey(pushApplicationId));
+	public User(UUID pushApplicationId, String alias) {
+		this(pushApplicationId, UUIDs.timeBased(), alias);
 	}
 
-	public User(UUID pushApplicationId, UUID id) {
-		this(new UserKey(pushApplicationId, id));
+	public User(UUID pushApplicationId, UUID id, String alias) {
+		this(new UserKey(pushApplicationId, id, alias));
 	}
 
 	public UserKey getKey() {
@@ -63,50 +65,21 @@ public class User extends Alias {
 		this.key = key;
 	}
 
-	@Override
 	@Transient
 	public UUID getId() {
 		return getKey().getId();
 	}
 
-	@Override
 	public void setId(UUID id) {
-		super.setId(id);
 		this.getKey().setId(id);
 	}
 
-	@Override
-	@Transient
-	public UUID getPushApplicationId() {
-		return this.getKey().getPushApplicationId();
+	public String getAlias() {
+		return this.getKey().getAlias();
 	}
 
-	@Override
-	public void setPushApplicationId(UUID pushApplicationId) {
-		super.setPushApplicationId(pushApplicationId);
-		this.getKey().setPushApplicationId(pushApplicationId);
-	}
-
-	@Override
-	@Column
-	public String getEmail() {
-		return super.getEmail();
-	}
-
-	@Override
-	public void setEmail(String email) {
-		super.setEmail(email);
-	}
-
-	@Override
-	@Column
-	public String getMobile() {
-		return super.getMobile();
-	}
-
-	@Override
-	public void setMobile(String mobile) {
-		super.setMobile(mobile);
+	public void setAlias(String alias) {
+		this.getKey().setAlias(alias);
 	}
 
 	public Byte getMonth() {
@@ -117,10 +90,7 @@ public class User extends Alias {
 		return day;
 	}
 
-	public static User copy(Alias alias) {
-		User user = new User(new UserKey(alias.getPushApplicationId(), alias.getId()));
-		user.setMobile(alias.getMobile());
-		user.setEmail(alias.getEmail());
-		return user;
+	public static User copy(Alias alias, String aliasAttribute) {
+		return new User(new UserKey(alias.getPushApplicationId(), alias.getId(), aliasAttribute));
 	}
 }

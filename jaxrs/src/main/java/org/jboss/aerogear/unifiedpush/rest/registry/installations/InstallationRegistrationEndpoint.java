@@ -154,7 +154,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
      * @responseheader Access-Control-Allow-Credentials true
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
-     * 
+     *
      * @statuscode 200 Successful storage of the device metadata
      * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
      * @statuscode 401 The request requires authentication
@@ -479,6 +479,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					.entity(quote("deviceToken header required")), request);
 		}
 
+		// TODO - Support optional application id as query parameter.
         String code = verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken), variant);
         if (code == null){
         	return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
@@ -522,7 +523,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					request);
 		}
 
-        // Associate the device - find the matching application and update the device to the right application
+        // Associate the device - find the matching application and update the device to the right application.
+		// TODO - Support optional application id as query parameter.
         Variant newVariant = clientInstallationService.associateInstallation(installation, variant);
 
         // Associate did not match to any alias

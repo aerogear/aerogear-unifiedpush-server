@@ -24,39 +24,49 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 public interface AliasService {
-    /**
-	 * Creates <b>distinct</b> (according to {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getName()}}) aliases,
-	 * mirroring the data received in {@code aliasData}, and associates them to the given application. Note that
-	 * this application's existing aliases will be overwritten by the newly created aliases.
+	/**
+	 * Creates <b>distinct</b> (according to
+	 * {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getName()}})
+	 * aliases, mirroring the data received in {@code aliasData}, and associates
+	 * them to the given application. Note that this application's existing
+	 * aliases will be overwritten by the newly created aliases.
 	 *
-	 * Any {@code Installation} that was previously installed under this application and whose alias
-	 * does not match one of the aliases provided in {@code aliases} will be deleted.
+	 * Any {@code Installation} that was previously installed under this
+	 * application and whose alias does not match one of the aliases provided in
+	 * {@code aliases} will be deleted.
 	 *
-	 * @param pushApp push application to associate the aliases to.
-	 * @param aliases aliases list to match against.
-	 * @param oauth2 also Synchronize oauth2 provider
+	 * @param pushApp
+	 *            push application to associate the aliases to.
+	 * @param aliases
+	 *            aliases list to match against.
+	 * @param oauth2
+	 *            also Synchronize oauth2 provider
 	 */
 
-    void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases, boolean oauth2);
+	void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases, boolean oauth2);
 
-    /**
-     * updates specific user password
-     *
-     * @param aliasId - current logged in user id
-     * @param currentPassword - user password
-     * @param newPassword - user old password
-     */
-    void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
+	/**
+	 * updates specific user password
+	 *
+	 * @param aliasId
+	 *            - current logged in user id
+	 * @param currentPassword
+	 *            - user password
+	 * @param newPassword
+	 *            - user old password
+	 */
+	void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
 
 	Installation exists(String alias);
 
-	Alias find(String alias);
+	Alias create(String pushApplicationId, String alias);
 
-	void remove(String alias);
+	Alias find(String pushApplicationId, String alias);
+
+	void remove(String pushApplicationId, String alias);
 
 	void removeAll(UUID pushApplicationId);
 
 	void create(Alias alias);
 
-	Alias create(String pushApplicationId, String alias);
 }

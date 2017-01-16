@@ -3,22 +3,22 @@ package org.jboss.aerogear.unifiedpush.api;
 import java.util.UUID;
 
 public class Alias {
-	private UUID pushApplicationId;
 	private UUID id;
+	private UUID pushApplicationId;
 	private String email;
 	private String mobile;
 
 	public Alias() {
 	}
 
-	private Alias(UUID pushApplicationId) {
+	private Alias(UUID id) {
 		super();
-		this.pushApplicationId = pushApplicationId;
+		this.id = id;
 	}
 
 	public Alias(UUID pushApplicationId, UUID id) {
-		this(pushApplicationId);
-		this.id = id;
+		this(id);
+		this.pushApplicationId = pushApplicationId;
 	}
 
 	public Alias(UUID pushApplicationId, UUID id, String email) {

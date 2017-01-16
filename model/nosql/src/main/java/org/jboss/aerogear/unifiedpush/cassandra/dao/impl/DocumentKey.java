@@ -39,7 +39,7 @@ public class DocumentKey implements Serializable {
 	}
 
 	public DocumentKey(DocumentMetadata metadata) {
-		this.pushApplicationId = UUID.fromString(metadata.getPushApplicationId());
+		this.pushApplicationId = metadata.getPushApplicationId();
 		this.database = metadata.getDatabase();
 
 		if (metadata.getUserId() == null) {

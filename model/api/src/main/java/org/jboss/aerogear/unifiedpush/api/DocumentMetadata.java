@@ -22,10 +22,10 @@ public class DocumentMetadata implements Serializable {
 	public static final String NULL_ALIAS = "NULL";
 	private static final String NULL_ID = "NULL";
 
-	private String documentId;
-	private String pushApplicationId;
+	private UUID pushApplicationId;
 	private String database;
 	private UUID userId;
+	private String documentId;
 
 	/*
 	 * InstallationId is optional and should be used only when userId (alias) is
@@ -39,15 +39,20 @@ public class DocumentMetadata implements Serializable {
 	public DocumentMetadata() {
 	}
 
-	public DocumentMetadata(String pushApplicationId, String database) {
+	private DocumentMetadata(UUID pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
 		this.database = database;
 	}
 
-
 	public DocumentMetadata(String pushApplicationId, //
 			String database, //
-			Alias alias){
+			Alias alias) {
+		this(UUID.fromString(pushApplicationId), database, alias);
+	}
+
+	public DocumentMetadata(UUID pushApplicationId, //
+			String database, //
+			Alias alias) {
 
 		this(pushApplicationId, database, alias, null, null, null);
 	}
@@ -57,7 +62,7 @@ public class DocumentMetadata implements Serializable {
 			Alias alias, //
 			String documentId) {
 
-		this(pushApplicationId, database, alias, null, documentId, null);
+		this(UUID.fromString(pushApplicationId), database, alias, null, documentId, null);
 	}
 
 	public DocumentMetadata(String pushApplicationId, //
@@ -66,20 +71,19 @@ public class DocumentMetadata implements Serializable {
 			String documentId, //
 			String snapshot) {
 
-		this(pushApplicationId, database, alias, null, documentId, snapshot);
+		this(UUID.fromString(pushApplicationId), database, alias, null, documentId, snapshot);
 	}
 
-	public DocumentMetadata(String pushApplicationId, //
+	public DocumentMetadata(UUID pushApplicationId, //
 			String database, //
 			Alias alias, //
 			String installationId, //
 			String documentId, //
 			String snapshot) {
 
-		this.setPushApplicationId(pushApplicationId);
+		this(pushApplicationId, database);
 		this.setUserId(alias != null ? alias.getId() : null);
 		this.setInstallationId((installationId == null || installationId.length() == 0 ? null : installationId));
-		this.setDatabase(database);
 		this.setDocumentId(documentId);
 		this.setSnapshot(snapshot == null || installationId.length() == 0 ? null : UUID.fromString(snapshot));
 	}
@@ -92,11 +96,11 @@ public class DocumentMetadata implements Serializable {
 		this.documentId = documentId;
 	}
 
-	public String getPushApplicationId() {
+	public UUID getPushApplicationId() {
 		return pushApplicationId;
 	}
 
-	public void setPushApplicationId(String pushApplicationId) {
+	public void setPushApplicationId(UUID pushApplicationId) {
 		this.pushApplicationId = pushApplicationId;
 	}
 

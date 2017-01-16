@@ -81,13 +81,13 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void remove(String alias) {
-		aliasCrudService.remove(alias);
+	public void remove(String pushApplicationId, String alias) {
+		aliasCrudService.remove(pushApplicationId, alias);
 	}
 
 	@Override
-	public Alias find(String alias) {
-		return aliasCrudService.find(alias);
+	public Alias find(String pushApplicationId, String alias) {
+		return aliasCrudService.find(pushApplicationId, alias);
 	}
 
 	@Override

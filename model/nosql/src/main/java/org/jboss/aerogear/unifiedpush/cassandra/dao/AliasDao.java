@@ -2,15 +2,20 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+
+import com.datastax.driver.core.Row;
 
 public interface AliasDao {
 	public static final String CACHE_NAME = "aliases";
 
-	Alias create(Alias alias);
+	List<User> create(Alias alias);
 
 	List<Alias> findAll(UUID pushApplicationId);
 
@@ -18,8 +23,12 @@ public interface AliasDao {
 	void removeAll(UUID pushApplicationId);
 
 	@CacheEvict(value = CACHE_NAME)
-	void remove(String alias);
+	void remove(UUID pushApplicationId, String alias);
 
 	@Cacheable(value = CACHE_NAME, unless = "#result == null")
-	Alias findByAlias(String alias);
+	Alias findByAlias(UUID pushApplicationId, String alias);
+
+	Stream<Row> findUserIds(UUID pushApplicationId);
+
+	User findOne(UserKey key);
 }

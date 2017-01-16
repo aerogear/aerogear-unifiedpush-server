@@ -49,7 +49,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id) {
 		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database,
-				getAlias(alias), id);
+				getAlias(pushApplication.getPushApplicationID(), alias), id);
 
 		DocumentContent document = (DocumentContent) documentDao.findOne(new DocumentKey(metadata), id);
 
@@ -66,7 +66,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null, id);
 
-		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases, id);
+		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases,
+				id);
 
 		if (docs != null) {
 			docs.forEach((doc) -> {
@@ -84,7 +85,7 @@ public class DocumentServiceImpl implements DocumentService {
 				&& message.getPushMessage().getCriteria().getAliases() != null) {
 
 			for (String alias : message.getPushMessage().getCriteria().getAliases()) {
-				save(pushApplication, getAlias(alias), //
+				save(pushApplication, getAlias(pushApplication.getPushApplicationID(), alias), //
 						DocumentMetadata.getDatabase(message.getQualifier()), //
 						DocumentMetadata.getId(message.getId()), //
 						message.getPayload());
@@ -98,8 +99,7 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 	}
 
-	private void save(PushApplication pushApplication, Alias alias, String database, String id,
-			String document) {
+	private void save(PushApplication pushApplication, Alias alias, String database, String id, String document) {
 
 		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id);
 		documentDao.create(createDocument(meta, document));
@@ -115,11 +115,11 @@ public class DocumentServiceImpl implements DocumentService {
 		// documentDao.delete(UUID.fromString(pushApplicationId));
 	}
 
-	private Alias getAlias(String alias) {
+	private Alias getAlias(String pushApplicationId, String alias) {
 		if (StringUtils.isEmpty(alias))
 			return null;
 
-		return aliasDao.findByAlias(alias);
+		return aliasDao.findByAlias(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
 	}
 
 }

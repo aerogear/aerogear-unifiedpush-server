@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.IDocument;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
@@ -16,7 +16,6 @@ import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
@@ -28,6 +27,8 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 
 	@Autowired
 	private DatabaseDao databaseDao;
+	@Autowired
+	private AliasDao aliasDao;
 
 	public NoSQLDocumentDaoImpl() {
 		super(DocumentContent.class);
@@ -139,20 +140,15 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	/*
-	 * Delete application/database documents from all 12 partitions (by month).
+	 * Delete application/alias documents from all 12 partitions (by month).
 	 *
-	 * For a planet scale databse, we can also create MV by day (365
+	 * For a planet scale database, we can also create MV by day (365
 	 * partitions).
 	 */
 	private void delete(UUID pushApplicationId, String database) {
-		String cql = "SELECT id FROM users_by_application where push_application_id=" + pushApplicationId
-				+ " AND month IN (1,2,3,4,5,6,7,8,9,10,11,12)";
-
-		StreamSupport
-				.stream(operations.getCqlOperations().queryForResultSet(new SimpleStatement(cql)).spliterator(), false)
-				.forEach(row -> {
-					delete(new DocumentKey(pushApplicationId, database, row.getUUID(0)));
-				});
+		aliasDao.findUserIds(pushApplicationId).forEach(row -> {
+			delete(new DocumentKey(pushApplicationId, database, row.getUUID(0)));
+		});
 	}
 
 	@Override
