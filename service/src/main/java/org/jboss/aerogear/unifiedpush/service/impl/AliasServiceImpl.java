@@ -143,7 +143,7 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public void removeAll(UUID pushApplicationId) {
 		aliasCrudService.removeAll(pushApplicationId);
-		}
+	}
 
 	@Override
 	public void create(Alias alias) {
@@ -151,12 +151,8 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void removeAll(UUID pushApplicationId) {
-		aliasCrudService.removeAll(pushApplicationId);
-	}
-
-	@Override
-	public void create(Alias alias){
+	@Asynchronous
+	public void createAsynchronous(Alias alias) {
 		aliasCrudService.create(alias);
 	}
 }

@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.HttpHeaders;
 
 public final class HttpBasicHelper {
 
@@ -34,7 +36,7 @@ public final class HttpBasicHelper {
 	}
 
 	private static String getAuthorizationHeader(HttpServletRequest request) {
-		return request.getHeader("Authorization");
+		return request.getHeader(HttpHeaders.AUTHORIZATION);
 	}
 
 	public static String[] extractUsernameAndPasswordFromBasicHeader(HttpServletRequest request) {
@@ -65,5 +67,11 @@ public final class HttpBasicHelper {
 
 	public static String encodeBase64(String str) {
 		return new String(Base64.getEncoder().encode(str.getBytes()));
+	}
+
+	public static Invocation.Builder basic(Invocation.Builder request, String username, String password){
+	    String auth = username + ":" + password;
+	    String authHeader = "Basic " + new String(encodeBase64(auth));
+		return request.header(HttpHeaders.AUTHORIZATION, authHeader);
 	}
 }

@@ -25,6 +25,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -36,7 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -81,7 +82,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * @statuscode 200 Successful response for your request
 	 */
 	@OPTIONS
-	@Path("/{aliasId}")
+	@Path("/{alias}")
 	@ReturnType("java.lang.Void")
 	public Response crossOriginForAlias(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
@@ -90,7 +91,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@GET
 	@Path("/exists/{aliasId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@ReturnType("java.lang.Boolean")
 	/**
 	 * Public API to validate alias doesn't exists
 	 */
@@ -106,7 +107,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:master secret</code>).
 	 *
-	 * @param aliasId
+	 * @param alias
 	 * @param passwordContainer
 	 * @return registered {@link Installation}
 	 *
@@ -125,18 +126,18 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * TODO - Find a way to validate current user password.
 	 */
 	@POST
-	@Path("/{aliasId}/password")
+	@Path("/{alias}/password")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response updateAliasPassword(@PathParam("aliasId") String aliasId, PasswordContainer passwordContainer,
+	public Response updateAliasPassword(@PathParam("alias") String alias, PasswordContainer passwordContainer,
 			@Context HttpServletRequest request) {
 		try {
 			AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request);
-			if (accessToken != null && accessToken.getPreferredUsername().equals(aliasId)) {
+			if (accessToken != null && accessToken.getPreferredUsername().equals(alias)) {
 				ResponseBuilder response = Response.notModified();
 				if (passwordContainer.isDataValid()) {
-					aliasService.updateAliasePassword(aliasId, passwordContainer.getCurrentPassword(),
+					aliasService.updateAliasePassword(alias, passwordContainer.getCurrentPassword(),
 							passwordContainer.getNewPassword());
 
 					response = Response.ok(EmptyJSON.STRING);
@@ -152,9 +153,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		}
 	}
 
-	/***********************************************************************
-	 * Admin API Section, must be protected with application id & password *
-	 ***********************************************************************/
+	/**************************************************************
+	 * Admin API Section, protected with application id & password*
+	 **************************************************************/
 	/**
 	 * RESTful API for synchronize aliases of the push application. The Endpoint
 	 * is protected using <code>HTTP Basic</code> (credentials
@@ -162,7 +163,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * <pre>
 	 * curl -u "ApplicationID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X POST
 	 *   -d '{
 	 *     ["123456789", "test@ups.com"]
@@ -192,31 +193,136 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	@Deprecated
+	// Can be removed with 1.2.0 release.
 	public Response updateAliases(List<String> aliasData, @QueryParam("oauth2") @DefaultValue("false") boolean oauth2,
 			@Context HttpServletRequest request) {
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
 		if (pushApplication == null) {
 			return Response.status(Status.UNAUTHORIZED)
-					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+					.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
 					.entity("Unauthorized Request").build();
 		}
 
 		try {
 			aliasService.updateAliasesAndInstallations(pushApplication, aliasData, oauth2);
 			return Response.ok(EmptyJSON.STRING).build();
+		} catch (ServiceConstraintViolationException e) {
+			logger.warn("ConstraintViolationException, alias {} already exists in db.", e.getEntityId());
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(quote("Error, alias " + e.getEntityId() + " already exists in db.")).build();
 		} catch (Exception e) {
 			logger.error("Cannot update aliases, {}", e.getCause());
-			int exceptionIndex = ExceptionUtils.indexOfType(e, ServiceConstraintViolationException.class);
-			if (exceptionIndex > 0) {
-				List<Throwable> throwableList = ExceptionUtils.getThrowableList(e);
-				ServiceConstraintViolationException throwable = (ServiceConstraintViolationException) throwableList.get(exceptionIndex);
-				String errorMessage = "Error, alias " + throwable.getEntityId() + " already exists in db.";
-				logger.error(errorMessage);
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(quote(errorMessage)).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	/**
+	 * RESTful API for query alias. The Endpoint is protected using
+	 * <code>HTTP Basic</code> (credentials
+	 * <code>ApplicationID:Master Secret</code>).
+	 *
+	 * @param alias
+	 * @return {@link Alias} registered with application
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="UnifiedPush Server" (only
+	 *                 for 401 response)
+	 *
+	 * @statuscode 200 Successful storage of the aliases.
+	 * @statuscode 400 The format of the aliases request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@GET
+	@Path("/{alias}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
+	public Response getAlias(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+		try {
+			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
+					pushAppService);
+			if (pushApplication == null) {
+				return Response.status(Status.UNAUTHORIZED)
+						.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
+						.entity("Unauthorized Request").build();
 			}
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return Response.ok(aliasService.find(pushApplication.getPushApplicationID(), alias)).build();
+		} catch (Exception e) {
+			logger.error("Cannot update aliases", e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+
+	}
+
+	/**
+	 * RESTful API for alias registration. The Endpoint is protected using
+	 * <code>HTTP Basic</code> (credentials
+	 * <code>ApplicationID:Master Secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "ApplicaitonId:Master Secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X POST
+	 *   -d '{
+	 *     "id" : "Time-based UUIDs",
+	 *     "pushApplicationId" : "Push Application ID",
+	 *     "email" : "iOS",
+	 *     "mobile" : "6.1.2"
+	 *   }'
+	 *   https://SERVER:PORT/context/rest/alias
+	 * </pre>
+	 *
+	 * Details about JSON format can be found HERE!
+	 *
+	 * @param entity
+	 *            {@link Alias} for registration
+	 * @param request
+	 *            the request object
+	 * @return registered {@link Alias}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 *                 Server" (only for 401 response)
+	 *
+	 * @statuscode 200 Successful storage of the alias metadata
+	 * @statuscode 400 The format of the client request was incorrect (e.g.
+	 *             missing required values)
+	 * @statuscode 401 The request requires authentication
+	 */
+	@POST
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
+	public Response create(Alias alias, @DefaultValue("true") @QueryParam("synchronously") boolean synchronously,
+			@Context HttpServletRequest request) {
+
+		try {
+			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
+					pushAppService);
+			if (pushApplication == null) {
+				return Response.status(Status.UNAUTHORIZED)
+						.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
+						.entity("Unauthorized Request").build();
+			}
+
+			// Support synchronously mode by default
+			if (synchronously)
+				aliasService.create(alias);
+			else
+				aliasService.createAsynchronous(alias);
+
+			return appendAllowOriginHeader(Response.ok(alias), request);
+		} catch (Exception e) {
+			logger.error("Cannot update aliases", e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
 }

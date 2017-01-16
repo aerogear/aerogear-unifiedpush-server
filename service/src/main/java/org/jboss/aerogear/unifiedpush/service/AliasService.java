@@ -69,4 +69,6 @@ public interface AliasService {
 
 	void create(Alias alias);
 
+	void createAsynchronous(Alias alias);
+
 }
