@@ -100,6 +100,24 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 0);
 	}
 
+	@Test
+	public void testFindLatestAlias() {
+		UUID pushApplicationId1 = UUID.randomUUID();
+		createTestUsers(pushApplicationId1);
+
+		UUID pushApplicationId2 = UUID.randomUUID();
+		createTestUsers(pushApplicationId2);
+
+		Alias alias = aliasDao.findByAlias(null, TEST_EMAIL);
+		alias.getPushApplicationId().equals(pushApplicationId2.toString());
+
+		// Delete aliases from application2 only
+		aliasDao.remove(pushApplicationId2, TEST_EMAIL);
+
+		alias = aliasDao.findByAlias(null, TEST_EMAIL);
+		alias.getPushApplicationId().equals(pushApplicationId1.toString());
+	}
+
 	private void createTestUsers(UUID pushApplicationId) {
 		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
 		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
