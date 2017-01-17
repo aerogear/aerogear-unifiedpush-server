@@ -55,7 +55,8 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	@Deprecated
-	public List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases, boolean oauth2) {
+	public List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases,
+			boolean oauth2) {
 		logger.debug("synchronize aliases oauth2 flag is: " + oauth2);
 		List<Alias> aliasList = Collections.emptyList();
 
@@ -118,22 +119,32 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public Alias create(String pushApplicationId, String alias){
 		EmailValidator validator = new EmailValidator();
-		return createAlias(UUID.fromString(pushApplicationId), alias, validator);
+		return createAlias(UUID.fromString(pushApplicationId), null, alias, validator);
 	}
 
+	/*
+	 * Deprecated - Use Alias object from model-api Used only from Deprecated
+	 * updateAliasesAndInstallations
+	 */
 	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases) {
 		EmailValidator validator = new EmailValidator();
 		Set<String> aliasSet = new HashSet<>(aliases);
 		List<Alias> aliasList = new ArrayList<>();
 
 		for (String name : aliasSet) {
-			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, validator));
+			// Search if alias is already register for application.
+			// If so, use the same userId in-order to keep privoius documents
+			// history. AUTOMATION edge case.
+			Alias alias = aliasCrudService.find(pushApp.getPushApplicationID(), name);
+
+			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()),
+					alias == null ? null : alias.getId(), name, validator));
 		}
 
 		return aliasList;
 	}
 
-	private Alias createAlias(UUID pushApp, String alias, EmailValidator validator) {
+	private Alias createAlias(UUID pushApp, UUID userId, String alias, EmailValidator validator) {
 		Alias user = new Alias(pushApp, UUIDs.timeBased());
 		if (validator.isValid(alias, null)) {
 			user.setEmail(alias);
