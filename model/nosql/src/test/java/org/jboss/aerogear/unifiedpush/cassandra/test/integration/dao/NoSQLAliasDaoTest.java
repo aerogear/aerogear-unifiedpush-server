@@ -87,13 +87,13 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	public void testDeleteAll() {
 		UUID pushApplicationId = UUID.randomUUID();
 
-		createTestUsers(pushApplicationId);
+		createTestUsers(pushApplicationId, TEST_EMAIL);
 
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 5);
 		aliasDao.removeAll(pushApplicationId);
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 0);
 
-		createTestUsers(pushApplicationId);
+		createTestUsers(pushApplicationId, TEST_EMAIL);
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 5);
 		aliasDao.remove(pushApplicationId, TEST_EMAIL);
 		aliasDao.remove(pushApplicationId, TEST_PHONE);
@@ -103,24 +103,25 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	@Test
 	public void testFindLatestAlias() {
 		UUID pushApplicationId1 = UUID.randomUUID();
-		createTestUsers(pushApplicationId1);
+		createTestUsers(pushApplicationId1, "1" + TEST_EMAIL);
 
 		UUID pushApplicationId2 = UUID.randomUUID();
-		createTestUsers(pushApplicationId2);
+		createTestUsers(pushApplicationId2, "2" + TEST_EMAIL);
 
-		Alias alias = aliasDao.findByAlias(null, TEST_EMAIL);
-		alias.getPushApplicationId().equals(pushApplicationId2.toString());
+		Alias alias = aliasDao.findByAlias(null, TEST_PHONE);
+		Assert.isTrue(alias.getPushApplicationId().equals(pushApplicationId2));
 
 		// Delete aliases from application2 only
-		aliasDao.remove(pushApplicationId2, TEST_EMAIL);
+		aliasDao.remove(pushApplicationId2, "2" + TEST_EMAIL);
+		aliasDao.remove(pushApplicationId2, TEST_PHONE);
 
-		alias = aliasDao.findByAlias(null, TEST_EMAIL);
-		alias.getPushApplicationId().equals(pushApplicationId1.toString());
+		alias = aliasDao.findByAlias(null, TEST_PHONE);
+		Assert.isTrue(alias.getPushApplicationId().equals(pushApplicationId1));
 	}
 
-	private void createTestUsers(UUID pushApplicationId) {
-		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
-		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), TEST_EMAIL);
+	private void createTestUsers(UUID pushApplicationId, String email) {
+		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), email);
+		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), email);
 
 		alias2.setMobile(TEST_PHONE);
 

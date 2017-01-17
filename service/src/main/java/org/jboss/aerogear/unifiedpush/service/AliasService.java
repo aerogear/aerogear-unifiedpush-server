@@ -26,24 +26,24 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 public interface AliasService {
 	/**
 	 * Creates <b>distinct</b> (according to
-	 * {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getName()}})
-	 * aliases, mirroring the data received in {@code aliasData}, and associates
+	 * {@code {@link org.jboss.aerogear.unifiedpush.api.Alias#getEmail()}})
+	 * aliases, mirroring the data received in {@code aliases}, and associates
 	 * them to the given application. Note that this application's existing
 	 * aliases will be overwritten by the newly created aliases.
 	 *
 	 * Any {@code Installation} that was previously installed under this
 	 * application and whose alias does not match one of the aliases provided in
-	 * {@code aliases} will be deleted.
+	 * {@code aliases} will be disabled.
 	 *
-	 * @param pushApp
+	 * @param pushApplication
 	 *            push application to associate the aliases to.
 	 * @param aliases
 	 *            aliases list to match against.
 	 * @param oauth2
-	 *            also Synchronize oauth2 provider
+	 *            synchronize state to identity provider
+	 * @return new {@link org.jboss.aerogear.unifiedpush.api.Alias} list
 	 */
-
-	void updateAliasesAndInstallations(PushApplication pushApp, List<String> aliases, boolean oauth2);
+	List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases, boolean oauth2);
 
 	/**
 	 * updates specific user password
@@ -61,7 +61,7 @@ public interface AliasService {
 
 	Alias create(String pushApplicationId, String alias);
 
-	Alias find(String pushApplicationId, String alias);
+	Alias findByAlias(String pushApplicationId, String alias);
 
 	void remove(String pushApplicationId, String alias);
 

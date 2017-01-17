@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,13 +54,13 @@ public class AliasServiceImpl implements AliasService {
 	private ClientInstallationService clientInstallationService;
 
 	@Override
-	public void updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases, boolean oauth2) {
+	@Deprecated
+	public List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases, boolean oauth2) {
 		logger.debug("synchronize aliases oauth2 flag is: " + oauth2);
+		List<Alias> aliasList = Collections.emptyList();
 
-		// Create keycloak client if missing
-		if (oauth2) {
-			keycloakService.createClientIfAbsent(pushApplication);
-		}
+		// Create keycloak client if missing.
+		keycloakService.createClientIfAbsent(pushApplication);
 
 		// Remove all aliases from Alias Table
 		removeAll(UUID.fromString(pushApplication.getPushApplicationID()));
@@ -67,12 +69,14 @@ public class AliasServiceImpl implements AliasService {
 		MergeResponse mergeResponse = clientInstallationService.syncInstallationByAliasList(pushApplication, aliases);
 
 		// Recreate all aliases to Alias Table
-		createAliases(pushApplication, aliases);
+		aliasList = createAliases(pushApplication, aliases);
 
 		// synchronize aliases to keycloak
 		if (oauth2) {
 			keycloakService.synchronizeUsers(mergeResponse, pushApplication, aliases);
 		}
+
+		return aliasList;
 	}
 
 	@Override
@@ -86,12 +90,11 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public Alias find(String pushApplicationId, String alias) {
+	public Alias findByAlias(String pushApplicationId, String alias) {
 		return aliasCrudService.find(pushApplicationId, alias);
 	}
 
 	@Override
-
 	/**
 	 * @param alias
 	 *            Return first existing and enabled device according to a given
@@ -118,13 +121,16 @@ public class AliasServiceImpl implements AliasService {
 		return createAlias(UUID.fromString(pushApplicationId), alias, validator);
 	}
 
-	private void createAliases(PushApplication pushApp, List<String> aliases) {
+	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases) {
 		EmailValidator validator = new EmailValidator();
 		Set<String> aliasSet = new HashSet<>(aliases);
+		List<Alias> aliasList = new ArrayList<>();
 
 		for (String name : aliasSet) {
-			createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, validator);
+			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, validator));
 		}
+
+		return aliasList;
 	}
 
 	private Alias createAlias(UUID pushApp, String alias, EmailValidator validator) {

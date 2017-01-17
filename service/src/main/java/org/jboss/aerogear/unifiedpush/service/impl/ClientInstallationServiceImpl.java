@@ -89,7 +89,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			return null;
 		}
 
-		Alias alias = aliasService.find(null, installation.getAlias());
+		Alias alias = aliasService.findByAlias(null, installation.getAlias());
 
 		if (alias == null) {
 			return null;

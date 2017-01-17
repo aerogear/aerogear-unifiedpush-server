@@ -4,6 +4,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +25,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 @Repository
 class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasDao {
 	private static final String MV_BY_PUSH_APPLICATION = "users_by_application";
+	private static final String MV_BY_ALIAS_AND_APPLICATION = "users_by_alias_application";
 	private static final String MV_BY_ALIAS = "users_by_alias";
 	private static final List<Integer> months;
 
@@ -40,10 +42,24 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		List<User> users = new ArrayList<User>();
 
 		if (StringUtils.isNotEmpty(alias.getEmail())) {
+
+			// Make sure email is unique cross other applications.
+			Optional<Row> existing = findUserIds(alias.getEmail(), null)
+					.filter(row -> !alias.getPushApplicationId().equals(getKey(row).getPushApplicationId()))
+					.findFirst();
+
+			if (existing.isPresent()) {
+				UserKey key = getKey(existing.get());
+				throw new AliasAlreadyExists(alias.getEmail(), key.getPushApplicationId());
+			}
+
+			// Create user by alias
 			users.add(User.copy(alias, alias.getEmail()));
 
-			// Keep alias as lower case so we can later match ignore case.
-			addLowerCase(alias, users);
+			// Keep email as lower case so we can later match ignore case.
+			if (isLowerCaseRequired(alias.getEmail())) {
+				users.add(User.copy(alias, alias.getEmail().toLowerCase()));
+			}
 		}
 
 		if (StringUtils.isNotEmpty(alias.getMobile())) {
@@ -77,11 +93,11 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	@Override
 	public Alias findByAlias(UUID pushApplicationId, String alias) {
-		// Always find latest alias assuming users_by_alias is sorted.
+		// Always find latest alias assuming users_by_alias is sorted DESC.
 		// pushApplicationId should be null only by associate/verify API.
-		List<UserKey> keys = findUserIds(alias, pushApplicationId).map(row -> getKey(row)).collect(Collectors.toList());
-		if (keys != null && !keys.isEmpty()) {
-			UserKey ukey = keys.get(keys.size() - 1);
+		Optional<Row> row = findUserIds(alias, pushApplicationId).findFirst();
+		if (row.isPresent()) {
+			UserKey ukey = getKey(row.get());
 			return new Alias(ukey.getPushApplicationId(), ukey.getId(), ukey.getAlias());
 		}
 
@@ -98,7 +114,8 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	/*
-	 * Select push_application_id, user_id according to optional aliases.
+	 * Select push_application_id, user_id and alias according to optional
+	 * aliases.
 	 */
 	private Stream<Row> findUserIds(String alias, UUID pushApplicationId) {
 		List<String> aliases = optionalAliases(alias, null);
@@ -107,7 +124,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 				.append(UserKey.FIELD_PUSH_APPLICATION_ID).append(",") //
 				.append(UserKey.FIELD_USER_ID).append(",") //
 				.append(UserKey.FIELD_ALIAS) //
-				.append(" FROM ").append(MV_BY_ALIAS) //
+				.append(" FROM ").append(pushApplicationId == null ? MV_BY_ALIAS : MV_BY_ALIAS_AND_APPLICATION) //
 				.append(" WHERE alias IN ('").append(StringUtils.join(aliases, "','")).append("')");
 		if (pushApplicationId != null) {
 			cql.append(" AND ").append(UserKey.FIELD_PUSH_APPLICATION_ID).append("=").append(pushApplicationId);
@@ -178,12 +195,6 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		}
 
 		return aliases;
-	}
-
-	private void addLowerCase(Alias alias, List<User> users) {
-		if (isLowerCaseRequired(alias.getEmail())) {
-			users.add(User.copy(alias, alias.getEmail().toLowerCase()));
-		}
 	}
 
 	private boolean isLowerCaseRequired(String alias) {

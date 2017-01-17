@@ -40,6 +40,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.AliasAlreadyExists;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.PasswordContainer;
@@ -251,7 +252,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 						.entity("Unauthorized Request").build();
 			}
 
-			return Response.ok(aliasService.find(pushApplication.getPushApplicationID(), alias)).build();
+			return Response.ok(aliasService.findByAlias(pushApplication.getPushApplicationID(), alias)).build();
 		} catch (Exception e) {
 			logger.error("Cannot update aliases", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
@@ -271,8 +272,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *   -d '{
 	 *     "id" : "Time-based UUIDs",
 	 *     "pushApplicationId" : "Push Application ID",
-	 *     "email" : "iOS",
-	 *     "mobile" : "6.1.2"
+	 *     "email" : "Unique email address",
+	 *     "mobile" : "Phone number"
 	 *   }'
 	 *   https://SERVER:PORT/context/rest/alias
 	 * </pre>
@@ -320,6 +321,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 				aliasService.createAsynchronous(alias);
 
 			return appendAllowOriginHeader(Response.ok(alias), request);
+		} catch (AliasAlreadyExists e) {
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST).entity(e.getMessage()), request);
 		} catch (Exception e) {
 			logger.error("Cannot update aliases", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
