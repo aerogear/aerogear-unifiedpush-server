@@ -37,7 +37,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
-	public void testLowerCaseForIOS() throws IOException {
+	public void testMultipleSync() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 
 		String[] legacyAliases = new String[] { "Supprot@AeroBase.org", "Test@AeroBase.org", "Help@AeroBase.org" };
@@ -52,7 +52,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		});
 
 		// Sync 2 aliases
-		aliasService.syncAliases(pushApplication, aliasList.subList(0, 1), false);
+		aliasService.syncAliases(pushApplication,Arrays.asList(legacyAliases[0], legacyAliases[1]), false);
 
 		// Validate 3 aliases
 		aliases.forEach(alias -> {

@@ -54,8 +54,7 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	@Deprecated
-	public List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases,
-			boolean oauth2) {
+	public List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases, boolean oauth2) {
 		logger.debug("synchronize aliases oauth2 flag is: " + oauth2);
 		List<Alias> aliasList = Collections.emptyList();
 
@@ -154,7 +153,7 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	private Alias createAlias(UUID pushApp, UUID userId, String alias, EmailValidator validator) {
-		Alias user = new Alias(pushApp, UUIDs.timeBased());
+		Alias user = new Alias(pushApp, userId != null ? userId : UUIDs.timeBased());
 		if (validator.isValid(alias, null)) {
 			user.setEmail(alias);
 		} else {
