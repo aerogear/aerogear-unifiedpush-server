@@ -14,7 +14,6 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
-import com.datastax.driver.core.utils.UUIDs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(value = "users")
@@ -26,16 +25,19 @@ public class User {
 	private UserKey key;
 
 	@Column
+	private Byte type;
+
+	@Column
 	private Byte month;
 
 	@Column
 	private Integer day;
 
 	public User() {
-		this(new UserKey());
+		this(new UserKey(), (byte) AliasType.OTHER.ordinal());
 	}
 
-	public User(UserKey key) {
+	private User(UserKey key, byte type) {
 		super();
 		this.key = key;
 
@@ -47,14 +49,8 @@ public class User {
 			this.day = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
 					.get(ChronoField.DAY_OF_MONTH);
 		}
-	}
 
-	public User(UUID pushApplicationId, String alias) {
-		this(pushApplicationId, UUIDs.timeBased(), alias);
-	}
-
-	public User(UUID pushApplicationId, UUID id, String alias) {
-		this(new UserKey(pushApplicationId, id, alias));
+		this.type = type;
 	}
 
 	public UserKey getKey() {
@@ -90,7 +86,19 @@ public class User {
 		return day;
 	}
 
-	public static User copy(Alias alias, String aliasAttribute) {
-		return new User(new UserKey(alias.getPushApplicationId(), alias.getId(), aliasAttribute));
+	public Byte getType() {
+		return type;
+	}
+
+	public void setType(Byte type) {
+		this.type = type;
+	}
+
+	public static User copy(Alias alias, String aliasAttribute, int type) {
+		return new User(new UserKey(alias.getPushApplicationId(), alias.getId(), aliasAttribute), (byte) type);
+	}
+
+	public enum AliasType {
+		EMAIL, EMAIL_LOWER, OTHER;
 	}
 }

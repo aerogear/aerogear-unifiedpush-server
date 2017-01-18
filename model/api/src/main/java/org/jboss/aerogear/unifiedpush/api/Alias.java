@@ -6,7 +6,7 @@ public class Alias {
 	private UUID id;
 	private UUID pushApplicationId;
 	private String email;
-	private String mobile;
+	private String other;
 
 	public Alias() {
 	}
@@ -26,10 +26,10 @@ public class Alias {
 		this.email = email;
 	}
 
-	public Alias(UUID pushApplicationId, UUID id, String email, String mobile) {
+	public Alias(UUID pushApplicationId, UUID id, String email, String other) {
 		this(pushApplicationId, id);
 		this.email = email;
-		this.mobile = mobile;
+		this.other = other;
 	}
 
 	public UUID getId() {
@@ -56,11 +56,11 @@ public class Alias {
 		this.email = email;
 	}
 
-	public String getMobile() {
-		return mobile;
+	public String getOther() {
+		return other;
 	}
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
+	public void setOther(String other) {
+		this.other = other;
 	}
 }

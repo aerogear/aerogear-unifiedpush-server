@@ -206,7 +206,7 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			if (DocumentMetadata.getAlias(alias).equals(DocumentMetadata.NULL_ALIAS))
 				user = NullAlias.getAlias(UUID.fromString(pushApp.getPushApplicationID()));
 			else
-				user = aliasService.findByAlias(pushApp.getPushApplicationID(), alias);
+				user = aliasService.find(pushApp.getPushApplicationID(), alias);
 
 			// Alias is not registered, create alias to current application
 			if (user == null)

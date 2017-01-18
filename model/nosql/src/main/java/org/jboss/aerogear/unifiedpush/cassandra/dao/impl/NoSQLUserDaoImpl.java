@@ -21,6 +21,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 
 @Repository
 class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasDao {
@@ -54,16 +55,16 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 			}
 
 			// Create user by alias
-			users.add(User.copy(alias, alias.getEmail()));
+			users.add(User.copy(alias, alias.getEmail(), User.AliasType.EMAIL.ordinal()));
 
 			// Keep email as lower case so we can later match ignore case.
 			if (isLowerCaseRequired(alias.getEmail())) {
-				users.add(User.copy(alias, alias.getEmail().toLowerCase()));
+				users.add(User.copy(alias, alias.getEmail().toLowerCase(), User.AliasType.EMAIL_LOWER.ordinal()));
 			}
 		}
 
-		if (StringUtils.isNotEmpty(alias.getMobile())) {
-			users.add(User.copy(alias, alias.getMobile()));
+		if (StringUtils.isNotEmpty(alias.getOther())) {
+			users.add(User.copy(alias, alias.getOther(), User.AliasType.OTHER.ordinal()));
 		}
 
 		users.stream().forEach(user -> {
@@ -98,10 +99,35 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		Optional<Row> row = findUserIds(alias, pushApplicationId).findFirst();
 		if (row.isPresent()) {
 			UserKey ukey = getKey(row.get());
-			return new Alias(ukey.getPushApplicationId(), ukey.getId(), ukey.getAlias());
+			return findOne(ukey.getPushApplicationId(), ukey.getId());
 		}
 
 		return null;
+	}
+
+	public Alias findOne(UUID pushApplicationId, UUID userId) {
+		Select select = QueryBuilder.select().from(super.tableName);
+		select.where(QueryBuilder.eq(UserKey.FIELD_PUSH_APPLICATION_ID, pushApplicationId));
+		select.where(QueryBuilder.eq(UserKey.FIELD_USER_ID, userId));
+
+		Alias alias = new Alias(pushApplicationId, userId);
+
+		// Get all possible aliases for a userId
+		List<User> users = operations.select(select, super.domainClass);
+		if (users == null || users.size() == 0) {
+			return alias;
+		}
+
+		users.forEach(user -> {
+			// We ignore User.AliasType.EMAIL_LOWER.
+			if (user.getType() == User.AliasType.EMAIL.ordinal()) {
+				alias.setEmail(user.getAlias());
+			} else if (user.getType() == User.AliasType.OTHER.ordinal()) {
+				alias.setOther(user.getAlias());
+			}
+		});
+
+		return alias;
 	}
 
 	/*
@@ -205,4 +231,5 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	private UserKey getKey(Row row) {
 		return new UserKey(row.getUUID(0), row.getUUID(1), row.getString(2));
 	}
+
 }

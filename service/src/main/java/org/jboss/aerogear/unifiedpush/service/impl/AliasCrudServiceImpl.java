@@ -51,6 +51,11 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 	}
 
 	@Override
+	public Alias find(UUID pushApplicationId, UUID userId) {
+		return aliasDao.findOne(pushApplicationId, userId);
+	}
+
+	@Override
 	public void removeAll(UUID pushApplicationId) {
 		aliasDao.removeAll(pushApplicationId);
 	}

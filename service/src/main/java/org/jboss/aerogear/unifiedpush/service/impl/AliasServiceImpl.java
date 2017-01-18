@@ -91,8 +91,13 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public Alias findByAlias(String pushApplicationId, String alias) {
+	public Alias find(String pushApplicationId, String alias) {
 		return aliasCrudService.find(pushApplicationId, alias);
+	}
+
+	@Override
+	public Alias find(UUID pushApplicationId, UUID userId){
+		return aliasCrudService.find(pushApplicationId, userId);
 	}
 
 	@Override
@@ -149,7 +154,7 @@ public class AliasServiceImpl implements AliasService {
 		if (validator.isValid(alias, null)) {
 			user.setEmail(alias);
 		} else {
-			user.setMobile(alias);
+			user.setOther(alias);
 		}
 
 		create(user);

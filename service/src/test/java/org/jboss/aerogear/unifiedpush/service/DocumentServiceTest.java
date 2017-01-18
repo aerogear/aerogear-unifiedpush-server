@@ -295,8 +295,8 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(salias1, salias2), false);
 
 		// Reload aliases
-		Alias alias1 = aliasService.findByAlias(pushApp.getPushApplicationID(), salias1);
-		Alias alias2 = aliasService.findByAlias(pushApp.getPushApplicationID(), salias2);
+		Alias alias1 = aliasService.find(pushApp.getPushApplicationID(), salias1);
+		Alias alias2 = aliasService.find(pushApp.getPushApplicationID(), salias2);
 
 		documentService.save(
 				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1, "ID301"),
@@ -342,8 +342,8 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2, "ID2"),
 				"{CONTENT1000}");
 
-		String doc1 = documentService.getLatestFromAlias(pushApp, alias1.getMobile(), DEFAULT_DEVICE_DATABASE, "ID1");
-		String doc2 = documentService.getLatestFromAlias(pushApp, alias2.getMobile(), DEFAULT_DEVICE_DATABASE, "ID2");
+		String doc1 = documentService.getLatestFromAlias(pushApp, alias1.getOther(), DEFAULT_DEVICE_DATABASE, "ID1");
+		String doc2 = documentService.getLatestFromAlias(pushApp, alias2.getOther(), DEFAULT_DEVICE_DATABASE, "ID2");
 
 		Assert.assertEquals(doc1, "{CONTENT1}");
 		Assert.assertEquals(doc2, "{CONTENT1000}");

@@ -89,7 +89,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			return null;
 		}
 
-		Alias alias = aliasService.findByAlias(null, installation.getAlias());
+		Alias alias = aliasService.find(null, installation.getAlias());
 
 		if (alias == null) {
 			return null;
@@ -102,7 +102,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 					"Unable to find application for alias %s, this behaviour "
 							+ "might occur when application is deleted and orphans aliases exists. "
 							+ "Use DELETE /rest/alias/THE-ALIAS in order to remove orphans.",
-					StringUtils.isEmpty(alias.getEmail()) ? alias.getMobile() : alias.getEmail()));
+					StringUtils.isEmpty(alias.getEmail()) ? alias.getOther() : alias.getEmail()));
 			return null;
 		}
 

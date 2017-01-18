@@ -56,23 +56,32 @@ public class AliasEndpointTest extends RestEndpointTest {
 
 		ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias");
 
+		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroBase.org");
 		// Create Alias
 		Response response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
-				.post(Entity.entity( //
-						new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroBase.org"), //
-						MediaType.APPLICATION_JSON_TYPE));
+				.post(Entity.entity(original, MediaType.APPLICATION_JSON_TYPE));
 
 		Assert.assertTrue(response.getStatus() == 200);
 		response.close();
 
-		// Query for previously created alias
-		target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/" + "supprot@aerobase.org");
+		// Query for previously created alias by alias lower(name)
+		target = client.target(
+				deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/name/" + original.getEmail().toLowerCase());
 
 		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
 		Assert.assertTrue(response.getStatus() == 200);
 		Alias alias = response.readEntity(Alias.class);
+		Assert.assertTrue(alias != null & alias.getEmail().equals(original.getEmail()));
+		response.close();
 
-		Assert.assertTrue(alias != null & alias.getEmail().equals("supprot@aerobase.org"));
+		// Query for previously created alias by alias id
+		target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/" + original.getId());
+
+		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
+		Assert.assertTrue(response.getStatus() == 200);
+		alias = response.readEntity(Alias.class);
+		Assert.assertTrue(alias != null & alias.getEmail().equals(original.getEmail()));
+		response.close();
 	}
 
 }

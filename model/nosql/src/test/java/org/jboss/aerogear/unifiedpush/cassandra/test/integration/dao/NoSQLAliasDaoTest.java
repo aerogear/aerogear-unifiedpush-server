@@ -119,11 +119,25 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		Assert.isTrue(alias.getPushApplicationId().equals(pushApplicationId1));
 	}
 
+	@Test
+	public void findOneAlias() {
+		UUID pushApplicationId = UUID.randomUUID();
+
+		// Create alias with 3 names (email, lower(email), mobile)
+		Alias alias = new Alias(pushApplicationId, UUIDs.timeBased(), "XX" + TEST_EMAIL);
+		alias.setOther(TEST_PHONE);
+		aliasDao.create(alias);
+
+		Alias aliasAttached = aliasDao.findOne(pushApplicationId, alias.getId());
+		Assert.isTrue(alias.getEmail().equals(aliasAttached.getEmail()));
+		Assert.isTrue(alias.getOther().equals(aliasAttached.getOther()));
+	}
+
 	private void createTestUsers(UUID pushApplicationId, String email) {
 		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), email);
 		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), email);
 
-		alias2.setMobile(TEST_PHONE);
+		alias2.setOther(TEST_PHONE);
 
 		// Create two users
 		aliasDao.create(alias1);

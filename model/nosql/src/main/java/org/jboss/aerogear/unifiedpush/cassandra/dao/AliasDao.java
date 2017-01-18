@@ -31,4 +31,6 @@ public interface AliasDao {
 	Stream<Row> findUserIds(UUID pushApplicationId);
 
 	User findOne(UserKey key);
+
+	Alias findOne(UUID pushApplicationId, UUID userId);
 }
