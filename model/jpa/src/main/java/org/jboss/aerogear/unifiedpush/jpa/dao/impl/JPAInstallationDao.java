@@ -226,24 +226,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     }
 
     /**
-     * Return list of installations not in aliases list.
-     * Match is case insensitive and expect aliases list to be lowercase letters.
-     * TODO - Improvement - return distinct aliases list only, then diasable/enable
-     * installations by alias and not by installation id.
-     */
-    @SuppressWarnings("unchecked")
-	@Override
-	public List<InstallationAlias> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases) {
-    	javax.persistence.Query typedQuery = entityManager.createQuery("select i.id, i.alias from Installation i" + //
-    			" where i.variant.variantID IN :variantIDs " + //
-    			" and LOWER(i.alias) NOT IN :aliases") //
-    			.setParameter("variantIDs", variantIDs) //
-    			.setParameter("aliases", getAliases(aliases)); //
-
-    	return toInstallationAlias(typedQuery.getResultList());
-	}
-
-    /**
      * Return list of installations by aliases list.
      * Match is case insensitive and expect aliases list to be lowercase letters.
      */
@@ -269,13 +251,6 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
 
     	return installations;
     }
-
-    @Override
-	public void updateEnabled(String id, Boolean enabled) {
-    	entityManager.createQuery("UPDATE Installation i SET i.enabled=:enabled where i.id=:id ") //
-    			.setParameter("enabled", enabled) //
-    			.setParameter("id", id).executeUpdate();
-	}
 
     /**
      *
@@ -312,7 +287,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
         }
     }
     /**
-     * Checks if the list is empty, and not null 
+     * Checks if the list is empty, and not null
      */
     private static boolean isListNotEmpty(List<?> list) {
         return (list != null && !list.isEmpty());

@@ -124,14 +124,6 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
     long getNumberOfDevicesForVariantID(String variantId);
 
-    /**
-     * Find all installations matching the given variant IDs whose alias is not in the {@code aliases} list.
-     * @param variantIDs variant IDs to include.
-     * @param aliases aliases the aliases the installation do not match against.
-     * @return all the matching installations
-     */
-	List<InstallationAlias> findByVariantIDsNotInAliasList(List<String> variantIDs, List<String> aliases);
-
 	/**
      * Find all installations matching the given variant IDs whose alias is in the {@code aliases} list.
      * @param variantIDs variant IDs to include.
@@ -149,6 +141,4 @@ public interface InstallationDao extends GenericBaseDao<Installation, String> {
      */
     List<Installation> findInstallationsByAlias(String alias);
 
-
-	void updateEnabled(String id, Boolean enabled);
 }

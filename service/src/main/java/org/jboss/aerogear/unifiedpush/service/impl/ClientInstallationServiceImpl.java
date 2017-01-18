@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,11 +38,9 @@ import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
-import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
-import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
@@ -294,57 +290,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
 	}
 
-	/**
-	 * Synchronize installations according to alias list. Disable any
-	 * installation not in alias list Enable any existing installation is alias
-	 * list.
-	 *
-	 * @param application
-	 *            - Push Application
-	 * @param aliases
-	 *            - List of Aliases
-	 */
-	@Override
-	public MergeResponse syncInstallationByAliasList(PushApplication application, List<String> aliases) {
-		MergeResponse mergeResponse = new MergeResponse();
-
-		List<String> variantIDs = new ArrayList<>(application.getVariants().size());
-		for (Variant variant : application.getVariants()) {
-			variantIDs.add(variant.getVariantID());
-		}
-
-		if (!aliases.isEmpty()) {
-			final List<InstallationAlias> installations = installationDao.findByVariantIDsNotInAliasList(variantIDs,
-					aliases);
-			if (!installations.isEmpty()) {
-				mergeResponse.setToDisable(getAliasesFromInstallations(installations));
-				disableInstallations(installations);
-			}
-
-			final List<InstallationAlias> existingInstallations = installationDao
-					.findByVariantIDsInAliasList(variantIDs, aliases);
-			if (!existingInstallations.isEmpty()) {
-				mergeResponse.setToEnable(getAliasesFromInstallations(existingInstallations));
-				enableInstallations(existingInstallations);
-			}
-		}
-
-		return mergeResponse;
-	}
-
-	/**
-	 * Return distinct aliases list.
-	 */
-	private List<String> getAliasesFromInstallations(List<InstallationAlias> installations) {
-		Set<String> aliases = new HashSet<String>();
-
-		for (InstallationAlias installation : installations) {
-			aliases.add(installation.getAlias());
-		}
-
-		return new ArrayList<String>(aliases);
-	}
-
 	@Override
 	@Asynchronous
 	public void unsubscribeOldTopics(Installation installation) {
@@ -437,18 +382,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		mergeCategories(entity, entity.getCategories());
 		// store Installation entity
 		installationDao.create(entity);
-	}
-
-	private void disableInstallations(List<InstallationAlias> installations) {
-		for (InstallationAlias installation : installations) {
-			installationDao.updateEnabled(installation.getId(), false);
-		}
-	}
-
-	private void enableInstallations(List<InstallationAlias> installations) {
-		for (InstallationAlias installation : installations) {
-			installationDao.updateEnabled(installation.getId(), true);
-		}
 	}
 
 	@Override
