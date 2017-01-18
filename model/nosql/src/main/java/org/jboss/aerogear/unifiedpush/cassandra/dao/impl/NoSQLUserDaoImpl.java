@@ -13,6 +13,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.DistinctUitils;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.springframework.stereotype.Repository;
@@ -85,11 +86,21 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		return update(entity);
 	}
 
+	/*
+	 * PERFORMANCE, This method might lead to pure performance or OutOfMemory.
+	 * Avoid usage as possible.
+	 */
 	@Override
 	public List<Alias> findAll(UUID pushApplicationId) {
-		return findUserIds(pushApplicationId).collect(ArrayList::new, (m, row) -> {
-			m.add(new Alias(pushApplicationId, row.getUUID(0)));
-		}, ArrayList::addAll);
+		List<Row> rows = findUserIds(pushApplicationId).filter(DistinctUitils.distinctByKey(row -> row.getUUID(0)))
+				.collect(Collectors.toList());
+
+		List<Alias> aliases = new ArrayList<>();
+		rows.forEach(row -> {
+			aliases.add(new Alias(pushApplicationId, row.getUUID(0)));
+		});
+
+		return aliases;
 	}
 
 	@Override

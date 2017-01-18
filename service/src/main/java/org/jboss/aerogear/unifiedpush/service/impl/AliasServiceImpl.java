@@ -35,7 +35,6 @@ import org.jboss.aerogear.unifiedpush.service.AliasCrudService;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,18 +62,12 @@ public class AliasServiceImpl implements AliasService {
 		// Create keycloak client if missing.
 		keycloakService.createClientIfAbsent(pushApplication);
 
-		// Remove all aliases from Alias Table
-		removeAll(UUID.fromString(pushApplication.getPushApplicationID()));
-
-		// Enable existing aliases / Disable missing aliases (DB Only)
-		MergeResponse mergeResponse = clientInstallationService.syncInstallationByAliasList(pushApplication, aliases);
-
 		// Recreate all aliases to Alias Table
 		aliasList = createAliases(pushApplication, aliases);
 
 		// synchronize aliases to keycloak
 		if (oauth2) {
-			keycloakService.synchronizeUsers(mergeResponse, pushApplication, aliases);
+			keycloakService.createUsersIfAbsent(pushApplication, aliases);
 		}
 
 		return aliasList;
@@ -86,7 +79,7 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void remove(String pushApplicationId, String alias) {
+	public void remove(UUID pushApplicationId, String alias) {
 		aliasCrudService.remove(pushApplicationId, alias);
 	}
 
@@ -138,9 +131,15 @@ public class AliasServiceImpl implements AliasService {
 
 		for (String name : aliasSet) {
 			// Search if alias is already register for application.
-			// If so, use the same userId in-order to keep privoius documents
+			// If so, use the same userId in-order to keep previous documents
 			// history. AUTOMATION edge case.
 			Alias alias = aliasCrudService.find(pushApp.getPushApplicationID(), name);
+
+			if (alias != null) {
+				// Remove all references to previous alias
+				remove(UUID.fromString(pushApp.getPushApplicationID()),
+						StringUtils.isEmpty(alias.getEmail()) ? alias.getOther() : alias.getEmail());
+			}
 
 			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()),
 					alias == null ? null : alias.getId(), name, validator));

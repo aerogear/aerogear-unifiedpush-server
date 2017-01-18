@@ -27,7 +27,6 @@ import javax.interceptor.Interceptors;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
-import org.jboss.aerogear.unifiedpush.service.AliasCrudService;
 import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,6 +42,11 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 	@Override
 	public void remove(String pushApplicationId, String alias) {
 		aliasDao.remove(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
+	}
+
+	@Override
+	public void remove(UUID pushApplicationId, String alias) {
+		aliasDao.remove(pushApplicationId, alias);
 	}
 
 	@Override

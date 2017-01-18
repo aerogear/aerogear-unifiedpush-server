@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,145 +41,151 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 	@Inject
 	private AliasService aliasService;
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void addPushApplication() {
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void addPushApplication() {
 
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertThat(stored).isNotNull();
-        assertThat(stored.getId()).isNotNull();
-        assertThat(pa.getName()).isEqualTo(stored.getName());
-        assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
-    }
+		PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+		assertThat(stored).isNotNull();
+		assertThat(stored.getId()).isNotNull();
+		assertThat(pa.getName()).isEqualTo(stored.getName());
+		assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void updatePushApplication() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void updatePushApplication() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertThat(stored).isNotNull();
+		PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+		assertThat(stored).isNotNull();
 
-        stored.setName("FOO");
-        pushApplicationService.updatePushApplication(stored);
-        stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertThat("FOO").isEqualTo(stored.getName());
-    }
+		stored.setName("FOO");
+		pushApplicationService.updatePushApplication(stored);
+		stored = pushApplicationService.findByPushApplicationID(uuid);
+		assertThat("FOO").isEqualTo(stored.getName());
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void findByPushApplicationID() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void findByPushApplicationID() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
-        assertThat(stored).isNotNull();
-        assertThat(stored.getId()).isNotNull();
-        assertThat(pa.getName()).isEqualTo(stored.getName());
-        assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
+		PushApplication stored = pushApplicationService.findByPushApplicationID(uuid);
+		assertThat(stored).isNotNull();
+		assertThat(stored.getId()).isNotNull();
+		assertThat(pa.getName()).isEqualTo(stored.getName());
+		assertThat(pa.getPushApplicationID()).isEqualTo(stored.getPushApplicationID());
 
-        stored = pushApplicationService.findByPushApplicationID("123");
-        assertThat(stored).isNull();
+		stored = pushApplicationService.findByPushApplicationID("123");
+		assertThat(stored).isNull();
 
-    }
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void findAllPushApplicationsForDeveloper() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
-        pa.setDeveloper("admin");
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void findAllPushApplicationsForDeveloper() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
+		pa.setDeveloper("admin");
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
-    }
+		assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
+		assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void removePushApplication() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
-        pa.setDeveloper("admin");
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void removePushApplication() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
+		pa.setDeveloper("admin");
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
+		assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
+		assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(2);
 
-        pushApplicationService.removePushApplication(pa);
+		pushApplicationService.removePushApplication(pa);
 
-        assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
-        assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
-    }
+		assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
+		assertThat(pushApplicationService.findByPushApplicationID(uuid)).isNull();
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void findByPushApplicationIDForDeveloper() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
-        pa.setDeveloper("admin");
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void findByPushApplicationIDForDeveloper() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
+		pa.setDeveloper("admin");
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
-        assertThat(queried).isNotNull();
-        assertThat(uuid).isEqualTo(queried.getPushApplicationID());
+		PushApplication queried = searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
+		assertThat(queried).isNotNull();
+		assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
-        assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
-    }
+		assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
+	}
 
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void removeApplicationAndDocuments() {
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
-        final String uuid = UUID.randomUUID().toString();
-        pa.setPushApplicationID(uuid);
-        pa.setDeveloper("admin");
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void removeApplicationAndDocuments() {
+		PushApplication pa = new PushApplication();
+		pa.setName("EJB Container");
+		final String uuid = UUID.randomUUID().toString();
+		pa.setPushApplicationID(uuid);
+		pa.setDeveloper("admin");
 
-        pushApplicationService.addPushApplication(pa);
+		pushApplicationService.addPushApplication(pa);
 
-    	Alias alias = new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com");
+		// Create Alias
+		Alias alias = new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com");
 		aliasService.create(alias);
 
-        documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias, "1", null), "{SIMPLE}");
-        List<String> documents = documentService.getLatestFromAliases(pa, alias.getEmail(), "1");
-        assertThat(documents.size() == 1);
+		// Create document for alias
+		documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias, "1"), "{SIMPLE}");
 
-        aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
-        assertThat(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) != null);
+		// Query document for alias
+		String content = documentService.getLatestFromAlias(pa, alias.getEmail(), "TASKS", "1");
+		assertTrue(content.equals("{SIMPLE}"));
+		List<String> documents = documentService.getLatestFromAliases(pa, "TASKS", "1");
+		assertTrue(documents.size() == 1);
 
-        pushApplicationService.removePushApplication(pa);
-        documents = documentService.getLatestFromAliases(pa, alias.getEmail(), "1");
-        assertThat(documents.size() == 0);
-        assertThat(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
+		// Recreate alias
+		aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
+		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) != null);
 
+		pushApplicationService.removePushApplication(pa);
+		documents = documentService.getLatestFromAliases(pa, "TASKS", "1");
+		assertTrue(documents.size() == 0);
+		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
 
-    }
+	}
 
 	@Override
 	protected void specificSetup() {

@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
-import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -29,8 +28,6 @@ public interface AliasDao {
 	Alias findByAlias(UUID pushApplicationId, String alias);
 
 	Stream<Row> findUserIds(UUID pushApplicationId);
-
-	User findOne(UserKey key);
 
 	Alias findOne(UUID pushApplicationId, UUID userId);
 }

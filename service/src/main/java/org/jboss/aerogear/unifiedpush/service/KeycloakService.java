@@ -9,11 +9,11 @@ public interface KeycloakService {
 
 	void updateUser(PushApplication pushApplication, String userName, String password);
 
-	void synchronizeUsers(MergeResponse mergeResponse, PushApplication pushApp, List<String> aliases);
+	void createUsersIfAbsent(PushApplication pushApp, List<String> aliases);
 
 	List<String> getVariantIdsFromClient(String clientID);
-	
+
 	void updateUserPassword(String aliasId, String currentPassword, String newPassword);
-	
+
 	boolean isInitialized();
 }

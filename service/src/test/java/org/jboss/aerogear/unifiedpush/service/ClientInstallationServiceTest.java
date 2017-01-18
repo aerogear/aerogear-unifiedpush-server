@@ -592,7 +592,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
 		Variant var = clientInstallationService.associateInstallation(device, variant);
 		assertTrue("Unable to assosiate variant!", var != null);
-		assertThat(var.getVariantID().equals(variant.getVariantID()));
+		assertTrue(var.getVariantID().equals(variant.getVariantID()));
 	}
 
 	@Test
@@ -624,19 +624,19 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		assertNotNull(installation);
 
-		// Remove (Disable) 'p1' alias from aliases list.
+		// Recreate without 'p1' alias from aliases list.
 		aliasService.updateAliasesAndInstallations(application, Arrays.asList("a", "b"), false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 
-		assertThat(installation.isEnabled() == false);
+		assertTrue(installation.isEnabled() == true);
 
-		// Add (Enable) 'p1' alias from aliases list.
+		// Recreate with 'p1' alias from aliases list.
 		aliasService.updateAliasesAndInstallations(application, aliases, false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 
-		assertThat(installation.isEnabled() == true);
+		assertTrue(installation.isEnabled() == true);
 	}
 
 	@Test
@@ -719,11 +719,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		clientInstallationService.addInstallationSynchronously(variant, device2);
 
 		List<Installation> installations = clientInstallationService.findByAlias(alias);
-		assertThat(installations.size() == 2);
+		assertTrue(installations.size() == 2);
 
 		clientInstallationService.removeInstallations(alias);
 		installations = clientInstallationService.findByAlias(alias);
-		assertThat(installations.size() == 0);
+		assertTrue(installations.size() == 0);
 	}
 
 	private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories,

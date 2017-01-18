@@ -44,7 +44,7 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		Alias alias = new Alias(UUID.randomUUID(), UUIDs.timeBased(), TEST_EMAIL);
 		aliasDao.create(alias);
 
-		Assert.isTrue(aliasDao.findAll(alias.getPushApplicationId()).size() == 2);
+		Assert.isTrue(aliasDao.findAll(alias.getPushApplicationId()).size() == 1);
 	}
 
 	@Test
@@ -59,8 +59,9 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		List<User> userList = aliasDao.create(alias1);
 
 		// Query findOne return latest user
-		User user1 = aliasDao.findOne(userList.stream().findFirst().get().getKey());
-		Assert.isTrue(user1.getAlias().equals(aliasx));
+		User user = userList.stream().findFirst().get();
+		Alias alias = aliasDao.findOne(user.getKey().getPushApplicationId(), user.getKey().getId());
+		Assert.isTrue(alias.getEmail().equals(aliasx));
 
 		// Query latest alias by alias name
 		Alias aliasFromDb = aliasDao.findByAlias(alias1.getPushApplicationId(), aliasx);
@@ -89,12 +90,12 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 		createTestUsers(pushApplicationId, TEST_EMAIL);
 
-		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 5);
+		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 2);
 		aliasDao.removeAll(pushApplicationId);
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 0);
 
 		createTestUsers(pushApplicationId, TEST_EMAIL);
-		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 5);
+		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 2);
 		aliasDao.remove(pushApplicationId, TEST_EMAIL);
 		aliasDao.remove(pushApplicationId, TEST_PHONE);
 		Assert.isTrue(aliasDao.findAll(pushApplicationId).size() == 0);

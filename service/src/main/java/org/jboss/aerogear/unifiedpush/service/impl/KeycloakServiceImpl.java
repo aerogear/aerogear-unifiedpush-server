@@ -15,10 +15,10 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.MergeResponse;
 import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
@@ -52,7 +52,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 	private volatile Boolean oauth2Enabled;
 	private Keycloak kc;
 	private RealmResource realm;
-
 
 	public boolean isInitialized() {
 		if (!OAuth2ConfigurationBuilder.isOAuth2Enabled()) {
@@ -140,15 +139,10 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	@Asynchronous
-	public void synchronizeUsers(MergeResponse mergeResponse, PushApplication pushApplication, List<String> aliases) {
+	public void createUsersIfAbsent(PushApplication pushApplication, List<String> aliases) {
 		if (!isInitialized()) {
 			return;
 		}
-
-		// Disable existing aliases (keycloak)
-		disable(mergeResponse.getToDisable());
-		// Enable existing aliases (keycloak)
-		enable(mergeResponse.getToEnable());
 
 		for (String alias : aliases) {
 			// Create user with random passowrd
@@ -156,20 +150,30 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 	}
 
-	private void disable(List<String> aliases) {
+	@Asynchronous
+	public void disable(Alias alias) {
+		updateUser(alias.getEmail(), null, false);
+	}
+
+	@Asynchronous
+	public void enable(Alias alias) {
+		updateUser(alias.getEmail(), null, true);
+	}
+
+	public void disable(List<Alias> aliases) {
 		if (aliases != null) {
-			for (String alias : aliases) {
-				updateUser(alias, null, false);
+			for (Alias alias : aliases) {
+				updateUser(alias.getEmail(), null, false);
 			}
 		} else {
 			logger.debug("No aliases to disable!");
 		}
 	}
 
-	private void enable(List<String> aliases) {
+	public void enable(List<Alias> aliases) {
 		if (aliases != null) {
-			for (String alias : aliases) {
-				updateUser(alias, null, true);
+			for (Alias alias : aliases) {
+				updateUser(alias.getEmail(), null, true);
 			}
 		} else {
 			logger.debug("No aliases to enable!");
@@ -207,7 +211,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	@Override
-	public List<String> getVariantIdsFromClient(String clientId){
+	public List<String> getVariantIdsFromClient(String clientId) {
 		if (!isInitialized()) {
 			return null;
 		}
@@ -215,12 +219,12 @@ public class KeycloakServiceImpl implements KeycloakService {
 		ClientRepresentation client = isClientExists(clientId);
 
 		List<String> variantIds = null;
-		if (client != null){
+		if (client != null) {
 			Map<String, String> attributes = client.getAttributes();
-			if(attributes != null) {
+			if (attributes != null) {
 				variantIds = new ArrayList<String>(attributes.size());
 				for (Map.Entry<String, String> entry : attributes.entrySet()) {
-					if (entry.getKey().endsWith(ATTRIBUTE_VARIANT_SUFFIX)){
+					if (entry.getKey().endsWith(ATTRIBUTE_VARIANT_SUFFIX)) {
 						variantIds.add(entry.getValue());
 					}
 				}
@@ -231,7 +235,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	@Override
-	public void updateUserPassword(String aliasId, String currentPassword, String newPassword){
+	public void updateUserPassword(String aliasId, String currentPassword, String newPassword) {
 		UserRepresentation user = getUser(aliasId);
 		if (user == null) {
 			logger.debug(String.format("Unable to find user %s, in keyclock", aliasId));
@@ -240,15 +244,15 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 		boolean isCurrentPasswordValid = isCurrentPasswordValid(user, currentPassword);
 
-		if(isCurrentPasswordValid == true){
+		if (isCurrentPasswordValid == true) {
 			UsersResource users = this.realm.users();
 			UserResource userResource = users.get(user.getId());
 			updateUserPassword(userResource, newPassword);
 		}
 	}
 
-	private boolean isCurrentPasswordValid(UserRepresentation user, String currentPassword){
-		//TODO: add current password validations
+	private boolean isCurrentPasswordValid(UserRepresentation user, String currentPassword) {
+		// TODO: add current password validations
 		return true;
 	}
 
@@ -263,7 +267,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 		user.setEnabled(enable);
 
-		if (StringUtils.isNotEmpty(password)){
+		if (StringUtils.isNotEmpty(password)) {
 			user.setEmailVerified(true);
 			user.setEmail(userName);
 
@@ -273,7 +277,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 		userResource.update(user);
 	}
 
-	private void updateUserPassword(UserResource userResource, String password){
+	private void updateUserPassword(UserResource userResource, String password) {
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);
 		credential.setValue(password);
@@ -294,7 +298,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 		return isClientExists(CLIENT_PREFIX + pushApp.getName());
 	}
 
-	private ClientRepresentation isClientExists(String clientId){
+	private ClientRepresentation isClientExists(String clientId) {
 		List<ClientRepresentation> clients = this.realm.clients().findAll();
 		ClientRepresentation clientRepresentation = null;
 
@@ -308,8 +312,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 		return clientRepresentation;
 	}
 
- 	private Map<String, String> getClientAttributes(PushApplication pushApp) {
- 		List<Variant> variants = pushApp.getVariants();
+	private Map<String, String> getClientAttributes(PushApplication pushApp) {
+		List<Variant> variants = pushApp.getVariants();
 		Map<String, String> attributes = new HashMap<>(variants.size());
 		for (Variant variant : variants) {
 			String varName = variant.getName().toLowerCase();

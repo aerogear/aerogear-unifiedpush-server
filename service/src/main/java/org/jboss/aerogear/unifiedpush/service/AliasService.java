@@ -65,7 +65,7 @@ public interface AliasService {
 
 	Alias find(UUID pushApplicationId, UUID userId);
 
-	void remove(String pushApplicationId, String alias);
+	void remove(UUID pushApplicationId, String alias);
 
 	void removeAll(UUID pushApplicationId);
 

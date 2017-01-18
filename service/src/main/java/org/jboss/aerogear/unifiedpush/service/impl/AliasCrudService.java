@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.UUID;
 
@@ -14,6 +14,8 @@ public interface AliasCrudService {
 	Alias find(UUID pushApplicationId, UUID userId);
 
 	void remove(String pushApplicationId, String alias);
+
+	void remove(UUID pushApplicationId, String alias);
 
 	void removeAll(UUID pushApplicationId);
 
