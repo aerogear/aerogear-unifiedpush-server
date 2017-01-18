@@ -36,7 +36,7 @@ public class AbstractEndpoint {
 	protected Response create401Response(final HttpServletRequest request) {
         return appendAllowOriginHeader(
                 Response.status(Status.UNAUTHORIZED)
-                        .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                        .header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
                         .entity(quote("Unauthorized Request")),
                 request);
     }

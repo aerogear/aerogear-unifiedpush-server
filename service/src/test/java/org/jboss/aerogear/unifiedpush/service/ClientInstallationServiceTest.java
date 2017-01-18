@@ -588,7 +588,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		device.setAlias(installationAlias);
 
 		clientInstallationService.addInstallationSynchronously(androidVariant, device);
-		aliasService.updateAliasesAndInstallations(application, aliases, false);
+		aliasService.syncAliases(application, aliases, false);
 
 		Variant var = clientInstallationService.associateInstallation(device, variant);
 		assertTrue("Unable to assosiate variant!", var != null);
@@ -618,21 +618,21 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		device.setAlias(installationAlias);
 
 		clientInstallationService.addInstallationSynchronously(variant, device);
-		aliasService.updateAliasesAndInstallations(application, aliases, false);
+		aliasService.syncAliases(application, aliases, false);
 
 		Installation installation = clientInstallationService
 				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		assertNotNull(installation);
 
 		// Recreate without 'p1' alias from aliases list.
-		aliasService.updateAliasesAndInstallations(application, Arrays.asList("a", "b"), false);
+		aliasService.syncAliases(application, Arrays.asList("a", "b"), false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 
 		assertTrue(installation.isEnabled() == true);
 
 		// Recreate with 'p1' alias from aliases list.
-		aliasService.updateAliasesAndInstallations(application, aliases, false);
+		aliasService.syncAliases(application, aliases, false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 

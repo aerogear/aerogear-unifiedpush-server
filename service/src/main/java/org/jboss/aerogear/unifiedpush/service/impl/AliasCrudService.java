@@ -17,6 +17,8 @@ public interface AliasCrudService {
 
 	void remove(UUID pushApplicationId, String alias);
 
+	void remove(UUID pushApplicationId, UUID userId);
+
 	void removeAll(UUID pushApplicationId);
 
 	void create(Alias alias);

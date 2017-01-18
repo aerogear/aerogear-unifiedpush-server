@@ -43,7 +43,7 @@ public interface AliasService {
 	 *            synchronize state to identity provider
 	 * @return new {@link org.jboss.aerogear.unifiedpush.api.Alias} list
 	 */
-	List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases, boolean oauth2);
+	List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases, boolean oauth2);
 
 	/**
 	 * updates specific user password
@@ -66,6 +66,8 @@ public interface AliasService {
 	Alias find(UUID pushApplicationId, UUID userId);
 
 	void remove(UUID pushApplicationId, String alias);
+
+	void remove(UUID pushApplicationId, UUID userId);
 
 	void removeAll(UUID pushApplicationId);
 

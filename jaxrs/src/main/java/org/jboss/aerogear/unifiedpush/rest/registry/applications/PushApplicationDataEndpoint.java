@@ -68,7 +68,7 @@ public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 
 		if (pushApp == null) {
 			return Response.status(Status.UNAUTHORIZED)
-					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+					.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
 					.entity("Unauthorized Request").build();
 		}
 

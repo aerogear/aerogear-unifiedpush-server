@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import static org.jboss.aerogear.unifiedpush.message.Priority.NORMAL;
 
-import java.io.Serializable; 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public class Message implements Serializable {
     /**
      * Returns the value of the 'alert' key from the submitted payload.
      * This key is recognized in native iOS, without any API invocation and
-     * on AeroGear's GCM offerings.
+     * on AeroBase's GCM offerings.
      *
      * Android users that are not using AGDROID can read the value as well,
      * but need to call specific APIs to show the 'alert' value.

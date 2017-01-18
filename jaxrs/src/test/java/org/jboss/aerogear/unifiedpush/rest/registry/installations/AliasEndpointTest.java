@@ -125,4 +125,44 @@ public class AliasEndpointTest extends RestEndpointTest {
 		}
 	}
 
+	@Test
+	@RunAsClient
+	public void delete(@ArquillianResource URL deploymentUrl) {
+		ResteasyClient client = new ResteasyClientBuilder().build();
+
+		ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias");
+
+		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot888@AeroBase.org");
+		// Create Alias
+		Response response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
+				.post(Entity.entity(original, MediaType.APPLICATION_JSON_TYPE));
+
+		Assert.assertTrue(response.getStatus() == 200);
+		response.close();
+
+		// Query for previously created alias by alias lower(name)
+		target = client.target(
+				deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/name/" + original.getEmail().toLowerCase());
+
+		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
+		Assert.assertTrue(response.getStatus() == 200);
+		Alias alias = response.readEntity(Alias.class);
+		Assert.assertTrue(alias != null & alias.getEmail().equals(original.getEmail()));
+		Assert.assertTrue(alias != null & alias.getId().equals(original.getId()));
+		response.close();
+
+		// Delete alias
+		target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/" + alias.getId());
+		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).delete();
+		Assert.assertTrue(response.getStatus() == 200);
+		response.close();
+
+		// Query for previously deleted alias by alias id
+		target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/" + original.getId());
+
+		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
+		Assert.assertTrue(response.getStatus() == 200);
+		Assert.assertTrue(!response.hasEntity());
+		response.close();
+	}
 }

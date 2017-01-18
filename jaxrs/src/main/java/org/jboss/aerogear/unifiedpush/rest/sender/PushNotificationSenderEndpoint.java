@@ -88,9 +88,9 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
      * @param request the request
      * @return          empty JSON body
      *
-     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush Server" (only for 401 response)
      *
-     * @statuscode 202 Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server
+     * @statuscode 202 Indicates the Job has been accepted and is being process by the AeroBase UnifiedPush Server
      * @statuscode 401 The request requires authentication
      */
     @POST
@@ -103,7 +103,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
         final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushApplicationService);
         if (pushApplication == null) {
             return Response.status(Status.UNAUTHORIZED)
-                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
                     .entity("Unauthorized Request")
                     .build();
         }
@@ -169,7 +169,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	private Response sendLargePayload(PushApplication pushApplication, DocumentDeployMessage payloadRequest, boolean override, @Context HttpServletRequest request) {
 		if (pushApplication == null) {
 			return Response.status(Status.UNAUTHORIZED)
-					.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+					.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
 					.entity("Unauthorized Request").build();
 		}
 

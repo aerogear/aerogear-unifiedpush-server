@@ -54,7 +54,7 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	@Deprecated
-	public List<Alias> updateAliasesAndInstallations(PushApplication pushApplication, List<String> aliases,
+	public List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases,
 			boolean oauth2) {
 		logger.debug("synchronize aliases oauth2 flag is: " + oauth2);
 		List<Alias> aliasList = Collections.emptyList();
@@ -81,6 +81,11 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public void remove(UUID pushApplicationId, String alias) {
 		aliasCrudService.remove(pushApplicationId, alias);
+	}
+
+	@Override
+	public void remove(UUID pushApplicationId, UUID userId) {
+		aliasCrudService.remove(pushApplicationId, userId);
 	}
 
 	@Override

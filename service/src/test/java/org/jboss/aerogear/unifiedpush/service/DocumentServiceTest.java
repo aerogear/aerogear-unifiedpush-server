@@ -292,7 +292,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		String salias1 = "9720525679037170105113811";
 		String salias2 = "9720521550826170105113811";
 
-		aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(salias1, salias2), false);
+		aliasService.syncAliases(pushApp, Arrays.asList(salias1, salias2), false);
 
 		// Reload aliases
 		Alias alias1 = aliasService.find(pushApp.getPushApplicationID(), salias1);
@@ -318,7 +318,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		String aliasstr2 = "9720521550826170105113810";
 
 		// Create aliases using legacy code
-		List<Alias> list = aliasService.updateAliasesAndInstallations(pushApp, Arrays.asList(aliasstr1, aliasstr2), false);
+		List<Alias> list = aliasService.syncAliases(pushApp, Arrays.asList(aliasstr1, aliasstr2), false);
 		Assert.assertTrue(list.size() == 2);
 
 		// Re-save aliases using the same numbers

@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -111,7 +112,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * @param alias
 	 * @param passwordContainer
-	 * @return registered {@link Installation}
+	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -208,7 +209,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		}
 
 		try {
-			aliasService.updateAliasesAndInstallations(pushApplication, aliasData, oauth2);
+			aliasService.syncAliases(pushApplication, aliasData, oauth2);
 			return Response.ok(EmptyJSON.STRING).build();
 		} catch (ServiceConstraintViolationException e) {
 			logger.warn("ConstraintViolationException, alias {} already exists in db.", e.getEntityId());
@@ -368,6 +369,49 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST).entity(e.getMessage()), request);
 		} catch (Exception e) {
 			logger.error("Cannot create alias", e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	/**
+	 * RESTful API for delete alias. The Endpoint is protected using
+	 * <code>HTTP Basic</code> (credentials
+	 * <code>ApplicationID:Master Secret</code>).
+	 *
+	 * @param id
+	 * @return {@link EmptyJSON}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="UnifiedPush Server" (only
+	 *                 for 401 response)
+	 *
+	 * @statuscode 200 Successful storage of the aliases.
+	 * @statuscode 400 The format of the aliases request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@DELETE
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response delete(@PathParam("id") String id, @Context HttpServletRequest request) {
+		try {
+			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
+					pushAppService);
+			if (pushApplication == null) {
+				return Response.status(Status.UNAUTHORIZED)
+						.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
+						.entity("Unauthorized Request").build();
+			}
+
+			aliasService.remove(UUID.fromString(pushApplication.getPushApplicationID()), //
+					UUID.fromString(id));
+
+			return Response.ok().build();
+		} catch (Exception e) {
+			logger.error(String.format("Cannot delete alias by alias id %s", id), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}

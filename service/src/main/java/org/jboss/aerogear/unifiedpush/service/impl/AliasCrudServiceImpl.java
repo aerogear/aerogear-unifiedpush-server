@@ -68,4 +68,10 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 	public void create(Alias alias) {
 		aliasDao.create(alias);
 	}
+
+	@Override
+	public void remove(UUID pushApplicationId, UUID userId) {
+		aliasDao.remove(pushApplicationId, userId);
+	}
+
 }

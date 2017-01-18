@@ -122,7 +122,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
 			ArrayList<String> aliases = new ArrayList<String>();
 			aliases.add("Support@Test.com");
-			aliasService.updateAliasesAndInstallations(app, aliases, false);
+			aliasService.syncAliases(app, aliases, false);
 
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);

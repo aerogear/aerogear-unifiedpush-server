@@ -16,6 +16,10 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DistinctUitils;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.Row;
@@ -30,6 +34,9 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	private static final String MV_BY_ALIAS_AND_APPLICATION = "users_by_alias_application";
 	private static final String MV_BY_ALIAS = "users_by_alias";
 	private static final List<Integer> months;
+
+	@Autowired
+	private CacheManager cacheManager;
 
 	static {
 		months = Arrays.stream(Month.values()).map(month -> month.getValue()).collect(Collectors.toList());
@@ -117,17 +124,15 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	public Alias findOne(UUID pushApplicationId, UUID userId) {
-		Select select = QueryBuilder.select().from(super.tableName);
-		select.where(QueryBuilder.eq(UserKey.FIELD_PUSH_APPLICATION_ID, pushApplicationId));
-		select.where(QueryBuilder.eq(UserKey.FIELD_USER_ID, userId));
+		// Get all possible aliases for a userId
+		List<User> users = getUsers(pushApplicationId, userId);
+
+
+		if (users == null || users.size() == 0) {
+			return null;
+		}
 
 		Alias alias = new Alias(pushApplicationId, userId);
-
-		// Get all possible aliases for a userId
-		List<User> users = operations.select(select, super.domainClass);
-		if (users == null || users.size() == 0) {
-			return alias;
-		}
 
 		users.forEach(user -> {
 			// We ignore User.AliasType.EMAIL_LOWER.
@@ -139,6 +144,15 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		});
 
 		return alias;
+	}
+
+	private List<User> getUsers(UUID pushApplicationId, UUID userId) {
+		Select select = QueryBuilder.select().from(super.tableName);
+		select.where(QueryBuilder.eq(UserKey.FIELD_PUSH_APPLICATION_ID, pushApplicationId));
+		select.where(QueryBuilder.eq(UserKey.FIELD_USER_ID, userId));
+
+		// Get all possible aliases for a userId
+		return operations.select(select, super.domainClass);
 	}
 
 	/*
@@ -195,6 +209,22 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		});
 	}
 
+	/*
+	 * Remove all available aliases for a user id.
+	 */
+	@Override
+	public void remove(UUID pushApplicationId, UUID id) {
+		List<User> aliases = getUsers(pushApplicationId, id);
+		delete(new UserKey(pushApplicationId, id));
+
+		// Evict available aliases from cache.
+		if (aliases != null) {
+			aliases.stream().forEach(user -> {
+				evict(user.getKey().getPushApplicationId(), user.getAlias());
+			});
+		}
+	}
+
 	@Override
 	public void delete(UserKey key) {
 		// Delete all aliases by partition key
@@ -243,4 +273,9 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		return new UserKey(row.getUUID(0), row.getUUID(1), row.getString(2));
 	}
 
+	// Aliases are cached by pushApplicationId and alias name.
+	private void evict(UUID pushApplicationId, String alias) {
+		Cache cache = cacheManager.getCache(AliasDao.CACHE_NAME);
+		cache.evict(new SimpleKey(pushApplicationId, alias));
+	}
 }
