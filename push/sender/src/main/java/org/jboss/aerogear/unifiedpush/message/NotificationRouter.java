@@ -118,7 +118,7 @@ public class NotificationRouter {
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
-            logger.info(String.format("Internal dispatching of push message for one %s variant", entry.getKey().getTypeName()));
+            logger.info(String.format("Internal dispatching of push message for one %s variant (by %s)", entry.getKey().getTypeName(), message.getClientIdentifier()));
             dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, entry.getKey(), entry.getValue()));
         }
     }

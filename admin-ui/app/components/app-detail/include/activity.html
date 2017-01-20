@@ -41,7 +41,7 @@
         </a>
       </td>
       <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
-      <td>{{ metric.ipAddress }}</td>
+      <td title="by {{ metric.clientIdentifier }}">{{ metric.ipAddress }}</td>
       <td>{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened</td>
       <td ng-if="metric.servedVariants < metric.totalVariants">
         <!--<i class="pficon-running"></i>-->
