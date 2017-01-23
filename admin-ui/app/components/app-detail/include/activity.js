@@ -75,7 +75,7 @@ angular.module('upsConsole')
         .then(function() {
           $log.debug('refreshed');
           // is the _last_ push job pending?
-          var isPending = self.metrics[0].servedVariants < self.metrics[0].totalVariants;
+          var isPending = self.metrics[0] && (self.metrics[0].servedVariants < self.metrics[0].totalVariants);
           // var isPending = self.metrics.some(function(metric) {
           //   return metric.servedVariants < metric.totalVariants;
           // });
