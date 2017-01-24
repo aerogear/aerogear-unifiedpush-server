@@ -27,8 +27,6 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 ## Getting started
 
-<a href="https://openshift.redhat.com/app/console/application_type/quickstart!31"><img src="http://launch-shifter.rhcloud.com/launch/light/LAUNCH ON.svg" /></a>
-
 Or for the on-premise version, execute the following steps to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
@@ -114,17 +112,6 @@ In order to clean the state of Admin UI build caches, run maven build with the f
     mvn clean install -Dfrontend.clean.force
 
 Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
-
-
-## Openshift
-
-For our Openshift Online cartridge we enforce HTTPS. This is done with a specific Maven Profile. To build the `WAR` files for Openshift the following needs to be invoked:
-
-```
-mvn clean install -Popenshift,test
-```
-
-The WAR file can be used to update our [Cartridge](https://github.com/aerogear/openshift-origin-cartridge-aerogear-push).
 
 
 ## Releasing the UnifiedPush Server
