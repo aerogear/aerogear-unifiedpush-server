@@ -231,25 +231,6 @@
                 </dependencies>
             </dependencyManagement>
         </profile>
-        <profile>
-            <!-- Make sure that you also activate 'test' profile if you activate this one explicitly -->
-	        <id>openshift</id>
-	        <build>
-	            <plugins>
-	                <plugin>
-	                    <groupId>org.apache.maven.plugins</groupId>
-	                    <artifactId>maven-war-plugin</artifactId>
-	                    <configuration>
-	                        <webXml>src/main/resources/openshift/web.xml</webXml>
-	                    </configuration>
-	                </plugin>
-	            </plugins>
-	        </build>
-            <properties>
-                <ups.ddl_value>validate</ups.ddl_value>
-            </properties>
-		</profile>
-
         <!--
             Builds the distribution.
 
