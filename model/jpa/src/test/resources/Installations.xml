@@ -29,6 +29,13 @@
             <value>Push App 1</value>
             <value>Admin</value>
         </row>
+        <row>
+            <value>2</value>
+            <value>880</value>
+            <value>hahaha</value>
+            <value>Push App 2</value>
+            <value>Admin</value>
+        </row>
     </table>
     <table name="SA.VARIANT">
         <column>id</column>
@@ -55,6 +62,15 @@
             <value>1</value>
             <value>2</value>
             <value>me</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>android</value>
+            <value>Android</value>
+            <value>3</value>
+            <value>2</value>
+            <value>0</value>
+            <value>notme</value>
         </row>
     </table>
     <table name="SA.ANDROID_VARIANT">
@@ -154,7 +170,14 @@
             <value>foo@bar.org</value>
             <value>Android Tablet</value>
         </row>
-
+        <row>
+            <value>10</value>
+            <value>true</value>
+            <value>378L90167890:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</value>
+            <value>3</value>
+            <value>xxx@bar.org</value>
+            <value>SuperDroid SuperTablet</value>
+        </row>
     </table>
 
     <table name="SA.CATEGORY">
