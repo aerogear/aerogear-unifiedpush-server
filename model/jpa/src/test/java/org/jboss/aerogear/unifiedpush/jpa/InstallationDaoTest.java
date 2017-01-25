@@ -98,6 +98,11 @@ public class InstallationDaoTest {
     }
 
     @Test
+    public void testTotalNumberOfDevices() {
+        assertThat(installationDao.getTotalNumberOfDevices()).isEqualTo(10);
+    }
+
+    @Test
     public void getNumberOfDevicesForVariantID() {
         assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(6);
         assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
