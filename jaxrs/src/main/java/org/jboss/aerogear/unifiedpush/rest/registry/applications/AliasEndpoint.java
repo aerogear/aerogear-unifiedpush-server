@@ -36,6 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -204,11 +205,17 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		try {
 			aliasService.updateAliasesAndInstallations(pushApplication, aliasData, oauth2);
 			return Response.ok(EmptyJSON.STRING).build();
-		} catch (ServiceConstraintViolationException e) {
-				logger.warn("ConstraintViolationException, alias {} already exists in db.", e.getEntityId());
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(quote("Error, alias " + e.getEntityId() + " already exists in db.")).build();
 		} catch (Exception e) {
 			logger.error("Cannot update aliases, {}", e.getCause());
+			int exceptionIndex = ExceptionUtils.indexOfType(e, ServiceConstraintViolationException.class);
+			if (exceptionIndex > 0) {
+				List<Throwable> throwableList = ExceptionUtils.getThrowableList(e);
+				ServiceConstraintViolationException throwable = (ServiceConstraintViolationException) throwableList.get(exceptionIndex);
+				String errorMessage = "Error, alias " + throwable.getEntityId() + " already exists in db.";
+				logger.error(errorMessage);
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(quote(errorMessage)).build();
+			}
+
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
