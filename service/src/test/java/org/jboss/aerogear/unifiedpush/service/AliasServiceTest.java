@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -29,6 +30,8 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
+
+import com.datastax.driver.core.utils.UUIDs;
 
 public class AliasServiceTest extends AbstractBaseServiceTest {
 
@@ -52,12 +55,68 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		});
 
 		// Sync 2 aliases
-		aliasService.syncAliases(pushApplication,Arrays.asList(legacyAliases[0], legacyAliases[1]), false);
+		aliasService.syncAliases(pushApplication, Arrays.asList(legacyAliases[0], legacyAliases[1]), false);
 
 		// Validate 3 aliases
 		aliases.forEach(alias -> {
 			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
 		});
+	}
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void testAddAll() throws IOException {
+		PushApplication pushApplication = new PushApplication();
+		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
+
+		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		List<Alias> aliasList = Arrays.asList(legacyAliases);
+
+		// Sync 3 aliases
+		List<Alias> aliases = aliasService.addAll(pushApplication, aliasList, false);
+
+		// Validate 3 aliases
+		aliases.forEach(alias -> {
+			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
+		});
+
+		// Sync 2 aliases
+		aliasService.addAll(pushApplication, Arrays.asList(legacyAliases[0], legacyAliases[1]), false);
+
+		// Validate 3 aliases
+		aliases.forEach(alias -> {
+			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
+		});
+	}
+
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void testRemoveAlias() throws IOException {
+		PushApplication pushApplication = new PushApplication();
+		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
+
+		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		List<Alias> aliasList = Arrays.asList(legacyAliases);
+
+		// Sync 3 aliases
+		List<Alias> aliases = aliasService.addAll(pushApplication, aliasList, false);
+
+		// Validate 3 aliases
+		aliases.forEach(alias -> {
+			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
+		});
+
+		// Delete alias
+		aliasService.remove(pushAppId, legacyAliases[0].getEmail());
+
+		// Validate Alias is missing
+		assertThat(aliasService.find(legacyAliases[0].getPushApplicationId(), legacyAliases[0].getId())).isNull();
+
 	}
 
 	@Override

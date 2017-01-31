@@ -50,8 +50,8 @@ public class AliasCrudServiceImpl implements AliasCrudService {
 	}
 
 	@Override
-	public Alias find(String pushApplicationId, String alias) {
-		return aliasDao.findByAlias(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
+	public Alias find(UUID pushApplicationId, String alias) {
+		return aliasDao.findByAlias(pushApplicationId, alias);
 	}
 
 	@Override

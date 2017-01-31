@@ -9,7 +9,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
  * EJB IOC, merge this service into AliasService.
  */
 public interface AliasCrudService {
-	Alias find(String pushApplicationId, String alias);
+	Alias find(UUID pushApplicationId, String alias);
 
 	Alias find(UUID pushApplicationId, UUID userId);
 

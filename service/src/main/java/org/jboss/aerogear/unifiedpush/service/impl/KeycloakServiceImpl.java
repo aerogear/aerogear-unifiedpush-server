@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.ConcurrencyManagement;
@@ -88,7 +89,10 @@ public class KeycloakServiceImpl implements KeycloakService {
 				.username(userName) //
 				.password(userPassword) //
 				.clientId(cliClientId) //
-				.resteasyClient(new ResteasyClientBuilder().connectionPoolSize(25).build()) //
+				.resteasyClient( //
+						// Setting TTL to 10 seconds, prevent KC token
+						// expiration.
+						new ResteasyClientBuilder().connectionPoolSize(25).connectionTTL(10, TimeUnit.SECONDS).build()) //
 				.build();
 
 		this.realm = this.kc.realm(upsiRealmId);

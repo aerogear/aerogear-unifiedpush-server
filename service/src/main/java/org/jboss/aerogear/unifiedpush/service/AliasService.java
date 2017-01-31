@@ -45,6 +45,8 @@ public interface AliasService {
 	 */
 	List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases, boolean oauth2);
 
+	List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2);
+
 	/**
 	 * updates specific user password
 	 *

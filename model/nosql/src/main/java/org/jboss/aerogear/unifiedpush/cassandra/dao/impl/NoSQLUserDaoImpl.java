@@ -51,17 +51,6 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		List<User> users = new ArrayList<User>();
 
 		if (StringUtils.isNotEmpty(alias.getEmail())) {
-
-			// Make sure email is unique cross other applications.
-			Optional<Row> existing = findUserIds(alias.getEmail(), null)
-					.filter(row -> !alias.getPushApplicationId().equals(getKey(row).getPushApplicationId()))
-					.findFirst();
-
-			if (existing.isPresent()) {
-				UserKey key = getKey(existing.get());
-				throw new AliasAlreadyExists(alias.getEmail(), key.getPushApplicationId());
-			}
-
 			// Create user by alias
 			users.add(User.copy(alias, alias.getEmail(), User.AliasType.EMAIL.ordinal()));
 
