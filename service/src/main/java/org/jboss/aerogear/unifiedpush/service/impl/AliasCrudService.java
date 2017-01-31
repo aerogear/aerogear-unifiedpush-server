@@ -22,8 +22,9 @@ public interface AliasCrudService {
 	 * manually evicted from cache.
 	 *
 	 * @param pushApplicationId
-	 *            selected push application
+	 *            Selected push application
 	 * @param userId
+	 *            Time based UUID
 	 */
 	void remove(UUID pushApplicationId, UUID userId);
 

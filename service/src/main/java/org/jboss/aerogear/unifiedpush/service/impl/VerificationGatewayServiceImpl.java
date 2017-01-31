@@ -40,17 +40,16 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 
 	private List<VerificationPart> chain;
 
-	public VerificationGatewayServiceImpl(){}
+	public VerificationGatewayServiceImpl() {
+	}
 
 	/**
 	 * Used for testing and mock services.
-<<<<<<< 39b80a4e5cb8951d391af1d475d965bfd930ba33
-	 * @param configuration EJB wrapper to spring Environment.
-=======
-	 * @param configuration contractor method for unittests only.
->>>>>>> Fix java docs errors
+	 *
+	 * @param configuration
+	 *            contractor method for unittests only.
 	 */
-	public VerificationGatewayServiceImpl(ConfigurationService configuration){
+	public VerificationGatewayServiceImpl(ConfigurationService configuration) {
 		this.configuration = configuration;
 	}
 
@@ -140,8 +139,8 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 			ConstraintValidator validator = part.getValidator();
 			publisher = part.getPublisher();
 
-
-			if (validator.isValid(alias, new ConstraintValidatorContextImpl(pushApplicationId, configuration.getProperties()))) {
+			if (validator.isValid(alias,
+					new ConstraintValidatorContextImpl(pushApplicationId, configuration.getProperties()))) {
 				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", code, alias,
 						publisher.getClass().getName()));
 				publisher.send(alias, code, configuration.getProperties());

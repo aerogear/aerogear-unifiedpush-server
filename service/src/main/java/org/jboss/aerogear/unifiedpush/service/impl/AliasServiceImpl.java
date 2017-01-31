@@ -132,8 +132,10 @@ public class AliasServiceImpl implements AliasService {
 	 * {@link VariantType}.
 	 *
 	 * @param alias
+	 *            alias name
 	 * @param type
 	 *            variant type to filter
+	 * @return {@link Installation}
 	 */
 	public Installation exists(String alias, VariantType type) {
 		List<Installation> devices = clientInstallationService.findByAlias(alias);
