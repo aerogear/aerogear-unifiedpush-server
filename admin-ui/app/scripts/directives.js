@@ -197,8 +197,8 @@ angular.module('upsConsole')
         url: 'snippets/senders/sender.java',
         show: true,
         text: {
-          before: '<p>First you need to add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>' +
-                  '<p>Then let\'s use following snippet in your Java code to enable push notification sending.</p>',
+          before: '<p>First add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>' +
+                  '<p>Then use the following snippet in your Java code to enable push notification sending.</p>',
           after:  '<p>Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.</p>' +
                   '<p>If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.</p>'
         }
@@ -207,8 +207,8 @@ angular.module('upsConsole')
         url: 'snippets/senders/sender-nodejs.js',
         show: true,
         text: {
-          before: '<p>First you need to download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>' +
-                  '<p>Then let\'s use following snippet in your Node.js code to enable push notification sending.</p>',
+          before: '<p>First download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>' +
+                  '<p>Then use the following snippet in your Node.js code to enable push notification sending.</p>',
           after:  '<p>Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.</p>'
         }
       },
@@ -216,9 +216,9 @@ angular.module('upsConsole')
         url: 'snippets/senders/sender-curl.sh',
         show: true,
         text: {
-          before: '<p>If none from the official client libs doesn\'t suit you or you just want to simply try out the notification sending, you can use REST API directly.</p>' +
-                  '<p>Run following <code>curl</code> command in the shell to send notification to UPS server.</p>',
-          after:  '<p>Read more on the details of the <a ups-doc="sender-api-rest">UPS REST Sender API in documentation</a>.</p>'
+          before: '<p>If none of the official client libs suit you or you just want to simply try out the notification sending, you can use the REST API directly.</p>' +
+                  '<p>Run the following <code>curl</code> command in a shell to send a notification to UPS server.</p>',
+          after:  '<p>Read more about the <a ups-doc="sender-api-rest">UPS REST Sender API in the documentation</a>.</p>'
         }
       }
     };
