@@ -111,8 +111,7 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public void delete(String pushApplicationId) {
-		// For DEBUG reasons don't delete documents.
-		// documentDao.delete(UUID.fromString(pushApplicationId));
+		documentDao.delete(UUID.fromString(pushApplicationId));
 	}
 
 	private Alias getAlias(String pushApplicationId, String alias) {

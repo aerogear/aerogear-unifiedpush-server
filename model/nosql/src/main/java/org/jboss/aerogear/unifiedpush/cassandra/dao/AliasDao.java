@@ -27,7 +27,15 @@ public interface AliasDao {
 	@Cacheable(value = CACHE_NAME, condition = "#pushApplicationId != null", unless = "#result == null")
 	Alias findByAlias(UUID pushApplicationId, String alias);
 
-	void remove(UUID pushApplicationId, UUID id);
+	/**
+	 * Remove all aliases according to given parameters. All aliases are
+	 * manually evicted from cache.
+	 *
+	 * @param pushApplicationId
+	 *            selected push application
+	 * @param userId
+	 */
+	void remove(UUID pushApplicationId, UUID userId);
 
 	Stream<Row> findUserIds(UUID pushApplicationId);
 

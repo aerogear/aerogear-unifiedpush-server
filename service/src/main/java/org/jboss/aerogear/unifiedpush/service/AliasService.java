@@ -69,12 +69,24 @@ public interface AliasService {
 
 	void remove(UUID pushApplicationId, String alias);
 
+	/**
+	 * Remove alias and user in KC.
+	 *
+	 * @param pushApplicationId
+	 *            related push application id
+	 * @param userId
+	 *            selected userId
+	 * @param destructive
+	 *            flag to also remove user in KC.
+	 */
+	void remove(UUID pushApplicationId, UUID userId, boolean destructive);
+
 	void remove(UUID pushApplicationId, UUID userId);
 
 	void removeAll(UUID pushApplicationId);
 
-	void create(Alias alias);
+	void create(Alias alias, boolean oauth2);
 
-	void createAsynchronous(Alias alias);
+	void createAsynchronous(Alias alias, boolean oauth2);
 
 }

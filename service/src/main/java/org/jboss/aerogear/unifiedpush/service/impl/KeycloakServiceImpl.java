@@ -143,48 +143,11 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	@Asynchronous
-	public void createUsersIfAbsent(PushApplication pushApplication, List<String> aliases) {
+	public void createUserIfAbsent(String userName) {
 		if (!isInitialized()) {
 			return;
 		}
 
-		for (String alias : aliases) {
-			// Create user with random passowrd
-			createUserIfAbsent(pushApplication, alias);
-		}
-	}
-
-	@Asynchronous
-	public void disable(Alias alias) {
-		updateUser(alias.getEmail(), null, false);
-	}
-
-	@Asynchronous
-	public void enable(Alias alias) {
-		updateUser(alias.getEmail(), null, true);
-	}
-
-	public void disable(List<Alias> aliases) {
-		if (aliases != null) {
-			for (Alias alias : aliases) {
-				updateUser(alias.getEmail(), null, false);
-			}
-		} else {
-			logger.debug("No aliases to disable!");
-		}
-	}
-
-	public void enable(List<Alias> aliases) {
-		if (aliases != null) {
-			for (Alias alias : aliases) {
-				updateUser(alias.getEmail(), null, true);
-			}
-		} else {
-			logger.debug("No aliases to enable!");
-		}
-	}
-
-	private void createUserIfAbsent(PushApplication pushApplication, String userName) {
 		UserRepresentation user = getUser(userName);
 
 		if (user == null) {
@@ -199,18 +162,38 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 			this.realm.users().create(user);
 		} else {
-			logger.debug("Username {}, already exist", userName);
+			logger.debug("KC Username {}, already exist", userName);
 		}
 	}
 
-	@Override
 	@Asynchronous
-	public void updateUser(PushApplication pushApplication, String userName, String password) {
+	public void disable(Alias alias) {
 		if (!isInitialized()) {
 			return;
 		}
 
-		createUserIfAbsent(pushApplication, userName);
+		updateUser(alias.getEmail(), null, false);
+	}
+
+	@Asynchronous
+	public void delete(String userName) {
+		UserRepresentation user = getUser(userName);
+		if (user == null) {
+			logger.debug(String.format("Unable to find user %s, in keyclock", userName));
+			return;
+		}
+
+		this.realm.users().delete(user.getId());
+	}
+
+	@Override
+	@Asynchronous
+	public void updateUser(String userName, String password) {
+		if (!isInitialized()) {
+			return;
+		}
+
+		createUserIfAbsent(userName);
 		updateUser(userName, password, true);
 	}
 

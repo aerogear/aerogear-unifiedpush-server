@@ -65,7 +65,7 @@ public class AliasServiceImpl implements AliasService {
 				remove(pushApplicationUUID,
 						StringUtils.isNoneEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther());
 			}
-			create(alias);
+			create(alias, oauth2);
 			aliasList.add(alias);
 		});
 
@@ -81,12 +81,7 @@ public class AliasServiceImpl implements AliasService {
 		keycloakService.createClientIfAbsent(pushApplication);
 
 		// Recreate all aliases to Alias Table
-		List<Alias> aliasList = createAliases(pushApplication, aliases);
-
-		// synchronize aliases to keycloak
-		if (oauth2) {
-			keycloakService.createUsersIfAbsent(pushApplication, aliases);
-		}
+		List<Alias> aliasList = createAliases(pushApplication, aliases, oauth2);
 
 		return aliasList;
 	}
@@ -103,7 +98,17 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public void remove(UUID pushApplicationId, UUID userId) {
+		remove(pushApplicationId, userId, false);
+	}
+
+	@Override
+	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
+		Alias alias = aliasCrudService.find(pushApplicationId, userId);
 		aliasCrudService.remove(pushApplicationId, userId);
+
+		if (destructive) {
+			keycloakService.delete(alias.getEmail());
+		}
 	}
 
 	@Override
@@ -149,7 +154,7 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public Alias create(String pushApplicationId, String alias) {
-		return createAlias(UUID.fromString(pushApplicationId), null, alias);
+		return createAlias(UUID.fromString(pushApplicationId), null, alias, false);
 	}
 
 	/*
@@ -157,7 +162,7 @@ public class AliasServiceImpl implements AliasService {
 	 * syncAliases
 	 */
 	@Deprecated
-	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases) {
+	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases, boolean oauth2) {
 		List<Alias> aliasList = new ArrayList<>();
 		UUID pushApplicationUUID = UUID.fromString(pushApp.getPushApplicationID());
 
@@ -174,14 +179,14 @@ public class AliasServiceImpl implements AliasService {
 			}
 
 			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()),
-					alias == null ? null : alias.getId(), name));
+					alias == null ? null : alias.getId(), name, oauth2));
 		}
 
 		return aliasList;
 	}
 
 	@Deprecated
-	private Alias createAlias(UUID pushApp, UUID userId, String alias) {
+	private Alias createAlias(UUID pushApp, UUID userId, String alias, boolean oauth2) {
 		Alias user = new Alias(pushApp, userId);
 		if (EMAIL_VALIDATOR.isValid(alias, null)) {
 			user.setEmail(alias);
@@ -189,7 +194,7 @@ public class AliasServiceImpl implements AliasService {
 			user.setOther(alias);
 		}
 
-		create(user);
+		create(user, oauth2);
 
 		return user;
 	}
@@ -218,17 +223,23 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void create(Alias alias) {
+	public void create(Alias alias, boolean oauth2) {
 		// Initialize a new time-based UUID on case one is missing.
 		if (alias.getId() == null) {
 			alias.setId(UUIDs.timeBased());
 		}
+
 		aliasCrudService.create(alias);
+
+		// synchronize aliases to keycloak
+		if (oauth2) {
+			keycloakService.createUserIfAbsent(alias.getEmail());
+		}
 	}
 
 	@Override
 	@Asynchronous
-	public void createAsynchronous(Alias alias) {
-		aliasCrudService.create(alias);
+	public void createAsynchronous(Alias alias, boolean oauth2) {
+		create(alias, oauth2);
 	}
 }

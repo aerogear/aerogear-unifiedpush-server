@@ -19,13 +19,11 @@ import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.slf4j.Logger;
@@ -45,8 +43,6 @@ public class VerificationServiceImpl implements VerificationService {
 	private VerificationGatewayService verificationService;
     @Inject
     private InstallationDao installationDao;
-    @Inject
-    private PushApplicationService pushApplicationService;
     @Inject
     private AliasService aliasService;
 	@Inject
@@ -130,8 +126,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			// Enable OAuth2 User
 			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()){
-				PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-				keycloakService.updateUser(pushApplication, installation.getAlias(), verificationAttempt.getCode());
+				keycloakService.updateUser(installation.getAlias(), verificationAttempt.getCode());
 			}
 
 			return VerificationResult.SUCCESS;

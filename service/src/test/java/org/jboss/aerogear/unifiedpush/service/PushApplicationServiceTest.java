@@ -165,7 +165,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
 		// Create Alias
 		Alias alias = new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com");
-		aliasService.create(alias);
+		aliasService.create(alias, false);
 
 		// Create document for alias
 		documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias, "1"), "{SIMPLE}");
@@ -177,7 +177,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 		assertTrue(documents.size() == 1);
 
 		// Recreate alias
-		aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"));
+		aliasService.create(new Alias(UUID.fromString(pa.getPushApplicationID()), UUIDs.timeBased(), "TEST@X.com"),
+				false);
 		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) != null);
 
 		pushApplicationService.removePushApplication(pa);

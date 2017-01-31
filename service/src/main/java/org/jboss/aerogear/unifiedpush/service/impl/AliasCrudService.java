@@ -17,6 +17,14 @@ public interface AliasCrudService {
 
 	void remove(UUID pushApplicationId, String alias);
 
+	/**
+	 * Remove all aliases according to given parameters. All aliases are
+	 * manually evicted from cache.
+	 *
+	 * @param pushApplicationId
+	 *            selected push application
+	 * @param userId
+	 */
 	void remove(UUID pushApplicationId, UUID userId);
 
 	void removeAll(UUID pushApplicationId);

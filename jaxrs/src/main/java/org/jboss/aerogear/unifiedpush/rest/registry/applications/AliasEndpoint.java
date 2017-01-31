@@ -65,7 +65,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 
 	@Inject
 	private AliasService aliasService;
-
 	/**
 	 * Cross Origin for Alias
 	 *
@@ -392,7 +391,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *     "email" : "Unique email address",
 	 *     "other" : "Phone number / Any other alias name"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/alias
+	 *   https://SERVER:PORT/context/rest/alias?oauth2=true&synchronously=true
 	 * </pre>
 	 *
 	 * Details about JSON format can be found HERE!
@@ -419,7 +418,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
-	public Response create(Alias alias, @DefaultValue("true") @QueryParam("synchronously") boolean synchronously,
+	public Response create(Alias alias, @QueryParam("oauth2") @DefaultValue("false") boolean oauth2,
+			@DefaultValue("true") @QueryParam("synchronously") boolean synchronously,
 			@Context HttpServletRequest request) {
 
 		try {
@@ -433,9 +433,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 
 			// Support synchronously mode by default
 			if (synchronously)
-				aliasService.create(alias);
+				aliasService.create(alias, oauth2);
 			else
-				aliasService.createAsynchronous(alias);
+				aliasService.createAsynchronous(alias, oauth2);
 
 			return appendAllowOriginHeader(Response.ok(alias), request);
 		} catch (AliasAlreadyExists e) {
@@ -494,7 +494,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param id
+	 * @param alias
+	 *            string
 	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
@@ -528,6 +529,49 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error(String.format("Cannot delete alias by alias name %s", alias), e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	/**
+	 * RESTful API for delete alias plus existing documents and identity user.
+	 * The Endpoint is protected using <code>HTTP Basic</code> (credentials
+	 * <code>ApplicationID:Master Secret</code>).
+	 *
+	 * @param id
+	 * @return {@link EmptyJSON}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="UnifiedPush Server" (only
+	 *                 for 401 response)
+	 *
+	 * @statuscode 200 Successful storage of the aliases.
+	 * @statuscode 400 The format of the aliases request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@DELETE
+	@Path("/hard/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+	public Response deleteDestructive(@PathParam("id") String id, @Context HttpServletRequest request) {
+		try {
+			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
+					pushAppService);
+			if (pushApplication == null) {
+				return Response.status(Status.UNAUTHORIZED)
+						.header("WWW-Authenticate", "Basic realm=\"AeroBase UnifiedPush Server\"")
+						.entity("Unauthorized Request").build();
+			}
+
+			aliasService.remove(UUID.fromString(pushApplication.getPushApplicationID()), UUID.fromString(id), true);
+
+			// TODO - Remove all documents for a given alias
+			return Response.ok().build();
+		} catch (Exception e) {
+			logger.error(String.format("Cannot destructively delete alias by alias id %s", id), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
