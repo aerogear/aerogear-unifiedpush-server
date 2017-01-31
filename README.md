@@ -7,8 +7,8 @@
 * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
 * [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
-* [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/)
-* [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush).
+* [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/) (*experimental*)
+* [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush) (_deprecated)_
 
 _UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
@@ -33,7 +33,7 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 
 ## Getting started
 
-For the on-premise version, execute the following steps to get going!
+Or for the on-premise version, execute the following steps to get going!
 
 * Download the [latest package (rpm/deb) files](http://ups.c-b4.com/ups/packages/)
 * Or follow the steps on the [install page](https://github.com/C-B4/unifiedpush-server/wiki/Unifiedpush-Installation)
@@ -136,6 +136,18 @@ In order to clean the state of Admin UI build caches, run maven build with the f
 Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
 
 
+<<<<<<< HEAD
+=======
+## Releasing the UnifiedPush Server
+
+The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the `distribution` bundle, you need to include these profiles:
+
+```
+mvn release:GOAL -Pdist,test
+```
+
+
+>>>>>>> upstream/master
 ## Deprecation Notices
 
 ###  1.1.x
