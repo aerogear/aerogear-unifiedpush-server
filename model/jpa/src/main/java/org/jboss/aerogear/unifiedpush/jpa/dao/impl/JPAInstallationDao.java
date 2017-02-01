@@ -207,7 +207,7 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     //Admin query
     @Override
     public long getTotalNumberOfDevices() {
-        return createQuery("select count(installation) from Installation installation, Variant t where installation.variant = t.variantID ", Long.class)
+        return createQuery("select count(installation) from Installation installation", Long.class)
                 .getSingleResult();
     }
 
