@@ -93,7 +93,11 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public void remove(UUID pushApplicationId, String alias) {
+		// Remove any aliases related to this alias
 		aliasCrudService.remove(pushApplicationId, alias);
+
+		// Remove user from keyCloak
+		keycloakService.delete(alias);
 	}
 
 	@Override
@@ -104,10 +108,15 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
 		Alias alias = aliasCrudService.find(pushApplicationId, userId);
+
+		// Remove any aliases belong to user_id
 		aliasCrudService.remove(pushApplicationId, userId);
 
+		// Remove user from keyCloak
+		keycloakService.delete(alias.getEmail());
+
 		if (destructive) {
-			keycloakService.delete(alias.getEmail());
+			// TODO - Remove all documents for a given alias
 		}
 	}
 

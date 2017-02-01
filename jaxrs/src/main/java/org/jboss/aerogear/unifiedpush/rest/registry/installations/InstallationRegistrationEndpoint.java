@@ -146,8 +146,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * @param oldToken  The previously registered deviceToken or an empty String.  Provided by the header x-ag-old-token.
      * @param entity    {@link Installation} for Device registration
-     * @param request   the request object
-     * @return          registered {@link Installation}
+     * @param request   The request object
+     * @return          Registered {@link Installation}
      *
      * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM). If present these tokens will be forcefully unregistered before the new token is registered.
      *

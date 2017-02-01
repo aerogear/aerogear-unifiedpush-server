@@ -1,96 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  JBoss, Home of Professional Open Source
-  Copyright Red Hat, Inc., and individual contributors
+<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+	individual contributors Licensed under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+	Unless required by applicable law or agreed to in writing, software distributed
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jboss.aerogear.unifiedpush</groupId>
+		<artifactId>unifiedpush-parent</artifactId>
+		<version>1.2.0-SNAPSHOT</version>
+	</parent>
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+	<artifactId>unifiedpush-jaxrs</artifactId>
+	<name>AeroBase RESTful Endpoint</name>
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	<dependencies>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jboss.aerogear.unifiedpush</groupId>
-        <artifactId>unifiedpush-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-    </parent>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <artifactId>unifiedpush-jaxrs</artifactId>
-    <name>UnifiedPush RESTful Endpoint</name>
+		<dependency>
+			<groupId>org.jboss.spec.javax.servlet</groupId>
+			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-service</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-push-model</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-       <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-push-sender</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-       <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-service</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-push-model</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-core</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-push-sender</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear</groupId>
+			<artifactId>aerogear-crypto</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.github.fge</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>1.7</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-crypto</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.fge</groupId>
-            <artifactId>json-patch</artifactId>
-            <version>1.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.qmino</groupId>
-            <artifactId>miredot-annotations</artifactId>
-            <version>1.4.0</version>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.qmino</groupId>
+			<artifactId>miredot-annotations</artifactId>
+			<version>1.4.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -98,298 +91,299 @@
 			<scope>provided</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.bitstrings.maven.plugins</groupId>
-                <artifactId>dependencypath-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.qmino</groupId>
-                <artifactId>miredot-plugin</artifactId>
-                <version>1.6.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>restdoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <licence>
-                        cHJvamVjdHxvcmcuamJvc3MuYWVyb2dlYXIudW5pZmllZHB1c2gudW5pZmllZHB1c2gtamF4cnN8MjAxNy0wNS0wMXx0cnVlfC0xI01Dd0NGQitaa0VVRVlsaU9LQjljR2h5TWNSWm1VMTREQWhRbUlHOXY3MExCR0FoT2FubklFSER2SWl1OVZnPT0=
-                    </licence>
-                    <output>
-                        <html>
-                            <baseUrl>https://SERVER:PORT/CONTEXT/rest</baseUrl>
-                            <initialCollapseLevel>100</initialCollapseLevel>
-                            <hideIssuesTab>false</hideIssuesTab>
-                        </html>
-                    </output>
-                    <restModel>
-                        <httpStatusCodes>
-                            <httpStatusCode>
-                                <httpCode>200</httpCode>
-                                <document>get</document>
-                                <defaultMessage>The service call has completed successfully</defaultMessage>
-                            </httpStatusCode>
-                            <httpStatusCode>
-                                <httpCode>500</httpCode>
-                                <document>explicit: java.util.concurrent.ExecutionException</document>
-                                <defaultMessage>The computation threw an exception</defaultMessage>
-                            </httpStatusCode>
-                            <httpStatusCode>
-                                <httpCode>500</httpCode>
-                                <document>explicit: java.lang.InterruptedException</document>
-                                <defaultMessage>The thread was interrupted</defaultMessage>
-                            </httpStatusCode>
-                        </httpStatusCodes>
-                    </restModel>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.bitstrings.maven.plugins</groupId>
+				<artifactId>dependencypath-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.qmino</groupId>
+				<artifactId>miredot-plugin</artifactId>
+				<version>2.0.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>restdoc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<organizationId>c6818e4f-24f9-41dd-a391-61be863ea5fb</organizationId>
+					<output>
+						<html>
+							<baseUrl>https://SERVER:PORT/CONTEXT</baseUrl>
+							<initialCollapseLevel>100</initialCollapseLevel>
+							<hideIssuesTab>false</hideIssuesTab>
+						</html>
+					</output>
+					<restModel>
+						<restFramework>
+							<name>jax-rs</name>
+						</restFramework>
+						<httpStatusCodes>
+							<httpStatusCode>
+								<httpCode>200</httpCode>
+								<document>get</document>
+								<defaultMessage>The service call has completed successfully</defaultMessage>
+							</httpStatusCode>
+							<httpStatusCode>
+								<httpCode>500</httpCode>
+								<document>explicit: java.util.concurrent.ExecutionException</document>
+								<defaultMessage>The computation threw an exception</defaultMessage>
+							</httpStatusCode>
+							<httpStatusCode>
+								<httpCode>500</httpCode>
+								<document>explicit: java.lang.InterruptedException</document>
+								<defaultMessage>The thread was interrupted</defaultMessage>
+							</httpStatusCode>
+						</httpStatusCodes>
+					</restModel>
                     <analysis>
                         <checks>
                             <JAVADOC_MISSING_AUTHORS>ignore</JAVADOC_MISSING_AUTHORS>
                             <JAVADOC_MISSING_SUMMARY>ignore</JAVADOC_MISSING_SUMMARY>
                         </checks>
                     </analysis>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <!-- Adds custom Miredot tags (required for JDK 8 DocLint: http://openjdk.java.net/jeps/172) -->
-                    <tags>
-                        <tag>
-                            <name>statuscode</name>
-                            <placement>m</placement>
-                            <head>Status codes:</head>
-                        </tag>
-                        <tag>
-                            <name>requestheader</name>
-                            <placement>m</placement>
-                            <head>Request headers:</head>
-                        </tag>
-                        <tag>
-                            <name>responseheader</name>
-                            <placement>m</placement>
-                            <head>Response headers:</head>
-                        </tag>
-                    </tags>
-                </configuration>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/filtered-resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
-    </build>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<!-- Adds custom Miredot tags (required for JDK 8 DocLint: http://openjdk.java.net/jeps/172) -->
+					<tags>
+						<tag>
+							<name>statuscode</name>
+							<placement>m</placement>
+							<head>Status codes:</head>
+						</tag>
+						<tag>
+							<name>requestheader</name>
+							<placement>m</placement>
+							<head>Request headers:</head>
+						</tag>
+						<tag>
+							<name>responseheader</name>
+							<placement>m</placement>
+							<head>Response headers:</head>
+						</tag>
+					</tags>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</testResource>
+			<testResource>
+				<directory>src/test/filtered-resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</testResource>
+		</testResources>
+	</build>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.aerogear.unifiedpush</groupId>
-                    <artifactId>unifiedpush-service</artifactId>
-                    <type>test-jar</type>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-				   <groupId>javax.el</groupId>
-				   <artifactId>javax.el-api</artifactId>
-				   <scope>test</scope>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.aerogear.unifiedpush</groupId>
+					<artifactId>unifiedpush-service</artifactId>
+					<type>test-jar</type>
+					<scope>test</scope>
 				</dependency>
 
 				<dependency>
-				   <groupId>org.glassfish.web</groupId>
-				   <artifactId>javax.el</artifactId>
-				   <scope>test</scope>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+					<scope>test</scope>
 				</dependency>
 
-                <dependency>
-                    <groupId>org.jboss.arquillian.junit</groupId>
-                    <artifactId>arquillian-junit-container</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>javax.el-api</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-container-chameleon</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.glassfish.web</groupId>
+					<artifactId>javax.el</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.jboss.arquillian.extension</groupId>
-                    <artifactId>arquillian-transaction-jta</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.junit</groupId>
+					<artifactId>arquillian-junit-container</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-client</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.arquillian.container</groupId>
+					<artifactId>arquillian-container-chameleon</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jackson2-provider</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.extension</groupId>
+					<artifactId>arquillian-transaction-jta</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <!-- Spring cql test -->
-                <dependency>
-                    <groupId>org.springframework.data</groupId>
-                    <artifactId>spring-cql</artifactId>
-                    <type>test-jar</type>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-client</artifactId>
+					<version>${resteasy.version}</version>
+					<scope>test</scope>
+				</dependency>
 
-                <!-- Cassandra dependencies -->
-                <dependency>
-                    <groupId>org.apache.cassandra</groupId>
-                    <artifactId>cassandra-all</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jackson2-provider</artifactId>
+					<version>${resteasy.version}</version>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-all</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<!-- Spring cql test -->
+				<dependency>
+					<groupId>org.springframework.data</groupId>
+					<artifactId>spring-cql</artifactId>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.hectorclient</groupId>
-                    <artifactId>hector-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<!-- Cassandra dependencies -->
+				<dependency>
+					<groupId>org.apache.cassandra</groupId>
+					<artifactId>cassandra-all</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <!-- Assert dependencies -->
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.hectorclient</groupId>
+					<artifactId>hector-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-core</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-controller-client</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.as</groupId>
-                            <artifactId>jboss-as-cli</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
+				<!-- Assert dependencies -->
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.extras.creaper</groupId>
-                    <artifactId>creaper-commands</artifactId>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.wildfly</groupId>
-                            <artifactId>wildfly-patching</artifactId>
-                        </exclusion>
-                    </exclusions>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-controller-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-controller-client</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.jboss.as</groupId>
+							<artifactId>jboss-as-cli</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-cli</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.wildfly.extras.creaper</groupId>
+					<artifactId>creaper-commands</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.wildfly</groupId>
+							<artifactId>wildfly-patching</artifactId>
+						</exclusion>
+					</exclusions>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-patching</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-controller-client</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>miredot</id>
-            <name>MireDot Releases</name>
-            <url>http://nexus.qmino.com/content/repositories/miredot</url>
-        </pluginRepository>
-    </pluginRepositories>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-cli</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-    <repositories>
-        <repository>
-            <id>miredot</id>
-            <name>MireDot Releases</name>
-            <url>http://nexus.qmino.com/content/repositories/miredot</url>
-        </repository>
-    </repositories>
+				<dependency>
+					<groupId>org.wildfly.core</groupId>
+					<artifactId>wildfly-patching</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>miredot</id>
+			<name>MireDot Releases</name>
+			<url>http://nexus.qmino.com/content/repositories/miredot</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>miredot</id>
+			<name>MireDot Releases</name>
+			<url>http://nexus.qmino.com/content/repositories/miredot</url>
+		</repository>
+	</repositories>
 
 </project>
