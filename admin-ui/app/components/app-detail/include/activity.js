@@ -100,6 +100,9 @@ angular.module('upsConsole')
     });
 
     $scope.$watch(function() { return self.searchString }, function( searchString, oldValue ) {
+      if (self.searchString === searchString) {
+        return;
+      }
       self.currentPage = 1;
       fetchMetrics( self.currentPage, self.searchString );
     });
