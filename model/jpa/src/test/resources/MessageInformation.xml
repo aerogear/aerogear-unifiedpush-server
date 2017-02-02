@@ -132,6 +132,14 @@
             <value>0</value>
             <value>admin</value>
         </row>
+        <row>
+            <value>4</value>
+            <value>android</value>
+            <value>213</value>
+            <value>0</value>
+            <value>dude</value>
+        </row>
+
     </table>
     <table name="SA.ANDROID_VARIANT">
         <column>id</column>
