@@ -91,6 +91,8 @@ angular.module('upsConsole')
         });
     }
 
+    refreshUntilAllServed();
+
     $scope.$on('upsNotificationSent', refreshUntilAllServed);
     $scope.$on('$destroy', function () {
       if (refreshInterval) {

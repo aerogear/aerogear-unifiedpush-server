@@ -25,7 +25,7 @@ angular.module('upsConsole')
     }
 
     // initial page
-    //fetchInstallations( 1, null );
+    fetchInstallations( 1, null );
 
     this.onPageChange = function ( page ) {
       fetchInstallations( page, self.searchString );
