@@ -93,8 +93,8 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.variantID IN (select t.variantID from Variant t where t.developer = :developer)" +
+        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi, Variant va " +
+                " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
                 " and vmi.deliveryStatus = false", String.class)
                 .setParameter("developer", loginName)
                 .getResultList();

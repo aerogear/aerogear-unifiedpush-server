@@ -223,6 +223,15 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
+    public void findVariantIDsWithWarningsForDude() {
+        // all warnings:
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings("dude");
+
+        assertThat(variantIDsWithWarnings).hasSize(1);
+        assertThat(variantIDsWithWarnings).containsOnly("213");
+    }
+
+    @Test
     public void ascendingDateOrdering() {
 
         PageResult<PushMessageInformation, MessageMetrics> messageInformations =
