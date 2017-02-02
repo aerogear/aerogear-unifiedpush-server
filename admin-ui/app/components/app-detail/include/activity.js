@@ -1,6 +1,5 @@
 angular.module('upsConsole')
   .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
-
     var self = this;
 
     this.app = $scope.$parent.$parent.appDetail.app;
@@ -92,9 +91,6 @@ angular.module('upsConsole')
         });
     }
 
-    // initial load
-    refreshUntilAllServed();
-
     $scope.$on('upsNotificationSent', refreshUntilAllServed);
     $scope.$on('$destroy', function () {
       if (refreshInterval) {
@@ -103,7 +99,7 @@ angular.module('upsConsole')
       }
     });
 
-    $scope.$watch(function() { return self.searchString }, function( searchString ) {
+    $scope.$watch(function() { return self.searchString }, function( searchString, oldValue ) {
       self.currentPage = 1;
       fetchMetrics( self.currentPage, self.searchString );
     });
