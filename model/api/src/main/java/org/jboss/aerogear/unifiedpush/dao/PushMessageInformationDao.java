@@ -62,6 +62,32 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
     List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending);
 
     /**
+     * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
+     *
+     * @param pushApplicationId ID of the PushApplication
+     * @param ascending boolean to define if ASC ordering (by date) or DESC ordering should be executed.
+     * @param search the value of the alert of a push notification
+     * @param page The number of the page.
+     * @param pageSize the number of elements in the result.
+     *
+     * @return list of push message info objects
+     */
+    List<PushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+
+    /**
+     * Loads paged push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
+     *
+     * @param pushApplicationId ID of the PushApplication
+     * @param ascending boolean to define if ASC ordering (by date) or DESC ordering should be executed.
+     * @param search the value of the alert of a push notification
+     * @param page The number of the page.
+     * @param pageSize the number of elements in the result.
+     *
+     * @return list of push message info objects
+     */
+    MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+
+    /**
      * Loads paged push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
      *
      * @param pushApplicationId ID of the PushApplication
