@@ -97,7 +97,9 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      * @param pageSize the number of elements in the result.
      *
      * @return list of push message info objects
+     * @deprecated use the combination of <code>findAllForPushApplicationByParams</code> and <code>findMessageMetricsForPushApplicationByParams</code>
      */
+    @Deprecated
     PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
