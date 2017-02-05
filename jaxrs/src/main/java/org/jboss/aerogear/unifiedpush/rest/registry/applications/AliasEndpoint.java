@@ -90,13 +90,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 
-	@GET
-	@Path("/exists/{alias}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("java.lang.Boolean")
-	/**
-	 * Public API to validate alias doesn't exists
-	 */
 	/**
 	 * RESTful API for updating alias password. The Endpoint has public access.
 	 *
@@ -115,6 +108,10 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
 	 */
+	@GET
+	@Path("/exists/{alias}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Boolean")
 	public Response exists(@PathParam("alias") String alias, @Context HttpServletRequest request) {
 		if (aliasService.exists(alias) != null)
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);

@@ -42,8 +42,8 @@ public class DocumentServiceImpl implements DocumentService {
 	private AliasDao aliasDao;
 
 	@Override
-	public void save(DocumentMetadata metadate, String content) {
-		documentDao.create(createDocument(metadate, content));
+	public DocumentContent save(DocumentMetadata metadate, String content) {
+		return (DocumentContent) documentDao.create(createDocument(metadate, content));
 	}
 
 	@Override
@@ -99,10 +99,11 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 	}
 
-	private void save(PushApplication pushApplication, Alias alias, String database, String id, String document) {
+	private DocumentContent save(PushApplication pushApplication, Alias alias, String database, String id,
+			String document) {
 
 		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id);
-		documentDao.create(createDocument(meta, document));
+		return (DocumentContent) documentDao.create(createDocument(meta, document));
 	}
 
 	private DocumentContent createDocument(DocumentMetadata metadata, String content) {

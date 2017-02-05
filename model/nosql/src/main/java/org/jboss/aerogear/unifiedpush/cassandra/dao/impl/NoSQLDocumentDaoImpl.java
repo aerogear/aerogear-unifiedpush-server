@@ -40,7 +40,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	public void create(IDocument<DocumentKey> document) {
+	public IDocument<DocumentKey> create(IDocument<DocumentKey> document) {
 		// If snapshot exists request is to update a specific version.
 		if (document.getKey().getSnapshot() != null)
 			operations.update(document);
@@ -55,6 +55,8 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			if (databaseDao.findOne(qkey) == null)
 				databaseDao.create(new Database(qkey));
 		}
+
+		return document;
 	}
 
 	@Override

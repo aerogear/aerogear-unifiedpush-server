@@ -1,6 +1,5 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -22,40 +21,49 @@ public class ClientAuthHelper {
 
 		return loadVariantWhenInstalled(genericVariantService, clientInstallationService, deviceToken, request);
 	}
+
 	/**
 	 * Returns the variant if the master secret is valid for the request and the
 	 * device token in the request is installed for that variant
 	 */
 	public static Variant loadVariantWhenInstalled(GenericVariantService genericVariantService,
-			ClientInstallationService clientInstallationService, String deviceToken , HttpServletRequest request) {
+			ClientInstallationService clientInstallationService, String deviceToken, HttpServletRequest request) {
 
 		if (deviceToken == null) {
 			logger.info("API request missing " + DEVICE_TOKEN_HEADER + " header! URI - > " + request.getRequestURI());
 			return null;
 		}
 
+		// Get variant from basic authentication headers
 		Variant variant = loadVariantWhenAuthorized(genericVariantService, request);
 
-		if (variant == null && request.getRequestURI().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) > -1) {
-			variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
-			if (variant == null) {
-				logger.info("API request using bearer to non-existing variant {}", request.getRequestURI());
+		if (variant == null) {
+			// Variant is missing, try to extract variant using Bearer
+			if (isBearerAllowed(request)) {
+				variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
+
+				if (variant == null) {
+					logger.info("API request using bearer to non-existing variant {}", request.getRequestURI());
+					return null;
+				}
+				logger.debug("API request using bearer to exising variant id: {} API: {}", variant.getVariantID(),
+						request.getRequestURI());
+			} else {
+				// Variant is missing to anonymous/otp mode
+				logger.warn("API request to non-existing variant {}", request.getRequestURI());
 				return null;
 			}
-			logger.debug("API request using bearer to exising variant id: {} API: {}", variant.getVariantID(), request.getRequestURI());
-		}
 
-		if (variant == null) {
-			logger.warn("API request to non-existing variant {}", request.getRequestURI());
-			return null;
-		}
-
-		Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(
-				variant.getVariantID(), HttpBasicHelper.decodeBase64(deviceToken));
-		// Installation should always be present.
-		if (installation == null) {
-			logger.info("API request to non-existing / disabled installation variant id: {} API: {}", variant.getVariantID(), request.getRequestURI());
-			return null;
+		} else {
+			// Make sure installation is enabled in case of OTP authentication.
+			Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(
+					variant.getVariantID(), HttpBasicHelper.decodeBase64(deviceToken));
+			// Installation should always be present.
+			if (installation == null) {
+				logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
+						variant.getVariantID(), request.getRequestURI());
+				return null;
+			}
 		}
 
 		return variant;
@@ -66,23 +74,22 @@ public class ClientAuthHelper {
 	 * PushApplicationEntity
 	 */
 	public static Variant loadVariantWhenAuthorized(GenericVariantService genericVariantService,
-		HttpServletRequest request) {
-        // extract the pushApplicationID and its secret from the HTTP Basic
-        // header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String variantID = credentials[0];
-        String secret = credentials[1];
+			HttpServletRequest request) {
+		// extract the pushApplicationID and its secret from the HTTP Basic
+		// header:
+		String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+		String variantID = credentials[0];
+		String secret = credentials[1];
 
-        final Variant variant = genericVariantService.findByVariantID(variantID);
-        if (variant != null && variant.getSecret().equals(secret)) {
-            return variant;
-        }
+		final Variant variant = genericVariantService.findByVariantID(variantID);
+		if (variant != null && variant.getSecret().equals(secret)) {
+			return variant;
+		}
 
-        logger.warn("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
-        // unauthorized...
-        return null;
-    }
-
+		logger.warn("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
+		// unauthorized...
+		return null;
+	}
 
 	/**
 	 * returns variant from the bearer token if it is valid for the request
@@ -106,5 +113,10 @@ public class ClientAuthHelper {
 			return null;
 		}
 		return HttpBasicHelper.decodeBase64(deviceToken);
+	}
+
+	// Barear authentication allowed only using /upsi context
+	private static boolean isBearerAllowed(HttpServletRequest request) {
+		return request.getRequestURI().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) > -1;
 	}
 }

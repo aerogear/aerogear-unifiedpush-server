@@ -8,7 +8,7 @@ import org.jboss.aerogear.unifiedpush.api.IDocument;
 
 public interface DocumentDao<T, ID> {
 
-	void create(IDocument<ID> document);
+	IDocument<ID> create(IDocument<ID> document);
 
 	void delete(UUID pushApplicationId);
 

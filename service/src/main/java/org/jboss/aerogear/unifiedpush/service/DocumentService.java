@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 
 public interface DocumentService {
 
-	void save(DocumentMetadata metadate, String content);
+	DocumentContent save(DocumentMetadata metadata, String content);
 
 	String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id);
 
