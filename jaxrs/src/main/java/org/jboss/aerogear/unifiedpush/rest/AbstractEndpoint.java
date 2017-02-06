@@ -2,7 +2,6 @@ package org.jboss.aerogear.unifiedpush.rest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -27,7 +26,7 @@ public class AbstractEndpoint {
 		// prevent duplicated cors when using /rest/upsi context
 		if (request.getRequestURI().toString().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) == -1)
 			return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-					.header("Access-Control-Allow-Credentials", "true").type(MediaType.APPLICATION_JSON)
+					.header("Access-Control-Allow-Credentials", "true")
 					.build();
 		else
 			return rb.build();

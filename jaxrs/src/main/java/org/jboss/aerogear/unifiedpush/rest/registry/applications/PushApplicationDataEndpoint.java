@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/applicationsData")
+@Deprecated
 public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(PushApplicationDataEndpoint.class);
 

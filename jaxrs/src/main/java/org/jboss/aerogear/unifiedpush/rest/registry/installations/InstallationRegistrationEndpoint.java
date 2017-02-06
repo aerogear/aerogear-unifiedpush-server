@@ -270,6 +270,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      */
     @DELETE
     @Path("{token: .*}")
+    @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("java.lang.Void")
     public Response unregisterInstallations(
             @PathParam("token") String token,
