@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.api;
+package org.jboss.aerogear.unifiedpush.api.document;
 
 public interface IDocument<ID> {
 

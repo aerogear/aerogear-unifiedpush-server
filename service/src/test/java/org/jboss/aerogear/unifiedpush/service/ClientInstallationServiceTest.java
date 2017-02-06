@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -660,8 +659,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		clientInstallationService.addInstallationSynchronously(variant, disabled);
 
 		Installation installation = clientInstallationService
-				.findEnabledInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-		assertNull(installation);
+				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		assertTrue(installation.isEnabled() == false);
 	}
 
 	@Test
@@ -685,8 +684,8 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		clientInstallationService.addInstallationSynchronously(variant, disabled);
 
 		Installation installation = clientInstallationService
-				.findEnabledInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-		assertNotNull(installation);
+				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
+		assertTrue(installation.isEnabled());
 	}
 
 	@Test
@@ -769,6 +768,5 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		}
 		return bos.toByteArray();
 	}
-
 
 }

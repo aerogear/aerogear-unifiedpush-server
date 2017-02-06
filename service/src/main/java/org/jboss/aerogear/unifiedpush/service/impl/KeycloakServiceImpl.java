@@ -177,6 +177,10 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 	@Asynchronous
 	public void delete(String userName) {
+		if (!isInitialized()) {
+			return;
+		}
+
 		UserRepresentation user = getUser(userName);
 		if (user == null) {
 			logger.debug(String.format("Unable to find user %s, in keyclock", userName));

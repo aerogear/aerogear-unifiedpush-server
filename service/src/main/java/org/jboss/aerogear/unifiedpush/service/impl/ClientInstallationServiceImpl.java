@@ -286,11 +286,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	public Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-		return installationDao.findEnabledInstallationForVariantByDeviceToken(variantID, deviceToken);
-	}
-
-	@Override
 	@Asynchronous
 	public void unsubscribeOldTopics(Installation installation) {
 		GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());

@@ -18,16 +18,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
-import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
@@ -42,10 +40,12 @@ import org.slf4j.LoggerFactory;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/document")
+@Deprecated
+/**
+ * @deprecated - Use database EndPoint
+ */
 public class DocumentEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DocumentEndpoint.class);
-
-	private static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
 
 	@Inject
 	private ClientInstallationService clientInstallationService;
@@ -325,254 +325,4 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
-
-	/**
-	 * RESTful API for storing global scope document. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
-	 * <code>VariantID:secret</code>).
-	 *
-	 * <pre>
-	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
-	 *   -X POST
-	 *   -d '{
-	 *     "any-attribute-1" : "example1",
-	 *     "any-attribute-2" : "example1",
-	 *     "any-attribute-3" : "example1"
-	 *   }'
-	 *   https://SERVER:PORT/context/rest/document/users
-	 * </pre>
-	 *
-	 * @param document
-	 *            JSON content
-	 * @param database
-	 *            Logical database name, e.g users | metadata | any other.
-	 * @param id
-	 *            Document collection id.
-	 *
-	 * @return Document body as json.
-	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
-	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
-	 *                 401 response)
-	 *
-	 * @statuscode 200 Successful store of the document.
-	 * @statuscode 400 The format of the document request was incorrect (e.g.
-	 *             missing required values).
-	 * @statuscode 401 The request requires authentication.
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("java.lang.Void")
-	@Path("/{database}")
-	public Response save(String document, @PathParam("database") String database, //
-			@QueryParam("id") String id, //
-			@Context HttpServletRequest request) { //
-
-		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-
-		if (variant == null) {
-			return create401Response(request);
-		}
-
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database,
-				NullAlias.getAlias(pushApplicationId), id);
-
-		DocumentContent doc = documentService.save(metadata, document);
-
-		try {
-			return appendAllowOriginHeader(appendSnapshotHeader(Response.ok(), doc.getKey().getSnapshot()), request);
-		} catch (Exception e) {
-			logger.error(String.format("Cannot store document for database %s", database), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-	}
-
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{database}/{snapshot}")
-	public Response update(@PathParam("database") String database, //
-			@PathParam("snapshot") String snapshot, //
-			@QueryParam("id") String id, //
-			@Context HttpServletRequest request) { //
-		String document = null;
-
-		// TODO - impl
-
-		try {
-			return appendAllowOriginHeader(Response.ok(StringUtils.isEmpty(document) ? EmptyJSON.STRING : document),
-					request);
-		} catch (Exception e) {
-			logger.error("Cannot retrieve files for alias", e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-
-	}
-
-	/**
-	 * RESTful API for storing alias scope document. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
-	 * <code>VariantID:secret</code>).
-	 *
-	 * <pre>
-	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
-	 *   -X POST
-	 *   -d '{
-	 *     "any-attribute-1" : "example1",
-	 *     "any-attribute-2" : "example1",
-	 *     "any-attribute-3" : "example1"
-	 *   }'
-	 *   https://SERVER:PORT/context/rest/document/users/alias/support@aerobase.org/
-	 * </pre>
-	 *
-	 * @param document
-	 *            JSON content.
-	 * @param database
-	 *            Logical database name, e.g users | metadata | any other.
-	 * @param alias
-	 *            Unique alias name (email/phone/tokenid/other).
-	 * @param id
-	 *            Document collection id.
-	 *
-	 * @return Document body as json.
-	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
-	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
-	 *                 401 response)
-	 *
-	 * @statuscode 200 Successful store of the document.
-	 * @statuscode 400 The format of the document request was incorrect (e.g.
-	 *             missing required values).
-	 * @statuscode 401 The request requires authentication.
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	@ReturnType("java.lang.Void")
-	@Path("/{database}/alias/{alias}")
-	public Response saveForAlias(String document, //
-			@PathParam("database") String database, //
-			@PathParam("alias") String alias, //
-			@QueryParam("id") String id, //
-			@Context HttpServletRequest request) { //
-
-		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-
-		if (variant == null) {
-			return create401Response(request);
-		}
-
-		// Find application by variant
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
-
-		// Find related alias
-		Alias aliasObj = aliasService.find(pushApplicationId.toString(), alias);
-
-		if (aliasObj == null) {
-			logger.debug("Unable to store document for unknown alias {}", alias);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(String.format("Unable to store document for unknown alias %s", alias)), request);
-		}
-
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj, id);
-		DocumentContent doc = documentService.save(metadata, document);
-
-		try {
-			return appendAllowOriginHeader(appendSnapshotHeader(Response.ok(), doc.getKey().getSnapshot()), request);
-		} catch (Exception e) {
-			logger.error(String.format("Cannot store document for database %s", database), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-	}
-
-	/**
-	 * RESTful API for query alias scope document. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
-	 * <code>VariantID:secret</code>).
-	 *
-	 * <pre>
-	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
-	 *   -X GET
-	 *   https://SERVER:PORT/context/rest/document/users/alias/support@aerobase.org/
-	 * </pre>
-	 *
-	 * @param document
-	 *            JSON content.
-	 * @param database
-	 *            Logical database name, e.g users | metadata | any other.
-	 * @param alias
-	 *            Unique alias name (email/phone/tokenid/other).
-	 * @param id
-	 *            Document collection id.
-	 *
-	 * @return Document body as json.
-	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
-	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
-	 *                 401 response)
-	 *
-	 * @statuscode 200 Successful store of the document.
-	 * @statuscode 400 The format of the document request was incorrect (e.g.
-	 *             missing required values).
-	 * @statuscode 401 The request requires authentication.
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	// @ReturnType("java.lang.String")
-	@Path("/{database}/alias/{alias}")
-	public Response getForAlias(String document, //
-			@PathParam("database") String database, //
-			@PathParam("alias") String alias, //
-			@QueryParam("id") String id, //
-			@Context HttpServletRequest request) { //
-
-		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-
-		if (variant == null) {
-			return create401Response(request);
-		}
-
-		// Find application by variant
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
-		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
-
-		// Find related alias
-		Alias aliasObj = aliasService.find(pushApplicationId.toString(), alias);
-
-		if (aliasObj == null) {
-			logger.debug("Unable to store document for unknown alias {}", alias);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(String.format("Unable to store document for unknown alias %s", alias)), request);
-		}
-
-		return null;
-	}
-
-	private ResponseBuilder appendSnapshotHeader(ResponseBuilder rb, UUID snapshot) {
-		rb.header(X_HEADER_SNAPSHOT_ID, snapshot.toString());
-		rb.header("Access-Control-Expose-Headers",
-				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, "Date" }, ","));
-
-		return rb;
-	}
-
 }

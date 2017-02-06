@@ -25,8 +25,8 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;

@@ -13,9 +13,10 @@ import javax.interceptor.Interceptors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.IDocument;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
@@ -44,6 +45,13 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public DocumentContent save(DocumentMetadata metadate, String content) {
 		return (DocumentContent) documentDao.create(createDocument(metadate, content));
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
+		return (List<DocumentContent>) documentDao.find(new DocumentKey(metadata), options);
 	}
 
 	@Override

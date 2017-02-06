@@ -9,11 +9,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;

@@ -125,16 +125,6 @@ public interface ClientInstallationService {
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
-     * Finder that returns the actual client <b>enabled</b> installation, identified by its device-token, for the given variant.
-     *
-     * @param variantID id of the variant
-     * @param deviceToken one tokens
-     *
-     * @return the installation entity
-     */
-    Installation findEnabledInstallationForVariantByDeviceToken(String variantID, String deviceToken);
-
-    /**
      * Used for Android installations which have less/other categories on repeated registration
      *
      * @param installation Installation object containing correct variant property of AndroidVariant class

@@ -2,8 +2,9 @@ package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 
@@ -18,4 +19,6 @@ public interface DocumentService {
 	List<String> getLatestFromAliases(PushApplication pushApp, String database, String id);
 
 	void delete(String pushApplicationId);
+
+	List<DocumentContent> find(DocumentMetadata metadata, QueryOptions options);
 }

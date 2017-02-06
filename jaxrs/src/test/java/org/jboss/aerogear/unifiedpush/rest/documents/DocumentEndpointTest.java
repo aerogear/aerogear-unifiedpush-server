@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
+@Deprecated
 public class DocumentEndpointTest extends RestEndpointTest {
 	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
 			.substring(1);
@@ -51,6 +52,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 
 	@Test
 	@RunAsClient
+	// TODO - Copy and move to database api
 	public void storeSimpleDocument(@ArquillianResource URL deploymentUrl) {
 		Installation iosInstallation = getDefaultInstallation();
 
@@ -121,9 +123,9 @@ public class DocumentEndpointTest extends RestEndpointTest {
 		}
 	}
 
-
 	@Test
 	@RunAsClient
+	// TODO - Copy and move to database api
 	public void updateDocument(@ArquillianResource URL deploymentUrl) {
 		Installation iosInstallation = getDefaultInstallation();
 
@@ -185,5 +187,4 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			Assert.fail(e.getMessage());
 		}
 	}
-
 }

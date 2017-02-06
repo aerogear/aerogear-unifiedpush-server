@@ -3,7 +3,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.springframework.cassandra.core.Ordering;
@@ -48,6 +48,10 @@ public class DocumentKey implements Serializable {
 			this.userId = NullUUID.NULL.getUuid();
 		} else {
 			this.userId = metadata.getUserId();
+		}
+
+		if (metadata.getSnapshot() != null) {
+			this.snapshot = metadata.getSnapshot();
 		}
 	}
 

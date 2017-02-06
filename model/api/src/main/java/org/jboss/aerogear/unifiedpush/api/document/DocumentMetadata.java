@@ -1,7 +1,9 @@
-package org.jboss.aerogear.unifiedpush.api;
+package org.jboss.aerogear.unifiedpush.api.document;
 
 import java.io.Serializable;
 import java.util.UUID;
+
+import org.jboss.aerogear.unifiedpush.api.Alias;
 
 public class DocumentMetadata implements Serializable {
 	private static final long serialVersionUID = -7488201263547869851L;
@@ -73,13 +75,13 @@ public class DocumentMetadata implements Serializable {
 		this(UUID.fromString(pushApplicationId), database, alias, documentId);
 	}
 
-	public DocumentMetadata(String pushApplicationId, //
+	public DocumentMetadata(UUID pushApplicationId, //
 			String database, //
 			Alias alias, //
 			String documentId, //
-			String snapshot) {
+			UUID snapshot) {
 
-		this(UUID.fromString(pushApplicationId), database, alias, null, documentId, snapshot);
+		this(pushApplicationId, database, alias, null, documentId, snapshot);
 	}
 
 	public DocumentMetadata(UUID pushApplicationId, //
@@ -87,13 +89,13 @@ public class DocumentMetadata implements Serializable {
 			Alias alias, //
 			String installationId, //
 			String documentId, //
-			String snapshot) {
+			UUID snapshot) {
 
 		this(pushApplicationId, database);
 		this.setUserId(alias != null ? alias.getId() : null);
 		this.setInstallationId((installationId == null || installationId.length() == 0 ? null : installationId));
 		this.setDocumentId(documentId);
-		this.setSnapshot(snapshot == null || snapshot.length() == 0 ? null : UUID.fromString(snapshot));
+		this.setSnapshot(snapshot);
 	}
 
 	public String getDocumentId() {

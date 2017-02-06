@@ -6,7 +6,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
@@ -115,7 +116,11 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		return docs;
 	}
 
-	public Stream<DocumentContent> find(DocumentKey queryKey) {
+	private Stream<DocumentContent> find(DocumentKey queryKey) {
+		return find (queryKey, null);
+	}
+
+	public Stream<DocumentContent> find(DocumentKey queryKey, QueryOptions options) {
 		Select select = QueryBuilder.select().from(super.tableName);
 		select.where(QueryBuilder.eq("push_application_id", queryKey.getPushApplicationId()));
 		select.where(QueryBuilder.eq("database", queryKey.getDatabase()));

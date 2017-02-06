@@ -54,16 +54,17 @@ public class ClientAuthHelper {
 				return null;
 			}
 
-		} else {
-			// Make sure installation is enabled in case of OTP authentication.
-			Installation installation = clientInstallationService.findEnabledInstallationForVariantByDeviceToken(
-					variant.getVariantID(), HttpBasicHelper.decodeBase64(deviceToken));
-			// Installation should always be present.
-			if (installation == null) {
-				logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
-						variant.getVariantID(), request.getRequestURI());
-				return null;
-			}
+		}
+
+		// Variant can't be null at this point.
+		Installation installation = clientInstallationService
+				.findInstallationForVariantByDeviceToken(variant.getVariantID(), getDeviceToken(request));
+
+		// Installation should always be present and enabled.
+		if (installation == null || installation.isEnabled() == false) {
+			logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
+					variant.getVariantID(), request.getRequestURI());
+			return null;
 		}
 
 		return variant;

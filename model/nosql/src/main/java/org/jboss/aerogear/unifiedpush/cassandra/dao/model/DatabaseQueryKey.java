@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
 import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.api.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 
 public class DatabaseQueryKey {

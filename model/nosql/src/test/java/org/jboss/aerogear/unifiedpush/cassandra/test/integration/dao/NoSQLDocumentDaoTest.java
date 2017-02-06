@@ -3,8 +3,8 @@ package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;

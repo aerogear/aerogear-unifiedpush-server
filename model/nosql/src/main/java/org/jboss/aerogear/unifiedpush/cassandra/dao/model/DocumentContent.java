@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
 import javax.validation.constraints.NotNull;
 
-import org.jboss.aerogear.unifiedpush.api.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
