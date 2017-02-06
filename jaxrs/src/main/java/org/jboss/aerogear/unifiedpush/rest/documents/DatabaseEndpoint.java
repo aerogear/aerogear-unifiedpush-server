@@ -62,7 +62,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private AliasService aliasService;
 
 	/**
-	 * Cross Origin for global scope database.
+	 * Cross Origin for application scope database.
 	 *
 	 * @param headers
 	 *            "Origin" header
@@ -81,12 +81,12 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	@OPTIONS
 	@Path("/{database}")
 	@ReturnType("java.lang.Void")
-	public Response crossOriginForGlobal(@Context HttpHeaders headers) {
+	public Response crossOriginForApplication(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 
 	/**
-	 * Cross Origin for global scope database.
+	 * Cross Origin for application scope database.
 	 *
 	 * @param headers
 	 *            "Origin" header
@@ -105,12 +105,12 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	@OPTIONS
 	@Path("/{database}/{snapshot}")
 	@ReturnType("java.lang.Void")
-	public Response crossOriginForGlobalPut(@Context HttpHeaders headers) {
+	public Response crossOriginForApplicationPut(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 
 	/**
-	 * Cross Origin for global scope database.
+	 * Cross Origin for application scope database.
 	 *
 	 * @param headers
 	 *            "Origin" header
@@ -134,7 +134,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * Cross Origin for global scope database.
+	 * Cross Origin for application scope database.
 	 *
 	 * @param headers
 	 *            "Origin" header
@@ -158,8 +158,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * RESTful API for storing global scope document. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
+	 * RESTful API for storing application scope document. The Endpoint is
+	 * protected using <code>HTTP Basic</code> (credentials
 	 * <code>VariantID:secret</code>).
 	 *
 	 * <pre>
@@ -208,8 +208,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	}
 
 	/**
-	 * RESTful API for updating global scope document. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
+	 * RESTful API for updating application scope document. The Endpoint is
+	 * protected using <code>HTTP Basic</code> (credentials
 	 * <code>VariantID:secret</code>).
 	 *
 	 * <pre>
@@ -381,6 +381,87 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	}
 
 	/**
+	 * RESTful API for query application scope document. The Endpoint is
+	 * protected using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X HEAD
+	 *   https://SERVER:PORT/context/rest/database/metadata
+	 * </pre>
+	 *
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 * @param id
+	 *            Document collection id.
+	 *
+	 * @return Headers Only.
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 204 The HEAD method is identical to GET except that the
+	 *             server DOES NOT return a message-body in the response
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@HEAD
+	@Produces("multipart/mixed")
+	@Path("/{database}")
+	public Response headForApplication(@PathParam("database") String database, //
+			@QueryParam("id") String id, //
+			@Context HttpServletRequest request) { //
+		return get(database, null, id, request, false);
+	}
+
+	/**
+	 * RESTful API for query application scope document. The Endpoint is
+	 * protected using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X GET
+	 *   https://SERVER:PORT/context/rest/database/metadata
+	 * </pre>
+	 *
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 * @param id
+	 *            Document collection id.
+	 *
+	 * @return Document content as multipart/mixed.
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 200 Successful query of the documents.
+	 * @statuscode 204 Successful query of the documents but no available
+	 *             content.
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@GET
+	@Produces("multipart/mixed")
+	@Path("/{database}")
+	public Response getForApplication(@PathParam("database") String database, //
+			@QueryParam("id") String id, //
+			@Context HttpServletRequest request) { //
+		return get(database, null, id, request, false);
+	}
+
+	/**
 	 * RESTful API for query alias scope document. The Endpoint is protected
 	 * using <code>HTTP Basic</code> (credentials
 	 * <code>VariantID:secret</code>).
@@ -407,7 +488,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
 	 *                 401 response)
 	 *
-	 * @statuscode 200 Successful query document headers.
+	 * @statuscode 204 The HEAD method is identical to GET except that the
+	 *             server DOES NOT return a message-body in the response
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
@@ -419,7 +501,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@PathParam("alias") String alias, //
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
-		return getForAlias(database, alias, id, request, true);
+		return get(database, alias, id, request, true);
 	}
 
 	/**
@@ -450,8 +532,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *                 401 response)
 	 *
 	 * @statuscode 200 Successful query of the documents.
-	 * @statuscode 204 Successful query of the documents but no available
-	 *             content.
+	 * @statuscode 204 Successful query without available documents.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
@@ -463,10 +544,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@PathParam("alias") String alias, //
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
-		return getForAlias(database, alias, id, request, false);
+		return get(database, alias, id, request, false);
 	}
 
-	private Response getForAlias(String database, //
+	private Response get(String database, //
 			String alias, //
 			String id, //
 			HttpServletRequest request, boolean headOnly) { //
@@ -484,10 +565,19 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		// Find related alias
-		Alias aliasObj = aliasService.find(pushApplicationId.toString(), alias);
+		// Find related alias by name
+		Alias aliasObj;
+
+		if (StringUtils.isNoneEmpty(alias)) {
+			// Alias scope document
+			aliasObj = aliasService.find(pushApplicationId.toString(), alias);
+		} else {
+			// application scope document
+			aliasObj = NullAlias.getAlias(pushApplicationId);
+		}
 
 		if (aliasObj == null) {
+			// Still alias scope document
 			logger.debug("Unable to get documents for unknown alias {}", alias);
 			if (aliasObj == null) {
 				logger.debug("Alias {} is missing, quering by token-id", alias);
