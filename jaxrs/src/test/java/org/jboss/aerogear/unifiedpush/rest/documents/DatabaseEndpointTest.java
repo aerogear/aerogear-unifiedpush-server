@@ -110,9 +110,17 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
 
 			Assert.assertTrue(response.getStatus() == 200);
-
 			String count = response.getHeaderString(DatabaseEndpoint.X_HEADER_COUNT);
-			Assert.assertTrue(StringUtils.isNoneEmpty(count));
+			Assert.assertTrue(Integer.valueOf(count) == 2);
+
+			response.close();
+
+			// get documents @HEAD /{database}/alias/{alias}
+			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
+					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).head();
+
+			Assert.assertTrue(response.getStatus() == 204);
+			count = response.getHeaderString(DatabaseEndpoint.X_HEADER_COUNT);
 			Assert.assertTrue(Integer.valueOf(count) == 2);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
@@ -156,7 +164,7 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			response = builder.post(Entity.entity(jsonEntity, MediaType.APPLICATION_JSON_TYPE));
 		}
 
-		if (response.getStatus() != 200) {
+		if (response.getStatus() != 204) {
 			Assert.fail("Response status was " + response.getStatus());
 		}
 

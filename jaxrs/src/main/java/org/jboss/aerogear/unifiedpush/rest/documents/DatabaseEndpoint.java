@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,6 +36,7 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
+import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,7 +189,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
 	 *                 401 response)
 	 *
-	 * @statuscode 200 Successful store of the document.
+	 * @statuscode 204 Successful store of the document.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
@@ -239,14 +241,13 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
 	 *                 401 response)
 	 *
-	 * @statuscode 200 Successful update of the document.
+	 * @statuscode 204 Successful update of the document.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{database}/{snapshot}")
 	public Response save(String document, //
 			@PathParam("database") String database, //
@@ -273,7 +274,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		DocumentContent doc = documentService.save(metadata, document);
 
 		try {
-			return appendAllowOriginHeader(appendSnapshotHeader(Response.ok(), doc.getKey().getSnapshot()), request);
+			return appendAllowOriginHeader(appendSnapshotHeader(Response.noContent(), doc.getKey().getSnapshot()),
+					request);
 		} catch (Exception e) {
 			logger.error(String.format("Cannot store document for database %s", database), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
@@ -282,7 +284,6 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response saveForAlias(String document, //
@@ -329,14 +330,13 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
 	 *                 401 response)
 	 *
-	 * @statuscode 200 Successful update of the document.
+	 * @statuscode 204 Successful update of the document.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}/{snapshot}")
 	public Response saveForAlias(String document, //
@@ -372,7 +372,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		DocumentContent doc = documentService.save(metadata, document);
 
 		try {
-			return appendAllowOriginHeader(appendSnapshotHeader(Response.ok(), doc.getKey().getSnapshot()), request);
+			return appendAllowOriginHeader(appendSnapshotHeader(Response.noContent(), doc.getKey().getSnapshot()),
+					request);
 		} catch (Exception e) {
 			logger.error(String.format("Cannot store document for database %s", database), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
@@ -387,12 +388,52 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * <pre>
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X HEAD
+	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
+	 * </pre>
+	 *
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 * @param alias
+	 *            Unique alias name (email/phone/tokenid/other).
+	 * @param id
+	 *            Document collection id.
+	 *
+	 * @return Headers Only.
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 200 Successful query document headers.
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@HEAD
+	@Produces("multipart/mixed")
+	@Path("/{database}/alias/{alias}")
+	public Response headForAlias(@PathParam("database") String database, //
+			@PathParam("alias") String alias, //
+			@QueryParam("id") String id, //
+			@Context HttpServletRequest request) { //
+		return getForAlias(database, alias, id, request, true);
+	}
+
+	/**
+	 * RESTful API for query alias scope document. The Endpoint is protected
+	 * using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X GET
 	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
 	 * </pre>
 	 *
-	 * @param document
-	 *            JSON content.
 	 * @param database
 	 *            Logical database name, e.g users | metadata | any other.
 	 * @param alias
@@ -408,7 +449,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
 	 *                 401 response)
 	 *
-	 * @statuscode 200 Successful store of the document.
+	 * @statuscode 200 Successful query of the documents.
+	 * @statuscode 204 Successful query of the documents but no available
+	 *             content.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
@@ -416,11 +459,17 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	@GET
 	@Produces("multipart/mixed")
 	@Path("/{database}/alias/{alias}")
-	public Response getForAlias(String document, //
-			@PathParam("database") String database, //
+	public Response getForAlias(@PathParam("database") String database, //
 			@PathParam("alias") String alias, //
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
+		return getForAlias(database, alias, id, request, false);
+	}
+
+	private Response getForAlias(String database, //
+			String alias, //
+			String id, //
+			HttpServletRequest request, boolean headOnly) { //
 
 		// Authentication
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
@@ -450,12 +499,18 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj, id);
 		documentService.find(metadata, null).forEach(doc -> {
-			output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()),
-					doc.getKey().getSnapshot().toString());
+			OutputPart part = output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()));
+			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());
 		});
 
 		try {
-			return appendAllowOriginHeader(appendCountHeader(Response.ok(output), output.getParts().size()), request);
+			// In case no available parts | HEAD request, return 204
+			if (headOnly || output.getParts().size() == 0)
+				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), output.getParts().size()),
+						request);
+			else
+				return appendAllowOriginHeader(appendCountHeader(Response.ok(output), output.getParts().size()),
+						request);
 		} catch (Exception e) {
 			logger.error(String.format("Cannot store document for database %s", database), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
