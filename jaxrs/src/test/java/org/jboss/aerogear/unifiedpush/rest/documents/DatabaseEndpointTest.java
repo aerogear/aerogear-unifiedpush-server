@@ -28,6 +28,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import javax.ws.rs.client.Invocation.Builder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,17 +74,8 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			Thread.sleep(500);
 
 			// Store document for alias @POST /{database}/alias/{alias}
-			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS/alias/"
-					+ newInstallation.getAlias().toLowerCase() + "?id=1");
-
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
-					.post(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
-
-			if (response.getStatus() != 200) {
-				Assert.fail("Response status was " + response.getStatus());
-			}
+			response = saveDocument(client, deploymentUrl, newInstallation.getDeviceToken(), newInstallation.getAlias(),
+					"1", newInstallation);
 
 			// Validate new snapshot id exists.
 			String snapshotId1 = response.getHeaderString(DatabaseEndpoint.X_HEADER_SNAPSHOT_ID);
@@ -94,17 +86,8 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			// Update parameter and PUT
 			newInstallation.setOperatingSystem("XXX");
 			// Store document for alias @PUT /{database}/alias/{alias}/{UUID}
-			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS/alias/"
-					+ newInstallation.getAlias().toLowerCase() + "/" + snapshotId1 + "?id=1");
-
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
-					.put(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
-
-			if (response.getStatus() != 200) {
-				Assert.fail("Response status was " + response.getStatus());
-			}
+			response = saveDocument(client, deploymentUrl, newInstallation.getDeviceToken(), newInstallation.getAlias(),
+					"1", newInstallation, snapshotId1);
 
 			// Validate new snapshot id exists.
 			String snapshotId2 = response.getHeaderString(DatabaseEndpoint.X_HEADER_SNAPSHOT_ID);
@@ -113,22 +96,70 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 
 			response.close();
 
-			// // get document @Path("/{alias}/{qualifier}/{id}/latest")
-			// target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX
-			// + "/document/INSTALLATION/"
-			// + newInstallation.getAlias() + "/STATUS/55");
-			//
-			// response =
-			// target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-			// HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
-			//
-			// Assert.assertTrue(response.getStatus() == 200);
-			//
-			// Installation getinst = response.readEntity(Installation.class);
-			// Assert.assertTrue(getinst.getOperatingSystem().equals("XXX"));
+			// Store additional document
+			response = saveDocument(client, deploymentUrl, newInstallation.getDeviceToken(), newInstallation.getAlias(),
+					"2", newInstallation);
 
+			response.close();
+
+			// get documents @GET /{database}/alias/{alias}
+			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS/alias/"
+					+ newInstallation.getAlias().toLowerCase());
+
+			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
+					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
+
+			Assert.assertTrue(response.getStatus() == 200);
+
+			String count = response.getHeaderString(DatabaseEndpoint.X_HEADER_COUNT);
+			Assert.assertTrue(StringUtils.isNoneEmpty(count));
+			Assert.assertTrue(Integer.valueOf(count) == 2);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}
+	}
+
+	private Response saveDocument(ResteasyClient client, URL deploymentUrl, String deviceToken, String alias, String id,
+			Object jsonEntity) {
+		return saveDocument(client, deploymentUrl, deviceToken, alias, id, jsonEntity, null);
+
+	}
+
+	// Store document for alias @POST /{database}/alias/{alias}
+	private Response saveDocument(ResteasyClient client, URL deploymentUrl, String deviceToken, String alias, String id,
+			Object jsonEntity, String snapshot) {
+
+		StringBuilder sBuilder = new StringBuilder(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS");
+		if (StringUtils.isNoneEmpty(alias)) {
+			sBuilder.append("/alias/").append(alias.toLowerCase());
+		}
+
+		if (StringUtils.isNoneEmpty(snapshot)) {
+			sBuilder.append("/" + snapshot);
+		}
+
+		if (StringUtils.isNoneEmpty(id)) {
+			sBuilder.append("?id=" + id);
+		}
+
+		ResteasyWebTarget target = client.target(sBuilder.toString());
+
+		Builder builder = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
+				HttpBasicHelper.encodeBase64(deviceToken));
+
+		Response response;
+		if (StringUtils.isNoneEmpty(snapshot)) {
+			// Update by snapshot
+			response = builder.put(Entity.entity(jsonEntity, MediaType.APPLICATION_JSON_TYPE));
+		} else {
+			// Create new document
+			response = builder.post(Entity.entity(jsonEntity, MediaType.APPLICATION_JSON_TYPE));
+		}
+
+		if (response.getStatus() != 200) {
+			Assert.fail("Response status was " + response.getStatus());
+		}
+
+		return response;
 	}
 }

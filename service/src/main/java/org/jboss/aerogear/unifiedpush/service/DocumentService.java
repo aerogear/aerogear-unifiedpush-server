@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
@@ -20,5 +21,5 @@ public interface DocumentService {
 
 	void delete(String pushApplicationId);
 
-	List<DocumentContent> find(DocumentMetadata metadata, QueryOptions options);
+	Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options);
 }

@@ -45,7 +45,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DatabaseEndpoint.class);
 
 	public static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
-	private static final String X_HEADER_COUNT = "X-AB-Count";
+	public static final String X_HEADER_COUNT = "X-AB-Count";
 	private static final String X_HEADER_DATE = "Date";
 
 	@Inject
@@ -169,7 +169,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/document/users
+	 *   https://SERVER:PORT/context/rest/database/users
 	 * </pre>
 	 *
 	 * @param document
@@ -219,7 +219,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/document/users/{UUID}
+	 *   https://SERVER:PORT/context/rest/database/users/snapshot
 	 * </pre>
 	 *
 	 * @param document
@@ -307,7 +307,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/document/users/alias/support@aerobase.org/{UUID}
+	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/snapshot
 	 * </pre>
 	 *
 	 * @param document
@@ -388,7 +388,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X GET
-	 *   https://SERVER:PORT/context/rest/document/users/alias/support@aerobase.org/
+	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
 	 * </pre>
 	 *
 	 * @param document
@@ -400,7 +400,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param id
 	 *            Document collection id.
 	 *
-	 * @return Document body as json.
+	 * @return Document content as multipart/mixed.
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -423,8 +423,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@Context HttpServletRequest request) { //
 
 		// Authentication
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
+				clientInstallationService, deviceToken, request);
 
 		if (variant == null) {
 			return create401Response(request);
@@ -438,9 +439,11 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		Alias aliasObj = aliasService.find(pushApplicationId.toString(), alias);
 
 		if (aliasObj == null) {
-			logger.debug("Unable to store document for unknown alias {}", alias);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(String.format("Unable to store document for unknown alias %s", alias)), request);
+			logger.debug("Unable to get documents for unknown alias {}", alias);
+			if (aliasObj == null) {
+				logger.debug("Alias {} is missing, quering by token-id", alias);
+				aliasObj = getAliasByToken(pushApplicationId, deviceToken);
+			}
 		}
 
 		final MultipartOutput output = new MultipartOutput();

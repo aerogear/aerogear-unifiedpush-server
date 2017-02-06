@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -47,11 +48,10 @@ public class DocumentServiceImpl implements DocumentService {
 		return (DocumentContent) documentDao.create(createDocument(metadate, content));
 	}
 
-
-	@Override
 	@SuppressWarnings("unchecked")
-	public List<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
-		return (List<DocumentContent>) documentDao.find(new DocumentKey(metadata), options);
+	@Override
+	public Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
+		return (Stream<DocumentContent>) documentDao.find(new DocumentKey(metadata), options);
 	}
 
 	@Override
