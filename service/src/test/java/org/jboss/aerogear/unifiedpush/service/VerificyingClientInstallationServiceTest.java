@@ -19,22 +19,22 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 	private VerificationService verificationService;
 
 	@Inject
-    private GenericVariantService variantService;
+	private GenericVariantService variantService;
 
 	@Inject
 	private ClientInstallationService clientInstallationService;
 
-    private AndroidVariant androidVariant;
+	private AndroidVariant androidVariant;
 
-    @Override
-    protected void specificSetup() {
-        // setup a variant:
-        androidVariant = new AndroidVariant();
-        androidVariant.setGoogleKey("Key");
-        androidVariant.setName("Android");
-        androidVariant.setDeveloper("me");
-        variantService.addVariant(androidVariant);
-    }
+	@Override
+	protected void specificSetup() {
+		// setup a variant:
+		androidVariant = new AndroidVariant();
+		androidVariant.setGoogleKey("Key");
+		androidVariant.setName("Android");
+		androidVariant.setDeveloper("me");
+		variantService.addVariant(androidVariant);
+	}
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
@@ -49,7 +49,11 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
 
-		VerificationResult result = verificationService.verifyDevice(device, androidVariant, new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
+		// Clear local cache and force fetch from cassandra
+		verificationService.clearCache();
+
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant,
+				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 
@@ -73,7 +77,8 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		fakeDevice.setVariant(androidVariant);
 		fakeDevice.setEnabled(false);
 
-		VerificationResult result = verificationService.verifyDevice(fakeDevice, androidVariant, new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
+		VerificationResult result = verificationService.verifyDevice(fakeDevice, androidVariant,
+				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
 		assertEquals(VerificationResult.UNKNOWN, result);
 	}
 
@@ -86,15 +91,16 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setVariant(androidVariant);
 		clientInstallationService.addInstallationSynchronously(androidVariant, device);
 
-
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
 
-		VerificationResult result = verificationService.verifyDevice(device, androidVariant, new InstallationVerificationAttempt(verificationCode + "1", device.getDeviceToken()));
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant,
+				new InstallationVerificationAttempt(verificationCode + "1", device.getDeviceToken()));
 		assertEquals(VerificationResult.FAIL, result);
 
 		// now retry with the correct code.
-		result = verificationService.verifyDevice(device, androidVariant,  new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
+		result = verificationService.verifyDevice(device, androidVariant,
+				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
 
@@ -116,10 +122,12 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		assertNotNull(newVerificationCode);
 
 		// the first code should have been invalidated
-		VerificationResult result = verificationService.verifyDevice(device, androidVariant,  new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
+		VerificationResult result = verificationService.verifyDevice(device, androidVariant,
+				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
 		assertEquals(VerificationResult.SUCCESS, result);
 
-		result = verificationService.verifyDevice(device, androidVariant,  new InstallationVerificationAttempt(newVerificationCode, device.getDeviceToken()));
+		result = verificationService.verifyDevice(device, androidVariant,
+				new InstallationVerificationAttempt(newVerificationCode, device.getDeviceToken()));
 		// Device is already enabled so always return success.
 		assertEquals(VerificationResult.SUCCESS, result);
 	}
