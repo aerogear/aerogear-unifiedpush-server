@@ -9,8 +9,14 @@ if [ -z "${JAVA_HOME}" ]; then
     fi
 fi
 
+die() {
+        local localmsg="$1"
+        echo "FATAL: ${localmsg}" >&2
+        exit 1
+}
+
 database="$1"
-[ -z "${database}" ] && die "Missing database! Usage: ./init-unifiedpush-db.sh database name"
+[ -z "${database}" ] && die "Missing database! Usage: ./init-cassandra-db.sh database name"
 
 #remote debug parameters
 #export DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=1044,server=y,suspend=y"
