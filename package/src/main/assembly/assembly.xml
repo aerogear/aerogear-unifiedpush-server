@@ -37,6 +37,15 @@
 			</includes>
 			<fileMode>755</fileMode>
 		</fileSet>
+                <!-- Copy VERSION.md file -->
+                <fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>/</outputDirectory>
+                        <includes>
+                                <include>VERSION.md</include>
+                        </includes>
+                        <fileMode>755</fileMode>
+                </fileSet>
 	</fileSets>
 
 </assembly>
