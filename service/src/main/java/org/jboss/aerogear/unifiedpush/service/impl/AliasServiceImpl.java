@@ -64,6 +64,8 @@ public class AliasServiceImpl implements AliasService {
 				// Remove all references to previous alias
 				remove(pushApplicationUUID,
 						StringUtils.isNoneEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther());
+				// TODO - Since KC users are not removed without destructive,
+				// We need to update existing KC users and set a new email
 			}
 			create(alias, oauth2);
 			aliasList.add(alias);
@@ -93,11 +95,8 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public void remove(UUID pushApplicationId, String alias) {
-		// Remove any aliases related to this alias
-		aliasCrudService.remove(pushApplicationId, alias);
-
-		// Remove user from keyCloak
-		keycloakService.delete(alias);
+		// Remove any aliases related to this alias name
+		remove(pushApplicationId, alias, false);
 	}
 
 	@Override
@@ -108,14 +107,17 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
 		Alias alias = aliasCrudService.find(pushApplicationId, userId);
+		this.remove(pushApplicationId, alias.getEmail(), false);
+	}
 
+	private void remove(UUID pushApplicationId, String alias, boolean destructive) {
 		// Remove any aliases belong to user_id
-		aliasCrudService.remove(pushApplicationId, userId);
-
-		// Remove user from keyCloak
-		keycloakService.delete(alias.getEmail());
+		aliasCrudService.remove(pushApplicationId, alias);
 
 		if (destructive) {
+			// Remove user from keyCloak
+			keycloakService.delete(alias);
+
 			// TODO - Remove all documents for a given alias
 		}
 	}

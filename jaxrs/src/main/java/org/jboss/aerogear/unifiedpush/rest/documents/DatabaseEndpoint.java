@@ -181,7 +181,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param id
 	 *            Document collection id.
 	 *
-	 * @return Document body as json.
+	 * @return {@link java.lang.Void}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -196,15 +196,14 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}")
-	public Response save(String document, //
+	public Response saveForApplication(String document, //
 			@PathParam("database") String database, //
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
 
-		return save(document, database, null, id, request);
+		return saveForApplication(document, database, null, id, request);
 	}
 
 	/**
@@ -233,7 +232,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param id
 	 *            Document collection identifier.
 	 *
-	 * @return Document body as json.
+	 * @return {@link java.lang.Void}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -248,8 +247,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Void")
 	@Path("/{database}/{snapshot}")
-	public Response save(String document, //
+	public Response saveForApplication(String document, //
 			@PathParam("database") String database, //
 			@PathParam("snapshot") String snapshot, //
 			@QueryParam("id") String id, //
@@ -322,7 +322,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param id
 	 *            Document collection id.
 	 *
-	 * @return Document body as json.
+	 * @return {@link java.lang.Void}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -413,6 +413,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@HEAD
 	@Produces("multipart/mixed")
+	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response headForApplication(@PathParam("database") String database, //
 			@QueryParam("id") String id, //
@@ -436,7 +437,6 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Logical database name, e.g users | metadata | any other.
 	 * @param id
 	 *            Document collection id.
-	 *
 	 * @return Document content as multipart/mixed.
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
@@ -454,6 +454,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@GET
 	@Produces("multipart/mixed")
+	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response getForApplication(@PathParam("database") String database, //
 			@QueryParam("id") String id, //
@@ -496,6 +497,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@HEAD
 	@Produces("multipart/mixed")
+	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response headForAlias(@PathParam("database") String database, //
 			@PathParam("alias") String alias, //
@@ -539,6 +541,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 */
 	@GET
 	@Produces("multipart/mixed")
+	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response getForAlias(@PathParam("database") String database, //
 			@PathParam("alias") String alias, //
