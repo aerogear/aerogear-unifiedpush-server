@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
@@ -110,22 +109,18 @@ public class TestNotificationRouter {
     public void testVariantIDsSpecified(GenericVariantService genericVariantService) {
         // given
         SimplePushVariant simplePushVariant = new SimplePushVariant();
-        simplePushVariant.setId("id-simplepush-variant");
+        simplePushVariant.setVariantID("id-simplepush-variant-1");
         iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setId("id-ios-variant");
+        iOSVariant.setVariantID("id-ios-variant-1");
         AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setId("id-android-variant");
+        androidVariant.setVariantID("id-android-variant-1");
 
         app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
-        message.getCriteria().setVariants(Arrays.asList("id-ios-variant", "id-android-variant"));
-
-        when(genericVariantService.findByVariantID("id-ios-variant")).thenReturn(iOSVariant);
-        when(genericVariantService.findByVariantID("id-android-variant")).thenReturn(androidVariant);
-        when(genericVariantService.findByVariantID("id-simplepush-variant")).thenReturn(androidVariant);
+        message.getCriteria().setVariants(Arrays.asList("id-ios-variant-1", "id-android-variant-2"));
 
         // when
         router.submit(app, message);
-        assertEquals("the 2 messages should be dispatched", 2, messageCounter.getCounter());
+        assertEquals("one variant should be dispatched", 1, messageCounter.getCounter());
     }
 
     public void observeMessageHolderWithVariants(@Observes @DispatchToQueue MessageHolderWithVariants msg) {

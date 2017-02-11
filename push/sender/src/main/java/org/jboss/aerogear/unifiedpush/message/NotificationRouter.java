@@ -23,7 +23,6 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +36,10 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
@@ -56,8 +57,6 @@ public class NotificationRouter {
 
     private final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
 
-    @Inject
-    private GenericVariantService genericVariantService;
     @Inject
     private PushMessageMetricsService metricsService;
 
@@ -80,20 +79,18 @@ public class NotificationRouter {
         // collections for all the different variants:
         final VariantMap variants = new VariantMap();
 
-        final List<String> variantIDs = message.getCriteria().getVariants();
-
         // if the criteria payload did specify the "variants" field,
         // we look up each of those mentioned variants, by their "variantID":
-        if (variantIDs != null) {
+        if (message.getCriteria().getVariants() != null) {
 
-            for (String variantID : variantIDs) {
-                Variant variant = genericVariantService.findByVariantID(variantID);
+            final Set<String> variantIDs = new HashSet(message.getCriteria().getVariants());
 
-                // does the variant exist ?
-                if (variant != null) {
+            for (Variant variant : pushApplication.getVariants()) {
+                if (variantIDs.contains(variant.getVariantID())) {
                     variants.add(variant);
                 }
             }
+
         } else {
             // No specific variants have been requested,
             // we get all the variants, from the given PushApplicationEntity:
@@ -114,7 +111,7 @@ public class NotificationRouter {
                         message.getIpAddress(),
                         message.getClientIdentifier(),
                         variants.getVariantCount()
-                        );
+                );
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         for (final Entry<VariantType, List<Variant>> entry : variants.entrySet()) {
@@ -134,7 +131,7 @@ public class NotificationRouter {
         void add(Variant variant) {
             List<Variant> list = this.get(variant.getType());
             if (list == null) {
-                list = new ArrayList<Variant>();
+                list = new ArrayList();
                 this.put(variant.getType(), list);
             }
             list.add(variant);
