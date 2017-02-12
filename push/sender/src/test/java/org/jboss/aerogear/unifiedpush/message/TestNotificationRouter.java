@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,7 +40,6 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -119,27 +117,44 @@ public class TestNotificationRouter {
     }
 
     @Test
-    public void testVariantIDsSpecified(GenericVariantService genericVariantService) throws InterruptedException {
+    public void testVariantIDsSpecified() throws InterruptedException {
         // given
         countDownLatch = new CountDownLatch(2);
         SimplePushVariant simplePushVariant = new SimplePushVariant();
-        simplePushVariant.setId("id-simplepush-variant");
+        simplePushVariant.setVariantID("id-simplepush-variant-1");
         iOSVariant iOSVariant = new iOSVariant();
-        iOSVariant.setId("id-ios-variant");
+        iOSVariant.setVariantID("id-ios-variant-1");
         AndroidVariant androidVariant = new AndroidVariant();
-        androidVariant.setId("id-android-variant");
+        androidVariant.setVariantID("id-android-variant-1");
 
         app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
-        message.getCriteria().setVariants(Arrays.asList("id-ios-variant", "id-android-variant"));
-
-        when(genericVariantService.findByVariantID("id-ios-variant")).thenReturn(iOSVariant);
-        when(genericVariantService.findByVariantID("id-android-variant")).thenReturn(androidVariant);
-        when(genericVariantService.findByVariantID("id-simplepush-variant")).thenReturn(simplePushVariant);
+        message.getCriteria().setVariants(Arrays.asList("id-ios-variant-1", "id-android-variant-1"));
 
         // when
         router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
         assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
+
+    }
+
+    @Test
+    public void testNoDuplocateVariantIDsSpecified() throws InterruptedException {
+        // given
+        countDownLatch = new CountDownLatch(2);
+        SimplePushVariant simplePushVariant = new SimplePushVariant();
+        simplePushVariant.setVariantID("id-simplepush-variant-1");
+        iOSVariant iOSVariant = new iOSVariant();
+        iOSVariant.setVariantID("id-ios-variant-1");
+        AndroidVariant androidVariant = new AndroidVariant();
+        androidVariant.setVariantID("id-android-variant-1");
+
+        app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
+        message.getCriteria().setVariants(Arrays.asList("id-ios-variant-1", "id-ios-variant-1"));
+
+        // when
+        router.submit(app, message);
+        countDownLatch.await(3, TimeUnit.SECONDS);
+        assertEquals(variants(VariantType.IOS), variantTypeHolder.getVariantTypes());
 
     }
 
@@ -163,6 +178,5 @@ public class TestNotificationRouter {
     private Set<VariantType> variants(VariantType... types) {
         return new HashSet<>(Arrays.asList(types));
     }
-
 
 }
