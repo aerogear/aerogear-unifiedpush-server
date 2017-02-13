@@ -88,7 +88,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         variant2Metric1.setPushMessageInformation(pushMetric);
         variant2Metric1.setVariantID(variantID2);
         variant2Metric1.setServedBatches(1);
-        when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
+        when(pushMessageInformationDao.lockedSelect(pushMetric)).thenReturn(pushMetric);
 
         // when
         send(new BatchLoadedEvent(variantID1+":"+pushMetric.getId())).withProperty("variantID", variantID1+":"+pushMetric.getId()).to(batchLoadedQueue);

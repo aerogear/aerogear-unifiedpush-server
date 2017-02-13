@@ -72,12 +72,6 @@ public class PushMessageMetricsService {
         return information;
     }
 
-
-    /**
-     * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
-     *
-     * @param pushMessageInformation the push message info object
-     */
     public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
         pushMessageInformationDao.update(pushMessageInformation);
     }
@@ -86,8 +80,8 @@ public class PushMessageMetricsService {
      * Locks the push message information for updates so that there will be no updates concurrently
      * @param pushMessageInformation push message information to lock
      */
-    public void lock(PushMessageInformation pushMessageInformation) {
-        pushMessageInformationDao.lock(pushMessageInformation);
+    public PushMessageInformation lock(PushMessageInformation pushMessageInformation) {
+        return pushMessageInformationDao.lockedSelect(pushMessageInformation);
     }
 
     /**
@@ -159,7 +153,7 @@ public class PushMessageMetricsService {
             variantMetricInformation.incrementVariantOpenCounter();
             variantMetricInformationDao.update(variantMetricInformation);
 
-            this.updatePushMessageInformation(pushMessageInformation);
+            pushMessageInformationDao.update(pushMessageInformation);
         }
 
     }

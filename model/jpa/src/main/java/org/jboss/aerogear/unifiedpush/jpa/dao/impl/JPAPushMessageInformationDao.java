@@ -20,6 +20,7 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -97,6 +98,12 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         final MessageMetrics messageMetrics = findMessageMetricsForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
 
         return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList,  messageMetrics);
+    }
+
+    @Override
+    public PushMessageInformation lockedSelect(PushMessageInformation pushMessageInformation) {
+        PushMessageInformation pmi = find(pushMessageInformation.getId(), LockModeType.PESSIMISTIC_WRITE);
+        return pmi;
     }
 
     @Override

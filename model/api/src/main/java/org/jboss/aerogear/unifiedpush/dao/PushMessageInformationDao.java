@@ -24,6 +24,8 @@ import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 
 public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
 
+    PushMessageInformation lockedSelect(PushMessageInformation pushMessageInformation);
+
     /**
      * Does a count for all the push message that have been submitted for the given PushApplication.
      *
