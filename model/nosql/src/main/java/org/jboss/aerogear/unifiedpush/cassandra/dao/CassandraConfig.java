@@ -21,25 +21,26 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 public class CassandraConfig extends AbstractCassandraConfiguration {
 
 	public static final String PROP_KEYSPACE_DEFV = "unifiedpush_server";
-	private static final String PROP_KEYSPACE_NAME = "aerogear.config.cassandra.keyspace";
-	private static final String PROP_CONTACT_POINTS = "aerogear.config.cassandra.contactpoints";
 	private static final String PROP_CONTACP_DEFV = "127.0.0.1";
-	private static final String PROP_PORT = "aerogear.config.cassandra.port";
 	private static final String PROP_PORT_DEFV = "9042";
+
+	private static final String PROP_KEYSPACE_NAME_KEY = "aerogear.config.cassandra.keyspace";
+	private static final String PROP_CONTACT_POINTS_KEY = "aerogear.config.cassandra.contactpoints";
+	private static final String PROP_PORT_KEY = "aerogear.config.cassandra.port";
 
 	@Autowired
 	private ConfigurationEnvironment config;
 
 	@Override
 	public String getKeyspaceName() {
-		return config.getProperty(PROP_KEYSPACE_NAME, PROP_KEYSPACE_DEFV);
+		return config.getProperty(PROP_KEYSPACE_NAME_KEY, PROP_KEYSPACE_DEFV);
 	}
 
 	@Bean
 	public CassandraClusterFactoryBean cluster() {
 		CassandraClusterFactoryBean cluster = new CassandraClusterFactoryBean();
-		cluster.setContactPoints(config.getProperty(PROP_CONTACT_POINTS, PROP_CONTACP_DEFV));
-		cluster.setPort(Integer.valueOf(config.getProperty(PROP_PORT, PROP_PORT_DEFV)));
+		cluster.setContactPoints(config.getProperty(PROP_CONTACT_POINTS_KEY, PROP_CONTACP_DEFV));
+		cluster.setPort(Integer.valueOf(config.getProperty(PROP_PORT_KEY, PROP_PORT_DEFV)));
 		return cluster;
 	}
 

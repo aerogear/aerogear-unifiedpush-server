@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import org.jacoco.core.internal.data.UUIDToDate;
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.utils.UUIDToDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;

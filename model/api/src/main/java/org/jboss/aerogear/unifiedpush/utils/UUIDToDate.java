@@ -1,4 +1,4 @@
-package org.jacoco.core.internal.data;
+package org.jboss.aerogear.unifiedpush.utils;
 
 import java.util.UUID;
 
