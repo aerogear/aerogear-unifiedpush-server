@@ -39,6 +39,12 @@ import org.slf4j.LoggerFactory;
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @DependsOn(value = { "ConfigurationServiceImpl" })
+/*
+ * TODO - Convert to Spring bean.
+ * 1 - Add Spring caching to getVariantIdsFromClient
+ * 2 - Replace ejb async with spring.
+ * 3 - Support remove client API.
+ */
 public class KeycloakServiceImpl implements KeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
@@ -290,17 +296,14 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	private ClientRepresentation isClientExists(String clientId) {
-		List<ClientRepresentation> clients = this.realm.clients().findAll();
-		ClientRepresentation clientRepresentation = null;
+		List<ClientRepresentation> clients = this.realm.clients().findByClientId(clientId);
 
-		for (ClientRepresentation client : clients) {
-			if (client.getClientId().equalsIgnoreCase(clientId)) {
-				clientRepresentation = client;
-				break;
-			}
+		if (clients == null | clients.size() == 0) {
+			return null;
 		}
 
-		return clientRepresentation;
+		// Return first client
+		return clients.get(0);
 	}
 
 	private Map<String, String> getClientAttributes(PushApplication pushApp) {
