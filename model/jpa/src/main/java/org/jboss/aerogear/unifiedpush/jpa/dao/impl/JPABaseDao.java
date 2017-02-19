@@ -66,6 +66,10 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
         return entityManager.find(getType(), id);
     }
 
+    public T find(K id, LockModeType lockModeType) {
+        return entityManager.find(getType(), id, lockModeType);
+    }
+
     public void create(T entity) {
         entityManager.persist(entity);
     }

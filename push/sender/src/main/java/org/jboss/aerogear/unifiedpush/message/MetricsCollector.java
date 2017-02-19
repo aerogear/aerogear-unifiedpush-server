@@ -68,17 +68,13 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
      * @param variantMetricInformation the variant metrics info object
      */
     public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
-        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformation.getPushMessageInformation().getId());
-        metricsService.lock(pushMessageInformation);
-
-        final String variantID = variantMetricInformation.getVariantID();
-
+        PushMessageInformation pushMessageInformation = metricsService.lock(variantMetricInformation.getPushMessageInformation());
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
         // AGPUSH-1585:
         // using a combined key of variant ID and PushMessageInformation ID, to not limit different push requests on the queue just to the variant
         // TODO: improve name and/or implementation if this.
-        final String variantPushMessageID = variantID + ":" + pushMessageInformation.getId();
+        final String variantPushMessageID = variantMetricInformation.getVariantID() + ":" + pushMessageInformation.getId();
 
         int loadedBatches = countLoadedBatches(variantPushMessageID);
         variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
@@ -96,8 +92,6 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
-
-        metricsService.updatePushMessageInformation(pushMessageInformation);
 
         if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
 
