@@ -43,7 +43,7 @@ public class DocumentMetadata implements Serializable {
 
 	private DocumentMetadata(UUID pushApplicationId, String database) {
 		this.pushApplicationId = pushApplicationId;
-		this.database = database;
+		this.database = getDatabase(database);
 	}
 
 	public DocumentMetadata(String pushApplicationId, //

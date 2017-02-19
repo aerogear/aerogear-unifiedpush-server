@@ -37,6 +37,7 @@
             <url-pattern>/rest/upsi/sender/*</url-pattern>
             <url-pattern>/rest/upsi/applicationsData/*</url-pattern>
             <url-pattern>/rest/upsi/document/*</url-pattern>
+            <url-pattern>/rest/upsi/database/*</url-pattern>
             <url-pattern>/rest/upsi/alias/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
@@ -52,6 +53,7 @@
             <url-pattern>/rest/sender/*</url-pattern>
             <url-pattern>/rest/applicationsData/*</url-pattern>
             <url-pattern>/rest/document/*</url-pattern>
+            <url-pattern>/rest/database/*</url-pattern>
             <url-pattern>/rest/alias/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
