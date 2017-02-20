@@ -513,7 +513,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -v -H "Accept: multipart/mixed" -H "Content-type: application/json"
 	 *   -X GET
 	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
 	 * </pre>

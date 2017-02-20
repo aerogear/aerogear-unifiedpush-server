@@ -56,17 +56,10 @@ public class AliasServiceImpl implements AliasService {
 		List<Alias> aliasList = new ArrayList<>();
 
 		// Create keycloak client if missing.
-		keycloakService.createClientIfAbsent(pushApplication);
-		UUID pushApplicationUUID = UUID.fromString(pushApplication.getPushApplicationID());
+		if (oauth2)
+			keycloakService.createClientIfAbsent(pushApplication);
 
 		aliases.forEach(alias -> {
-			if (exists(pushApplicationUUID, alias)) {
-				// Remove all references to previous alias
-				remove(pushApplicationUUID,
-						StringUtils.isNoneEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther());
-				// TODO - Since KC users are not removed without destructive,
-				// We need to update existing KC users and set a new email
-			}
 			create(alias, oauth2);
 			aliasList.add(alias);
 		});
@@ -80,7 +73,8 @@ public class AliasServiceImpl implements AliasService {
 		logger.debug("OAuth2 flag is: " + oauth2);
 
 		// Create keycloak client if missing.
-		keycloakService.createClientIfAbsent(pushApplication);
+		if (oauth2)
+			keycloakService.createClientIfAbsent(pushApplication);
 
 		// Recreate all aliases to Alias Table
 		List<Alias> aliasList = createAliases(pushApplication, aliases, oauth2);
@@ -107,7 +101,8 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
 		Alias alias = aliasCrudService.find(pushApplicationId, userId);
-		this.remove(pushApplicationId, alias.getEmail(), false);
+		this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
+				false);
 	}
 
 	private void remove(UUID pushApplicationId, String alias, boolean destructive) {
@@ -167,7 +162,7 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public Alias create(String pushApplicationId, String alias) {
-		return createAlias(UUID.fromString(pushApplicationId), null, alias, false);
+		return createAlias(UUID.fromString(pushApplicationId), alias, false);
 	}
 
 	/*
@@ -177,30 +172,17 @@ public class AliasServiceImpl implements AliasService {
 	@Deprecated
 	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases, boolean oauth2) {
 		List<Alias> aliasList = new ArrayList<>();
-		UUID pushApplicationUUID = UUID.fromString(pushApp.getPushApplicationID());
 
 		for (String name : aliases) {
-			// Search if alias is already register for application.
-			// If so, use the same userId in-order to keep previous documents
-			// history. AUTOMATION edge case.
-			Alias alias = aliasCrudService.find(pushApplicationUUID, name);
-
-			if (alias != null) {
-				// Remove all references to previous alias
-				remove(pushApplicationUUID,
-						StringUtils.isEmpty(alias.getEmail()) ? alias.getOther() : alias.getEmail());
-			}
-
-			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()),
-					alias == null ? null : alias.getId(), name, oauth2));
+			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, oauth2));
 		}
 
 		return aliasList;
 	}
 
 	@Deprecated
-	private Alias createAlias(UUID pushApp, UUID userId, String alias, boolean oauth2) {
-		Alias user = new Alias(pushApp, userId);
+	private Alias createAlias(UUID pushApp, String alias, boolean oauth2) {
+		Alias user = new Alias(pushApp, null);
 		if (EMAIL_VALIDATOR.isValid(alias, null)) {
 			user.setEmail(alias);
 		} else {
@@ -212,22 +194,28 @@ public class AliasServiceImpl implements AliasService {
 		return user;
 	}
 
-	private boolean exists(UUID pushApplicationUUID, Alias aliasToFind) {
-		if (aliasToFind.getId() != null && aliasCrudService.find(pushApplicationUUID, aliasToFind.getId()) != null) {
-			return true;
+	private Alias exists(UUID pushApplicationUUID, Alias aliasToFind) {
+		Alias alias = null;
+		if (aliasToFind.getId() != null) {
+			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getId());
+
+			if (alias != null)
+				return alias;
 		}
 
-		if (StringUtils.isNotEmpty(aliasToFind.getEmail())
-				&& aliasCrudService.find(pushApplicationUUID, aliasToFind.getEmail()) != null) {
-			return true;
+		if (StringUtils.isNotEmpty(aliasToFind.getEmail())) {
+			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getEmail());
+			if (alias != null)
+				return alias;
 		}
 
-		if (StringUtils.isNotEmpty(aliasToFind.getOther())
-				&& aliasCrudService.find(pushApplicationUUID, aliasToFind.getOther()) != null) {
-			return true;
+		if (StringUtils.isNotEmpty(aliasToFind.getOther())) {
+			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getOther());
+			if (alias != null)
+				return alias;
 		}
 
-		return false;
+		return alias;
 	}
 
 	@Override
@@ -239,7 +227,21 @@ public class AliasServiceImpl implements AliasService {
 	public void create(Alias alias, boolean oauth2) {
 		// Initialize a new time-based UUID on case one is missing.
 		if (alias.getId() == null) {
-			alias.setId(UUIDs.timeBased());
+			// Search if alias is already register for application.
+			// If so, use the same userId in-order to keep previous history.
+			Alias existingAlias = exists(alias.getPushApplicationId(), alias);
+
+			if (existingAlias != null) {
+				// Remove all references to previous alias
+				remove(alias.getPushApplicationId(), existingAlias.getId());
+				// TODO - Since KC users are not removed without destructive
+				// flag, We need to update existing KC users and set a new
+				// email.
+
+				alias.setId(existingAlias.getId());
+			} else {
+				alias.setId(UUIDs.timeBased());
+			}
 		}
 
 		aliasCrudService.create(alias);

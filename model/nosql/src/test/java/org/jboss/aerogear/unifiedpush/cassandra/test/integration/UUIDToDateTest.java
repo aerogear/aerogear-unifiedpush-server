@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.test.integration;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.utils.UUIDToDate;
@@ -33,4 +34,9 @@ public class UUIDToDateTest {
 		}
 	}
 
+	@Test
+	public void uuidNull() {
+		assertTrue(UUID.fromString("13814000-1dd2-11b2-8080-808080808080")
+				.equals(UUIDs.startOf(Instant.EPOCH.toEpochMilli())));
+	}
 }
