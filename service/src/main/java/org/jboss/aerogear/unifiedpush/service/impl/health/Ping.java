@@ -16,21 +16,36 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
+import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public final class Ping {
-
-    private Ping() {}
+public class Ping {
 
     public static boolean isReachable(String host, int port) {
+        Socket socket = null;
         boolean reachable;
-        try (Socket socket = new Socket()) {
+        try {
+
+            if (ProxyConfiguration.hasSocks()) {
+                socket = new Socket(ProxyConfiguration.socks());
+            } else {
+                socket = new Socket();
+            }
             socket.connect(new InetSocketAddress(host, port), 2000);
             reachable = true;
         } catch (IOException e) {
             reachable = false;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    //ignore
+                }
+            }
         }
         return reachable;
     }
