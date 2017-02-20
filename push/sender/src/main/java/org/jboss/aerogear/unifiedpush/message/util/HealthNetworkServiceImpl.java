@@ -59,7 +59,7 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     static {
         if (customAerogearApnsPushHost != null) {
             final int port = customAerogearApnsPushPort != null ? customAerogearApnsPushPort : Utilities.SANDBOX_GATEWAY_PORT;
-            PUSH_NETWORKS.add(new PushNetwork("Proxy host", customAerogearApnsPushHost, port));
+            PUSH_NETWORKS.add(new PushNetwork("APNs Proxy host", customAerogearApnsPushHost, port));
         }
     }
 
