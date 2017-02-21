@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
@@ -396,6 +397,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Logical database name, e.g users | metadata | any other.
 	 * @param id
 	 *            Document collection id.
+	 * @param fromDate
+	 *            Limit query, return documents newer (>=) then fromDate.
+	 * @param toDate
+	 *            Limit query, return documents older (<) then toDate.
 	 *
 	 * @return Headers Only.
 	 *
@@ -417,8 +422,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	@Path("/{database}")
 	public Response headForApplication(@PathParam("database") String database, //
 			@QueryParam("id") String id, //
+			@QueryParam("fromDate") Long fromDate, //
+			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, id, request, false);
+		return get(database, null, id, new QueryOptions(fromDate, toDate), request, false);
 	}
 
 	/**
@@ -437,6 +444,11 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Logical database name, e.g users | metadata | any other.
 	 * @param id
 	 *            Document collection id.
+	 * @param fromDate
+	 *            Limit query, return documents newer (>=) then fromDate.
+	 * @param toDate
+	 *            Limit query, return documents older (<) then toDate.
+	 *
 	 * @return Document content as multipart/mixed.
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
@@ -458,8 +470,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	@Path("/{database}")
 	public Response getForApplication(@PathParam("database") String database, //
 			@QueryParam("id") String id, //
+			@QueryParam("fromDate") Long fromDate, //
+			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, id, request, false);
+		return get(database, null, id, new QueryOptions(fromDate, toDate), request, false);
 	}
 
 	/**
@@ -480,6 +494,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Unique alias name (email/phone/tokenid/other).
 	 * @param id
 	 *            Document collection id.
+	 * @param fromDate
+	 *            Limit query, return documents newer (>=) then fromDate.
+	 * @param toDate
+	 *            Limit query, return documents older (<) then toDate.
 	 *
 	 * @return Headers Only.
 	 *
@@ -502,8 +520,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	public Response headForAlias(@PathParam("database") String database, //
 			@PathParam("alias") String alias, //
 			@QueryParam("id") String id, //
+			@QueryParam("fromDate") Long fromDate, //
+			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, id, request, true);
+		return get(database, alias, id, new QueryOptions(fromDate, toDate), request, true);
 	}
 
 	/**
@@ -524,6 +544,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Unique alias name (email/phone/tokenid/other).
 	 * @param id
 	 *            Document collection id.
+	 * @param fromDate
+	 *            Limit query, return documents newer (>=) then fromDate.
+	 * @param toDate
+	 *            Limit query, return documents older (<) then toDate.
 	 *
 	 * @return Document content as multipart/mixed.
 	 *
@@ -546,14 +570,16 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	public Response getForAlias(@PathParam("database") String database, //
 			@PathParam("alias") String alias, //
 			@QueryParam("id") String id, //
+			@QueryParam("fromDate") Long fromDate, //
+			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, id, request, false);
+		return get(database, alias, id, new QueryOptions(fromDate, toDate), request, false);
 	}
 
 	private Response get(String database, //
 			String alias, //
 			String id, //
-			HttpServletRequest request, boolean headOnly) { //
+			QueryOptions options, HttpServletRequest request, boolean headOnly) { //
 
 		// Authentication
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
@@ -591,7 +617,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		final MultipartOutput output = new MultipartOutput();
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj, id);
-		documentService.find(metadata, null).forEach(doc -> {
+		documentService.find(metadata, options).forEach(doc -> {
 			OutputPart part = output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()));
 			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());
 		});

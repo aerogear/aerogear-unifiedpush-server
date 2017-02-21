@@ -27,7 +27,7 @@ public class DocumentKey implements Serializable {
 	@PrimaryKeyColumn(name = "database", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
 	private String database;
 
-	// User id can be NullUUID ('00000000-0000-0000-0000-000000000000') AKA
+	// User id can be NullUUID ('13814000-1dd2-11b2-8080-808080808080') AKA
 	// global doc.
 	@PrimaryKeyColumn(name = "user_id", ordinal = 2, type = PrimaryKeyType.PARTITIONED)
 	private UUID userId;

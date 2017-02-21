@@ -1,10 +1,12 @@
 package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.IDocument;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
@@ -165,6 +167,71 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		doc4 = documentDao.findOne(key4);
 		Assert.assertTrue(doc3 == null);
 		Assert.assertTrue(doc4 == null);
+	}
+
+	@Test
+	public void testWithDateRange() {
+		UUID pushApplicationId = UUID.randomUUID();
+
+		try {
+			// Create alias specific documents
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+			Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+
+			aliasDao.create(alias1);
+			aliasDao.create(alias2);
+
+			DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias2));
+			DocumentKey key3 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key4 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias2));
+
+			Long startTime = System.currentTimeMillis();
+
+			// Create all documents
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key1, "{TEST CONTENT 1}"));
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}"));
+
+			Long midTime = System.currentTimeMillis();
+
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key3, "{TEST CONTENT 3}"));
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key4, "{TEST CONTENT 4}"));
+			Thread.sleep(100);
+
+
+			IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
+			IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
+			IDocument<DocumentKey> doc3 = documentDao.findOne(key3);
+			IDocument<DocumentKey> doc4 = documentDao.findOne(key4);
+
+			Assert.assertTrue(doc1 != null);
+			Assert.assertTrue(doc2 != null);
+			Assert.assertTrue(doc3 != null);
+			Assert.assertTrue(doc4 != null);
+
+			// Query 2 documents
+			Assert.assertTrue(documentDao
+					.find(key1, new QueryOptions(startTime, System.currentTimeMillis()))
+					.collect(Collectors.toList()).size() == 2);
+
+			// Query 1 documents
+			Assert.assertTrue(documentDao
+					.find(key2, new QueryOptions(midTime, System.currentTimeMillis()))
+					.collect(Collectors.toList()).size() == 1);
+
+			// Query 1 documents only by from date
+			Assert.assertTrue(documentDao
+					.find(key2, new QueryOptions(midTime))
+					.collect(Collectors.toList()).size() == 1);
+
+
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 
 }

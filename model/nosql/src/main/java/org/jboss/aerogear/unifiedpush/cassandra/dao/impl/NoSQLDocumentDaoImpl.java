@@ -117,7 +117,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	private Stream<DocumentContent> find(DocumentKey queryKey) {
-		return find (queryKey, null);
+		return find(queryKey, null);
 	}
 
 	public Stream<DocumentContent> find(DocumentKey queryKey, QueryOptions options) {
@@ -125,6 +125,17 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		select.where(QueryBuilder.eq("push_application_id", queryKey.getPushApplicationId()));
 		select.where(QueryBuilder.eq("database", queryKey.getDatabase()));
 		select.where(QueryBuilder.eq("user_id", queryKey.getUserId()));
+
+		if (options != null) {
+			if (options.getFromDate() != null){
+				final UUID min = UUIDs.startOf(options.getFromDate());
+				select.where(QueryBuilder.gte("snapshot", min));
+			}
+			if (options.getToDate() != null){
+				final UUID max = UUIDs.endOf(options.getToDate());
+				select.where(QueryBuilder.lt("snapshot", max));
+			}
+		}
 
 		return operations.stream(select, domainClass);
 	}
