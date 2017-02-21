@@ -30,23 +30,28 @@ import javax.ws.rs.core.Response.Status;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.message.PushMessageBatchDispatcher;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
 
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
+
+    @Inject
+    private PushMessageBatchDispatcher dispatcher;
+
     @Inject
     private PushApplicationService pushApplicationService;
-    @Inject
-    private NotificationRouter notificationRouter;
 
     /**
      * RESTful API for sending Push Notifications.
@@ -68,8 +73,6 @@ public class PushNotificationSenderEndpoint {
      *   }'
      *   https://SERVER:PORT/CONTEXT/rest/sender
      * </pre>
-     *
-     * Details about the Message Format can be found HERE!
      *
      * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
      * @HTTP 401 (Unauthorized) The request requires authentication.
@@ -98,15 +101,64 @@ public class PushNotificationSenderEndpoint {
                     .build();
         }
 
-        // submit http request metadata:
-        message.setIpAddress(HttpRequestUtil.extractIPAddress(request));
+        logger.debug("Single push job for %s received", pushApplication.getPushApplicationID());
+        processPushMessages(request, pushApplication, Arrays.asList(message));
 
-        // add the client identifier
-        message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
+        return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
+    }
 
-        // submitted to EJB:
-        notificationRouter.submit(pushApplication, message);
-        logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
+    /**
+     * RESTful API for sending Push Notifications in a batch
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>PushApplicationID:masterSecret</code>).
+     * <p/><p/>
+     *
+     * Messages are submitted as flexible JSON maps. Below is a simple example:
+     * <pre>
+     * curl -u "PushApplicationID:MasterSecret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json"
+     *   -X POST
+     *   -d '[{
+     *     "message": {
+     *      "alert": "HELLO!",
+     *      "sound": "default",
+     *      "user-data": {
+     *          "key": "value",
+     *      }
+     *   }}]'
+     *   https://SERVER:PORT/CONTEXT/rest/sender/batch
+     * </pre>
+     *
+     * @HTTP 202 (Accepted) Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server.
+     * @HTTP 401 (Unauthorized) The request requires authentication.
+     * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     *
+     * @param messages  collection of batch messages to send
+     * @return          empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 202 Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server
+     * @statuscode 401 The request requires authentication
+     */
+    @POST
+    @Path("/batch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @BodyType("java.util.List<org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage>")
+    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
+    public Response send(final List<InternalUnifiedPushMessage> messages, @Context HttpServletRequest request) {
+
+        final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
+
+        if (pushApplication == null) {
+            return Response.status(Status.UNAUTHORIZED)
+                    .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+                    .entity("Unauthorized Request")
+                    .build();
+        }
+
+        logger.debug("Batch job of [%d] for %s received" , messages.size(), pushApplication.getPushApplicationID());
+        processPushMessages(request, pushApplication, messages);
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }
@@ -128,4 +180,21 @@ public class PushNotificationSenderEndpoint {
         // unauthorized...
         return null;
     }
+
+    private void processPushMessages(final HttpServletRequest request, final PushApplication pushApplication, final List<InternalUnifiedPushMessage> messages) {
+
+        // read some metadata about the submitting client
+        final String ipAddress = HttpRequestUtil.extractIPAddress(request);
+        final String clientSender = HttpRequestUtil.extractAeroGearSenderInformation(request);
+
+        // apply client metada
+        for (InternalUnifiedPushMessage msg : messages) {
+            msg.setIpAddress(ipAddress);
+            msg.setClientIdentifier(clientSender);
+        }
+
+        // call
+        dispatcher.dispatchPushMessageBatch(pushApplication, messages);
+    }
+
 }
