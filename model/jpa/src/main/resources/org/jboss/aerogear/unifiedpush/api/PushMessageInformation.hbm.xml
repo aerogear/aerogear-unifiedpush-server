@@ -47,4 +47,10 @@
             <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantMetricInformation" />
         </set>
     </class>
+    <database-object>
+        <create>
+            CREATE INDEX idx_receiver_open_count ON push_message_info (total_receivers, app_open_counter)
+        </create>
+        <drop></drop>
+    </database-object>
 </hibernate-mapping>
