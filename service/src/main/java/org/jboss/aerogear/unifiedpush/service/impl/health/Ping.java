@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl.health;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Ping {
@@ -25,7 +26,8 @@ public class Ping {
         Socket socket = null;
         boolean reachable;
         try {
-            socket = new Socket(host, port);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), 2000);
             reachable = true;
         } catch (IOException e) {
             reachable = false;
