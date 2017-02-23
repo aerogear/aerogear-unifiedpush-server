@@ -17,8 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.regex.Pattern;
 
 /**
  * Helper for various tasks for working with {@link javax.servlet.http.HttpServletRequest} objects.
@@ -28,6 +27,9 @@ public final class HttpRequestUtil {
     private HttpRequestUtil() {
         // no-op
     }
+
+    // from JSR 303
+    private static final Pattern IP_ADDR_PATTERN = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     /**
      * Returns FALSE when sorting query value matches 'desc', otherwise it returns TRUE.
@@ -53,6 +55,7 @@ public final class HttpRequestUtil {
      * @return the IP address from the given request
      */
     public static String extractIPAddress(final HttpServletRequest request) {
+
         String ip = request.getHeader("x-forwarded-for");
         if (isIPAdressValid(ip)) {
             return ip;
@@ -97,11 +100,7 @@ public final class HttpRequestUtil {
         // InetAddress.getByName() validates 'null' as a valid IP (localhost).
         // we do not want that
         if (hasValue(ip)) {
-            try {
-                InetAddress.getByName(ip);
-                return true;
-            } catch (UnknownHostException uhe) {
-            }
+            return IP_ADDR_PATTERN.matcher(ip).matches();
         }
         return false;
     }
