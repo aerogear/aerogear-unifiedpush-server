@@ -223,8 +223,8 @@ public class DocumentEndpoint extends AbstractEndpoint {
 				user = aliasService.create(pushApp.getPushApplicationID(), alias);
 
 			documentService.save(new DocumentMetadata(UUID.fromString(pushApp.getPushApplicationID()),
-					DocumentMetadata.getDatabase(database), user, deviceToken, DocumentMetadata.getId(id), null),
-					content);
+					DocumentMetadata.getDatabase(database), user, deviceToken, null),
+					content, DocumentMetadata.getId(id));
 
 			return appendAllowOriginHeader(Response.ok(EmptyJSON.STRING), request);
 		} catch (Exception e) {

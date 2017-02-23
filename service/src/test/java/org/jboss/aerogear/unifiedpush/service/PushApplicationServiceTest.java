@@ -168,7 +168,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 		aliasService.create(alias, false);
 
 		// Create document for alias
-		documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias, "1"), "{SIMPLE}");
+		documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias), "{SIMPLE}", "1");
 
 		// Query document for alias
 		String content = documentService.getLatestFromAlias(pa, alias.getEmail(), "TASKS", "1");

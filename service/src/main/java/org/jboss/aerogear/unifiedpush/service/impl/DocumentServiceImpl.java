@@ -44,8 +44,8 @@ public class DocumentServiceImpl implements DocumentService {
 	private AliasDao aliasDao;
 
 	@Override
-	public DocumentContent save(DocumentMetadata metadate, String content) {
-		return (DocumentContent) documentDao.create(createDocument(metadate, content));
+	public DocumentContent save(DocumentMetadata metadate, String content, String id) {
+		return (DocumentContent) documentDao.create(createDocument(metadate, content, id));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -57,7 +57,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id) {
 		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database,
-				getAlias(pushApplication.getPushApplicationID(), alias), id);
+				getAlias(pushApplication.getPushApplicationID(), alias));
 
 		DocumentContent document = (DocumentContent) documentDao.findOne(new DocumentKey(metadata), id);
 
@@ -72,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
 		List<String> contents = new ArrayList<>();
 		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApplication.getPushApplicationID()));
 
-		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null, id);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null);
 
 		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases,
 				id);
@@ -110,12 +110,12 @@ public class DocumentServiceImpl implements DocumentService {
 	private DocumentContent save(PushApplication pushApplication, Alias alias, String database, String id,
 			String document) {
 
-		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias, id);
-		return (DocumentContent) documentDao.create(createDocument(meta, document));
+		DocumentMetadata meta = new DocumentMetadata(pushApplication.getPushApplicationID(), database, alias);
+		return (DocumentContent) documentDao.create(createDocument(meta, document, id));
 	}
 
-	private DocumentContent createDocument(DocumentMetadata metadata, String content) {
-		return new DocumentContent(new DocumentKey(metadata), content, metadata.getDocumentId());
+	private DocumentContent createDocument(DocumentMetadata metadata, String content, String id) {
+		return new DocumentContent(new DocumentKey(metadata), content, id);
 	}
 
 	@Override

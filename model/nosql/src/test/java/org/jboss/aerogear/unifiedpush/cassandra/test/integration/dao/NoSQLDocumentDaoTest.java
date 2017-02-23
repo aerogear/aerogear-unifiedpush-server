@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
@@ -118,6 +119,9 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		// Search by document id.
 		IDocument<DocumentKey> doc1ById = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"), "ID1");
 		Assert.assertTrue(doc1.getContent().equals(doc1ById.getContent()));
+
+		Stream<? extends IDocument<DocumentKey>> documents = documentDao.find(new DocumentKey(pushApplicationId, "STATUS"), new QueryOptions("ID1"));
+		Assert.assertTrue(documents.collect(Collectors.toList()).size() == 1);
 	}
 
 	@Test

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
@@ -134,6 +135,11 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			if (options.getToDate() != null){
 				final UUID max = UUIDs.endOf(options.getToDate());
 				select.where(QueryBuilder.lt("snapshot", max));
+			}
+
+			// Also search by document logical id.
+			if (StringUtils.isNoneEmpty(options.getId())) {
+				select.where(QueryBuilder.eq("document_id", options.getId()));
 			}
 		}
 

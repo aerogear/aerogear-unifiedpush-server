@@ -269,10 +269,10 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 		// Create metadata object
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database,
-				NullAlias.getAlias(pushApplicationId), id,
+				NullAlias.getAlias(pushApplicationId),
 				StringUtils.isEmpty(snapshot) ? null : UUID.fromString(snapshot));
 
-		DocumentContent doc = documentService.save(metadata, document);
+		DocumentContent doc = documentService.save(metadata, document, id);
 
 		try {
 			return appendAllowOriginHeader(appendSnapshotHeader(Response.noContent(), doc.getKey().getSnapshot()),
@@ -368,9 +368,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			aliasObj = getAliasByToken(pushApplicationId, deviceToken);
 		}
 
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj, id,
+		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj,
 				StringUtils.isEmpty(snapshot) ? null : UUID.fromString(snapshot));
-		DocumentContent doc = documentService.save(metadata, document);
+		DocumentContent doc = documentService.save(metadata, document, id);
 
 		try {
 			return appendAllowOriginHeader(appendSnapshotHeader(Response.noContent(), doc.getKey().getSnapshot()),
@@ -425,7 +425,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, id, new QueryOptions(fromDate, toDate), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id), request, false);
 	}
 
 	/**
@@ -473,7 +473,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, id, new QueryOptions(fromDate, toDate), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id), request, false);
 	}
 
 	/**
@@ -523,7 +523,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, id, new QueryOptions(fromDate, toDate), request, true);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id), request, true);
 	}
 
 	/**
@@ -573,12 +573,11 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, id, new QueryOptions(fromDate, toDate), request, false);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id), request, false);
 	}
 
 	private Response get(String database, //
 			String alias, //
-			String id, //
 			QueryOptions options, HttpServletRequest request, boolean headOnly) { //
 
 		// Authentication
@@ -616,7 +615,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 		final MultipartOutput output = new MultipartOutput();
 
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj, id);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj);
 		documentService.find(metadata, options).forEach(doc -> {
 			OutputPart part = output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()));
 			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());

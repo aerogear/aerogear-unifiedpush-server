@@ -4,6 +4,12 @@ public class QueryOptions {
 
 	private Long fromDate;
 	private Long toDate;
+	private String id;
+
+	public QueryOptions(String id) {
+		super();
+		this.id = id;
+	}
 
 	public QueryOptions(Long fromDate) {
 		super();
@@ -14,6 +20,13 @@ public class QueryOptions {
 		super();
 		this.fromDate = fromDate;
 		this.toDate = toDate;
+	}
+
+	public QueryOptions(Long fromDate, Long toDate, String id) {
+		super();
+		this.fromDate = fromDate;
+		this.toDate = toDate;
+		this.id = id;
 	}
 
 	public Long getFromDate() {
@@ -30,6 +43,14 @@ public class QueryOptions {
 
 	public void setToDate(Long toDate) {
 		this.toDate = toDate;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
