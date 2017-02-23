@@ -49,7 +49,7 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     public static final String WNS_SEND_ENDPOINT = "db3.notify.windows.com";
     private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<PushNetwork>(Arrays.asList(
             new PushNetwork[]{
-                    new PushNetwork("Firebase Cloud Messaging", FCM_SEND_ENDPOINT, 433),
+                    new PushNetwork("Firebase Cloud Messaging", FCM_SEND_ENDPOINT, 443),
                     new PushNetwork("Apple Push Network Sandbox", Utilities.SANDBOX_GATEWAY_HOST, Utilities.SANDBOX_GATEWAY_PORT),
                     new PushNetwork("Apple Push Network Production", Utilities.PRODUCTION_GATEWAY_HOST, Utilities.PRODUCTION_GATEWAY_PORT),
                     new PushNetwork("Windows Push Network", WNS_SEND_ENDPOINT, 443)
