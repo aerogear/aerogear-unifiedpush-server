@@ -39,6 +39,7 @@ import org.jboss.aerogear.unifiedpush.message.serviceHolder.ApnsServiceHolder;
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceConstructor;
 import org.jboss.aerogear.unifiedpush.message.serviceHolder.ServiceDestroyer;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +119,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
             builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
 
-       // apply the 'content-available:1' value:
+        // apply the 'content-available:1' value:
         if (apns.isContentAvailable()) {
             // content-available is for 'silent' notifications and Newsstand
             builder = builder.instantDeliveryOrSilentNotification();
@@ -260,6 +261,10 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
             configureDestinations(iOSVariant, builder);
 
+            if(ProxyConfiguration.hasSocks()){
+                logger.debug("configuring with socks proxy");
+                builder.withProxy(ProxyConfiguration.socks());
+            }
 
             // create the service
             return builder.build();
