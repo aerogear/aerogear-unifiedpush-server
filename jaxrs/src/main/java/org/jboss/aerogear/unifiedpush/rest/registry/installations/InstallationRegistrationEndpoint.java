@@ -48,6 +48,7 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
@@ -76,6 +77,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private PushMessageMetricsService metricsService;
     @Inject
     private VerificationService verificationService;
+	@Inject
+	private ConfigurationService configuration;
     /**
      * Cross Origin for Installations
      *
@@ -146,6 +149,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      *
      * @param oldToken  The previously registered deviceToken or an empty String.  Provided by the header x-ag-old-token.
      * @param entity    {@link Installation} for Device registration
+     * @param synchronously force synchronous registration
      * @param request   The request object
      * @return          Registered {@link Installation}
      *
@@ -168,6 +172,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             Installation entity,
             @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
             @Context HttpServletRequest request) {
+
+    	boolean shouldVerifiy = configuration.isVerificationEnabled();
 
         // find the matching variation:
         final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
@@ -193,9 +199,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
         }
 
-        // In some cases (mostly automation & registration verification), we need to
+        // In some cases (automation & verification a.k.a OTP), we need to
         // make sure device is synchronously registered.
-        if (synchronously)
+        if (synchronously || shouldVerifiy)
         	clientInstallationService.addInstallationSynchronously(variant, entity);
         else
         	clientInstallationService.addInstallation(variant, entity);
