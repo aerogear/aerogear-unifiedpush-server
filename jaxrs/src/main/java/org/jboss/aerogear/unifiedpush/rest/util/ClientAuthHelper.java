@@ -30,12 +30,13 @@ public class ClientAuthHelper {
 			ClientInstallationService clientInstallationService, String deviceToken, HttpServletRequest request) {
 
 		if (deviceToken == null) {
-			logger.info("API request missing " + DEVICE_TOKEN_HEADER + " header! URI - > " + request.getRequestURI());
+			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
+					request.getRequestURI());
 			return null;
 		}
 
 		// Get variant from basic authentication headers
-		Variant variant = loadVariantWhenAuthorized(genericVariantService, request);
+		Variant variant = loadVariantWhenAuthorized(genericVariantService, request, false);
 
 		if (variant == null) {
 			// Variant is missing, try to extract variant using Bearer
@@ -43,17 +44,17 @@ public class ClientAuthHelper {
 				variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
 
 				if (variant == null) {
-					logger.info("API request using bearer to non-existing variant {}", request.getRequestURI());
+					logger.info("UnAuthorized bearer authentication missing variant. device token ({}), URI {}",
+							deviceToken, request.getRequestURI());
 					return null;
 				}
-				logger.debug("API request using bearer to exising variant id: {} API: {}", variant.getVariantID(),
-						request.getRequestURI());
+				logger.debug("Authorized bearer authentication to exising variant id: {} API: {}",
+						variant.getVariantID(), request.getRequestURI());
 			} else {
 				// Variant is missing to anonymous/otp mode
-				logger.warn("API request to non-existing variant {}", request.getRequestURI());
+				logger.warn("UnAuthorized basic authentication using token-id {}", request.getRequestURI());
 				return null;
 			}
-
 		}
 
 		// Variant can't be null at this point.
@@ -70,12 +71,16 @@ public class ClientAuthHelper {
 		return variant;
 	}
 
+	public static Variant loadVariantWhenAuthorized(GenericVariantService genericVariantService,
+			HttpServletRequest request) {
+		return loadVariantWhenAuthorized(genericVariantService, request, true);
+	}
 	/**
 	 * returns application if the masterSecret is valid for the request
 	 * PushApplicationEntity
 	 */
 	public static Variant loadVariantWhenAuthorized(GenericVariantService genericVariantService,
-			HttpServletRequest request) {
+			HttpServletRequest request, boolean logUnAuthorized) {
 		// extract the pushApplicationID and its secret from the HTTP Basic
 		// header:
 		String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
@@ -87,7 +92,8 @@ public class ClientAuthHelper {
 			return variant;
 		}
 
-		logger.warn("UnAuthorized authentication using variantID: " + variantID + ", Secret: " + secret);
+		if (logUnAuthorized)
+			logger.warn("UnAuthorized authentication using variantID: {}, Secret: {}", variantID, secret);
 		// unauthorized...
 		return null;
 	}
