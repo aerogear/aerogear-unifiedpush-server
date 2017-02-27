@@ -26,7 +26,7 @@ public interface VerificationPublisher {
 			String toaddres, String subjectt, Exception e) {
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("Cannot send SMS message using");
+		builder.append("Cannot send " + type + " message using");
 		builder.append(": hostname: ").append(hostname);
 		builder.append(", portnumb: ").append(portnumb);
 		builder.append(", username: ").append(username);
@@ -34,6 +34,7 @@ public interface VerificationPublisher {
 		builder.append(", fromaddr: ").append(fromaddr);
 		builder.append(", toaddres: ").append(toaddres);
 
-		logger.error(builder.toString() , e);
+		logger.error(builder.toString());
+		logger.debug("Error while sending verification code", e);
 	}
 }

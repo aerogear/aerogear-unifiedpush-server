@@ -1,7 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.sms;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Properties;
 
@@ -78,9 +77,7 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 			}
 
 			invokeAPI(apiCall.toString());
-		} catch (UnsupportedEncodingException e) {
-			VerificationPublisher.logError(logger, "SMS", API_URL, "443", username, password, username, alias, code, e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			VerificationPublisher.logError(logger, "SMS", API_URL, "443", username, password, username, alias, code, e);
 		}
 	}
