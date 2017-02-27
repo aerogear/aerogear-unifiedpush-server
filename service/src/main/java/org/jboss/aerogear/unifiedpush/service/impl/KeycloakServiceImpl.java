@@ -292,7 +292,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	private ClientRepresentation isClientExists(PushApplication pushApp) {
-		return isClientExists(CLIENT_PREFIX + pushApp.getName());
+		return isClientExists(CLIENT_PREFIX + pushApp.getName().toLowerCase());
 	}
 
 	private ClientRepresentation isClientExists(String clientId) {
