@@ -75,6 +75,7 @@ public class ClientAuthHelper {
 			HttpServletRequest request) {
 		return loadVariantWhenAuthorized(genericVariantService, request, true);
 	}
+
 	/**
 	 * returns application if the masterSecret is valid for the request
 	 * PushApplicationEntity
@@ -124,6 +125,11 @@ public class ClientAuthHelper {
 
 	// Barear authentication allowed only using /upsi context
 	private static boolean isBearerAllowed(HttpServletRequest request) {
+		return isWebAppContext(request);
+	}
+
+	// Barear authentication allowed only using /upsi context
+	public static boolean isWebAppContext(HttpServletRequest request) {
 		return request.getRequestURI().indexOf(RestWebApplication.UPSI_BASE_CONTEXT) > -1;
 	}
 }
