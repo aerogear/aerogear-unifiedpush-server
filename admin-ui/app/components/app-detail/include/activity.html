@@ -103,15 +103,15 @@
   </div>
 
   <h1 ng-if="appDetail.app.$deviceCount == 0">You have no devices registered</h1>
-  <h1 ng-if="appDetail.app.$deviceCount != 0">You haven't send push notifications yet</h1>
+  <h1 ng-if="appDetail.app.$deviceCount != 0">You haven't sent any push notifications yet</h1>
 
   <div ng-if="appDetail.app.$deviceCount == 0">
-    <p>There are no registered device for this application.</p>
+    <p>There are no registered devices for this application.</p>
     <p>Check out the documentation on how to get started to <a ups-doc="docs-push-getting-started">register a device</a>.</p>
   </div>
 
   <div ng-if="appDetail.app.$deviceCount != 0">
-    <p>You haven't send push notifications to the device yet.</p>
+    <p>You haven't sent any push notifications to the device yet.</p>
     <div class="blank-slate-pf-main-action">
       <button class="btn btn-primary btn-lg" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length">
         <i class="fa fa-paper-plane"></i>

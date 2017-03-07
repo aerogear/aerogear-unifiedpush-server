@@ -62,7 +62,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 	protected void specificSetup() {
 		// setup a variant:
 		androidVariant = new AndroidVariant();
-		androidVariant.setGoogleKey("Key");
+        androidVariant.setGoogleKey("XYZQWEAWSvw:GGG91bGd6o9D-tU9JJJyvlL1iXibUde4fckYLG-LOLebCnB07Z1kTSycOC3a7HHxP1JFv6S_xxxxxMWgXQ2hZZIQoo3o4Jv0JbzPdNg4x4b0MRdjPM4M4cFOxBF4l4lozBRx4looPYso");
 		androidVariant.setName("Android");
 		androidVariant.setDeveloper("me");
 		variantService.addVariant(androidVariant);
