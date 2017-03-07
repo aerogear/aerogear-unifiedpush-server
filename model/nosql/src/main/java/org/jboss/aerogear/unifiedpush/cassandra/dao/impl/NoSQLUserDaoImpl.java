@@ -79,7 +79,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		if (user == null)
 			return super.save(entity);
 
-		return update(entity);
+		return super.update(entity);
 	}
 
 	/*

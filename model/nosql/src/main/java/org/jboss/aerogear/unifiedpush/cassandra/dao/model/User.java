@@ -24,13 +24,13 @@ public class User {
 	@JsonIgnore
 	private UserKey key;
 
-	@Column
+	@Column(value = "type")
 	private Byte type;
 
-	@Column
+	@Column(value = "month")
 	private Byte month;
 
-	@Column
+	@Column(value = "day")
 	private Integer day;
 
 	public User() {
@@ -44,10 +44,11 @@ public class User {
 		// Time zone is not important here, month/day are used only as MV
 		// partition key.
 		if (key != null && key.getId() != null) {
-			this.month = (byte) LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
-					.get(ChronoField.MONTH_OF_YEAR);
-			this.day = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0, ZoneOffset.UTC)
-					.get(ChronoField.DAY_OF_MONTH);
+			LocalDateTime date = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0,
+					ZoneOffset.UTC);
+
+			this.month = (byte) date.get(ChronoField.MONTH_OF_YEAR);
+			this.day = date.get(ChronoField.DAY_OF_MONTH);
 		}
 
 		this.type = type;
