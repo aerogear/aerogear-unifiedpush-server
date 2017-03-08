@@ -469,12 +469,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					.entity(quote("installation not found for: " + verificationAttempt.getDeviceToken())), request);
 		}
 
-		// OTP based devices should never update active users
-		// Therefore we override oauth2 flag for OTP related requests.
-		if (!ClientAuthHelper.isWebAppContext(request)) {
-			verificationAttempt.setOauth2(false);
-		}
-
 		VerificationResult result = verificationService.verifyDevice(installation, variant, verificationAttempt);
 
 		return appendAllowOriginHeader(Response.ok(result), request);
