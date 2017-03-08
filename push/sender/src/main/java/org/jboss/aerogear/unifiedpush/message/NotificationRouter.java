@@ -150,7 +150,7 @@ public class NotificationRouter {
 
 			// Prevent dev/null messages from being sent.
         	if (VerificationService.isDevNullVariant(variant.getName())){
-        		logger.warn(String.format("Push message requst to {} variant has been aborted!", variant.getName()));
+        		logger.warn("Push message requst to {} variant has been aborted!", variant.getName());
         		return;
         	}
 

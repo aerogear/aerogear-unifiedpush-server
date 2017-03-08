@@ -114,6 +114,8 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 					throw new RuntimeException("Received status code " + status + " from clickatell, with response " +
 							responseText);
 				}
+
+				logger.debug("Received status code {} from clickatell, with response: {}", status, responseText);
 			}
 		}
 	}
@@ -150,7 +152,6 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 		public String getCountryCode() {
 			return countryCode;
 		}
-
     }
 
 	@Override
