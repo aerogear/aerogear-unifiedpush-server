@@ -1,0 +1,47 @@
+# Galera cluster config, modified from
+# https://gist.github.com/lucidfrontier45/497341c4b848dfbd6dfb
+
+upsnode1:
+    image: hauptmedia/mariadb:10.1
+    hostname: upsnode1
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=unifiedpush
+      - REPLICATION_PASSWORD=unifiedpush
+      - MYSQL_DATABASE=unifiedpush
+      - MYSQL_USER=unifiedpush
+      - MYSQL_PASSWORD=unifiedpush
+      - GALERA=On
+      - NODE_NAME=upsnode1
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://
+    command: --wsrep-new-cluster
+
+upsnode2:
+    image: hauptmedia/mariadb:10.1
+    hostname: upsnode2
+    links:
+      - upsnode1
+    ports:
+      - 23306:3306
+    environment:
+      - REPLICATION_PASSWORD=unifiedpush
+      - GALERA=On
+      - NODE_NAME=upsnode2
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://upsnode1
+      
+upsnode3:
+    image: hauptmedia/mariadb:10.1
+    hostname: upsnode3
+    links:
+      - upsnode1
+    ports:
+      - 33306:3306
+    environment:
+      - REPLICATION_PASSWORD=unifiedpush
+      - GALERA=On
+      - NODE_NAME=upsnode3
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://upsnode1
