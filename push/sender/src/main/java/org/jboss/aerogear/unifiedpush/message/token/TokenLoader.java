@@ -226,7 +226,7 @@ public class TokenLoader {
                         if (gcmTopicRequest) {
                             logger.debug("No legacy(non-InstanceID) tokens found. Just pure GCM topic requests");
                         } else {
-                            logger.warn("Check your push query: 0 tokens were loaded from the DB. Variant type {}", variant.getType().name());
+                            logger.warn("Check your push query: 0 tokens were loaded from the DB. Variant type {} name {}", variant.getType().name(), variant.getName());
                         }
 
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();

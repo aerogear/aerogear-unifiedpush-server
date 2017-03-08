@@ -124,8 +124,10 @@ public class NotificationRouter {
 		// we split the variants per type since each type may have its own
 		// configuration (e.g. batch size)
         variants.forEach((variantType, variant) -> {
-            logger.info(String.format("Internal dispatching of push message for one %s variant (by %s)", variantType.getTypeName(), message.getClientIdentifier()));
-            dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));
+        	if (variant != null && !variant.isEmpty()){
+        		logger.info(String.format("Internal dispatching of push message for one %s variant (by %s)", variantType.getTypeName(), message.getClientIdentifier()));
+        		dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));
+        	}
         });
     }
 
@@ -146,7 +148,7 @@ public class NotificationRouter {
 				this.put(variant.getType(), list);
 			}
 
-			// Prevent dev/null messages from beening sent.
+			// Prevent dev/null messages from being sent.
         	if (VerificationService.isDevNullVariant(variant.getName())){
         		logger.warn(String.format("Push message requst to {} variant has been aborted!", variant.getName()));
         		return;
