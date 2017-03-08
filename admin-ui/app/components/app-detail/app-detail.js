@@ -9,6 +9,12 @@ angular.module('upsConsole')
 
     this.contextPath = ContextProvider.contextPath();
 
+    this.selectTab = function(tab) {
+      if (self.tab === tab) {
+        this.canActivate();
+      }
+    };
+
     this.canActivate = function() {
       return $q.all([
         applicationsEndpoint.getWithMetrics({appId: $routeParams.app})

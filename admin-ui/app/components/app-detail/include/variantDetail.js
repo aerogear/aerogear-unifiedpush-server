@@ -32,6 +32,9 @@ angular.module('upsConsole')
     };
 
     $scope.$watch(function() { return self.searchString }, function( searchString ) {
+      if (self.searchString === searchString) {
+        return;
+      }
       self.currentPage = 1;
       fetchInstallations( self.currentPage, self.searchString );
     });

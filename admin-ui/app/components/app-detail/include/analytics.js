@@ -50,8 +50,6 @@ angular.module('upsConsole')
         });
     }
 
-    updateAnalytics();
-
     $scope.$on('upsNotificationSent', function( pushData, app ) {
       updateAnalytics();
     });
