@@ -17,8 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 
-import java.util.Collection;
-
 import org.jboss.aerogear.adm.ADM;
 import org.jboss.aerogear.adm.AdmService;
 import org.jboss.aerogear.adm.PayloadBuilder;
@@ -29,6 +27,8 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
@@ -61,12 +61,6 @@ public class AdmPushNotificationSender implements PushNotificationSender {
 
         //add the aerogear-push-id
         builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
-
-        // no need to send dev/null requests
-        if (PushNotificationSender.isDevNullVariant(variant.getName())) {
-        	senderCallback.onSilent(variant.getType().getTypeName());
-        	return;
-        }
 
         final AdmVariant admVariant = (AdmVariant) variant;
 

@@ -10,6 +10,10 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 public interface VerificationService {
 	public static final String DEVNULL_NOTIFICATIONS_VARIANT = "NULL-NOTIFICATIONS-VARIANT";
 
+    public static boolean isDevNullVariant(String variantName){
+    	return VerificationService.DEVNULL_NOTIFICATIONS_VARIANT.equals(variantName);
+    }
+
 	/**
 	 * Sends a verification request to the device represented by the
 	 * installation.

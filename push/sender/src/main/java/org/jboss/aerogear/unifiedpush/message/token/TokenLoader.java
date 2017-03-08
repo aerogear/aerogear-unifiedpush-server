@@ -16,6 +16,21 @@
  */
 package org.jboss.aerogear.unifiedpush.message.token;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
@@ -39,21 +54,6 @@ import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
@@ -131,6 +131,7 @@ public class TokenLoader {
         logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
 
         for (Variant variant : variants) {
+
             try {
 
                 ResultsStream<String> tokenStream;
@@ -267,7 +268,7 @@ public class TokenLoader {
      * @param e throwable thrown when JMS message delivery fails
      * @return true if exceptions represents state when queue is full; false otherwise
      */
-    private boolean isQueueFullException(Throwable e) {
+    private static boolean isQueueFullException(Throwable e) {
         if (e instanceof JMSException && e.getCause() != null) {
             if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
                 return true;

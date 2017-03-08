@@ -16,16 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
-
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.inject.Inject;
-
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsDelegateAdapter;
+import com.notnoop.apns.ApnsNotification;
+import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.ApnsServiceBuilder;
+import com.notnoop.apns.DeliveryError;
+import com.notnoop.apns.EnhancedApnsNotification;
+import com.notnoop.apns.PayloadBuilder;
+import com.notnoop.apns.internal.Utilities;
+import com.notnoop.exceptions.ApnsDeliveryErrorException;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -43,16 +43,14 @@ import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.notnoop.apns.APNS;
-import com.notnoop.apns.ApnsDelegateAdapter;
-import com.notnoop.apns.ApnsNotification;
-import com.notnoop.apns.ApnsService;
-import com.notnoop.apns.ApnsServiceBuilder;
-import com.notnoop.apns.DeliveryError;
-import com.notnoop.apns.EnhancedApnsNotification;
-import com.notnoop.apns.PayloadBuilder;
-import com.notnoop.apns.internal.Utilities;
-import com.notnoop.exceptions.ApnsDeliveryErrorException;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
 @SenderType(VariantType.IOS)
 public class APNsPushNotificationSender implements PushNotificationSender {
@@ -118,7 +116,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
         //this kind of check should belong in java-apns
         if(apns.getLocalizedTitleArguments() != null) {
-            builder.localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
+            builder .localizedArguments(apns.getLocalizedTitleArguments()); //iOS8 : Localized Title Arguments;
         }
 
         // apply the 'content-available:1' value:
@@ -136,13 +134,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
         if (builder.isTooLong()) {
             // invoke the error callback and return, as it is pointless to send something out
             callback.onError("Nothing sent to APNs since the payload is too large");
-            return;
-        }
-
-        // support for dev/null messages. this is useful for automation tests.
-        if (PushNotificationSender.isDevNullVariant(variant.getName())) {
-            // invoke the silent callback and return, as it is pointless to send something out.
-            callback.onSilent(variant.getType().getTypeName());
             return;
         }
 
@@ -182,7 +173,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                     service.stop();
                 }
             });
-
             try {
                 callback.onSuccess();
             } catch (Exception e) {
@@ -198,7 +188,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                 }
                 callback.onError("Error sending payload to APNs server: " + e.getMessage());
             } finally {
-            	apnsServiceHolder.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
+                apnsServiceHolder.freeUpSlot(pushMessageInformationId, iOSVariant.getVariantID());
             }
         }
     }
@@ -207,7 +197,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
      * If no TTL was provided, we use the max date from the APNs library
      */
-    private Date createFutureDateBasedOnTTL(int ttl) {
+    private static Date createFutureDateBasedOnTTL(int ttl) {
 
         // no TTL was specified on the payload, we use the MAX Default from the APNs library:
         if (ttl == -1) {
@@ -241,14 +231,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
 
                 @Override
                 public void messageSendFailed(ApnsNotification message, Throwable e) {
-
-                    // message not found in Java-APNs cache
-                    if (message == null) {
-                        // Notification has been rejected by Apple, and it was removed from the java-apns cache
-                        logger.error("Error sending payload to APNs server", e);
-                        return;
-                    }
-
                     if (e.getClass().isAssignableFrom(ApnsDeliveryErrorException.class)) {
                         ApnsDeliveryErrorException deliveryError = (ApnsDeliveryErrorException) e;
                         if (deliveryError.getDeliveryError() == DeliveryError.INVALID_TOKEN) {
@@ -260,12 +242,6 @@ public class APNsPushNotificationSender implements PushNotificationSender {
                             logger.error("Error sending payload to APNs server", e);
                         }
                     }
-                }
-
-                @Override
-                public void cacheLengthExceeded(int newCacheLength) {
-                    logger.warn("Internal cache size exceeded, new size is: " + newCacheLength);
-
                 }
             });
 
@@ -309,7 +285,7 @@ public class APNsPushNotificationSender implements PushNotificationSender {
      * @param iOSVariant
      * @param builder
      */
-    private void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
+    private static void configureDestinations(iOSVariant iOSVariant, ApnsServiceBuilder builder) {
         // pick the destination, based on submitted profile:
         builder.withAppleDestination(iOSVariant.isProduction());
 

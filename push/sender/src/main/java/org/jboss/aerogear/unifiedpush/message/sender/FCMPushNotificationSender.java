@@ -109,26 +109,22 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
         Message fcmMessage = fcmBuilder.build();
 
-		// send it out.....
-		try {
-			if (!PushNotificationSender.isDevNullVariant(variant.getName())) {
-				logger.debug("Sending transformed FCM payload: {}", fcmMessage);
+        // send it out.....
+        try {
+            logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
             final ConfigurableFCMSender sender = new ConfigurableFCMSender(androidVariant.getGoogleKey());
 
-				// send out a message to a batch of devices...
-				processFCM(androidVariant, pushTargets, fcmMessage, sender);
+            // send out a message to a batch of devices...
+            processFCM(androidVariant, pushTargets, fcmMessage , sender);
 
-				logger.debug("Message batch to FCM has been submitted");
-				callback.onSuccess();
-			} else {
-				callback.onSilent(VariantType.ANDROID.name());
-			}
+            logger.debug("Message batch to FCM has been submitted");
+            callback.onSuccess();
 
-		} catch (Exception e) {
-			// FCM exceptions:
-			callback.onError(String.format("Error sending payload to FCM server: %s", e.getMessage()));
-		}
+        } catch (Exception e) {
+            // FCM exceptions:
+            callback.onError(String.format("Error sending payload to FCM server: %s", e.getMessage()));
+        }
     }
 
     /**
@@ -221,6 +217,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (FCM_ERROR_CODES.contains(errorCodeName)) {
+
                     // Ok the result at INDEX 'i' represents a 'bad' registrationID
 
                     // Now use the INDEX of the _that_ result object, and look

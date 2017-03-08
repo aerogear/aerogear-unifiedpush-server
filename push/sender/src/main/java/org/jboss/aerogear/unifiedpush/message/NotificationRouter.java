@@ -16,17 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,10 +27,19 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Takes a request for sending {@link UnifiedPushMessage} and submits it to
@@ -127,31 +129,42 @@ public class NotificationRouter {
         });
     }
 
-    /**
-     * Map for storing variants split by the variant type
-     */
-    private static class VariantMap extends EnumMap<VariantType, List<Variant>> {
-        private static final long serialVersionUID = -1942168038908630961L;
-        VariantMap() {
-            super(VariantType.class);
-        }
-        void add(Variant variant) {
-            List<Variant> list = this.get(variant.getType());
-            if (list == null) {
-                list = new ArrayList<>();
-                this.put(variant.getType(), list);
-            }
-            list.add(variant);
-        }
-        void addAll(Collection<Variant> variants) {
-            variants.forEach(this::add);
-        }
-        int getVariantCount() {
-            int count = 0;
-            for (Collection<Variant> variants : values()) {
-                count += variants.size();
-            }
-            return count;
-        }
-    }
+	/**
+	 * Map for storing variants split by the variant type
+	 */
+	private static class VariantMap extends EnumMap<VariantType, List<Variant>> {
+		private static final long serialVersionUID = -1942168038908630961L;
+		private static final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
+		VariantMap() {
+			super(VariantType.class);
+		}
+
+		void add(Variant variant) {
+			List<Variant> list = this.get(variant.getType());
+			if (list == null) {
+				list = new ArrayList<>();
+				this.put(variant.getType(), list);
+			}
+
+			// Prevent dev/null messages from beening sent.
+        	if (VerificationService.isDevNullVariant(variant.getName())){
+        		logger.warn(String.format("Push message requst to {} variant has been aborted!", variant.getName()));
+        		return;
+        	}
+
+			list.add(variant);
+		}
+
+		void addAll(Collection<Variant> variants) {
+			variants.forEach(this::add);
+		}
+
+		int getVariantCount() {
+			int count = 0;
+			for (Collection<Variant> variants : values()) {
+				count += variants.size();
+			}
+			return count;
+		}
+	}
 }

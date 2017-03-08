@@ -107,12 +107,6 @@ public class NotificationDispatcher {
             logger.warn(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
         }
-
-        @Override
-        public void onSilent(String variantType) {
-            logger.warn(String.format("%s message batch to dev/null has been submitted to %s devices.", variantType, tokenSize));
-            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
-        }
     }
 
     /**

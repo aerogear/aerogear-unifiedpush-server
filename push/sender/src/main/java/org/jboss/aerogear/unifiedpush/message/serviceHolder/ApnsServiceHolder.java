@@ -16,25 +16,22 @@
  */
 package org.jboss.aerogear.unifiedpush.message.serviceHolder;
 
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+import com.notnoop.apns.ApnsService;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.notnoop.apns.ApnsService;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * This cache creates and holds queue of used {@link ApnsService} with upper-bound limit of 10 created instances
@@ -50,6 +47,7 @@ import com.notnoop.apns.ApnsService;
  */
 @ApplicationScoped
 public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
+
     private final Logger logger = LoggerFactory.getLogger(ApnsServiceHolder.class);
 
     public static final int INSTANCE_LIMIT = 10;
@@ -72,11 +70,9 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
     }
 
     public void initializeHolderForVariants(@Observes MessageHolderWithVariants msg) throws ExecutionException {
-		if (msg.getVariantType() == VariantType.IOS) {
-			// Filter DevNull variants if exists before initialize
-			msg.getVariants().stream().filter(variant -> !PushNotificationSender.isDevNullVariant(variant.getName()))
-					.forEach(variant -> initialize(msg.getPushMessageInformation().getId(), variant.getVariantID()));
-		}
+        if (msg.getVariantType() == VariantType.IOS) {
+            msg.getVariants().forEach(variant -> initialize(msg.getPushMessageInformation().getId(), variant.getVariantID()));
+        }
     }
 
     /**
@@ -121,7 +117,7 @@ public class ApnsServiceHolder extends AbstractServiceHolder<ApnsService> {
      * The Java-APNs lib returns the tokens in UPPERCASE format, however, the iOS Devices submit the token in
      * LOWER CASE format. This helper method performs a transformation
      */
-    private Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
+    private static Set<String> lowerCaseAllTokens(Set<String> inactiveTokens) {
         return inactiveTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
     }
 }
