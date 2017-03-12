@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
@@ -44,8 +45,7 @@ public class User {
 		// Time zone is not important here, month/day are used only as MV
 		// partition key.
 		if (key != null && key.getId() != null) {
-			LocalDateTime date = LocalDateTime.ofEpochSecond(UUIDToDate.getTimeFromUUID(key.getId()), 0,
-					ZoneOffset.UTC);
+			LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(UUIDToDate.getTimeFromUUID(key.getId())), ZoneOffset.UTC);
 
 			this.month = (byte) date.get(ChronoField.MONTH_OF_YEAR);
 			this.day = date.get(ChronoField.DAY_OF_MONTH);
