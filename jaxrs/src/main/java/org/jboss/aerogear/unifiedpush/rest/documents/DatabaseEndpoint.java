@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.documents;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -33,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -61,6 +64,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private PushApplicationService pushApplicationService;
 	@Inject
 	private AliasService aliasService;
+	@Inject
+	private ConfigurationService configuration;
 
 	/**
 	 * Cross Origin for application scope database.
@@ -611,6 +616,12 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 				logger.debug("Alias {} is missing, quering by token-id", alias);
 				aliasObj = getAliasByToken(pushApplicationId, deviceToken);
 			}
+		}
+
+		// Always query two weeks period in case from date is missing
+		if (options != null && options.getFromDate() == null) {
+			options.setFromDate(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays())
+					.toInstant(ZoneOffset.UTC).toEpochMilli());
 		}
 
 		final MultipartOutput output = new MultipartOutput();

@@ -26,21 +26,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	private ConfigurationEnvironment environment;
 
-	public ConfigurationServiceImpl(){
+	public ConfigurationServiceImpl() {
 
 	}
 
-	public ConfigurationServiceImpl (ConfigurationEnvironment environment){
+	public ConfigurationServiceImpl(ConfigurationEnvironment environment) {
 		this.environment = environment;
 	}
 
 	@PostConstruct
-	public void initialized(){
+	public void initialized() {
 		OAuth2ConfigurationBuilder.build(environment);
-	}
-
-	public String getDocumentsRootPath() {
-		return environment.getDocumentsRootPath();
 	}
 
 	public Boolean isVerificationEnabled() {
@@ -53,6 +49,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	public String getMasterCode() {
 		return environment.getMasterCode();
+	}
+
+	/*
+	 * Number of days period to query existing documents.
+	 */
+	public Integer getQueryDefaultPeriodInDays() {
+		return environment.getQueryDefaultPeriodInDays();
 	}
 
 	public Properties getProperties() {

@@ -3,7 +3,6 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +19,15 @@ public class ConfigurationTest {
 	@Autowired
 	private ConfigurationEnvironment configuration;
 
-	@Before
-	public void cleanUp() {
-		System.clearProperty(ConfigurationEnvironment.PROPERTIES_DOCUMENTS_KEY);
-	}
-
 	@Test
 	public void testDefaultConfigurationLoader() {
-		Assert.assertTrue("/tmp/documents".equals(configuration.getDocumentsRootPath()));
+		Assert.assertFalse(configuration.isVerificationEnabled());
 	}
 
 	@Test
 	public void testSystemPropertiesOverride() {
-		System.setProperty(ConfigurationEnvironment.PROPERTIES_DOCUMENTS_KEY, "/tmp/xxx");
+		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, Boolean.TRUE.toString());
 
-		Assert.assertTrue("/tmp/xxx".equals(configuration.getDocumentsRootPath()));
+		Assert.assertTrue(configuration.isVerificationEnabled());
 	}
 }

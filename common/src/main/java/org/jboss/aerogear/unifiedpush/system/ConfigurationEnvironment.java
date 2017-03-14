@@ -16,7 +16,7 @@ import org.springframework.core.env.MapPropertySource;
 @PropertySource(value = { "classpath:default.properties", "file://${aerogear.config}" }, ignoreResourceNotFound = true)
 public class ConfigurationEnvironment {
 
-	public static final String PROPERTIES_DOCUMENTS_KEY = "aerogear.config.document.path.root";
+	public static final String PROPERTIES_DOCUMENTS_QUERY_DAYS = "aerogear.config.documents.query.period.days";
 	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
 	public static final String PROP_MASTER_VERIFICATION = "aerogear.config.verification.master_code";
 
@@ -24,10 +24,6 @@ public class ConfigurationEnvironment {
 	private Environment env;
 
 	private Properties properties;
-
-	public String getDocumentsRootPath() {
-		return env.getProperty(PROPERTIES_DOCUMENTS_KEY, System.getProperty("java.io.tmpdir"));
-	}
 
 	public Boolean isVerificationEnabled() {
 		return env.getProperty(PROP_ENABLE_VERIFICATION, Boolean.class, Boolean.FALSE);
@@ -37,21 +33,28 @@ public class ConfigurationEnvironment {
 		return env.getProperty(PROP_MASTER_VERIFICATION, String.class, null);
 	}
 
+	/*
+	 * Number of days period to query existing documents.
+	 */
+	public Integer getQueryDefaultPeriodInDays() {
+		return env.getProperty(PROPERTIES_DOCUMENTS_QUERY_DAYS, Integer.class, 14);
+	}
+
 	public String getProperty(String key, String defaultValue) {
 		return env.getProperty(key, defaultValue);
 	}
 
-	public Boolean getProperty (String key, Boolean defaultValue){
+	public Boolean getProperty(String key, Boolean defaultValue) {
 		return env.getProperty(key, Boolean.class, defaultValue);
 	}
 
-    /**
-     * Property placeholder configurer needed to process @Value annotations
-     */
-     @Bean
-     public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
-    	 return  new PropertySourcesPlaceholderConfigurer();
-     }
+	/**
+	 * Property placeholder configurer needed to process @Value annotations
+	 */
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 	/**
 	 * Cache and return all Environment properties
@@ -66,7 +69,8 @@ public class ConfigurationEnvironment {
 
 		for (Iterator<org.springframework.core.env.PropertySource<?>> it = ((AbstractEnvironment) env)
 				.getPropertySources().iterator(); it.hasNext();) {
-			org.springframework.core.env.PropertySource<?> propertySource = (org.springframework.core.env.PropertySource<?>) it.next();
+			org.springframework.core.env.PropertySource<?> propertySource = (org.springframework.core.env.PropertySource<?>) it
+					.next();
 			if (propertySource instanceof MapPropertySource) {
 				properties.putAll(((MapPropertySource) propertySource).getSource());
 			}
