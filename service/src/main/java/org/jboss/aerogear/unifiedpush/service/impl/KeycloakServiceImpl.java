@@ -40,10 +40,9 @@ import org.slf4j.LoggerFactory;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @DependsOn(value = { "ConfigurationServiceImpl" })
 /*
- * TODO - Convert to Spring bean.
- * 1 - Add Spring caching to getVariantIdsFromClient
- * 2 - Replace ejb async with spring.
- * 3 - Support remove client API.
+ * TODO - Convert to Spring bean. 1 - Add Spring caching to
+ * getVariantIdsFromClient 2 - Replace ejb async with spring. 3 - Support remove
+ * client API.
  */
 public class KeycloakServiceImpl implements KeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
@@ -197,7 +196,11 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	@Override
-	@Asynchronous
+	/*
+	 * Update user must be done synchronously. When user tries to verify code,
+	 * and response is immediate (asynchronously), client might try to
+	 * authenticate before KC operation is complete.
+	 */
 	public void updateUser(String userName, String password) {
 		if (!isInitialized()) {
 			return;

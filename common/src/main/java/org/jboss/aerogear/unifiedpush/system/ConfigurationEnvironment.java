@@ -37,7 +37,7 @@ public class ConfigurationEnvironment {
 	 * Number of days period to query existing documents.
 	 */
 	public Integer getQueryDefaultPeriodInDays() {
-		return env.getProperty(PROPERTIES_DOCUMENTS_QUERY_DAYS, Integer.class, 14);
+		return env.getProperty(PROPERTIES_DOCUMENTS_QUERY_DAYS, Integer.class, 60);
 	}
 
 	public String getProperty(String key, String defaultValue) {
