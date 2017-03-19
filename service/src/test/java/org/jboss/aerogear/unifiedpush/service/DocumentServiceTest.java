@@ -1,10 +1,13 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -14,6 +17,9 @@ import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -46,6 +52,8 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	private VerificationService verificationService;
 	@Inject
 	private AliasService aliasService;
+	@Inject
+	private ConfigurationService configuration;
 
 	@Before
 	public void cleanup() {
@@ -233,11 +241,9 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasService.create(alias1, false);
 		aliasService.create(alias2, false);
 
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"doc1", "test_id");
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"doc2", "test_id");
 
 		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "test_id");
@@ -298,11 +304,9 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Alias alias1 = aliasService.find(pushApp.getPushApplicationID(), salias1);
 		Alias alias2 = aliasService.find(pushApp.getPushApplicationID(), salias2);
 
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"{CONTENT101}", "ID301");
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"{CONTENT102}", "ID301");
 
 		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "ID301");
@@ -328,18 +332,14 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		aliasService.create(alias1, false);
 		aliasService.create(alias2, false);
 
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"{CONTENT1}", "ID1");
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"{CONTENT2}", "ID2");
 
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"{CONTENT2}", "ID1");
-		documentService.save(
-				new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
+		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"{CONTENT1000}", "ID2");
 
 		String doc1 = documentService.getLatestFromAlias(pushApp, alias1.getOther(), DEFAULT_DEVICE_DATABASE, "ID1");
@@ -347,5 +347,43 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 
 		Assert.assertEquals(doc1, "{CONTENT1}");
 		Assert.assertEquals(doc2, "{CONTENT1000}");
+	}
+
+	@Test
+	public void testDefaultDateRange() {
+		UUID pushApplicationId = UUID.randomUUID();
+
+		try {
+			// Create alias specific documents
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+
+			aliasService.create(alias1, false);
+
+			DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key3 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+
+			// Create snapshot X+1 (X defaults days) backwards.
+			UUID snapshot = UUIDs.startOf(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays() + 1).toInstant(ZoneOffset.UTC).toEpochMilli());
+			DocumentKey key4 = new DocumentKey(new DocumentMetadata(pushApplicationId, "STATUS", alias1, snapshot));
+
+			// Create all documents
+			Thread.sleep(100);
+			documentService.save(new DocumentContent(key1, "{TEST CONTENT 1}"));
+			Thread.sleep(100);
+			documentService.save(new DocumentContent(key2, "{TEST CONTENT 2}"));
+			Thread.sleep(100);
+			documentService.save(new DocumentContent(key3, "{TEST CONTENT 3}"));
+			Thread.sleep(100);
+			documentService.save(new DocumentContent(key4, "{TEST CONTENT 4}"));
+			Thread.sleep(100);
+
+			// Query 3 documents only
+			Assert.assertTrue(documentService.find(new DocumentMetadata(pushApplicationId, "STATUS", alias1), new QueryOptions())
+					.collect(Collectors.toList()).size() == 3);
+
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 }

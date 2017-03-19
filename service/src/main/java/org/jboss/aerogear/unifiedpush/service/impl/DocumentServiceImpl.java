@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Stateless
@@ -42,6 +45,12 @@ public class DocumentServiceImpl implements DocumentService {
 	private DocumentDao<DocumentContent, DocumentKey> documentDao;
 	@Autowired
 	private AliasDao aliasDao;
+	@Autowired
+	private ConfigurationEnvironment configuration;
+
+	public DocumentContent save(DocumentContent doc){
+		return (DocumentContent) documentDao.create(doc);
+	}
 
 	@Override
 	public DocumentContent save(DocumentMetadata metadate, String content, String id) {
@@ -51,6 +60,12 @@ public class DocumentServiceImpl implements DocumentService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
+		// Always query two weeks period in case from date is missing
+		if (options != null && options.getFromDate() == null) {
+			options.setFromDate(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays())
+					.toInstant(ZoneOffset.UTC).toEpochMilli());
+		}
+
 		return (Stream<DocumentContent>) documentDao.find(new DocumentKey(metadata), options);
 	}
 

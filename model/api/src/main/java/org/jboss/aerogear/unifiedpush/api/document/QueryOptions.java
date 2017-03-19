@@ -6,6 +6,10 @@ public class QueryOptions {
 	private Long toDate;
 	private String id;
 
+	public QueryOptions(){
+
+	}
+
 	public QueryOptions(String id) {
 		super();
 		this.id = id;

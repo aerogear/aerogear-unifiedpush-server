@@ -11,6 +11,8 @@ import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 
 public interface DocumentService {
 
+	DocumentContent save(DocumentContent doc);
+
 	DocumentContent save(DocumentMetadata metadata, String content, String id);
 
 	String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id);
