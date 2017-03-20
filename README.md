@@ -1,6 +1,6 @@
 # UnifiedPush Server
 
-[![Build Status](https://travis-ci.org/C-B4/unifiedpush-server.svg?branch=master)](https://travis-ci.org/C-B4/unifiedpush-server)
+[![Build Status](https://travis-ci.org/aerobase/unifiedpush-server.svg?branch=master)](https://travis-ci.org/aerobase/unifiedpush-server)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
@@ -10,16 +10,18 @@
 * [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/) (*experimental*)
 * [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush) (_deprecated)_
 
-_UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
+_AeroBase UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
+* Collections DB - NoSQL Document Database, store & access your documents from both the server and the client.
+* Scalable & Fault Tolerant, Based on apache cassandra database.
+* By default, every AeroBase package comes with an embeded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
+* OTP Registraion - [SMS/Email Verification process](https://github.com/aerobase/unifiedpush-server/issues/2).
+* SSL Support and easy configuration.
+* Silent Push Notifications (Notification without payload).
+* Centralized configuration/managment using Chef Omnibus.
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
-* SSL Suuport, embeded NGINX, PostgreSQL, Wildfly 10.1 & KeyCloak 2.4.
-* Centralized configuration/managment using Chef Omnibus. 
-* Code base registraion verification - [SMS/Email Verification process](https://github.com/C-B4/unifiedpush-server/issues/2).
-* Collections DB - Can be accessed from both the server and the client.
-* Silent Push Notifications (Notification without payload) 
 
-<img src="https://raw.githubusercontent.com/C-B4/unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
-<img src="https://raw.githubusercontent.com/C-B4/unifiedpush-server/master/ups-home-ui-screenshot.png" height="427px" width="550px" />
+<img src="https://raw.githubusercontent.com/aerobase/unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
+<img src="https://raw.githubusercontent.com/aerobase/unifiedpush-server/master/ups-home-ui-screenshot.png" height="427px" width="550px" />
 
 ## Project Info
 
@@ -28,15 +30,15 @@ _UnifiedPush Server_ releases additional functionality while maintaining _AeroGe
 | License:        | Apache License, Version 2.0  |
 | Build:          | Maven  |
 | Documentation:  | https://aerogear.org/push/  |
-|                 | https://github.com/C-B4/omnibus-unifiedpush-server/tree/master/doc  |
-| Issue tracker:  | https://github.com/C-B4/unifiedpush-server/issues  |
+|                 | https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc  |
+| Issue tracker:  | https://github.com/aerobase/unifiedpush-server/issues  |
 
 ## Getting started
 
 Or for the on-premise version, execute the following steps to get going!
 
 * Download the [latest package (rpm/deb) files](http://ups.c-b4.com/ups/packages/)
-* Or follow the steps on the [install page](https://github.com/C-B4/unifiedpush-server/wiki/Unifiedpush-Installation)
+* Or follow the steps on the [install page](https://github.com/aerobase/unifiedpush-server/wiki/Unifiedpush-Installation)
 * Run ``sudo unifiedpush-server reconfigure``
 * Start the server ``sudo unifiedpush-server start``
 
@@ -79,7 +81,7 @@ For your convenience, we do have an easy way of launch with our [Docker compose 
 
 ## Documentation
 
-For more details about the current release, please consult [our documentation] (https://github.com/C-B4/omnibus-unifiedpush-server/tree/master/doc) or visit [AeroGear documentation] 
+For more details about the current release, please consult [our documentation] (https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) or visit [AeroGear documentation] 
 (https://aerogear.org/getstarted/guides/#push).
 
 #### Generate REST Documentation
@@ -88,7 +90,7 @@ Up to date generated REST endpoint documentation can be found in `jaxrs/target/m
 
 ## Who is using it?
 
-We have a list of users in our [wiki](https://github.com/C-B4/unifiedpush-server/wiki/Users-of-the-UnifiedPush-Server). If you are using the UnifiedPush Server, please add yourself to the list!
+We have a list of users in our [wiki](https://github.com/aerobase/unifiedpush-server/wiki/Users-of-the-UnifiedPush-Server). If you are using the UnifiedPush Server, please add yourself to the list!
 
 ## Development
 
@@ -121,11 +123,11 @@ The sources for administration console UI are placed under `admin-ui`.
 
 For a build of the `admin-ui` during release, you can just run a Maven build, the `admin-ui` will be compiled by `frontend-maven-plugin` during `admin-ui` module build.
 
-For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/C-B4/unifiedpush-server/blob/master/admin-ui/README.md).
+For instructions how to develop `admin-ui`, refer to [`admin-ui/README.md`](https://github.com/aerobase/unifiedpush-server/blob/master/admin-ui/README.md).
 
 These instructions contains also specific instructions how to upgrade NPM package dependencies.
 
-Note that the {{frontend-maven-plugin}} may fail if you killed the build during its work - it may leave the downloaded modules in inconsistent state, see [`admin-ui/README.md`](https://github.com/C-B4/unifiedpush-server/blob/master/admin-ui/README.md#build-errors).
+Note that the {{frontend-maven-plugin}} may fail if you killed the build during its work - it may leave the downloaded modules in inconsistent state, see [`admin-ui/README.md`](https://github.com/aerobase/unifiedpush-server/blob/master/admin-ui/README.md#build-errors).
 
 #### Cleaning the Admin UI build
 
@@ -136,9 +138,8 @@ In order to clean the state of Admin UI build caches, run maven build with the f
 Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
 
 
-<<<<<<< HEAD
 =======
-## Releasing the UnifiedPush Server
+## Releasing the AeroBase UnifiedPush Server
 
 The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the `distribution` bundle, you need to include these profiles:
 
@@ -146,8 +147,6 @@ The content of the [Release Process](https://github.com/aerogear/collateral/wiki
 mvn release:GOAL -Pdist,test
 ```
 
-
->>>>>>> upstream/master
 ## Deprecation Notices
 
 ###  1.1.x
@@ -167,4 +166,4 @@ There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Issues](https://github.com/C-B4/unifiedpush-server/issues) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Issues](https://github.com/aerobase/unifiedpush-server/issues) with some steps to reproduce it.
