@@ -16,16 +16,16 @@
 
       <ul class="nav nav-tabs">
         <li ng-class="{ active: appDetail.tab == 'analytics' }" ng-if="appDetail.app.variants.length">
-          <a id="analytics-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'analytics'})">Analytics</a>
+          <a id="analytics-tab" href="#/app/{{appDetail.app.pushApplicationID}}/analytics">Analytics</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'variants' }">
-          <a id="variants-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})">Variants</a>
+          <a id="variants-tab" href="#/app/{{appDetail.app.pushApplicationID}}/variants">Variants</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'sender' }" ng-if="appDetail.app.variants.length">
-          <a id="sender-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'sender'})">Sender API</a>
+          <a id="sender-tab" href="#/app/{{appDetail.app.pushApplicationID}}/sender">Sender API</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'activity' }"  ng-if="appDetail.app.variants.length">
-          <a id="activity-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})">Activity log</a>
+          <a id="activity-tab" href="#/app/{{appDetail.app.pushApplicationID}}/activity">Activity log</a>
         </li>
       </ul>
 

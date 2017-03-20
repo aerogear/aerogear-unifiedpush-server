@@ -58,7 +58,8 @@ angular.module('upsConsole')
               $scope.pushData.criteria.categories = $scope.categories.split(',');
             }
 
-            messageSenderEndpoint( self.app.pushApplicationID, self.app.masterSecret ).send({}, $scope.pushData)
+            messageSenderEndpoint( self.app.pushApplicationID, self.app.masterSecret )
+              .send({}, $scope.pushData)
               .then(function() {
                 self.app.$messageCount += 1;
                 self.notifications.unshift({ submitDate: new Date().getTime() });
