@@ -1,16 +1,9 @@
-# UnifiedPush Server
+# AeroBase UnifiedPush Server
 
 [![Build Status](https://travis-ci.org/aerobase/unifiedpush-server.svg?branch=master)](https://travis-ci.org/aerobase/unifiedpush-server)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-* [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
-* [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
-* [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
-* [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
-* [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/) (*experimental*)
-* [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush) (_deprecated)_
-
-_AeroBase UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
+#### _AeroBase UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
 * Collections DB - NoSQL Document Database, store & access your documents from both the server and the client.
 * Scalable & Fault Tolerant, Based on apache cassandra database.
 * By default, every AeroBase package comes with an embeded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
@@ -19,6 +12,15 @@ _AeroBase UnifiedPush Server_ releases additional functionality while maintainin
 * Silent Push Notifications (Notification without payload).
 * Centralized configuration/managment using Chef Omnibus.
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
+
+#### Push Notification to major cloud providers
+
+* [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
+* [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
+* [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
+* [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
+* [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/) (*experimental*)
+* [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush) (_deprecated)_
 
 <img src="https://raw.githubusercontent.com/aerobase/unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 <img src="https://raw.githubusercontent.com/aerobase/unifiedpush-server/master/ups-home-ui-screenshot.png" height="427px" width="550px" />
@@ -137,8 +139,6 @@ In order to clean the state of Admin UI build caches, run maven build with the f
 
 Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
 
-
-=======
 ## Releasing the AeroBase UnifiedPush Server
 
 The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the `distribution` bundle, you need to include these profiles:
