@@ -39,7 +39,7 @@ ag-push
 `ag-push.war` can be deployed directly but in order for Grunt to work properly, `ag-push` must be deployed instead. To do that, simply rename it to `ag-push.war` and move it to the `standalone/deployments` directory:
 ```
 cd $SERVER_HOME/standalone/deployments
-cp path/to/aerogear-unifiedpush-server/servers/ups-wildfly/target/ag-push ag-push.war
+cp -r path/to/aerogear-unifiedpush-server/servers/ups-wildfly/target/ag-push ag-push.war
 ```
 
  After this there should be no more errors.
