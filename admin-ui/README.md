@@ -2,38 +2,55 @@
 
 ### Setting Up The Development Environment
 
-Pre-reqs:
+First make sure you have installed in you machine:
 
 * Node.js - [Download Here](http://nodejs.org/)
-* Bower( version >= 0.9.1 ) - [Download Here](http://bower.io/)
+* Bower( version >= 0.9.1 ) - [Download Here](https://bower.io/#install-bower)
+* Grunt - [Download Here](https://gruntjs.com/getting-started)
 
-Once the pre-reqs have been taken care of, run:
-
-    npm install -g grunt-cli bower
+Then install all project dependencies by running:
     
-    npm install
-
-    bower install
+    npm install && bower install
 
 
-Run:
+Once all dependencies are installed, Grunt must be configured:
 
     grunt initLocalConfig
 
-Now you need to modify `admin-ui/local-config.json` file and fill in `jbossweb` property properly:
+This is more likely to fail first time. It will create a file named `local-config.json` that you have to edit to suit your local environment:
 
     {
-        "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
-        "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/ag-push.war",
-    };
-    
-_note:  This is now required for all grunt steps bellow because of bug in assemble-less - once fixed, it will be required just for development_
+        "home": "/path/to/aerogear-unified-push-server/admin-ui",
+        "jbossweb": "/path/to/server_home/standalone/deployments/ag-push.war",
+    }
 
-To run:
+ > The `home` property will have the absolute path to your local fork of `admin-ui`.\
+ The `jbossweb` property will have the absolute path to your local server app, i.e. Wildfly or EAP.
+
+ Now, if you try to init the configuration you will probably see this error:
+```
+Fatal error: jbossweb directory /home/jgallaso/apps/wildfly-10.1.0.Final/standalone/deployments/ag-push.war configured in ./local-config.json is not directory (must be exploded WAR)
+```
+That's because you did not deploy the correct file. After building the whole project with `mvn`, you will have this two files located in `aerogear-unifiedpush-server/servers/ups-wildfly/target/`:
+```
+ag-push.war
+ag-push
+```
+`ag-push.war` can be deployed directly but in order for Grunt to work properly, `ag-push` must be deployed instead. To do that, simply rename it to `ag-push.war` and move it to the `standalone/deployments` directory:
+```
+cd $SERVER_HOME/standalone/deployments
+cp -r path/to/aerogear-unifiedpush-server/servers/ups-wildfly/target/ag-push ag-push.war
+```
+
+ After this there should be no more errors.
+    
+> NOTE: This is now required for all grunt steps bellow because of bug in assemble-less - once fixed, it will be required just for development_
+
+Finally, to start developing, run:
 
     grunt server
     
-Now everytime you save a file, grunt is watching and will copy to configured directories.
+Now anytime you save a file, grunt will deploy the UI and you will see the changes after manually refreshing the browser. No further steps are necessary.
 
 
 ### Generate distribution
