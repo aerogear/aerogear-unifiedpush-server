@@ -1,4 +1,4 @@
-# AeroGear Unified Push Server - Admin UI [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui)
+# AeroBase Unified Push Server - Admin UI [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-server-admin-ui)
 
 ### Setting Up The Development Environment
 
@@ -10,7 +10,7 @@ Pre-reqs:
 Once the pre-reqs have been taken care of, run:
 
     npm install -g grunt-cli bower
-    
+
     npm install
 
     bower install
@@ -26,13 +26,13 @@ Now you need to modify `admin-ui/local-config.json` file and fill in `jbossweb` 
         "home": "/home/sebastien/aerogear/aerogear-unified-push-server-admin-ui",
         "jbossweb": "/home/sebastien/apps/jboss-as-7.1.1.Final/standalone/deployments/unifiedpush-server.war",
     };
-    
+
 _note:  This is now required for all grunt steps bellow because of bug in assemble-less - once fixed, it will be required just for development_
 
 To run:
 
     grunt server
-    
+
 Now everytime you save a file, grunt is watching and will copy to configured directories.
 
 
@@ -41,17 +41,17 @@ Now everytime you save a file, grunt is watching and will copy to configured dir
 To create a distribution in `admin-ui/dist/` directory:
 
     grunt dist
-    
+
 To create a distribution and copy it jbossweb folder (as configured above):
 
     grunt jbosswebDist
-    
-    
+
+
 In order to create a WAR application, go into `../server/` folder and run Maven build:
 
     cd ../server/
     mvn clean install
-    
+
 
 ### Cleaning the Admin UI build
 
