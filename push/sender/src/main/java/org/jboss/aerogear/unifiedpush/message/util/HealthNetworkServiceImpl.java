@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.util;
 
-import com.notnoop.apns.internal.Utilities;
+import com.relayrides.pushy.apns.ApnsClient;
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import static org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
-import static org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
+import static org.jboss.aerogear.unifiedpush.message.sender.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
+import static org.jboss.aerogear.unifiedpush.message.sender.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
 
@@ -50,15 +50,15 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<PushNetwork>(Arrays.asList(
             new PushNetwork[]{
                     new PushNetwork("Firebase Cloud Messaging", FCM_SEND_ENDPOINT, 443),
-                    new PushNetwork("Apple Push Network Sandbox", Utilities.SANDBOX_GATEWAY_HOST, Utilities.SANDBOX_GATEWAY_PORT),
-                    new PushNetwork("Apple Push Network Production", Utilities.PRODUCTION_GATEWAY_HOST, Utilities.PRODUCTION_GATEWAY_PORT),
+                    new PushNetwork("Apple Push Network Sandbox", ApnsClient.DEVELOPMENT_APNS_HOST, ApnsClient.DEFAULT_APNS_PORT),
+                    new PushNetwork("Apple Push Network Production", ApnsClient.PRODUCTION_APNS_HOST, ApnsClient.DEFAULT_APNS_PORT),
                     new PushNetwork("Windows Push Network", WNS_SEND_ENDPOINT, 443)
             }
     ));
 
     static {
         if (customAerogearApnsPushHost != null) {
-            final int port = customAerogearApnsPushPort != null ? customAerogearApnsPushPort : Utilities.SANDBOX_GATEWAY_PORT;
+            final int port = customAerogearApnsPushPort != null ? customAerogearApnsPushPort : ApnsClient.DEFAULT_APNS_PORT;
             PUSH_NETWORKS.add(new PushNetwork("APNs Proxy host", customAerogearApnsPushHost, port));
         }
     }
