@@ -36,7 +36,7 @@ AeroBase is a mobile/web platform that helps you quickly develop high-quality mo
 | Build:          | Maven  |
 | Documentation:  | [AeroBase Server Documentation](https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) |
 |                 | [AeroBase API Documentaion](http://ups.c-b4.com/aerobase-docs/) |
-| Issue tracker:  | [JIRA](https://aerobase.atlassian.net) |
+| Issue tracker:  | [JIRA](https://aerobase.atlassian.net/projects/ARB/issues/) |
 
 ## Getting started
 
@@ -142,4 +142,4 @@ There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Issues](https://aerobase.atlassian.net) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Issues](https://aerobase.atlassian.net/projects/ARB/issues/) with some steps to reproduce it.
