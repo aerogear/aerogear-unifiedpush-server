@@ -31,9 +31,9 @@
 | --------------- | ------------- |
 | License:        | Apache License, Version 2.0  |
 | Build:          | Maven  |
-| Documentation:  | [AeroBase Server Documentation] (https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) |
-|                 | [AeroBase API Documentaion] (http://ups.c-b4.com/aerobase-docs/) |
-| Issue tracker:  | [JIRA] (https://aerobase.atlassian.net) |
+| Documentation:  | [AeroBase Server Documentation](https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) |
+|                 | [AeroBase API Documentaion](http://ups.c-b4.com/aerobase-docs/) |
+| Issue tracker:  | [JIRA](https://aerobase.atlassian.net) |
 
 ## Getting started
 
@@ -57,8 +57,7 @@ For your convenience, we do have an easy way of launch with our [Docker compose 
 
 ## Documentation
 
-For more details about the current release, please consult [our documentation] (https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) or visit [AeroGear documentation] 
-(https://aerogear.org/getstarted/guides/#push).
+For more details about the current release, please consult [our documentation](https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) or visit [AeroGear documentation](https://aerogear.org/getstarted/guides/#push).
 
 #### Generate REST Documentation
 
