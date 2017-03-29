@@ -3,17 +3,20 @@
 [![Build Status](https://travis-ci.org/aerobase/unifiedpush-server.svg?branch=master)](https://travis-ci.org/aerobase/unifiedpush-server)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
+AeroBase is a mobile/web platform that helps you quickly develop high-quality modern web and mobile applications.
+
 #### _AeroBase UnifiedPush Server_ releases additional functionality while maintaining _AeroGear_ API compatibility:
-* Collections DB - NoSQL Document Database, store & access your documents from both the server and the client.
+* Realtime DB - NoSQL Document Database, store & access your documents from both the server and the client.
 * Scalable & Fault Tolerant, Based on apache cassandra database.
-* By default, every AeroBase package comes with an embeded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
-* OTP Registraion - [SMS/Email Verification process](https://github.com/aerobase/unifiedpush-server/issues/2).
+* Authentication - Add authentication to applications and secure services with minimum fuss.
+* OTP Registraion - Pluggable SMS/Email Verification process.
 * SSL Support and easy configuration.
-* Silent Push Notifications (Notification without payload).
+* Cloud Messeging - Push Notifications (Payload & Silent).
 * Centralized configuration/managment using Chef Omnibus.
+* By default, every AeroBase package comes with an embeded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
 
-#### Push Notification to major cloud providers
+#### Push Notification cloud providers
 
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
