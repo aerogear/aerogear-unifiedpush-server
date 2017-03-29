@@ -129,6 +129,10 @@ public class PushyApnsSender implements PushNotificationSender {
                                 final Throwable t = future.cause();
                                 logger.warn(t.getMessage(), t);
                             }
+
+                            // once disconnected, time to clean the DB
+                            logger.debug(String.format("Deleting %d invalid tokens for %s variant (ID: %s)", invalidTokens.size(), iOSVariant.getType(), iOSVariant.getVariantID()));
+                            clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), invalidTokens);
                         }
                     });
                 } else {
