@@ -31,52 +31,26 @@
 | --------------- | ------------- |
 | License:        | Apache License, Version 2.0  |
 | Build:          | Maven  |
-| Documentation:  | https://aerogear.org/push/  |
-|                 | https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc  |
-| Issue tracker:  | https://github.com/aerobase/unifiedpush-server/issues  |
+| Documentation:  | [AeroBase Server Documentation] (https://github.com/aerobase/omnibus-unifiedpush-server/tree/master/doc) |
+|                 | [AeroBase API Documentaion] (http://ups.c-b4.com/aerobase-docs/) |
+| Issue tracker:  | [JIRA] (https://aerobase.atlassian.net) |
 
 ## Getting started
 
 Or for the on-premise version, execute the following steps to get going!
 
 * Download the [latest package (rpm/deb) files](http://ups.c-b4.com/ups/packages/)
-* Or follow the steps on the [install page](https://github.com/aerobase/unifiedpush-server/wiki/Unifiedpush-Installation)
+* Or follow the steps on the [Installation guide](https://github.com/aerobase/unifiedpush-server/wiki/Unifiedpush-Installation)
 * Run ``sudo unifiedpush-server reconfigure``
 * Start the server ``sudo unifiedpush-server start``
 
-Now go to ``http://localhost/unifiedpush-server`` and enjoy the UnifiedPush Server.
+Now go to ``http://localhost/unifiedpush-server`` and enjoy the AeroBase Server.
 __NOTE:__ the default user/password is ```admin```:```123```
 
 #### Getting Started with Clustered Servers
 
-In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
+In order to test on a cluster of AeroBase servers, the default configuration serves pretty well, you just need to set 'contactpoints' to /etc/unifiedpush/unifiedpush.rb.
 
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
-
-And in a second terminal:
-
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
-
-Note: on OS X, you need to enable multicast first:
-
-    # Adds a multicast route for 224.0.0.1-231.255.255.254
-    sudo route add -net 224.0.0.0/5 127.0.0.1
-
-#### Getting Started with Clustered Servers
-
-In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
-
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
-
-And in a second terminal
-
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
-
-Note: on OS X, you need to enable multicast first:
-
-    # Adds a multicast route for 224.0.0.1-231.255.255.254
-    sudo route add -net 224.0.0.0/5 127.0.0.1
-    
 ## Docker-Compose
 
 For your convenience, we do have an easy way of launch with our [Docker compose file](docker-compose)
@@ -88,7 +62,7 @@ For more details about the current release, please consult [our documentation] (
 
 #### Generate REST Documentation
 
-Up to date generated REST endpoint documentation can be found in `jaxrs/target/miredot/index.html`. It is generated with every `jaxrs` module build.
+Up to date generated REST endpoint documentation can be found in `http://ups.c-b4.com/aerobase-docs/`. It is generated with every `jaxrs` module build.
 
 ## Who is using it?
 
@@ -99,7 +73,7 @@ We have a list of users in our [wiki](https://github.com/aerobase/unifiedpush-se
 The above `Getting started` section covers the latest release of the UnifiedPush Server. For development and deploying `SNAPSHOT` versions, you will find information in this section.
 
 
-### Deployment
+### Deployment & Development
 
 For deployment of the `master branch` to a specific server (Wildfly-10 or EAP7), you need to build the WAR files and deploy them to a running and configured server.
 
@@ -166,4 +140,4 @@ There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Issues](https://github.com/aerobase/unifiedpush-server/issues) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Issues](https://aerobase.atlassian.net) with some steps to reproduce it.
