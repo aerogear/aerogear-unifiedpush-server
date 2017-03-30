@@ -29,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
 import org.jboss.aerogear.unifiedpush.message.sender.apns.AeroGearApnsPushNotification;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
@@ -53,9 +54,12 @@ public class PushyApnsSender implements PushNotificationSender {
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
+    private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
+
+    @Inject
+    private SimpleApnsClientCache simpleApnsClientCache;
     @Inject
     private ClientInstallationService clientInstallationService;
-    private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
 
 
     @Override
@@ -81,68 +85,38 @@ public class PushyApnsSender implements PushNotificationSender {
         final ApnsClient apnsClient;
         {
             try {
-                apnsClient = buildApnsClient(iOSVariant);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                senderCallback.onError(e.getMessage());
+                apnsClient = receiveApnsConnection(iOSVariant);
+            } catch (IllegalArgumentException iae) {
+                logger.error(iae.getMessage(), iae);
+                senderCallback.onError(String.format("Unable to connect to APNs (%s))", iae.getMessage()));
                 return;
             }
         }
 
-        // connect and move on with sending in the background:
-        final Future<Void> connectFuture = connectToDestinations(iOSVariant, apnsClient);
-        connectFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
-            @Override
-            public void operationComplete(Future<? super Void> future) throws Exception {
+        if (apnsClient.isConnected()) {
+            logger.debug(String.format("sending payload for all tokens for '%s' to APNs", iOSVariant.getVariantID()));
+            for (final String token : tokens) {
 
-                if (future.isSuccess() && apnsClient.isConnected()) {
+                final AeroGearApnsPushNotification pushNotification = new AeroGearApnsPushNotification(token, payload);
+                final Future<PushNotificationResponse<AeroGearApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
 
-                    logger.debug("sending payload for all tokens to APNS");
+                notificationSendFuture.addListener(new GenericFutureListener<Future<? super PushNotificationResponse<AeroGearApnsPushNotification>>>() {
+                    @Override
+                    public void operationComplete(Future<? super PushNotificationResponse<AeroGearApnsPushNotification>> future) throws Exception {
 
-                    for (final String token : tokens) {
-
-                        final AeroGearApnsPushNotification pushNotification = new AeroGearApnsPushNotification(token, payload);
-                        final Future<PushNotificationResponse<AeroGearApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
-
-                        notificationSendFuture.addListener(new GenericFutureListener<Future<? super PushNotificationResponse<AeroGearApnsPushNotification>>>() {
-                            @Override
-                            public void operationComplete(Future<? super PushNotificationResponse<AeroGearApnsPushNotification>> future) throws Exception {
-
-                                if (future.isSuccess()) {
-                                    handlePushNotificationResponsePerToken(notificationSendFuture.get());
-                                }
-                            }
-                        });
-                    }
-
-                    // we have managed to dispatch all messages ;-)
-                    senderCallback.onSuccess();
-
-                    final Future<Void> disconnectFuture = apnsClient.disconnect();
-                    disconnectFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
-                        @Override
-                        public void operationComplete(Future<? super Void> future) throws Exception {
-
-                            if (future.isSuccess()) {
-                                logger.debug("Disconnected from APNS");
-                            } else {
-                                final Throwable t = future.cause();
-                                logger.warn(t.getMessage(), t);
-                            }
-
-                            // once disconnected, time to clean the DB
-                            logger.debug(String.format("Deleting %d invalid tokens for %s variant (ID: %s)", invalidTokens.size(), iOSVariant.getType(), iOSVariant.getVariantID()));
-                            clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), invalidTokens);
+                        if (future.isSuccess()) {
+                            handlePushNotificationResponsePerToken(notificationSendFuture.get());
                         }
-                    });
-                } else {
-
-                    final Throwable t = future.cause();
-                    logger.error("Error connecting to APNs", t);
-                    senderCallback.onError(t.getMessage());
-                }
+                    }
+                });
             }
-        });
+
+            // we have managed to dispatch all messages ;-)
+            senderCallback.onSuccess();
+        } else {
+            logger.error("Unable to send notifications, client is not connected");
+            senderCallback.onError("Unable to send notifications, client is not connected");
+        }
     }
 
     private void handlePushNotificationResponsePerToken(final PushNotificationResponse<AeroGearApnsPushNotification> pushNotificationResponse ) {
@@ -195,6 +169,40 @@ public class PushyApnsSender implements PushNotificationSender {
     }
 
 
+    private ApnsClient receiveApnsConnection(iOSVariant iOSVariant) {
+        ApnsClient apnsClient = simpleApnsClientCache.getApnsClientForVariantID(iOSVariant.getVariantID());
+
+        if (apnsClient == null) {
+
+            logger.debug("no cached connection, setting one up");
+
+            try {
+                apnsClient = buildApnsClient(iOSVariant);
+
+                // connect and wait:
+                logger.debug(String.format("establishing the connection for %s", iOSVariant.getVariantID()));
+                connectToDestinations(iOSVariant, apnsClient);
+
+                // APNS client has auto-reconnect, but let's log when that happens
+                apnsClient.getReconnectionFuture().addListener(new GenericFutureListener<Future<? super Void>>() {
+                    @Override
+                    public void operationComplete(Future<? super Void> future) throws Exception {
+                        logger.debug("Reconnecting to APNs");
+                    }
+                });
+
+                // set the connection to the cache
+                simpleApnsClientCache.putApnsClientForVariantID(iOSVariant.getVariantID(), apnsClient);
+
+            } catch (Exception e) {
+                logger.error("Unable to receive a connection for APNs", e);
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return apnsClient;
+    }
+
+
     private ApnsClient buildApnsClient(final iOSVariant iOSVariant) {
 
         // this check should not be needed, but you never know:
@@ -221,7 +229,7 @@ public class PushyApnsSender implements PushNotificationSender {
         throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
-    private Future<Void> connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
+    private synchronized void connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
 
         String apnsHost;
         int apnsPort = ApnsClient.DEFAULT_APNS_PORT;
@@ -242,7 +250,17 @@ public class PushyApnsSender implements PushNotificationSender {
             }
         }
 
-        return apnsClient.connect(apnsHost, apnsPort);
+        // Once we've created a client, we can connect it to the APNs gateway.
+        // Note that this process is asynchronous; we'll get a Future right
+        // away, but we'll need to wait for it to complete before we can send
+        // any notifications. Note that this is a Netty Future, which is an
+        // extension of the Java Future interface that allows callers to add
+        // listeners and adds methods for checking the status of the Future.
+        final Future<Void> connectFuture = apnsClient.connect(apnsHost, apnsPort);
+        try {
+            connectFuture.await();
+        } catch (InterruptedException e) {
+            logger.error("Error connecting to APNs", e);
+        }
     }
-
 }
