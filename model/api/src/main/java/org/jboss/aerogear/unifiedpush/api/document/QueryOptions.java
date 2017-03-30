@@ -5,8 +5,9 @@ public class QueryOptions {
 	private Long fromDate;
 	private Long toDate;
 	private String id;
+	private Integer limit;
 
-	public QueryOptions(){
+	public QueryOptions() {
 
 	}
 
@@ -33,6 +34,14 @@ public class QueryOptions {
 		this.id = id;
 	}
 
+	public QueryOptions(Long fromDate, Long toDate, String id, Integer limit) {
+		super();
+		this.fromDate = fromDate;
+		this.toDate = toDate;
+		this.id = id;
+		this.limit = limit;
+	}
+
 	public Long getFromDate() {
 		return fromDate;
 	}
@@ -55,6 +64,14 @@ public class QueryOptions {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 
 }

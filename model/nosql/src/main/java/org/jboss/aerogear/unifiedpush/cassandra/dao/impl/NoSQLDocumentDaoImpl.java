@@ -128,11 +128,11 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		select.where(QueryBuilder.eq("user_id", queryKey.getUserId()));
 
 		if (options != null) {
-			if (options.getFromDate() != null){
+			if (options.getFromDate() != null) {
 				final UUID min = UUIDs.startOf(options.getFromDate());
 				select.where(QueryBuilder.gte("snapshot", min));
 			}
-			if (options.getToDate() != null){
+			if (options.getToDate() != null) {
 				final UUID max = UUIDs.endOf(options.getToDate());
 				select.where(QueryBuilder.lt("snapshot", max));
 			}
@@ -141,6 +141,9 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			if (StringUtils.isNoneEmpty(options.getId())) {
 				select.where(QueryBuilder.eq("document_id", options.getId()));
 			}
+
+			if (options.getLimit() != null && options.getLimit().intValue() > 0)
+				select.limit(options.getLimit());
 		}
 
 		return operations.stream(select, domainClass);

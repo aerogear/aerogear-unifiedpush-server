@@ -60,8 +60,8 @@ public class DocumentServiceImpl implements DocumentService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
-		// Always query two weeks period in case from date is missing
-		if (options != null && options.getFromDate() == null) {
+		// Always query X days period in case from date or limit are missing
+		if (options != null && options.getFromDate() == null && options.getLimit() == null) {
 			options.setFromDate(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays())
 					.toInstant(ZoneOffset.UTC).toEpochMilli());
 		}

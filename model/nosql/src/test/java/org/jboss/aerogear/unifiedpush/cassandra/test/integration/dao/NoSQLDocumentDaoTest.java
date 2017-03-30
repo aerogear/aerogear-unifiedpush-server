@@ -120,7 +120,8 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		IDocument<DocumentKey> doc1ById = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"), "ID1");
 		Assert.assertTrue(doc1.getContent().equals(doc1ById.getContent()));
 
-		Stream<? extends IDocument<DocumentKey>> documents = documentDao.find(new DocumentKey(pushApplicationId, "STATUS"), new QueryOptions("ID1"));
+		Stream<? extends IDocument<DocumentKey>> documents = documentDao
+				.find(new DocumentKey(pushApplicationId, "STATUS"), new QueryOptions("ID1"));
 		Assert.assertTrue(documents.collect(Collectors.toList()).size() == 1);
 	}
 
@@ -206,7 +207,6 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 			documentDao.create(new DocumentContent(key4, "{TEST CONTENT 4}"));
 			Thread.sleep(100);
 
-
 			IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
 			IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
 			IDocument<DocumentKey> doc3 = documentDao.findOne(key3);
@@ -218,24 +218,55 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 			Assert.assertTrue(doc4 != null);
 
 			// Query 2 documents
-			Assert.assertTrue(documentDao
-					.find(key1, new QueryOptions(startTime, System.currentTimeMillis()))
+			Assert.assertTrue(documentDao.find(key1, new QueryOptions(startTime, System.currentTimeMillis()))
 					.collect(Collectors.toList()).size() == 2);
 
 			// Query 1 documents
-			Assert.assertTrue(documentDao
-					.find(key2, new QueryOptions(midTime, System.currentTimeMillis()))
+			Assert.assertTrue(documentDao.find(key2, new QueryOptions(midTime, System.currentTimeMillis()))
 					.collect(Collectors.toList()).size() == 1);
 
 			// Query 1 documents only by from date
-			Assert.assertTrue(documentDao
-					.find(key2, new QueryOptions(midTime))
-					.collect(Collectors.toList()).size() == 1);
-
+			Assert.assertTrue(
+					documentDao.find(key2, new QueryOptions(midTime)).collect(Collectors.toList()).size() == 1);
 
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
+	@Test
+	public void testWithLimit() {
+		UUID pushApplicationId = UUID.randomUUID();
+
+		try {
+			// Create alias specific documents
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+
+			aliasDao.create(alias1);
+
+			DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key3 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+			DocumentKey key4 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
+
+			// Create all documents
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key1, "{TEST CONTENT 1}"));
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}"));
+
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key3, "{TEST CONTENT 3}"));
+			Thread.sleep(100);
+			documentDao.create(new DocumentContent(key4, "{TEST CONTENT 4}"));
+			Thread.sleep(100);
+
+			// Query 2 documents limit
+			Assert.assertTrue(documentDao.find(key1, new QueryOptions(null, null, null, 2)).collect(Collectors.toList())
+					.size() == 2);
+
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 }

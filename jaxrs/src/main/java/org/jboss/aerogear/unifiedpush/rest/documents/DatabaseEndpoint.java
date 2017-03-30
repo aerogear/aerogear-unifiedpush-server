@@ -401,6 +401,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Limit query, return documents newer (>=) then fromDate.
 	 * @param toDate
 	 *            Limit query, return documents older (<) then toDate.
+	 * @param limit
+	 *            max number of documents.
 	 *
 	 * @return Headers Only.
 	 *
@@ -424,8 +426,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
+			@QueryParam("limit") Integer limit, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), request, false);
 	}
 
 	/**
@@ -448,6 +451,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Limit query, return documents newer (>=) then fromDate.
 	 * @param toDate
 	 *            Limit query, return documents older (<) then toDate.
+	 * @param limit
+	 *            max number of documents.
 	 *
 	 * @return Document content as multipart/mixed.
 	 *
@@ -472,8 +477,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
+			@QueryParam("limit") Integer limit, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), request, false);
 	}
 
 	/**
@@ -498,6 +504,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Limit query, return documents newer (>=) then fromDate.
 	 * @param toDate
 	 *            Limit query, return documents older (<) then toDate.
+	 * @param limit
+	 *            max number of documents.
 	 *
 	 * @return Headers Only.
 	 *
@@ -522,8 +530,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
+			@QueryParam("limit") Integer limit, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id), request, true);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), request, true);
 	}
 
 	/**
@@ -548,6 +557,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *            Limit query, return documents newer (>=) then fromDate.
 	 * @param toDate
 	 *            Limit query, return documents older (<) then toDate.
+	 * @param limit
+	 *            max number of documents.
 	 *
 	 * @return Document content as multipart/mixed.
 	 *
@@ -572,8 +583,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
+			@QueryParam("limit") Integer limit, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id), request, false);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), request, false);
 	}
 
 	private Response get(String database, //
