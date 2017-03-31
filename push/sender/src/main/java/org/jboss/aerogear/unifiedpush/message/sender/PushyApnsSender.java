@@ -29,12 +29,14 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
+import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
 import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
 import org.jboss.aerogear.unifiedpush.message.sender.apns.AeroGearApnsPushNotification;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
@@ -44,10 +46,11 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetIntegerProperty;
 import static org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils.tryGetProperty;
 
+@Stateless
 @SenderType(VariantType.IOS)
 public class PushyApnsSender implements PushNotificationSender {
 
-    private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
@@ -169,15 +172,11 @@ public class PushyApnsSender implements PushNotificationSender {
     }
 
 
-    private ApnsClient receiveApnsConnection(iOSVariant iOSVariant) {
-        ApnsClient apnsClient = simpleApnsClientCache.getApnsClientForVariantID(iOSVariant.getVariantID());
-
-        if (apnsClient == null) {
-
-            logger.debug("no cached connection, setting one up");
-
-            try {
-                apnsClient = buildApnsClient(iOSVariant);
+    private ApnsClient receiveApnsConnection(final iOSVariant iOSVariant) {
+        return simpleApnsClientCache.getApnsClientForVariantID(iOSVariant.getVariantID(), new ServiceConstructor<ApnsClient>() {
+            @Override
+            public ApnsClient construct() {
+                final ApnsClient apnsClient = buildApnsClient(iOSVariant);
 
                 // connect and wait:
                 logger.debug(String.format("establishing the connection for %s", iOSVariant.getVariantID()));
@@ -190,18 +189,10 @@ public class PushyApnsSender implements PushNotificationSender {
                         logger.debug("Reconnecting to APNs");
                     }
                 });
-
-                // set the connection to the cache
-                simpleApnsClientCache.putApnsClientForVariantID(iOSVariant.getVariantID(), apnsClient);
-
-            } catch (Exception e) {
-                logger.error("Unable to receive a connection for APNs", e);
-                throw new IllegalArgumentException(e);
+                return apnsClient;
             }
-        }
-        return apnsClient;
+        });
     }
-
 
     private ApnsClient buildApnsClient(final iOSVariant iOSVariant) {
 
@@ -256,6 +247,7 @@ public class PushyApnsSender implements PushNotificationSender {
         // any notifications. Note that this is a Netty Future, which is an
         // extension of the Java Future interface that allows callers to add
         // listeners and adds methods for checking the status of the Future.
+        logger.debug("connecting to APNs");
         final Future<Void> connectFuture = apnsClient.connect(apnsHost, apnsPort);
         try {
             connectFuture.await();
