@@ -44,6 +44,7 @@ import com.qmino.miredot.annotations.ReturnType;
 public class DocumentEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DocumentEndpoint.class);
 
+	@Inject
 	private DocumentService documentService;
 	@Inject
 	private AliasService aliasService;
