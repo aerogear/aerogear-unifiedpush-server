@@ -24,18 +24,15 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
 import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
@@ -52,15 +49,11 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private static final String X_HEADER_DATE = "Date";
 
 	@Inject
-	private ClientInstallationService clientInstallationService;
-	@Inject
-	private GenericVariantService genericVariantService;
-	@Inject
 	private DocumentService documentService;
 	@Inject
-	private PushApplicationService pushApplicationService;
-	@Inject
 	private AliasService aliasService;
+	@Inject
+	private AuthenticationHelper authenticationHelper;
 
 	/**
 	 * Cross Origin for application scope database.
@@ -255,16 +248,14 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@PathParam("snapshot") String snapshot, //
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
-		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
 
-		if (variant == null) {
+		// Authentication verification
+		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request);
+
+		if (pushApplication == null) {
 			return create401Response(request);
 		}
 
-		// Find push application b variant
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
 
 		// Create metadata object
@@ -347,17 +338,14 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
 
-		// Authentication
-		String deviceToken = ClientAuthHelper.getDeviceToken(request);
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, deviceToken, request);
+		// Get device-token authentication
+		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request, alias);
 
-		if (variant == null) {
+		if (pushApplication == null) {
 			return create401Response(request);
 		}
 
 		// Find application by variant
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
 
 		// Find related alias
@@ -365,7 +353,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 		if (aliasObj == null) {
 			logger.debug("Alias {} is missing, storing by token-id", alias);
-			aliasObj = getAliasByToken(pushApplicationId, deviceToken);
+			aliasObj = getAliasByToken(pushApplicationId, ClientAuthHelper.getDeviceToken(request));
 		}
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj,
@@ -592,17 +580,13 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			String alias, //
 			QueryOptions options, HttpServletRequest request, boolean headOnly) { //
 
-		// Authentication
-		String deviceToken = ClientAuthHelper.getDeviceToken(request);
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, deviceToken, request);
+		// Authentication validation
+		PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request, alias);
 
-		if (variant == null) {
+		if (pushApplication == null) {
 			return create401Response(request);
 		}
 
-		// Find application by variant
-		PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
 
 		// Find related alias by name
@@ -621,7 +605,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			logger.debug("Unable to get documents for unknown alias {}", alias);
 			if (aliasObj == null) {
 				logger.debug("Alias {} is missing, quering by token-id", alias);
-				aliasObj = getAliasByToken(pushApplicationId, deviceToken);
+				aliasObj = getAliasByToken(pushApplicationId, ClientAuthHelper.getDeviceToken(request));
 			}
 		}
 

@@ -23,17 +23,14 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,17 +44,11 @@ import com.qmino.miredot.annotations.ReturnType;
 public class DocumentEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DocumentEndpoint.class);
 
-	@Inject
-	private ClientInstallationService clientInstallationService;
-	@Inject
-	private GenericVariantService genericVariantService;
-	@Inject
 	private DocumentService documentService;
 	@Inject
-	private PushApplicationService pushApplicationService;
-	@Inject
 	private AliasService aliasService;
-
+	@Inject
+	private AuthenticationHelper authenticationHelper;
 	/**
 	 * Cross Origin for Installations
 	 *
@@ -197,11 +188,10 @@ public class DocumentEndpoint extends AbstractEndpoint {
 	@Deprecated
 	private Response deployDocument(String content, String alias, String database, String id,
 			HttpServletRequest request) {
-		String deviceToken = request.getHeader(ClientAuthHelper.DEVICE_TOKEN_HEADER);
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, deviceToken, request);
-		if (variant == null) {
+		final PushApplication pushApp = authenticationHelper.loadApplicationWhenAuthorized(request);
+		if (pushApp == null) {
 			return create401Response(request);
 		}
 
@@ -210,7 +200,6 @@ public class DocumentEndpoint extends AbstractEndpoint {
 		}
 
 		try {
-			PushApplication pushApp = pushApplicationService.findByVariantID(variant.getVariantID());
 			Alias user;
 
 			if (DocumentMetadata.getAlias(alias).equals(DocumentMetadata.NULL_ALIAS))
@@ -258,15 +247,14 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			@Context HttpServletRequest request) {
 
 		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-		if (variant == null) {
+		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request);
+
+		if (pushApplication == null) {
 			return create401Response(request);
 		}
 
 		try {
 			// TODO - support snapshot other then latest
-			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String document = documentService.getLatestFromAlias(pushApplication,
 					DocumentMetadata.getAlias(alias).toString(), DocumentMetadata.getDatabase(qualifier), null);
 
@@ -306,15 +294,14 @@ public class DocumentEndpoint extends AbstractEndpoint {
 			@Context HttpServletRequest request) { //
 
 		// Authentication
-		final Variant variant = ClientAuthHelper.loadVariantWhenInstalled(genericVariantService,
-				clientInstallationService, request);
-		if (variant == null) {
+		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request);
+
+		if (pushApplication == null) {
 			return create401Response(request);
 		}
 
 		try {
 			// TODO - support snapshot other then latest
-			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String document = documentService.getLatestFromAlias(pushApplication, DocumentMetadata.getAlias(alias), //
 					DocumentMetadata.getDatabase(qualifier), //
 					DocumentMetadata.getId(id));

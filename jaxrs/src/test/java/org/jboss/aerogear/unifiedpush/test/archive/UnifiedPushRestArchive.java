@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.test.archive;
 
 import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
+import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
@@ -61,7 +62,7 @@ public class UnifiedPushRestArchive extends UnifiedPushArchiveBase<UnifiedPushRe
 				.addPackage(RestApplication.class.getPackage()) //
 				.addPackage(ClientAuthHelper.class.getPackage()) //
 				.addPackage(RestEndpointTest.class.getPackage()) //
-				.addPackage(Authenticator.class.getPackage());
-
+				.addPackage(Authenticator.class.getPackage()) //
+				.addPackage(AuthenticationHelper.class.getPackage());
 	}
 }

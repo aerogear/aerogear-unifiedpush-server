@@ -35,7 +35,7 @@ public final class HttpBasicHelper {
         return authorizationHeader.startsWith(HTTP_BASIC_SCHEME);
 	}
 
-	private static String getAuthorizationHeader(HttpServletRequest request) {
+	public static String getAuthorizationHeader(HttpServletRequest request) {
 		return request.getHeader(HttpHeaders.AUTHORIZATION);
 	}
 
