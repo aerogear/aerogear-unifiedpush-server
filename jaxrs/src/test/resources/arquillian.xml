@@ -42,7 +42,7 @@
                 <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
                 <!-- both http and management ports are offset  -->
                 <!-- To Start in remote debug add: -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n -->
-                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y -Djboss.socket.binding.port-offset=4321 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node1 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m</property>
+                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n -Djboss.socket.binding.port-offset=4321 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node1 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m</property>
                 <!--  tell Arquillian where he will find the running container -->
                 <property name="managementPort">14311</property>
 
