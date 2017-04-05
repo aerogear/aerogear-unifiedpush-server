@@ -90,8 +90,8 @@ public class SimpleApnsClientCache {
     private void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {
         final ApnsClient client = apnsClientExpiringMap.putIfAbsent(variantID, apnsClient);
         if (client != null) {
-            logger.warn("duplicate connection in pool, shutting it down");
-            tearDownApnsHttp2Connection(client);
+            logger.warn("duplicate connection in pool, immediately shutting down the new connection");
+            tearDownApnsHttp2Connection(apnsClient);  // we do not want this new connection
         }
     }
 
