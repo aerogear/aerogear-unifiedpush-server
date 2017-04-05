@@ -258,6 +258,12 @@
 
 			<!-- keycloak verison policy -->
 			<dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-dependencies-server-min</artifactId>
+                <version>${keycloak.version}</version>
+            </dependency>
+
+			<dependency>
 				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-core</artifactId>
 				<version>${keycloak.version}</version>
@@ -438,7 +444,7 @@
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>2.4.0.Final</keycloak.version>
+		<keycloak.version>2.5.5.Final</keycloak.version>
 		<hibernate.version>5.0.10.Final</hibernate.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
