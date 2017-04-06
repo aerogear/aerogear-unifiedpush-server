@@ -26,12 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-@ApplicationScoped
+@Singleton
 public class SimpleApnsClientCache {
 
     private final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
@@ -70,12 +70,29 @@ public class SimpleApnsClientCache {
                 }).build();
     }
 
-    public ApnsClient getApnsClientForVariantID(final String variantID) {
-        return apnsClientExpiringMap.get(variantID);
+    public ApnsClient getApnsClientForVariantID(final String variantID, final ServiceConstructor<ApnsClient> constructor) {
+        ApnsClient client = apnsClientExpiringMap.get(variantID);
+
+        if (client == null) {
+            logger.debug(String.format("no cached connection for %s, establishing it", variantID));
+            synchronized (apnsClientExpiringMap) {
+                client = constructor.construct();
+                putApnsClientForVariantID(variantID, client);
+
+                return client; // return the newly connected client
+            }
+        } else {
+            logger.debug(String.format("reusing cached connection for %s", variantID));
+            return client; // we had it already
+        }
     }
 
-    public void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {
-        apnsClientExpiringMap.put(variantID, apnsClient);
+    private void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {
+        final ApnsClient client = apnsClientExpiringMap.putIfAbsent(variantID, apnsClient);
+        if (client != null) {
+            logger.warn("duplicate connection in pool, immediately shutting down the new connection");
+            tearDownApnsHttp2Connection(apnsClient);  // we do not want this new connection
+        }
     }
 
     @PreDestroy
@@ -86,20 +103,26 @@ public class SimpleApnsClientCache {
         for (final Map.Entry<String, ApnsClient> cachedConnection : apnsClientExpiringMap.entrySet()) {
 
             final ApnsClient connection = cachedConnection.getValue();
-            if (connection.isConnected()) {
-                connection.disconnect().addListener(new GenericFutureListener<Future<? super Void>>() {
-                    @Override
-                    public void operationComplete(Future<? super Void> future) throws Exception {
+            tearDownApnsHttp2Connection(connection);
+        }
+    }
 
-                        if (future.isSuccess()) {
-                            logger.debug(String.format("Successfully disconnected connection for iOS variant %s", cachedConnection.getKey()));
-                        } else {
-                            final Throwable t = future.cause();
-                            logger.warn(t.getMessage(), t);
-                        }
-                    }
-                });
+    private void tearDownApnsHttp2Connection(final ApnsClient client) {
+        if (client.isConnected()) {
+            client.disconnect().addListener(new ApnsDisconnectFutureListener());
+        }
+    }
+
+    private class ApnsDisconnectFutureListener implements GenericFutureListener<Future<? super Void>> {
+        @Override
+        public void operationComplete(Future<? super Void> future) throws Exception {
+            if (future.isSuccess()) {
+                logger.debug("Successfully disconnected connection...");
+            } else {
+                final Throwable t = future.cause();
+                logger.warn(t.getMessage(), t);
             }
+
         }
     }
 }
