@@ -5,21 +5,8 @@
             <module name="org.codehaus.jackson.jackson-mapper-asl"/>
             <module name="org.jboss.xnio"/>
 
-            <module name="org.jboss.as.web">
-                <imports>
-                    <exclude-set>
-                        <path name="org/apache/tomcat/jni"/>
-                    </exclude-set>
-                    <include path="**" />
-                </imports>
-                <exports>
-                    <exclude path="org/apache/tomcat/jni/**" />
-                </exports>
-            </module>
-
         </dependencies>
         <exclusions>
-            <module name="org.jboss.as.web" />
         </exclusions>
     </deployment>
 </jboss-deployment-structure>
