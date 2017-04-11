@@ -77,7 +77,10 @@ public class SimpleApnsClientCache {
             logger.debug(String.format("no cached connection for %s, establishing it", variantID));
             synchronized (apnsClientExpiringMap) {
                 client = constructor.construct();
-                putApnsClientForVariantID(variantID, client);
+
+                if (client.isConnected()) {
+                    putApnsClientForVariantID(variantID, client);
+                }
 
                 return client; // return the newly connected client
             }
