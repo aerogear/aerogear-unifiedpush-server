@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import com.relayrides.pushy.apns.ApnsClient;
 import com.relayrides.pushy.apns.ApnsClientBuilder;
 import com.relayrides.pushy.apns.PushNotificationResponse;
+import com.relayrides.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -33,12 +34,14 @@ import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
 import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
 import org.jboss.aerogear.unifiedpush.message.sender.apns.AeroGearApnsPushNotification;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
+import java.net.Proxy;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -203,9 +206,15 @@ public class PushyApnsSender implements PushNotificationSender {
             try {
                 final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
 
-                final ApnsClient apnsClient = new ApnsClientBuilder()
-                        .setClientCredentials(stream, iOSVariant.getPassphrase())
-                        .build();
+                final ApnsClientBuilder builder = new ApnsClientBuilder();
+                builder.setClientCredentials(stream, iOSVariant.getPassphrase());
+
+                if (ProxyConfiguration.hasSocks()) {
+                    final Proxy proxy = ProxyConfiguration.socks();
+                    builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(proxy.address()));
+                }
+
+                final ApnsClient apnsClient = builder.build();
 
                 // release the stream
                 stream.close();
