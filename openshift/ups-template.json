@@ -336,63 +336,62 @@
         }
       }
     },
-	
-	{
-	  "apiVersion": "v1",
-	  "kind": "Route",
-	  "metadata": {
-	    "name": "ups-localhost-unsecure"
-	  },
-	  "spec": {
-	    "host": "ups.127.0.0.1.nip.io",
-	    "to": {
-	      "kind": "Service",
-	      "name": "unifiedpush-server",
-	      "weight": 100
-	    },
-	    "port": {
-	      "targetPort": "8080-tcp"
-	    },
-	    "wildcardPolicy": "None"
-	  },
-	  "status": {
-	    "ingress": [
-	      {
-		"host": "ups.127.0.0.1.nip.io",
-		"routerName": "router",
-		"wildcardPolicy": "None"
-	      }
-	    ]
-	  }
-	},
-{
-	  "apiVersion": "v1",
-	  "kind": "Route",
-	  "metadata": {
-	    "name": "ups-android-unsecure"
-	  },
-	  "spec": {
-	    "host": "ups.10.0.2.2.nip.io",
-	    "to": {
-	      "kind": "Service",
-	      "name": "unifiedpush-server",
-	      "weight": 10
-	    },
-	    "port": {
-	      "targetPort": "8080-tcp"
-	    },
-	    "wildcardPolicy": "None"
-	  },
-	  "status": {
-	    "ingress": [
-	      {
-		"host": "ups.10.0.2.2.nip.io",
-		"routerName": "router",
-		"wildcardPolicy": "None"
-	      }
-	    ]
-	  }
-	},
+    {
+      "apiVersion": "v1",
+      "kind": "Route",
+      "metadata": {
+        "name": "ups-localhost-unsecure"
+      },
+      "spec": {
+        "host": "ups.127.0.0.1.nip.io",
+        "to": {
+          "kind": "Service",
+          "name": "unifiedpush-server",
+          "weight": 100
+        },
+        "port": {
+          "targetPort": "8080-tcp"
+        },
+        "wildcardPolicy": "None"
+      },
+      "status": {
+        "ingress": [
+          {
+            "host": "ups.127.0.0.1.nip.io",
+            "routerName": "router",
+            "wildcardPolicy": "None"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Route",
+      "metadata": {
+        "name": "ups-android-unsecure"
+      },
+      "spec": {
+        "host": "ups.10.0.2.2.nip.io",
+        "to": {
+          "kind": "Service",
+          "name": "unifiedpush-server",
+          "weight": 10
+        },
+        "port": {
+          "targetPort": "8080-tcp"
+        },
+        "wildcardPolicy": "None"
+      },
+      "status": {
+        "ingress": [
+          {
+            "host": "ups.10.0.2.2.nip.io",
+            "routerName": "router",
+            "wildcardPolicy": "None"
+          }
+        ]
+      }
+    },
     {
       "kind": "Service",
       "apiVersion": "v1",
@@ -401,17 +400,17 @@
       },
       "spec": {
         "ports": [
-           { 
-             "name": "8080-tcp",
-             "protocol": "TCP",
-             "port": 8080,
-             "targetPort": 8080
+          {
+            "name": "8080-tcp",
+            "protocol": "TCP",
+            "port": 8080,
+            "targetPort": 8080
           },
           {
-             "name": "8443-tcp",
-             "protocol": "TCP",
-             "port": 8443,
-             "targetPort": 8443
+            "name": "8443-tcp",
+            "protocol": "TCP",
+            "port": 8443,
+            "targetPort": 8443
           }
         ],
         "selector": {
@@ -463,16 +462,16 @@
                   }
                 ],
                 "readinessProbe": {
-                   "timeoutSeconds": 1,
-                   "initialDelaySeconds": 90,
-                   "exec": {
-                      "command": [
-                        "/bin/sh",
-                        "-i",
-                        "-c",
-                        "wget http://localhost:8080/ag-push "
-                      ]
-                    }
+                  "timeoutSeconds": 1,
+                  "initialDelaySeconds": 90,
+                  "exec": {
+                    "command": [
+                      "/bin/sh",
+                      "-i",
+                      "-c",
+                      "wget http://localhost:8080/ag-push "
+                    ]
+                  }
                 },
                 "env": [
                   {
@@ -516,9 +515,7 @@
                     "value": "keycloak"
                   }
                 ],
-                "resources": {
-                  
-                }
+                "resources": {}
               }
             ]
           }
