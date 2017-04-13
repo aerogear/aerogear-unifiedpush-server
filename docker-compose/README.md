@@ -1,4 +1,4 @@
-#UnifiedPush Server - Docker Compose
+# UnifiedPush Server - Docker Compose
 
 The quickest way to run the latest version of the UPS is running it [Docker Dev image](https://github.com/jboss-dockerfiles/aerogear/tree/master/wildfly/unifiedpush-wildfly-dev#running-the-image).
 
