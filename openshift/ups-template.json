@@ -2,9 +2,9 @@
   "kind": "Template",
   "apiVersion": "v1",
   "metadata": {
-    "name": "redhat-mobile-backend",
+    "name": "aerogear-unified-push",
     "annotations": {
-      "description": "An example Mobile Backend using RedHat, JBoss, AeroGear, and FeedHenry technologies",
+      "description": "The AeroGear Unified Push Server provides an API and web console for sending push messages to Android, iOS, Windows Phone, and other push messaging services.",
       "tags": "mobile",
       "iconClass": "icon-node"
     }
@@ -77,20 +77,6 @@
         },
         "triggers": [
           {
-            "type": "ImageChange",
-            "imageChangeParams": {
-              "automatic": true,
-              "containerNames": [
-                "mysql"
-              ],
-              "from": {
-                "kind": "ImageStreamTag",
-                "name": "mysql:5.7",
-                "namespace": "${NAMESPACE}"
-              }
-            }
-          },
-          {
             "type": "ConfigChange"
           }
         ],
@@ -108,7 +94,7 @@
             "containers": [
               {
                 "name": "mysql",
-                "image": " ",
+                "image": "centos/mysql-57-centos7",
                 "ports": [
                   {
                     "containerPort": 3306
@@ -181,7 +167,7 @@
       "kind": "Secret",
       "apiVersion": "v1",
       "metadata": {
-        "name": "keycloak"
+        "name": "keycloak-mysql"
       },
       "stringData": {
         "database-user": "keycloak",
@@ -193,7 +179,7 @@
       "kind": "Service",
       "apiVersion": "v1",
       "metadata": {
-        "name": "keycloak"
+        "name": "keycloak-mysql"
       },
       "spec": {
         "ports": [
@@ -203,7 +189,7 @@
           }
         ],
         "selector": {
-          "name": "keycloak"
+          "name": "keycloak-mysql"
         }
       }
     },
@@ -211,7 +197,7 @@
       "kind": "PersistentVolumeClaim",
       "apiVersion": "v1",
       "metadata": {
-        "name": "keycloak"
+        "name": "keycloak-mysql"
       },
       "spec": {
         "accessModes": [
@@ -228,7 +214,7 @@
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "keycloak"
+        "name": "keycloak-mysql"
       },
       "spec": {
         "strategy": {
@@ -236,38 +222,24 @@
         },
         "triggers": [
           {
-            "type": "ImageChange",
-            "imageChangeParams": {
-              "automatic": true,
-              "containerNames": [
-                "mysql"
-              ],
-              "from": {
-                "kind": "ImageStreamTag",
-                "name": "mysql:5.7",
-                "namespace": "${NAMESPACE}"
-              }
-            }
-          },
-          {
             "type": "ConfigChange"
           }
         ],
         "replicas": 1,
         "selector": {
-          "name": "keycloak"
+          "name": "keycloak-mysql"
         },
         "template": {
           "metadata": {
             "labels": {
-              "name": "keycloak"
+              "name": "keycloak-mysql"
             }
           },
           "spec": {
             "containers": [
               {
                 "name": "mysql",
-                "image": " ",
+                "image": "centos/mysql-57-centos7",
                 "ports": [
                   {
                     "containerPort": 3306
@@ -328,7 +300,7 @@
               {
                 "name": "keycloak-data",
                 "persistentVolumeClaim": {
-                  "claimName": "keycloak"
+                  "claimName": "keycloak-mysql"
                 }
               }
             ]
@@ -353,15 +325,6 @@
           "targetPort": "8080-tcp"
         },
         "wildcardPolicy": "None"
-      },
-      "status": {
-        "ingress": [
-          {
-            "host": "ups.127.0.0.1.nip.io",
-            "routerName": "router",
-            "wildcardPolicy": "None"
-          }
-        ]
       }
     },
     {
@@ -381,15 +344,6 @@
           "targetPort": "8080-tcp"
         },
         "wildcardPolicy": "None"
-      },
-      "status": {
-        "ingress": [
-          {
-            "host": "ups.10.0.2.2.nip.io",
-            "routerName": "router",
-            "wildcardPolicy": "None"
-          }
-        ]
       }
     },
     {
@@ -438,7 +392,6 @@
         },
         "template": {
           "metadata": {
-            "creationTimestamp": null,
             "labels": {
               "app": "unifiedpush-server",
               "deploymentconfig": "unifiedpush-server"
@@ -488,7 +441,7 @@
                   },
                   {
                     "name": "KEYCLOAK_PORT_3306_TCP_ADDR",
-                    "value": "keycloak"
+                    "value": "keycloak-mysql"
                   },
                   {
                     "name": "KEYCLOAK_PORT_3306_TCP_PORT",
