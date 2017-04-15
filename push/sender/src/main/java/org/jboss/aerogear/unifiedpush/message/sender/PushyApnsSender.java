@@ -21,6 +21,7 @@ import com.relayrides.pushy.apns.ApnsClientBuilder;
 import com.relayrides.pushy.apns.PushNotificationResponse;
 import com.relayrides.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
+import com.relayrides.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -32,7 +33,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.cache.ServiceConstructor;
 import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
-import org.jboss.aerogear.unifiedpush.message.sender.apns.AeroGearApnsPushNotification;
+import org.jboss.aerogear.unifiedpush.message.sender.apns.ApnsUtil;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
@@ -100,15 +101,18 @@ public class PushyApnsSender implements PushNotificationSender {
         }
 
         if (apnsClient.isConnected()) {
-            logger.debug(String.format("sending payload for all tokens for '%s' to APNs", iOSVariant.getVariantID()));
+
+            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
+            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+
             for (final String token : tokens) {
 
-                final AeroGearApnsPushNotification pushNotification = new AeroGearApnsPushNotification(token, payload);
-                final Future<PushNotificationResponse<AeroGearApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
+                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic, payload);
+                final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
 
-                notificationSendFuture.addListener(new GenericFutureListener<Future<? super PushNotificationResponse<AeroGearApnsPushNotification>>>() {
+                notificationSendFuture.addListener(new GenericFutureListener<Future<? super PushNotificationResponse<SimpleApnsPushNotification>>>() {
                     @Override
-                    public void operationComplete(Future<? super PushNotificationResponse<AeroGearApnsPushNotification>> future) throws Exception {
+                    public void operationComplete(Future<? super PushNotificationResponse<SimpleApnsPushNotification>> future) throws Exception {
 
                         if (future.isSuccess()) {
                             handlePushNotificationResponsePerToken(notificationSendFuture.get());
@@ -125,14 +129,15 @@ public class PushyApnsSender implements PushNotificationSender {
         }
     }
 
-    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<AeroGearApnsPushNotification> pushNotificationResponse ) {
+    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse ) {
 
         final String deviceToken = pushNotificationResponse.getPushNotification().getToken();
 
         if (pushNotificationResponse.isAccepted()) {
-            logger.trace(String.format("Push notification for '%s' (payload=%s)", deviceToken, pushNotificationResponse.getPushNotification().getPayload()));
+            logger.trace("Push notification for '{}' (payload={})", deviceToken, pushNotificationResponse.getPushNotification().getPayload());
         } else {
             final String rejectReason = pushNotificationResponse.getRejectionReason();
+            logger.trace("Push Message has been rejected with reason: {}", rejectReason);
 
             // token is either invalid, or did just expire
             if ((pushNotificationResponse.getTokenInvalidationTimestamp() != null) || ("BadDeviceToken".equals(rejectReason))) {
@@ -174,15 +179,14 @@ public class PushyApnsSender implements PushNotificationSender {
         return payloadBuilder.buildWithDefaultMaximumLength();
     }
 
-
     private ApnsClient receiveApnsConnection(final iOSVariant iOSVariant) {
-        return simpleApnsClientCache.getApnsClientForVariantID(iOSVariant.getVariantID(), new ServiceConstructor<ApnsClient>() {
+        return simpleApnsClientCache.getApnsClientForVariant(iOSVariant, new ServiceConstructor<ApnsClient>() {
             @Override
             public ApnsClient construct() {
                 final ApnsClient apnsClient = buildApnsClient(iOSVariant);
 
                 // connect and wait:
-                logger.debug(String.format("establishing the connection for %s", iOSVariant.getVariantID()));
+                logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
                 connectToDestinations(iOSVariant, apnsClient);
 
                 // APNS client has auto-reconnect, but let's log when that happens

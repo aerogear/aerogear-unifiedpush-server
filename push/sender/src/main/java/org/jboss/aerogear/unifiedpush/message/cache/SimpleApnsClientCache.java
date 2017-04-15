@@ -22,6 +22,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class SimpleApnsClientCache {
                     public void expired(final String variantID, final ApnsClient apnsClient) {
 
                         if (apnsClient.isConnected()) {
-                            logger.info(String.format("APNs connection for iOS Variant (%s) was inactive last 12 hours, disconnecting...", variantID));
+                            logger.info("APNs connection for iOS Variant ({}) was inactive last 12 hours, disconnecting...", variantID);
 
                             final Future<Void> disconnectFuture = apnsClient.disconnect();
 
@@ -58,7 +59,7 @@ public class SimpleApnsClientCache {
                                 public void operationComplete(Future<? super Void> future) throws Exception {
 
                                     if (future.isSuccess()) {
-                                        logger.debug(String.format("Disconnected from APNS due to inactive connection for iOS Variant (%s)", variantID));
+                                        logger.debug("Disconnected from APNS due to inactive connection for iOS Variant ({})", variantID);
                                     } else {
                                         final Throwable t = future.cause();
                                         logger.warn(t.getMessage(), t);
@@ -70,24 +71,33 @@ public class SimpleApnsClientCache {
                 }).build();
     }
 
-    public ApnsClient getApnsClientForVariantID(final String variantID, final ServiceConstructor<ApnsClient> constructor) {
-        ApnsClient client = apnsClientExpiringMap.get(variantID);
+    public ApnsClient getApnsClientForVariant(final iOSVariant iOSVariant, final ServiceConstructor<ApnsClient> constructor) {
+        final String connectionKey = extractConnectionKey(iOSVariant);
+        ApnsClient client = apnsClientExpiringMap.get(connectionKey);
 
         if (client == null) {
-            logger.debug(String.format("no cached connection for %s, establishing it", variantID));
+            logger.debug("no cached connection for {}, establishing it", connectionKey);
             synchronized (apnsClientExpiringMap) {
                 client = constructor.construct();
 
                 if (client.isConnected()) {
-                    putApnsClientForVariantID(variantID, client);
+                    putApnsClientForVariantID(connectionKey, client);
                 }
 
                 return client; // return the newly connected client
             }
         } else {
-            logger.debug(String.format("reusing cached connection for %s", variantID));
+            logger.debug("reusing cached connection for {}", connectionKey);
             return client; // we had it already
         }
+    }
+
+    private String extractConnectionKey(final iOSVariant iOSVariant) {
+        final StringBuilder sb = new StringBuilder()
+                .append(iOSVariant.getVariantID())
+                .append(iOSVariant.isProduction() ? "-prod" : "-dev");
+
+        return  sb.toString();
     }
 
     private void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {
