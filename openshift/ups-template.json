@@ -15,6 +15,24 @@
       "displayName": "Namespace",
       "description": "The OpenShift Namespace where the ImageStream resides.",
       "value": "openshift"
+    },
+    {
+      "name": "UPS_URL",
+      "displayName": "UPS URL",
+      "description": "This is the url that will be the base route to the UPS server.",
+      "value": "ups.127.0.0.1.nip.io"
+    },
+    {
+      "name": "MYSQL_IMAGE",
+      "displayName": "MySQL Image",
+      "description": "Docker image to use for the MySQL database servers",
+      "value": "centos/mysql-57-centos7"
+    },
+    {
+      "name": "UPS_IMAGE",
+      "displayName": "UPS Image",
+      "description": "Docker image to use for the UPS Server",
+      "value": "aerogear/unifiedpush-wildfly"
     }
   ],
   "objects": [
@@ -94,7 +112,7 @@
             "containers": [
               {
                 "name": "mysql",
-                "image": "centos/mysql-57-centos7",
+                "image": "${MYSQL_IMAGE}",
                 "ports": [
                   {
                     "containerPort": 3306
@@ -239,7 +257,7 @@
             "containers": [
               {
                 "name": "mysql",
-                "image": "centos/mysql-57-centos7",
+                "image": "${MYSQL_IMAGE}",
                 "ports": [
                   {
                     "containerPort": 3306
@@ -315,30 +333,11 @@
         "name": "ups-localhost-unsecure"
       },
       "spec": {
-        "host": "ups.127.0.0.1.nip.io",
+        "host": "${UPS_URL}",
         "to": {
           "kind": "Service",
           "name": "unifiedpush-server",
           "weight": 100
-        },
-        "port": {
-          "targetPort": "8080-tcp"
-        },
-        "wildcardPolicy": "None"
-      }
-    },
-    {
-      "apiVersion": "v1",
-      "kind": "Route",
-      "metadata": {
-        "name": "ups-android-unsecure"
-      },
-      "spec": {
-        "host": "ups.10.0.2.2.nip.io",
-        "to": {
-          "kind": "Service",
-          "name": "unifiedpush-server",
-          "weight": 10
         },
         "port": {
           "targetPort": "8080-tcp"
@@ -401,7 +400,7 @@
             "containers": [
               {
                 "name": "unifiedpush-server",
-                "image": "aerogear/unifiedpush-wildfly",
+                "image": "${UPS_IMAGE}",
                 "ports": [
                   {
                     "name": "8080-tcp",
