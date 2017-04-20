@@ -102,6 +102,9 @@ public class PushyApnsSender implements PushNotificationSender {
 
         if (apnsClient.isConnected()) {
 
+            // we have managed to connect and will send tokens ;-)
+            senderCallback.onSuccess();
+
             final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
             logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
@@ -121,8 +124,6 @@ public class PushyApnsSender implements PushNotificationSender {
                 });
             }
 
-            // we have managed to dispatch all messages ;-)
-            senderCallback.onSuccess();
         } else {
             logger.error("Unable to send notifications, client is not connected");
             senderCallback.onError("Unable to send notifications, client is not connected");
@@ -193,7 +194,7 @@ public class PushyApnsSender implements PushNotificationSender {
                 apnsClient.getReconnectionFuture().addListener(new GenericFutureListener<Future<? super Void>>() {
                     @Override
                     public void operationComplete(Future<? super Void> future) throws Exception {
-                        logger.debug("Reconnecting to APNs");
+                        logger.trace("Reconnecting to APNs");
                     }
                 });
                 return apnsClient;
