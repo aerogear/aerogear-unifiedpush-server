@@ -7,14 +7,13 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
-import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +41,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	public IDocument<DocumentKey> create(IDocument<DocumentKey> document) {
+	public DocumentContent create(DocumentContent document) {
 		// If snapshot exists request is to update a specific version.
 		if (document.getKey().getSnapshot() != null)
 			operations.update(document);
@@ -99,8 +98,8 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	public List<IDocument<DocumentKey>> findLatestForAliases(DocumentKey key, List<Alias> aliases, String logicalId) {
-		List<IDocument<DocumentKey>> docs = new ArrayList<>();
+	public List<DocumentContent> findLatestForAliases(DocumentKey key, List<Alias> aliases, String logicalId) {
+		List<DocumentContent> docs = new ArrayList<>();
 		if (aliases == null)
 			return docs;
 

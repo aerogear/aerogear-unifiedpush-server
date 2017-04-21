@@ -18,13 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
-import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
@@ -57,7 +56,6 @@ public class DocumentServiceImpl implements DocumentService {
 		return (DocumentContent) documentDao.create(createDocument(metadate, content, id));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options) {
 		// Always query X days period in case from date or limit are missing
@@ -89,7 +87,7 @@ public class DocumentServiceImpl implements DocumentService {
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null);
 
-		final List<IDocument<DocumentKey>> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases,
+		final List<DocumentContent> docs = documentDao.findLatestForAliases(new DocumentKey(metadata), aliases,
 				id);
 
 		if (docs != null) {

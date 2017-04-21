@@ -6,15 +6,14 @@ import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
-import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.cassandra.test.integration.FixedKeyspaceCreatingIntegrationTest;
-import org.jboss.aerogear.unifiedpush.dao.DocumentDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +57,7 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 		documentDao.create(new DocumentContent(key, "{TEST CONTENT}"));
 
-		IDocument<DocumentKey> doc = documentDao.findOne(key);
+		DocumentContent doc = documentDao.findOne(key);
 		Assert.assertTrue(doc != null);
 
 		documentDao.delete((DocumentContent) doc);
@@ -79,15 +78,15 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}"));
 
 		// Search with existing snapshot
-		IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
+		DocumentContent doc1 = documentDao.findOne(key1);
 		Assert.assertTrue(doc1 != null);
 
 		// Search with existing snapshot
-		IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
+		DocumentContent doc2 = documentDao.findOne(key2);
 		Assert.assertTrue(doc2 != null);
 
 		// Search Without snapshot
-		IDocument<DocumentKey> latest = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"));
+		DocumentContent latest = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"));
 
 		Assert.assertTrue(doc2.getContent().equals(latest.getContent()));
 	}
@@ -104,23 +103,23 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		documentDao.create(new DocumentContent(key2, "{TEST CONTENT 2}", "ID2"));
 
 		// Search by complete key
-		IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
+		DocumentContent doc1 = documentDao.findOne(key1);
 		Assert.assertTrue(doc1.getDocumentId().equals("ID1"));
 
 		// Search by complete key
-		IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
+		DocumentContent doc2 = documentDao.findOne(key2);
 		Assert.assertTrue(doc2.getDocumentId().equals("ID2"));
 
 		// Search when missing snapshot, return latest document regardless of
 		// id.
-		IDocument<DocumentKey> latest = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"));
+		DocumentContent latest = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"));
 		Assert.assertTrue(doc2.getContent().equals(latest.getContent()));
 
 		// Search by document id.
-		IDocument<DocumentKey> doc1ById = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"), "ID1");
+		DocumentContent doc1ById = documentDao.findOne(new DocumentKey(pushApplicationId, "STATUS"), "ID1");
 		Assert.assertTrue(doc1.getContent().equals(doc1ById.getContent()));
 
-		Stream<? extends IDocument<DocumentKey>> documents = documentDao
+		Stream<DocumentContent> documents = documentDao
 				.find(new DocumentKey(pushApplicationId, "STATUS"), new QueryOptions("ID1"));
 		Assert.assertTrue(documents.collect(Collectors.toList()).size() == 1);
 	}
@@ -151,10 +150,10 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		documentDao.create(new DocumentContent(key3, "{TEST CONTENT 3}"));
 		documentDao.create(new DocumentContent(key4, "{TEST CONTENT 4}"));
 
-		IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
-		IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
-		IDocument<DocumentKey> doc3 = documentDao.findOne(key3);
-		IDocument<DocumentKey> doc4 = documentDao.findOne(key4);
+		DocumentContent doc1 = documentDao.findOne(key1);
+		DocumentContent doc2 = documentDao.findOne(key2);
+		DocumentContent doc3 = documentDao.findOne(key3);
+		DocumentContent doc4 = documentDao.findOne(key4);
 
 		Assert.assertTrue(doc1 != null);
 		Assert.assertTrue(doc2 != null);
@@ -207,10 +206,10 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 			documentDao.create(new DocumentContent(key4, "{TEST CONTENT 4}"));
 			Thread.sleep(100);
 
-			IDocument<DocumentKey> doc1 = documentDao.findOne(key1);
-			IDocument<DocumentKey> doc2 = documentDao.findOne(key2);
-			IDocument<DocumentKey> doc3 = documentDao.findOne(key3);
-			IDocument<DocumentKey> doc4 = documentDao.findOne(key4);
+			DocumentContent doc1 = documentDao.findOne(key1);
+			DocumentContent doc2 = documentDao.findOne(key2);
+			DocumentContent doc3 = documentDao.findOne(key3);
+			DocumentContent doc4 = documentDao.findOne(key4);
 
 			Assert.assertTrue(doc1 != null);
 			Assert.assertTrue(doc2 != null);

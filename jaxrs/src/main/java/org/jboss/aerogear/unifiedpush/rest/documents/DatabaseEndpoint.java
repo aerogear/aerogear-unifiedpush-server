@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.rest.documents;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -25,9 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.parser.JsonDocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
@@ -201,6 +204,57 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	}
 
 	/**
+	 * RESTful API for storing application scope document. The Endpoint is
+	 * protected using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: multipart/form-data" -H "Content-type: multipart/form-data; boundary=115bbbac-ac64-403f-ac6e-fd9874c056ee"
+	 *   -X POST
+	 *   -d '{
+	 *     "content":{YOUR JSON CONTENT},
+	 *     "contentType":"application/json",
+	 *     "documentId":"ANY ID"}'
+	 *   }
+	 *   https://SERVER:PORT/context/rest/database/DEVICES
+	 * </pre>
+	 *
+	 * @param documents
+	 *            List of {@link IDocument}
+	 *
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 *
+	 * @return {@link java.lang.Void}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 204 Successful store of the document.
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@ReturnType("java.lang.Void")
+	@Path("/{database}")
+	public Response saveForApplication(List<JsonDocumentContent> documents, //
+			@PathParam("database") String database, //
+			@Context HttpServletRequest request) { //
+
+		documents.forEach(document -> {
+			saveForApplication(document.getContent(), database, null, document.getDocumentId(), request);
+		});
+
+		return appendAllowOriginHeader(Response.noContent(), request);
+	}
+
+	/**
 	 * RESTful API for updating application scope document. The Endpoint is
 	 * protected using <code>HTTP Basic</code> (credentials
 	 * <code>VariantID:secret</code>).
@@ -274,6 +328,45 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		}
 	}
 
+	/**
+	 * RESTful API for update alias scope document. The Endpoint is protected
+	 * using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X POST
+	 *   -d '{
+	 *     "any-attribute-1" : "example1",
+	 *     "any-attribute-2" : "example1",
+	 *     "any-attribute-3" : "example1"
+	 *   }'
+	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.orgt
+	 * </pre>
+	 *
+	 * @param document
+	 *            JSON content.
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 * @param alias
+	 *            Unique alias name (email/phone/tokenid/other).
+	 * @param id
+	 *            Document collection id.
+	 *
+	 * @return {@link java.lang.Void}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 204 Successful update of the document.
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
@@ -284,6 +377,61 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("id") String id, //
 			@Context HttpServletRequest request) { //
 		return saveForAlias(document, database, alias, null, id, request);
+	}
+
+	/**
+	 * RESTful API for storing alias scope document. The Endpoint is protected
+	 * using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: multipart/form-data" -H "Content-type: multipart/form-data; boundary=115bbbac-ac64-403f-ac6e-fd9874c056ee"
+	 *   -X POST
+	 *   -d '{
+	 *     "content":{YOUR JSON CONTENT},
+	 *     "contentType":"application/json",
+	 *     "documentId":"ANY ID"}'
+	 *   }
+	 *   https://SERVER:PORT/context/rest/database/DEVICES/alias/support@aerobase.org
+	 * </pre>
+	 *
+	 * @param documents
+	 *            List of {@link IDocument}
+	 *
+	 * @param database
+	 *            Logical database name, e.g users | metadata | any other.
+	 *
+	 * @param alias
+	 *            Unique alias name (email/phone/tokenid/other).
+	 *
+	 * @return {@link java.lang.Void}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 204 Successful store of the document.
+	 * @statuscode 400 The format of the document request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@ReturnType("java.lang.Void")
+	@Path("/{database}/alias/{alias}")
+	public Response saveForAlias(List<JsonDocumentContent> documents, //
+			@PathParam("database") String database, //
+			@PathParam("alias") String alias, //
+			@Context HttpServletRequest request) { //
+
+		documents.forEach(document -> {
+			saveForAlias(document.getContent(), database, alias, null, document.getDocumentId(), request);
+		});
+
+		return appendAllowOriginHeader(Response.noContent(), request);
 	}
 
 	/**

@@ -11,7 +11,7 @@ import org.springframework.data.cassandra.mapping.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(value = "documents")
-public class DocumentContent implements IDocument<DocumentKey> {
+public class DocumentContent implements IDocument<DocumentKey, String> {
 
 	@NotNull
 	@PrimaryKey
@@ -22,6 +22,7 @@ public class DocumentContent implements IDocument<DocumentKey> {
 	private String documentId;
 
 	@Column
+	@JsonIgnore
 	private String content;
 
 	@Column(value = "content_type")
@@ -75,5 +76,4 @@ public class DocumentContent implements IDocument<DocumentKey> {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-
 }

@@ -2,9 +2,6 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
 import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.api.document.IDocument;
-import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
-
 public class DatabaseQueryKey {
 
 	private UUID pushApplicationId;
@@ -16,7 +13,7 @@ public class DatabaseQueryKey {
 		this.database = db.getDatabase();
 	}
 
-	public DatabaseQueryKey(IDocument<DocumentKey> doc) {
+	public DatabaseQueryKey(DocumentContent doc) {
 		super();
 		this.pushApplicationId = doc.getKey().getPushApplicationId();
 		this.database = doc.getKey().getDatabase();

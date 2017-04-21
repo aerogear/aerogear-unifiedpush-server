@@ -1,14 +1,21 @@
 package org.jboss.aerogear.unifiedpush.api.document;
 
-public interface IDocument<ID> {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+public interface IDocument<ID, CT> {
+
+	@JsonIgnore
 	ID getKey();
 
 	void setKey(ID key);
 
-	String getContent();
+	CT getContent();
 
-	void setContent(String content);
+	void setContent(CT content);
+
+	String getContentType();
+
+	void setContentType(String contentType);
 
 	String getDocumentId();
 
