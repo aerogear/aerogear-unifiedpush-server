@@ -102,7 +102,7 @@ public class AliasServiceImpl implements AliasService {
 	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
 		Alias alias = aliasCrudService.find(pushApplicationId, userId);
 		this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
-				false);
+				destructive);
 	}
 
 	private void remove(UUID pushApplicationId, String alias, boolean destructive) {
@@ -218,11 +218,19 @@ public class AliasServiceImpl implements AliasService {
 		return alias;
 	}
 
+	/*
+	 * Remove all aliases by application id and invalidates alias cache.
+	 */
 	@Override
 	public void removeAll(UUID pushApplicationId) {
 		aliasCrudService.removeAll(pushApplicationId);
+
+		// TODO - Remove KC client and all related users.
 	}
 
+	/**
+	 * If
+	 */
 	@Override
 	public void create(Alias alias, boolean oauth2) {
 		// Initialize a new time-based UUID on case one is missing.
