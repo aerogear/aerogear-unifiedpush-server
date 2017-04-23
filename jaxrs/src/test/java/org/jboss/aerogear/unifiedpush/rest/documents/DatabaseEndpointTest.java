@@ -110,8 +110,10 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS/alias/"
 					+ newInstallation.getAlias().toLowerCase());
 
-			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
+			// Additional Accept header to also test MediaType.APPLICATION_JSON content
+			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER, //
+					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())) //
+					.header("Accept", MediaType.APPLICATION_JSON).get();
 
 			Assert.assertTrue(response.getStatus() == 200);
 			String count = response.getHeaderString(DatabaseEndpoint.X_HEADER_COUNT);

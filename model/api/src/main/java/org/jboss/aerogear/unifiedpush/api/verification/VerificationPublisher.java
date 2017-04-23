@@ -34,7 +34,6 @@ public interface VerificationPublisher {
 		builder.append(", fromaddr: ").append(fromaddr);
 		builder.append(", toaddres: ").append(toaddres);
 
-		logger.error(builder.toString());
-		logger.debug("Error while sending verification code", e);
+		logger.error(builder.toString(), e);
 	}
 }

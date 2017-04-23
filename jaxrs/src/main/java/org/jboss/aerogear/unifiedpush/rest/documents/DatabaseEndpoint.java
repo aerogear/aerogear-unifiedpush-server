@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.rest.documents;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -50,6 +52,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	public static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
 	public static final String X_HEADER_COUNT = "X-AB-Count";
 	private static final String X_HEADER_DATE = "Date";
+	private static final String MULTIPART_MIXED = "multipart/mixed";
 
 	@Inject
 	private DocumentService documentService;
@@ -555,7 +558,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@HEAD
-	@Produces("multipart/mixed")
+	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
 	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response headForApplication(@PathParam("database") String database, //
@@ -563,8 +566,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@QueryParam("limit") Integer limit, //
+			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
 	}
 
 	/**
@@ -606,7 +610,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@GET
-	@Produces("multipart/mixed")
+	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
 	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response getForApplication(@PathParam("database") String database, //
@@ -614,8 +618,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@QueryParam("limit") Integer limit, //
+			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), request, false);
+		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
 	}
 
 	/**
@@ -658,7 +663,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@HEAD
-	@Produces("multipart/mixed")
+	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response headForAlias(@PathParam("database") String database, //
@@ -667,8 +672,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@QueryParam("limit") Integer limit, //
+			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), request, true);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), accept, true, request);
 	}
 
 	/**
@@ -711,7 +717,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@GET
-	@Produces("multipart/mixed")
+	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response getForAlias(@PathParam("database") String database, //
@@ -720,13 +726,17 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //
 			@QueryParam("limit") Integer limit, //
+			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), request, false);
+		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
 	}
 
 	private Response get(String database, //
 			String alias, //
-			QueryOptions options, HttpServletRequest request, boolean headOnly) { //
+			QueryOptions options, //
+			String accept, //
+			boolean headOnly, //
+			HttpServletRequest request) { //
 
 		// Authentication validation
 		PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request, alias);
@@ -757,9 +767,26 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			}
 		}
 
+		/**
+		 * TODO - Remove accept.contains(MediaType.WILDCARD) from condition. NOT
+		 * Before all clients > 1.3.6
+		 */
+		if (StringUtils.isEmpty(accept) || accept.contains(MediaType.WILDCARD) || accept.contains("multipart/mixed")) {
+			return getAsMultipartMixed(pushApplicationId, database, aliasObj, options, headOnly, request);
+		} else {
+			return getAsApplicationJson(pushApplicationId, database, aliasObj, options, headOnly, request);
+		}
+	}
+
+	private Response getAsMultipartMixed(UUID pushApplicationId, //
+			String database, //
+			Alias alias, //
+			QueryOptions options, //
+			boolean headOnly, //
+			HttpServletRequest request) { //
 		final MultipartOutput output = new MultipartOutput();
 
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, alias);
 		documentService.find(metadata, options).forEach(doc -> {
 			OutputPart part = output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()));
 			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());
@@ -771,8 +798,36 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), output.getParts().size()),
 						request);
 			else
-				return appendAllowOriginHeader(appendCountHeader(Response.ok(output), output.getParts().size()),
+				return appendAllowOriginHeader(
+						appendCountHeader(Response.ok(output).type(MULTIPART_MIXED), output.getParts().size()),
 						request);
+		} catch (Exception e) {
+			logger.error(String.format("Cannot store document for database %s", database), e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	private Response getAsApplicationJson(UUID pushApplicationId, //
+			String database, //
+			Alias alias, //
+			QueryOptions options, //
+			boolean headOnly, //
+			HttpServletRequest request) { //
+
+		final List<JsonDocumentContent> docs = new ArrayList<>();
+
+		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, alias);
+		documentService.find(metadata, options).forEach(doc -> {
+			docs.add(new JsonDocumentContent(doc.getKey(), doc.getContent(), doc.getDocumentId()));
+		});
+
+		try {
+			// In case no available parts | HEAD request, return 204
+			if (headOnly || docs.size() == 0)
+				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), docs.size()), request);
+			else
+				return appendAllowOriginHeader(
+						appendCountHeader(Response.ok(docs).type(MediaType.APPLICATION_JSON), docs.size()), request);
 		} catch (Exception e) {
 			logger.error(String.format("Cannot store document for database %s", database), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);

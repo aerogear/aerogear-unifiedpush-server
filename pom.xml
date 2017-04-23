@@ -544,7 +544,7 @@
 					<dependency>
 						<groupId>org.wildfly.extras.creaper</groupId>
 						<artifactId>creaper-core</artifactId>
-						<version>1.4.0</version>
+						<version>1.6.0</version>
 						<exclusions>
 							<exclusion>
 								<groupId>org.jboss.as</groupId>
@@ -561,7 +561,7 @@
 					<dependency>
 						<groupId>org.wildfly.extras.creaper</groupId>
 						<artifactId>creaper-commands</artifactId>
-						<version>1.4.0</version>
+						<version>1.6.0</version>
 						<exclusions>
 							<exclusion>
 								<groupId>org.wildfly</groupId>
@@ -781,6 +781,11 @@
     </profiles>
 
 	<repositories>
+	    <repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</repository>
 		<repository>
 			<id>alfresco-public</id>
 			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
