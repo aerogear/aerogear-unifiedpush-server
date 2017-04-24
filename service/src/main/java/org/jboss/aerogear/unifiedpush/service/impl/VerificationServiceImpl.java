@@ -135,7 +135,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			// Enable OAuth2 User
 			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
-				keycloakService.updateUser(installation.getAlias(), verificationAttempt.getCode());
+				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode());
 			}
 
 			return VerificationResult.SUCCESS;

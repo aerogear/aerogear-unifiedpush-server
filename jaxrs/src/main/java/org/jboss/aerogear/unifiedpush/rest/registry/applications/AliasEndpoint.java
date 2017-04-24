@@ -113,7 +113,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
 	public Response exists(@PathParam("alias") String alias, @Context HttpServletRequest request) {
-		if (aliasService.exists(alias) != null)
+		if (aliasService.exists(alias))
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
 
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);

@@ -16,7 +16,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
@@ -147,7 +146,15 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 	}
 
-	@Asynchronous
+	/**
+	 * Create user by username (If Absent).
+	 *
+	 * Create user must be done synchronously and prevent clients from
+	 * authenticating before KC operation is complete.
+	 *
+	 * @param userName
+	 *            unique username
+	 */
 	public void createUserIfAbsent(String userName) {
 		if (!isInitialized()) {
 			return;
@@ -156,14 +163,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 		UserRepresentation user = getUser(userName);
 
 		if (user == null) {
-			user = new UserRepresentation();
-			user.setUsername(userName);
-
-			user.setRequiredActions(Arrays.asList(UPDATE_PASSWORD_ACTION));
-
-			user.setRealmRoles(Collections.singletonList(KEYCLOAK_ROLE_USER));
-
-			user.setEnabled(false);
+			user = create(userName, null, false);
 
 			this.realm.users().create(user);
 		} else {
@@ -171,13 +171,62 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 	}
 
-	@Asynchronous
-	public void disable(Alias alias) {
+	/**
+	 * Create verified user by username (If Absent).
+	 *
+	 * Create user must be done synchronously and prevent clients from
+	 * authenticating before KC operation is complete.
+	 *
+	 * @param userName
+	 *            unique username
+	 */
+	public void createVerifiedUserIfAbsent(String userName, String password) {
 		if (!isInitialized()) {
 			return;
 		}
 
-		updateUser(alias.getEmail(), null, false);
+		UserRepresentation user = getUser(userName);
+
+		if (user == null) {
+			user = create(userName, password, true);
+
+			this.realm.users().create(user);
+		} else {
+			logger.debug("KC Username {}, already exist", userName);
+		}
+	}
+
+	private UserRepresentation create(String userName, String password, boolean enabled) {
+		UserRepresentation user = new UserRepresentation();
+		user.setUsername(userName);
+
+		user.setRequiredActions(Arrays.asList(UPDATE_PASSWORD_ACTION));
+		user.setRealmRoles(Collections.singletonList(KEYCLOAK_ROLE_USER));
+
+		user.setEnabled(enabled);
+
+		if (StringUtils.isNotEmpty(password)) {
+			user.setEmailVerified(true);
+			user.setEmail(userName);
+
+			user.getCredentials().add(getUserCredentials(password));
+		}
+
+		return user;
+	}
+
+	public boolean exists(String userName) {
+		if (!isInitialized()) {
+			return false;
+		}
+
+		UserRepresentation user = getUser(userName);
+		if (user == null) {
+			logger.debug(String.format("Unable to find user %s, in keyclock", userName));
+			return false;
+		}
+
+		return true;
 	}
 
 	@Asynchronous
@@ -193,21 +242,6 @@ public class KeycloakServiceImpl implements KeycloakService {
 		}
 
 		this.realm.users().delete(user.getId());
-	}
-
-	@Override
-	/*
-	 * Update user must be done synchronously. When user tries to verify code,
-	 * and response is immediate (asynchronously), client might try to
-	 * authenticate before KC operation is complete.
-	 */
-	public void updateUser(String userName, String password) {
-		if (!isInitialized()) {
-			return;
-		}
-
-		createUserIfAbsent(userName);
-		updateUser(userName, password, true);
 	}
 
 	@Override
@@ -247,7 +281,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 		if (isCurrentPasswordValid == true) {
 			UsersResource users = this.realm.users();
 			UserResource userResource = users.get(user.getId());
-			updateUserPassword(userResource, newPassword);
+
+			userResource.resetPassword(getUserCredentials(newPassword));
 		}
 	}
 
@@ -256,33 +291,12 @@ public class KeycloakServiceImpl implements KeycloakService {
 		return true;
 	}
 
-	private void updateUser(String userName, String password, boolean enable) {
-		UserRepresentation user = getUser(userName);
-		if (user == null) {
-			logger.debug(String.format("Unable to find user %s, in keyclock", userName));
-			return;
-		}
-
-		UserResource userResource = this.realm.users().get(user.getId());
-
-		user.setEnabled(enable);
-
-		if (StringUtils.isNotEmpty(password)) {
-			user.setEmailVerified(true);
-			user.setEmail(userName);
-
-			updateUserPassword(userResource, password);
-		}
-
-		userResource.update(user);
-	}
-
-	private void updateUserPassword(UserResource userResource, String password) {
+	private CredentialRepresentation getUserCredentials(String password) {
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);
 		credential.setValue(password);
 
-		userResource.resetPassword(credential);
+		return credential;
 	}
 
 	private UserRepresentation getUser(String username) {

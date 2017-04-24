@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -28,11 +27,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +44,6 @@ public class AliasServiceImpl implements AliasService {
 	private AliasCrudService aliasCrudService;
 	@Inject
 	private KeycloakService keycloakService;
-	@Inject
-	private ClientInstallationService clientInstallationService;
 
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
 		logger.debug("OAuth2 flag is: " + oauth2);
@@ -128,36 +122,15 @@ public class AliasServiceImpl implements AliasService {
 		return aliasCrudService.find(pushApplicationId, userId);
 	}
 
-	@Override
-	public Installation exists(String alias) {
-		return exists(alias, VariantType.SIMPLE_PUSH);
-	}
-
 	/**
-	 * Return first existing and enabled device according to a given alias and
-	 * {@link VariantType}.
+	 * Test if user exists in KC.
 	 *
 	 * @param alias
 	 *            alias name
-	 * @param type
-	 *            variant type to filter
-	 * @return {@link Installation}
 	 */
-	public Installation exists(String alias, VariantType type) {
-		List<Installation> devices = clientInstallationService.findByAlias(alias);
-
-		if (devices == null || devices.size() == 0)
-			return null;
-
-		List<Installation> enabledDevices = devices.stream()
-				.filter(device -> device.isEnabled() & device.getVariant().getType().equals(type))
-				.collect(Collectors.toList());
-
-		if (enabledDevices != null && enabledDevices.size() > 0) {
-			return enabledDevices.get(0);
-		}
-
-		return null;
+	@Override
+	public boolean exists(String alias) {
+		return keycloakService.exists(alias);
 	}
 
 	@Override
@@ -229,7 +202,7 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	/**
-	 * If
+	 * Create alias while preserving user uuid.
 	 */
 	@Override
 	public void create(Alias alias, boolean oauth2) {
@@ -242,9 +215,8 @@ public class AliasServiceImpl implements AliasService {
 			if (existingAlias != null) {
 				// Remove all references to previous alias
 				remove(alias.getPushApplicationId(), existingAlias.getId());
-				// TODO - Since KC users are not removed without destructive
-				// flag, We need to update existing KC users and set a new
-				// email.
+				// TODO - if user exists with KC, and primary email changed?
+				// Change user alias and enforce registration process
 
 				alias.setId(existingAlias.getId());
 			} else {
@@ -253,11 +225,6 @@ public class AliasServiceImpl implements AliasService {
 		}
 
 		aliasCrudService.create(alias);
-
-		// synchronize aliases to keycloak
-		if (oauth2) {
-			keycloakService.createUserIfAbsent(alias.getEmail());
-		}
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 public interface AliasService {
@@ -59,7 +58,7 @@ public interface AliasService {
 	 */
 	void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
 
-	Installation exists(String alias);
+	boolean exists(String alias);
 
 	Alias create(String pushApplicationId, String alias);
 

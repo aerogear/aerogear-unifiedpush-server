@@ -7,11 +7,13 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 public interface KeycloakService {
 	void createClientIfAbsent(PushApplication pushApplication);
 
-	void updateUser(String userName, String password);
+	void createUserIfAbsent(String alias);
+
+	void createVerifiedUserIfAbsent(String userName, String password);
+
+	boolean exists(String userName);
 
 	void delete(String userName);
-
-	void createUserIfAbsent(String alias);
 
 	List<String> getVariantIdsFromClient(String clientID);
 

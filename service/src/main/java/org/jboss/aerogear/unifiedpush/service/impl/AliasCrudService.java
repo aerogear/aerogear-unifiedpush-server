@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 
 /**
- * Public Service which wraps Spring DAO. TODO - As soon as can mixup Spting and
- * EJB IOC, merge this service into AliasService.
+ * Public Service which wraps Spring DAO. TODO - As soon as we can mixup Spring
+ * and EJB IOC, merge this service into AliasService.
  */
 public interface AliasCrudService {
 	Alias find(UUID pushApplicationId, String alias);

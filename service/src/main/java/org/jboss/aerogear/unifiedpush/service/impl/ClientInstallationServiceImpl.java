@@ -113,6 +113,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			}
 		}
 
+		// TODO - Make sure user is associated to a KC client.
+
 		return null;
 	}
 
