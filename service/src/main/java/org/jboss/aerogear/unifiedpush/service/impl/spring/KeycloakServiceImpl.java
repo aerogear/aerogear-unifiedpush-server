@@ -168,7 +168,9 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 * authenticating before KC operation is complete.
 	 *
 	 * @param userName
-	 *            unique username
+	 *            unique userName
+	 * @param password
+	 *            password
 	 */
 	public void createVerifiedUserIfAbsent(String userName, String password) {
 		if (!isInitialized()) {

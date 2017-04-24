@@ -19,6 +19,8 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.handler.codec.http.HttpRequest;
+
 @ApplicationScoped
 public class AuthenticationHelper {
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationHelper.class);
@@ -36,11 +38,21 @@ public class AuthenticationHelper {
 		return loadApplicationWhenAuthorized(request, null, false);
 	}
 
-	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue){
+	/**
+	 * Returns the {@link PushApplication} if either device token is present and
+	 * device is enabled or applicationId exists and authorized.
+	 *
+	 * @param request
+	 *            {@link HttpRequest}
+	 * @param aliasValue
+	 *            user alias
+	 */
+	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue) {
 		return loadApplicationWhenAuthorized(request, aliasValue, true);
 	}
 
-	private PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue, boolean forceAliasScope) {
+	private PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue,
+			boolean forceAliasScope) {
 
 		// Extract device token
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
@@ -78,11 +90,30 @@ public class AuthenticationHelper {
 	}
 
 	/**
-	 * Returns the variant if either device token is present and device enabled
-	 * or applicationId exists and
+	 * Returns the {@link Variant} if device token is present and device is
+	 * enabled. first fetch credentials from basic authentication, if missing
+	 * try bearer credentials.
+	 *
+	 * @param request
+	 *            {@link HttpRequest}
 	 *
 	 */
-	private Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
+	public Variant loadVariantWhenAuthorized(HttpServletRequest request) {
+		// Extract device token
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
+		return loadVariantWhenAuthorized(deviceToken, request);
+	}
+
+	/**
+	 * Returns the {@link Variant} if device token is present and device is
+	 * enabled. first fetch credentials from basic authentication, if missing
+	 * try bearer credentials.
+	 *
+	 * @param request
+	 *            {@link HttpRequest}
+	 *
+	 */
+	public Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
 
 		if (deviceToken == null) {
 			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
@@ -127,7 +158,12 @@ public class AuthenticationHelper {
 	}
 
 	/**
-	 * returns variant from the bearer token if it is valid for the request
+	 * returns variant from the bearer token if it is valid for the request.
+	 *
+	 * {@link GenericVariantService}
+	 *
+	 * @param request
+	 *            {@link HttpRequest}
 	 */
 	private static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
 			HttpServletRequest request) {

@@ -45,6 +45,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
+import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -58,6 +59,8 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
@@ -81,6 +84,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Inject
 	@Wrapper
 	private ConfigurationService configuration;
+	@Inject
+	private AuthenticationHelper authenticationHelper;
 
 	/**
 	 * Cross Origin for Installations
@@ -545,7 +550,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 			return create401Response(request);
 		}
 
-		String basicDeviceToken = request.getHeader("device-token");
+		String basicDeviceToken = ClientAuthHelper.getDeviceToken(request);
 		if (basicDeviceToken == null) {
 			return appendAllowOriginHeader(
 					Response.status(Status.BAD_REQUEST).entity(quote("deviceToken header required")), request);
@@ -566,7 +571,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		// Associate the device - find the matching application and update the
 		// device to the right application.
-		// TODO - Support optional application id as query parameter.
 		Variant newVariant = clientInstallationService.associateInstallation(installation, variant);
 
 		// Associate did not match to any alias
@@ -578,6 +582,55 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		}
 
 		return appendAllowOriginHeader(Response.ok(newVariant), request);
+	}
+
+	@GET
+	@Path("/exists")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.rest.registry.installations.State")
+	public Response exists(@Context HttpServletRequest request) {
+		String basicDeviceToken = ClientAuthHelper.getDeviceToken(request);
+
+		final Variant variant = authenticationHelper.loadVariantWhenAuthorized(basicDeviceToken, request);
+		if (variant == null) {
+			return create401Response(request);
+		}
+
+		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(
+				variant.getVariantID(), HttpBasicHelper.decodeBase64(basicDeviceToken));
+
+		if (installation == null) {
+			return appendAllowOriginHeader(Response.status(Status.NO_CONTENT), request);
+		}
+
+		return appendAllowOriginHeader(Response.ok(State.EXISTS), request);
+	}
+
+	public enum State {
+		EXISTS("EXISTS");
+
+		private String value;
+
+		private State(String value) {
+			this.value = value;
+		}
+
+		@JsonValue
+		public String getValue() {
+			return this.value;
+		}
+
+		@JsonCreator
+		public static State create(String val) {
+			State[] states = State.values();
+			for (State state : states) {
+				if (state.getValue().equalsIgnoreCase(val)) {
+					return state;
+				}
+			}
+			return EXISTS;
+		}
 	}
 
 }
