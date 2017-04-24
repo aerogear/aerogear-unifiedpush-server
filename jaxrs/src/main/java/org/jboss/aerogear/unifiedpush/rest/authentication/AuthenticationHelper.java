@@ -19,8 +19,6 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.netty.handler.codec.http.HttpRequest;
-
 @ApplicationScoped
 public class AuthenticationHelper {
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationHelper.class);
@@ -43,7 +41,7 @@ public class AuthenticationHelper {
 	 * device is enabled or applicationId exists and authorized.
 	 *
 	 * @param request
-	 *            {@link HttpRequest}
+	 *            {@link HttpServletRequest}
 	 * @param aliasValue
 	 *            user alias
 	 */
@@ -95,7 +93,7 @@ public class AuthenticationHelper {
 	 * try bearer credentials.
 	 *
 	 * @param request
-	 *            {@link HttpRequest}
+	 *            {@link HttpServletRequest}
 	 *
 	 */
 	public Variant loadVariantWhenAuthorized(HttpServletRequest request) {
@@ -110,7 +108,7 @@ public class AuthenticationHelper {
 	 * try bearer credentials.
 	 *
 	 * @param request
-	 *            {@link HttpRequest}
+	 *            {@link HttpServletRequest}
 	 *
 	 */
 	public Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
@@ -163,7 +161,7 @@ public class AuthenticationHelper {
 	 * {@link GenericVariantService}
 	 *
 	 * @param request
-	 *            {@link HttpRequest}
+	 *            {@link HttpServletRequest}
 	 */
 	private static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
 			HttpServletRequest request) {
