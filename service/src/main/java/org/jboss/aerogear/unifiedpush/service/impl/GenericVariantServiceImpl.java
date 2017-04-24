@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -39,59 +36,56 @@ public class GenericVariantServiceImpl implements GenericVariantService {
 	@Wrapper
 	private KeycloakService keycloakService;
 
-    @Inject
-    private VariantDao variantDao;
+	@Inject
+	private VariantDao variantDao;
 
-    @Inject
-    @LoggedIn
-    private Instance<String> loginName;
+	@Inject
+	@LoggedIn
+	private Instance<String> loginName;
 
-    private final Map<String, Variant> variantIdFromClientIdCache = new ConcurrentHashMap<>();
+	@Override
+	public void addVariant(Variant variant) {
+		variant.setDeveloper(loginName.get());
+		variantDao.create(variant);
+	}
 
-    @Override
-    public void addVariant(Variant variant) {
-        variant.setDeveloper(loginName.get());
-        variantDao.create(variant);
-    }
+	@Override
+	public Variant findByVariantID(String variantID) {
+		return variantDao.findByVariantID(variantID);
+	}
 
-    @Override
-    public Variant findByVariantID(String variantID) {
-        return variantDao.findByVariantID(variantID);
-    }
+	@Override
+	public Variant findVariantByKeycloakClientID(String clientId) {
+		Variant variant = null;
 
-    @Override
-    public Variant findVariantByKeycloakClientID(String clientID) {
-    	Variant variant = variantIdFromClientIdCache.get(clientID);
-    	if (variant == null){
-    		Iterable<String> clientVariants = keycloakService.getVariantIdsFromClient(clientID);
+		Iterable<String> clientVariants = keycloakService.getVariantIdsFromClient(clientId);
 
-    		if(clientVariants != null){
-        		for (String clientVariantId : clientVariants){
-        			Variant clientVariant = findByVariantID(clientVariantId);
-        			if (clientVariant != null && (clientVariant.getType() == VariantType.SIMPLE_PUSH)) {
-        				// TODO - Support case of several Variants.
-        				variant = clientVariant;
-        				variantIdFromClientIdCache.put(clientID, variant);
-        				break;
-        			}
-        		}
-    		}
-    	}
+		if (clientVariants != null) {
+			for (String clientVariantId : clientVariants) {
+				Variant clientVariant = findByVariantID(clientVariantId);
+				if (clientVariant != null && (clientVariant.getType() == VariantType.SIMPLE_PUSH)) {
+					// TODO - Support case of several Variants.
+					variant = clientVariant;
+					break;
+				}
 
-    	if (variant == null) {
-    		logger.info("unable to resolve variant for clientID={}", clientID);
-    	}
+			}
+		}
 
-    	return variant;
-    }
+		if (variant == null) {
+			logger.info("unable to resolve variant for clientID={}", clientId);
+		}
 
-    @Override
-    public void updateVariant(Variant variant) {
-        variantDao.update(variant);
-    }
+		return variant;
+	}
 
-    @Override
-    public void removeVariant(Variant variant) {
-        variantDao.delete(variant);
-    }
+	@Override
+	public void updateVariant(Variant variant) {
+		variantDao.update(variant);
+	}
+
+	@Override
+	public void removeVariant(Variant variant) {
+		variantDao.delete(variant);
+	}
 }

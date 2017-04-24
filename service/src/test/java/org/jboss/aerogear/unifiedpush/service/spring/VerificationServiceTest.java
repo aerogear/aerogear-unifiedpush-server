@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.spring;
 
 import java.io.File;
 import java.io.IOException;

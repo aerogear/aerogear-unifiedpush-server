@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
@@ -47,7 +48,7 @@ public class UUIDToDateTest {
 	@Test
 	public void testUserDates() {
 		User user = User.copy(new Alias(UUID.randomUUID(), UUIDs.timeBased()), "123456789", AliasType.OTHER.ordinal());
-		assertTrue(user.getDay().intValue() == LocalDateTime.now().getDayOfMonth());
+		assertTrue(user.getDay().intValue() == LocalDateTime.now(ZoneOffset.UTC).getDayOfMonth());
 		assertTrue(user.getMonth().intValue() == LocalDateTime.now().getMonthValue());
 	}
 }

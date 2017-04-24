@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.service;
+package org.jboss.aerogear.unifiedpush.service.spring;
 
 import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;

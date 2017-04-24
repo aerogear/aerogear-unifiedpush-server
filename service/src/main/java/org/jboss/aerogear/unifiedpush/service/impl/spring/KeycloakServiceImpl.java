@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ejb.Asynchronous;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -27,6 +25,9 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,6 +45,9 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	private volatile Boolean oauth2Enabled;
 	private Keycloak kc;
 	private RealmResource realm;
+
+	@Autowired
+	private CacheManager cacheManager;
 
 	@Autowired
 	private IOAuth2Configuration conf;
@@ -133,6 +137,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			ClientResource clientResource = this.realm.clients().get(clientRepresentation.getId());
 			clientRepresentation.setAttributes(getClientAttributes(pushApplication));
 			clientResource.update(clientRepresentation);
+			// Evict from cache
+			evict(clientRepresentation.getId());
 		}
 	}
 
@@ -221,7 +227,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		return true;
 	}
 
-	@Asynchronous
+	@Async
 	public void delete(String userName) {
 		if (!isInitialized()) {
 			return;
@@ -325,5 +331,10 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		}
 
 		return attributes;
+	}
+
+	private void evict(String clientId) {
+		Cache cache = cacheManager.getCache(IKeycloakService.CACHE_NAME);
+		cache.evict(clientId);
 	}
 }

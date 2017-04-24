@@ -225,6 +225,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 			operations.getCqlOperations().execute(delete);
 		} else {
 			super.delete(key);
+			evict(key.getPushApplicationId(), key.getAlias());
 		}
 	}
 

@@ -45,8 +45,8 @@ public class KeycloakServiceWrapper implements KeycloakService {
 	}
 
 	@Override
-	public List<String> getVariantIdsFromClient(String clientID) {
-		return keycloakService.getVariantIdsFromClient(clientID);
+	public List<String> getVariantIdsFromClient(String clientId) {
+		return keycloakService.getVariantIdsFromClient(clientId);
 	}
 
 	@Override
