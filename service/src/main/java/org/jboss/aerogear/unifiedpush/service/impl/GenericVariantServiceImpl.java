@@ -29,12 +29,14 @@ import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.slf4j.Logger;
 
 @Stateless
 public class GenericVariantServiceImpl implements GenericVariantService {
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GenericVariantServiceImpl.class);
 	@Inject
+	@Wrapper
 	private KeycloakService keycloakService;
 
     @Inject

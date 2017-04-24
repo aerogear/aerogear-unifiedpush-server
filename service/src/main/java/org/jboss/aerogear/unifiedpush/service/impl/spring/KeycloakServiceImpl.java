@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.service.impl;
+package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,17 +9,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Asynchronous;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.DependsOn;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -33,17 +26,11 @@ import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Singleton
-@Startup
-@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-@DependsOn(value = { "ConfigurationServiceImpl" })
-/*
- * TODO - Convert to Spring bean. 1 - Add Spring caching to
- * getVariantIdsFromClient 2 - Replace ejb async with spring. 3 - Support remove
- * client API.
- */
-public class KeycloakServiceImpl implements KeycloakService {
+@Service
+public class KeycloakServiceImpl implements IKeycloakService {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
 	private static final String CLIENT_PREFIX = "ups-installation-";
@@ -58,8 +45,11 @@ public class KeycloakServiceImpl implements KeycloakService {
 	private Keycloak kc;
 	private RealmResource realm;
 
+	@Autowired
+	private IOAuth2Configuration conf;
+
 	public boolean isInitialized() {
-		if (!OAuth2ConfigurationBuilder.isOAuth2Enabled()) {
+		if (!conf.isOAuth2Enabled()) {
 			return false;
 		}
 
@@ -67,11 +57,11 @@ public class KeycloakServiceImpl implements KeycloakService {
 			synchronized (this) {
 				if (oauth2Enabled == null) {
 
-					if (OAuth2ConfigurationBuilder.isOAuth2Enabled()) {
+					if (conf.isOAuth2Enabled()) {
 						this.initialize();
 					}
 
-					oauth2Enabled = OAuth2ConfigurationBuilder.isOAuth2Enabled();
+					oauth2Enabled = conf.isOAuth2Enabled();
 				}
 			}
 		}
@@ -80,12 +70,12 @@ public class KeycloakServiceImpl implements KeycloakService {
 	}
 
 	private void initialize() {
-		String keycloakPath = OAuth2ConfigurationBuilder.getOAuth2Url();
+		String keycloakPath = conf.getOAuth2Url();
 
-		String upsiRealmId = OAuth2ConfigurationBuilder.getUpsiRealm();
-		String cliClientId = OAuth2ConfigurationBuilder.getAdminClient();
-		String userName = OAuth2ConfigurationBuilder.getAdminUserName();
-		String userPassword = OAuth2ConfigurationBuilder.getAdminPassword();
+		String upsiRealmId = conf.getUpsiRealm();
+		String cliClientId = conf.getAdminClient();
+		String userName = conf.getAdminUserName();
+		String userPassword = conf.getAdminPassword();
 
 		this.kc = KeycloakBuilder.builder() //
 				.serverUrl(keycloakPath) //
@@ -127,8 +117,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 			clientRepresentation.setClientId(applicationName);
 			clientRepresentation.setEnabled(true);
 
-			String domain = OAuth2ConfigurationBuilder.getRooturlDomain();
-			String protocol = OAuth2ConfigurationBuilder.getRooturlProtocol();
+			String domain = conf.getRooturlDomain();
+			String protocol = conf.getRooturlProtocol();
 			clientRepresentation.setRootUrl(protocol + "://" + simpleApplicationName + SUBDOMAIN_SEPERATOR + domain);
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");

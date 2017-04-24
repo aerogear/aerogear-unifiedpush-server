@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -53,6 +54,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	@Inject
 	private AliasService aliasService;
 	@Inject
+	@Wrapper
 	private ConfigurationService configuration;
 
 	@Before

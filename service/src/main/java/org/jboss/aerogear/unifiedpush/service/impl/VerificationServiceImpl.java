@@ -23,6 +23,7 @@ import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +36,18 @@ public class VerificationServiceImpl implements VerificationService {
 	private final ConcurrentMap<Object, Set<Object>> deviceToToken = new ConcurrentHashMap<>();
 
 	@Inject
+	@Wrapper
 	private ConfigurationService configuration;
 	@Inject
+	@Wrapper
 	private VerificationGatewayService verificationService;
+	@Inject
+	@Wrapper
+	private KeycloakService keycloakService;
 	@Inject
 	private InstallationDao installationDao;
 	@Inject
 	private AliasService aliasService;
-	@Inject
-	private KeycloakService keycloakService;
 	@Inject
 	private OtpCodeService codeService;
 

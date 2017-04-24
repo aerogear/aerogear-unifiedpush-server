@@ -44,6 +44,7 @@ import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +77,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private VerificationService verificationService;
 
 	@Inject
+	@Wrapper
 	private ConfigurationService configuration;
 
 	@Override
@@ -114,6 +116,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 
 		// TODO - Make sure user is associated to a KC client.
+		// If not, associate to appropriate rules.
 
 		return null;
 	}

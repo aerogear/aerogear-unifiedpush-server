@@ -1,57 +1,40 @@
-package org.jboss.aerogear.unifiedpush.service.impl;
+package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.validation.ConstraintValidator;
 
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
-import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ConstraintValidatorContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- * Default implementation of {@link VerificationGatewayService}. Note that this
+ * Default implementation of {@link IVerificationGatewayService}. Note that this
  * class does not implement the underlying SMS sending mechanism. Rather, it
  * uses an implementation of {@link VerificationPublisher} to do so.
  *
  * @see VerificationPublisher
  */
-@Singleton
-@DependsOn(value = { "ConfigurationServiceImpl" })
-public class VerificationGatewayServiceImpl implements VerificationGatewayService {
+@Service
+public class VerificationGatewayServiceImpl implements IVerificationGatewayService {
 	private final Logger logger = LoggerFactory.getLogger(VerificationGatewayServiceImpl.class);
 
 	public final static String VERIFICATION_IMPL_KEY = "aerogear.config.verification.impl.class";
 	private final static String IMPL_SPLITTER_TOKEN = ";";
 	private final static String IMPL_CLASS_TOKEN = "::";
 
-	@Inject
-	private ConfigurationService configuration;
+	@Autowired
+	private IConfigurationService configurationService;
 
 	private List<VerificationPart> chain;
-
-	public VerificationGatewayServiceImpl() {
-	}
-
-	/**
-	 * Used for testing and mock services.
-	 *
-	 * @param configuration
-	 *            contractor method for unittests only.
-	 */
-	public VerificationGatewayServiceImpl(ConfigurationService configuration) {
-		this.configuration = configuration;
-	}
 
 	/**
 	 * Initializes the SMS sender. We cache the sender since an implementation
@@ -60,7 +43,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 	 */
 	@PostConstruct
 	public void initializeSender() {
-		final String validationMap = configuration.getVerificationClassImpl();
+		final String validationMap = configurationService.getVerificationClassImpl();
 
 		if (validationMap == null || validationMap.length() == 0) {
 			logger.warn("Cannot find validation implementation class, using log based validation class!");
@@ -69,12 +52,7 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 			chain.add(new VerificationPart(new AlwaysTrueValidator(), new MockLogSender()));
 		}
 
-		if (chain == null) {
-			synchronized (this) {
-				if (chain == null)
-					chain = buildMap(validationMap);
-			}
-		}
+		chain = buildMap(validationMap);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -140,10 +118,10 @@ public class VerificationGatewayServiceImpl implements VerificationGatewayServic
 			publisher = part.getPublisher();
 
 			if (validator.isValid(alias,
-					new ConstraintValidatorContextImpl(pushApplicationId, configuration.getProperties()))) {
+					new ConstraintValidatorContextImpl(pushApplicationId, configurationService.getProperties()))) {
 				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", code, alias,
 						publisher.getClass().getName()));
-				publisher.send(alias, code, configuration.getProperties());
+				publisher.send(alias, code, configurationService.getProperties());
 
 				if (!publisher.chain()) {
 					break;

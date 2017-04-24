@@ -30,6 +30,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ public class AliasServiceImpl implements AliasService {
 	@Inject
 	private AliasCrudService aliasCrudService;
 	@Inject
+	@Wrapper
 	private KeycloakService keycloakService;
 
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {

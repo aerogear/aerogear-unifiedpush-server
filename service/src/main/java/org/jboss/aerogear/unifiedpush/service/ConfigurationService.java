@@ -1,15 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
-import java.util.Properties;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 
-public interface ConfigurationService {
-	Properties getProperties();
+public interface ConfigurationService extends IConfigurationService {
 
-	Boolean isVerificationEnabled();
-
-	String getVerificationClassImpl();
-
-	String getMasterCode();
-
-	Integer getQueryDefaultPeriodInDays();
 }

@@ -53,6 +53,7 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Inject
 	private VerificationService verificationService;
 	@Inject
+	@Wrapper
 	private ConfigurationService configuration;
 
 	/**

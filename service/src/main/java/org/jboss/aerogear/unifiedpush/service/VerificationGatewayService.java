@@ -1,19 +1,10 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
+
 /**
  * Service class used to send SMS messages.
  */
-public interface VerificationGatewayService {
+public interface VerificationGatewayService extends IVerificationGatewayService {
 
-	/**
-	 * Sends a message to the specified alias
-	 *
-	 * @param pushApplicationId
-	 *            push application uuid
-	 * @param alias
-	 *            phone number / email to send to.
-	 * @param message
-	 *            text message to be sent
-	 */
-	void sendVerificationMessage(String pushApplicationId, String alias, String message);
 }

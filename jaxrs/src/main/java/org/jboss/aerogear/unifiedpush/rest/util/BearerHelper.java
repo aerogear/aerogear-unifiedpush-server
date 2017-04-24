@@ -26,7 +26,7 @@ import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.impl.KeycloakServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 

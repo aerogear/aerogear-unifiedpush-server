@@ -1,12 +1,14 @@
 package org.jboss.aerogear.unifiedpush.rest.config;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.service.OAuth2ConfigurationBuilder;
+import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
+import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.util.SystemPropertiesJsonParserFactory;
 
@@ -17,6 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Path("/keycloak/config")
 public class KeycloakConfigurationEndpoint {
 
+	@Inject
+	@Wrapper
+	private ConfigurationService configurationService;
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response configurationFile() {
@@ -24,8 +30,8 @@ public class KeycloakConfigurationEndpoint {
 		ObjectMapper mapper = new ObjectMapper(new SystemPropertiesJsonParserFactory());
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 		AdapterConfig adapterConfig = new AdapterConfig();
-		adapterConfig.setRealm(OAuth2ConfigurationBuilder.getUpsRealm());
-		adapterConfig.setAuthServerUrl(OAuth2ConfigurationBuilder.getOAuth2Url());
+		adapterConfig.setRealm(configurationService.getUpsRealm());
+		adapterConfig.setAuthServerUrl(configurationService.getOAuth2Url());
 		adapterConfig.setSslRequired("external");
 		adapterConfig.setPublicClient(true);
 		adapterConfig.setResource("unified-push-server-js");

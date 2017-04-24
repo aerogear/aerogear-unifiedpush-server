@@ -4,21 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidator;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
-import org.jboss.aerogear.unifiedpush.service.impl.ConfigurationServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.VerificationGatewayServiceImpl.VerificationPart;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl.VerificationPart;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
 import org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;
 import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
 import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,18 +33,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 public class VerificationServiceTest {
 
 	@Autowired
-	private ConfigurationEnvironment environment;
-
-	private ConfigurationServiceImpl cService;
-	private VerificationGatewayServiceImpl vService;
-
-	@PostConstruct
-	public void init() {
-		cService =  new ConfigurationServiceImpl(environment);
-		vService = new VerificationGatewayServiceImpl(cService);
-
-		vService.initializeSender();
-	}
+	private IVerificationGatewayService vService;
 
 	@After
 	public void after(){
@@ -55,14 +42,12 @@ public class VerificationServiceTest {
 
 	@Test
 	public void singleImplTest() {
-		init();
-
 		Assert.assertTrue(vService.getChain().size() != 0);
 	}
 
 	@Test
 	public void singleImplWithDefaultType() {
-		init();
+		vService.initializeSender();
 
 		for (VerificationPart part : vService.getChain()) {
 			Assert.assertTrue(AlwaysTrueValidator.class.isAssignableFrom(part.getValidator().getClass()));
@@ -73,8 +58,6 @@ public class VerificationServiceTest {
 	@Test
 	public void singleImplWithType() {
 		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender");
-
-		init();
 
 		for (VerificationPart part : vService.getChain()) {
 			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
@@ -95,8 +78,7 @@ public class VerificationServiceTest {
 	@Test
 	public void singleImplWithType1() {
 		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;");
-
-		init();
+		vService.initializeSender();
 
 		for (VerificationPart part : vService.getChain()) {
 			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
@@ -107,8 +89,7 @@ public class VerificationServiceTest {
 	@Test
 	public void multipleImplWithType() {
 		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
-
-		init();
+		vService.initializeSender();
 
 		Assert.assertTrue(vService.getChain().size() == 2);
 
@@ -135,7 +116,7 @@ public class VerificationServiceTest {
 		System.setProperty(HtmlFileSender.HTMLFILE_KEY, "/tmp/otp.html");
 		System.setProperty(HtmlFileSender.MESSAGE_TMPL, "{1} - Your CB4 verification code is: {0}");
 
-		init();
+		vService.initializeSender();
 
 		Assert.assertTrue(vService.getChain().size() == 3);
 
