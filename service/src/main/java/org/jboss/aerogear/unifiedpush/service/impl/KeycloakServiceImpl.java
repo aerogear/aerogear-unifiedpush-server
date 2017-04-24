@@ -209,7 +209,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 			user.setEmailVerified(true);
 			user.setEmail(userName);
 
-			user.getCredentials().add(getUserCredentials(password));
+			user.setCredentials(Arrays.asList(getUserCredentials(password)));
 		}
 
 		return user;
