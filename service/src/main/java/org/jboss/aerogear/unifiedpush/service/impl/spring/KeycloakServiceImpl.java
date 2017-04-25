@@ -189,6 +189,13 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			user = create(userName, password, true);
 
 			this.realm.users().create(user);
+
+			// TODO - Improve implementation, check why we need to update the
+			// user right upon creation. without calling updateUserPassword
+			// password is invalid.
+			if (StringUtils.isNotEmpty(password)) {
+				updateUserPassword(userName, password, password);
+			}
 		} else {
 			logger.debug("KC Username {}, already exist", userName);
 		}
