@@ -1,10 +1,14 @@
 language: java
 
 sudo: false
+cache:
+  directories:
+    - $HOME/.m2
 
 env:
   - JDK=openjdk8
 dist: trusty
+
 branches:
   only:
     - master
