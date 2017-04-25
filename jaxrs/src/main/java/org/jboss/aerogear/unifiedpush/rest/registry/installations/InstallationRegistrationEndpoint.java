@@ -47,7 +47,6 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -516,16 +515,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 			return create401Response(request);
 		}
 
-		// TODO: use ClientAuthHelper
-		String basicDeviceToken = request.getHeader("device-token");
-		if (basicDeviceToken == null) {
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
+		if (deviceToken == null) {
 			return appendAllowOriginHeader(
 					Response.status(Status.BAD_REQUEST).entity(quote("deviceToken header required")), request);
 		}
 
 		// TODO - Support optional application id as query parameter.
-		String code = verificationService.retryDeviceVerification(HttpBasicHelper.decodeBase64(basicDeviceToken),
-				variant);
+		String code = verificationService.retryDeviceVerification(deviceToken, variant);
 		if (code == null) {
 			return appendAllowOriginHeader(
 					Response.status(Status.BAD_REQUEST).entity(quote("Unable to find installation for device-token")),
@@ -548,23 +545,23 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 			return create401Response(request);
 		}
 
-		String basicDeviceToken = ClientAuthHelper.getDeviceToken(request);
-		if (basicDeviceToken == null) {
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
+		if (deviceToken == null) {
 			return appendAllowOriginHeader(
 					Response.status(Status.BAD_REQUEST).entity(quote("deviceToken header required")), request);
 		}
 
 		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(
-				variant.getVariantID(), HttpBasicHelper.decodeBase64(basicDeviceToken));
+				variant.getVariantID(), deviceToken);
 
 		if (installation == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity(quote("installation not found for: " + basicDeviceToken)), request);
+					.entity(quote("installation not found for: " + deviceToken)), request);
 		}
 
 		if (installation.isEnabled() == false) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity(quote("unable to assosiate, device is disabled: " + basicDeviceToken)), request);
+					.entity(quote("unable to assosiate, device is disabled: " + deviceToken)), request);
 		}
 
 		// Associate the device - find the matching application and update the
@@ -588,15 +585,15 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
 	public Response exists(@Context HttpServletRequest request) {
-		String basicDeviceToken = ClientAuthHelper.getDeviceToken(request);
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 
-		final Variant variant = authenticationHelper.loadVariantWhenAuthorized(basicDeviceToken, request);
+		final Variant variant = authenticationHelper.loadVariantWhenAuthorized(deviceToken, request);
 		if (variant == null) {
 			return create401Response(request);
 		}
 
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(
-				variant.getVariantID(), HttpBasicHelper.decodeBase64(basicDeviceToken));
+		Installation installation = clientInstallationService
+				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 
 		if (installation == null) {
 			return appendAllowOriginHeader(Response.ok(Boolean.FALSE), request);
