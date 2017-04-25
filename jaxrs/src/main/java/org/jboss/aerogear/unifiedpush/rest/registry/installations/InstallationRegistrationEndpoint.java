@@ -59,8 +59,6 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
@@ -588,7 +586,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Path("/exists")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.rest.registry.installations.State")
+	@ReturnType("java.lang.Boolean")
 	public Response exists(@Context HttpServletRequest request) {
 		String basicDeviceToken = ClientAuthHelper.getDeviceToken(request);
 
@@ -601,36 +599,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 				variant.getVariantID(), HttpBasicHelper.decodeBase64(basicDeviceToken));
 
 		if (installation == null) {
-			return appendAllowOriginHeader(Response.status(Status.NO_CONTENT), request);
+			return appendAllowOriginHeader(Response.ok(Boolean.FALSE), request);
 		}
 
-		return appendAllowOriginHeader(Response.ok(State.EXISTS), request);
+		return appendAllowOriginHeader(Response.ok(Boolean.TRUE), request);
 	}
-
-	public enum State {
-		EXISTS("EXISTS");
-
-		private String value;
-
-		private State(String value) {
-			this.value = value;
-		}
-
-		@JsonValue
-		public String getValue() {
-			return this.value;
-		}
-
-		@JsonCreator
-		public static State create(String val) {
-			State[] states = State.values();
-			for (State state : states) {
-				if (state.getValue().equalsIgnoreCase(val)) {
-					return state;
-				}
-			}
-			return EXISTS;
-		}
-	}
-
 }
