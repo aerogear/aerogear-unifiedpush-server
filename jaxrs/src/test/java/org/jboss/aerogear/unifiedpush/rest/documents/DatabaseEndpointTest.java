@@ -20,7 +20,6 @@ import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.InstallationRegistrationEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -110,9 +109,9 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/STATUS/alias/"
 					+ newInstallation.getAlias().toLowerCase());
 
-			// Additional Accept header to also test MediaType.APPLICATION_JSON content
-			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER, //
-					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())) //
+			// Additional Accept header to also test MediaType.APPLICATION_JSON
+			// content
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken())
 					.header("Accept", MediaType.APPLICATION_JSON).get();
 
 			Assert.assertTrue(response.getStatus() == 200);
@@ -122,8 +121,7 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 			response.close();
 
 			// get documents @HEAD /{database}/alias/{alias}
-			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).head();
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken()).head();
 
 			Assert.assertTrue(response.getStatus() == 204);
 			count = response.getHeaderString(DatabaseEndpoint.X_HEADER_COUNT);
@@ -158,8 +156,7 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 
 		ResteasyWebTarget target = client.target(sBuilder.toString());
 
-		Builder builder = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-				HttpBasicHelper.encodeBase64(deviceToken));
+		Builder builder = ClientAuthHelper.setDeviceToken(target.request(), deviceToken);
 
 		Response response;
 

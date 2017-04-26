@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Invocation.Builder;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.RestWebApplication;
@@ -9,10 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClientAuthHelper {
-	public static final String DEVICE_TOKEN_HEADER = "device-token";
-
 	private static final Logger logger = LoggerFactory.getLogger(ClientAuthHelper.class);
 
+	private static final String DEVICE_TOKEN_HEADER = "device-token";
 
 	public static Variant loadVariantWhenAuthorized(GenericVariantService genericVariantService,
 			HttpServletRequest request) {
@@ -48,7 +48,10 @@ public class ClientAuthHelper {
 			return null;
 		}
 		return HttpBasicHelper.decodeBase64(deviceToken);
+	}
 
+	public static Builder setDeviceToken(Builder request, String deviceToken) {
+		return request.header(DEVICE_TOKEN_HEADER, HttpBasicHelper.encodeBase64(deviceToken));
 	}
 
 	// Barear authentication allowed only using /upsi context

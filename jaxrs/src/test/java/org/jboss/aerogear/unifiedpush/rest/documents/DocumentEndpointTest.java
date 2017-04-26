@@ -13,7 +13,6 @@ import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.InstallationRegistrationEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
-import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -75,9 +74,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/installation/"
 					+ newInstallation.getAlias().toUpperCase() + "/status/null");
 
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken())
 					.post(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
 
 			if (response.getStatus() != 200) {
@@ -94,9 +91,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/installation/"
 					+ newInstallation.getAlias().toLowerCase() + "/status/null");
 
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken())
 					.post(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
 
 			if (response.getStatus() != 200) {
@@ -109,8 +104,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
 					+ newInstallation.getAlias().toLowerCase() + "/STATUS/null");
 
-			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken()).get();
 
 			Assert.assertTrue(response.getStatus() == 200);
 
@@ -148,9 +142,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/"
 					+ newInstallation.getAlias().toLowerCase() + "/STATUS/55");
 
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken())
 					.put(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
 
 			if (response.getStatus() != 200) {
@@ -164,9 +156,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/"
 					+ newInstallation.getAlias() + "/STATUS/55");
 
-			response = target.request()
-					.header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-							HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken()))
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken())
 					.put(Entity.entity(newInstallation, MediaType.APPLICATION_JSON_TYPE));
 
 			response.close();
@@ -175,8 +165,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/document/INSTALLATION/"
 					+ newInstallation.getAlias() + "/STATUS/55");
 
-			response = target.request().header(ClientAuthHelper.DEVICE_TOKEN_HEADER,
-					HttpBasicHelper.encodeBase64(newInstallation.getDeviceToken())).get();
+			response = ClientAuthHelper.setDeviceToken(target.request(), newInstallation.getDeviceToken()).get();
 
 			Assert.assertTrue(response.getStatus() == 200);
 

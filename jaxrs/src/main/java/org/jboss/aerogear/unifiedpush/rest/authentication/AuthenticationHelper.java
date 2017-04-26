@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.authentication;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +59,7 @@ public class AuthenticationHelper {
 
 		// Device based authentication
 		if (StringUtils.isNotEmpty(deviceToken)) {
-			final Variant variant = loadVariantWhenAuthorized(deviceToken, request);
+			final Variant variant = loadVariantWhenAuthorized(deviceToken, true, request);
 
 			if (variant == null) {
 				return null;
@@ -79,7 +81,7 @@ public class AuthenticationHelper {
 
 		if (forceAliasScope && aliasService.find(pushApplication.getPushApplicationID(), aliasValue) == null) {
 			logger.warn(
-					"UnAuthorized application authentication, application ({}) is not authorized to modify alias ({}) data",
+					"UnAuthorized application authentication, application ({}) is not authorized for alias ({}) scopedata",
 					pushApplication.getName(), aliasValue);
 			return null;
 		}
@@ -88,30 +90,55 @@ public class AuthenticationHelper {
 	}
 
 	/**
-	 * Returns the {@link Variant} if device token is present and device is
-	 * enabled. first fetch credentials from basic authentication, if missing
-	 * try bearer credentials.
+	 * Returns the {@link Variant} if device token exists, device exists/enabled
+	 * and request is authenticated (Basic/Bearer).
 	 *
 	 * @param request
 	 *            {@link HttpServletRequest}
-	 *
 	 */
 	public Variant loadVariantWhenAuthorized(HttpServletRequest request) {
 		// Extract device token
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
-		return loadVariantWhenAuthorized(deviceToken, request);
+
+		return loadVariantWhenAuthorized(deviceToken, true, request);
 	}
 
 	/**
-	 * Returns the {@link Variant} if device token is present and device is
-	 * enabled. first fetch credentials from basic authentication, if missing
-	 * try bearer credentials.
+	 * Returns the {@link Installation} if device token exists and request is
+	 * authenticated (Basic/Bearer).
 	 *
 	 * @param request
 	 *            {@link HttpServletRequest}
 	 *
 	 */
-	public Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
+	public Optional<Installation> loadInstallationWhenAuthorized(HttpServletRequest request) {
+		// Extract device token
+		String deviceToken = ClientAuthHelper.getDeviceToken(request);
+
+		Variant variant = loadVariantWhenAuthorized(deviceToken, false, request);
+
+		if (variant != null) {
+			return Optional.ofNullable(clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
+					deviceToken));
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Returns the {@link Variant} if device token is present and device is
+	 * enabled (forceExistingInstallation). first fetch credentials from basic
+	 * authentication, if missing try bearer credentials.
+	 *
+	 * @param deviceToken
+	 *            Base64 decoded device token
+	 * @param forceExistingInstallation
+	 *            verify installation exists and enabled.
+	 * @param request
+	 *            {@link HttpServletRequest}
+	 */
+	private Variant loadVariantWhenAuthorized(String deviceToken, boolean forceExistingInstallation,
+			HttpServletRequest request) {
 
 		if (deviceToken == null) {
 			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
@@ -141,15 +168,17 @@ public class AuthenticationHelper {
 			}
 		}
 
-		// Variant can't be null at this point.
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(
-				variant.getVariantID(), ClientAuthHelper.getDeviceToken(request));
+		if (forceExistingInstallation) {
+			// Variant can't be null at this point.
+			Installation installation = clientInstallationService
+					.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 
-		// Installation should always be present and enabled.
-		if (installation == null || installation.isEnabled() == false) {
-			logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
-					variant.getVariantID(), request.getRequestURI());
-			return null;
+			// Installation should always be present and enabled.
+			if (installation == null || installation.isEnabled() == false) {
+				logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
+						variant.getVariantID(), request.getRequestURI());
+				return null;
+			}
 		}
 
 		return variant;

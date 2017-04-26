@@ -551,12 +551,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 					Response.status(Status.BAD_REQUEST).entity(quote("deviceToken header required")), request);
 		}
 
-		Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(
-				variant.getVariantID(), deviceToken);
+		Installation installation = clientInstallationService
+				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 
 		if (installation == null) {
-			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST)
-					.entity(quote("installation not found for: " + deviceToken)), request);
+			return appendAllowOriginHeader(
+					Response.status(Status.BAD_REQUEST).entity(quote("installation not found for: " + deviceToken)),
+					request);
 		}
 
 		if (installation.isEnabled() == false) {
@@ -585,20 +586,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
 	public Response exists(@Context HttpServletRequest request) {
-		String deviceToken = ClientAuthHelper.getDeviceToken(request);
-
-		final Variant variant = authenticationHelper.loadVariantWhenAuthorized(deviceToken, request);
-		if (variant == null) {
-			return create401Response(request);
+		// Query installation if exists, enabled and authorized
+		if (authenticationHelper.loadInstallationWhenAuthorized(request).isPresent()) {
+			return appendAllowOriginHeader(Response.ok(Boolean.TRUE), request);
 		}
 
-		Installation installation = clientInstallationService
-				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-
-		if (installation == null) {
-			return appendAllowOriginHeader(Response.ok(Boolean.FALSE), request);
-		}
-
-		return appendAllowOriginHeader(Response.ok(Boolean.TRUE), request);
+		return appendAllowOriginHeader(Response.ok(Boolean.FALSE), request);
 	}
 }
