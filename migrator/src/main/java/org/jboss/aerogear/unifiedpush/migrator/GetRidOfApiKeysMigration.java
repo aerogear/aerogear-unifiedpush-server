@@ -29,17 +29,17 @@ public class GetRidOfApiKeysMigration implements CustomTaskChange {
 
     @Override
     public void execute(Database database) throws CustomChangeException {
-        Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
-        try {
-            conn.setAutoCommit(false);
-            List<InstallationData> list = new ArrayList<>();
-            String query = "select installation.id as installation_id," +
-                    " installation.variant_id as installation_variant_id," +
-                    " variant.id as variant_id," +
-                    " variant.api_key as variant_api_key" +
-                    " from installation join variant on installation.variant_id = variant.api_key";
+        String query = "select installation.id as installation_id," +
+                " installation.variant_id as installation_variant_id," +
+                " variant.id as variant_id," +
+                " variant.api_key as variant_api_key" +
+                " from installation join variant on installation.variant_id = variant.api_key";
+        try(Connection conn = ((JdbcConnection) (database.getConnection())).getWrappedConnection();
             PreparedStatement statement = conn.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();
+            ResultSet rs = statement.executeQuery()) {
+
+            conn.setAutoCommit(false);
+            List<InstallationData> list = new ArrayList<InstallationData>();
             while (rs.next()) {
                 String installationId = rs.getString("installation_id");
                 String installationVariantId = rs.getString("installation_variant_id");
