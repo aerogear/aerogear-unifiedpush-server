@@ -28,7 +28,7 @@
     <container qualifier="chameleon" default="true">
         <configuration>
             <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->>
-            <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
+            <!-- (if running against different containers, be sure to check the port offset settings below) -->
             <property name="target">wildfly:8.0.0.Final:managed</property>
             
             <!-- use Full EE profile for a JMS support -->
