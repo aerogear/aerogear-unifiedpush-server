@@ -3,6 +3,10 @@ angular.module('upsConsole')
 
     var self = this;
 
+    this.TOOLTIP_PENDING = "Payload is being submitted";
+    this.TOOLTIP_SUCCESS = "Payload submitted to 3rd party push network for further processing";
+    this.TOOLTIP_FAIL = "Could not submit payload to 3rd party";
+
     this.app = $scope.$parent.$parent.appDetail.app;
     this.metrics = [];
     this.totalCount;
