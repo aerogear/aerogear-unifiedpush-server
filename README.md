@@ -11,9 +11,9 @@ AeroBase is a mobile/web platform that helps you quickly develop high-quality mo
 * Authentication - Add authentication to applications and secure services with minimum fuss.
 * OTP Registraion - Pluggable SMS/Email Verification process.
 * SSL Support and easy configuration.
-* Cloud Messeging - Push Notifications (Payload & Silent).
-* Centralized configuration/managment using Chef Omnibus.
-* By default, every AeroBase package comes with an embeded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
+* Cloud Messaging - Push Notifications (Payload & Silent).
+* Centralized configuration/management using Chef Omnibus.
+* By default, every AeroBase package comes with an embedded NGINX, Wildfly 10.1 & KeyCloak 2.4, Cassandra 3.9.
 * [Full-stack](http://ups.c-b4.com/ups/packages/) rpm/deb installers across a variety of platforms (RHEL, Debian, Fedora, Ubuntu).
 
 #### Push Notification cloud providers
