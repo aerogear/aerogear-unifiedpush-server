@@ -175,8 +175,8 @@ public class AuthenticationHelper {
 
 			// Installation should always be present and enabled.
 			if (installation == null || installation.isEnabled() == false) {
-				logger.info("API request to non-existing / disabled installation variant id: {} API: {}",
-						variant.getVariantID(), request.getRequestURI());
+				logger.info("API request to non-existing / disabled installation variant id: {} API: {} device-token: {}",
+						variant.getVariantID(), request.getRequestURI(), deviceToken);
 				return null;
 			}
 		}

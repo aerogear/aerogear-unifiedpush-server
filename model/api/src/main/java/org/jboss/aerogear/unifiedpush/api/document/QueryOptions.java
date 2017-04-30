@@ -27,13 +27,6 @@ public class QueryOptions {
 		this.toDate = toDate;
 	}
 
-	public QueryOptions(Long fromDate, Long toDate, String id) {
-		super();
-		this.fromDate = fromDate;
-		this.toDate = toDate;
-		this.id = id;
-	}
-
 	public QueryOptions(Long fromDate, Long toDate, String id, Integer limit) {
 		super();
 		this.fromDate = fromDate;
