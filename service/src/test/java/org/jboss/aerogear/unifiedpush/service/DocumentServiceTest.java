@@ -240,8 +240,8 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Alias alias1 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), "alias1");
 		Alias alias2 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), "alias2");
 
-		aliasService.create(alias1, false);
-		aliasService.create(alias2, false);
+		aliasService.create(alias1);
+		aliasService.create(alias2);
 
 		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"doc1", "test_id");
@@ -331,8 +331,8 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Alias alias1 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), null, aliasstr1);
 		Alias alias2 = new Alias(UUID.fromString(pushApp.getPushApplicationID()), UUIDs.timeBased(), null, aliasstr2);
 
-		aliasService.create(alias1, false);
-		aliasService.create(alias2, false);
+		aliasService.create(alias1);
+		aliasService.create(alias2);
 
 		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias1),
 				"{CONTENT1}", "ID1");
@@ -359,7 +359,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			// Create alias specific documents
 			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
 
-			aliasService.create(alias1, false);
+			aliasService.create(alias1);
 
 			DocumentKey key1 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
 			DocumentKey key2 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));

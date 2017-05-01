@@ -56,7 +56,7 @@ public class AliasServiceImpl implements AliasService {
 			keycloakService.createClientIfAbsent(pushApplication);
 
 		aliases.forEach(alias -> {
-			create(alias, oauth2);
+			create(alias);
 			aliasList.add(alias);
 		});
 
@@ -115,6 +115,9 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public Alias find(String pushApplicationId, String alias) {
+		if (StringUtils.isEmpty(alias))
+			return null;
+
 		return aliasCrudService.find(StringUtils.isEmpty(pushApplicationId) ? null : UUID.fromString(pushApplicationId),
 				alias);
 	}
@@ -164,7 +167,7 @@ public class AliasServiceImpl implements AliasService {
 			user.setOther(alias);
 		}
 
-		create(user, oauth2);
+		create(user);
 
 		return user;
 	}
@@ -207,7 +210,7 @@ public class AliasServiceImpl implements AliasService {
 	 * Create alias while preserving user uuid.
 	 */
 	@Override
-	public void create(Alias alias, boolean oauth2) {
+	public void create(Alias alias) {
 		// Initialize a new time-based UUID on case one is missing.
 		if (alias.getId() == null) {
 			// Search if alias is already register for application.
@@ -231,7 +234,7 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	@Asynchronous
-	public void createAsynchronous(Alias alias, boolean oauth2) {
-		create(alias, oauth2);
+	public void createAsynchronous(Alias alias) {
+		create(alias);
 	}
 }

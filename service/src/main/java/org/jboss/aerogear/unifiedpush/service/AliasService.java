@@ -84,8 +84,8 @@ public interface AliasService {
 
 	void removeAll(UUID pushApplicationId);
 
-	void create(Alias alias, boolean oauth2);
+	void create(Alias alias);
 
-	void createAsynchronous(Alias alias, boolean oauth2);
+	void createAsynchronous(Alias alias);
 
 }

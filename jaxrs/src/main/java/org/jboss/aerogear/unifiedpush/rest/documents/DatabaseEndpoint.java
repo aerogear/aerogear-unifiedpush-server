@@ -171,7 +171,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/database/users
+	 *   "https://SERVER:PORT/context/rest/database/users"
 	 * </pre>
 	 *
 	 * @param document
@@ -220,7 +220,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "contentType":"application/json",
 	 *     "documentId":"ANY ID"}'
 	 *   }
-	 *   https://SERVER:PORT/context/rest/database/DEVICES
+	 *   "https://SERVER:PORT/context/rest/database/DEVICES"
 	 * </pre>
 	 *
 	 * @param documents
@@ -271,7 +271,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/database/users/snapshot
+	 *   "https://SERVER:PORT/context/rest/database/users/snapshot"
 	 * </pre>
 	 *
 	 * @param document
@@ -307,7 +307,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@Context HttpServletRequest request) { //
 
 		// Authentication verification
-		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request);
+		final PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request, null);
 
 		if (pushApplication == null) {
 			return create401Response(request);
@@ -345,7 +345,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.orgt
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.orgt"
 	 * </pre>
 	 *
 	 * @param document
@@ -396,7 +396,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "contentType":"application/json",
 	 *     "documentId":"ANY ID"}'
 	 *   }
-	 *   https://SERVER:PORT/context/rest/database/DEVICES/alias/support@aerobase.org
+	 *   "https://SERVER:PORT/context/rest/database/DEVICES/alias/support@aerobase.org"
 	 * </pre>
 	 *
 	 * @param documents
@@ -451,7 +451,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/snapshot
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/snapshot"
 	 * </pre>
 	 *
 	 * @param document
@@ -529,7 +529,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X HEAD
-	 *   https://SERVER:PORT/context/rest/database/metadata
+	 *   "https://SERVER:PORT/context/rest/database/metadata"
 	 * </pre>
 	 *
 	 * @param database
@@ -580,7 +580,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X GET
-	 *   https://SERVER:PORT/context/rest/database/metadata
+	 *   "https://SERVER:PORT/context/rest/database/metadata"
 	 * </pre>
 	 *
 	 * @param database
@@ -632,7 +632,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X HEAD
-	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/"
 	 * </pre>
 	 *
 	 * @param database
@@ -753,18 +753,15 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		if (StringUtils.isNoneEmpty(alias)) {
 			// Alias scope document
 			aliasObj = aliasService.find(pushApplicationId.toString(), alias);
-		} else {
-			// application scope document
-			aliasObj = NullAlias.getAlias(pushApplicationId);
-		}
 
-		if (aliasObj == null) {
-			// Still alias scope document
-			logger.debug("Unable to get documents for unknown alias {}", alias);
+			// Alias scope document, but alias was not found.
 			if (aliasObj == null) {
 				logger.debug("Alias {} is missing, quering by token-id", alias);
 				aliasObj = getAliasByToken(pushApplicationId, ClientAuthHelper.getDeviceToken(request));
 			}
+		} else {
+			// application scope document
+			aliasObj = NullAlias.getAlias(pushApplicationId);
 		}
 
 		/**
@@ -843,8 +840,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			logger.debug("Alias {} is missing, creating new alias by token-id", deviceToken);
 			aliasObj = new Alias(pushApplicationId, null, null, deviceToken);
 
-			// Since device is anonymous we don't want to create KC user.
-			aliasService.create(aliasObj, false);
+			// Create anonymous alias
+			aliasService.create(aliasObj);
 		}
 
 		return aliasObj;

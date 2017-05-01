@@ -301,9 +301,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 
 			// Support synchronously mode by default
 			if (synchronously)
-				aliasService.create(alias, oauth2);
+				aliasService.create(alias);
 			else
-				aliasService.createAsynchronous(alias, oauth2);
+				aliasService.createAsynchronous(alias);
 
 			return appendAllowOriginHeader(Response.ok(alias), request);
 		} catch (AliasAlreadyExists e) {

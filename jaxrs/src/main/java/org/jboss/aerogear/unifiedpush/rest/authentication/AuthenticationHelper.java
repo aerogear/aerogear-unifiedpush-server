@@ -35,29 +35,15 @@ public class AuthenticationHelper {
 	private AliasService aliasService;
 
 	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request) {
-		return loadApplicationWhenAuthorized(request, null, false);
+		return loadApplicationWhenAuthorized(request, null);
 	}
 
-	/**
-	 * Returns the {@link PushApplication} if either device token is present and
-	 * device is enabled or applicationId exists and authorized.
-	 *
-	 * @param request
-	 *            {@link HttpServletRequest}
-	 * @param aliasValue
-	 *            user alias
-	 */
-	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue) {
-		return loadApplicationWhenAuthorized(request, aliasValue, true);
-	}
-
-	private PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String aliasValue,
-			boolean forceAliasScope) {
+	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String alias) {
 
 		// Extract device token
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 
-		// Device based authentication
+		// Try device based authentication
 		if (StringUtils.isNotEmpty(deviceToken)) {
 			final Variant variant = loadVariantWhenAuthorized(deviceToken, true, request);
 
@@ -69,7 +55,7 @@ public class AuthenticationHelper {
 			return pushApplicationService.findByVariantID(variant.getVariantID());
 		}
 
-		// Application based authentication
+		// Try application based authentication
 		PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushApplicationService);
 
@@ -79,10 +65,11 @@ public class AuthenticationHelper {
 			return null;
 		}
 
-		if (forceAliasScope && aliasService.find(pushApplication.getPushApplicationID(), aliasValue) == null) {
+		// Application authentication can only access associated aliases !
+		if (StringUtils.isNoneEmpty(alias) && aliasService.find(pushApplication.getPushApplicationID(), alias) == null) {
 			logger.warn(
-					"UnAuthorized application authentication, application ({}) is not authorized for alias ({}) scopedata",
-					pushApplication.getName(), aliasValue);
+					"UnAuthorized application authentication, application ({}) is not authorized for alias ({}) scope data !",
+					pushApplication.getName(), alias);
 			return null;
 		}
 
@@ -118,8 +105,8 @@ public class AuthenticationHelper {
 		Variant variant = loadVariantWhenAuthorized(deviceToken, false, request);
 
 		if (variant != null) {
-			return Optional.ofNullable(clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
-					deviceToken));
+			return Optional.ofNullable(clientInstallationService
+					.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken));
 		}
 
 		return Optional.empty();
@@ -140,7 +127,7 @@ public class AuthenticationHelper {
 	private Variant loadVariantWhenAuthorized(String deviceToken, boolean forceExistingInstallation,
 			HttpServletRequest request) {
 
-		if (deviceToken == null) {
+		if (StringUtils.isEmpty(deviceToken)) {
 			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
 					request.getRequestURI());
 			return null;
@@ -175,7 +162,8 @@ public class AuthenticationHelper {
 
 			// Installation should always be present and enabled.
 			if (installation == null || installation.isEnabled() == false) {
-				logger.info("API request to non-existing / disabled installation variant id: {} API: {} device-token: {}",
+				logger.info(
+						"API request to non-existing / disabled installation variant id: {} API: {} device-token: {}",
 						variant.getVariantID(), request.getRequestURI(), deviceToken);
 				return null;
 			}
