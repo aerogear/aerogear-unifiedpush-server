@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import com.relayrides.pushy.apns.ApnsClient;
 import com.relayrides.pushy.apns.ApnsClientBuilder;
 import com.relayrides.pushy.apns.PushNotificationResponse;
+import com.relayrides.pushy.apns.proxy.HttpProxyHandlerFactory;
 import com.relayrides.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification;
@@ -42,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
-import java.net.Proxy;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -214,9 +214,17 @@ public class PushyApnsSender implements PushNotificationSender {
                 final ApnsClientBuilder builder = new ApnsClientBuilder();
                 builder.setClientCredentials(stream, iOSVariant.getPassphrase());
 
-                if (ProxyConfiguration.hasSocks()) {
-                    final Proxy proxy = ProxyConfiguration.socks();
-                    builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(proxy.address()));
+                if (ProxyConfiguration.hasHttpProxyConfig()) {
+                    if (ProxyConfiguration.hasBasicAuth()) {
+                        String user =  ProxyConfiguration.getProxyUser();
+                        String pass = ProxyConfiguration.getProxyPass();
+                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
+                    } else {
+                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress()));
+                    }
+
+                } else if (ProxyConfiguration.hasSocksProxyConfig()) {
+                    builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
                 }
 
                 final ApnsClient apnsClient = builder.build();
@@ -233,6 +241,8 @@ public class PushyApnsSender implements PushNotificationSender {
         // indicating an incomplete service
         throw new IllegalArgumentException("Not able to construct APNS client");
     }
+
+
 
     private synchronized void connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
 

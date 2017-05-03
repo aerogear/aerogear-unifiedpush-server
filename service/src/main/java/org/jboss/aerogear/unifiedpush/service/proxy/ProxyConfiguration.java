@@ -22,7 +22,6 @@ import javax.ejb.Startup;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
-import java.net.Proxy;
 
 
 /**
@@ -49,16 +48,45 @@ public class ProxyConfiguration {
         });
     }
 
-    public static Proxy socks(){
-        String socksHost = System.getenv("SOCKS_PROXY_HOST");
-        String socksPort = System.getenv("SOCKS_PROXY_PORT");
-        int port = Integer.parseInt(socksPort);
-        return new Proxy(Proxy.Type.SOCKS,new InetSocketAddress(socksHost,port));
+    public static Boolean hasHttpProxyConfig(){
+        String proxyHost = System.getenv("HTTP_PROXY_HOST");
+        String proxyPort = System.getenv("HTTP_PROXY_PORT");
+        return ((null != proxyPort && ! "".equals(proxyPort)) && (null != proxyHost && ! "".equals(proxyHost)));
     }
 
-    public static Boolean hasSocks(){
+
+    public static Boolean hasBasicAuth() {
+        String proxyUser = System.getenv("HTTP_PROXY_USER");
+        String proxyPass = System.getenv("HTTP_PROXY_PASS");
+        return ((proxyUser != null && ! "".equals(proxyUser) && proxyPass != null && ! "".equals(proxyPass)));
+    }
+
+
+    public static InetSocketAddress proxyAddress(){
+        String proxyHost = System.getenv("HTTP_PROXY_HOST");
+        String proxyPort = System.getenv("HTTP_PROXY_PORT");
+        int port = Integer.parseInt(proxyPort);
+        return new InetSocketAddress(proxyHost,port);
+    }
+
+    public static Boolean hasSocksProxyConfig(){
         String socksHost = System.getenv("SOCKS_PROXY_HOST");
         String socksPort = System.getenv("SOCKS_PROXY_PORT");
         return ((null != socksPort && ! "".equals(socksPort)) && (null != socksHost && ! "".equals(socksHost)));
+    }
+
+    public static InetSocketAddress socks(){
+        String socksHost = System.getenv("SOCKS_PROXY_HOST");
+        String socksPort = System.getenv("SOCKS_PROXY_PORT");
+        int port = Integer.parseInt(socksPort);
+        return new InetSocketAddress(socksHost,port);
+    }
+
+    public static String getProxyUser() {
+        return System.getenv("HTTP_PROXY_USER");
+    }
+
+    public static String getProxyPass() {
+        return System.getenv("HTTP_PROXY_PASS");
     }
 }
