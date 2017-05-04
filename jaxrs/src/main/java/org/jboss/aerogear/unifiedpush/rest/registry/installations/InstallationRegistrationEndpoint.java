@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
@@ -226,6 +228,64 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 			clientInstallationService.addInstallation(variant, entity);
 
 		return appendAllowOriginHeader(Response.ok(entity), request);
+	}
+
+	/**
+	 * RESTful API for updating device token. The Endpoint is protected using
+	 * <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "device-token: BASE64 encoded device-token"
+	 *   -X PUT
+	 *   -d 'BASE64 encoded new device-token'
+	 *   https://SERVER:PORT/context/rest/registry/device/
+	 * </pre>
+	 *
+	 * Details about JSON format can be found HERE!
+	 *
+	 * @param token
+	 *            The new registered deviceToken.
+	 * @param request
+	 *            The request object
+	 *
+	 * @requestheader device-token the old push service dependent token (ie
+	 *                InstanceID in FCM). If not present return 401 error code.
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 *                 Server" (only for 401 response)
+	 *
+	 * @statuscode 204 Successful update of the device token
+	 * @statuscode 401 The request requires authentication.
+	 * @statuscode 500 Server error while replacing.
+	 */
+	@PUT
+	@Path("{token: .*}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Void")
+	public Response updateDeviceToken(@PathParam("token") String token, @Context HttpServletRequest request) {
+
+		// find the matching device by variation and token id.
+		Optional<Installation> device = authenticationHelper.loadInstallationWhenAuthorized(request);
+		if (!device.isPresent()) {
+			return create401Response(request);
+		}
+
+		// Update device token
+		Installation inst = device.get();
+		inst.setDeviceToken(HttpBasicHelper.decodeBase64(token));
+
+		try {
+			clientInstallationService.updateInstallation(inst);
+			logger.info("Device token was updated from {} to {}", ClientAuthHelper.getDeviceToken(request), inst.getDeviceToken());
+		} catch (Exception e) {
+			logger.error("Error when update device token", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+		return appendAllowOriginHeader(Response.noContent(), request);
 	}
 
 	/**
