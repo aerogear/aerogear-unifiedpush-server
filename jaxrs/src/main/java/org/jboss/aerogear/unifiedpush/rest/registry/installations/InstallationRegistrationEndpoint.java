@@ -92,7 +92,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @param headers
 	 *            "Origin" header
 	 * @param token
-	 *            token
+	 *            Will match any pattern not matched by a more specific path.
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
@@ -263,7 +263,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @statuscode 500 Server error while replacing.
 	 */
 	@PUT
-	@Path("{token: .*}")
+	@Path("/token/{token: .*}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	public Response updateDeviceToken(@PathParam("token") String token, @Context HttpServletRequest request) {
@@ -280,7 +280,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		try {
 			clientInstallationService.updateInstallation(inst);
-			logger.info("Device token was updated from {} to {}", ClientAuthHelper.getDeviceToken(request), inst.getDeviceToken());
+			logger.info("Device token was updated from {} to {}", ClientAuthHelper.getDeviceToken(request),
+					inst.getDeviceToken());
 		} catch (Exception e) {
 			logger.error("Error when update device token", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -470,7 +471,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		return Response.ok(EmptyJSON.STRING).build();
 	}
 
-	// TODO: Fix documentation for curl usage
 	/**
 	 * RESTful API for enabling a device (verifying it). The Endpoint is
 	 * protected using <code>HTTP Basic</code> (credentials
