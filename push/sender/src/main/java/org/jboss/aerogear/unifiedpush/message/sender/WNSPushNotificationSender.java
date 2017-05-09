@@ -135,7 +135,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private static WnsBadge createBadgeMessage(Message message) {
+    private WnsBadge createBadgeMessage(Message message) {
         final WnsBadgeBuilder builder = new WnsBadgeBuilder();
         Windows windows = message.getWindows();
         if (windows.getBadge() != null) {
@@ -146,7 +146,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private static WnsRaw createRawMessage(Message message) {
+    private WnsRaw createRawMessage(Message message) {
         final WnsRawBuilder builder = new WnsRawBuilder();
         builder.stream(message.getAlert().getBytes());
         return builder.build();
@@ -158,7 +158,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         return builder.build();
     }
 
-    private static void createMessage(Message message, String type, WnsAbstractBuilder builder) {
+    private void createMessage(Message message, String type, WnsAbstractBuilder builder) {
         Windows windows = message.getWindows();
         List<String> param = new ArrayList<>(windows.getImages());
         param.add(message.getAlert());
@@ -167,7 +167,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         createTemplate(builder, type, param);
     }
 
-    private static void createTemplate(WnsAbstractBuilder builder, String type, List<String> param) {
+    private void createTemplate(WnsAbstractBuilder builder, String type, List<String> param) {
         try {
             Method[] methods = builder.getClass().getMethods();
             for (Method method : methods) {

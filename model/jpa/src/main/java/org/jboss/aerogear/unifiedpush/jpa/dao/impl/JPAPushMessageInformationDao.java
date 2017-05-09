@@ -163,7 +163,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     /**
      * Helper that returns 'ASC' when true and 'DESC' when false.
      */
-    private static String ascendingOrDescending(boolean asc) {
+    private String ascendingOrDescending(boolean asc) {
         if (asc) {
             return ASC;
         } else {

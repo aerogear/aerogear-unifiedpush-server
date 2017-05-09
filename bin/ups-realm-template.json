@@ -1,0 +1,89 @@
+
+{
+    "realm": "aerogear",
+    "enabled": true,
+    "accessTokenLifespan": 60,
+    "accessCodeLifespan": 60,
+    "accessCodeLifespanUserAction": 300,
+    "ssoSessionIdleTimeout": 600,
+    "ssoSessionMaxLifespan": 36000,
+    "sslRequired": "external",
+    "registrationAllowed": false,
+    "social": false,
+    "adminTheme": "aerogear",
+    "accountTheme": "aerogear",
+    "loginTheme": "aerogear",
+    "updateProfileOnInitialSocialLogin": false,
+    "requiredCredentials": [ "password" ],
+    "defaultRoles": [ "developer" ],
+    "users" : [
+        {
+            "username" : "admin",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "123" }
+            ],
+            "requiredActions": [
+                "UPDATE_PASSWORD"
+            ],
+            "realmRoles": [ "admin" ],
+            "applicationRoles": {
+               "realm-management": [ "realm-admin" ],
+               "account": [ "manage-account" ]
+            }
+        },
+        {
+            "username" : "developer",
+            "enabled": false,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "developer" }
+            ],
+            "requiredActions": [
+                "UPDATE_PASSWORD"
+            ],
+            "realmRoles": [ "developer" ],
+            "applicationRoles": {
+                "account": [ "manage-account" ]
+            }
+        }
+    ],
+    "roles" : {
+        "realm" : [
+            {
+                "name": "admin",
+                "description": "Administrator privileges"
+            },
+            {
+                "name": "developer",
+                "description": "Developer privileges"
+            }
+        ]
+    },
+    "scopeMappings": [
+        {
+            "client": "unified-push-server-js",
+            "roles": ["admin", "developer"]
+        }
+    ],
+    "clients": [
+        {
+            "clientId": "unified-push-server",
+            "enabled": true,
+            "bearerOnly": true
+        },
+        {
+            "clientId": "unified-push-server-js",
+            "enabled": true,
+            "publicClient": true,
+            "baseUrl": "dummyhost/ag-push",
+            "redirectUris": [
+                "dummyhost/ag-push/*"
+            ],
+            "webOrigins": [
+                "dummyhost"
+            ]
+        }
+    ]
+}
