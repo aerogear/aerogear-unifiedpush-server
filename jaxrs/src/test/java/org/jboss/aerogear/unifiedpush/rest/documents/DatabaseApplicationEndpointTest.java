@@ -13,7 +13,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
-import org.jboss.aerogear.unifiedpush.rest.documents.DatabaseApplicationEndpoint.DocumentList;
 import org.jboss.aerogear.unifiedpush.rest.registry.applications.AliasEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.InstallationRegistrationEndpoint;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
