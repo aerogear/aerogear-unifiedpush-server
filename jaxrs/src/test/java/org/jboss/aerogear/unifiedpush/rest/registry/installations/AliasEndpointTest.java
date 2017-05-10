@@ -3,14 +3,12 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 import java.net.URL;
 import java.util.UUID;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
-import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.registry.applications.AliasEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
@@ -34,9 +32,6 @@ import com.datastax.driver.core.utils.UUIDs;
 
 @RunWith(Arquillian.class)
 public class AliasEndpointTest extends RestEndpointTest {
-	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
-			.substring(1);
-
 	@Deployment
 	public static WebArchive archive() {
 		return UnifiedPushRestArchive.forTestClass(AliasEndpointTest.class) //
@@ -88,15 +83,12 @@ public class AliasEndpointTest extends RestEndpointTest {
 	@Test
 	@RunAsClient
 	public void registerAliases(@ArquillianResource URL deploymentUrl) {
-		ResteasyClient client = new ResteasyClientBuilder().build();
-
-		ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/aliases");
+		ResteasyWebTarget target = getAliasesTarget(deploymentUrl);
 
 		String[] legacyAliases = new String[] { "Supprot@AeroBase.org", "Test@AeroBase.org", "Help@AeroBase.org" };
 
 		// Create 3 Aliases
-		Response response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
-				.post(Entity.entity(legacyAliases, MediaType.APPLICATION_JSON_TYPE));
+		Response response = target.request().post(Entity.entity(legacyAliases, MediaType.APPLICATION_JSON_TYPE));
 
 		Assert.assertTrue(response.getStatus() == 200);
 		response.close();
@@ -115,7 +107,7 @@ public class AliasEndpointTest extends RestEndpointTest {
 
 		// Query for previously created aliases
 		for (String alias : legacyAliases) {
-			target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/name/" + alias);
+			target = getAliasByNameTarget(deploymentUrl, alias);
 
 			response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
 			Assert.assertTrue(response.getStatus() == 200);

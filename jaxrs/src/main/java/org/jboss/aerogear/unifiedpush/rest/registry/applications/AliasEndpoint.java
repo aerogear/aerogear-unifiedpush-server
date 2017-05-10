@@ -217,6 +217,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	// Can be removed with 1.2.0 release.
 	public Response add(List<String> aliases, @QueryParam("oauth2") @DefaultValue("false") boolean oauth2,
 			@Context HttpServletRequest request) {
+
+		logger.warn("API Call to @deprecated /alias/aliases, check if retail < 3.2.12 exists in production");
+
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushAppService);
 		if (pushApplication == null) {

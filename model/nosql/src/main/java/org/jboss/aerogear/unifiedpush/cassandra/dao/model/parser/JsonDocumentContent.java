@@ -6,6 +6,13 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+/**
+ * JSON wrapper parser to DocumentContent. JSON is serialized by including
+ * literal String content as is, without quoting of characters.
+ * <p>
+ * Warning: the resulting JSON stream may be invalid depending on your input
+ * value.
+ */
 public class JsonDocumentContent extends DocumentContent {
 	private static final String CONTENT_TYPE = "application/json";
 

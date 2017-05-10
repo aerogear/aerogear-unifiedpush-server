@@ -21,7 +21,7 @@ public class DatabaseParseTest extends RestEndpointTest {
 	@Test
 	public void testDocumentContent() {
 		ObjectMapper mapper = new ObjectMapper();
-		Installation exampleObject = RestEndpointTest.getDefaultInstallation();
+		Installation exampleObject = RestEndpointTest.getIosDefaultInstallation();
 
 		DocumentContent content = null;
 

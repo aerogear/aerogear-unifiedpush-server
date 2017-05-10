@@ -53,10 +53,10 @@ public class DocumentEndpointTest extends RestEndpointTest {
 	@RunAsClient
 	// TODO - Copy and move to database api
 	public void storeSimpleDocument(@ArquillianResource URL deploymentUrl) {
-		Installation iosInstallation = getDefaultInstallation();
+		Installation iosInstallation = getIosDefaultInstallation();
 
 		ResteasyClient client = new ResteasyClientBuilder()
-				.register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+				.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
 		// First register installation
 		try {
@@ -109,7 +109,7 @@ public class DocumentEndpointTest extends RestEndpointTest {
 			Assert.assertTrue(response.getStatus() == 200);
 
 			Installation getinst = response.readEntity(Installation.class);
-			Assert.assertTrue(getinst.getAlias().equals(DEFAULT_DEVICE_ALIAS));
+			Assert.assertTrue(getinst.getAlias().equals(DEFAULT_IOS_DEVICE_ALIAS));
 			Assert.assertTrue(getinst.getOperatingSystem().equals("TTT"));
 
 		} catch (Throwable e) {
@@ -121,10 +121,10 @@ public class DocumentEndpointTest extends RestEndpointTest {
 	@RunAsClient
 	// TODO - Copy and move to database api
 	public void updateDocument(@ArquillianResource URL deploymentUrl) {
-		Installation iosInstallation = getDefaultInstallation();
+		Installation iosInstallation = getIosDefaultInstallation();
 
 		ResteasyClient client = new ResteasyClientBuilder()
-				.register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+				.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
 		// First register installation
 		try {

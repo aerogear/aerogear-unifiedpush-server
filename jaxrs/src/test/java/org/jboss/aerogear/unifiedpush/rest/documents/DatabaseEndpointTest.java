@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.MediaType;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.registry.installations.InstallationRegistrationEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
@@ -39,9 +37,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class DatabaseEndpointTest extends RestEndpointTest {
-	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
-			.substring(1);
-
 	@Deployment
 	public static WebArchive archive() {
 		return UnifiedPushRestArchive.forTestClass(DatabaseEndpointTest.class) //
@@ -59,10 +54,10 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 	@Test
 	@RunAsClient
 	public void storeQueySingleDocument(@ArquillianResource URL deploymentUrl) {
-		Installation iosInstallation = getDefaultInstallation();
+		Installation iosInstallation = getIosDefaultInstallation();
 
 		ResteasyClient client = new ResteasyClientBuilder()
-				.register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+				.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
 		// First register installation
 		try {
@@ -131,14 +126,14 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 		}
 	}
 
-	private Response saveDocument(ResteasyClient client, URL deploymentUrl, String databse, String deviceToken,
+	public static Response saveDocument(ResteasyClient client, URL deploymentUrl, String databse, String deviceToken,
 			String alias, String id, Object... jsonEntity) {
 		return saveDocument(client, deploymentUrl, databse, deviceToken, alias, id, null, jsonEntity);
 
 	}
 
 	// Store document for alias @POST /{database}/alias/{alias}
-	private Response saveDocument(ResteasyClient client, URL deploymentUrl, String databse, String deviceToken,
+	public static Response saveDocument(ResteasyClient client, URL deploymentUrl, String databse, String deviceToken,
 			String alias, String id, String snapshot, Object... jsonEntity) {
 
 		StringBuilder sBuilder = new StringBuilder(deploymentUrl.toString() + RESOURCE_PREFIX + "/database/" + databse);
@@ -175,7 +170,7 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 		return response;
 	}
 
-	private Object getEntity(Object... jsonEntity) {
+	private static Object getEntity(Object... jsonEntity) {
 		if (jsonEntity.length == 1) {
 			return jsonEntity[0];
 		} else {
@@ -190,7 +185,7 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 		}
 	}
 
-	private MediaType getContentType(Object... jsonEntity) {
+	private static MediaType getContentType(Object... jsonEntity) {
 		if (jsonEntity.length == 1) {
 			return MediaType.APPLICATION_JSON_TYPE;
 		} else {
@@ -201,10 +196,10 @@ public class DatabaseEndpointTest extends RestEndpointTest {
 	@Test
 	@RunAsClient
 	public void storeQueyMultiPartDocuments(@ArquillianResource URL deploymentUrl) {
-		Installation iosInstallation = getDefaultInstallation();
+		Installation iosInstallation = getIosDefaultInstallation();
 
 		ResteasyClient client = new ResteasyClientBuilder()
-				.register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+				.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
 		// First register installation
 		ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");

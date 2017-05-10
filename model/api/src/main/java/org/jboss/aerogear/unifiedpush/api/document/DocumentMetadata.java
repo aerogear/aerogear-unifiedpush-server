@@ -52,6 +52,14 @@ public class DocumentMetadata implements Serializable {
 
 	public DocumentMetadata(UUID pushApplicationId, //
 			String database, //
+			UUID userId) {
+
+		this(pushApplicationId, database);
+		this.setUserId(userId);
+	}
+
+	public DocumentMetadata(UUID pushApplicationId, //
+			String database, //
 			Alias alias) {
 
 		this(pushApplicationId, database, alias, null, null);

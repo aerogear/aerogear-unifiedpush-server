@@ -73,9 +73,9 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
     @RunAsClient
     public void registerDeviceTest(@ArquillianResource URL deploymentUrl) {
     	// Prepare installation
-    	Installation iosInstallation = getDefaultInstallation();
+    	Installation iosInstallation = getIosDefaultInstallation();
 
-    	ResteasyClient client = new ResteasyClientBuilder().register(new Authenticator(DEFAULT_VARIENT_ID, DEFAULT_VARIENT_PASS)).build();
+    	ResteasyClient client = new ResteasyClientBuilder().register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
     	try{
 	    	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
@@ -106,12 +106,12 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
 
     	// Prepare installation
-    	Installation iosInstallation = getDefaultInstallation();
+    	Installation iosInstallation = getIosDefaultInstallation();
     	// Also check case sensitive aliases
     	iosInstallation.setAlias("SupporT@test.com");
     	try {
-			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
-			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
+			Variant variant = genericVariantService.findByVariantID(DEFAULT_IOS_VARIENT_ID);
+			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_IOS_VARIENT_ID));
 
 			installationService.addInstallationSynchronously(variant, iosInstallation);
 

@@ -51,7 +51,6 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 	public static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
 	public static final String X_HEADER_COUNT = "X-AB-Count";
-	private static final String X_HEADER_DATE = "Date";
 	private static final String MULTIPART_MIXED = "multipart/mixed";
 
 	@Inject
@@ -568,7 +567,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("limit") Integer limit, //
 			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
+		return get(request, new QueryOptions(fromDate, toDate, id, limit), accept, false, database, null);
 	}
 
 	/**
@@ -620,7 +619,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("limit") Integer limit, //
 			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, null, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
+		return get(request, new QueryOptions(fromDate, toDate, id, limit), accept, false, database, null);
 	}
 
 	/**
@@ -674,7 +673,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("limit") Integer limit, //
 			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), accept, true, request);
+		return get(request, new QueryOptions(fromDate, toDate, id, limit), accept, true, database, alias);
 	}
 
 	/**
@@ -728,15 +727,15 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			@QueryParam("limit") Integer limit, //
 			@HeaderParam("Accept") String accept, //
 			@Context HttpServletRequest request) { //
-		return get(database, alias, new QueryOptions(fromDate, toDate, id, limit), accept, false, request);
+		return get(request, new QueryOptions(fromDate, toDate, id, limit), accept, false, database, alias);
 	}
 
-	private Response get(String database, //
-			String alias, //
+	private Response get(HttpServletRequest request, //
 			QueryOptions options, //
 			String accept, //
 			boolean headOnly, //
-			HttpServletRequest request) { //
+			String database, //
+			String alias) {
 
 		// Authentication validation
 		PushApplication pushApplication = authenticationHelper.loadApplicationWhenAuthorized(request, alias);
@@ -746,6 +745,30 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		}
 
 		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
+		ResponseData data = getDocuments(request, options, accept, headOnly, pushApplicationId, database, alias);
+
+		try {
+			// In case no available parts | HEAD request, return 204
+			if (headOnly || data.getSize() == 0)
+				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), data.getSize()), request);
+			else
+				return appendAllowOriginHeader(
+						appendCountHeader(Response.ok(data.getResponse()).type(data.getContentType()), data.getSize()),
+						request);
+		} catch (Exception e) {
+			logger.error(String.format("Cannot query documents for database %s, application %s", database,
+					pushApplication.getPushApplicationID()), e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	private ResponseData getDocuments(HttpServletRequest request, //
+			QueryOptions options, //
+			String accept, //
+			boolean headOnly, //
+			UUID pushApplicationId, //
+			String database, //
+			String alias) {
 
 		// Find related alias by name
 		Alias aliasObj;
@@ -769,18 +792,19 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		 * Before all clients > 1.3.6
 		 */
 		if (StringUtils.isEmpty(accept) || accept.contains(MediaType.WILDCARD) || accept.contains("multipart/mixed")) {
-			return getAsMultipartMixed(pushApplicationId, database, aliasObj, options, headOnly, request);
+			return getAsMultipartMixed(request, options, headOnly, pushApplicationId, database, aliasObj);
 		} else {
-			return getAsApplicationJson(pushApplicationId, database, aliasObj, options, headOnly, request);
+			return getAsApplicationJson(request, options, headOnly, pushApplicationId, database, aliasObj);
 		}
+
 	}
 
-	private Response getAsMultipartMixed(UUID pushApplicationId, //
-			String database, //
-			Alias alias, //
+	private ResponseData getAsMultipartMixed(HttpServletRequest request, //
 			QueryOptions options, //
 			boolean headOnly, //
-			HttpServletRequest request) { //
+			UUID pushApplicationId, //
+			String database, //
+			Alias alias) { //
 		final MultipartOutput output = new MultipartOutput();
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, alias);
@@ -789,27 +813,15 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());
 		});
 
-		try {
-			// In case no available parts | HEAD request, return 204
-			if (headOnly || output.getParts().size() == 0)
-				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), output.getParts().size()),
-						request);
-			else
-				return appendAllowOriginHeader(
-						appendCountHeader(Response.ok(output).type(MULTIPART_MIXED), output.getParts().size()),
-						request);
-		} catch (Exception e) {
-			logger.error(String.format("Cannot store document for database %s", database), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
+		return new ResponseData(output.getParts().size(), output, MULTIPART_MIXED);
 	}
 
-	private Response getAsApplicationJson(UUID pushApplicationId, //
-			String database, //
-			Alias alias, //
+	private ResponseData getAsApplicationJson(HttpServletRequest request, //
 			QueryOptions options, //
 			boolean headOnly, //
-			HttpServletRequest request) { //
+			UUID pushApplicationId, //
+			String database, //
+			Alias alias) { //
 
 		final List<JsonDocumentContent> docs = new ArrayList<>();
 
@@ -818,17 +830,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			docs.add(new JsonDocumentContent(doc.getKey(), doc.getContent(), doc.getDocumentId()));
 		});
 
-		try {
-			// In case no available parts | HEAD request, return 204
-			if (headOnly || docs.size() == 0)
-				return appendAllowOriginHeader(appendCountHeader(Response.noContent(), docs.size()), request);
-			else
-				return appendAllowOriginHeader(
-						appendCountHeader(Response.ok(docs).type(MediaType.APPLICATION_JSON), docs.size()), request);
-		} catch (Exception e) {
-			logger.error(String.format("Cannot store document for database %s", database), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
+		return new ResponseData(docs.size(), docs, MediaType.APPLICATION_JSON);
 	}
 
 	private Alias getAliasByToken(UUID pushApplicationId, String deviceToken) {
@@ -847,7 +849,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		return aliasObj;
 	}
 
-	private ResponseBuilder appendCountHeader(ResponseBuilder rb, int count) {
+	public static ResponseBuilder appendCountHeader(ResponseBuilder rb, int count) {
 		rb.header(X_HEADER_COUNT, count);
 
 		return appendAllowExposeHeader(rb);
@@ -859,9 +861,34 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		return appendAllowExposeHeader(rb);
 	}
 
-	private ResponseBuilder appendAllowExposeHeader(ResponseBuilder rb) {
+	public static ResponseBuilder appendAllowExposeHeader(ResponseBuilder rb) {
 		rb.header("Access-Control-Expose-Headers",
-				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT, X_HEADER_DATE }, ","));
+				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT }, ","));
 		return rb;
+	}
+
+	class ResponseData {
+		private final int size;
+		private final Object response;
+		private final String contentType;
+
+		public ResponseData(int size, Object response, String contentType) {
+			super();
+			this.size = size;
+			this.response = response;
+			this.contentType = contentType;
+		}
+
+		public int getSize() {
+			return size;
+		}
+
+		public Object getResponse() {
+			return response;
+		}
+
+		public String getContentType() {
+			return contentType;
+		}
 	}
 }
