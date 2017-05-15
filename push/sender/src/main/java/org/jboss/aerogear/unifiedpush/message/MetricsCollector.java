@@ -108,9 +108,9 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
         }
     }
 
-    private int countLoadedBatches(String variantID) {
+    private int countLoadedBatches(final String variantID) {
         int loadedBatches = 0;
-        while (receiveInTransactionNoWait(batchLoadedQueue, "variantID", variantID) != null) {
+        while (receiveInTransactionWithTimeout(batchLoadedQueue, "variantID", variantID, 250) != null) {
             loadedBatches += 1;
         }
         return loadedBatches;

@@ -82,4 +82,35 @@ public abstract class AbstractJMSMessageConsumer {
         }
     }
 
+    protected <T extends Serializable> T receiveInTransactionWithTimeout(final Queue queue, final String propertyName, final String propertyValue, final long timeout) {
+        Connection connection = null;
+        try {
+            connection = xaConnectionFactory.createConnection();
+            final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            final MessageConsumer messageConsumer;
+            if (propertyName != null) {
+                messageConsumer = session.createConsumer(queue, String.format("%s = '%s'", propertyName, propertyValue));
+            } else {
+                messageConsumer = session.createConsumer(queue);
+            }
+            connection.start();
+            final ObjectMessage objectMessage = (ObjectMessage) messageConsumer.receive(timeout);
+            if (objectMessage != null) {
+                return (T) objectMessage.getObject();
+            } else {
+                return null;
+            }
+        } catch (JMSException e) {
+            throw new MessageDeliveryException("Failed to queue push message for further processing", e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
