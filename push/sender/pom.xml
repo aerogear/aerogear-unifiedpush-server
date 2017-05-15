@@ -93,14 +93,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.notnoop.apns</groupId>
-            <artifactId>apns</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.jackson</groupId>
-                    <artifactId>jackson-mapper-asl</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>net.jodah</groupId>
+            <artifactId>expiringmap</artifactId>
+            <version>0.5.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.relayrides</groupId>
+            <artifactId>pushy</artifactId>
+            <version>0.9.3</version>
         </dependency>
 
         <dependency>
