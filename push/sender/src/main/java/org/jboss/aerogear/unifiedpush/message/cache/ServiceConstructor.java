@@ -1,3 +1,4 @@
+
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
@@ -14,19 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.serviceHolder;
+package org.jboss.aerogear.unifiedpush.message.cache;
 
 /**
- * Allows to destroy instance of service T
- *
- * @param <T> the type of service
+ * Allows to create a new service of type T
  */
-public interface ServiceDestroyer<T> {
+public interface ServiceConstructor<T> {
 
     /**
-     * Destroys the service instance
+     * Create a new service of type T
      *
-     * @param instance the service instance
+     * @return a new service instance or null if creation failed
      */
-    void destroy(T instance);
+    T construct();
 }
