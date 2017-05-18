@@ -71,7 +71,7 @@ CREATE TABLE push_message_info (
   client_identifier  VARCHAR(255)  DEFAULT NULL,
   ip_address         VARCHAR(255)  DEFAULT NULL,
   push_application_id VARCHAR(255) NOT NULL,
-  raw_json_message    VARCHAR(4500) DEFAULT NULL,
+  raw_json_message    CLOB DEFAULT NULL,
   submit_date        DATE          DEFAULT NULL,
   total_receivers    BIGINT       NOT NULL,
   app_open_counter    BIGINT      DEFAULT 0,

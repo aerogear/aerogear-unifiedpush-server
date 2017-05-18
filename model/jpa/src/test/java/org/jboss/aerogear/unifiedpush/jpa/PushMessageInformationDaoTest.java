@@ -264,7 +264,7 @@ public class PushMessageInformationDaoTest {
     public void testLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4500));
+        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(10000));
         pushMessageInformationDao.create(largePushMessageInformation);
     }
 
@@ -272,7 +272,7 @@ public class PushMessageInformationDaoTest {
     public void testTooLongRawJsonPayload() {
         PushMessageInformation largePushMessageInformation = new PushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
-        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4501));
+        largePushMessageInformation.setRawJsonMessage(TestUtils.longString(10000));
         pushMessageInformationDao.create(largePushMessageInformation);
         flushAndClear();
     }
