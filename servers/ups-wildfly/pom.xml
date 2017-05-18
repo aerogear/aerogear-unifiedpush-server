@@ -90,6 +90,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                         <manifestEntries>
+                            <Build-Branch>${scmBranch}</Build-Branch>
                             <Implementation-Build>${buildNumber}</Implementation-Build>
                             <Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
                         </manifestEntries>
