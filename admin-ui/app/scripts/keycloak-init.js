@@ -8,7 +8,7 @@
   var app = angular.module('upsConsole');
 
   angular.element(document).ready(function () {
-    var keycloak = new Keycloak('config/admin-ui-keycloak.json');
+    var keycloak = new Keycloak('rest/keycloak/config');
     auth.loggedIn = false;
 
     keycloak.init({ onLoad: 'login-required' }).success(function () {
@@ -17,7 +17,7 @@
       auth.logout = function() {
         auth.loggedIn = false;
         auth.keycloak = null;
-        window.location = keycloak.authServerUrl + '/realms/aerogear/tokens/logout?redirect_uri=' + window.location.href;
+        window.location = keycloak.authServerUrl + '/realms/' + keycloak.realm + '/tokens/logout?redirect_uri=' + window.location.href;
       };
       app.factory('Auth', function () {
         return auth;
