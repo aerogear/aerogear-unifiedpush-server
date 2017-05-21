@@ -51,6 +51,8 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 	public static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
 	public static final String X_HEADER_COUNT = "X-AB-Count";
+	// Date header is added by nginx/wildfly and accessed by clients.
+	private static final String X_HEADER_DATE = "Date";
 	private static final String MULTIPART_MIXED = "multipart/mixed";
 
 	@Inject
@@ -863,7 +865,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 	public static ResponseBuilder appendAllowExposeHeader(ResponseBuilder rb) {
 		rb.header("Access-Control-Expose-Headers",
-				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT }, ","));
+				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT, X_HEADER_DATE }, ","));
 		return rb;
 	}
 
