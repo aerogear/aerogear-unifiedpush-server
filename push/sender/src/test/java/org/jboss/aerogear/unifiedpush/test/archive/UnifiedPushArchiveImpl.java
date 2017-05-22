@@ -49,6 +49,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     private PomEquippedResolveStage resolver;
+    private static final String WEB_RESOURCE_PATH = "../../servers/ups-wildfly/src/main/webapp/WEB-INF/";
 
     public UnifiedPushArchiveImpl(Archive<?> delegate) {
         super(delegate);
@@ -75,7 +76,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
             .addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
-            .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/hornetq-jms.xml"));
+            .addAsWebInfResource(new File(WEB_RESOURCE_PATH + "hornetq-jms.xml"));
     }
 
     @Override
@@ -84,7 +85,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
                 .addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
                 .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
                 .addClasses(TriggerMetricCollectionConsumer.class)
-                .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/jboss-ejb3.xml"), "jboss-ejb3.xml");
+                .addAsWebInfResource(new File(WEB_RESOURCE_PATH + "jboss-ejb3.xml"), "jboss-ejb3.xml");
     }
 
     @Override
