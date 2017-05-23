@@ -16,22 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.Queue;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+
+import javax.annotation.Resource;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.Queue;
 
 /**
  * Receives CDI event with {@link MessageHolderWithTokens} payload and dispatches this payload to JMS queue selected by a type of the variant specified in payload.
  *
  * This bean serves as mediator for decoupling of JMS subsystem and services that triggers these messages.
  */
-@Stateless
 public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer {
 
     @Inject

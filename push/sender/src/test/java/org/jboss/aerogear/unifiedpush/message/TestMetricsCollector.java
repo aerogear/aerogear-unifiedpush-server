@@ -22,7 +22,9 @@ import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
+import org.jboss.aerogear.unifiedpush.message.jms.MetricCollectionTrigger;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -34,6 +36,7 @@ import org.junit.runner.RunWith;
 import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.JMSException;
 import javax.jms.Queue;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -52,6 +55,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
                 .withMessaging()
                     .addClasses(MetricsCollector.class)
                     .addClasses(PushMessageMetricsService.class)
+                    .addClasses(MetricCollectionTrigger.class)
                 .withMockito()
                     .addClasses(MockProviders.class)
                 .as(WebArchive.class);
@@ -66,6 +70,10 @@ public class TestMetricsCollector extends AbstractJMSTest {
     @Resource(mappedName = "java:/queue/AllBatchesLoadedQueue")
     private Queue allBatchesLoaded;
 
+    @Resource(mappedName = "java:/queue/MetricsQueue")
+    private Queue metricsQueue;
+
+    private String pushMessageInformationId = UUID.randomUUID().toString();
     private String variantID1 = UUID.randomUUID().toString();
     private String variantID2 = UUID.randomUUID().toString();
 
@@ -73,9 +81,10 @@ public class TestMetricsCollector extends AbstractJMSTest {
     private static final CountDownLatch variantsCompleted = new CountDownLatch(2);
 
     @Test
-    public void test(PushMessageInformationDao pushMessageInformationDao) throws InterruptedException {
+    public void test(PushMessageInformationDao pushMessageInformationDao) throws InterruptedException, JMSException {
         // given
         PushMessageInformation pushMetric = new PushMessageInformation();
+        pushMetric.setId(pushMessageInformationId);
         VariantMetricInformation variant1Metric1 = new VariantMetricInformation();
         variant1Metric1.setPushMessageInformation(pushMetric);
         variant1Metric1.setVariantID(variantID1);
@@ -88,7 +97,7 @@ public class TestMetricsCollector extends AbstractJMSTest {
         variant2Metric1.setPushMessageInformation(pushMetric);
         variant2Metric1.setVariantID(variantID2);
         variant2Metric1.setServedBatches(1);
-        when(pushMessageInformationDao.lockedSelect(pushMetric)).thenReturn(pushMetric);
+        when(pushMessageInformationDao.find(pushMetric.getId())).thenReturn(pushMetric);
 
         // when
         send(new BatchLoadedEvent(variantID1+":"+pushMetric.getId())).withProperty("variantID", variantID1+":"+pushMetric.getId()).to(batchLoadedQueue);
@@ -97,14 +106,18 @@ public class TestMetricsCollector extends AbstractJMSTest {
         send(new AllBatchesLoadedEvent(variantID1+":"+pushMetric.getId())).withProperty("variantID", variantID1+":"+pushMetric.getId()).to(allBatchesLoaded);
         send(new AllBatchesLoadedEvent(variantID2+":"+pushMetric.getId())).withProperty("variantID", variantID2+":"+pushMetric.getId()).to(allBatchesLoaded);
 
-        metricsCollector.collectMetrics(variant1Metric1);
-        metricsCollector.collectMetrics(variant1Metric2);
-        metricsCollector.collectMetrics(variant2Metric1);
+        send(variant1Metric1).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
+        send(variant1Metric2).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
+        send(variant2Metric1).withProperty("pushMessageInformationId", pushMessageInformationId).to(metricsQueue);
 
+        metricsCollector.collectMetrics(new TriggerMetricCollectionEvent(pushMetric));
+
+        variantsCompleted.await(2, TimeUnit.SECONDS);
         pushMessagesCompleted.await(1, TimeUnit.SECONDS);
-        variantsCompleted.await(1, TimeUnit.SECONDS);
 
         // then
+        variant1Metric1 = updateVarianMetricById(pushMetric, variant1Metric1);
+        variant2Metric1 = updateVarianMetricById(pushMetric, variant2Metric1);
         assertEquals(2, pushMetric.getServedVariants().intValue());
         assertEquals(2, variant1Metric1.getServedBatches().intValue());
         assertEquals(2, variant1Metric1.getTotalBatches().intValue());
@@ -114,6 +127,15 @@ public class TestMetricsCollector extends AbstractJMSTest {
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID1+":"+pushMetric.getId()).from(allBatchesLoaded));
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2+":"+pushMetric.getId()).from(batchLoadedQueue));
         assertNull(receive().withTimeout(100).withSelector("variantID = '%s'", variantID2+":"+pushMetric.getId()).from(allBatchesLoaded));
+    }
+
+    private VariantMetricInformation updateVarianMetricById(PushMessageInformation pmi, VariantMetricInformation vmi) {
+        for (VariantMetricInformation v : pmi.getVariantInformations()) {
+            if (vmi.getVariantID().equals(v.getVariantID())) {
+                return v;
+            }
+        }
+        throw new IllegalStateException("No variant metric found for given id");
     }
 
     public void observeVariantCompleted(@Observes VariantCompletedEvent variantCompleted) {

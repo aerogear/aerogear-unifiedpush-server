@@ -16,6 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerMetricCollectionEvent;
+import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -23,26 +27,26 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-
-/**
- * Consumes {@link VariantMetricInformation} from queue and pass them as a CDI event for further processing.
- *
- * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
- */
-@MessageDriven(name = "MetricsConsumer", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MetricsQueue"),
+@MessageDriven(name = "TriggerVariantMetricCollectionConsumer", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/TriggerVariantMetricCollectionQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class VariantMetricInformationConsumer extends AbstractJMSMessageListener<VariantMetricInformation> {
+public class TriggerVariantMetricCollectionConsumer extends AbstractJMSMessageListener<TriggerVariantMetricCollectionEvent> {
 
     @Inject
     @Dequeue
-    private Event<VariantMetricInformation> dequeueEvent;
+    private Event<TriggerVariantMetricCollectionEvent> dequeueEvent;
 
+    /**
+     * Fires the {@link TriggerMetricCollectionEvent} event and checks if its listeners reports that all batches were loaded by {@link MetricsCollector}.
+     *
+     * If all batches were loaded, the metric collection process ends.
+     *
+     * If not all batches were loaded, the transaction is rolled back so that this method will be re-triggered based on TriggerMetricCollectionQueue address settings.
+     */
     @Override
-    public void onMessage(VariantMetricInformation message) {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void onMessage(TriggerVariantMetricCollectionEvent message) {
         dequeueEvent.fire(message);
     }
 }

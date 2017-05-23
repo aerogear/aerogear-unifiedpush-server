@@ -14,19 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.jms;
+package org.jboss.aerogear.unifiedpush.message.event;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 
-/**
- * Denotes an event with message that is pulled from JMS queue for further processing
- */
-@Qualifier
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Dequeue {
+public class MetricsProcessingStartedEvent implements Serializable {
+
+    private static final long serialVersionUID = -5192336478703267019L;
+
+    private String pushMessageInformationId;
+
+    public MetricsProcessingStartedEvent(String pushMessageInformationId) {
+        this.pushMessageInformationId = pushMessageInformationId;
+    }
+
+    public String getPushMessageInformationId() {
+        return pushMessageInformationId;
+    }
+
 }
