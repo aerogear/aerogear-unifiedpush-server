@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.event;
 
-import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
-
 /**
  * Event fired by {@link MetricsCollector} when given variant was completely served when dispatching message for given push message
  */
