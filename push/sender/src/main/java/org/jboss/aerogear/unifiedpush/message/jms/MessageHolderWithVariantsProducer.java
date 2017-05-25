@@ -33,9 +33,6 @@ import javax.jms.Queue;
 @Stateless
 public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProducer {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-
     @Resource(mappedName = "java:/queue/AdmPushMessageQueue")
     private Queue admPushMessageQueue;
 
