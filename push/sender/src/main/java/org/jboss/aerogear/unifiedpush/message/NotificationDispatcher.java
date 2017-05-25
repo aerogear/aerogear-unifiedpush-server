@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
@@ -40,8 +39,6 @@ import java.util.Collection;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
- *
- * and generates metrics that are sent for further processing to {@link MetricsCollector}.
  */
 @Stateless
 public class NotificationDispatcher {
@@ -56,15 +53,9 @@ public class NotificationDispatcher {
     @DispatchToQueue
     private Event<VariantMetricInformation> dispatchVariantMetricEvent;
 
-    @Inject
-    @DispatchToQueue
-    private Event<TriggerVariantMetricCollectionEvent> triggerVariantMetricCollection;
-
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
      * the push notifications are submitted to.
-     *
-     * Once the sending process finishes, generates message for {@link MetricsCollector} with information how much devices was the notification submitted to.
      *
      * @param msg object containing details about the payload and the related device tokens
      */
@@ -126,6 +117,5 @@ public class NotificationDispatcher {
         variantMetricInformation.setServedBatches(1);
 
         dispatchVariantMetricEvent.fire(variantMetricInformation);
-        triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(pushMessageInformation.getId(), variantID));
     }
 }

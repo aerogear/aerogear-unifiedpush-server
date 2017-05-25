@@ -16,6 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
@@ -23,31 +29,27 @@ import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Consumes {@link MessageHolderWithTokens} from queue and pass them as a CDI event for further processing.
+ * Consumes {@link VariantMetricInformation} from queue and pass them as a CDI event for further processing.
  *
  * This class serves as mediator for decoupling of JMS subsystem and services that observes these messages.
  */
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class MessageHolderWithTokensConsumer extends AbstractJMSMessageListener<MessageHolderWithTokens> {
+public class VariantMetricInformationConsumer extends AbstractJMSMessageListener<VariantMetricInformation> {
 
-    private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensConsumer.class);
+    private final Logger logger = LoggerFactory.getLogger(VariantMetricInformationConsumer.class);
 
     @Inject
     @Dequeue
-    private Event<MessageHolderWithTokens> dequeueEvent;
+    private Event<VariantMetricInformation> dequeueEvent;
 
     @Override
-    public void onMessage(MessageHolderWithTokens message) {
+    public void onMessage(VariantMetricInformation vmi) {
         try {
-            logger.trace("receiving tokens from queue, triggering Notification Dispatcher to pick the right sender");
-            dequeueEvent.fire(message);
+            logger.error("Messsage => "+ vmi.getDeliveryStatus());
+            logger.error("Messsage => "+ vmi.getReason());
+            dequeueEvent.fire(vmi);
         } catch (DispatchInitiationException e) {
             throw e;
         } catch (Exception e) {
