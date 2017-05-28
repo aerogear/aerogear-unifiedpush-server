@@ -43,6 +43,7 @@ import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.driver.core.utils.UUIDs;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/database")
@@ -52,7 +53,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	public static final String X_HEADER_SNAPSHOT_ID = "X-AB-Snapshot-Id";
 	public static final String X_HEADER_COUNT = "X-AB-Count";
 	// Date header is added by nginx/wildfly and accessed by clients.
-	private static final String X_HEADER_DATE = "Date";
+	private static final String HEADER_DATE = "Date";
 	private static final String MULTIPART_MIXED = "multipart/mixed";
 
 	@Inject
@@ -61,6 +62,20 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private AliasService aliasService;
 	@Inject
 	private AuthenticationHelper authenticationHelper;
+
+	/**
+	 * Hartbeat Endpoint
+	 *
+	 * @return Hartbeat in form of time-based UUID.
+	 * @statuscode 200 Successful response for your request
+	 */
+	@GET
+	@Path("/hartbeat")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.String")
+	public Response hartbeat() {
+		return Response.ok().entity(quote(UUIDs.timeBased().toString())).build();
+	}
 
 	/**
 	 * Cross Origin for application scope database.
@@ -865,7 +880,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 	public static ResponseBuilder appendAllowExposeHeader(ResponseBuilder rb) {
 		rb.header("Access-Control-Expose-Headers",
-				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT, X_HEADER_DATE }, ","));
+				StringUtils.join(new String[] { X_HEADER_SNAPSHOT_ID, X_HEADER_COUNT, HEADER_DATE }, ","));
 		return rb;
 	}
 
