@@ -43,7 +43,6 @@ import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.utils.UUIDs;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/database")
@@ -62,20 +61,6 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	private AliasService aliasService;
 	@Inject
 	private AuthenticationHelper authenticationHelper;
-
-	/**
-	 * Hartbeat Endpoint
-	 *
-	 * @return Hartbeat in form of time-based UUID.
-	 * @statuscode 200 Successful response for your request
-	 */
-	@GET
-	@Path("/hartbeat")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("java.lang.String")
-	public Response hartbeat() {
-		return Response.ok().entity(quote(UUIDs.timeBased().toString())).build();
-	}
 
 	/**
 	 * Cross Origin for application scope database.

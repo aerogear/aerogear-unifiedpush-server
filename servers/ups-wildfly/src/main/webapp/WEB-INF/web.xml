@@ -39,6 +39,7 @@
             <url-pattern>/rest/upsi/document/*</url-pattern>
             <url-pattern>/rest/upsi/database/*</url-pattern>
             <url-pattern>/rest/upsi/alias/*</url-pattern>
+            <url-pattern>/rest/upsi/hartbeat/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>installation</role-name>
@@ -55,6 +56,7 @@
             <url-pattern>/rest/document/*</url-pattern>
             <url-pattern>/rest/database/*</url-pattern>
             <url-pattern>/rest/alias/*</url-pattern>
+            <url-pattern>/rest/hartbeat/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
 
