@@ -34,6 +34,7 @@ public interface AliasDao {
 	 * @param pushApplicationId
 	 *            selected push application
 	 * @param userId
+	 *            User in UUID v1 format
 	 */
 	void remove(UUID pushApplicationId, UUID userId);
 

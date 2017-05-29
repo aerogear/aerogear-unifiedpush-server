@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model.parser;
 
 import java.util.UUID;
 
+import org.jboss.aerogear.unifiedpush.api.document.IDocument;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 
