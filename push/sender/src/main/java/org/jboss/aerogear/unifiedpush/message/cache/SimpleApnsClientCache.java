@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
-import com.relayrides.pushy.apns.ApnsClient;
+import com.turo.pushy.apns.ApnsClient;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.jodah.expiringmap.ExpirationListener;

@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.util;
 
-import com.relayrides.pushy.apns.ApnsClient;
+import com.turo.pushy.apns.ApnsClient;
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
