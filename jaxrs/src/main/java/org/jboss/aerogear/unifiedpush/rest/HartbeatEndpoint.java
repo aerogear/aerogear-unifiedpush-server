@@ -2,9 +2,11 @@ package org.jboss.aerogear.unifiedpush.rest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -13,6 +15,13 @@ import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/hartbeat")
 public class HartbeatEndpoint extends AbstractBaseEndpoint {
+
+	@OPTIONS
+	@ReturnType("java.lang.Void")
+	public Response crossOriginForApplication(@Context HttpHeaders headers) {
+		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
+
 	/**
 	 * Hartbeat Endpoint
 	 *
