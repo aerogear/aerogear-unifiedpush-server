@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import com.datastax.driver.core.utils.UUIDs;
 import com.qmino.miredot.annotations.ReturnType;
 
-@Path("/hartbeat")
-public class HartbeatEndpoint extends AbstractBaseEndpoint {
+@Path("/heartbeat")
+public class HeartbeatEndpoint extends AbstractBaseEndpoint {
 
 	@OPTIONS
 	@ReturnType("java.lang.Void")
