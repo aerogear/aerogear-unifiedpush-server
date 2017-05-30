@@ -41,22 +41,17 @@
         </a>
       </td>
       <td>{{ metric.$message.alert | limitTo : 15 }}{{ metric.$message.alert.length > 15 ? '&hellip;' : '' }}</td>
-      <td title="by {{ metric.clientIdentifier }}">{{ metric.ipAddress }}</td>
-      <td>{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened</td>
-        <td ng-if="metric.servedVariants < metric.totalVariants">
-          <span tooltip="{{activity.TOOLTIP_PENDING}}">
-            <!--<i class="pficon-running"></i>-->
-            <span class="pficon spinner spinner-sm spinner-inline"></span>
-            <span>Pending...</span>
-          </span>
-        </td>
-        <td ng-if="metric.servedVariants == metric.totalVariants && metric.deliveryFailed != true" class="success">
-          <span tooltip="{{activity.TOOLTIP_SUCCESS}}">
-            <i class="fa fa-check"></i>
-            Succeeded
-          </span>
-        </td>
-        <td ng-if="metric.servedVariants == metric.totalVariants && metric.deliveryFailed == true" class="danger">
+      <td>
+        <span tooltip="sent via {{ metric.clientIdentifier }}">
+          {{ metric.ipAddress }}
+        </span>
+      </td>
+      <td>
+        <span tooltip="{{activity.TOOLTIP_OPENED}}">
+          {{ metric.appOpenCounter }} opened
+        </span>
+      </td>
+      <td ng-if="metric.deliveryFailed == true" class="danger">
           <span tooltip="{{activity.TOOLTIP_FAIL}}">
             <span class="pficon-layered">
               <span class="pficon pficon-error-octagon"></span>
@@ -64,7 +59,12 @@
             </span>
             Failed
           </span>
-        </td>
+      </td>
+      <td ng-if="metric.deliveryFailed != true" class="success">
+          <span tooltip="{{activity.TOOLTIP_SUCCESS}}">
+            <i class="fa fa-check"></i>
+            Processed
+          </span>
       </td>
       <td>{{ metric.submitDate | date : 'd MMM, HH:mm:ss, yyyy' }}</td>
       <td>
