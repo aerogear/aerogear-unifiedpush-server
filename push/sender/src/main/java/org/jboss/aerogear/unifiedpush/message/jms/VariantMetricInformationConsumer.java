@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.exception.DispatchInitiationException;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
