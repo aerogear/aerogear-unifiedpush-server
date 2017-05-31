@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
-import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;

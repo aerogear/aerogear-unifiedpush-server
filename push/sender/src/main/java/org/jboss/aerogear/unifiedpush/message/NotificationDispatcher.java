@@ -90,31 +90,21 @@ public class NotificationDispatcher {
         @Override
         public void onSuccess() {
             logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
-            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
 
         @Override
         public void onError(final String reason) {
             logger.warn(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
-            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
+            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), Boolean.FALSE, reason);
         }
     }
 
-    /**
-     * Helpers to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
-     */
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus) {
-        this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receivers, deliveryStatus, null);
-    }
-
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
-        variantMetricInformation.setPushMessageInformation(pushMessageInformation);
         variantMetricInformation.setVariantID(variantID);
-        variantMetricInformation.setReceivers(Long.valueOf(receivers));
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
-        variantMetricInformation.setServedBatches(1);
+        variantMetricInformation.setPushMessageInformation(pushMessageInformation);
 
         dispatchVariantMetricEvent.fire(variantMetricInformation);
     }

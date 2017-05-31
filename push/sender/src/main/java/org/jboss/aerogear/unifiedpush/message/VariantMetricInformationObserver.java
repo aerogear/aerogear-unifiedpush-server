@@ -59,8 +59,6 @@ public class VariantMetricInformationObserver {
         if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(vmi);
         }
-
-//        metricsService.updatePushMessageInformation(pushMessageInformation);
     }
 
     private void updateExistingMetric(VariantMetricInformation existing, VariantMetricInformation update) {
