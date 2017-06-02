@@ -35,6 +35,11 @@ batch
 /subsystem=messaging-activemq/server=default/jms-queue=WNSTokenBatchQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSTokenBatchQueue:remove()
 
+/subsystem=messaging-activemq/server=default/jms-queue=FirefoxPushMessageQueue:remove()
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.FirefoxPushMessageQueue:remove()
+/subsystem=messaging-activemq/server=default/jms-queue=FirefoxTokenBatchQueue:remove()
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.FirefoxTokenBatchQueue:remove()
+
 
 
 /subsystem=messaging-activemq/server=default/jms-queue=MetricsQueue:remove()

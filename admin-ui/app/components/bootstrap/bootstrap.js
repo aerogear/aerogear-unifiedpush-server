@@ -11,7 +11,8 @@ angular.module('upsConsole')
       simplePush : {},
       windows_wns: {},
       windows_mpns: {},
-      adm: {}
+      adm: {},
+      firefox: {}
     };
 
     this.allowCreate = function( variantType ) {

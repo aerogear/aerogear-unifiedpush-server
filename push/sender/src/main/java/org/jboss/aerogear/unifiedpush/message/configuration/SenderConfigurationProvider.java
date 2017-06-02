@@ -74,6 +74,11 @@ public class SenderConfigurationProvider {
     public SenderConfiguration produceWindowsWnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));
     }
+    
+    @Produces @ApplicationScoped @SenderType(VariantType.FIREFOX)
+    public SenderConfiguration produceFirefoxConfiguration() {
+        return loadConfigurationFor(VariantType.FIREFOX, new SenderConfiguration(10, 1000));
+    }
 
     private SenderConfiguration loadConfigurationFor(VariantType type, SenderConfiguration defaultConfiguration) {
         return validateAndSanitizeConfiguration(type, new SenderConfiguration(

@@ -162,6 +162,9 @@ angular.module('upsConsole').factory('variantModal', function ($modal, $q, varia
     case 'adm':
       properties = properties.concat(['clientId', 'clientSecret']);
       break;
+    case 'firefox':
+      properties = properties.concat([]);
+      break;
     default:
       throw 'Unknown variant type ' + variant.type;
     }

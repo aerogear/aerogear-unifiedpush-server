@@ -169,6 +169,21 @@
     </div>
   </div>
 
+  <div class="form-group" ng-if="bootstrap.allowCreate('firefox')">
+    <label class="col-sm-3 control-label sr-only">Firefox</label>
+    <div class="col-sm-9">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="bootstrap.types.firefox">
+              <span class="ups-has-icon ups-variant-firefox">
+                <strong>Firefox (experimental)</strong><br>
+                using Mozilla Push Service
+              </span>
+        </label>
+      </div>
+    </div>
+  </div>
+
   <div ng-if="bootstrap.types.adm">
     <div class="form-group">
       <label class="col-sm-3 control-label" for="admClientId"></label>

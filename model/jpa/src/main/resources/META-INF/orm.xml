@@ -119,6 +119,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </basic>
         </attributes>
     </entity>
+    <entity class="FirefoxVariant" access="FIELD">
+        <table name="firefox_variant"/>
+        <discriminator-value>firefoxVariant</discriminator-value>
+    </entity>
     <entity class="org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant" access="FIELD">
         <table name="windows_wns_variant"/>
         <discriminator-value>windows_wns</discriminator-value>
