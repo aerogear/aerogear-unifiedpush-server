@@ -212,6 +212,8 @@
         <aerogear.bom.version>1.1.7</aerogear.bom.version>
         <admin-ui.version>1.2.12</admin-ui.version>
 
+        <kafka.clients.version>0.10.2.1</kafka.clients.version>
+
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
         <slfj4.version>1.7.21</slfj4.version>
