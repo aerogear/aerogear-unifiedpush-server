@@ -71,7 +71,7 @@
     });
   });
 
-  app.constant('allVariantTypes', ['android', 'ios', 'windows_mpns', 'windows_wns', 'simplePush', 'adm']);
+  app.constant('allVariantTypes', ['android', 'ios', 'windows_mpns', 'windows_wns', 'simplePush', 'adm', 'webPush']);
 
   app.value('allowCreateVariant', function( app, variantType ) {
     return true;

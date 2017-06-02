@@ -135,5 +135,17 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <table name="windows_mpns_variant"/>
         <discriminator-value>windows_mpns</discriminator-value>
     </entity>
+    <entity class="WebPushVariant" access="FIELD">
+        <table name="webpush_variant"/>
+        <discriminator-value>webPush</discriminator-value>
+        <attributes>
+            <basic name="fcmServerKey">
+                <column name="fcm_server_key" length="255" nullable="false"/>
+            </basic>
+            <basic name="fcmSenderID">
+                <column name="fcm_sender_id" length="255"/>
+            </basic>
+        </attributes>
+    </entity>
 
 </entity-mappings>

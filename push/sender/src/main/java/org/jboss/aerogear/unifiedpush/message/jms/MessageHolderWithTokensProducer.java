@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+
 import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 
 /**
  * Receives CDI event with {@link MessageHolderWithTokens} payload and dispatches this payload to JMS queue selected by a type of the variant specified in payload.
@@ -52,6 +52,9 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
 
     @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
     private Queue wnsTokenBatchQueue;
+    
+    @Resource(mappedName = "java:/queue/WebPushTokenBatchQueue")
+    private Queue webPushTokenBatchQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
         String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
@@ -72,6 +75,8 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
                 return mpnsTokenBatchQueue;
             case WINDOWS_WNS:
                 return wnsTokenBatchQueue;
+            case WEB_PUSH:
+                return webPushTokenBatchQueue;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }

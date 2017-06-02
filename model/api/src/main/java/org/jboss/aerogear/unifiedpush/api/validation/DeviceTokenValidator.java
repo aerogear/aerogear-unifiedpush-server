@@ -56,6 +56,11 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      */
     private static final Pattern ADM_DEVICE_TOKEN = Pattern.compile("(?i)[0-9a-z\\-_.]{100,}");
 
+    /**
+     * The WebPush token is an URI. According to the Push API specification, https is required.
+     */
+    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("https?://.{0,2000}");
+
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {
     }
@@ -92,6 +97,8 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return SIMPLE_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
             case ADM:
                 return ADM_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case WEB_PUSH:
+                return WEB_PUSH_DEVICE_TOKEN.matcher(deviceToken).matches();
         }
         return false;
     }
