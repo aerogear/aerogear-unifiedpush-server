@@ -100,7 +100,6 @@ angular.module('upsConsole')
     return {
       'android': { url: 'snippets/register-device/android.java' },
       'cordova': { url: 'snippets/register-device/cordova.js' },
-      'titanium': { url: 'snippets/register-device/titanium.js' },
       'ios_objc': { url: 'snippets/register-device/ios.objc' },
       'ios_swift': { url: 'snippets/register-device/ios.swift' },
       'dotnet': { url: 'snippets/register-device/dotnet.cs' },
@@ -146,8 +145,8 @@ angular.module('upsConsole')
         $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
         $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
-          android:      { name: 'Android',    snippets: ['android', 'cordova', 'titanium', 'push_config'] },
-          ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova', 'titanium', 'push_config']},
+          android:      { name: 'Android',    snippets: ['android', 'cordova', 'push_config'] },
+          ios:          { name: 'iOS',        snippets: ['ios_objc', 'ios_swift', 'cordova', 'push_config']},
           windows_mpns: { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
           windows_wns:  { name: 'Windows',    snippets: ['dotnet', 'cordova', 'push_config'] },
           simplePush:   { name: 'SimplePush', snippets: ['cordova', 'push_config'] },
