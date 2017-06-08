@@ -20,10 +20,13 @@ import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,6 +44,9 @@ import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/ios")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
+
+    @Inject
+    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
     /**
      * Add iOS Variant
@@ -200,6 +206,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             iOSVariant.setPassphrase(updatedForm.getPassphrase());
             iOSVariant.setCertificate(updatedForm.getCertificate());
             iOSVariant.setProduction(updatedForm.getProduction());
+
+            // update performed, we now need to invalidate existing connection w/ APNs:
+            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
 
             // some model validation on the entity:
             try {

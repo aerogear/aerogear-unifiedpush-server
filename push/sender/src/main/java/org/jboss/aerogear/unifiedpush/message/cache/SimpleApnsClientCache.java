@@ -23,11 +23,13 @@ import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
+import javax.enterprise.event.Observes;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +87,20 @@ public class SimpleApnsClientCache {
         }
     }
 
+    /**
+     * Receives iOS variant change event to remove client from the cache and also tear down the connection.
+     * @param iOSVariantUpdateEvent event fired when updating the variant
+     */
+    public void disconnectOnChange(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
+        final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
+        final String connectionKey = extractConnectionKey(variant);
+        final ApnsClient client = apnsClientExpiringMap.remove(connectionKey);
+        logger.debug("Removed client from cache for {}", variant.getVariantID());
+        if (client != null) {
+            tearDownApnsHttp2Connection(client);
+        }
+    }
+
     private String extractConnectionKey(final iOSVariant iOSVariant) {
         final StringBuilder sb = new StringBuilder()
                 .append(iOSVariant.getVariantID())
@@ -115,6 +131,7 @@ public class SimpleApnsClientCache {
 
     private void tearDownApnsHttp2Connection(final ApnsClient client) {
         if (client.isConnected()) {
+            logger.trace("Tearing down connection to APNs for the given client");
             client.disconnect().addListener(new ApnsDisconnectFutureListener());
         }
     }
