@@ -17,7 +17,7 @@
 package org.jboss.aerogear.unifiedpush.dao;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 
-
+@Deprecated
 public interface VariantMetricInformationDao extends GenericBaseDao<VariantMetricInformation, String>{
 
     /**
