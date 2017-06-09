@@ -24,6 +24,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * Contains metadata about a variant, of the push message request, such as successful delivery to the push network
  * or involved client devices.
  */
+@Deprecated
 public class VariantMetricInformation extends BaseModel {
 
     private static final long serialVersionUID = 8704836533294404718L;
