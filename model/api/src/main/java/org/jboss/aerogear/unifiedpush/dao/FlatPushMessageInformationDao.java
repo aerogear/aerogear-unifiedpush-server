@@ -16,16 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.dao;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-
-@Deprecated
-public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInformation, String>  {
-
-    PushMessageInformation lockedSelect(PushMessageInformation pushMessageInformation);
+public interface FlatPushMessageInformationDao extends GenericBaseDao<FlatPushMessageInformation, String>  {
 
     /**
      * Does a count for all the push message that have been submitted for the given PushApplication.
@@ -62,7 +58,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending);
+    List<FlatPushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending);
 
     /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
@@ -75,7 +71,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    List<PushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+    List<FlatPushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads paged push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
@@ -88,7 +84,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+//    MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads paged push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
@@ -100,10 +96,8 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      * @param pageSize the number of elements in the result.
      *
      * @return list of push message info objects
-     * @deprecated use the combination of <code>findAllForPushApplicationByParams</code> and <code>findMessageMetricsForPushApplicationByParams</code>
      */
-    @Deprecated
-    PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+//    PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends
@@ -122,7 +116,7 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
      *
      * @return list of push message info objects
      */
-    List<PushMessageInformation> findLatestActivity(String loginName, int maxResults);
+    List<FlatPushMessageInformation> findLatestActivity(String loginName, int maxResults);
 
     /**
      * Delete all Push Message Information entries that are older than the given date
@@ -133,6 +127,6 @@ public interface PushMessageInformationDao extends GenericBaseDao<PushMessageInf
 
     //Admin queries
     List<String> findVariantIDsWithWarnings();
-    List<PushMessageInformation> findLatestActivity(int maxResults);
+    List<FlatPushMessageInformation> findLatestActivity(int maxResults);
     long getNumberOfPushMessagesForApplications();
 }
