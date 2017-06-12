@@ -18,9 +18,12 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
@@ -71,28 +74,29 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
                 .setParameter("variantID", variantID).getSingleResult();
     }
 
-//    public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
-//        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(totalReceivers), sum(appOpenCounter)) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
-//        if (search != null) {
-//            metricsJPQL += " AND pmi.rawJsonMessage LIKE :search";
-//        }
-//
-//        final Query metricsQuery = createUntypedQuery(metricsJPQL).setParameter("pushApplicationId", pushApplicationId);
-//        if (search != null) {
-//            metricsQuery.setParameter("search", "%" + search + "%");
-//        }
-//
-//        return (MessageMetrics) metricsQuery.getSingleResult();
-//    }
+    @Override
+    public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(totalReceivers), sum(appOpenCounter)) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+        if (search != null) {
+            metricsJPQL += " AND pmi.rawJsonMessage LIKE :search";
+        }
 
-//    @Override
-//    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
-//
-//        final List<PushMessageInformation> pushMessageInformationList = findAllForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
-//        final MessageMetrics messageMetrics = findMessageMetricsForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
-//
-//        return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList,  messageMetrics);
-//    }
+        final Query metricsQuery = createUntypedQuery(metricsJPQL).setParameter("pushApplicationId", pushApplicationId);
+        if (search != null) {
+            metricsQuery.setParameter("search", "%" + search + "%");
+        }
+
+        return (MessageMetrics) metricsQuery.getSingleResult();
+    }
+
+    @Override
+    public PageResult<FlatPushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+
+        final List<FlatPushMessageInformation> pushMessageInformationList = findAllForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
+        final MessageMetrics messageMetrics = findMessageMetricsForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
+
+        return new PageResult<>(pushMessageInformationList,  messageMetrics);
+    }
 
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {

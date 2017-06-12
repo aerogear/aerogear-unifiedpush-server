@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.dao;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 
 import java.util.Date;
 import java.util.List;
@@ -84,7 +85,7 @@ public interface FlatPushMessageInformationDao extends GenericBaseDao<FlatPushMe
      *
      * @return list of push message info objects
      */
-//    MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+    MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Loads paged push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
@@ -97,7 +98,7 @@ public interface FlatPushMessageInformationDao extends GenericBaseDao<FlatPushMe
      *
      * @return list of push message info objects
      */
-//    PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
+    PageResult<FlatPushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize);
 
     /**
      * Filters those variantIDs where the variant shows errors/issues for previous message sends

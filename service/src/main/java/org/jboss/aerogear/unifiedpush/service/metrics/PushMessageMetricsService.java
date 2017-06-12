@@ -133,7 +133,7 @@ public class PushMessageMetricsService {
      * @return the number of message for the given push application
      */
     public long countMessagesForPushApplication(String pushApplicationId) {
-        return pushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
+        return flatPushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
     }
 
     /**
@@ -144,7 +144,7 @@ public class PushMessageMetricsService {
      * @return the number of message for the given variant
      */
     public long countMessagesForVariant(String variantID) {
-        return pushMessageInformationDao.getNumberOfPushMessagesForVariant(variantID);
+        return flatPushMessageInformationDao.getNumberOfPushMessagesForVariant(variantID);
     }
 
     /**
@@ -154,6 +154,15 @@ public class PushMessageMetricsService {
     public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
+    }
+
+    /**
+     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
+     *  <i>older</i> than 30 days!
+     */
+    public void deleteOutdatedFlatPushInformationData() {
+        final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
+        flatPushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
 
     public FlatPushMessageInformation getPushMessageInformation(String id) {
