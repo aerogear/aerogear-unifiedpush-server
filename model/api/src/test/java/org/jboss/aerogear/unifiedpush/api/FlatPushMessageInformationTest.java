@@ -46,13 +46,8 @@ public class FlatPushMessageInformationTest {
 
 
         // two involved variants:
-        VariantErrorStatus variantInfo1 = new VariantErrorStatus();
-        variantInfo1.setVariantID("345");
-        variantInfo1.setErrorReason("Some error");
-
-        VariantErrorStatus variantInfo2 = new VariantErrorStatus();
-        variantInfo2.setVariantID("678");
-        variantInfo2.setErrorReason("Some other failure");
+        VariantErrorStatus variantInfo1 = new VariantErrorStatus(pushMessageInformation.getId(), "345", "Some error");
+        VariantErrorStatus variantInfo2 = new VariantErrorStatus(pushMessageInformation.getId(), "678", "Some other failure");
 
         // add the variant metadata:
         pushMessageInformation.getErrors().add(variantInfo1);
