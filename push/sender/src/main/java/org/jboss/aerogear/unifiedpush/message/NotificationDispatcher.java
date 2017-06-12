@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
@@ -41,8 +40,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
- *
- * and generates metrics that are sent for further processing to {@link MetricsCollector}.
  */
 @Stateless
 public class NotificationDispatcher {
@@ -57,15 +54,9 @@ public class NotificationDispatcher {
     @DispatchToQueue
     private Event<VariantMetricInformation> dispatchVariantMetricEvent;
 
-    @Inject
-    @DispatchToQueue
-    private Event<TriggerVariantMetricCollectionEvent> triggerVariantMetricCollection;
-
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
      * the push notifications are submitted to.
-     *
-     * Once the sending process finishes, generates message for {@link MetricsCollector} with information how much devices was the notification submitted to.
      *
      * @param msg object containing details about the payload and the related device tokens
      */
@@ -100,33 +91,22 @@ public class NotificationDispatcher {
         @Override
         public void onSuccess() {
             logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
-            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
 
         @Override
         public void onError(final String reason) {
             logger.warn(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
-            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.FALSE, reason);
+            updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), Boolean.FALSE, reason);
         }
     }
 
-    /**
-     * Helpers to update the given {@link PushMessageInformation} with a {@link VariantMetricInformation} object
-     */
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus) {
-        this.updateStatusOfPushMessageInformation(pushMessageInformation, variantID, receivers, deliveryStatus, null);
-    }
-
-    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
-        variantMetricInformation.setPushMessageInformation(pushMessageInformation);
         variantMetricInformation.setVariantID(variantID);
-        variantMetricInformation.setReceivers(Long.valueOf(receivers));
         variantMetricInformation.setDeliveryStatus(deliveryStatus);
         variantMetricInformation.setReason(reason);
-        variantMetricInformation.setServedBatches(1);
+        variantMetricInformation.setPushMessageInformation(pushMessageInformation);
 
         dispatchVariantMetricEvent.fire(variantMetricInformation);
-        triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(pushMessageInformation.getId(), variantID));
     }
 }
