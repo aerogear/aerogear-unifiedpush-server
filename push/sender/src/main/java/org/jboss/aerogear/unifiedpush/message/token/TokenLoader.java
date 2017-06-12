@@ -30,9 +30,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
@@ -96,7 +95,7 @@ public class TokenLoader {
      * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
      *
-     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event) that helps {@link MetricsCollector} to track how many batches were loaded.
+     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event).
      * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
@@ -107,7 +106,7 @@ public class TokenLoader {
         final Collection<Variant> variants = msg.getVariants();
         final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
         final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
-        final PushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
+        final FlatPushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
         int serialId = msg.getLastSerialId();
 
         logger.debug("Received message from queue: {}", message.getMessage().getAlert());
@@ -213,11 +212,6 @@ public class TokenLoader {
                         } else {
                             logger.warn("Check your push query: Not a single token was loaded from the DB!");
                         }
-
-                        VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
-                        variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
-                        variantMetricInformation.setVariantID(variant.getVariantID());
-                        variantMetricInformation.setDeliveryStatus(Boolean.TRUE);
                     }
                 }
             } catch (ResultStreamException e) {

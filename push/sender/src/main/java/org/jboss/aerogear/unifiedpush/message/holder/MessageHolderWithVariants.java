@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -53,7 +53,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder {
      * @param variantType variant type info
      * @param variants list of effected variants
      */
-    public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
+    public MessageHolderWithVariants(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants) {
         this(pushMessageInformation, unifiedPushMessage, variantType, variants, INITIAL_SERIAL_ID, null);
     }
 
@@ -67,7 +67,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder {
      * @param lastSerialId last id from previous batch
      * @param lastTokenFromPreviousBatch last token from previous stream
      */
-    public MessageHolderWithVariants(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {
+    public MessageHolderWithVariants(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {
         super(pushMessageInformation, unifiedPushMessage);
         this.variantType = variantType;
         this.variants = new ArrayList<>(variants);

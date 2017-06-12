@@ -21,12 +21,21 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Test;
+<<<<<<< HEAD
+
+import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
+=======
 import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
+public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
 
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
@@ -47,16 +56,41 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     @Test
     public void updateAnalyticsTest() {
+<<<<<<< HEAD
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(), "321");
+        PushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+=======
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
         FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
         assertThat(updatedPushInformation.getAppOpenCounter()).isEqualTo(1);
 
+<<<<<<< HEAD
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(), "321");
+        PushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+=======
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
         FlatPushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
     }
 
     @Test
+<<<<<<< HEAD
+    public void deleteAnalyticsTest() {
+
+        assertThat(pushMessageMetricsService.countMessagesForVariant("321")).isEqualTo(1);
+
+        System.setProperty(PushMessageMetricsService.AEROGEAR_METRICS_STORAGE_MAX_DAYS, "0");
+
+        // delete all
+        pushMessageMetricsService.deleteOutdatedPushInformationData();
+
+        assertThat(pushMessageMetricsService.countMessagesForVariant("321")).isZero();
+
+    }
+}
+=======
     public void errorCounter() {
 //        pushMessageMetricsService.appendError(pushMessageInformation, "321", "Big failure");
         pushMessageMetricsService.appendError(pushMessageInformation, "321", "Really big failure");
@@ -71,5 +105,5 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
                         tuple(updatedPushInformation.getId() + ":321", "321", "Really big failure" )
                 );
     }
-
 }
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model

@@ -29,7 +29,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.MockProviders;
@@ -63,7 +63,7 @@ public class TestMessageRedelivery {
     }
 
     private UnifiedPushMessage message;
-    private PushMessageInformation information;
+    private FlatPushMessageInformation information;
     private Variant variant;
     private Collection<String> deviceTokens;
 
@@ -79,7 +79,7 @@ public class TestMessageRedelivery {
 
     @Before
     public void setUp() {
-        information = new PushMessageInformation();
+        information = new FlatPushMessageInformation();
         message = new UnifiedPushMessage();
         deviceTokens = new ArrayList<>();
     }

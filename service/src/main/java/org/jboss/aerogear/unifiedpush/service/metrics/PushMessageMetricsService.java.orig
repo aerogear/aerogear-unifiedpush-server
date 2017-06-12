@@ -79,6 +79,14 @@ public class PushMessageMetricsService {
         return information;
     }
 
+<<<<<<< HEAD
+
+    /**
+     * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
+     *
+     * @param pushMessageInformation the push message info object
+     */
+=======
     public FlatPushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
         final FlatPushMessageInformation information = new FlatPushMessageInformation();
 
@@ -94,10 +102,19 @@ public class PushMessageMetricsService {
     }
 
     @Deprecated
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
     public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
         pushMessageInformationDao.update(pushMessageInformation);
     }
 
+<<<<<<< HEAD
+    /**
+     * Locks the push message information for updates so that there will be no updates concurrently
+     * @param pushMessageInformation push message information to lock
+     */
+    public void lock(PushMessageInformation pushMessageInformation) {
+        pushMessageInformationDao.lock(pushMessageInformation);
+=======
     public void updatePushMessageInformation(FlatPushMessageInformation pushMessageInformation) {
         flatPushMessageInformationDao.update(pushMessageInformation);
     }
@@ -109,6 +126,7 @@ public class PushMessageMetricsService {
     public void appendError(final FlatPushMessageInformation pushMessageInformation, final String variantID, final String errorMessage) {
         final VariantErrorStatus ves = new VariantErrorStatus(pushMessageInformation.getId() , variantID, errorMessage);
         pushMessageInformation.getErrors().add(ves);
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
     }
 
     /**
@@ -180,7 +198,11 @@ public class PushMessageMetricsService {
 //            variantMetricInformation.incrementVariantOpenCounter();
 //            variantMetricInformationDao.update(variantMetricInformation);
 
+<<<<<<< HEAD
+            this.updatePushMessageInformation(pushMessageInformation);
+=======
 //            pushMessageInformationDao.update(pushMessageInformation);
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
         }
 
     }

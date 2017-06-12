@@ -16,6 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+<<<<<<< HEAD
+import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+=======
+import java.util.Collection;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
@@ -78,7 +91,11 @@ public class NotificationDispatcher {
         private final int tokenSize;
         private final FlatPushMessageInformation pushMessageInformation;
 
+<<<<<<< HEAD
+        SenderServiceCallback(Variant variant, int tokenSize, PushMessageInformation pushMessageInformation) {
+=======
         public SenderServiceCallback(Variant variant, int tokenSize, FlatPushMessageInformation pushMessageInformation) {
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
             this.variant = variant;
             this.tokenSize = tokenSize;
             this.pushMessageInformation = pushMessageInformation;
@@ -95,4 +112,17 @@ public class NotificationDispatcher {
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
         }
     }
+<<<<<<< HEAD
+
+    private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final Boolean deliveryStatus, final String reason) {
+        final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
+        variantMetricInformation.setVariantID(variantID);
+        variantMetricInformation.setDeliveryStatus(deliveryStatus);
+        variantMetricInformation.setReason(reason);
+        variantMetricInformation.setPushMessageInformation(pushMessageInformation);
+
+        dispatchVariantMetricEvent.fire(variantMetricInformation);
+    }
+=======
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
 }

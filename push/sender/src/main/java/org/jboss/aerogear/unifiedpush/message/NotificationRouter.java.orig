@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,14 +34,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
@@ -110,6 +106,7 @@ public class NotificationRouter {
             jsonMessageContent = message.toMinimizedJsonString();
         }
 
+/*
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
@@ -117,6 +114,9 @@ public class NotificationRouter {
                         message.getIpAddress(),
                         message.getClientIdentifier(),
                         variants.getVariantCount()
+<<<<<<< HEAD
+                        );
+=======
                 );
 */
         final FlatPushMessageInformation pushMessageInformation =
@@ -126,6 +126,7 @@ public class NotificationRouter {
                         message.getIpAddress(),
                         message.getClientIdentifier()
                 );
+>>>>>>> 2df0ec49... Fixing some services, for storing the new model
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)
         variants.forEach((variantType, variant) -> {
