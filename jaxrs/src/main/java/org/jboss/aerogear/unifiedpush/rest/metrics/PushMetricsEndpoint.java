@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 import com.qmino.miredot.annotations.ReturnType;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -81,12 +82,17 @@ public class PushMetricsEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        PageResult<PushMessageInformation, MessageMetrics> pageResult =
-                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+        PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =
+                metricsService.findAllFlatsForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+
+
+//
+//        PageResult<PushMessageInformation, MessageMetrics> pageResult =
+//                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getAggregate().getCount())
-                .header("receivers", pageResult.getAggregate().getReceivers())
+                .header("receivers", "0")
                 .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
                 .build();
     }

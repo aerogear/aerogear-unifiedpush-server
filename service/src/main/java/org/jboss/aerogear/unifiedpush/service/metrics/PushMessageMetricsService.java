@@ -125,6 +125,10 @@ public class PushMessageMetricsService {
         return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
     }
 
+    public PageResult<FlatPushMessageInformation, MessageMetrics> findAllFlatsForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
+        return flatPushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
+    }
+
     /**
      * Returns number of push messages for given push application ID
      *
