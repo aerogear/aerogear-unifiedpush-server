@@ -76,7 +76,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
 
     @Override
     public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
-        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(totalReceivers), sum(appOpenCounter)) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(appOpenCounter)) from FlatPushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
         if (search != null) {
             metricsJPQL += " AND pmi.rawJsonMessage LIKE :search";
         }

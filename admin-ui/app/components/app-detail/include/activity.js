@@ -46,9 +46,6 @@ angular.module('upsConsole')
               console.log('failed to parse metric');
               metric.$message = {};
             }
-            metric.variantInformations.forEach(function( variantInformation ) {
-              variantInformation.$variant = getVariantByID( variantInformation.variantID );
-            });
           });
         });
     }

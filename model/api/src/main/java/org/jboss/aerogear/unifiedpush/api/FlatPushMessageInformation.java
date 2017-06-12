@@ -23,7 +23,8 @@ import java.util.Set;
 
 public class FlatPushMessageInformation extends BaseModel {
 
-    // like currently:
+    private static final long serialVersionUID = -1L;
+
     @NotNull
     private String pushApplicationId;
 
