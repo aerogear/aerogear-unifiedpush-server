@@ -77,4 +77,21 @@ public class VariantErrorStatus {
     public FlatPushMessageInformation getPushMessageInformation() {
         return pushMessageInformation;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final VariantErrorStatus that = (VariantErrorStatus) o;
+
+        return pushMessageVariantId != null ? pushMessageVariantId.equals(that.pushMessageVariantId) : that.pushMessageVariantId == null;
+    }
+
+      @Override
+      public int hashCode() {
+          return pushMessageVariantId != null ? pushMessageVariantId.hashCode() : 0;
+      }
+
 }
