@@ -59,42 +59,6 @@
         </row>
     </table>
 
-    <table name="SA.VARIANT_ERROR_STATUS">
-        <column>push_message_variant_id</column>
-        <column>error_reason</column>
-        <column>variant_id</column>
-        <column>push_job_id</column>
-        <row>
-            <value>1:213</value>
-            <value>FAILED</value>
-            <value>213</value>
-            <value>1</value>
-        </row>
-        <row>
-            <value>2:231543432432</value>
-            <value>FAILED</value>
-            <value>231543432432</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>2:23154343243333</value>
-            <value>FAILED</value>
-            <value>23154343243333</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>2:231543432434</value>
-            <value>FAILED</value>
-            <value>231543432434</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>3:231543432432</value>
-            <value>FAILED</value>
-            <value>231543432432</value>
-            <value>3</value>
-        </row>
-    </table>
 
 
     <table name="SA.VARIANT">
@@ -153,4 +117,42 @@
     <table name="SA.SIMPLE_PUSH_VARIANT"/>
     <table name="SA.INSTALLATION"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
+
+    <table name="SA.VARIANT_ERROR_STATUS">
+        <column>push_message_variant_id</column>
+        <column>error_reason</column>
+        <column>variant_id</column>
+        <column>push_job_id</column>
+        <row>
+            <value>1:213</value>
+            <value>FAILED</value>
+            <value>4</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2:231543432432</value>
+            <value>FAILED</value>
+            <value>1</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2:23154343243333</value>
+            <value>FAILED</value>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2:231543432434</value>
+            <value>FAILED</value>
+            <value>3</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>3:231543432432</value>
+            <value>FAILED</value>
+            <value>1</value>
+            <value>3</value>
+        </row>
+    </table>
+
 </dataset>
