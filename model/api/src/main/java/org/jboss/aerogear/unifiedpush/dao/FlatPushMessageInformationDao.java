@@ -43,15 +43,6 @@ public interface FlatPushMessageInformationDao extends GenericBaseDao<FlatPushMe
     long getNumberOfPushMessagesForPushApplication(String pushApplicationId);
 
     /**
-     * Counts push messages for given variant ID
-     *
-     * @param variantID the variant ID
-     *
-     * @return number of push messages
-     */
-    long getNumberOfPushMessagesForVariant(String variantID);
-
-    /**
      * Loads all push message metadata objects for the given PushApplication, but offers a way to order (asc/desc) by date.
      *
      * @param pushApplicationId ID of the PushApplication
