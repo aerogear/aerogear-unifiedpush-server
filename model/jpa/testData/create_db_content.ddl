@@ -98,7 +98,7 @@ CREATE TABLE flat_push_message_info (
 CREATE TABLE variant_error_status (
   push_message_variant_id VARCHAR(255) NOT NULL,
   error_reason VARCHAR(255) NOT NULL,
-  variant_id VARCHAR(31)  NOT NULL,
+  variant_id VARCHAR(255)  NOT NULL,
   push_job_id VARCHAR(255) NOT NULL,
   PRIMARY KEY (push_message_variant_id),
   FOREIGN KEY (push_job_id) REFERENCES flat_push_message_info (id),
