@@ -82,6 +82,29 @@ CREATE TABLE push_message_info (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE flat_push_message_info (
+  id                VARCHAR(255) NOT NULL,
+  push_application_id VARCHAR(255) NOT NULL,
+  raw_json_message    VARCHAR(4500) DEFAULT NULL,
+  ip_address         VARCHAR(255)  DEFAULT NULL,
+  client_identifier  VARCHAR(255)  DEFAULT NULL,
+  submit_date        DATE          DEFAULT NULL,
+  app_open_counter    BIGINT      DEFAULT 0,
+  first_open_date     DATE          DEFAULT NULL,
+  last_open_date      DATE          DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE variant_error_status (
+  push_message_variant_id VARCHAR(255) NOT NULL,
+  error_reason VARCHAR(255) NOT NULL,
+  variant_id VARCHAR(31)  NOT NULL,
+  push_job_id VARCHAR(255) NOT NULL,
+  PRIMARY KEY (push_message_variant_id),
+  FOREIGN KEY (push_job_id) REFERENCES flat_push_message_info (id),
+  FOREIGN KEY (variant_id) REFERENCES variant (id)
+);
+
 CREATE TABLE variant_metric_info (
   id                     VARCHAR(255) NOT NULL,
   delivery_status         BOOLEAN      DEFAULT NULL,
