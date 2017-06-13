@@ -141,17 +141,6 @@ public class PushMessageMetricsService {
     }
 
     /**
-     * Returns number of push messages for given variant ID
-     *
-     * @param variantID the variant ID
-     *
-     * @return the number of message for the given variant
-     */
-    public long countMessagesForVariant(String variantID) {
-        return flatPushMessageInformationDao.getNumberOfPushMessagesForVariant(variantID);
-    }
-
-    /**
      *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
      *  <i>older</i> than 30 days!
      */
