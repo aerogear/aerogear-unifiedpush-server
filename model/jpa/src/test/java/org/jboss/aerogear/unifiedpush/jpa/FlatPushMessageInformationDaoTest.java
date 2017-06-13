@@ -181,12 +181,6 @@ public class FlatPushMessageInformationDaoTest {
     }
 
     @Test
-    public void countMessagesPerVariant() {
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432432")).isEqualTo(2);
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432434")).isEqualTo(1);
-    }
-
-    @Test
     public void findMostBusyVariants() {
         List<FlatPushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
@@ -215,7 +209,7 @@ public class FlatPushMessageInformationDaoTest {
         final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings();
 
         assertThat(variantIDsWithWarnings).hasSize(4);
-        assertThat(variantIDsWithWarnings).contains("213", "231543432432", "23154343243333", "231543432434");
+        assertThat(variantIDsWithWarnings).contains("1", "2", "3", "4");
     }
 
     @Test
@@ -224,7 +218,7 @@ public class FlatPushMessageInformationDaoTest {
         final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings("dude");
 
         assertThat(variantIDsWithWarnings).hasSize(1);
-        assertThat(variantIDsWithWarnings).containsOnly("213");
+        assertThat(variantIDsWithWarnings).containsOnly("4");
     }
 
 //    @Test

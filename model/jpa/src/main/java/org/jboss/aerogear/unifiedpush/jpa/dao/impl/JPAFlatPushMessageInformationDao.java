@@ -67,13 +67,6 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
                 .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
     }
 
-    // TODO: this is still possible/needed??? ?
-    @Override
-    public long getNumberOfPushMessagesForVariant(String variantID) {
-        return createQuery("select count(*) from VariantErrorStatus vmi where vmi.variantID = :variantID", Long.class)
-                .setParameter("variantID", variantID).getSingleResult();
-    }
-
     @Override
     public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
         String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(appOpenCounter)) from FlatPushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
@@ -107,11 +100,11 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi, Variant va " +
-                " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
-                " and vmi.deliveryStatus = false", String.class)
-                .setParameter("developer", loginName)
-                .getResultList();
+
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi " +
+            " WHERE vmi.variant.developer = :developer)", String.class)
+            .setParameter("developer", loginName)
+            .getResultList();
     }
 
     @Override
