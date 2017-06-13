@@ -20,6 +20,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -35,24 +38,18 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -217,7 +214,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
-                           @Context HttpServletRequest request) {
+                           @Context HttpServletRequest request) throws IOException {
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
@@ -225,7 +222,19 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
 
-        //let's do update the analytics
+        // /resources/kafka/producer.props
+        try (InputStream props = new FileInputStream(this.getClass().getResourceAsStream("/path/to/properties")) {
+            Properties properties = new Properties();
+            properties.load(props);
+
+            if (pushMessageId != null) {
+                Producer<String, String> producer = new KafkaProducer<>(properties);
+                producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
+                producer.close();
+            }
+        }
+
+        // let's do update the analytics
         if (pushMessageId != null) {
             metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
         }
