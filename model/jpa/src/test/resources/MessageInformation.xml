@@ -161,4 +161,6 @@
     <table name="SA.SIMPLE_PUSH_VARIANT"/>
     <table name="SA.INSTALLATION"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
+    <table name="SA.FLAT_PUSH_MESSAGE_INFO" />
+    <table name="SA.VARIANT_ERROR_STATUS" />
 </dataset>

@@ -129,4 +129,7 @@
     </table>
     <table name="SA.CATEGORY"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
+    <table name="SA.FLAT_PUSH_MESSAGE_INFO" />
+    <table name="SA.VARIANT_ERROR_STATUS" />
+
 </dataset>
