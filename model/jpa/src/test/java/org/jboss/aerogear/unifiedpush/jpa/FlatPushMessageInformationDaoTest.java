@@ -221,7 +221,16 @@ public class FlatPushMessageInformationDaoTest {
         assertThat(variantIDsWithWarnings).containsOnly("4");
     }
 
-//    @Test
+    @Test
+    public void findVariantIDsWithWarningsForKalle() {
+        // all warnings:
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings("kalle");
+
+        assertThat(variantIDsWithWarnings).isNotNull();
+        assertThat(variantIDsWithWarnings).isEmpty();
+    }
+
+    //    @Test
 //    public void ascendingDateOrdering() {
 //
 //        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
