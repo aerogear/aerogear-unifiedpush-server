@@ -142,8 +142,8 @@ angular.module('upsConsole')
         allVariants: '='
       },
       restrict: 'E',
-      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, pushConfigGenerator ) {
-        $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, pushConfigGenerator, gettextCatalog ) {
+        $scope.clipText = $sce.trustAsHtml(gettextCatalog.getString('Copy to clipboard'));
         $scope.contextPath = ContextProvider.contextPath();
         $scope.typeEnum = {
           android:      { name: 'Android',    snippets: ['android', 'cordova', 'titanium', 'push_config'] },
@@ -170,9 +170,9 @@ angular.module('upsConsole')
           return $scope.snippets[$scope.state.activeSnippet].source;
         };
         $scope.copied = function() {
-          $scope.clipText = 'Copied!';
+          $scope.clipText = gettextCatalog.getString('Copied!');
           $timeout(function() {
-            $scope.clipText = 'Copy to clipboard';
+            $scope.clipText = gettextCatalog.getString('Copy to clipboard');
           }, 1000);
         };
         $scope.cordovaVariantType = (function() {
@@ -191,34 +191,34 @@ angular.module('upsConsole')
     };
   })
 
-  .factory('senderSnippets', function() {
+  .factory('senderSnippets', function(gettext) {
     return {
       java: {
         url: 'snippets/senders/sender.java',
         show: true,
         text: {
-          before: '<p>First add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.</p>' +
-                  '<p>Then use the following snippet in your Java code to enable push notification sending.</p>',
-          after:  '<p>Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.</p>' +
-                  '<p>If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.</p>'
+          before: '<p translate>' + gettext('First add <code>unifiedpush-java-client.jar</code> as a <a ups-doc="sender-downloads-java">dependency to your Java project</a>.') + '</p>' +
+                  '<p translate>' + gettext('Then use the following snippet in your Java code to enable push notification sending.') + '</p>',
+          after:  '<p translate>' + gettext('Read more on the details of the <a ups-doc="sender-api-java">Java UPS Sender API in documentation</a>.') + '</p>' +
+                  '<p translate>' + gettext('If you have questions about this process, <a ups-doc="sender-step-by-step-java">visit the documentation for full step by step explanation</a>.') + '</p>'
         }
       },
       nodejs: {
         url: 'snippets/senders/sender-nodejs.js',
         show: true,
         text: {
-          before: '<p>First download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.</p>' +
-                  '<p>Then use the following snippet in your Node.js code to enable push notification sending.</p>',
-          after:  '<p>Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.</p>'
+          before: '<p translate>' + gettext('First download add <code>unifiedpush-node-sender</code> as a <a ups-doc="sender-downloads-nodejs">dependency to your project</a>.') + '</p>' +
+                  '<p translate>' + gettext('Then use the following snippet in your Node.js code to enable push notification sending.') + '</p>',
+          after:  '<p translate>' + gettext('Read more on the details of the <a ups-doc="sender-api-nodejs">Node.js UPS Sender API in documentation</a>.') + '</p>'
         }
       },
       curl: {
         url: 'snippets/senders/sender-curl.sh',
         show: true,
         text: {
-          before: '<p>If none of the official client libs suit you or you just want to simply try out the notification sending, you can use the REST API directly.</p>' +
-                  '<p>Run the following <code>curl</code> command in a shell to send a notification to UPS server.</p>',
-          after:  '<p>Read more about the <a ups-doc="sender-api-rest">UPS REST Sender API in the documentation</a>.</p>'
+          before: '<p translate>' + gettext('If none of the official client libs suit you or you just want to simply try out the notification sending, you can use the REST API directly.') + '</p>' +
+                  '<p translate>' + gettext('Run the following <code>curl</code> command in a shell to send a notification to UPS server.') + '</p>',
+          after:  '<p translate>' + gettext('Read more about the <a ups-doc="sender-api-rest">UPS REST Sender API in the documentation</a>.') + '</p>'
         }
       }
     };
@@ -232,9 +232,9 @@ angular.module('upsConsole')
         app: '=',
         activeSnippet: '@'
       },
-      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, senderSnippets ) {
+      controller: function( $scope, ContextProvider, SnippetRetriever, $sce, $interpolate, $timeout, senderSnippets, gettextCatalog ) {
 
-        $scope.clipText = $sce.trustAsHtml('Copy to clipboard');
+        $scope.clipText = $sce.trustAsHtml(gettextCatalog.getString('Copy to clipboard'));
         $scope.contextPath = ContextProvider.contextPath();
         $scope.snippets = senderSnippets;
         function renderSnippets() {
@@ -253,9 +253,9 @@ angular.module('upsConsole')
           return $scope.snippets[$scope.activeSnippet].source;
         };
         $scope.copied = function() {
-          $scope.clipText = 'Copied!';
+          $scope.clipText = gettextCatalog.getString('Copied!');
           $timeout(function() {
-            $scope.clipText = 'Copy to clipboard';
+            $scope.clipText = gettextCatalog.getString('Copy to clipboard');
           }, 1000);
         };
         $scope.$watch('app.masterSecret', function() {

@@ -5,9 +5,9 @@
 
       <div class="page-header page-header-bleed-right">
         <div class="actions pull-right">
-          <a ng-link="welcome" class="btn btn-primary ups-create-app-btn"><span class="pficon pficon-add"></span> Create Application</a>
+          <a ng-link="welcome" class="btn btn-primary ups-create-app-btn"><span class="pficon pficon-add"></span> <span translate>Create Application</span></a>
         </div>
-        <h1>Applications</h1>
+        <h1 translate>Applications</h1>
       </div>
 
       <div class="ups-sub-header">
@@ -32,8 +32,8 @@
         <li class="media" ng-repeat="app in home.apps">
           <div class="actions">
             <ul class="list-inline">
-              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> Edit name</a></li>
-              <li class="danger"><a href="#" ng-click="home.deleteApp( app )"><span class="pficon pficon-delete"></span> Delete</a></li>
+              <li><a href ng-click="home.changeName(app)"><span class="pficon pficon-edit"></span> <span translate>Edit name</span></a></li>
+              <li class="danger"><a href="#" ng-click="home.deleteApp( app )"><span class="pficon pficon-delete"></span> <span translate>Delete</span></a></li>
             </ul>
           </div>
 
@@ -46,10 +46,10 @@
 
               <h2 class="media-heading">{{ app.name }} <small></small></h2>
               <ul class="list-inline">
-                <li><span class="pficon pficon-user"></span> created by  <strong>{{ app.developer }}</strong></li>
-                <li><i class="fa fa-code-fork"></i> <ups-pluralize noun="variant" count="app.variants.length"></ups-pluralize></li>
-                <li><span class="pficon pficon-messages"></span> <ups-pluralize noun="message" count="app.$messageCount"></ups-pluralize> sent</li>
-                <li><i class="fa fa-mobile"></i> <ups-pluralize noun="device" count="app.$deviceCount"></ups-pluralize> registered</li>
+                <li><span class="pficon pficon-user"></span> <span translate>created by  <strong>{{ app.developer }}</strong></span></li>
+                <li><i class="fa fa-code-fork"></i> <span class="count">{{ app.variants.length }}</span><span translate translate-n="app.variants.length" translate-plural="variants">variant</span></li>
+                <li><span class="pficon pficon-messages"></span> <span class="count">{{ app.$messageCount }}</span><span translate translate-n="app.$messageCount" translate-plural="messages">message</span></li>
+                <li><i class="fa fa-mobile"></i> <span class="count">{{ app.$deviceCount }}</span><span translate translate-n="app.$deviceCount" translate-plural="devices">device</span></li>
               </ul>
 
             </div>
@@ -75,17 +75,17 @@
     <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
-        <h2 class="h5">General Statistics</h2>
+        <h2 class="h5" translate>General Statistics</h2>
       </div>
       <ul class="list-unstyled ups-statistics">
-        <li><ups-pluralize noun="App" count="app.stats.applications"></ups-pluralize></li>
-        <li><span class="count">{{ app.stats.messages }}</span>Messages</li>
-        <li><ups-pluralize noun="Device" count="app.stats.devices"></ups-pluralize></li>
+        <li><span class="count">{{ app.stats.applications }}</span><span translate translate-n="app.stats.applications" translate-plural="Apps">App</span></li>
+        <li><span class="count">{{ app.stats.messages }}</span><span translate translate-n="app.stats.messages" translate-plural="Messages">Message</span></li>
+        <li><span class="count">{{ app.stats.devices }}</span><span translate translate-n="app.stats.devices" translate-plural="Devices">Device</span></li>
       </ul>
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right"
            ng-if="app.stats.messages">
-        <h2 class="h5">Latest Notifications</h2>
+        <h2 class="h5" translate>Latest Notifications</h2>
       </div>
       <div class="list-group" ng-if="app.stats.messages">
         <a ng-link="appDetail({app: notification.id, tab: 'variants'})" class="list-group-item" ng-repeat="notification in home.topNotifications | limitTo:4">

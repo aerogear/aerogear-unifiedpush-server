@@ -3,13 +3,13 @@
     <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title">Export Installations </h4>
+    <h4 class="modal-title" translate>Export Installations </h4>
   </div>
   <div class="modal-body">
-    <b>{{ variant.$deviceCount }}</b> installations will be exported.
+    <b>{{ variant.$deviceCount }}</b> <span translate>installations will be exported.</span>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary text-left" ng-click="confirm()">Export</button>
-    <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+    <button type="button" class="btn btn-primary text-left" ng-click="confirm()" translate>Export</button>
+    <button type="button" class="btn btn-default" ng-click="dismiss()" translate>Cancel</button>
   </div>
 </div>

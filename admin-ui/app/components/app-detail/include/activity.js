@@ -1,11 +1,11 @@
 angular.module('upsConsole')
-  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
+  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint, gettextCatalog ) {
 
     var self = this;
 
-    this.TOOLTIP_PENDING = "Payload is being submitted";
-    this.TOOLTIP_SUCCESS = "Payload submitted to 3rd party push network for further processing";
-    this.TOOLTIP_FAIL = "Could not submit payload to 3rd party";
+    this.TOOLTIP_PENDING = gettextCatalog.getString("Payload is being submitted");
+    this.TOOLTIP_SUCCESS = gettextCatalog.getString("Payload submitted to 3rd party push network for further processing");
+    this.TOOLTIP_FAIL = gettextCatalog.getString("Could not submit payload to 3rd party");
 
     this.app = $scope.$parent.$parent.appDetail.app;
     this.metrics = [];

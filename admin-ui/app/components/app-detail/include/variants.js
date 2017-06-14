@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter, allowCreateVariant, allVariantTypes ) {
+  .controller('VariantsController', function ( $http, $rootScope, $modal, variantModal, $scope, variantsEndpoint, exporterEndpoint, importerEndpoint, Notifications, ErrorReporter, allowCreateVariant, allVariantTypes, gettextCatalog ) {
 
     var self = this;
 
@@ -38,10 +38,10 @@ angular.module('upsConsole')
           self.app.variants.push( variant );
           variant.$toggled = true;
           self.byType = splitByType( self.app.variants );
-          Notifications.success('Variant ' + variant.name + ' successfully created');
+          Notifications.success(gettextCatalog.getString('Variant {{name}} successfully created', {name: variant.name}));
         })
         .catch(function(e) {
-          ErrorReporter.error(e, 'Failed to create variant');
+          ErrorReporter.error(e, gettextCatalog.getString('Failed to create variant'));
         });
     };
 
@@ -50,11 +50,11 @@ angular.module('upsConsole')
       return variantModal.edit( this.app, variantClone )
         .then(function( updatedVariant ) {
           angular.extend(variant, updatedVariant);
-          Notifications.success('Variant ' + variant.name + ' was successfully modified');
+          Notifications.success(gettextCatalog.getString('Variant {{name}} was successfully modified', {name: variant.name}));
         })
         .catch(function( e ) {
           if ( e != 'cancel' ) {
-            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, gettextCatalog.getString('Failed to modify variant {{name}}: {{error}}', {name: variant.name, error: e}));
           }
         });
     };
@@ -64,11 +64,11 @@ angular.module('upsConsole')
       return variantModal.editName( self.app, variantClone )
         .then(function( updatedVariant ) {
           angular.extend(variant, updatedVariant);
-          Notifications.success('The name of ' + variant.name + ' variant was successfully changed');
+          Notifications.success(gettextCatalog.getString('The name of {{name}} variant was successfully changed', {name: variant.name}));
         })
         .catch(function(e) {
           if ( e !== 'cancel' ) {
-            ErrorReporter.error(e, 'Failed to modify variant ' + variant.name + ': ' + e);
+            ErrorReporter.error(e, gettextCatalog.getString('Failed to modify variant {{name}}: {{error}}', {name: variant.name, error: e}));
           }
         });
     };
@@ -139,7 +139,7 @@ angular.module('upsConsole')
               hiddenElement.click();
 
               $modalInstance.close();
-              Notifications.success('Successfully exported installations');
+              Notifications.success(gettextCatalog.getString('Successfully exported installations'));
             });
           };
           $scope.dismiss = function() {
@@ -161,7 +161,7 @@ angular.module('upsConsole')
             $http.defaults.headers.common.Authorization = 'Basic ' + btoa(variant.variantID+
                 ':' + variant.secret);
             importerEndpoint.import(null, fd, function(){
-              Notifications.success('Import processing has started');
+              Notifications.success(gettextCatalog.getString('Import processing has started'));
               $modalInstance.close();
             });
           };

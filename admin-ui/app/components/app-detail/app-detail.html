@@ -3,29 +3,29 @@
     <div class="col-sm-8 col-md-9">
 
       <ol class="breadcrumb">
-        <li><a ng-link="href">Applications</a></li>
-        <li><strong>{{ appDetail.app.name }}:</strong> Variants</li>
+        <li><a ng-link="href" translate>Applications</a></li>
+        <li><strong>{{ appDetail.app.name }}:</strong> <span translate>Variants</span></li>
       </ol>
 
       <div class="ups-app-header">
         <div class="actions pull-right">
-          <button id="send-notification-btn" class="btn btn-default" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length"><i class="fa fa-paper-plane"></i> Send Notification to this app</button>
+          <button id="send-notification-btn" class="btn btn-default" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length"><i class="fa fa-paper-plane"></i> <span translate>Send Notification to this app</span></button>
         </div>
         <h1>{{ appDetail.app.name }}</h1>
       </div><!-- app header -->
 
       <ul class="nav nav-tabs">
         <li ng-class="{ active: appDetail.tab == 'analytics' }" ng-if="appDetail.app.variants.length">
-          <a id="analytics-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'analytics'})">Analytics</a>
+          <a id="analytics-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'analytics'})" translate>Analytics</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'variants' }">
-          <a id="variants-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})">Variants</a>
+          <a id="variants-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'variants'})" translate>Variants</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'sender' }" ng-if="appDetail.app.variants.length">
-          <a id="sender-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'sender'})">Sender API</a>
+          <a id="sender-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'sender'})" translate>Sender API</a>
         </li>
         <li ng-class="{ active: appDetail.tab == 'activity' }"  ng-if="appDetail.app.variants.length">
-          <a id="activity-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})">Activity log</a>
+          <a id="activity-tab" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})" translate>Activity log</a>
         </li>
       </ul>
 
@@ -39,18 +39,18 @@
     <div class="col-sm-4 col-md-3 sidebar-pf sidebar-pf-right">
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
-        <h2 class="h5">App Statistics</h2>
+        <h2 class="h5" translate>App Statistics</h2>
       </div>
       <ul class="list-unstyled ups-statistics">
-        <li id="stat-variant-count"><ups-pluralize noun="Variant" count="appDetail.app.variants.length"></ups-pluralize></li>
-        <li id="stat-message-count"><span class="count">{{ appDetail.app.$messageCount }}</span>Messages</li>
-        <li id="stat-device-count"><ups-pluralize noun="Device" count="appDetail.app.$deviceCount"></ups-pluralize></li>
+        <li id="stat-variant-count"><span class="count">{{ appDetail.app.variants.length }}</span><span translate translate-n="appDetail.app.variants.length" translate-plural="Variants">Variant</span></li>
+        <li id="stat-message-count"><span class="count">{{ appDetail.app.$messageCount }}</span><span translate translate-n="appDetail.app.$messageCount" translate-plural="Messages">Message</span></li>
+        <li id="stat-device-count"><span class="count">{{ appDetail.app.$deviceCount }}</span><span translate translate-n="appDetail.app.$deviceCount" translate-plural="Devices">Device</span></li>
       </ul>
 
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right"
            ng-if="appDetail.app.$messageCount">
-        <h2 class="h5">App Notifications</h2>
+        <h2 class="h5" translate>App Notifications</h2>
       </div>
       <div class="list-group" ng-if="appDetail.app.$messageCount">
         <a class="list-group-item" ng-repeat="notification in appDetail.notifications | limitTo:4">
@@ -58,7 +58,7 @@
           <p class="list-group-item-text">{{ notification.submitDate | date:'d MMM, H:mm:ss, yyyy' }}</p>
         </a>
       </div>
-      <p><a id="see-notifications" ng-hide="appDetail.tab == 'activity' || appDetail.app.$messageCount == 0" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})"><span class="pficon pficon-history"></span> See all notifications</a></p>
+      <p><a id="see-notifications" ng-hide="appDetail.tab == 'activity' || appDetail.app.$messageCount == 0" ng-link="appDetail({app: appDetail.app.pushApplicationID, tab: 'activity'})"><span class="pficon pficon-history"></span> <span translate>See all notifications</span></a></p>
     </div><!-- /col -->
 
   </div><!-- /row -->

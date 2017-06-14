@@ -17,7 +17,7 @@
 </ul>
 
 <div class="ups-snippet" ng-if="typeEnum[variant.type].snippets.length">
-  <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()">Copy</a>
+  <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()" translate>Copy</a>
   <!-- use both ng-if and ng-show prevents screen flickering caused by reinsertion of DOM parts, ng-if turns the invalid sample off to avoid DOM pollution -->
   <pre ng-bind="snippets.android.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('android') !== -1" ng-show="state.activeSnippet == 'android'"></pre>
   <pre ng-bind="snippets.cordova.source" class="pre-scrollable prettyprint" ng-if="typeEnum[variant.type].indexOf('cordova') !== -1" ng-show="state.activeSnippet == 'cordova'"></pre>

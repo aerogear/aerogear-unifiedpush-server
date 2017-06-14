@@ -7,3 +7,4 @@ dist
 app/bower-components
 app/bower_components
 npm-debug.log
+*~

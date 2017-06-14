@@ -1,23 +1,23 @@
 
 
-<p ng-if="variant.type == 'ios'">
+<p ng-if="variant.type == 'ios'" translate>
   Apple's Push Network (APNs) will be used.
   To learn more about APNs, visit our <a ups-doc="docs-push-ios">iOS</a>
   or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
-<p ng-if="variant.type == 'android'">
+<p ng-if="variant.type == 'android'" translate>
   Firebase's Cloud Messaging Network (FCM) will be used.
   To learn more about FCM, visit our <a ups-doc="docs-push-android">Android</a>, <a ups-doc="docs-push-chrome">Chrome</a> or <a ups-doc="docs-push-cordova">Apache Cordova</a> guides for push.
 </p>
-<p ng-if="variant.type == 'simplePush'">
+<p ng-if="variant.type == 'simplePush'" translate>
   A Server implementing the <em>SimplePush</em> protocol will be used.
   More information can be found in <a ups-doc="simplepush-protocol">SimplePush Protocol Draft</a>.
   The <a ups-doc="simplepush-quickstart">AeroGears' SimplePush Quickstart</a> also contains useful information.<br/>
 </p>
-<p ng-if="variant.type == 'adm'">Amazon's Device Messaging Network (ADM) will be used.
+<p ng-if="variant.type == 'adm'" translate>Amazon's Device Messaging Network (ADM) will be used.
   This is still experimental, the client SDK is not yet there.
 </p>
-<p ng-if="variant.type == 'windows_mpns'">Microsoft's Push Notification Service (MPNS) in Windows Phone will be used.
+<p ng-if="variant.type == 'windows_mpns'" translate>Microsoft's Push Notification Service (MPNS) in Windows Phone will be used.
   <i>This type of Push Network is deprecated and will be removed in future versions</i>.
 </p>
 
@@ -28,84 +28,84 @@
 -->
 
 <dl class="dl-horizontal">
-  <dt>Server URL:</dt>
+  <dt translate>Server URL:</dt>
   <dd class="server-url">{{ variantDetail.contextPath }}</dd>
-  <dt>Variant ID:</dt>
+  <dt translate>Variant ID:</dt>
   <dd class="variant-id">{{ variant.variantID }}</dd>
-  <dt>Variant Secret:</dt>
+  <dt translate>Variant Secret:</dt>
   <dd class="variant-secret">
     {{ variant.secret }}<br />
-    <button class="renew-variant-secret btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> Renew Variant Secret</button>
+    <button class="renew-variant-secret btn btn-sm btn-default" ng-click="variants.renewVariantSecret( variant )"><span class="pficon pficon-refresh"></span> <span translate>Renew Variant Secret</span></button>
   </dd>
 </dl>
 
 
 
 <dl class="dl-horizontal" ng-if="variant.type == 'android'">
-  <dt>Sender ID:</dt>
+  <dt translate>Sender ID:</dt>
   <dd class="project-number">{{ variant.projectNumber }}</dd>
-  <dt>Server Key:</dt>
+  <dt translate>Server Key:</dt>
   <dd class="google-key">
     {{ variant.googleKey }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> <span translate>Edit network options</span></button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'windows_mpns'">
-  <dt>Type:</dt>
+  <dt translate>Type:</dt>
   <dd>
-    Microsoft Push Notification Service<br />
+    <span translate>Microsoft Push Notification Service</span><br />
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'windows_wns'">
-  <dt>Type:</dt>
-  <dd>Windows Push Network</dd>
-  <dt>Package SID:</dt>
+  <dt translate>Type:</dt>
+  <dd translate>Windows Push Network</dd>
+  <dt translate>Package SID:</dt>
   <dd class="package-sid">{{ variant.sid }}</dd>
-  <dt>Client Secret:</dt>
+  <dt translate>Client Secret:</dt>
   <dd class="client-secret">
     {{ variant.clientSecret }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> <span translate>Edit network options</span></button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'ios'">
-  <dt>Type:</dt>
+  <dt translate>Type:</dt>
   <dd>
     {{ variant.production ? 'Production' : 'Development' }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> <span translate>Edit network options</span></button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'chrome'">
-  <dt>Client Id:</dt>
+  <dt translate>Client Id:</dt>
   <dd>{{ variant.clientId }}</dd>
-  <dt>Client Secret:</dt>
+  <dt translate>Client Secret:</dt>
   <dd>{{ variant.clientSecret }}</dd>
-  <dt>Refresh Token:</dt>
+  <dt translate>Refresh Token:</dt>
   <dd>
     {{ variant.refreshToken }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> <span translate>Edit network options</span></button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'adm'">
-  <dt>Client Id:</dt>
+  <dt translate>Client Id:</dt>
   <dd>{{ variant.clientId }}</dd>
-  <dt>Client Secret:</dt>
+  <dt translate>Client Secret:</dt>
   <dd>
     {{ variant.clientSecret }}<br />
-    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> Edit network options</button>
+    <button class="btn btn-sm btn-default" ng-click="variants.edit( variant )"><span class="fa fa-pencil"></span> <span translate>Edit network options</span></button>
   </dd>
 </dl>
 <dl class="dl-horizontal" ng-if="variant.type == 'simplePush'">
-  <dt>Network Type:</dt>
+  <dt translate>Network Type:</dt>
   <dd>
-    SimplePush<br/>
+    <span>SimplePush</span><br/>
   </dd>
 </dl>
 
 <ups-client-snippets variant="variant" all-variants="appDetail.app.variants" ng-if="variant.$deviceCount == 0 || variantDetail.forceShowSnippets"></ups-client-snippets>
 
 <p ng-if="variant.$deviceCount > 0">
-  This is a list of devices using this variant.
-  <a href ng-click="variantDetail.forceShowSnippets = true" ng-if="!variantDetail.forceShowSnippets">To see installation instructions and code snippet click here</a>
+  <span translate>This is a list of devices using this variant.</span>
+  <a href ng-click="variantDetail.forceShowSnippets = true" ng-if="!variantDetail.forceShowSnippets" translate>To see installation instructions and code snippet click here</a>
 </p>
 
 <div class="dataTables_wrapper no-footer" ng-if="variant.$deviceCount > 0">
@@ -113,7 +113,7 @@
     <div class="dataTables_filter">
       <label><input type="search" ng-model="variantDetail.searchString" ng-model-options="{debounce: 300}"></label>
     </div>
-    <div class="dataTables_info" role="status" aria-live="polite">
+    <div class="dataTables_info" role="status" aria-live="polite" translate>
       Showing <b>{{ variantDetail.currentStart }}</b> to <b>{{ variantDetail.currentEnd }}</b> of <b>{{ variantDetail.totalCount }}</b> Devices
     </div>
   </div>
@@ -122,11 +122,11 @@
     <table class="datatable table table-striped table-bordered" pf-datatable>
       <thead>
       <tr>
-        <th>Device token</th>
-        <th>Device type</th>
-        <th>Categories</th>
-        <th>Alias</th>
-        <th>Receiving</th>
+        <th translate>Device token</th>
+        <th translate>Device type</th>
+        <th translate>Categories</th>
+        <th translate>Alias</th>
+        <th translate>Receiving</th>
       </tr>
       </thead>
       <tbody>

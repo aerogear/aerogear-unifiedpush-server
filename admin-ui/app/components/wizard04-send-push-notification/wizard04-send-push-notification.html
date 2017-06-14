@@ -6,7 +6,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href ng-click="wizard04SendPushNotification.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard04SendPushNotification.editAppName()"><span class="pficon pficon-edit"></span> <span translate>Edit Name</span></a></li>
           </ul>
         </div>
 
@@ -16,30 +16,30 @@
 
       <h2 class="ups-variant-name-header ups-has-icon ups-variant-{{ wizard04SendPushNotification.variant.type }}">
         <strong>{{ wizard04SendPushNotification.variant.name }}:</strong>
-        <span ng-if="wizard04SendPushNotification.deviceCount == 0" class="muted"><i class="fa fa-ban"></i> No installation yet</span>
-        <span ng-if="wizard04SendPushNotification.deviceCount > 0"><i class="fa fa-check"></i> Successful installation</span>
+        <span ng-if="wizard04SendPushNotification.deviceCount == 0" class="muted"><i class="fa fa-ban"></i> <span translate>No installation yet</span></span>
+        <span ng-if="wizard04SendPushNotification.deviceCount > 0"><i class="fa fa-check"></i> <span translate>Successful installation</span></span>
       </h2>
 
       <div ng-if="wizard04SendPushNotification.deviceCount == 0">
-        <p><strong>Build your app!</strong> You need a recipient to send the test notification. You can go back to get instructions on how to build your app or skip this and continue with the wizard.</p>
-        <p>You can always <a ng-link="wizard05SetupSender()">Skip the wizard</a> altogether if you want.</p>
+        <p translate><strong>Build your app!</strong> You need a recipient to send the test notification. You can go back to get instructions on how to build your app or skip this and continue with the wizard.</p>
+        <p translate>You can always <a ng-link="wizard05SetupSender()">Skip the wizard</a> altogether if you want.</p>
       </div>
-      <p ng-if="wizard04SendPushNotification.deviceCount > 0">
+      <p ng-if="wizard04SendPushNotification.deviceCount > 0" translate>
         <strong>Excellent!</strong> Now lets test by sending a notification and see if everything adds up.
       </p>
 
       <form>
         <div class="form-group">
-          <label class="control-label">Message</label>
+          <label class="control-label" translate>Message</label>
           <textarea class="form-control" rows="3" ng-model="wizard04SendPushNotification.pushData.message.alert" ng-disabled="wizard04SendPushNotification.deviceCount == 0" pf-focused="true"></textarea>
         </div>
 
         <div ng-if="wizard04SendPushNotification.deviceCount == 0" class="form-group pull-right">
-          <a ng-link="wizard03RegisterDevice()" class="btn btn-primary btn-lg"><i class="fa fa-angle-left"></i> Back to variant set up </a>
-          <a ng-link="wizard05SetupSender()" class="btn btn-default btn-lg">Skip this step <i class="fa fa-angle-right"></i></a>
+          <a ng-link="wizard03RegisterDevice()" class="btn btn-primary btn-lg"><i class="fa fa-angle-left"></i> <span translate>Back to variant set up</span> </a>
+          <a ng-link="wizard05SetupSender()" class="btn btn-default btn-lg"><span translate>Skip this step</span> <i class="fa fa-angle-right"></i></a>
         </div>
         <div ng-if="wizard04SendPushNotification.deviceCount > 0" class="form-group pull-right">
-          <button class="btn btn-primary btn-lg" ng-click="wizard04SendPushNotification.sendNotification()">Send Push Notification and Continue <i class="fa fa-angle-double-right"></i></button>
+          <button class="btn btn-primary btn-lg" ng-click="wizard04SendPushNotification.sendNotification()"><span translate>Send Push Notification and Continue</span> <i class="fa fa-angle-double-right"></i></button>
         </div>
       </form>
 
@@ -50,16 +50,16 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a ng-link="appDetail({app: wizard04SendPushNotification.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a ng-link="appDetail({app: wizard04SendPushNotification.app.pushApplicationID, tab: 'variants'})"><span translate>Skip the wizard</span> <i class="fa fa-angle-double-right"></i></a>
         </div>
-        <h2 class="h5">Wizard steps</h2>
+        <h2 class="h5" translate>Wizard steps</h2>
       </div>
       <ol class="list-unstyled ups-steps">
-        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
-        <li class="done"><strong><i class="fa fa-check"></i></strong> Add a variant</li>
-        <li class="done"><strong><i class="fa fa-check"></i></strong> Mobile device: Set up variant</li>
-        <li class="active"><strong>4</strong> Test! Send notification</li>
-        <li><strong>5</strong> Backend: Set up sender API</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> <span translate>Create your first Application</span></li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> <span translate>Add a variant</span></li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> <span translate>Mobile device: Set up variant</span></li>
+        <li class="active"><strong>4</strong> <span translate>Test! Send notification</span></li>
+        <li><strong>5</strong> <span translate>Backend: Set up sender API</span></li>
       </ol>
 
 

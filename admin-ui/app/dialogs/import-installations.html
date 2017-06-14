@@ -4,7 +4,7 @@
       <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
         <span class="pficon pficon-close"></span>
       </button>
-      <h4 class="modal-title">Import Installations </h4>
+      <h4 class="modal-title" translate>Import Installations </h4>
     </div>
     <div class="modal-body">
       <p>
@@ -12,19 +12,19 @@
       </p>
 
       <p ng-show="importPreview">
-        <ups-pluralize noun="installation" count="importPreview" zero="No"></ups-pluralize>
-        <span>will be imported</span>
+	<span translate ng-if="importPreview == 0"><span class="count">No</span> installations will be imported</span>
+	<span translate ng-if="importPreview > 0" translate-n="importPreview" translate-plural="{{$count}} installations will be imported">{{ importPreview }} installation will be imported</span>
       </p>
       <p ng-show="incorrectFormat">
         <strong>
           <i class="fa fa-warning"></i>
-          This file can not be parsed !
+          <span translate>This file can not be parsed !</span>
         </strong>
       </p>
     </div>
     <div class="modal-footer">
-      <button ng-disabled="!importPreview" type="submit" class="btn btn-primary text-left" ng-click="confirm(variant)">Import</button>
-      <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+      <button ng-disabled="!importPreview" type="submit" class="btn btn-primary text-left" ng-click="confirm(variant)" translate>Import</button>
+      <button type="button" class="btn btn-default" ng-click="dismiss()" translate>Cancel</button>
     </div>
   </div>
 </form>

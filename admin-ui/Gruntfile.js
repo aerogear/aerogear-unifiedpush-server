@@ -374,7 +374,37 @@ module.exports = function (grunt) {
           filter: 'isFile',
           flatten: true,
           expand: true
+        }, {
+          src: ['dist/languages/*.json'],
+          dest: 'ups-admin-ui/public/languages',
+          filter: 'isFile',
+          flatten: true,
+          expand: true
         }]
+      }
+    },
+    nggettext_extract: {
+      pot: {
+        files: {
+          'po/ups-admin-ui.pot': ['app/**/*.html', 'app/**/*.js']
+        }
+      }
+    },
+    nggettext_compile: {
+      all: {
+        options: {
+          format: 'json'
+        },
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: 'po',
+            dest: 'dist/languages',
+            src: ['*.po'],
+            ext: '.json'
+          }
+        ]
       }
     }
   });

@@ -3,12 +3,12 @@
     <button type="button" class="close" aria-hidden="true" ng-click="cancel()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title" id="myModalLabel">Send push to Application One</h4>
+    <h4 class="modal-title" id="myModalLabel" translate>Send push to Application One</h4>
   </div>
   <div class="modal-body form-horizontal">
 
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Message</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Message</label>
       <div class="col-sm-9">
         <textarea id="pushAlert" class="form-control" rows="3" placeholder="Write the notification" ng-model="pushData.message.alert" ng-required="true" pf-focused="true"></textarea>
       </div>
@@ -16,17 +16,17 @@
 
       
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Priority</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Priority</label>
       <div class="col-sm-9">
           <select ng-model="pushData.message.priority">
-              <option value="normal">Normal</option>
-              <option value="high">High</option>
+              <option value="normal" translate>Normal</option>
+              <option value="high" translate>High</option>
           </select>
       </div>
     </div>
 
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Variants</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Variants</label>
       <div class="col-sm-9">
         <select pf-select="{ noneSelectedText: 'All Variants' }" multiple ng-model="selectedVariants" ng-options="variant.variantID as variant.name for variant in app.variants"></select>
       </div>
@@ -34,7 +34,7 @@
 
 
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Aliases</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Aliases</label>
       <div class="col-sm-9">
         <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="aliases">
       </div>
@@ -42,7 +42,7 @@
 
 
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Device Types</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Device Types</label>
       <div class="col-sm-9">
         <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="deviceTypes">
       </div>
@@ -50,20 +50,20 @@
 
 
     <div class="form-group">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Categories</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Categories</label>
       <div class="col-sm-9">
         <input type="text" id="textInput-modal-markup" class="form-control" placeholder="All" ng-model="categories">
       </div>
     </div>
 
 
-    <span id="helpBlock" class="help-block">You can provide multiple values at a time by separating them by commas.</span>
+    <span id="helpBlock" class="help-block" translate>You can provide multiple values at a time by separating them by commas.</span>
 
 
 
   </div>
   <div class="modal-footer">
-    <button id="cancelPush" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button id="sendPush" class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid">Send Push Notification</button>
+    <button id="cancelPush" class="btn btn-default" ng-click="cancel()" translate>Cancel</button>
+    <button id="sendPush" class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid" translate>Send Push Notification</button>
   </div>
 </form>

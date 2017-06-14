@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('HomeController', function( $q, $modal, $router, $rootScope, applicationsEndpoint, dashboardEndpoint, appModal, Notifications ) {
+  .controller('HomeController', function( $q, $modal, $router, $rootScope, applicationsEndpoint, dashboardEndpoint, appModal, Notifications, gettextCatalog ) {
 
     var self = this;
 
@@ -41,11 +41,11 @@ angular.module('upsConsole')
       appModal.editName( appClone )
         .then(function( updatedApp ) {
           angular.extend( app, updatedApp );
-          Notifications.success('The name of ' + app.name + ' application was successfully changed');
+          Notifications.success(gettextCatalog.getString('The name of {{name}} application was successfully changed', {name: app.name}));
         })
         .catch(function( e ) {
           if ( e instanceof Error ) {
-            Notifications.error('Failed to modify app ' + app.name + ': ' + e);
+            Notifications.error(gettextCatalog.getString('Failed to modify app {{name}}: {{error}}', {name: app.name, error: e}));
           }
         });
     };
