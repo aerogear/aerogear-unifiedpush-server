@@ -36,6 +36,7 @@ public class FlatPushMessageInformationTest {
 
         // general job data
         pushMessageInformation = new FlatPushMessageInformation();
+        pushMessageInformation.setId("123");
         pushMessageInformation.setPushApplicationId("123");
         pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
@@ -45,9 +46,16 @@ public class FlatPushMessageInformationTest {
         pushMessageInformation.setLastOpenDate(lastOpenDate);
 
 
+        Variant variant1 = new AndroidVariant();
+        variant1.setId("345");
+        variant1.setVariantID("345");
+        Variant variant2 = new AndroidVariant();
+        variant2.setId("678");
+        variant2.setVariantID("678");
+
         // two involved variants:
-        VariantErrorStatus variantInfo1 = new VariantErrorStatus(pushMessageInformation.getId(), "345", "Some error");
-        VariantErrorStatus variantInfo2 = new VariantErrorStatus(pushMessageInformation.getId(), "678", "Some other failure");
+        VariantErrorStatus variantInfo1 = new VariantErrorStatus(pushMessageInformation, variant1, "Some error");
+        VariantErrorStatus variantInfo2 = new VariantErrorStatus(pushMessageInformation, variant2, "Some other failure");
 
         // add the variant metadata:
         pushMessageInformation.getErrors().add(variantInfo1);

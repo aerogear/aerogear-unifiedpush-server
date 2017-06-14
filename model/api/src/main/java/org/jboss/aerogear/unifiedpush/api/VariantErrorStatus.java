@@ -32,11 +32,13 @@ public class VariantErrorStatus {
         // bogus ctor
     }
 
-    public VariantErrorStatus(final String pushJobId, final String variantId, final String errorReason) {
-        this.pushMessageVariantId = new StringBuilder(pushJobId).append(':').append(variantId).toString();
-        this.variantID = variantId;
-        this.pushJobId = pushJobId;
+    public VariantErrorStatus(final FlatPushMessageInformation pushMessageInformation, final Variant variant, final String errorReason) {
+        this.pushMessageVariantId = new StringBuilder(pushMessageInformation.getId()).append(':').append(variant.getVariantID()).toString();
+        this.variantID = variant.getVariantID();
+        this.pushJobId = pushMessageInformation.getId();
         this.errorReason = errorReason;
+        this.pushMessageInformation = pushMessageInformation;
+        this.variant = variant;
     }
 
     public String getErrorReason() {
