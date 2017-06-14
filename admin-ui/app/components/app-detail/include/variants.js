@@ -16,7 +16,6 @@ angular.module('upsConsole')
           var variantType = variantList[type] = variantList[type] || [];
           variantType.push(variant);
           variantType.$deviceCount = (variantType.$deviceCount  || 0) + (variant.$deviceCount || 0);
-          variantType.$messageCount = (variantType.$messageCount  || 0) + (variant.$messageCount || 0);
           return variantList;
         }, {});
     }
@@ -33,8 +32,8 @@ angular.module('upsConsole')
     this.add = function() {
       return variantModal.add( this.app )
         .then(function( variant ) {
+
           variant.$deviceCount = 0;
-          variant.$messageCount = 0;
           self.app.variants.push( variant );
           variant.$toggled = true;
           self.byType = splitByType( self.app.variants );
