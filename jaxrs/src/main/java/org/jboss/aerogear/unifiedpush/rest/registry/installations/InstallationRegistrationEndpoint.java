@@ -231,20 +231,20 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
 
-        try (InputStream props = new FileInputStream(this.getClass().getResourceAsStream("/kafka/producer.props")) {
-            Properties properties = new Properties();
-            properties.load(props);
+        if (pushMessageId != null) {
+            try (InputStream props = this.getClass().getResourceAsStream("/kafka/producer.props")) {
+                Properties properties = new Properties();
+                properties.load(props);
 
-            if (pushMessageId != null) {
                 Producer<String, String> producer = new KafkaProducer<>(properties);
                 producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
                 producer.close();
             }
-        }
 
-        // let's do update the analytics
-        if (pushMessageId != null) {
+            // let's do update the analytics
             metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+        } else {
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
         return Response.ok(EmptyJSON.STRING).build();
