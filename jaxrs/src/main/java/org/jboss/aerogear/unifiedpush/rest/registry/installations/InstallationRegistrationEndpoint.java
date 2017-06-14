@@ -22,6 +22,8 @@ import io.prometheus.client.Counter;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -30,7 +32,6 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +54,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
+
+    public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
 
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
@@ -76,8 +76,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private GenericVariantService genericVariantService;
 
-    @Inject
-    private PushMessageMetricsService metricsService;
+    @Producer(topic = KAFKA_INSTALLATION_TOPIC)
+    private SimpleKafkaProducer<String, String> installationMetricsProducer;
 
     /**
      * Cross Origin for Installations
@@ -150,7 +150,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @return          registered {@link Installation}
      *
      * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM). If present these tokens will be forcefully unregistered before the new token is registered.
-     * 
+     *
      * @responseheader Access-Control-Allow-Origin      With host in your "Origin" header
      * @responseheader Access-Control-Allow-Credentials true
      * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
@@ -233,23 +233,18 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
 
-        try (InputStream props = new FileInputStream(this.getClass().getResourceAsStream("/kafka/producer.props")) {
-            Properties properties = new Properties();
-            properties.load(props);
-
-            if (pushMessageId != null) {
-                Producer<String, String> producer = new KafkaProducer<>(properties);
-                producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
-                producer.close();
-            }
-        }
-
-        // let's do update the analytics
         if (pushMessageId != null) {
-            metricsService.updateAnalytics(pushMessageId);
-        }
 
-        return Response.ok(EmptyJSON.STRING).build();
+            // start the producer and push a message to installation metrics
+            // topic
+            installationMetricsProducer.send(pushMessageId, variant.getVariantID());
+
+            return Response.ok(EmptyJSON.STRING).build();
+
+        } else {
+            logger.warn("A request with empty push message id was done. Bad Request response is returned.");
+            return Response.status(Status.BAD_REQUEST).build();
+        }
     }
 
     /**
@@ -353,7 +348,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response importDevice(
             @MultipartForm
-            ImporterForm form,
+                    ImporterForm form,
             @Context HttpServletRequest request) {
 
         // find the matching variation:
@@ -396,7 +391,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
-                 .build();
+                .build();
     }
 
     private static Response create401Response(final HttpServletRequest request) {
