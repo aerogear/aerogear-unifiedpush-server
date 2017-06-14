@@ -105,6 +105,7 @@ public class PushMessageMetricsService {
     public void appendError(final FlatPushMessageInformation pushMessageInformation, final Variant variant, final String errorMessage) {
         final VariantErrorStatus ves = new VariantErrorStatus(pushMessageInformation, variant, errorMessage);
         pushMessageInformation.getErrors().add(ves);
+        flatPushMessageInformationDao.update(pushMessageInformation);
     }
 
     /**

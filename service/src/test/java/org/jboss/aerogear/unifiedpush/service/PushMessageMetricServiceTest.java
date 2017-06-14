@@ -73,7 +73,6 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     @Test
     public void errorCounter() {
-//        pushMessageMetricsService.appendError(pushMessageInformation, "321", "Big failure");
         pushMessageMetricsService.appendError(pushMessageInformation, variantDao.findByVariantID("321"), "Really big failure");
         pushMessageMetricsService.updatePushMessageInformation(pushMessageInformation);
 
