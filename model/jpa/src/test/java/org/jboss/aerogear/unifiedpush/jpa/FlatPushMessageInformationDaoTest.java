@@ -18,7 +18,10 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -47,6 +50,9 @@ public class FlatPushMessageInformationDaoTest {
 
     @Inject
     private FlatPushMessageInformationDao pushMessageInformationDao;
+
+    @Inject
+    private VariantDao variantDao;
 
 //    @Inject
 //    private JPAVariantMetricInformationDao variantMetricInformationDao;
@@ -230,7 +236,19 @@ public class FlatPushMessageInformationDaoTest {
         assertThat(variantIDsWithWarnings).isEmpty();
     }
 
-    //    @Test
+    @Test
+    public void addTwoErrors() {
+        FlatPushMessageInformation fmpi = pushMessageInformationDao.find("1");
+        Variant variant = variantDao.find("1");
+        VariantErrorStatus ves = new VariantErrorStatus(fmpi, variant, "error");
+
+        ves.setVariant(variant);
+        ves.setPushMessageInformation(fmpi);
+
+        fmpi.getErrors().add(ves);
+    }
+
+//    @Test
 //    public void ascendingDateOrdering() {
 //
 //        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
