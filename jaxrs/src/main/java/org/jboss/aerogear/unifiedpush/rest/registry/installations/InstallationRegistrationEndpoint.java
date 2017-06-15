@@ -20,6 +20,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -32,6 +36,7 @@ import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +60,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
+	public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
+	public static final String KAFKA_CONSUMER_PROPERTIES_PATH = "/kafka/consumer.properties";
+	public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.props";
+	
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
 
@@ -221,33 +230,52 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
-                           @Context HttpServletRequest request) throws IOException {
+	public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
+			@Context HttpServletRequest request) throws IOException {
 
-        // find the matching variation:
-        final Variant variant = loadVariantWhenAuthorized(request);
-        if (variant == null) {
-            return create401Response(request);
-        }
+		// find the matching variation:
+		final Variant variant = loadVariantWhenAuthorized(request);
+		if (variant == null) {
+			return create401Response(request);
+		}
 
-        if (pushMessageId != null) {
-            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.properties")) {
-                final Properties properties = new Properties();
-                properties.load(props);
+		if (pushMessageId != null) {
 
-                final Producer<String, String> producer = new KafkaProducer<>(properties);
-                producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
-                producer.close();
-            }
+			// start the producer and push a message to installation metrics
+			// topic
+			final Properties properties = ConfigurationUtils.loadProperties(KAFKA_PRODUCER_PROPERTIES_PATH);
+			final Producer<String, String> producer = new KafkaProducer<>(properties);
+			producer.send(new ProducerRecord<String, String>(KAFKA_INSTALLATION_TOPIC, pushMessageId,
+					variant.getVariantID()));
+			producer.close();
 
-            // let's do update the analytics
-            metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
-        } else {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
+			// start a consumer that reads from "istallationMetrics" and based
+			// on the information updates the analytics
+			// read only messages which weren't read from other consumers
+			final Properties consumerProperties = ConfigurationUtils.loadProperties(KAFKA_CONSUMER_PROPERTIES_PATH);
+			final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
+			consumer.subscribe(Arrays.asList(KAFKA_INSTALLATION_TOPIC));
 
-        return Response.ok(EmptyJSON.STRING).build();
-    }
+			ConsumerRecords<String, String> records = consumer.poll(100);
+			for (ConsumerRecord<String, String> record : records) {
+				// the key of each record - pushMessageId
+				// the value - variant's id
+				// let's do update the analytics
+				logger.info(String.format("Update metric analytics for push message's ID %s and variant's ID %s",
+						record.key(), record.value()));
+				metricsService.updateAnalytics(record.key(), record.value());
+			}
+
+			// stop the consumer
+			consumer.close();
+			
+			return Response.ok(EmptyJSON.STRING).build();
+
+		} else {
+			logger.warn("A request with empty push message id was done. Bad Request response is returned.");
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
 
     /**
      * RESTful API for Device unregistration.
