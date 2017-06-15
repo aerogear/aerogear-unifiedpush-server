@@ -12,6 +12,9 @@
         <property name="variantID" type="java.lang.String" insert="false" update="false">
             <column name="variant_id" />
         </property>
+        <property name="pushJobId" type="java.lang.String" insert="false" update="false">
+            <column name="push_job_id" />
+        </property>
         <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation" fetch="join">
             <column name="push_job_id" />
         </many-to-one>
