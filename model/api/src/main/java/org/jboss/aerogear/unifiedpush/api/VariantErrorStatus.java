@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class VariantErrorStatus {
 
     //@Id
@@ -25,7 +27,9 @@ public class VariantErrorStatus {
     private String pushJobId;
     private String variantID;
 
+    @JsonIgnore
     private FlatPushMessageInformation pushMessageInformation;
+    @JsonIgnore
     private Variant variant;
 
     public VariantErrorStatus () {
