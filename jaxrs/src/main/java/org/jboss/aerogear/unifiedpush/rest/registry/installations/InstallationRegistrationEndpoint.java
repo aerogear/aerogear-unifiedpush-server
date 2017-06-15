@@ -231,11 +231,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
 
         if (pushMessageId != null) {
-            try (InputStream props = this.getClass().getResourceAsStream("/kafka/producer.props")) {
-                Properties properties = new Properties();
+            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.props")) {
+                final Properties properties = new Properties();
                 properties.load(props);
 
-                Producer<String, String> producer = new KafkaProducer<>(properties);
+                final Producer<String, String> producer = new KafkaProducer<>(properties);
                 producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
                 producer.close();
             }
