@@ -20,6 +20,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -52,7 +55,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -217,7 +222,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
-                           @Context HttpServletRequest request) {
+                           @Context HttpServletRequest request) throws IOException {
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
@@ -225,9 +230,20 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             return create401Response(request);
         }
 
-        //let's do update the analytics
         if (pushMessageId != null) {
+            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.props")) {
+                final Properties properties = new Properties();
+                properties.load(props);
+
+                final Producer<String, String> producer = new KafkaProducer<>(properties);
+                producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
+                producer.close();
+            }
+
+            // let's do update the analytics
             metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+        } else {
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
         return Response.ok(EmptyJSON.STRING).build();
