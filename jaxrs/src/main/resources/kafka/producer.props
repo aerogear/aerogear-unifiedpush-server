@@ -6,4 +6,4 @@ auto.commit.interval.ms=1000
 linger.ms=1
 buffer.memory=33554432
 key.serializer=org.apache.kafka.common.serialization.StringSerializer
-value.serializer=org.apache.kafka.common.
+value.serializer=org.apache.kafka.common.serialization.StringSerializer
