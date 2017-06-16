@@ -200,7 +200,7 @@ public class TokenLoader {
                     logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.debug(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), pushMessageInformation.getId()));
+                    logger.debug("All batches for {} variant were loaded ({})", variant.getType().getTypeName(), variant.getVariantID());
 
                     // using combined key of variant and PMI (AGPUSH-1585):
                     //allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
