@@ -21,7 +21,9 @@ import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -123,28 +125,16 @@ public class FlatPushMessageInformationDaoTest {
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
     }
 
-//    @Test
-//    public void addVariantInfoToPushMessageInformation() {
-//        FlatPushMessageInformation pushMessageInformation = pushMessageInformationDao.find("2");
-//
-//        assertThat(pushMessageInformation.getVariantInformations()).extracting("receivers", "deliveryStatus")
-//                .contains(
-//                        tuple(1000L, Boolean.FALSE),
-//                        tuple(200L, Boolean.FALSE)
-//                );
-//
-//        assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
-//    }
 
-//    @Test
-//    public void findByPushApplicationID() {
-//        int page = 0;
-//        int pageSize = 20;
-//        PageResult<PushMessageInformation, MessageMetrics> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
-//        assertThat(messageInformations.getResultList()).isNotEmpty();
-//        assertThat(messageInformations.getResultList()).hasSize(2);
-//    }
-//
+    @Test
+    public void findByPushApplicationID() {
+        int page = 0;
+        int pageSize = 20;
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
+        assertThat(messageInformations.getResultList()).isNotEmpty();
+        assertThat(messageInformations.getResultList()).hasSize(2);
+    }
+
     @Test
     public void countMessagesPerLoginName() {
 
@@ -248,35 +238,35 @@ public class FlatPushMessageInformationDaoTest {
         fmpi.getErrors().add(ves);
     }
 
-//    @Test
-//    public void ascendingDateOrdering() {
-//
-//        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
-//                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, 0, 25);
-//        final List<PushMessageInformation> list = messageInformations.getResultList();
-//        assertThat(list).hasSize(2);
-//
-//        assertThat(list.get(0).getSubmitDate()).isBefore(list.get(1).getSubmitDate());
-//    }
-//
-//    @Test
-//    public void descendingDateOrdering() {
-//        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
-//                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.FALSE, 0, 25);
-//        final List<PushMessageInformation> list = messageInformations.getResultList();
-//        assertThat(list).hasSize(2);
-//
-//        assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
-//    }
-//
-//    @Test
-//    public void testSearchString() {
-//        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
-//                pushMessageInformationDao.findAllForPushApplication("231231231", "foo", Boolean.TRUE, 0, 25);
-//        final List<PushMessageInformation> list = messageInformations.getResultList();
-//        assertThat(list).hasSize(1);
-//    }
-//
+    @Test
+    public void ascendingDateOrdering() {
+
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, 0, 25);
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(2);
+
+        assertThat(list.get(0).getSubmitDate()).isBefore(list.get(1).getSubmitDate());
+    }
+
+    @Test
+    public void descendingDateOrdering() {
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.FALSE, 0, 25);
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(2);
+
+        assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
+    }
+
+    @Test
+    public void testSearchString() {
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
+                pushMessageInformationDao.findAllForPushApplication("231231231", "foo", Boolean.TRUE, 0, 25);
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
+        assertThat(list).hasSize(1);
+    }
+
     @Test
     public void testLongRawJsonPayload() {
         FlatPushMessageInformation largePushMessageInformation = new FlatPushMessageInformation();
@@ -307,10 +297,4 @@ public class FlatPushMessageInformationDaoTest {
         messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(0);
     }
-
-//    @Test
-//    public void findVariantMetricByVariantId() {
-//        FlatPushMessageInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213","1");
-//        assertThat(variantMetricInformation).isNotNull();
-//    }
 }
