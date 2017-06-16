@@ -51,7 +51,7 @@
           {{ metric.appOpenCounter }} opened
         </span>
       </td>
-      <td ng-if="metric.deliveryFailed == true" class="danger">
+      <td ng-if="metric.errors.length > 0" class="danger">
           <span tooltip="{{activity.TOOLTIP_FAIL}}">
             <span class="pficon-layered">
               <span class="pficon pficon-error-octagon"></span>
@@ -60,7 +60,7 @@
             Failed
           </span>
       </td>
-      <td ng-if="metric.deliveryFailed != true" class="success">
+      <td ng-if="metric.errors.length == 0" class="success">
           <span tooltip="{{activity.TOOLTIP_SUCCESS}}">
             <i class="fa fa-check"></i>
             Processed
