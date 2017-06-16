@@ -159,7 +159,7 @@ public class PushMessageMetricsService {
         return flatPushMessageInformationDao.find(id);
     }
 
-    public void updateAnalytics(String aerogearPushId, String variantID) {
+    public void updateAnalytics(final String aerogearPushId) {
         FlatPushMessageInformation pushMessageInformation = this.getPushMessageInformation(aerogearPushId);
 
         if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message
@@ -173,14 +173,6 @@ public class PushMessageMetricsService {
             }
             //update the general counter
             pushMessageInformation.incrementAppOpenCounter();
-
-//            //update the variant counter
-//            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
-//            variantMetricInformation.incrementVariantOpenCounter();
-//            variantMetricInformationDao.update(variantMetricInformation);
-
-//            pushMessageInformationDao.update(pushMessageInformation);
         }
-
     }
 }

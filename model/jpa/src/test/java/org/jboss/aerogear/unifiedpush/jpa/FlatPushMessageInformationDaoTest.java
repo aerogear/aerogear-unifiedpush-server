@@ -42,7 +42,6 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
 public class FlatPushMessageInformationDaoTest {
@@ -56,8 +55,6 @@ public class FlatPushMessageInformationDaoTest {
     @Inject
     private VariantDao variantDao;
 
-//    @Inject
-//    private JPAVariantMetricInformationDao variantMetricInformationDao;
     private String pushMessageInformationID = "1";
 
     @Deployment

@@ -81,11 +81,6 @@ public class PushMetricsEndpoint {
         PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =
                 metricsService.findAllFlatsForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
-
-//
-//        PageResult<PushMessageInformation, MessageMetrics> pageResult =
-//                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
-
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getAggregate().getCount())
                 .header("receivers", "0")
