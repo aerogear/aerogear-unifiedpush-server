@@ -22,7 +22,6 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
-import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 
 /**
@@ -32,9 +31,6 @@ import javax.jms.Queue;
  */
 @Stateless
 public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProducer {
-
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
 
     @Resource(mappedName = "java:/queue/AdmPushMessageQueue")
     private Queue admPushMessageQueue;

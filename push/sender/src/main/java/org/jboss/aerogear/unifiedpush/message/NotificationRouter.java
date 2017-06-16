@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
@@ -104,6 +104,7 @@ public class NotificationRouter {
             jsonMessageContent = message.toMinimizedJsonString();
         }
 
+/*
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
@@ -111,6 +112,14 @@ public class NotificationRouter {
                         message.getIpAddress(),
                         message.getClientIdentifier(),
                         variants.getVariantCount()
+                );
+*/
+        final FlatPushMessageInformation pushMessageInformation =
+                metricsService.storeNewRequestFrom(
+                        pushApplication.getPushApplicationID(),
+                        jsonMessageContent,
+                        message.getIpAddress(),
+                        message.getClientIdentifier()
                 );
 
         // we split the variants per type since each type may have its own configuration (e.g. batch size)

@@ -30,20 +30,17 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.TriggerVariantMetricCollectionEvent;
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -85,14 +82,6 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<AllBatchesLoadedEvent> allBatchesLoaded;
 
-    @Inject
-    @DispatchToQueue
-    private Event<TriggerVariantMetricCollectionEvent> triggerVariantMetricCollection;
-
-    @Inject
-    @DispatchToQueue
-    private Event<VariantMetricInformation> dispatchVariantMetricEvent;
-
     @Inject @Any
     private Instance<SenderConfiguration> senderConfiguration;
 
@@ -106,7 +95,7 @@ public class TokenLoader {
      * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
      *
-     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event) that helps {@link MetricsCollector} to track how many batches were loaded.
+     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event).
      * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
@@ -117,7 +106,7 @@ public class TokenLoader {
         final Collection<Variant> variants = msg.getVariants();
         final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
         final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
-        final PushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
+        final FlatPushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
         int serialId = msg.getLastSerialId();
 
         logger.debug("Received message from queue: " + message.getMessage().getAlert());
@@ -156,8 +145,6 @@ public class TokenLoader {
                         // therefore we have to adjust the number by adding this extra batch
                         batchesToLoad = batchesToLoad + 1;
                     }
-                    logger.error("DDDDDDDDDDDDDDDDDDDDDDDDDDDDD-clientInstallationService " + clientInstallationService);
-                    logger.error("DDDDDDDDDDDDDDDDDDDDDDDDDDDDD-configuration " + configuration);
                     // 2) always load the legacy tokens, for all number of batch iterations
                     tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
@@ -200,26 +187,24 @@ public class TokenLoader {
                                 return;
                             }
                         }
-                        logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID());
 
                         // using combined key of variant and PMI (AGPUSH-1585):
-                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
-                        triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(msg.getPushMessageInformation(), variant));
+                        //batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
-                        logger.debug(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
+                        logger.debug("Ending batch processing: No more tokens for batch #{} available", serialId);
                         break;
                     }
                 }
                 // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug("Ending token loading transaction for {} variant ({})", variant.getType().getTypeName(), variant.getVariantID());
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.debug(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), pushMessageInformation.getId()));
+                    logger.debug("All batches for {} variant were loaded ({})", variant.getType().getTypeName(), variant.getVariantID());
 
                     // using combined key of variant and PMI (AGPUSH-1585):
-                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
-                    triggerVariantMetricCollection.fire(new TriggerVariantMetricCollectionEvent(pushMessageInformation, variant));
+                    //allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
@@ -228,12 +213,6 @@ public class TokenLoader {
                         } else {
                             logger.warn("Check your push query: Not a single token was loaded from the DB!");
                         }
-
-                        VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
-                        variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
-                        variantMetricInformation.setVariantID(variant.getVariantID());
-                        variantMetricInformation.setDeliveryStatus(Boolean.TRUE);
-                        dispatchVariantMetricEvent.fire(variantMetricInformation);
                     }
                 }
             } catch (ResultStreamException e) {

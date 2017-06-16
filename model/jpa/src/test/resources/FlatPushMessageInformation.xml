@@ -34,76 +34,32 @@
             <value>admin</value>
         </row>
     </table>
-    <table name="SA.PUSH_MESSAGE_INFO">
+    <table name="SA.FLAT_PUSH_MESSAGE_INFO">
         <column>id</column>
         <column>push_application_id</column>
         <column>raw_json_message</column>
         <column>submit_date</column>
-        <column>total_receivers</column>
         <row>
             <value>1</value>
             <value>231231231</value>
             <value>{ "message": { "alert": "foo" } }</value>
             <value>1980-02-01</value>
-            <value>0</value>
         </row>
         <row>
             <value>2</value>
             <value>231231231</value>
             <value>{ "message": { "alert": "bar" } }</value>
             <value>1980-02-04</value>
-            <value>0</value>
         </row>
         <row>
             <value>3</value>
             <value>231231232</value>
             <value>{ "message": { "alert": "foo" } }</value>
             <value>2015-01-22</value>
-            <value>0</value>
         </row>
     </table>
-    <table name="SA.VARIANT_METRIC_INFO">
-        <column>id</column>
-        <column>delivery_status</column>
-        <column>receivers</column>
-        <column>variant_id</column>
-        <column>push_message_info_id</column>
-        <row>
-            <value>1</value>
-            <value>false</value>
-            <value>200</value>
-            <value>213</value>
-            <value>1</value>
-        </row>
-        <row>
-            <value>2</value>
-            <value>false</value>
-            <value>200</value>
-            <value>231543432432</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>3</value>
-            <value>false</value>
-            <value>300</value>
-            <value>23154343243333</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>4</value>
-            <value>false</value>
-            <value>1000</value>
-            <value>231543432434</value>
-            <value>2</value>
-        </row>
-        <row>
-            <value>5</value>
-            <value>true</value>
-            <value>2000</value>
-            <value>231543432432</value>
-            <value>3</value>
-        </row>
-    </table>
+
+
 
     <table name="SA.VARIANT">
         <column>id</column>
@@ -161,6 +117,42 @@
     <table name="SA.SIMPLE_PUSH_VARIANT"/>
     <table name="SA.INSTALLATION"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
-    <table name="SA.FLAT_PUSH_MESSAGE_INFO" />
-    <table name="SA.VARIANT_ERROR_STATUS" />
+
+    <table name="SA.VARIANT_ERROR_STATUS">
+        <column>push_message_variant_id</column>
+        <column>error_reason</column>
+        <column>variant_id</column>
+        <column>push_job_id</column>
+        <row>
+            <value>1:213</value>
+            <value>FAILED</value>
+            <value>4</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2:231543432432</value>
+            <value>FAILED</value>
+            <value>1</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2:23154343243333</value>
+            <value>FAILED</value>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2:231543432434</value>
+            <value>FAILED</value>
+            <value>3</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>3:231543432432</value>
+            <value>FAILED</value>
+            <value>1</value>
+            <value>3</value>
+        </row>
+    </table>
+
 </dataset>

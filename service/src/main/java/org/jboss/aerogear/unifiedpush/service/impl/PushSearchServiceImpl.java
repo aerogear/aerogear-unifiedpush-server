@@ -22,14 +22,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
@@ -53,7 +53,7 @@ public class PushSearchServiceImpl implements PushSearchService {
     private InstallationDao installationDao;
 
     @Inject
-    private PushMessageInformationDao pushMessageInformationDao;
+    private FlatPushMessageInformationDao flatPushMessageInformationDao;
 
     @Override
     public PageResult<PushApplication, Count> findAllPushApplicationsForDeveloper(Integer page, Integer pageSize) {
@@ -101,7 +101,7 @@ public class PushSearchServiceImpl implements PushSearchService {
      */
     @Override
     public List<ApplicationVariant> getVariantsWithWarnings() {
-        final List<String> warningIDs = pushMessageInformationDao.findVariantIDsWithWarnings();
+        final List<String> warningIDs = flatPushMessageInformationDao.findVariantIDsWithWarnings();
         if (warningIDs.isEmpty()) {
             return Collections.emptyList();
         }
@@ -114,11 +114,11 @@ public class PushSearchServiceImpl implements PushSearchService {
      */
     @Override
     public List<Application> getLatestActivity(int maxResults) {
-        return wrapApplication(pushMessageInformationDao.findLatestActivity(maxResults));
+        return wrapApplication(flatPushMessageInformationDao.findLatestActivity(maxResults));
     }
 
     private long totalMessages() {
-        return pushMessageInformationDao.getNumberOfPushMessagesForApplications();
+        return flatPushMessageInformationDao.getNumberOfPushMessagesForApplications();
     }
 
     private long totalDeviceNumber() {
@@ -140,16 +140,16 @@ public class PushSearchServiceImpl implements PushSearchService {
         return applicationVariants;
     }
 
-    private List<Application> wrapApplication(List<PushMessageInformation> pushMessageInformations) {
+    private List<Application> wrapApplication(List<FlatPushMessageInformation> pushMessageInformations) {
         final List<Application> applications = new ArrayList<Application>(pushMessageInformations.size());
-        for (PushMessageInformation pushMessageInformation : pushMessageInformations) {
+        for (FlatPushMessageInformation pushMessageInformation : pushMessageInformations) {
 
             final PushApplication pushApplication = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId());
 
             // make sure this is really there, and has not been deleted
             if (pushApplication != null) {
                 final String applicationName = pushApplication.getName();
-                final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
+                final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getSubmitDate());
                 applications.add(application);
             }
         }

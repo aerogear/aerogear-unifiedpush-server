@@ -22,9 +22,16 @@ package org.jboss.aerogear.unifiedpush.dto;
 public class MessageMetrics {
 
     private final long count;
-    private final long receivers;
+    private final long receivers;;
     private final long appOpenedCounter;
 
+    public MessageMetrics(Long count, Long appOpenedCounter) {
+        this.count = count;
+        this.receivers = 0;
+        this.appOpenedCounter = (appOpenedCounter == null) ? 0 : appOpenedCounter;
+    }
+
+    @Deprecated
     public MessageMetrics(Long count, Long receivers, Long appOpenedCounter) {
         this.count = count;
         this.receivers = (receivers == null) ? 0 : receivers;
