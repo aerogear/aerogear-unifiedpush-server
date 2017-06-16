@@ -186,12 +186,12 @@ public class TokenLoader {
                             context.setRollbackOnly();
                             return;
                         }
-                        logger.error(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID());
 
                         // using combined key of variant and PMI (AGPUSH-1585):
                         //batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
-                        logger.error(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
+                        logger.debug("Ending batch processing: No more tokens for batch #{} available", serialId);
                         break;
                     }
                 }
