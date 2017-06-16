@@ -29,7 +29,7 @@ public class VariantErrorStatus {
 
     @JsonIgnore
     private FlatPushMessageInformation pushMessageInformation;
-    @JsonIgnore
+
     private Variant variant;
 
     public VariantErrorStatus () {

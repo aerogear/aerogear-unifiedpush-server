@@ -83,7 +83,7 @@
           </span>
 
 
-          <strong>Variant <a href ng-link="appDetail({app: activity.app.pushApplicationID, tab: 'variants'})">{{ variantInformation.$variant.name }}</a> has failed:</strong> {{ error.errorReason }}
+          <strong>Variant <a href ng-link="appDetail({app: activity.app.pushApplicationID, tab: 'variants'})">{{ error.variant.name }}</a> has failed:</strong> {{ error.errorReason }}
         </div>
         <pre>{{ metric.$message | json  }}</pre>
       </td>
