@@ -145,8 +145,6 @@ public class TokenLoader {
                         // therefore we have to adjust the number by adding this extra batch
                         batchesToLoad = batchesToLoad + 1;
                     }
-                    logger.error("DDDDDDDDDDDDDDDDDDDDDDDDDDDDD-clientInstallationService " + clientInstallationService);
-                    logger.error("DDDDDDDDDDDDDDDDDDDDDDDDDDDDD-configuration " + configuration);
                     // 2) always load the legacy tokens, for all number of batch iterations
                     tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
@@ -189,21 +187,21 @@ public class TokenLoader {
                                 return;
                             }
                         }
-                        logger.error(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID());
 
                         // using combined key of variant and PMI (AGPUSH-1585):
                         //batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
-                        logger.error(String.format("Ending batch processing: No more tokens for batch #%s available", serialId));
+                        logger.debug("Ending batch processing: No more tokens for batch #{} available", serialId);
                         break;
                     }
                 }
                 // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.error(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug("Ending token loading transaction for {} variant ({})", variant.getType().getTypeName(), variant.getVariantID());
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.error(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug("All batches for {} variant were loaded ({})", variant.getType().getTypeName(), variant.getVariantID());
 
                     // using combined key of variant and PMI (AGPUSH-1585):
                     //allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
