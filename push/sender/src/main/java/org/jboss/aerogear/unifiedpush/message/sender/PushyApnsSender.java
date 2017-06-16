@@ -16,13 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import com.relayrides.pushy.apns.ApnsClient;
-import com.relayrides.pushy.apns.ApnsClientBuilder;
-import com.relayrides.pushy.apns.PushNotificationResponse;
-import com.relayrides.pushy.apns.proxy.HttpProxyHandlerFactory;
-import com.relayrides.pushy.apns.proxy.Socks5ProxyHandlerFactory;
-import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
-import com.relayrides.pushy.apns.util.SimpleApnsPushNotification;
+import com.turo.pushy.apns.ApnsClient;
+import com.turo.pushy.apns.ApnsClientBuilder;
+import com.turo.pushy.apns.PushNotificationResponse;
+import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
+import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
+import com.turo.pushy.apns.util.ApnsPayloadBuilder;
+import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jboss.aerogear.unifiedpush.api.Variant;
