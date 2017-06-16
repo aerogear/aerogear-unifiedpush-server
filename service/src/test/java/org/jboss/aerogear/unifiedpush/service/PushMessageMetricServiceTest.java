@@ -18,13 +18,16 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
-import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
 
@@ -32,9 +35,9 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
     private PushMessageMetricsService pushMessageMetricsService;
 
     @Inject
-    private VariantMetricInformationDao variantMetricInformationDao;
+    private VariantDao variantDao;
 
-    private PushMessageInformation pushMessageInformation;
+    private FlatPushMessageInformation pushMessageInformation;
 
     @Override
     protected void specificSetup() {
@@ -43,30 +46,43 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest{
                         "123",
                         "hello",
                         "127.0.01",
-                        "testcase",
-                        1
+                        "testcase"
                 );
 
-        VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
-        variantMetricInformation.setVariantID("321");
-        pushMessageInformation.addVariantInformations(variantMetricInformation);
-        pushMessageMetricsService.updatePushMessageInformation(pushMessageInformation);
+         AndroidVariant v = new AndroidVariant();
+         v.setVariantID("321");
+         v.setId("321");
+         v.setSecret("secret");
+         v.setName("Android test variant");
+         v.setType(VariantType.ANDROID);
+         v.setGoogleKey("12345678");
+         variantDao.create(v);
+
     }
 
     @Test
     public void updateAnalyticsTest() {
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
-        PushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+        FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation.getAppOpenCounter()).isEqualTo(1);
-        VariantMetricInformation updatedVariantMetric = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
-        assertThat(updatedVariantMetric.getVariantOpenCounter()).isEqualTo(1);
 
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
-        PushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+        FlatPushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
-        VariantMetricInformation updatedVariantMetric1 = variantMetricInformationDao.findVariantMetricInformationByVariantID("321", updatedPushInformation.getId());
-        assertThat(updatedVariantMetric1.getVariantOpenCounter()).isEqualTo(2);
-
     }
 
+    @Test
+    public void errorCounter() {
+        pushMessageMetricsService.appendError(pushMessageInformation, variantDao.findByVariantID("321"), "Really big failure");
+        pushMessageMetricsService.updatePushMessageInformation(pushMessageInformation);
+
+        FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+        assertThat(updatedPushInformation.getErrors().size()).isEqualTo(1);
+        assertThat(updatedPushInformation.getErrors())
+                .extracting("pushMessageVariantId", "variantID", "errorReason")
+                .contains(
+//                        tuple(updatedPushInformation.getId() + ":321", "321", "Big failure" ),
+                        tuple(updatedPushInformation.getId() + ":321", "321", "Really big failure" )
+                );
+    }
 }

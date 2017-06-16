@@ -182,9 +182,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     private void putActivityIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
         response.header("activity_app_" + app.getPushApplicationID(), metricsService.countMessagesForPushApplication(app.getPushApplicationID()));
-        for (Variant variant : app.getVariants()) {
-            response.header("activity_variant_" + variant.getVariantID(), metricsService.countMessagesForVariant(variant.getVariantID()));
-        }
     }
 
     private void putDeviceCountIntoResponseHeaders(PushApplication app, ResponseBuilder response) {

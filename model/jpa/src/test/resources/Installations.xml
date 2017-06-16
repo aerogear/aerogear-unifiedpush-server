@@ -217,4 +217,7 @@
             <value>102</value>
         </row>
     </table>
+    <table name="SA.FLAT_PUSH_MESSAGE_INFO" />
+    <table name="SA.VARIANT_ERROR_STATUS" />
+
 </dataset>

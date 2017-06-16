@@ -3,7 +3,8 @@ angular.module('upsConsole')
 
     var self = this;
 
-    this.TOOLTIP_PENDING = "Payload is being submitted";
+    this.TOOLTIP_TARGETS = "Targeted devices or topics for Android/Firebase";
+    this.TOOLTIP_OPENED = "Number of users that launched the mobile app by using the push notification";
     this.TOOLTIP_SUCCESS = "Payload submitted to 3rd party push network for further processing";
     this.TOOLTIP_FAIL = "Could not submit payload to 3rd party";
 
@@ -45,9 +46,6 @@ angular.module('upsConsole')
               console.log('failed to parse metric');
               metric.$message = {};
             }
-            metric.variantInformations.forEach(function( variantInformation ) {
-              variantInformation.$variant = getVariantByID( variantInformation.variantID );
-            });
           });
         });
     }
@@ -78,21 +76,6 @@ angular.module('upsConsole')
       fetchMetrics( self.currentPage, self.searchString )
         .then(function() {
           $log.debug('refreshed');
-          // is the _last_ push job pending?
-          var isPending = self.metrics[0] && (self.metrics[0].servedVariants < self.metrics[0].totalVariants);
-          // var isPending = self.metrics.some(function(metric) {
-          //   return metric.servedVariants < metric.totalVariants;
-          // });
-          if (isPending) {
-            if (!refreshInterval) {
-              $log.debug('scheduling refresh');
-              refreshInterval = $interval(refreshUntilAllServed, 1000);
-            }
-          } else {
-            $log.debug('clearing refresh');
-            $interval.cancel(refreshInterval);
-            refreshInterval = null;
-          }
         });
     }
 
@@ -100,13 +83,11 @@ angular.module('upsConsole')
     refreshUntilAllServed();
 
     $scope.$on('upsNotificationSent', function() {
-      var timer1 = $timeout(refreshUntilAllServed, 500); // artificial delay - refresh after 0.5sec to ensure server has time to load some batches; prevents situation when totalBatches = 0 for all variants
-      var timer2 = $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
+      var timer1 = $timeout(refreshUntilAllServed, 3000); // refresh again to be double-sure ;-) note: should be addressed as part of https://issues.jboss.org/browse/AGPUSH-1513
       // destroy timeouts
       $scope.$on("$destroy", function() {
         $log.debug('cancelling refreshUntilAllServed timeouts');
         $timeout.cancel( timer1 );
-        $timeout.cancel( timer2 );
       });
     });
     $scope.$on('$destroy', function () {

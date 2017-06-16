@@ -36,4 +36,15 @@ public class DeleteOldPushMessageInformationScheduler {
     public void deleteOutdatedMetrics(){
         service.deleteOutdatedPushInformationData();
     }
+
+    /**
+     * Job that triggers a delete of outdated metric information from the Server.
+     *
+     * Note: Occurring every day at midnight in the default time zone associated with the container
+     * in which the application is executing. These are the default values from the @Schedule annotation.
+     */
+    @Schedule
+    public void deleteOutdatedFlatMetrics(){
+        service.deleteOutdatedFlatPushInformationData();
+    }
 }

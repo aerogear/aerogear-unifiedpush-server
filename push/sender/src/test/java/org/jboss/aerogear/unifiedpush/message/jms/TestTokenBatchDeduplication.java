@@ -32,7 +32,7 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
@@ -103,7 +103,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
 
     private void sendBatchWithSerialId(int serialId) {
         List<String> tokenBatch = new ArrayList<>();
-        PushMessageInformation pmi = new PushMessageInformation();
+        FlatPushMessageInformation pmi = new FlatPushMessageInformation();
         pmi.setId(uuid);
         AndroidVariant variant = new AndroidVariant();
         MessageHolderWithTokens msg = new MessageHolderWithTokens(pmi, null, variant, tokenBatch, serialId);
