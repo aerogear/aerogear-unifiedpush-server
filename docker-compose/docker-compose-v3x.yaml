@@ -3,7 +3,7 @@ version: "3.2"
 services:
   unifiedpushDB:
     image: mysql:5.5
-    environment: 
+    environment:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE_UNIFIEDPUSH}
@@ -12,7 +12,7 @@ services:
       - 4306:3306
   keycloakDB:
     image: mysql:5.5
-    environment: 
+    environment:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE_KEYCLOAK}
@@ -21,7 +21,7 @@ services:
       - 4406:3306
   unifiedpushserver:
     image: aerogear/unifiedpush-wildfly-dev
-    environment: 
+    environment:
         UNIFIEDPUSH_PORT_3306_TCP_ADDR: ${MYSQL_ADDR_UNIFIEDPUSH}
         UNIFIEDPUSH_ENV_MYSQL_USER: ${MYSQL_USER}
         UNIFIEDPUSH_ENV_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
