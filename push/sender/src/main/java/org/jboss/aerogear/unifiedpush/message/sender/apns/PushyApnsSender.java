@@ -27,6 +27,7 @@ import io.netty.util.concurrent.Future;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -41,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
@@ -67,7 +69,8 @@ public class PushyApnsSender implements PushNotificationSender {
     private SimpleApnsClientCache simpleApnsClientCache;
     @Inject
     private ClientInstallationService clientInstallationService;
-
+    @Inject
+    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
     @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
@@ -122,8 +125,9 @@ public class PushyApnsSender implements PushNotificationSender {
             });
 
         } else {
-            logger.error("Unable to send notifications, client is not connected");
+            logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
+            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
         }
     }
 
