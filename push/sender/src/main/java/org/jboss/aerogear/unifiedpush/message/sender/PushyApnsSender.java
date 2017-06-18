@@ -28,6 +28,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -41,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
@@ -62,6 +64,9 @@ public class PushyApnsSender implements PushNotificationSender {
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
     private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
+
+    @Inject
+    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
     @Inject
     private SimpleApnsClientCache simpleApnsClientCache;
@@ -127,6 +132,9 @@ public class PushyApnsSender implements PushNotificationSender {
         } else {
             logger.error("Unable to send notifications, client is not connected");
             senderCallback.onError("Unable to send notifications, client is not connected");
+
+            // when a client is not connected, for what ever reason, we need to remove it from the cache
+            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
         }
     }
 
