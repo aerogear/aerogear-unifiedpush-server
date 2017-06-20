@@ -94,9 +94,9 @@ public final class ConfigurationUtils {
 	 * @return loaded configurations into {@link Properties} object
 	 * @throws IOException
 	 */
-	public static Properties loadProperties(String path) throws IOException {
-		try (InputStream props = ConfigurationUtils.class.getResourceAsStream(path)) {
-			Properties properties = new Properties();
+	public static Properties loadProperties(final String path) throws IOException {
+		try (final InputStream props = ConfigurationUtils.class.getResourceAsStream(path)) {
+			final Properties properties = new Properties();
 			properties.load(props);
 			return properties;
 		}
