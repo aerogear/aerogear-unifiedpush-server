@@ -137,28 +137,31 @@ public class AliasServiceImpl implements AliasService {
 	 *            alias name
 	 */
 	@Override
-	public boolean exists(String alias) {
+	public boolean registered(String alias) {
 		return keycloakService.exists(alias);
 	}
 
 	/**
 	 * Validate rather an alias is associated to a team/application.
 	 *
-	 * @param fqdn
-	 *            domain team name.
 	 * @param alias
 	 *            alias name
+	 * @param fqdn
+	 *            domain / team name.
 	 */
+	public boolean associated(String alias, String fqdn) {
+		PushApplication pushApplication = null;
 
-	public boolean associated(String fqdn, String alias) {
 		// Return application name from fqdn.
-		String applicationName = keycloakService.strip(fqdn);
-		PushApplication pushApplication = pushApplicationService.findByName(applicationName);
+		if (StringUtils.isNotEmpty(fqdn)) {
+			String applicationName = keycloakService.strip(fqdn);
+			pushApplication = pushApplicationService.findByName(applicationName);
+		}
 
-		if (pushApplication == null)
-			return false;
-
-		Alias aliasObj = find(pushApplication.getPushApplicationID(), alias);
+		// TODO - Disallow query when fqdn is missing.
+		// This can be done only when: 1) 1.6.0 is out of market 2) CAPTCHA was
+		// added to login template.
+		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
 		return aliasObj != null;
 	}

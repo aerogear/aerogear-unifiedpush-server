@@ -141,8 +141,10 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 
 		// Sync 3 aliases
 		aliasService.addAll(pushApplication, aliasList, false);
-		boolean result = aliasService.associated(appName + "-" + domain, aliases[0].getEmail());
+		boolean result = aliasService.associated(aliases[0].getEmail(), appName + "-" + domain);
+		assertThat(result).isTrue();
 
+		result = aliasService.associated(aliases[0].getEmail(), null);
 		assertThat(result).isTrue();
 	}
 

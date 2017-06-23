@@ -58,7 +58,7 @@ public interface AliasService {
 	 */
 	void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
 
-	boolean exists(String alias);
+	boolean registered(String alias);
 
 	boolean associated(String fqdn, String alias);
 
