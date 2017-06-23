@@ -134,7 +134,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * @param alias
 	 *            The associated domain / team.
 	 * @param fqdn
-	 *            The asso domain.
+	 *            The alias domain.
 	 *
 	 * @return {@link Boolean}
 	 *

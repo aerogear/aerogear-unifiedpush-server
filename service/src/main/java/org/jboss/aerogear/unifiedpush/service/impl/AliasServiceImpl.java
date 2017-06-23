@@ -144,8 +144,8 @@ public class AliasServiceImpl implements AliasService {
 	/**
 	 * Validate rather an alias is associated to a team/application.
 	 *
-	 * @param domain
-	 *            ser/browser domain.
+	 * @param fqdn
+	 *            domain team name.
 	 * @param alias
 	 *            alias name
 	 */
