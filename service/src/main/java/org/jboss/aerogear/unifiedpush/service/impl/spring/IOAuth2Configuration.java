@@ -20,4 +20,5 @@ interface IOAuth2Configuration {
 
 	String getRooturlProtocol();
 
+	String getRooturlSeparator();
 }

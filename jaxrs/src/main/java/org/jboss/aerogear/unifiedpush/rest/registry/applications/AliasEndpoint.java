@@ -91,7 +91,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
-	 * RESTful API for updating alias password. The Endpoint has public access.
+	 * RESTful API for validating alias is already registered. The Endpoint has
+	 * public access.
 	 *
 	 * @param alias
 	 *            The alias name.
@@ -107,6 +108,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * @statuscode 400 The format of the aliases request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
+	 *
+	 *             TODO - Rename to registered
 	 */
 	@GET
 	@Path("/exists/{alias}")
@@ -114,6 +117,45 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("java.lang.Boolean")
 	public Response exists(@PathParam("alias") String alias, @Context HttpServletRequest request) {
 		if (aliasService.exists(alias))
+			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+
+		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+	}
+
+	/**
+	 * RESTful API for validating alias existence (associated) within a team.
+	 * The Endpoint has public access.
+	 *
+	 * <pre>
+	 * curl -v -H "Accept: application/json" -H "Content-type: application/json"
+	 *   -X GET https://SERVER:PORT/context/rest/alias/associated/{alias}?fqdn=test.aerobase.org
+	 * </pre>
+	 *
+	 * @param alias
+	 *            The associated domain / team.
+	 * @param fqdn
+	 *            The asso domain.
+	 *
+	 * @return {@link Boolean}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
+	 *                 header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="UnifiedPush Server" (only
+	 *                 for 401 response)
+	 *
+	 * @statuscode 200 True/False String value.
+	 * @statuscode 400 The format of the aliases request was incorrect (e.g.
+	 *             missing required values).
+	 * @statuscode 401 The request requires authentication.
+	 */
+	@GET
+	@Path("/associated/{alias}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Boolean")
+	public Response associated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
+			@Context HttpServletRequest request) {
+		if (aliasService.associated(fqdn, alias))
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
 
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);

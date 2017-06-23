@@ -59,4 +59,9 @@ public class KeycloakServiceWrapper implements KeycloakService {
 	public boolean isInitialized() {
 		return keycloakService.isInitialized();
 	}
+
+	@Override
+	public String strip(String fqdn) {
+		return keycloakService.strip(fqdn);
+	}
 }

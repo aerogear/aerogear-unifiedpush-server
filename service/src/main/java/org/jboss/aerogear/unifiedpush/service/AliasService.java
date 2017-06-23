@@ -60,6 +60,8 @@ public interface AliasService {
 
 	boolean exists(String alias);
 
+	boolean associated(String fqdn, String alias);
+
 	Alias create(String pushApplicationId, String alias);
 
 	Alias find(String pushApplicationId, String alias);

@@ -64,4 +64,6 @@ public interface PushApplicationService {
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 
     PushApplication findByVariantID(String variantID);
+
+    PushApplication findByName(String name);
 }

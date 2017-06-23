@@ -20,13 +20,15 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	private static final String KEY_OAUTH2_ADMIN_PASSWORD = "aerogear.config.oauth2.admin.password";
 
 	private static final String KEY_OAUTH2_ADMIN_CLIENT_ID = "aerogear.config.oauth2.ups.admin.client";
-	private static final String KEY_OAUTH2_ENFORE_DOMAIN = "aerogear.config.oauth2.enforce.rooturl.domain";
+	public static final String KEY_OAUTH2_ENFORE_DOMAIN = "aerogear.config.oauth2.enforce.rooturl.domain";
 	private static final String KEY_OAUTH2_ENFORCE_PROTOCOL = "aerogear.config.oauth2.enforce.rooturl.protocol";
+	private static final String KEY_OAUTH2_ENFORE_SEPERATOR = "aerogear.config.oauth2.enforce.rooturl.seperator";
 
 	private static final String DEFAULT_OAUTH2_SERVER_URL = "/auth";
 
 	public static final String DEFAULT_OAUTH2_UPS_REALM = "unifiedpush";
 	public static final String DEFAULT_OAUTH2_UPSI_REALM = "unifiedpush-installations";
+	public static final String DEFAULT_SUBDOMAIN_SEPERATOR = "-";
 
 	private static ConfigurationEnvironment configuration;
 
@@ -64,6 +66,10 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	public String getRooturlProtocol() {
 		return getProperty(KEY_OAUTH2_ENFORCE_PROTOCOL, StringUtils.EMPTY);
+	}
+
+	public String getRooturlSeparator() {
+		return getProperty(KEY_OAUTH2_ENFORE_SEPERATOR, DEFAULT_SUBDOMAIN_SEPERATOR);
 	}
 
 	private Boolean getProperty(String key, Boolean defaultValue) {
@@ -109,7 +115,6 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	public static String getStaticUpsiRealm() {
 		return getProperty(KEY_OAUTH2_UPSI_REALM, DEFAULT_OAUTH2_UPSI_REALM);
 	}
-
 
 	public ConfigurationEnvironment getConfiguration() {
 		return configuration;

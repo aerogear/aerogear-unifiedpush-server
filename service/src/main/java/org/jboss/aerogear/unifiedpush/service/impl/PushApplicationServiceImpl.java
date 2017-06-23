@@ -92,4 +92,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	public PushApplication findByVariantID(String variantId) {
 		return pushApplicationDao.findByVariantId(variantId);
 	}
+
+	@Override
+	public PushApplication findByName(String name) {
+		return pushApplicationDao.findByPushApplicationName(name);
+	}
 }

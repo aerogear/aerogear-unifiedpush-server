@@ -63,6 +63,15 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      */
     PushApplication findByPushApplicationID(String pushApplicationID);
 
+    /**
+     * Finder that returns an actual PushApplication by its Name.
+     *
+     * @param name the push application name
+     *
+     * @return push application object or null
+     */
+    PushApplication findByPushApplicationName(String name);
+
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 
     /**

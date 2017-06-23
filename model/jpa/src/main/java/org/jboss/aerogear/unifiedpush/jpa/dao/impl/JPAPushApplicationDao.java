@@ -153,4 +153,11 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 .getSingleResult();
     }
 
+    @Override
+    public PushApplication findByPushApplicationName(String name) {
+        return getSingleResultForQuery(createQuery(
+                "select pa from PushApplication pa where LOWER(pa.name) = :name")
+                .setParameter("name", name));
+    }
+
 }

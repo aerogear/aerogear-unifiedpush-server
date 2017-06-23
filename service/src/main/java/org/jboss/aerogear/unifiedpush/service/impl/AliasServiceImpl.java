@@ -30,6 +30,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.KeycloakService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,8 @@ public class AliasServiceImpl implements AliasService {
 	@Inject
 	@Wrapper
 	private KeycloakService keycloakService;
+	@Inject
+	private PushApplicationService pushApplicationService;
 
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
 		logger.debug("OAuth2 flag is: " + oauth2);
@@ -128,7 +131,7 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	/**
-	 * Test if user exists in KC.
+	 * Test if user exists / registered to KC.
 	 *
 	 * @param alias
 	 *            alias name
@@ -136,6 +139,28 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public boolean exists(String alias) {
 		return keycloakService.exists(alias);
+	}
+
+	/**
+	 * Validate rather an alias is associated to a team/application.
+	 *
+	 * @param domain
+	 *            ser/browser domain.
+	 * @param alias
+	 *            alias name
+	 */
+
+	public boolean associated(String fqdn, String alias) {
+		// Return application name from fqdn.
+		String applicationName = keycloakService.strip(fqdn);
+		PushApplication pushApplication = pushApplicationService.findByName(applicationName);
+
+		if (pushApplication == null)
+			return false;
+
+		Alias aliasObj = find(pushApplication.getPushApplicationID(), alias);
+
+		return aliasObj != null;
 	}
 
 	@Override

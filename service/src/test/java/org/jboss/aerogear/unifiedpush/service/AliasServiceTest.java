@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
@@ -91,7 +92,6 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		});
 	}
 
-
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
 	public void testRemoveAlias() throws IOException {
@@ -117,6 +117,33 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		// Validate Alias is missing
 		assertThat(aliasService.find(legacyAliases[0].getPushApplicationId(), legacyAliases[0].getId())).isNull();
 
+	}
+
+	@Test
+	@Transactional(TransactionMode.ROLLBACK)
+	public void addPushApplication() {
+		String domain = "aerobase.com";
+		String appName = "xxx";
+
+		System.setProperty(OAuth2Configuration.KEY_OAUTH2_ENFORE_DOMAIN, domain);
+
+		PushApplication pushApplication = new PushApplication();
+		pushApplication.setName(appName);
+		UUID pushAppId = UUID.randomUUID();
+		pushApplication.setPushApplicationID(pushAppId.toString());
+
+		pushApplicationService.addPushApplication(pushApplication);
+
+		Alias[] aliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		List<Alias> aliasList = Arrays.asList(aliases);
+
+		// Sync 3 aliases
+		aliasService.addAll(pushApplication, aliasList, false);
+		boolean result = aliasService.associated(appName + "-" + domain, aliases[0].getEmail());
+
+		assertThat(result).isTrue();
 	}
 
 	@Override

@@ -36,7 +36,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	private static final String CLIENT_PREFIX = "ups-installation-";
 	private static final String KEYCLOAK_ROLE_USER = "installation";
-	private static final String SUBDOMAIN_SEPERATOR = "-";
 	private static final String UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD";
 
 	private static final String ATTRIBUTE_VARIANT_SUFFIX = "_variantid";
@@ -123,7 +122,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 			String domain = conf.getRooturlDomain();
 			String protocol = conf.getRooturlProtocol();
-			clientRepresentation.setRootUrl(protocol + "://" + simpleApplicationName + SUBDOMAIN_SEPERATOR + domain);
+			clientRepresentation
+					.setRootUrl(protocol + "://" + simpleApplicationName + conf.getRooturlSeparator() + domain);
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");
 
@@ -343,5 +343,20 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	private void evict(String clientId) {
 		Cache cache = cacheManager.getCache(IKeycloakService.CACHE_NAME);
 		cache.evict(clientId);
+	}
+
+	/*
+	 * String domain name and separator and return subdomain as application
+	 * name.
+	 */
+	public String strip(String fqdn) {
+		String domain = conf.getRooturlDomain();
+		String separator = conf.getRooturlSeparator();
+
+		if (StringUtils.isNotEmpty(fqdn)) {
+			return StringUtils.removeEnd(StringUtils.removeEnd(fqdn, domain), separator);
+		}
+
+		return StringUtils.EMPTY;
 	}
 }
