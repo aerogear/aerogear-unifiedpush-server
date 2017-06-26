@@ -231,7 +231,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
 
         if (pushMessageId != null) {
-            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.props")) {
+            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.properties")) {
                 final Properties properties = new Properties();
                 properties.load(props);
 
