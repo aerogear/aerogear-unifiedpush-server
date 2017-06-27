@@ -111,6 +111,13 @@
             <version>${kafka.clients.version}</version>
         </dependency>
 
+        <!-- Apache Kafka CDI -->
+        <dependency>
+            <groupId>net.wessendorf.kafka</groupId>
+            <artifactId>kafka-cdi-extension</artifactId>
+            <version>${kafka.cdi.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
