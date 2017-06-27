@@ -190,6 +190,7 @@
         <admin-ui.version>1.2.6</admin-ui.version>
 
         <kafka.clients.version>0.10.2.1</kafka.clients.version>
+        <kafka.cdi.version>0.0.5</kafka.cdi.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
