@@ -53,26 +53,3 @@
   </div><!-- row -->
 </div><!-- ng-if -->
 
-<div class="blank-slate-pf" ng-if="appDetail.app.$messageCount == 0 || appDetail.app.$deviceCount == 0 || analyticsCtrl.receivers == 0">
-  <div class="blank-slate-pf-icon">
-    <i class="fa fa-bar-chart"></i>
-  </div>
-
-  <h1 ng-if="appDetail.app.$messageCount == 0">No Analytics yet</h1>
-  <h1 ng-if="appDetail.app.$messageCount != 0">No Charts yet</h1>
-
-  <div ng-if="appDetail.app.$deviceCount == 0">
-    <p>There are no registered device for this application.</p>
-    <p>Check out the documentation on how to get started to <a ups-doc="docs-push-getting-started">register a device</a>.</p>
-  </div>
-
-  <div ng-if="appDetail.app.$deviceCount != 0">
-    <p>You haven't send push notifications to the device yet.</p>
-    <div class="blank-slate-pf-main-action">
-      <button class="btn btn-primary btn-lg" ng-click="appDetail.sendNotification()" ng-disabled="!appDetail.app.variants.length">
-        <i class="fa fa-paper-plane"></i>
-        Send Notification to this app
-      </button>
-    </div>
-  </div>
-</div>
