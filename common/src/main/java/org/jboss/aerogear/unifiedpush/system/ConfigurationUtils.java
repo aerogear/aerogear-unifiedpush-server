@@ -87,19 +87,19 @@ public final class ConfigurationUtils {
         }
     }
 
-	/**
-	 * Load properties from a file.
-	 * 
-	 * @param path path to a file in which the properties are stored.
-	 * @return loaded configurations into {@link Properties} object
-	 * @throws IOException
-	 */
-	public static Properties loadProperties(final String path) throws IOException {
-		try (final InputStream props = ConfigurationUtils.class.getResourceAsStream(path)) {
-			final Properties properties = new Properties();
-			properties.load(props);
-			return properties;
-		}
-	}
+    /**
+     * Load properties from a file.
+     * 
+     * @param path path to a file in which the properties are stored.
+     * @return loaded configurations into {@link Properties} object
+     * @throws IOException
+     */
+    public static Properties loadProperties(final String path) throws IOException {
+        try (final InputStream props = ConfigurationUtils.class.getResourceAsStream(path)) {
+            final Properties properties = new Properties();
+            properties.load(props);
+            return properties;
+        }
+    }
 
 }
