@@ -220,32 +220,31 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
-			@Context HttpServletRequest request) throws IOException {
+    public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId, @Context HttpServletRequest request)
+            throws IOException {
 
-		// find the matching variation:
-		final Variant variant = loadVariantWhenAuthorized(request);
-		if (variant == null) {
-			return create401Response(request);
-		}
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
 
-		if (pushMessageId != null) {
+        if (pushMessageId != null) {
 
-			// start the producer and push a message to installation metrics
-			// topic
-			final Properties properties = ConfigurationUtils.loadProperties(KAFKA_PRODUCER_PROPERTIES_PATH);
-			final Producer<String, String> producer = new KafkaProducer<>(properties);
-			producer.send(new ProducerRecord<String, String>(KAFKA_INSTALLATION_TOPIC, pushMessageId,
-					variant.getVariantID()));
-			producer.close();
+            // start the producer and push a message to installation metrics
+            // topic
+            final Properties properties = ConfigurationUtils.loadProperties(KAFKA_PRODUCER_PROPERTIES_PATH);
+            final Producer<String, String> producer = new KafkaProducer<>(properties);
+            producer.send(new ProducerRecord<String, String>(KAFKA_INSTALLATION_TOPIC, pushMessageId, variant.getVariantID()));
+            producer.close();
 
-			return Response.ok(EmptyJSON.STRING).build();
+            return Response.ok(EmptyJSON.STRING).build();
 
-		} else {
-			logger.warn("A request with empty push message id was done. Bad Request response is returned.");
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-	}
+        } else {
+            logger.warn("A request with empty push message id was done. Bad Request response is returned.");
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+    }
 
     /**
      * RESTful API for Device unregistration.
