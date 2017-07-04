@@ -61,8 +61,8 @@ import java.util.Properties;
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
-	public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.properties";
-	public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
+    public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.properties";
+    public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
 	
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
