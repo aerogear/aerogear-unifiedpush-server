@@ -31,7 +31,7 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +55,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
+    public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.properties";
+    public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
+	
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
 
@@ -70,9 +72,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
-
-    @Inject
-    private PushMessageMetricsService metricsService;
 
     /**
      * Cross Origin for Installations
@@ -221,8 +220,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-    public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId,
-                           @Context HttpServletRequest request) throws IOException {
+    public Response increasePushMessageReadCounter(@PathParam("id") String pushMessageId, @Context HttpServletRequest request)
+            throws IOException {
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
@@ -231,22 +230,20 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         }
 
         if (pushMessageId != null) {
-            try (final InputStream props = this.getClass().getResourceAsStream("/kafka/producer.properties")) {
-                final Properties properties = new Properties();
-                properties.load(props);
 
-                final Producer<String, String> producer = new KafkaProducer<>(properties);
-                producer.send(new ProducerRecord<String, String>("installationMetrics", pushMessageId, variant.getVariantID()));
-                producer.close();
-            }
+            // start the producer and push a message to installation metrics
+            // topic
+            final Properties properties = ConfigurationUtils.loadProperties(KAFKA_PRODUCER_PROPERTIES_PATH);
+            final Producer<String, String> producer = new KafkaProducer<>(properties);
+            producer.send(new ProducerRecord<String, String>(KAFKA_INSTALLATION_TOPIC, pushMessageId, variant.getVariantID()));
+            producer.close();
 
-            // let's do update the analytics
-            metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+            return Response.ok(EmptyJSON.STRING).build();
+
         } else {
+            logger.warn("A request with empty push message id was done. Bad Request response is returned.");
             return Response.status(Status.BAD_REQUEST).build();
         }
-
-        return Response.ok(EmptyJSON.STRING).build();
     }
 
     /**
