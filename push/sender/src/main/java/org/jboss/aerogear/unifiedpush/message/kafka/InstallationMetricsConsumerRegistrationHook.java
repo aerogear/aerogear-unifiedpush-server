@@ -16,13 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -45,18 +44,18 @@ public class InstallationMetricsConsumerRegistrationHook {
     private PushMessageMetricsService metricsService;
 
     private InstallationMetricsKafkaConsumer consumer;
-    private ExecutorService executor;
+    
+    @Resource(name = "DefaultManagedExecutorService")
+    private ManagedExecutorService executor;
 
     /**
      * Start a new instance of {@link InstallationMetricsKafkaConsumer}.
      */
     @PostConstruct
     private void startup() {
-        executor = Executors.newSingleThreadExecutor();
         consumer = new InstallationMetricsKafkaConsumer(metricsService);
         executor.execute(consumer);
         logger.debug("Consumer {} started.", InstallationMetricsKafkaConsumer.class);
-
     }
 
     /**
