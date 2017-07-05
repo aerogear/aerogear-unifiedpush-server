@@ -7,12 +7,12 @@ local-config.json
 *.war
 *.ear
 
-#Build targets
+# Build targets
 target/
 /target
 */target
 
-#Maven release files
+# Maven release files
 *.releaseBackup
 release.properties
 
@@ -25,3 +25,7 @@ release.properties
 
 .DS_Store
 *.checkstyle
+
+# SonarQube
+.scannerwork/
+sonar-project.properties
