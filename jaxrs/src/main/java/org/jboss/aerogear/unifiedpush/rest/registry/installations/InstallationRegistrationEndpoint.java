@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Path("/registry/device")
+@KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.properties";
