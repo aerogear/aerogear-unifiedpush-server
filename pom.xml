@@ -199,6 +199,7 @@
         <aerogear.bom.version>0.2.20.2</aerogear.bom.version>
 
         <kafka.clients.version>0.10.2.1</kafka.clients.version>
+        <kafka.cdi.version>0.0.5</kafka.cdi.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
