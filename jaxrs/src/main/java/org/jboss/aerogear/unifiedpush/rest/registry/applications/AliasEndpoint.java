@@ -71,11 +71,13 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * @param headers
 	 *            "Origin" header
+	 * @param token
+	 *            Will match any pattern not matched by a more specific path.
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
-	 * @responseheader Access-Control-Allow-Methods POST, DELETE
+	 * @responseheader Access-Control-Allow-Methods POST, DELETE, OPTIONS, PUT
 	 * @responseheader Access-Control-Allow-Headers accept, origin,
 	 *                 content-type, authorization
 	 * @responseheader Access-Control-Allow-Credentials true
@@ -84,9 +86,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * @statuscode 200 Successful response for your request
 	 */
 	@OPTIONS
-	@Path("/{alias}")
+	@Path("{token: .*}")
 	@ReturnType("java.lang.Void")
-	public Response crossOriginForAlias(@Context HttpHeaders headers) {
+	public Response crossOriginForInstallations(@Context HttpHeaders headers, @PathParam("token") String token) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 
