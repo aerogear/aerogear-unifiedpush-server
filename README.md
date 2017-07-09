@@ -43,7 +43,7 @@ AeroBase is a mobile/web platform that helps you quickly develop high-quality mo
 Or for the on-premise version, execute the following steps to get going!
 
 * Download the [latest package (rpm/deb) files](http://ups.c-b4.com/ups/packages/)
-* Or follow the steps on the [Installation guide](https://github.com/aerobase/unifiedpush-server/wiki/Unifiedpush-Installation)
+* Or follow the steps on the [Installation guide](https://github.com/aerobase/unifiedpush-server/wiki/AeroBase-Installation)
 * Run ``sudo unifiedpush-server reconfigure``
 * Start the server ``sudo unifiedpush-server start``
 
