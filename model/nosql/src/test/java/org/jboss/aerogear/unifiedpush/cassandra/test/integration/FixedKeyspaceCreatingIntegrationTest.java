@@ -1,6 +1,6 @@
 package org.jboss.aerogear.unifiedpush.cassandra.test.integration;
 
-import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.junit.ClassRule;
 import org.springframework.cassandra.core.SessionCallback;
 import org.springframework.cassandra.test.integration.AbstractKeyspaceCreatingIntegrationTest;

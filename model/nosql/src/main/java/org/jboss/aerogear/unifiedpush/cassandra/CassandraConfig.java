@@ -1,5 +1,6 @@
-package org.jboss.aerogear.unifiedpush.cassandra.dao;
+package org.jboss.aerogear.unifiedpush.cassandra;
 
+import org.jboss.aerogear.unifiedpush.cassandra.dao.CacheConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.CassandraBaseDao;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraEntityClassScanner;
+import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
 import org.springframework.data.cassandra.config.java.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.mapping.BasicCassandraMappingContext;
 import org.springframework.data.cassandra.mapping.CassandraMappingContext;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
-@Import({ ConfigurationEnvironment.class, CacheConfig.class})
+@Import({ ConfigurationEnvironment.class, CacheConfig.class })
 @ComponentScan(basePackageClasses = { CassandraBaseDao.class })
 @EnableCassandraRepositories(basePackageClasses = { CassandraBaseDao.class })
 public class CassandraConfig extends AbstractCassandraConfiguration {
@@ -55,8 +57,28 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		BasicCassandraMappingContext bean = new BasicCassandraMappingContext();
 		bean.initialize();
 		bean.setInitialEntitySet(CassandraEntityClassScanner.scan(getEntityBasePackages()));
-		bean.setBeanClassLoader(beanClassLoader);
 
 		return bean;
+	}
+
+	/**
+	 * Override CassandraSessionFactoryBean to control and retry failed
+	 * connections.
+	 *
+	 * TODO - Check that super.session() impl is not changed over time.
+	 */
+	@Bean
+	public CassandraSessionFactoryBean session() throws ClassNotFoundException {
+
+		RetryCassandraSessionFactoryBean session = new RetryCassandraSessionFactoryBean();
+
+		session.setCluster(cluster().getObject());
+		session.setConverter(cassandraConverter());
+		session.setKeyspaceName(getKeyspaceName());
+		session.setSchemaAction(getSchemaAction());
+		session.setStartupScripts(getStartupScripts());
+		session.setShutdownScripts(getShutdownScripts());
+
+		return session;
 	}
 }

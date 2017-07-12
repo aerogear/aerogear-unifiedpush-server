@@ -35,11 +35,6 @@ class OtpCodeDaoImpl extends CassandraBaseDao<OtpCode, OtpCodeKey> implements Ot
 		return operations.insert(entity, options);
 	}
 
-	@Override
-	public void delete(OtpCodeKey id) {
-		super.delete(id);
-	}
-
 	public void deleteAll(OtpCodeKey id) {
 		Delete delete = QueryBuilder.delete().from(super.tableName);
 		delete.where(QueryBuilder.eq(OtpCodeKey.FIELD_VARIANT_ID, id.getVariantId()));

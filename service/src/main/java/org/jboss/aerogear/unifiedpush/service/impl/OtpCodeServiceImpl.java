@@ -34,6 +34,6 @@ public class OtpCodeServiceImpl implements OtpCodeService {
 
 	@Override
 	public OtpCode findOne(OtpCodeKey id) {
-		return codeDao.findOne(id);
+		return codeDao.findById(id).orElse(null);
 	}
 }

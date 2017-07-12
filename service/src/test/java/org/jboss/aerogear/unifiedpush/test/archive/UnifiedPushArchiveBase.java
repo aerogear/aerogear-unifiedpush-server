@@ -252,8 +252,7 @@ public abstract class UnifiedPushArchiveBase<T extends Archive<T>> extends Unifi
 	}
 
 	public T withSpringResources() {
-		return ((UnifiedPushArchive<T>) addAsResource("applicationContext.xml")) //
-				.addAsResource("beanRefContext.xml");
+		return addAsResource("applicationContext.xml");
 	}
 
 }

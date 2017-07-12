@@ -65,21 +65,19 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		}
 
 		users.stream().forEach(user -> {
-			super.save(user);
+			super.insert(user);
 		});
 
 		return users;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
 	public User update(User entity) {
 		// Read before write validation.
-		User user = findOne(entity.getKey());
+		User user = findById(entity.getKey()).orElse(null);
 		if (user == null)
-			return super.save(entity);
+			return super.insert(entity);
 
-		return super.update(entity);
+		return super.save(entity);
 	}
 
 	/*
@@ -149,7 +147,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	 */
 	public void removeAll(UUID pushApplicationId) {
 		findUserIds(pushApplicationId).forEach((row) -> {
-			delete(new UserKey(pushApplicationId, row.getUUID(0)));
+			deleteById(new UserKey(pushApplicationId, row.getUUID(0)));
 		});
 	}
 
@@ -194,7 +192,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	@Override
 	public void remove(UUID pushApplicationId, String alias) {
 		findUserIds(alias, pushApplicationId).forEach(row -> {
-			delete(getKey(row));
+			deleteById(getKey(row));
 		});
 	}
 
@@ -204,7 +202,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	@Override
 	public void remove(UUID pushApplicationId, UUID id) {
 		List<User> aliases = getUsers(pushApplicationId, id);
-		delete(new UserKey(pushApplicationId, id));
+		deleteById(new UserKey(pushApplicationId, id));
 
 		// Evict available aliases from cache.
 		if (aliases != null) {
@@ -215,7 +213,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	@Override
-	public void delete(UserKey key) {
+	public void deleteById(UserKey key) {
 		// Delete all aliases by partition key
 		// Future spring-cassandra versions might handle null clustering key.
 		if (key.getAlias() == null) {
@@ -224,7 +222,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 			delete.where(QueryBuilder.eq(UserKey.FIELD_USER_ID, key.getId()));
 			operations.getCqlOperations().execute(delete);
 		} else {
-			super.delete(key);
+			super.deleteById(key);
 			evict(key.getPushApplicationId(), key.getAlias());
 		}
 	}

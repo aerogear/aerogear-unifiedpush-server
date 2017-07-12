@@ -3,7 +3,6 @@ package org.jboss.aerogear.unifiedpush.spring;
 import javax.ejb.EJB;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
 
 /**
  * Spring Context Interceptor which assume SpringContextBean (EJB) was

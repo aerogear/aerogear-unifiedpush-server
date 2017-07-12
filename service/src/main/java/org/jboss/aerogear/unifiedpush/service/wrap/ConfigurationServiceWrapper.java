@@ -2,8 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.wrap;
 
 import java.util.Properties;
 
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
 import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
@@ -12,12 +11,11 @@ import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * EJB singleton wrapper bean. Wraps spring configuration environments and
+ * EJB wrapper bean. Wraps spring configuration environments and
  * beans.
  */
-@Startup
+@Stateless
 @Wrapper
-@Singleton
 @Interceptors(SpringContextInterceptor.class)
 public class ConfigurationServiceWrapper implements ConfigurationService {
 

@@ -25,11 +25,6 @@ public class KeycloakServiceWrapper implements KeycloakService {
 	}
 
 	@Override
-	public void createUserIfAbsent(String alias) {
-		keycloakService.createUserIfAbsent(alias);
-	}
-
-	@Override
 	public void createVerifiedUserIfAbsent(String userName, String password) {
 		keycloakService.createVerifiedUserIfAbsent(userName, password);
 	}

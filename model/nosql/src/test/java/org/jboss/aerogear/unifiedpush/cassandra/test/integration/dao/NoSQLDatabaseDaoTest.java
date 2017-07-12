@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 
 import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;

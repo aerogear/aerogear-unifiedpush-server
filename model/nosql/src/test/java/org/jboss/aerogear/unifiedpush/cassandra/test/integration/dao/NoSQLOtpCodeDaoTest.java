@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 
 import java.util.UUID;
 
-import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.OtpCodeDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
@@ -46,7 +46,7 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		OtpCode code1 = new OtpCode(key);
 		codeDao.save(code1, options);
 
-		OtpCode code2 = codeDao.findOne(key);
+		OtpCode code2 = codeDao.findById(key).orElse(null);
 		Assert.assertTrue(code2 != null);
 		Assert.assertTrue(code2.getKey().getCode().equals(code1.getKey().getCode()));
 
@@ -57,7 +57,7 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 			e.printStackTrace();
 		}
 
-		OtpCode code3 = codeDao.findOne(key);
+		OtpCode code3 = codeDao.findById(key).orElse(null);
 		Assert.assertTrue(code3 == null);
 	}
 
@@ -72,15 +72,15 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		codeDao.save(new OtpCode(key1));
 		codeDao.save(new OtpCode(key2));
 
-		OtpCode code1 = codeDao.findOne(key1);
+		OtpCode code1 = codeDao.findById(key1).orElse(null);
 		Assert.assertTrue(code1 != null);
 
 		codeDao.deleteAll(new OtpCodeKey(variantId, deviceToken.toString(), null));
 
-		OtpCode code2 = codeDao.findOne(key1);
+		OtpCode code2 = codeDao.findById(key1).orElse(null);
 		Assert.assertTrue(code2 == null);
 
-		OtpCode code3 = codeDao.findOne(key2);
+		OtpCode code3 = codeDao.findById(key2).orElse(null);
 		Assert.assertTrue(code3 == null);
 	}
 }

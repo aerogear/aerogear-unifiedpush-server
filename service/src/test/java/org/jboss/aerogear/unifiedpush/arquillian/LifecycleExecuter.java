@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.arquillian;
 
 import java.lang.reflect.Method;
 
-import org.jboss.aerogear.unifiedpush.cassandra.dao.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.arquillian.container.spi.event.container.AfterDeploy;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.AfterUnDeploy;

@@ -40,7 +40,7 @@ class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> imple
 
 	@Override
 	public void create(Database database) {
-		super.save(database);
+		super.insert(database);
 	}
 
 }

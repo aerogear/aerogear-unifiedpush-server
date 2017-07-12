@@ -166,6 +166,12 @@
 			<version>${springframework.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.reactivestreams</groupId>
+			<artifactId>reactive-streams</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 		<!-- Support SendGrip API -->
 		<dependency>
 			<groupId>com.sendgrid</groupId>
@@ -322,7 +328,7 @@
 
 			<build>
 				<plugins>
-				    <!-- Activation from test scope to we can run using mvn verify -->
+					<!-- Activation from test scope to we can run using mvn verify -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>

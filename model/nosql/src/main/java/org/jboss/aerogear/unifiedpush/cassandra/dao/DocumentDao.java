@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -18,7 +19,7 @@ public interface DocumentDao<T, ID> {
 
 	Stream<DocumentContent> find(ID key, QueryOptions options);
 
-	DocumentContent findOne(ID key);
+	Optional<DocumentContent> findOne(ID key);
 
 	DocumentContent findOne(ID key, String documentId);
 

@@ -43,6 +43,8 @@ public class UUIDToDateTest {
 	public void uuidNull() {
 		assertTrue(UUID.fromString("13814000-1dd2-11b2-8080-808080808080")
 				.equals(UUIDs.startOf(Instant.EPOCH.toEpochMilli())));
+
+		System.out.println(UUIDs.timeBased());
 	}
 
 	@Test

@@ -309,7 +309,7 @@
 			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-all</artifactId>
-				<version>4.0.36.Final</version>
+				<version>4.0.48.Final</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -462,13 +462,13 @@
 		<mysql.version>5.1.36</mysql.version>
 		<fasterxml.version>2.7.4</fasterxml.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
-		<springframework.version>5.0.0.M3</springframework.version>
+		<springframework.version>5.0.0.RC1</springframework.version>
 
 		<!-- Cassandra related properties -->
 		<failsafe.version>2.19.1</failsafe.version>
-		<cassandra.version>3.9</cassandra.version>
-		<cassandra-driver-core.version>3.1.1</cassandra-driver-core.version>
-		<cassandra-data.version>2.0.0.M1</cassandra-data.version>
+		<cassandra.version>3.10</cassandra.version>
+		<cassandra-driver-core.version>3.2.0</cassandra-driver-core.version>
+		<cassandra-data.version>2.0.0.M3</cassandra-data.version>
 
 		<ups.ddl_value>validate</ups.ddl_value>
 	</properties>
@@ -501,7 +501,7 @@
 					<dependency>
 						<groupId>org.arquillian.container</groupId>
 						<artifactId>arquillian-container-chameleon</artifactId>
-						<version>1.0.0.Alpha7</version>
+						<version>1.0.0.Beta2</version>
 						<scope>test</scope>
 						<exclusions>
 							<exclusion>
@@ -544,7 +544,7 @@
 					<dependency>
 						<groupId>org.wildfly.extras.creaper</groupId>
 						<artifactId>creaper-core</artifactId>
-						<version>1.6.0</version>
+						<version>1.6.1</version>
 						<exclusions>
 							<exclusion>
 								<groupId>org.jboss.as</groupId>
@@ -561,7 +561,7 @@
 					<dependency>
 						<groupId>org.wildfly.extras.creaper</groupId>
 						<artifactId>creaper-commands</artifactId>
-						<version>1.6.0</version>
+						<version>1.6.1</version>
 						<exclusions>
 							<exclusion>
 								<groupId>org.wildfly</groupId>
@@ -574,19 +574,19 @@
 					<dependency>
 						<groupId>org.wildfly.core</groupId>
 						<artifactId>wildfly-controller-client</artifactId>
-						<version>2.2.0.Final</version>
+						<version>2.2.1.Final</version>
 						<scope>test</scope>
 					</dependency>
 					<dependency>
 						<groupId>org.wildfly.core</groupId>
 						<artifactId>wildfly-cli</artifactId>
-						<version>2.2.0.Final</version>
+						<version>2.2.1.Final</version>
 						<scope>test</scope>
 					</dependency>
 					<dependency>
 						<groupId>org.wildfly.core</groupId>
 						<artifactId>wildfly-patching</artifactId>
-						<version>2.2.0.Final</version>
+						<version>2.2.1.Final</version>
 						<scope>test</scope>
 					</dependency>
 
@@ -787,8 +787,9 @@
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>alfresco-public</id>
-			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+			<id>spring-libs-milestone</id>
+			<name>Spring Snapshot Repository</name>
+			<url>http://repo.spring.io/libs-milestone-local</url>
 		</repository>
 	</repositories>
 </project>

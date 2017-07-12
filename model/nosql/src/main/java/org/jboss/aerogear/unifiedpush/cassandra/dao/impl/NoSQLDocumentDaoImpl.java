@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -49,7 +50,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			// Populate unique snapshot version.
 			document.getKey().snapshot = UUIDs.timeBased();
 
-			save((DocumentContent) document);
+			insert((DocumentContent) document);
 
 			// Populate database object if doesn't exists.
 			DatabaseQueryKey qkey = new DatabaseQueryKey(document);
@@ -61,8 +62,8 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	public DocumentContent findOne(DocumentKey key) {
-		return findOne(key, null);
+	public Optional<DocumentContent> findOne(DocumentKey key) {
+		return Optional.ofNullable(findOne(key, null));
 	}
 
 	@Override
@@ -72,9 +73,10 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		}
 
 		// Find document with specific version.
-		if (key.getSnapshot() != null && documentId == null)
-			return super.findOne(key);
-		else
+		if (key.getSnapshot() != null && documentId == null) {
+			return super.findById(key).orElse(null);
+
+		} else
 			return findLatest(key, documentId);
 	}
 
@@ -173,12 +175,12 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	 */
 	private void delete(UUID pushApplicationId, String database) {
 		aliasDao.findUserIds(pushApplicationId).forEach(row -> {
-			delete(new DocumentKey(pushApplicationId, database, row.getUUID(0)));
+			deleteById(new DocumentKey(pushApplicationId, database, row.getUUID(0)));
 		});
 	}
 
 	@Override
-	public void delete(DocumentKey key) {
+	public void deleteById(DocumentKey key) {
 		// Delete all documents by partition key
 		if (key.getSnapshot() == null) {
 			Delete delete = QueryBuilder.delete().from(super.tableName);
@@ -187,7 +189,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			delete.where(QueryBuilder.eq("user_id", key.getUserId()));
 			operations.getCqlOperations().execute(delete);
 		} else {
-			super.delete(key);
+			super.deleteById(key);
 		}
 	}
 }
