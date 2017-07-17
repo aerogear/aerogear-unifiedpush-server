@@ -46,6 +46,10 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		return cluster;
 	}
 
+	public CassandraClusterFactoryBean newCluster() {
+		return cluster();
+	}
+
 	/**
 	 * Manually assemble entity mapping. this is required because xml mapping is
 	 * not fully supported.
