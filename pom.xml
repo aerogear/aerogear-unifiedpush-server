@@ -32,6 +32,10 @@
     <name>AeroGear UnifiedPush Server</name>
     <url>http://aerogear.org/push</url>
 
+    <organization>
+        <name>JBoss by Red Hat</name>
+    </organization>
+
     <scm>
         <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
