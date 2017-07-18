@@ -42,9 +42,32 @@ $ docker run -d --name kafka --network kafka-net -p 9092:9092 --env ZOOKEEPER_IP
 ```
 Connect to the Kafka broker using your host IP.
 
+## Getting started with Openshift
+### Linux
+Create a new project: 
+```
+oc new-project kafka-cluster
+```
+Create the application:
+```
+oc new-app -f https://raw.githubusercontent.com/EnMasseProject/barnabas/master/kafka-statefulsets/resources/openshift-template.yaml -n kafka-cluster
+```
+To find the cluster IP, run:
+
+``` 
+oc get svc kafka
+```
+
+______ 
+
+**Note**: For provisioning persistent volumes, see [here](https://github.com/ppatierno/amqp-kafka-demo#deploying-the-apache-kafka-cluster). You may have to change the SELinux security context of each directory like so: 
+```
+chcon -R -t svirt_sandbox_file_t /path/to/dir
+```
+
 ## Connecting to the server
 
-Allow the UPS to connect to your Kafka broker by passing in the host and port (configured in the previous step) to the Wildfly server. Use the environment variables `KAFKA_HOST` and `KAFKA_PORT`:
+Allow the UPS to connect to your Kafka broker by passing in the host and port (configured in the previous steps) to the Wildfly server. Use the environment variables `KAFKA_HOST` and `KAFKA_PORT`:
 ```
 $SERVER_HOME/bin/standalone.sh -c standalone-full.xml -DKAFKA_HOST=<ip_address> -DKAFKA_PORT=<port>
 ```
