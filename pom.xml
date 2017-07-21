@@ -206,9 +206,9 @@
         <slfj4.version>1.7.21</slfj4.version>
 
         <!-- Code coverage -->
-        <org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
-        <org.jacoco.agent.version>0.6.3.201306030806</org.jacoco.agent.version>
-        <org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
+        <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>
+        <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
+        <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
         <ant.contrib.version>20020829</ant.contrib.version>
         <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
         <ups.ddl_value>update</ups.ddl_value>
@@ -255,6 +255,9 @@
 
         <profile>
             <id>code-coverage</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <unifiedpush-parent.build>${user.dir}/target</unifiedpush-parent.build>
                 <jacoco.prep>${unifiedpush-parent.build}/jacoco/prep</jacoco.prep>
