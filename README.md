@@ -113,6 +113,16 @@ In order to clean the state of Admin UI build caches, run maven build with the f
 
 Try this if the build fails e.g. after `bower.json` or `package.json` modifications to make sure no cache is playing with you.
 
+### Jacoco and Sonarqube 
+
+To run Jacoco and produce a jacoco report, run maven build with the following parameter
+
+```
+mvn -Ptest,code-coverage clean install
+
+```
+
+Then a report is generated in `target/jacoco/prep/` folder. To run a SonarQube use `sonar-project.properties` file in the root folder.
 
 ## Releasing the UnifiedPush Server
 
@@ -121,7 +131,6 @@ The content of the [Release Process](https://github.com/aerogear/collateral/wiki
 ```
 mvn release:GOAL -Pdist,test
 ```
-
 
 ## Deprecation Notices
 
