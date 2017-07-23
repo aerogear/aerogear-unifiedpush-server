@@ -28,4 +28,3 @@ release.properties
 
 # SonarQube
 .scannerwork/
-sonar-project.properties
