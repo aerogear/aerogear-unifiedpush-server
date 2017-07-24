@@ -20,10 +20,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import net.wessendorf.kafka.SimpleKafkaProducer;
 import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import net.wessendorf.kafka.cdi.annotation.Producer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -32,7 +31,6 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +55,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 @Path("/registry/device")
 @KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
-    public static final String KAFKA_PRODUCER_PROPERTIES_PATH = "/kafka/producer.properties";
     public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
 	
     // at some point we should move the mapper to a util class.?
@@ -74,6 +70,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private ClientInstallationService clientInstallationService;
     @Inject
     private GenericVariantService genericVariantService;
+
+    @Producer(topic = KAFKA_INSTALLATION_TOPIC)
+    private SimpleKafkaProducer<String, String> installationMetricsProducer;
 
     /**
      * Cross Origin for Installations
@@ -235,10 +234,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
             // start the producer and push a message to installation metrics
             // topic
-            final Properties properties = ConfigurationUtils.loadProperties(KAFKA_PRODUCER_PROPERTIES_PATH);
-            final Producer<String, String> producer = new KafkaProducer<>(properties);
-            producer.send(new ProducerRecord<String, String>(KAFKA_INSTALLATION_TOPIC, pushMessageId, variant.getVariantID()));
-            producer.close();
+            installationMetricsProducer.send(pushMessageId, variant.getVariantID());
 
             return Response.ok(EmptyJSON.STRING).build();
 
