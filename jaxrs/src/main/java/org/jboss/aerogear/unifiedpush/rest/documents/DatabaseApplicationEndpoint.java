@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
@@ -121,6 +122,11 @@ public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 			UUID pushApplicationId, //
 			String database, //
 			String userId) { //
+
+		if (StringUtils.isEmpty(userId)){
+			logger.warn("UserId (UUID) is null or empty for ApplicationId {}, and database {} ", pushApplicationId, database);
+			return;
+		}
 
 		try {
 			UUID uuid = UUID.fromString(userId);
