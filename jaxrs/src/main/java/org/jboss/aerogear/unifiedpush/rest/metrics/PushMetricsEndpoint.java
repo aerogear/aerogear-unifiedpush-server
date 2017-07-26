@@ -68,14 +68,14 @@ public class PushMetricsEndpoint {
             @QueryParam("sort") String sorting,
             @QueryParam("search") String search) {
 
+        if (id == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
+        }
+        
         pageSize = parsePageSize(pageSize);
 
         if (page == null) {
             page = 0;
-        }
-
-        if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
         PageResult<PushMessageInformation, MessageMetrics> pageResult =
