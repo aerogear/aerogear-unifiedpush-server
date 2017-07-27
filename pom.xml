@@ -58,6 +58,7 @@
         <module>jaxrs</module>
         <module>dependencies</module>
         <module>servers</module>
+        <module>kafka</module>
     </modules>
 
     <dependencyManagement>
