@@ -116,6 +116,12 @@
                                     <version>${project.version}</version>
                                     <classifier>sources</classifier>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>unifiedpush-kafka</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>sources</classifier>
+                                </artifactItem>
                             </artifactItems>
                             <outputDirectory>
                                 ${project.build.directory}/src
