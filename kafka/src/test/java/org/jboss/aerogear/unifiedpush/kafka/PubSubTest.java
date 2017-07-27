@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.rest.kafka;
+package org.jboss.aerogear.unifiedpush.kafka;
 
 import io.debezium.kafka.KafkaCluster;
 import io.debezium.util.Testing;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class KafkaTest {
+public class PubSubTest {
     private KafkaConsumer consumer;
     private KafkaProducer producer;
     private File dataDir;

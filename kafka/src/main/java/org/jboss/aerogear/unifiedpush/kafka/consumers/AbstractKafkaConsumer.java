@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.kafka;
+package org.jboss.aerogear.unifiedpush.kafka.consumers;
 
 import java.io.IOException;
 import java.util.List;
