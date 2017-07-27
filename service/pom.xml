@@ -139,6 +139,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-core</artifactId>
+			<scope>provided</scope>
+			<!-- Provided as we use the Infinispan provided by Wildfly -->
+		</dependency>
+
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>

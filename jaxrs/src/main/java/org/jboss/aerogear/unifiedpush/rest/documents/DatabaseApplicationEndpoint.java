@@ -72,6 +72,7 @@ public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 	 *                 401 response)
 	 *
 	 * @statuscode 200 Successful query of documents.
+	 * @statuscode 204 Successful but no available content.
 	 * @statuscode 400 The format of the document request was incorrect (e.g.
 	 *             missing required values).
 	 * @statuscode 401 The request requires authentication.
@@ -113,8 +114,11 @@ public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 			collect(request, docs, new QueryOptions(fromDate, toDate, id, limit), pushApplicationId, database, userId);
 		});
 
-		return appendAllowOriginHeader(
+		if (docs.getDocuments().size() > 0)
+			return appendAllowOriginHeader(
 				DatabaseEndpoint.appendCountHeader(Response.ok(docs), docs.getDocuments().size()), request);
+		else
+			return appendAllowOriginHeader(Response.noContent(), request);
 	}
 
 	private void collect(HttpServletRequest request, DocumentList docs, //

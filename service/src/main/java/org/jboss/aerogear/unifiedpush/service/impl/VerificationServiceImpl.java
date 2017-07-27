@@ -6,12 +6,17 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.infinispan.manager.CacheContainer;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
@@ -33,7 +38,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
 
-	private final ConcurrentMap<Object, Set<Object>> deviceToToken = new ConcurrentHashMap<>();
+	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
 	@Inject
 	@Wrapper
@@ -50,6 +55,23 @@ public class VerificationServiceImpl implements VerificationService {
 	private AliasService aliasService;
 	@Inject
 	private OtpCodeService codeService;
+
+
+	@PostConstruct
+	private void startup() {
+		CacheContainer container;
+
+		try {
+			Context ctx = new InitialContext();
+			container = (CacheContainer) ctx.lookup("java:jboss/infinispan/Aerobase");
+
+			deviceToToken = container.getCache("aerobase");
+		} catch (NamingException e) {
+			logger.warn("Unable to locate infinispan cache installationverification, rolling back to ConcurrentHashMap impl!");
+			deviceToToken = new ConcurrentHashMap<>();
+		}
+
+	}
 
 	@Override
 	public String retryDeviceVerification(String deviceToken, Variant variant) {
