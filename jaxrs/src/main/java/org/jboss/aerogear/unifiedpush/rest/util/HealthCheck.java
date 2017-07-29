@@ -90,20 +90,20 @@ public class HealthCheck {
      *
      * @return {@link Attributes}
      * @statuscode 200 Successful response for your request with manifest's attributes
-     * @statuscode 500 Error response for your resquest
+     * @statuscode 404 Not found version information
      */
     @GET
-    @Path("/details")
+    @Path("/version")
     @Produces(MediaType.APPLICATION_JSON)
     public Response manifestDetails(@Context HttpServletRequest request) {
 
-        ServletContext context = request.getSession().getServletContext();
+        final ServletContext context = request.getSession().getServletContext();
 
         try {
-            InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF");
+            final InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF");
             return Response.ok(new Manifest(manifestStream).getMainAttributes()).build();
         } catch (Exception e) {
-            return Response.serverError().build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find version information").build();
         }
     }
 
