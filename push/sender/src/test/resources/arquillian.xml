@@ -29,7 +29,7 @@
         <container qualifier="container-1" default="true">
             <configuration>
                 <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->
-                <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
+                <!-- (if running against different containers, be sure to check the port offset settings below) -->
                 <property name="chameleonTarget">wildfly:10.1.0.Final:managed</property>
                 <!-- use Full EE profile for a JMS support -->
                 <property name="serverConfig">standalone-full-ha.xml</property>
@@ -39,7 +39,7 @@
 
                 <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
                 <!-- both http and management ports are offset  -->
-                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n -Djboss.socket.binding.port-offset=4321 -Djboss.bind.address.unsecure=127.0.0.1 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node1 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m </property>
+                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n -Djboss.socket.binding.port-offset=4321 -Djboss.bind.address.unsecure=127.0.0.1 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node1 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m -XX:MaxPermSize=1024m</property>
                 <!--  tell Arquillian where he will find the running container -->
                 <property name="managementPort">14311</property>
 
@@ -52,7 +52,7 @@
                 <property name="chameleonTarget">wildfly:10.1.0.Final:managed</property>
                 <property name="serverConfig">standalone-full-ha.xml</property>
                 <property name="chameleonDistributionDownloadFolder">target/cluster/server-2</property>
-                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8788,server=y,suspend=n -Djboss.socket.binding.port-offset=4322 -Djboss.bind.address.unsecure=127.0.0.2 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node2 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m</property>
+                <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8788,server=y,suspend=n -Djboss.socket.binding.port-offset=4322 -Djboss.bind.address.unsecure=127.0.0.2 -Djava.net.preferIPv4Stack=true -Djboss.node.name=node2 -Djboss.messaging.cluster.password=hellothere -Xms128m -Xmx800m -XX:MaxPermSize=1024m</property>
                 <property name="managementPort">14312</property>
                 <property name="allowConnectingToRunningServer">true</property>
             </configuration>

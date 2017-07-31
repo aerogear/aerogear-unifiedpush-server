@@ -73,21 +73,22 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     tile.title(message.getAlert());
 
                     List<String> images = windows.getImages();
-                    if (images.size() >= 1) {
-                        tile.backgroundImage(images.get(0));
-                    }
 
-                    if (images.size() >= 2) {
-                        tile.backBackgroundImage(images.get(1));
+                    if (!images.isEmpty()) {
+                        tile.backgroundImage(images.get(0));
+                        if (images.size() >= 2) {
+                            tile.backBackgroundImage(images.get(1));
+                        }
                     }
 
                     List<String> textFields = windows.getTextFields();
-                    if (textFields.size() >= 1) {
+                    if (!textFields.isEmpty()) {
                         tile.backTitle(textFields.get(0));
+                        if (textFields.size() >= 2) {
+                            tile.backContent(textFields.get(1));
+                        }
                     }
-                    if (textFields.size() >= 2) {
-                        tile.backContent(textFields.get(1));
-                    }
+
                     notification = tile.build();
                     break;
                 default:

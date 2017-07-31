@@ -19,6 +19,9 @@ package org.jboss.aerogear.unifiedpush.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +41,6 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
-import org.jboss.aerogear.unifiedpush.message.sender.APNsPushNotificationSenderTest;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
@@ -59,8 +61,7 @@ public class TestNotificationRouter {
 		return UnifiedPushSenderArchive.forTestClass(TestNotificationRouter.class) //
 				.withMessaging() //
 				.addClasses(NotificationRouter.class, //
-						PushNotificationSender.class, //
-						APNsPushNotificationSenderTest.class) //
+						PushNotificationSender.class) //
 				.as(WebArchive.class); //
 	}
 
@@ -130,7 +131,7 @@ public class TestNotificationRouter {
 		iOSVariant iOSVariant = new iOSVariant();
 		iOSVariant.setName("ios-variant");
 		try {
-			iOSVariant.setCertificate(APNsPushNotificationSenderTest.readCertificate("/cert/certificate.p12"));
+			iOSVariant.setCertificate(TestNotificationRouter.readCertificate("/cert/certificate.p12"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -174,5 +175,24 @@ public class TestNotificationRouter {
 	private Set<VariantType> variants(VariantType... types) {
 		return new HashSet<>(Arrays.asList(types));
 	}
+
+
+    /**
+     * The store read by this method was copied from
+     * https://github.com/notnoop/java-apns/tree/master/src/test/resources
+     */
+    public static byte[] readCertificate(String cert) throws Exception {
+        return asByteArray(TestNotificationRouter.class.getResourceAsStream(cert));
+    }
+
+    private static byte[] asByteArray(final InputStream is) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int reads = is.read();
+        while (reads != -1) {
+            baos.write(reads);
+            reads = is.read();
+        }
+        return baos.toByteArray();
+    }
 
 }

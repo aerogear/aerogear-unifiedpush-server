@@ -113,6 +113,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
 				        <manifestEntries>
+				            <Build-Branch>${scmBranch}</Build-Branch>
 					        <Implementation-Build>${buildNumber}</Implementation-Build>
                             <Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
 				            <Dependencies>org.infinispan export</Dependencies>
@@ -193,6 +194,12 @@
 					<artifactId>hibernate-entitymanager</artifactId>
 					<scope>test</scope>
 				</dependency>
+				
+			    <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
 				<dependency>
 					<groupId>com.h2database</groupId>

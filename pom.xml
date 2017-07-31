@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
-	individual contributors Licensed under the Apache License, Version 2.0 (the
-	"License"); you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-	Unless required by applicable law or agreed to in writing, software distributed
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
-	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.jboss.aerogear</groupId>
 		<artifactId>aerogear-parent</artifactId>
-		<!-- NOTE: if updated for version of UPS dependencies, please update the
-			'aerogear.bom.version' as well -->
-		<!-- NOTE: if updated for version of UPS dependencies, please update the
-			'aerogear.bom.version' as well -->
-		<version>0.2.20</version>
+        <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
+        <version>0.2.20.2</version>
 	</parent>
 
 	<groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -66,8 +70,7 @@
 				<version>${aerogear.crypto.version}</version>
 			</dependency>
 
-			<!-- We need to redefine few testing dependencies until JDF updates -with-tools
-				BOM -->
+            <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
 			<!-- https://issues.jboss.org/browse/JDF-417 -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -254,6 +257,7 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slfj4.version}</version>
+                <scope>test</scope>
 			</dependency>
 
 			<!-- keycloak verison policy -->
@@ -309,7 +313,7 @@
 			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-all</artifactId>
-				<version>4.0.48.Final</version>
+				<version>4.1.14.Final</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -440,7 +444,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<wildfly-maven-plugin.version>1.1.0.Alpha11</wildfly-maven-plugin.version>
 
-		<aerogear.bom.version>0.2.20</aerogear.bom.version>
+        <aerogear.bom.version>0.2.20.2</aerogear.bom.version>
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
@@ -452,9 +456,9 @@
 		<slfj4.version>1.7.21</slfj4.version>
 
 		<!-- Code coverage -->
-		<org.jacoco.ant.version>0.6.3.201306030806</org.jacoco.ant.version>
-		<org.jacoco.agent.version>0.6.3.201306030806</org.jacoco.agent.version>
-		<org.jacoco.jacoco-maven-plugin.version>0.6.3.201306030806</org.jacoco.jacoco-maven-plugin.version>
+        <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>
+        <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
+        <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
 		<ant.contrib.version>20020829</ant.contrib.version>
 		<aerogear.crypto.version>0.1.5</aerogear.crypto.version>
 
@@ -695,47 +699,29 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <taskdef name="jacoco-report"
-                                            classname="org.jacoco.ant.ReportTask"
-                                            classpathref="maven.plugin.classpath" />
-                                        <taskdef
-                                            classpathref="maven.runtime.classpath"
-                                            resource="net/sf/antcontrib/antcontrib.properties" />
-                                        <available
-                                            file="${project.build.sourceDirectory}"
-                                            type="dir" property="source.dir.exists" />
-                                        <available
-                                            file="${jacoco.report.file}"
-                                            property="exec.file.exists" />
+                                        <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask" classpathref="maven.plugin.classpath" />
+                                        <taskdef classpathref="maven.runtime.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
+                                        <available file="${project.build.sourceDirectory}" type="dir" property="source.dir.exists" />
+                                        <available file="${jacoco.report.file}" property="exec.file.exists" />
                                         <if>
-                                            <equals
-                                                arg1="${source.dir.exists}"
-                                                arg2="true" />
+                                            <equals arg1="${source.dir.exists}" arg2="true" />
                                             <then>
-                                                <copy
-                                                    todir="${jacoco.prep.sources}">
-                                                    <fileset
-                                                        dir="${project.build.sourceDirectory}" />
+                                                <copy todir="${jacoco.prep.sources}">
+                                                    <fileset dir="${project.build.sourceDirectory}" />
                                                 </copy>
-                                                <copy
-                                                    todir="${jacoco.prep.classes}">
-                                                    <fileset
-                                                        dir="${project.build.directory}/classes" />
+                                                <copy todir="${jacoco.prep.classes}">
+                                                    <fileset dir="${project.build.directory}/classes" />
                                                 </copy>
                                                 <if>
-                                                    <equals
-                                                        arg1="${exec.file.exists}"
-                                                        arg2="true" />
+                                                    <equals arg1="${exec.file.exists}" arg2="true" />
                                                     <then>
-                                                        <trycatch
-                                                            reference="report_exception">
+                                                        <trycatch reference="report_exception">
                                                             <try>
                                                                 <jacoco-report>
                                                                     <executiondata>
                                                                         <file file="${jacoco.report.file}" />
                                                                     </executiondata>
-                                                                    <structure
-                                                                        name="AeroGear UnifiedPush Server Unit Tests">
+                                                                    <structure name="AeroGear UnifiedPush Server Unit Tests">
                                                                         <classfiles>
                                                                             <fileset dir="${jacoco.prep.classes}" />
                                                                         </classfiles>
@@ -743,31 +729,23 @@
                                                                             <fileset dir="${jacoco.prep.sources}" />
                                                                         </sourcefiles>
                                                                     </structure>
-                                                                    <html
-                                                                        destdir="${jacoco.report.output}" />
+                                                                    <html destdir="${jacoco.report.output}" />
                                                                 </jacoco-report>
                                                             </try>
                                                             <catch>
-                                                                <property
-                                                                    name="exception"
-                                                                    refid="report_exception" />
-                                                                <property
-                                                                    name="message"
-                                                                    value="Error while generating jacoco report: ${exception}" />
-                                                                <echo
-                                                                    message="${message}" />
+                                                                <property name="exception" refid="report_exception" />
+                                                                <property name="message" value="Error while generating jacoco report: ${exception}" />
+                                                                <echo message="${message}" />
                                                             </catch>
                                                         </trycatch>
                                                     </then>
                                                     <else>
-                                                        <echo
-                                                            message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
+                                                        <echo message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
                                                     </else>
                                                 </if>
                                             </then>
                                             <else>
-                                                <echo
-                                                    message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
+                                                <echo message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
                                             </else>
                                         </if>
                                     </target>

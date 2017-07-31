@@ -174,7 +174,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
                 if (method.getName().equals("bindingTemplate" + type)) {
                     int methodArgs = method.getParameterTypes().length;
                     if (methodArgs == param.size()) {
-                        method.invoke(builder, param.toArray(new String[param.size()]));
+                        method.invoke(builder, (Object[]) param.toArray(new String[param.size()]));
                     } else {
                         throw new IllegalArgumentException("this template needs " + methodArgs
                                 + " fields, but you specified " + param.size());
