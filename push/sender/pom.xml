@@ -91,26 +91,6 @@
             <artifactId>unifiedpush-push-model</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- Apache Kafka libs -->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.clients.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-streams</artifactId>
-            <version>${kafka.clients.version}</version>
-        </dependency>
-
-        <!-- Apache Kafka CDI -->
-        <dependency>
-            <groupId>net.wessendorf.kafka</groupId>
-            <artifactId>kafka-cdi-extension</artifactId>
-            <version>${kafka.cdi.version}</version>
-        </dependency>
         
         <dependency>
             <groupId>net.jodah</groupId>
