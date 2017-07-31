@@ -93,6 +93,8 @@
                             <Build-Branch>${scmBranch}</Build-Branch>
                             <Implementation-Build>${buildNumber}</Implementation-Build>
                             <Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
+                            <SCM-URL>${scm.url}</SCM-URL>
+                            <SCM-Tag>${scm.tag}</SCM-Tag>
                         </manifestEntries>
                     </archive>
                 </configuration>
