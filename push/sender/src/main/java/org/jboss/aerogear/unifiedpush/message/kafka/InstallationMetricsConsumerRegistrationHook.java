@@ -65,7 +65,6 @@ public class InstallationMetricsConsumerRegistrationHook {
     private void shutdown() {
         logger.debug("Shutting down the consumer {}.", InstallationMetricsKafkaConsumer.class);
         consumer.shutdown();
-        executor.shutdown();
     }
 
 }
