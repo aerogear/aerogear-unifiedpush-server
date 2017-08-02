@@ -33,7 +33,6 @@ import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsume
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProducer;
-import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;

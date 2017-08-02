@@ -18,8 +18,8 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
@@ -151,7 +151,7 @@ public class PushSearchByDeveloperServiceImpl implements PushSearchService {
 
         pushMessageInformations.forEach(pushMessageInformation -> {
             final String applicationName = pushApplicationDao.findByPushApplicationID(pushMessageInformation.getPushApplicationId()).getName();
-            final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getTotalReceivers(), pushMessageInformation.getSubmitDate());
+            final Application application = new Application(applicationName, pushMessageInformation.getPushApplicationId(), pushMessageInformation.getSubmitDate());
             applications.add(application);
         });
         return applications;

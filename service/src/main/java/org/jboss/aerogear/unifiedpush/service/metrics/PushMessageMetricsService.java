@@ -151,7 +151,7 @@ public class PushMessageMetricsService {
      *  <i>older</i> than 30 days!
      */
     public void deleteOutdatedFlatPushInformationData() {
-        final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
+        final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
         flatPushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
 

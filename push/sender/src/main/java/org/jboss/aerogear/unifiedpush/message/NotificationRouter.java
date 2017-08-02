@@ -38,10 +38,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
@@ -109,7 +106,7 @@ public class NotificationRouter {
         if (jsonMessageContent != null && jsonMessageContent.length() >= 4500) {
             jsonMessageContent = message.toMinimizedJsonString();
         }
-
+/*
         final PushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),

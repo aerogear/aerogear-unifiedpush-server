@@ -53,7 +53,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
         final String queryJPQL = "select pmi " + baseQuery + " ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
 
         TypedQuery<PushMessageInformation> typedQuery = createQuery(queryJPQL)
-                .setParameter("pushApplicationId", pushApplicationId);
+            .setParameter("pushApplicationId", pushApplicationId);
         if (search != null) {
             typedQuery.setParameter("search", "%" + search + "%");
         }
@@ -67,13 +67,13 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public long getNumberOfPushMessagesForPushApplication(String pushApplicationId) {
         return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
-                .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
+            .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
     }
 
     @Override
     public long getNumberOfPushMessagesForVariant(String variantID) {
         return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
-                .setParameter("variantID", variantID).getSingleResult();
+            .setParameter("variantID", variantID).getSingleResult();
     }
 
     public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
@@ -102,39 +102,39 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from PushMessageInformation pmi, PushApplication pa " +
-                "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer)", Long.class)
-                .setParameter("developer", loginName).getSingleResult();
+            "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer)", Long.class)
+            .setParameter("developer", loginName).getSingleResult();
     }
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
         return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi, Variant va " +
-                " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
-                " and vmi.deliveryStatus = false", String.class)
-                .setParameter("developer", loginName)
-                .getResultList();
+            " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
+            " and vmi.deliveryStatus = false", String.class)
+            .setParameter("developer", loginName)
+            .getResultList();
     }
 
     @Override
     public List<PushMessageInformation> findLatestActivity(String loginName, int maxResults) {
         return createQuery("select pmi from PushMessageInformation pmi, PushApplication pa" +
-                " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer)" +
-                " ORDER BY pmi.submitDate " + DESC)
-                .setParameter("developer", loginName)
-                .setMaxResults(maxResults)
-                .getResultList();
+            " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer)" +
+            " ORDER BY pmi.submitDate " + DESC)
+            .setParameter("developer", loginName)
+            .setMaxResults(maxResults)
+            .getResultList();
     }
 
     @Override
     public void deletePushInformationOlderThan(Date oldest) {
         // TODO: use criteria API...
         entityManager.createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
-                .setParameter("oldest", oldest)
-                .executeUpdate();
+            .setParameter("oldest", oldest)
+            .executeUpdate();
 
         int affectedRows = entityManager.createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
-                .setParameter("oldest", oldest)
-                .executeUpdate();
+            .setParameter("oldest", oldest)
+            .executeUpdate();
 
         logger.info("Deleting ['{}'] outdated PushMessageInformation objects", affectedRows);
     }
@@ -143,16 +143,16 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public List<String> findVariantIDsWithWarnings() {
         return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.deliveryStatus = false", String.class)
-                .getResultList();
+            " where vmi.deliveryStatus = false", String.class)
+            .getResultList();
     }
 
     @Override
     public List<PushMessageInformation> findLatestActivity(int maxResults) {
         return createQuery("select pmi from PushMessageInformation pmi" +
-                " ORDER BY pmi.submitDate " + DESC)
-                .setMaxResults(maxResults)
-                .getResultList();
+            " ORDER BY pmi.submitDate " + DESC)
+            .setMaxResults(maxResults)
+            .getResultList();
     }
 
     @Override
