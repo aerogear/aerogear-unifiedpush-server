@@ -142,6 +142,13 @@
 
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-kafka</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-push-model</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
