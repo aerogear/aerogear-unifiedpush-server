@@ -96,10 +96,6 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <debezium.version>0.5.1</debezium.version>
-    </properties>
-
     <profiles>
         <profile>
             <id>test</id>
