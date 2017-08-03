@@ -83,18 +83,22 @@
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-core</artifactId>
-            <version>0.5.1</version>
+            <version>${debezium.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-core</artifactId>
-            <version>0.5.1</version>
+            <version>${debezium.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <debezium.version>0.5.1</debezium.version>
+    </properties>
 
     <profiles>
         <profile>
