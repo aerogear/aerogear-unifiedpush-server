@@ -60,8 +60,8 @@ import java.util.List;
 @KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
-    public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
-	
+    public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
+
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
 
