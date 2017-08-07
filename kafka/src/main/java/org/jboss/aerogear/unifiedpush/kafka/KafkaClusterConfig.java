@@ -20,4 +20,16 @@ import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
 
 @KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class KafkaClusterConfig {
+
+    /**
+     * Consumer's topic.
+     */
+    public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
+
+    /**
+     * Consumer's groupId.
+     */
+    public static final String KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID = "agpush_installationMetricsGroup";
+
+
 }
