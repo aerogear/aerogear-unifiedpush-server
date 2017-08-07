@@ -6,7 +6,7 @@
 
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a href ng-click="wizard02AddVariant.editAppName()"><span class="pficon pficon-edit"></span> Edit Name</a></li>
+            <li><a href ng-click="wizard02AddVariant.editAppName()"><span class="pficon pficon-edit"></span> <span translate>Edit Name</span></a></li>
           </ul>
         </div>
 
@@ -20,13 +20,13 @@
           <i class="fa fa-code-fork"></i>
         </div>
       
-        <h1>Add a variant for {{ wizard02AddVariant.app.name }}.</h1>
-        <p>The first step to set up your mobile device is to add a variants. That will generate the code necessary to register UPS on your device.</p>
-        <p>Learn more about variants <a ups-doc="add-variant">in the documentation</a>.</p>
+        <h1 translate>Add a variant for {{ wizard02AddVariant.app.name }}.</h1>
+        <p translate>The first step to set up your mobile device is to add a variants. That will generate the code necessary to register UPS on your device.</p>
+        <p translate>Learn more about variants <a ups-doc="add-variant">in the documentation</a>.</p>
       
         <div class="blank-slate-pf-main-action">
           <button class="btn btn-primary btn-lg" ng-click="wizard02AddVariant.addVariant()">
-            <span class="pficon pficon-add"></span> Add a variant
+            <span class="pficon pficon-add"></span> <span translate>Add a variant</span>
           </button>
         </div>
       </div><!-- blank-slate-pf -->
@@ -38,16 +38,16 @@
 
       <div class="sidebar-header sidebar-header-bleed-left sidebar-header-bleed-right">
         <div class="actions pull-right">
-          <a ng-link="appDetail({app: wizard02AddVariant.app.pushApplicationID, tab: 'variants'})">Skip the wizard <i class="fa fa-angle-double-right"></i></a>
+          <a ng-link="appDetail({app: wizard02AddVariant.app.pushApplicationID, tab: 'variants'})"><span translate>Skip the wizard</span> <i class="fa fa-angle-double-right"></i></a>
         </div>
-        <h2 class="h5">Wizard steps</h2>
+        <h2 class="h5" translate>Wizard steps</h2>
       </div>
       <ol class="list-unstyled ups-steps">
-        <li class="done"><strong><i class="fa fa-check"></i></strong> Create your first Application</li>
-        <li class="active"><strong>2</strong> Add a variant</li>
-        <li><strong>3</strong> Mobile device: Set up variant</li>
-        <li><strong>4</strong> Test! Send notification</li>
-        <li><strong>5</strong> Backend: Set up sender API</li>
+        <li class="done"><strong><i class="fa fa-check"></i></strong> <span translate>Create your first Application</span></li>
+        <li class="active"><strong>2</strong> <span translate>Add a variant</span></li>
+        <li><strong>3</strong> <span translate>Mobile device: Set up variant</span></li>
+        <li><strong>4</strong> <span translate>Test! Send notification</span></li>
+        <li><strong>5</strong> <span translate>Backend: Set up sender API</span></li>
       </ol>
 
 

@@ -1,0 +1,1190 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+
+#: app/components/app-detail/include/analytics.js:143
+msgid "1 Device"
+msgid_plural "{{$count}} Devices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/dialogs/create-variant.html:133
+msgid "<em>Apple Push Notification Service</em> certificate:"
+msgstr ""
+
+#: app/dialogs/import-installations.html:15
+msgid "<span class=\"count\">No</span> installations will be imported"
+msgstr ""
+
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:20
+msgid "<strong>Backend:</strong> Set up sender API"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:24
+msgid "<strong>Build your app!</strong> You need a recipient to send the test notification. You can go back to get instructions on how to build your app or skip this and continue with the wizard."
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:27
+msgid "<strong>Excellent!</strong> Now lets test by sending a notification and see if everything adds up."
+msgstr ""
+
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:21
+msgid "<strong>Last step!</strong> Now that your mobile device is set up, lets make your backend server send notifications to this UnifiedPush Server using <a ups-doc=\"sender-api\">UPS Sender API</a>:"
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:29
+msgid "<strong>We are half way there!</strong> Use the code snippet below to <a ups-doc=\"register-device-{{ wizard03RegisterDevice.variant.type }}\">register your device</a> and allow it to receiving notifications through this UnifiedPush Server. If you don't know how to do this, <a ups-doc=\"step-by-step-{{ wizard03RegisterDevice.variant.type }}\">go to the documentation for full step by step explanation</a>."
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:47
+msgid "<strong>{{ variant.$deviceCount }}</strong> Devices"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:46
+msgid "<strong>{{ variant.$messageCount }}</strong> Messages"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:13
+msgid "<strong>{{ variantList.$deviceCount }}</strong> Devices"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:12
+msgid "<strong>{{ variantList.$messageCount }}</strong> Messages"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:12
+msgid ""
+"A Server implementing the <em>SimplePush</em> protocol will be used.\n"
+"  More information can be found in <a ups-doc=\"simplepush-protocol\">SimplePush Protocol Draft</a>.\n"
+"  The <a ups-doc=\"simplepush-quickstart\">AeroGears' SimplePush Quickstart</a> also contains useful information.<br>"
+msgstr ""
+
+#: app/components/welcome/welcome.html:25
+msgid "A variant is a group of devices under a platform. Add your first variant for this application and set it up on your device code. Later on you will be able to add one variant for each platform."
+msgstr ""
+
+#: app/dialogs/create-variant.html:103
+msgid "ADM (experimental)"
+msgstr ""
+
+#: app/index.html:115
+msgid "Account management"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:28
+msgid "Activity log"
+msgstr ""
+
+#: app/dialogs/create-variant.html:6
+msgid "Add Variant"
+msgstr ""
+
+#: app/components/app-detail/include/blank.html:14
+#: app/components/app-detail/include/variants.html:2
+#: app/components/welcome/welcome.html:24
+#: app/components/wizard01-create-app/wizard01-create-app.html:43
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:29
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:47
+#: app/components/wizard03-register-device/wizard03-register-device.html:61
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:59
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:51
+#: app/components/wizard06-done/wizard06-done.html:36
+msgid "Add a variant"
+msgstr ""
+
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:23
+msgid "Add a variant for {{ wizard02AddVariant.app.name }}."
+msgstr ""
+
+#: app/index.html:15
+msgid "AeroGear UnifiedPush Server"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:128
+msgid "Alias"
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:37
+msgid "Aliases"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:17
+msgid ""
+"Amazon's Device Messaging Network (ADM) will be used.\n"
+"  This is still experimental, the client SDK is not yet there."
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:19
+msgid "Analytics"
+msgstr ""
+
+#: app/components/home/home.html:81
+msgid "App"
+msgid_plural "Apps"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/components/app-detail/include/analytics.html:3
+msgid "App Analytics"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:53
+msgid "App Notifications"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:42
+msgid "App Statistics"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:3
+msgid ""
+"Apple's Push Network (APNs) will be used.\n"
+"  To learn more about APNs, visit our <a ups-doc=\"docs-push-ios\">iOS</a>\n"
+"  or <a ups-doc=\"docs-push-cordova\">Apache Cordova</a> guides for push."
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:6
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:25
+msgid "Application ID"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.js:12
+msgid "Application {{name}} successfully created"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:6
+#: app/components/home/home.html:10
+msgid "Applications"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:58
+msgid "Average Open Rate"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:38
+msgid "Back to variant set up"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:46
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:50
+#: app/components/wizard03-register-device/wizard03-register-device.html:64
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:62
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:54
+#: app/components/wizard06-done/wizard06-done.html:39
+msgid "Backend: Set up sender API"
+msgstr ""
+
+#: app/dialogs/renew-variant-secret.html:9
+msgid "Be aware that this cannot be undone and you'll have to change secret on all the installed devices in order to continue receiving push notifications."
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:30
+msgid "Be aware that this cannot be undone and you'll have to change your sender in order to continue sending push notifications."
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:33
+msgid "Build and deploy your app."
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:38
+#: app/dialogs/create-app.html:28
+#: app/dialogs/create-variant.html:219
+#: app/dialogs/edit-app-name.html:17
+#: app/dialogs/edit-variant-name.html:17
+#: app/dialogs/export-installations.html:13
+#: app/dialogs/import-installations.html:27
+#: app/dialogs/remove-app.html:16
+#: app/dialogs/remove-variant.html:16
+#: app/dialogs/renew-variant-secret.html:17
+#: app/dialogs/send-push-notification.html:66
+msgid "Cancel"
+msgstr ""
+
+#: app/components/welcome/welcome.html:51
+#: app/components/wizard01-create-app/wizard01-create-app.html:37
+msgid "Cancel the wizard"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:127
+#: app/dialogs/send-push-notification.html:53
+msgid "Categories"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:56
+msgid "Certificate"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:122
+#: app/components/app-detail/include/analytics.html:97
+msgid "Check out the documentation on how to get started to <a ups-doc=\"docs-push-getting-started\">register a device</a>."
+msgstr ""
+
+#: app/dialogs/create-variant.html:19
+msgid "Choose a platform"
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:34
+msgid "Click <a ng-link=\"wizard04SendPushNotification\">Next (below)</a>"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:175
+#: app/dialogs/create-variant.html:202
+msgid "Client ID"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:78
+#: app/components/app-detail/include/variantDetail.html:89
+msgid "Client Id:"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:120
+#: app/components/bootstrap/bootstrap.html:182
+#: app/dialogs/create-variant.html:179
+#: app/dialogs/create-variant.html:209
+msgid "Client Secret"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:64
+#: app/components/app-detail/include/variantDetail.html:80
+#: app/components/app-detail/include/variantDetail.html:91
+msgid "Client Secret:"
+msgstr ""
+
+#: app/components/wizard06-done/wizard06-done.html:15
+msgid "Congratulations! you have created an app"
+msgstr ""
+
+#: app/scripts/directives.js:173
+#: app/scripts/directives.js:256
+msgid "Copied!"
+msgstr ""
+
+#: app/directives/ups-client-snippets.html:20
+#: app/directives/ups-sender-snippets.html:22
+msgid "Copy"
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:32
+msgid "Copy the code snippet and paste it on your device code."
+msgstr ""
+
+#: app/scripts/directives.js:146
+#: app/scripts/directives.js:175
+#: app/scripts/directives.js:237
+#: app/scripts/directives.js:258
+msgid "Copy to clipboard"
+msgstr ""
+
+#: app/components/app-detail/include/activity.js:8
+msgid "Could not submit payload to 3rd party"
+msgstr ""
+
+#: app/dialogs/create-app.html:30
+#: app/dialogs/create-variant.html:220
+msgid "Create"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:24
+msgid "Create App"
+msgstr ""
+
+#: app/components/home/home.html:8
+#: app/dialogs/create-app.html:7
+msgid "Create Application"
+msgstr ""
+
+#: app/components/welcome/welcome.html:16
+msgid "Create your Application"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:14
+msgid "Create your an application"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:42
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:46
+#: app/components/wizard03-register-device/wizard03-register-device.html:60
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:58
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:50
+#: app/components/wizard06-done/wizard06-done.html:35
+msgid "Create your first Application"
+msgstr ""
+
+#: app/components/home/home.html:36
+#: app/dialogs/remove-app.html:19
+#: app/dialogs/remove-variant.html:19
+msgid "Delete"
+msgstr ""
+
+#: app/dialogs/remove-app.html:6
+msgid "Delete Application"
+msgstr ""
+
+#: app/dialogs/create-app.html:19
+msgid "Description"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:77
+#: app/dialogs/create-variant.html:152
+msgid "Development"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:47
+#: app/components/home/home.html:83
+msgid "Device"
+msgid_plural "Devices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/dialogs/send-push-notification.html:45
+msgid "Device Types"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:125
+msgid "Device token"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:126
+msgid "Device type"
+msgstr ""
+
+#: app/dialogs/remove-app.html:9
+msgid "Do you really want to delete the application <strong>\"{{ app.name }}\"</strong>?"
+msgstr ""
+
+#: app/dialogs/remove-variant.html:9
+msgid "Do you really want to delete the variant <strong>\"{{ variant.name }}\"</strong>?"
+msgstr ""
+
+#: app/components/wizard06-done/wizard06-done.html:19
+msgid "Done! Go to homepage"
+msgstr ""
+
+#: app/dialogs/create-app.html:6
+msgid "Edit Application"
+msgstr ""
+
+#: app/dialogs/edit-app-name.html:6
+msgid "Edit Application Name"
+msgstr ""
+
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:9
+#: app/components/wizard03-register-device/wizard03-register-device.html:10
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:9
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:12
+msgid "Edit Name"
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:20
+#: app/dialogs/create-variant.html:7
+msgid "Edit Variant"
+msgstr ""
+
+#: app/dialogs/edit-variant-name.html:6
+msgid "Edit Variant Name"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:23
+#: app/components/home/home.html:35
+msgid "Edit name"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:50
+#: app/components/app-detail/include/variantDetail.html:67
+#: app/components/app-detail/include/variantDetail.html:74
+#: app/components/app-detail/include/variantDetail.html:85
+#: app/components/app-detail/include/variantDetail.html:94
+msgid "Edit network options"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:194
+msgid "Enable Push"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:4
+msgid "Explore push messages that you have sent to the registered devices."
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:30
+#: app/dialogs/export-installations.html:12
+msgid "Export"
+msgstr ""
+
+#: app/dialogs/export-installations.html:6
+msgid "Export Installations"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.js:17
+msgid "Failed to create application {{name}}"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:44
+#: app/components/wizard02-add-variant/wizard02-add-variant.js:25
+msgid "Failed to create variant"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.js:68
+msgid "Failed to enable Push notification support for {{name}}"
+msgstr ""
+
+#: app/components/home/home.js:48
+msgid "Failed to modify app {{name}}: {{error}}"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:57
+#: app/components/app-detail/include/variants.js:71
+msgid "Failed to modify variant {{name}}: {{error}}"
+msgstr ""
+
+#: app/components/app-detail/app-detail.js:71
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.js:43
+msgid "Failed to sent notification"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:8
+msgid ""
+"Firebase's Cloud Messaging Network (FCM) will be used.\n"
+"  To learn more about FCM, visit our <a ups-doc=\"docs-push-android\">Android</a>, <a ups-doc=\"docs-push-chrome\">Chrome</a> or <a ups-doc=\"docs-push-cordova\">Apache Cordova</a> guides for push."
+msgstr ""
+
+#: app/scripts/directives.js:200
+msgid "First add <code>unifiedpush-java-client.jar</code> as a <a ups-doc=\"sender-downloads-java\">dependency to your Java project</a>."
+msgstr ""
+
+#: app/scripts/directives.js:210
+msgid "First download add <code>unifiedpush-node-sender</code> as a <a ups-doc=\"sender-downloads-nodejs\">dependency to your project</a>."
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:27
+msgid "First time opened"
+msgstr ""
+
+#: app/components/home/home.html:78
+msgid "General Statistics"
+msgstr ""
+
+#: app/components/welcome/welcome.html:17
+msgid "Give a name to your application. Set up just one application for all your platforms and devices."
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.js:27
+msgid "Hello! This is my first notification to {{name}}"
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:23
+msgid "High"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:23
+msgid "IP Address"
+msgstr ""
+
+#: app/scripts/directives.js:219
+msgid "If none of the official client libs suit you or you just want to simply try out the notification sending, you can use the REST API directly."
+msgstr ""
+
+#: app/scripts/directives.js:203
+msgid "If you have questions about this process, <a ups-doc=\"sender-step-by-step-java\">visit the documentation for full step by step explanation</a>."
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:16
+msgid "If you want to read about the process, <a ups-doc=\"create-app\" param=\"'123'\">go to the documentation</a>."
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:29
+#: app/dialogs/import-installations.html:26
+msgid "Import"
+msgstr ""
+
+#: app/dialogs/import-installations.html:7
+msgid "Import Installations"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:164
+msgid "Import processing has started"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:24
+msgid "Installations"
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:2
+msgid "Java Sender API"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:16
+msgid "Keep this info secure!"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:28
+msgid "Last time opened"
+msgstr ""
+
+#: app/components/home/home.html:88
+msgid "Latest Notifications"
+msgstr ""
+
+#: app/components/app-detail/include/blank.html:10
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:25
+msgid "Learn more about variants <a ups-doc=\"add-variant\">in the documentation</a>."
+msgstr ""
+
+#: app/components/links-check/links-check.html:6
+msgid "Links Check"
+msgstr ""
+
+#: app/index.html:119
+msgid "Logout"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:2
+msgid "Make your backend server send push notifications through this UnifiedPush Server using supported sender APIs."
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:8
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:27
+msgid "Master Secret"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:46
+#: app/components/app-detail/include/activity.html:22
+#: app/components/home/home.html:82
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:33
+#: app/dialogs/send-push-notification.html:11
+msgid "Message"
+msgid_plural "Messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/components/app-detail/include/variantDetail.html:56
+msgid "Microsoft Push Notification Service"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:20
+msgid ""
+"Microsoft's Push Notification Service (MPNS) in Windows Phone will be used.\n"
+"  <i>This type of Push Network is deprecated and will be removed in future versions</i>."
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:44
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:48
+#: app/components/wizard03-register-device/wizard03-register-device.html:62
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:60
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:52
+#: app/components/wizard06-done/wizard06-done.html:37
+msgid "Mobile device: Set up variant"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:26
+msgid "More"
+msgstr ""
+
+#: app/dialogs/create-app.html:12
+#: app/dialogs/create-variant.html:12
+#: app/dialogs/edit-app-name.html:10
+#: app/dialogs/edit-variant-name.html:10
+msgid "Name"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:98
+msgid "Network Type:"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:16
+msgid "Never expose your Master Secret or Application ID publicly."
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:44
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:34
+msgid "Next"
+msgstr ""
+
+#: app/components/wizard03-register-device/wizard03-register-device.html:41
+msgid "Next we are going to send a test notification. Make sure you <a ups-doc=\"build-and-deploy-{{ wizard03RegisterDevice.variant.type }}\">build or deploy your app</a> after pasting the snippet."
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:92
+msgid "No Analytics yet"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:93
+msgid "No Charts yet"
+msgstr ""
+
+#: app/dialogs/create-variant.html:188
+#: app/dialogs/create-variant.html:195
+msgid "No configuration needed"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:45
+#: app/components/wizard03-register-device/wizard03-register-device.html:26
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:19
+msgid "No installation yet"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:34
+msgid "No message matches the given search criteria."
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:3
+msgid "Node.js Sender API"
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:22
+msgid "Normal"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:2
+msgid "Notification activity"
+msgstr ""
+
+#: app/components/app-detail/app-detail.js:68
+msgid "Notification was successfully sent"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:26
+msgid "Notifications Dispatched"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:42
+msgid "Notifications Opened"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:62
+msgid "Notifications Opened / Notifications Dispatched"
+msgstr ""
+
+#: app/components/wizard06-done/wizard06-done.html:16
+msgid "Now go ahead and add more variants, send test notifications and create more applications!"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:30
+msgid "Number of notifications dispatched via Push Networks to registered devices"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:46
+msgid "Number of notifications that were delivered to a registered device and opened by a user"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:15
+msgid "Number of push messages sent to UnifiedPush Server for dispatching to registered devices"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:114
+#: app/dialogs/create-variant.html:173
+msgid "Package SID"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:62
+msgid "Package SID:"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:85
+#: app/dialogs/create-variant.html:160
+msgid "Passphrase"
+msgstr ""
+
+#: app/components/app-detail/include/activity.js:6
+msgid "Payload is being submitted"
+msgstr ""
+
+#: app/components/app-detail/include/activity.js:7
+msgid "Payload submitted to 3rd party push network for further processing"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:75
+msgid "Performance"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:31
+msgid "Please type in the name of the app to confirm."
+msgstr ""
+
+#: app/dialogs/remove-app.html:10
+msgid "Please type in the name of the application to confirm."
+msgstr ""
+
+#: app/dialogs/remove-variant.html:10
+#: app/dialogs/renew-variant-secret.html:10
+msgid "Please type in the name of the variant to confirm."
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:19
+msgid "Priority"
+msgstr ""
+
+#: app/index.html:68
+msgid "Processing..."
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:69
+#: app/dialogs/create-variant.html:144
+msgid "Production"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:11
+msgid "Push Messages"
+msgstr ""
+
+#: app/dialogs/create-variant.html:115
+#: app/dialogs/create-variant.html:131
+#: app/dialogs/create-variant.html:172
+#: app/dialogs/create-variant.html:187
+#: app/dialogs/create-variant.html:194
+#: app/dialogs/create-variant.html:201
+msgid "Push Network"
+msgstr ""
+
+#: app/components/app-detail/include/analytics.html:80
+msgid "Push Networks"
+msgstr ""
+
+#: app/index.html:102
+msgid "Push Problem for Variant <strong>{{ warning.variant.name }}</strong>"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.js:63
+msgid "Push notification support enabled for {{name}}"
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:4
+msgid "REST Sender API (with CURL)"
+msgstr ""
+
+#: app/scripts/directives.js:221
+msgid "Read more about the <a ups-doc=\"sender-api-rest\">UPS REST Sender API in the documentation</a>."
+msgstr ""
+
+#: app/scripts/directives.js:202
+msgid "Read more on the details of the <a ups-doc=\"sender-api-java\">Java UPS Sender API in documentation</a>."
+msgstr ""
+
+#: app/scripts/directives.js:212
+msgid "Read more on the details of the <a ups-doc=\"sender-api-nodejs\">Node.js UPS Sender API in documentation</a>."
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:129
+msgid "Receiving"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:82
+msgid "Refresh Token:"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:24
+msgid "Remove"
+msgstr ""
+
+#: app/dialogs/remove-variant.html:6
+msgid "Remove Variant"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:10
+#: app/components/app-detail/include/sender.html:26
+#: app/components/app-detail/include/sender.html:41
+msgid "Renew Master Secret"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:38
+#: app/dialogs/renew-variant-secret.html:20
+#: app/dialogs/renew-variant-secret.html:5
+msgid "Renew Variant Secret"
+msgstr ""
+
+#: app/scripts/directives.js:220
+msgid "Run the following <code>curl</code> command in a shell to send a notification to UPS server."
+msgstr ""
+
+#: app/components/welcome/welcome.html:46
+msgid "START HERE"
+msgstr ""
+
+#: app/dialogs/create-app.html:29
+#: app/dialogs/create-variant.html:221
+#: app/dialogs/edit-app-name.html:18
+#: app/dialogs/edit-variant-name.html:18
+msgid "Save"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:61
+msgid "See all notifications"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:12
+#: app/components/app-detail/include/activity.html:130
+#: app/components/app-detail/include/analytics.html:105
+msgid "Send Notification to this app"
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:67
+msgid "Send Push Notification"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:42
+msgid "Send Push Notification and Continue"
+msgstr ""
+
+#: app/components/welcome/welcome.html:32
+msgid "Send a notification"
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:6
+msgid "Send push to Application One"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:25
+msgid "Sender API"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:28
+#: app/dialogs/create-variant.html:123
+msgid "Sender ID"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:45
+msgid "Sender ID:"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:1
+msgid "Sending push notifications"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:26
+msgid "Sent"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:21
+msgid "Server Key"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:47
+msgid "Server Key:"
+msgstr ""
+
+#: app/dialogs/create-variant.html:116
+msgid ""
+"Server Key<br>\n"
+"            <input type=\"text\" placeholder=\"e.g. AIza5a448c2f31700a466fbc9d33d33942b043a27596\" id=\"fcmApiKey\" class=\"form-control\" ng-model=\"variant.googleKey\" ng-required=\"variant.type == 'android'\">"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:4
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:23
+msgid "Server URL"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:31
+msgid "Server URL:"
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:9
+msgid "Set up Java UPS Sender API"
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:13
+msgid "Set up Node.js Sender API"
+msgstr ""
+
+#: app/components/welcome/welcome.html:40
+msgid "Set up sender API"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:116
+msgid "Showing <b>{{ variantDetail.currentStart }}</b> to <b>{{ variantDetail.currentEnd }}</b> of <b>{{ variantDetail.totalCount }}</b> Devices"
+msgstr ""
+
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:41
+#: app/components/wizard03-register-device/wizard03-register-device.html:55
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:53
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:45
+msgid "Skip the wizard"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:39
+msgid "Skip this step"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:25
+msgid "Status"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:20
+msgid "Successful installation"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:142
+msgid "Successfully exported installations"
+msgstr ""
+
+#: app/components/welcome/welcome.html:33
+msgid "Test your setup. Send your first push notification!"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:45
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:49
+#: app/components/wizard03-register-device/wizard03-register-device.html:63
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:61
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:53
+#: app/components/wizard06-done/wizard06-done.html:38
+msgid "Test! Send notification"
+msgstr ""
+
+#: app/components/app-detail/include/blank.html:8
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:24
+msgid "The first step to set up your mobile device is to add a variants. That will generate the code necessary to register UPS on your device."
+msgstr ""
+
+#: app/components/home/home.js:44
+msgid "The name of {{name}} application was successfully changed"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:67
+msgid "The name of {{name}} variant was successfully changed"
+msgstr ""
+
+#: app/scripts/directives.js:201
+msgid "Then use the following snippet in your Java code to enable push notification sending."
+msgstr ""
+
+#: app/scripts/directives.js:211
+msgid "Then use the following snippet in your Node.js code to enable push notification sending."
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:121
+#: app/components/app-detail/include/analytics.html:96
+msgid "There are no registered devices for this application."
+msgstr ""
+
+#: app/components/app-detail/include/blank.html:6
+msgid "There are no variants yet."
+msgstr ""
+
+#: app/components/welcome/welcome.html:8
+msgid "This console will help you registering apps and variants to manage push notifications. Follow these steps to set up your application."
+msgstr ""
+
+#: app/dialogs/import-installations.html:21
+msgid "This file can not be parsed !"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:107
+msgid "This is a list of devices using this variant."
+msgstr ""
+
+#: app/components/welcome/welcome.html:41
+msgid "This is the backend code. We have sender API configuration for Java, Node.js or Curl that will help get everything up and running fast. You can do your own sender if you want."
+msgstr ""
+
+#: app/dialogs/create-variant.html:195
+msgid "This server's <em>SimplePush</em> implementation will be used."
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:108
+msgid "To see installation instructions and code snippet click here"
+msgstr ""
+
+#: app/index.html:78
+msgid "Toggle navigation"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:63
+#: app/dialogs/create-variant.html:138
+msgid "Type"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:54
+#: app/components/app-detail/include/variantDetail.html:60
+#: app/components/app-detail/include/variantDetail.html:71
+msgid "Type:"
+msgstr ""
+
+#: app/directives/ups-sender-snippets.html:17
+msgid "Use UPS REST Sender API (with CURL)"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:45
+msgid "Variant"
+msgid_plural "Variants"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/components/app-detail/include/variantDetail.html:33
+msgid "Variant ID:"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:35
+msgid "Variant Secret:"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:41
+#: app/components/wizard02-add-variant/wizard02-add-variant.js:21
+msgid "Variant {{name}} successfully created"
+msgstr ""
+
+#: app/components/app-detail/include/variants.js:53
+msgid "Variant {{name}} was successfully modified"
+msgstr ""
+
+#: app/components/app-detail/app-detail.html:22
+#: app/components/app-detail/app-detail.html:7
+#: app/dialogs/send-push-notification.html:29
+msgid "Variants"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:43
+msgid "Warning"
+msgstr ""
+
+#: app/index.html:92
+msgid "Warnings:"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:15
+msgid "We will hold your hand and guide you all the way. Sit back and enjoy the ride."
+msgstr ""
+
+#: app/components/welcome/welcome.html:7
+#: app/components/wizard01-create-app/wizard01-create-app.html:6
+msgid "Welcome to Unified Push Server"
+msgstr ""
+
+#: app/components/wizard06-done/wizard06-done.html:6
+msgid "Well done!"
+msgstr ""
+
+#: app/components/app-detail/include/variantDetail.html:61
+msgid "Windows Push Network"
+msgstr ""
+
+#: app/dialogs/create-variant.html:73
+msgid "Windows/MPNS (deprecated)"
+msgstr ""
+
+#: app/components/wizard01-create-app/wizard01-create-app.html:39
+#: app/components/wizard02-add-variant/wizard02-add-variant.html:43
+#: app/components/wizard03-register-device/wizard03-register-device.html:57
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:55
+#: app/components/wizard05-setup-sender/wizard05-setup-sender.html:47
+#: app/components/wizard06-done/wizard06-done.html:32
+msgid "Wizard steps"
+msgstr ""
+
+#: app/components/app-detail/include/sender.html:29
+msgid "You are about to change the master secret for application <strong>\"{{app.name}}\"</strong>!"
+msgstr ""
+
+#: app/dialogs/renew-variant-secret.html:8
+msgid "You are about to change the variant secret for variant <strong>\"{{variant.name}}\"</strong>!"
+msgstr ""
+
+#: app/components/wizard04-send-push-notification/wizard04-send-push-notification.html:25
+msgid "You can always <a ng-link=\"wizard05SetupSender()\">Skip the wizard</a> altogether if you want."
+msgstr ""
+
+#: app/dialogs/send-push-notification.html:60
+msgid "You can provide multiple values at a time by separating them by commas."
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:117
+msgid "You have no devices registered"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:5
+msgid "You have {{ appDetail.app.variants.length }} Variants"
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:126
+#: app/components/app-detail/include/analytics.html:101
+msgid "You haven't sent any push notifications to the device yet."
+msgstr ""
+
+#: app/components/app-detail/include/activity.html:118
+msgid "You haven't sent any push notifications yet"
+msgstr ""
+
+#: app/index.html:40
+msgid "You will be logged off in {{ idle.idleCountdown }}&nbsp;seconds due to inactivity."
+msgstr ""
+
+#: app/components/home/home.html:49
+msgid "created by  <strong>{{ app.developer }}</strong>"
+msgstr ""
+
+#: app/components/home/home.html:52
+msgid "device"
+msgid_plural "devices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/dialogs/create-app.html:22
+msgid "e.g. A useful application for everyone."
+msgstr ""
+
+#: app/dialogs/create-app.html:15
+msgid "e.g. MyApp"
+msgstr ""
+
+#: app/dialogs/create-variant.html:14
+msgid "eg. Demo"
+msgstr ""
+
+#: app/dialogs/export-installations.html:9
+msgid "installations will be exported."
+msgstr ""
+
+#: app/components/home/home.html:51
+msgid "message"
+msgid_plural "messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/components/bootstrap/bootstrap.html:165
+#: app/dialogs/create-variant.html:104
+msgid "using Amazon Push Network"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:43
+#: app/dialogs/create-variant.html:42
+msgid "using Apple Push Network"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:11
+#: app/dialogs/create-variant.html:26
+msgid "using Firebase Cloud Messaging"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:135
+#: app/dialogs/create-variant.html:74
+msgid "using Microsoft Push Notification Service (MPNS)"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:104
+#: app/dialogs/create-variant.html:58
+msgid "using Windows Push Notification Services (WNS)"
+msgstr ""
+
+#: app/components/bootstrap/bootstrap.html:150
+#: app/dialogs/create-variant.html:89
+msgid "using the Mozilla WebAPI"
+msgstr ""
+
+#: app/components/home/home.html:50
+msgid "variant"
+msgid_plural "variants"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/dialogs/import-installations.html:16
+msgid "{{ importPreview }} installation will be imported"
+msgid_plural "{{$count}} installations will be imported"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/components/app-detail/include/activity.html:45
+msgid "{{ metric.totalReceivers }} receivers / {{ metric.appOpenCounter }} opened"
+msgstr ""
+
+#: app/components/app-detail/include/variants.html:10
+msgid "{{ variants.typeEnum[variantType].name }} Variants"
+msgstr ""

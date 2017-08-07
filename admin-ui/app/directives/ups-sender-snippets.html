@@ -1,25 +1,25 @@
 <ul class="nav nav-tabs nav-tabs-pf">
-  <li id="java-snippet-tab" ng-class="{ active: activeSnippet == 'java' }" ng-show=" snippets.java.show"><a href ng-click="activeSnippet = 'java'">Java Sender API</a></li>
-  <li id="nodejs-snippet-tab" ng-class="{ active: activeSnippet == 'nodejs' }"  ng-show=" snippets.nodejs.show"><a href ng-click="activeSnippet = 'nodejs'">Node.js Sender API</a></li>
-  <li id="curl-snippet-tab" ng-class="{ active: activeSnippet == 'curl' }"  ng-show=" snippets.curl.show"><a href ng-click="activeSnippet = 'curl'">REST Sender API (with CURL)</a></li>
+  <li id="java-snippet-tab" ng-class="{ active: activeSnippet == 'java' }" ng-show=" snippets.java.show"><a href ng-click="activeSnippet = 'java'" translate>Java Sender API</a></li>
+  <li id="nodejs-snippet-tab" ng-class="{ active: activeSnippet == 'nodejs' }"  ng-show=" snippets.nodejs.show"><a href ng-click="activeSnippet = 'nodejs'" translate>Node.js Sender API</a></li>
+  <li id="curl-snippet-tab" ng-class="{ active: activeSnippet == 'curl' }"  ng-show=" snippets.curl.show"><a href ng-click="activeSnippet = 'curl'" translate>REST Sender API (with CURL)</a></li>
 </ul>
 
 
 <div ng-if="activeSnippet == 'java'">
-  <h3>Set up Java UPS Sender API</h3>
+  <h3 translate>Set up Java UPS Sender API</h3>
   <div ups-bind-html-compile="snippets.java.text.before"></div>
 </div>
 <div ng-if="activeSnippet == 'nodejs'">
-  <h3>Set up Node.js Sender API</h3>
+  <h3 translate>Set up Node.js Sender API</h3>
   <div ups-bind-html-compile="snippets.nodejs.text.before"></div>
 </div>
 <div ng-if="activeSnippet == 'curl'">
-  <h3>Use UPS REST Sender API (with CURL)</h3>
+  <h3 translate>Use UPS REST Sender API (with CURL)</h3>
   <div ups-bind-html-compile="snippets.curl.text.before"></div>
 </div>
 
 <div class="ups-snippet">
-  <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()">Copy</a>
+  <a href tooltip="{{ clipText }}" tooltip-placement="right" clip-copy="copySnippet()" clip-click="copied()" translate>Copy</a>
   <pre ng-bind="snippets.java.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'java'"></pre>
   <pre ng-bind="snippets.nodejs.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'nodejs'"></pre>
   <pre ng-bind="snippets.curl.source" class="pre-scrollable prettyprint" ng-if="activeSnippet == 'curl'"></pre>

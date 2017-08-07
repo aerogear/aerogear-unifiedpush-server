@@ -12,7 +12,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AeroGear UnifiedPush Server</title>
+    <title translate>AeroGear UnifiedPush Server</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -38,7 +38,7 @@
 <body class="app-dashboard" ng-controller="AppController as app">
 
 <div class="idlebox ng-cloak" ng-controller="IdleController as idle"
-     ng-hide="idle.idleCountdown > idle.config.idleWarningDuration">
+     ng-hide="idle.idleCountdown > idle.config.idleWarningDuration" translate>
   You will be logged off in {{ idle.idleCountdown }}&nbsp;seconds due to inactivity.
 </div>
 
@@ -65,7 +65,7 @@
   <div ng-show="app.havePendingRequests()">
     <div class="alert alert-info">
       <span class="pficon spinner spinner-sm spinner-inline"></span>
-      <strong>Processing...</strong>
+      <strong translate>Processing...</strong>
     </div>
   </div>
 
@@ -75,7 +75,7 @@
 <nav class="navbar navbar-default navbar-pf ng-cloak" role="navigation">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
-      <span class="sr-only">Toggle navigation</span>
+      <span class="sr-only" translate>Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
@@ -89,7 +89,7 @@
       <li class="dropdown" dropdown ng-if="app.warnings.length">
         <a href dropdown-toggle>
           <span class="pficon pficon-info"></span>
-          Warnings: <strong>{{ app.warnings.length }}</strong>
+          <span translate>Warnings:</span> <strong>{{ app.warnings.length }}</strong>
         </a>
         <div class="dropdown-menu infotip bottom-right">
           <div class="arrow"></div>
@@ -99,7 +99,7 @@
                   <span class="pficon pficon-warning-triangle"></span>
                   <span class="pficon pficon-warning-exclamation"></span>
               </span>
-              <a href ng-link="appDetail({app: warning.applicationID, tab: 'activity'})">Push Problem for Variant <strong>{{ warning.variant.name }}</strong></a>
+              <a href ng-link="appDetail({app: warning.applicationID, tab: 'activity'})" translate>Push Problem for Variant <strong>{{ warning.variant.name }}</strong></a>
             </li>
           </ul>
           <!--<div class="footer"><a href="#">Clear Warnings</a></div>-->
@@ -112,11 +112,11 @@
         </a>
         <ul class="dropdown-menu">
           <li>
-            <a href ng-click="app.goToAccountManagement()">Account management</a>
+            <a href ng-click="app.goToAccountManagement()" translate>Account management</a>
           </li>
           <li class="divider"></li>
           <li>
-            <a href ng-click="app.logout()">Logout</a>
+            <a href ng-click="app.logout()" translate>Logout</a>
           </li>
         </ul>
       </li>
@@ -154,6 +154,7 @@
 <script src="bower_components/google-code-prettify/bin/prettify.min.js"></script>
 <script src="bower_components/zeroclipboard/dist/ZeroClipboard.min.js"></script>
 <script src="bower_components/ng-clip/src/ngClip.js"></script>
+<script src="bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
 <!-- endbuild -->
 
 <script src="/auth/js/keycloak.js"></script>

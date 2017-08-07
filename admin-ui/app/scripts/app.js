@@ -14,7 +14,8 @@
     'patternfly.notification',
     'patternfly.select',
     'angular-c3',
-    'ngClipboard'
+    'ngClipboard',
+    'gettext'
   ]);
 
   app.run(function($rootScope) {

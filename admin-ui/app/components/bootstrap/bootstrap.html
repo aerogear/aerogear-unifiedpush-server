@@ -8,7 +8,7 @@
           <input type="checkbox" ng-model="bootstrap.types.android">
               <span class="ups-has-icon ups-variant-android">
                 <strong>Android</strong><br>
-                using Firebase Cloud Messaging
+                <span translate>using Firebase Cloud Messaging</span>
               </span>
         </label>
       </div>
@@ -18,14 +18,14 @@
   <div ng-if="bootstrap.types.android">
     <div class="form-group">
       <label class="col-sm-3 control-label" for="fcmApiKey"></label>
-      <div class="col-sm-7">Server Key<br>
+      <div class="col-sm-7"><span translate>Server Key</span><br>
         <input type="text" placeholder="e.g. AIza5a448c2f31700a466fbc9d33d33942b043a27596" id="fcmApiKey" class="form-control" ng-model="bootstrap.config.android.googleKey" ng-required="bootstrap.types.android">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-3 control-label" for="fcmProjectNumber"></label>
       <div class="col-sm-7">
-        Sender ID<br>
+        <span translate>Sender ID</span><br>
         <input type="text" placeholder="e.g. 42" id="fcmProjectNumber" class="form-control" ng-model="bootstrap.config.android.projectNumber" ng-required="bootstrap.types.android">
       </div>
     </div>
@@ -40,7 +40,7 @@
           <input type="checkbox" ng-model="bootstrap.types.ios">
               <span class="ups-has-icon ups-variant-ios">
                 <strong>iOS</strong><br>
-                using Apple Push Network
+                <span translate>using Apple Push Network</span>
               </span>
         </label>
       </div>
@@ -53,20 +53,20 @@
       <div class="col-sm-7">
         <div class="form-horizontal">
           <div class="form-group">
-            <label class="col-sm-3 control-label" for="iosPassphrase">Certificate</label>
+            <label class="col-sm-3 control-label" for="iosPassphrase" translate>Certificate</label>
             <div class="col-sm-9">
               <strong><input type="file" ups-files="bootstrap.iosCertificates" /></strong>
             </div>
           </div>
           <div class="form-group">
             <div class="row">
-              <br><label class="col-sm-3 control-label">Type</label>
+              <br><label class="col-sm-3 control-label" translate>Type</label>
               <div class="col-sm-9">
                 <div class="row">
                   <div class="radio">
                     <label>
                       <input type="radio" name="iosType" id="iosType1" ng-model="bootstrap.config.ios.production" ng-value="true" ng-required="bootstrap.types.ios">
-                      Production
+                      <span translate>Production</span>
                     </label>
                   </div>
                 </div>
@@ -74,7 +74,7 @@
                   <div class="radio">
                     <label>
                       <input type="radio" name="iosType" id="iosType2" ng-model="bootstrap.config.ios.production" ng-value="false" ng-required="bootstrap.types.ios">
-                      Development
+                      <span translate>Development</span>
                     </label>
                   </div>
                 </div>
@@ -82,7 +82,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
+            <label class="col-sm-3 control-label" for="iosPassphrase" translate>Passphrase</label>
             <div class="col-sm-9">
               <input type="password" id="iosPassphrase" class="form-control" ng-model="bootstrap.config.ios.passphrase" ng-required="bootstrap.types.ios">
             </div>
@@ -101,7 +101,7 @@
           <input type="checkbox" ng-model="bootstrap.types.windows_wns" ng-disabled="bootstrap.types.windows_mpns">
               <span class="ups-has-icon ups-variant-windows">
                 <strong>Windows</strong><br>
-                using Windows Push Notification Services (WNS)
+                <span translate>using Windows Push Notification Services (WNS)</span>
               </span>
         </label>
       </div>
@@ -111,13 +111,13 @@
   <div ng-if="bootstrap.types.windows_wns">
     <div class="form-group">
       <label class="col-sm-3 control-label" for="sid"></label>
-      <div class="col-sm-7"><em>Package SID</em><br>
+      <div class="col-sm-7"><em translate>Package SID</em><br>
         <input type="text" placeholder="ms-app://s-1-15-2-3183935804-3637592178" id="sid" class="form-control" ng-model="bootstrap.config.windows_wns.sid" ng-required="bootstrap.types.windows_wns">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-3 control-label" for="clientSecret"></label>
-      <div class="col-sm-7">Client Secret<br>
+      <div class="col-sm-7"><span translate>Client Secret</span><br>
         <input type="text" placeholder="e.g. 42" id="clientSecret" class="form-control" ng-model="bootstrap.config.windows_wns.clientSecret" ng-required="bootstrap.types.windows_wns">
       </div>
     </div>
@@ -132,7 +132,7 @@
           <input type="checkbox" ng-model="bootstrap.types.windows_mpns" ng-disabled="bootstrap.types.windows_wns">
               <span class="ups-has-icon ups-variant-windows">
                 <strong>Windows</strong><br>
-                using Microsoft Push Notification Service (MPNS)
+                <span translate>using Microsoft Push Notification Service (MPNS)</span>
               </span>
         </label>
       </div>
@@ -147,7 +147,7 @@
           <input type="checkbox" ng-model="bootstrap.types.simplePush">
               <span class="ups-has-icon ups-variant-simplePush">
                 <strong>SimplePush</strong><br>
-                using the Mozilla WebAPI
+                <span translate>using the Mozilla WebAPI</span>
               </span>
         </label>
       </div>
@@ -162,7 +162,7 @@
           <input type="checkbox" ng-model="bootstrap.types.adm">
               <span class="ups-has-icon ups-variant-adm">
                 <strong>ADM</strong><br>
-                using Amazon Push Network
+                <span translate>using Amazon Push Network</span>
               </span>
         </label>
       </div>
@@ -172,14 +172,14 @@
   <div ng-if="bootstrap.types.adm">
     <div class="form-group">
       <label class="col-sm-3 control-label" for="admClientId"></label>
-      <div class="col-sm-7">Client ID<br>
+      <div class="col-sm-7"><span translate>Client ID</span><br>
         <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="admClientId" class="form-control" ng-model="bootstrap.config.adm.clientId" ng-required="bootstrap.types.adm">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-3 control-label" for="admclientSecret"></label>
       <div class="col-sm-7">
-        Client Secret<br>
+        <span translate>Client Secret</span><br>
         <input type="text" placeholder="e.g. 5da448c2f31700a466fbc9d33d33942b043a27596" id="admclientSecret" class="form-control" ng-model="bootstrap.config.adm.clientSecret" ng-required="bootstrap.types.adm">
       </div>
     </div>
@@ -191,7 +191,7 @@
   <div class="form-group">
     <label class="col-sm-3"></label>
     <div class="col-sm-9">
-      <button id="enablePush" ng-click="bootstrap.bootstrapApplication()" class="btn btn-primary" ng-disabled="form.$invalid || !bootstrap.validateForm() || !bootstrap.validateFileInputs()">Enable Push</button>
+      <button id="enablePush" ng-click="bootstrap.bootstrapApplication()" class="btn btn-primary" ng-disabled="form.$invalid || !bootstrap.validateForm() || !bootstrap.validateFileInputs()" translate>Enable Push</button>
     </div>
   </div>
 </form>

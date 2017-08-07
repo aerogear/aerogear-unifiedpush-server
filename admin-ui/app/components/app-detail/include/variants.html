@@ -1,16 +1,16 @@
 <div class="actions pull-right ups-main-action" ng-if="variants.isAllowedToAddVariant()">
-  <button id="add-variant-btn" class="btn btn-primary" ng-click="variants.add()"><span class="pficon pficon-add"></span> Add a variant</button>
+  <button id="add-variant-btn" class="btn btn-primary" ng-click="variants.add()"><span class="pficon pficon-add"></span> <span translate>Add a variant</span></button>
 </div>
 
-<h3>You have {{ appDetail.app.variants.length }} Variants</h3>
+<h3 translate>You have {{ appDetail.app.variants.length }} Variants</h3>
 
 <div class="panel panel-default ups-panel" ng-repeat="(variantType, variantList) in variants.byType">
 
   <div class="panel-heading ups-has-icon ups-variant-{{ variantType }}">
-    <h3 class="panel-title">{{ variants.typeEnum[variantType].name }} Variants</h3>
+    <h3 class="panel-title" translate>{{ variants.typeEnum[variantType].name }} Variants</h3>
     <ul class="list-inline">
-      <li id="message-count-{{ variantType }}"><span class="pficon pficon-messages"></span> <strong>{{ variantList.$messageCount }}</strong> Messages</li>
-      <li id="device-count-{{ variantType }}"><i class="fa fa-mobile"></i> <strong>{{ variantList.$deviceCount }}</strong> Devices</li>
+      <li id="message-count-{{ variantType }}"><span class="pficon pficon-messages"></span> <span translate><strong>{{ variantList.$messageCount }}</strong> Messages</span></li>
+      <li id="device-count-{{ variantType }}"><i class="fa fa-mobile"></i> <span translate><strong>{{ variantList.$deviceCount }}</strong> Devices</span></li>
     </ul>
 
   </div>
@@ -20,14 +20,14 @@
       <div class="ups-variant-header" ng-click="variant.$toggled = !variant.$toggled">
         <div class="actions pull-right">
           <ul class="list-inline">
-            <li><a ng-click="$event.stopPropagation(); variants.editName( variant );"><span class="pficon pficon-edit"></span> Edit name</a></li>
-            <li class="danger"><a ng-click="$event.stopPropagation(); variants.delete( variant );"><span class="pficon pficon-delete"></span> Remove</a></li>
+            <li><a ng-click="$event.stopPropagation(); variants.editName( variant );"><span class="pficon pficon-edit"></span> <span translate>Edit name</span></a></li>
+            <li class="danger"><a ng-click="$event.stopPropagation(); variants.delete( variant );"><span class="pficon pficon-delete"></span> <span translate>Remove</span></a></li>
             <li class="ups-drop" onclick="event.stopPropagation()">
-              More
+              <span translate>More</span>
               <i class="fa fa-angle-down"></i>
               <ul class="list-unstyled">
-                <li><a ng-click="$event.stopPropagation(); variants.importInstallations( variant )"><span class="pficon pficon-import"></span> Import</a></li>
-                <li><a ng-click="$event.stopPropagation(); variants.exportInstallations( variant )" ng-if="variant.$deviceCount > 0"><span class="pficon pficon-export"></span> Export</a></li>
+                <li><a ng-click="$event.stopPropagation(); variants.importInstallations( variant )"><span class="pficon pficon-import"></span> <span translate>Import</span></a></li>
+                <li><a ng-click="$event.stopPropagation(); variants.exportInstallations( variant )" ng-if="variant.$deviceCount > 0"><span class="pficon pficon-export"></span> <span translate>Export</span></a></li>
               </ul>
             </li>
           </ul>
@@ -40,11 +40,11 @@
                 <span class="pficon pficon-warning-triangle"></span>
                 <span class="pficon pficon-warning-exclamation"></span>
               </span>
-            Warning
+            <span translate>Warning</span>
           </li>
-          <li ng-if="variant.$deviceCount == 0"><i class="fa fa-ban"></i> No installation yet</li>
-          <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <strong>{{ variant.$messageCount }}</strong> Messages</li>
-          <li ng-if="variant.$deviceCount > 0"><i class="fa fa-mobile"></i> <strong>{{ variant.$deviceCount }}</strong> Devices</li>
+          <li ng-if="variant.$deviceCount == 0"><i class="fa fa-ban"></i> <span translate>No installation yet</span></li>
+          <li ng-if="variant.$deviceCount > 0"><span class="pficon pficon-messages"></span> <span translate><strong>{{ variant.$messageCount }}</strong> Messages</span></li>
+          <li ng-if="variant.$deviceCount > 0"><i class="fa fa-mobile"></i> <span translate><strong>{{ variant.$deviceCount }}</strong> Devices</span></li>
         </ul>
 
       </div><!-- vaiant header -->

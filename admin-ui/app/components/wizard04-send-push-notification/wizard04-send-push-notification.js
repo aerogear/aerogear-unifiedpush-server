@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('Wizard04SendPushNotificationController', function( $rootScope, $router, $interval, $timeout, createAppWizard, Notifications, messageSenderEndpoint, appModal, applicationsEndpoint) {
+  .controller('Wizard04SendPushNotificationController', function( $rootScope, $router, $interval, $timeout, createAppWizard, Notifications, messageSenderEndpoint, appModal, applicationsEndpoint, gettextCatalog) {
 
     var self = this;
 
@@ -24,7 +24,7 @@ angular.module('upsConsole')
     this.pushData = {
       'message': {
         'sound': 'default',
-        'alert': 'Hello! This is my first notification to ' + (self.variant ? self.variant.name : null),
+        'alert': gettextCatalog.getString('Hello! This is my first notification to {{name}}', {name: (self.variant ? self.variant.name : null)}),
         'simple-push': 'version=' + new Date().getTime()
       },
       'criteria' : {}
@@ -40,7 +40,7 @@ angular.module('upsConsole')
           $rootScope.$broadcast('upsNavigate', '/wizard/setup-sender');
         })
         .catch(function() {
-          Notifications.error('Failed to sent notification');
+          Notifications.error(gettextCatalog.getString('Failed to sent notification'));
         });
     };
 

@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, bootstrapedAppName, allowCreateVariant ) {
+  .controller('BootstrapController', function( $rootScope, applicationsEndpoint, Notifications, $router, bootstrapedAppName, allowCreateVariant, gettextCatalog ) {
 
     var self = this;
 
@@ -60,12 +60,12 @@ angular.module('upsConsole')
       });
       applicationsEndpoint.bootstrap({}, formData)
         .then(function( app ) {
-          Notifications.success('Push notification support enabled for ' + app.name);
+          Notifications.success(gettextCatalog.getString('Push notification support enabled for {{name}}', {name: app.name}));
           $rootScope.$broadcast('upsUpdateStats');
           $rootScope.$broadcast('upsNavigate', '/app/' + app.pushApplicationID + '/variants');
         })
         .catch(function() {
-          Notifications.error('Failed to enable Push notification support for ' + self.application.name);
+          Notifications.error(gettextCatalog.getString('Failed to enable Push notification support for {{name}}', {name: self.application.name}));
         });
     };
 

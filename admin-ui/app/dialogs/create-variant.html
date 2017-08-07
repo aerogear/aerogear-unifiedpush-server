@@ -3,26 +3,27 @@
     <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title" id="myModalLabel">{{ isNew ? 'Add' : 'Edit' }} Variant</h4>
+    <h4 class="modal-title" id="myModalLabel" ng-if="isNew" translate>Add Variant</h4>
+    <h4 class="modal-title" id="myModalLabel" ng-if="!isNew" translate>Edit Variant</h4>
   </div>
   <div class="modal-body form-horizontal">
 
     <div class="form-group" ng-if="isNew">
-      <label class="col-sm-3 control-label" for="textInput-modal-markup">Name</label>
+      <label class="col-sm-3 control-label" for="textInput-modal-markup" translate>Name</label>
       <div class="col-sm-9">
-        <input type="text" id="textInput-modal-markup" class="form-control" placeholder="eg. Demo" ng-model="variant.name" required="required" pf-focused="true">
+        <input type="text" id="textInput-modal-markup" class="form-control" data-placeholder="'eg. Demo'|translate" ng-model="variant.name" required="required" pf-focused="true">
       </div>
     </div>
 
     <div class="form-group" ng-if="isNew && allowCreate('android')">
-      <label class="col-sm-3 control-label" for="optionAndroid">Choose a platform</label>
+      <label class="col-sm-3 control-label" for="optionAndroid" translate>Choose a platform</label>
       <div class="col-sm-9">
         <div class="radio">
           <label>
             <input type="radio" name="variantType" id="optionAndroid" value="android" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-android">
                   <strong>Android</strong><br>
-                  using Firebase Cloud Messaging
+                  <span translate>using Firebase Cloud Messaging</span>
                 </span>
           </label>
         </div>
@@ -38,7 +39,7 @@
             <input type="radio" name="variantType" id="optionIos" value="ios" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-ios">
                   <strong>iOS</strong><br>
-                  using Apple Push Network
+                  <span translate>using Apple Push Network</span>
                 </span>
           </label>
         </div>
@@ -54,7 +55,7 @@
             <input type="radio" name="variantType" id="optionWindowsWns" value="windows_wns" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-windows">
                   <strong>Windows/WNS</strong><br>
-                  using Windows Push Notification Services (WNS)
+                  <span translate>using Windows Push Notification Services (WNS)</span>
                 </span>
           </label>
         </div>
@@ -69,8 +70,8 @@
           <label>
             <input type="radio" name="variantType" id="optionWindowsMpns" value="windows_mpns" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-windows">
-                  <strong>Windows/MPNS (deprecated)</strong><br>
-                  using Microsoft Push Notification Service (MPNS)
+                  <strong translate>Windows/MPNS (deprecated)</strong><br>
+                  <span translate>using Microsoft Push Notification Service (MPNS)</span>
                 </span>
           </label>
         </div>
@@ -85,7 +86,7 @@
             <input type="radio" name="variantType" id="optionSimplePush" value="simplePush" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-simplePush">
                   <strong>SimplePush</strong><br>
-                  using the Mozilla WebAPI
+                  <span translate>using the Mozilla WebAPI</span>
                 </span>
           </label>
         </div>
@@ -99,8 +100,8 @@
           <label>
             <input type="radio" name="variantType" id="optionsAdm" value="adm" ng-model="variant.type" ng-required="true">
                 <span class="ups-has-icon ups-variant-adm">
-                  <strong>ADM (experimental)</strong><br>
-                  using Amazon Push Network
+                  <strong translate>ADM (experimental)</strong><br>
+                  <span translate>using Amazon Push Network</span>
                 </span>
           </label>
         </div>
@@ -111,15 +112,15 @@
 
       <div ng-show="variant.type == 'android'">
         <div class="form-group">
-          <label class="col-sm-3 control-label" for="fcmApiKey">Push Network</label>
-          <div class="col-sm-7">Server Key<br>
+          <label class="col-sm-3 control-label" for="fcmApiKey" translate>Push Network</label>
+          <div class="col-sm-7" translate>Server Key<br>
             <input type="text" placeholder="e.g. AIza5a448c2f31700a466fbc9d33d33942b043a27596" id="fcmApiKey" class="form-control" ng-model="variant.googleKey" ng-required="variant.type == 'android'">
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="fcmProjectNumber"></label>
           <div class="col-sm-7">
-            Sender ID<br>
+            <span translate>Sender ID</span><br>
             <input type="text" placeholder="e.g. 42" id="fcmProjectNumber" class="form-control" ng-model="variant.projectNumber">
           </div>
         </div>
@@ -127,20 +128,20 @@
 
       <div ng-show="variant.type == 'ios'">
         <div class="form-group">
-          <label class="col-sm-3 control-label">Push Network</label>
+          <label class="col-sm-3 control-label" translate>Push Network</label>
           <div class="col-sm-7">
-            <p><em>Apple Push Notification Service</em> certificate:</p>
+            <p translate><em>Apple Push Notification Service</em> certificate:</p>
             <strong><input type="file" ups-files="variant.certificates" /></strong>
             <div class="form-horizontal">
               <div class="form-group">
                 <div class="row">
-                  <br><label class="col-sm-3 control-label">Type</label>
+                  <br><label class="col-sm-3 control-label" translate>Type</label>
                   <div class="col-sm-9">
                     <div class="row">
                       <div class="radio">
                         <label>
                           <input type="radio" name="iosType" id="iosType1" ng-model="variant.production" ng-value="true" ng-required="variant.type == 'ios'">
-                          Production
+                          <span translate>Production</span>
                         </label>
                       </div>
                     </div>
@@ -148,7 +149,7 @@
                       <div class="radio">
                         <label>
                           <input type="radio" name="iosType" id="iosType2" ng-model="variant.production" ng-value="false" ng-required="variant.type == 'ios'">
-                          Development
+                          <span translate>Development</span>
                         </label>
                       </div>
                     </div>
@@ -156,7 +157,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label" for="iosPassphrase">Passphrase</label>
+                <label class="col-sm-3 control-label" for="iosPassphrase" translate>Passphrase</label>
                 <div class="col-sm-9">
                   <input type="password" id="iosPassphrase" class="form-control" ng-model="variant.passphrase" ng-disabled="!isNew && variant.certificates.length == 0">
                 </div>
@@ -168,14 +169,14 @@
 
       <div ng-show="variant.type == 'windows_wns'">
         <div class="form-group">
-          <label class="col-sm-3 control-label" for="sid">Push Network</label>
-          <div class="col-sm-7"><em>Package SID</em><br>
+          <label class="col-sm-3 control-label" for="sid" translate>Push Network</label>
+          <div class="col-sm-7"><em translate>Package SID</em><br>
             <input type="text" placeholder="ms-app://s-1-15-2-3183935804-3637592178" id="sid" class="form-control" ng-model="variant.sid" ng-required="variant.protocolType == 'wns'">
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="clientSecret"></label>
-          <div class="col-sm-7">Client Secret<br>
+          <div class="col-sm-7"><span translate>Client Secret</span><br>
             <input type="text" placeholder="e.g. 42" id="clientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.protocolType == 'wns'">
           </div>
         </div>
@@ -183,29 +184,29 @@
 
       <div ng-show="variant.type == 'windows_mpns'">
         <div class="form-group">
-          <label class="col-sm-3 control-label">Push Network</label>
-          <div class="col-sm-7"><strong>No configuration needed</strong></div>
+          <label class="col-sm-3 control-label" translate>Push Network</label>
+          <div class="col-sm-7"><strong translate>No configuration needed</strong></div>
         </div>
       </div>
 
       <div ng-show="variant.type == 'simplePush'">
         <div class="form-group">
-          <label class="col-sm-3 control-label">Push Network</label>
-          <div class="col-sm-7"><strong>No configuration needed</strong><p>This server's <em>SimplePush</em> implementation will be used.</p></div>
+          <label class="col-sm-3 control-label" translate>Push Network</label>
+          <div class="col-sm-7"><strong translate>No configuration needed</strong><p translate>This server's <em>SimplePush</em> implementation will be used.</p></div>
         </div>
       </div>
 
       <div ng-show="variant.type == 'adm'">
         <div class="form-group">
-          <label class="col-sm-3 control-label" for="admClientId">Push Network</label>
-          <div class="col-sm-7">Client ID<br>
+          <label class="col-sm-3 control-label" for="admClientId" translate>Push Network</label>
+          <div class="col-sm-7"><span translate>Client ID</span><br>
             <input type="text" placeholder="e.g. 5a448c2f31700a466fbc9d33d33942b043a27596" id="admClientId" class="form-control" ng-model="variant.clientId" ng-required="variant.type == 'adm'">
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label" for="admclientSecret"></label>
           <div class="col-sm-7">
-            Client Secret<br>
+            <span translate>Client Secret</span><br>
             <input type="text" placeholder="e.g. 5da448c2f31700a466fbc9d33d33942b043a27596" id="admclientSecret" class="form-control" ng-model="variant.clientSecret" ng-required="variant.type == 'adm'">
           </div>
         </div>
@@ -215,7 +216,8 @@
 
   </div>
   <div class="modal-footer">
-    <button ng-click="dismiss()" type="button" class="btn btn-default">Cancel</button>
-    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()">{{ isNew ? 'Create' : 'Save' }}</button>
+    <button ng-click="dismiss()" type="button" class="btn btn-default" translate>Cancel</button>
+    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()" ng-if="isNew" translate>Create</button>
+    <button ng-click="confirm()" class="btn btn-primary" ng-disabled="form.$invalid || !validateFileInputs()" ng-if="!isNew" translate>Save</button>
   </div>
 </form>

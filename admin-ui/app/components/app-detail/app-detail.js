@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('AppDetailController', function( $rootScope, $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider, Notifications ) {
+  .controller('AppDetailController', function( $rootScope, $q, $routeParams, $modal, applicationsEndpoint, messageSenderEndpoint, metricsEndpoint, ContextProvider, Notifications, gettextCatalog ) {
 
     var self = this;
 
@@ -65,10 +65,10 @@ angular.module('upsConsole')
                 self.notifications.unshift({ submitDate: new Date().getTime() });
                 $modalInstance.close();
                 $rootScope.$broadcast('upsNotificationSent', $scope.pushData, $scope.app);
-                Notifications.success('Notification was successfully sent');
+                Notifications.success(gettextCatalog.getString('Notification was successfully sent'));
               })
               .catch(function() {
-                Notifications.error('Failed to sent notification');
+                Notifications.error(gettextCatalog.getString('Failed to sent notification'));
               });
           };
 

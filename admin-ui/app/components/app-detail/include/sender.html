@@ -1,19 +1,19 @@
-<h3>Sending push notifications</h3>
-<p>Make your backend server send push notifications through this UnifiedPush Server using supported sender APIs.</p>
+<h3 translate>Sending push notifications</h3>
+<p translate>Make your backend server send push notifications through this UnifiedPush Server using supported sender APIs.</p>
 <dl class="dl-horizontal">
-  <dt>Server URL</dt>
+  <dt translate>Server URL</dt>
   <dd id="server-url">{{ appDetail.contextPath }}</dd>
-  <dt>Application ID</dt>
+  <dt translate>Application ID</dt>
   <dd id="application-id">{{ appDetail.app.pushApplicationID }}</dd>
-  <dt>Master Secret</dt>
+  <dt translate>Master Secret</dt>
   <dd id="master-secret">{{ appDetail.app.masterSecret }}
-    <br /><button id="renew-master-secret" class="btn btn-sm btn-default" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> Renew Master Secret</button>
+    <br /><button id="renew-master-secret" class="btn btn-sm btn-default" ng-click="sender.renewMasterSecret()"><span class="pficon pficon-refresh"></span> <span translate>Renew Master Secret</span></button>
   </dd>
 </dl>
 
 <div class="alert alert-info">
   <span class="pficon pficon-info"></span>
-  <strong>Keep this info secure!</strong> Never expose your Master Secret or Application ID publicly.
+  <strong translate>Keep this info secure!</strong> <span translate>Never expose your Master Secret or Application ID publicly.</span>
 </div>
 
 <ups-sender-snippets app="appDetail.app"></ups-sender-snippets>
@@ -23,22 +23,22 @@
     <button type="button" class="close" aria-hidden="true" ng-click="dismiss()">
       <span class="pficon pficon-close"></span>
     </button>
-    <h4 class="modal-title" id="myModalLabel">Renew Master Secret</h4>
+    <h4 class="modal-title" id="myModalLabel" translate>Renew Master Secret</h4>
   </div>
   <div class="modal-body">
-    <h4>You are about to change the master secret for application <strong>"{{app.name}}"</strong>!</h4>
-    <p>Be aware that this cannot be undone and you'll have to change your sender in order to continue sending push notifications.</p>
-    <p>Please type in the name of the app to confirm.</p>
+    <h4 translate>You are about to change the master secret for application <strong>"{{app.name}}"</strong>!</h4>
+    <p translate>Be aware that this cannot be undone and you'll have to change your sender in order to continue sending push notifications.</p>
+    <p translate>Please type in the name of the app to confirm.</p>
     <p>
       <input class="form-control" ng-model="confirmAppName" pf-focused="true" />
     </p>
 
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="dismiss()">
+    <button class="btn btn-default" ng-click="dismiss()" translate>
       Cancel
     </button>
-    <button class="btn btn-danger" ng-click="confirm()" ng-disabled="app.name !== confirmAppName">
+    <button class="btn btn-danger" ng-click="confirm()" ng-disabled="app.name !== confirmAppName" translate>
       Renew Master Secret
     </button>
   </div>

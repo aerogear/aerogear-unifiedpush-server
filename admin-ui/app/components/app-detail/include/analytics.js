@@ -1,5 +1,5 @@
 angular.module('upsConsole')
-  .controller('AnalyticsController', function ( $scope, $q, metricsEndpoint, c3Factory ) {
+  .controller('AnalyticsController', function ( $scope, $q, metricsEndpoint, c3Factory, gettextCatalog ) {
 
     var self = this;
 
@@ -140,11 +140,7 @@ angular.module('upsConsole')
       },
       donut: {
         title: function() {
-          if (self.app.$deviceCount == 1) {
-            return '1 Device';
-          } else {
-            return self.app.$deviceCount + ' Devices';
-          }
+          return gettextCatalog.getPlural(self.app.$deviceCount, '1 Device', '{{$count}} Devices');
         }
       }
     };
