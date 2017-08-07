@@ -99,12 +99,10 @@ public class HealthCheck {
 
         final ServletContext context = request.getSession().getServletContext();
 
-        try {
-            final InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF");
+        try (final InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF")) {
             return Response.ok(new Manifest(manifestStream).getMainAttributes()).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find version information").build();
         }
     }
-
 }
