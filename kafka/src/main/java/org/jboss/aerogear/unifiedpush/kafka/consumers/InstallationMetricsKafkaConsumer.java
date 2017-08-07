@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import net.wessendorf.kafka.cdi.annotation.Consumer;
 
+import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC;
+import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID;
+
 /**
  * Kafka Consumer that reads from "installationMetrics" topic a pair (PushMessageID, VariantID) and updates analytics by
  * invocation of {@link PushMessageMetricsService#updateAnalytics(String, String)}.
@@ -32,16 +35,6 @@ import net.wessendorf.kafka.cdi.annotation.Consumer;
 public class InstallationMetricsKafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(InstallationMetricsKafkaConsumer.class);
-
-    /**
-     * Consumer's topic.
-     */
-    public static final String KAFKA_INSTALLATION_TOPIC = "installationMetrics";
-
-    /**
-     * Consumer's groupId.
-     */
-    public static final String KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID = "installationMetricsGroup";
 
     @Inject
     private PushMessageMetricsService metricsService;
