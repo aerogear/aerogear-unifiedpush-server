@@ -24,9 +24,8 @@ import java.util.List;
 /**
  * Simple class, containing all "query criteria" options for a message,
  * that has been sent to the Send-HTTP endpoint.
- *
  * <p>
- * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
+ * For details have a look at the <a href="https://aerogear.org/docs/unifiedpush/push-message-format/">AeroGear UnifiedPush Message Format</a>.
  */
 public class Criteria implements Serializable {
 

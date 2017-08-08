@@ -22,9 +22,8 @@ import java.io.Serializable;
 
 /**
  * Configuration options of the UnifiedPush Message.
- *
  * <p>
- * For details have a look at the <a href="http://aerogear.org/docs/specs/aerogear-push-messages/">Message Format Specification</a>.
+ * For details have a look at the <a href="https://aerogear.org/docs/unifiedpush/push-message-format/">AeroGear UnifiedPush Message Format</a>.
  */
 public class Config implements Serializable {
 
