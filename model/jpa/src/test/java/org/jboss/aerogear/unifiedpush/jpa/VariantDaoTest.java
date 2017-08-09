@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -46,7 +45,6 @@ public class VariantDaoTest {
     private EntityManager entityManager;
     @Inject
     private VariantDao variantDao;
-    private JPAInstallationDao installationDao;
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -170,6 +168,7 @@ public class VariantDaoTest {
     @Test
     public void deleteVariantIncludingInstallations() {
         AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
+        assertThat(entityManager.find(Installation.class, "1")).isNotNull();
 
         variantDao.delete(queriedVariant);
         entityManager.flush();

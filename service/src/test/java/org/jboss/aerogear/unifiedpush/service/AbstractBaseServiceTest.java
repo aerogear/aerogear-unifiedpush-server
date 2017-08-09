@@ -21,6 +21,7 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAFlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
@@ -115,6 +116,7 @@ public abstract class AbstractBaseServiceTest {
         final Beans beans = new Beans();
         beans.addManagedClass(ClientInstallationServiceImpl.class);
         beans.addManagedClass(JPAPushMessageInformationDao.class);
+        beans.addManagedClass(JPAFlatPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);

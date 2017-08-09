@@ -242,7 +242,7 @@ public class JmsClient {
          */
         public JmsSender withProperty(String name, String value) {
             if (value == null) {
-                throw new NullPointerException("property value");
+                throw new NullPointerException("Property value cannot be null");
             }
             this.properties.put(name, value);
             return this;
@@ -257,7 +257,7 @@ public class JmsClient {
          */
         public JmsSender withProperty(String name, Long value) {
             if (value == null) {
-                throw new NullPointerException("property value");
+                throw new NullPointerException("Property value cannot be null");
             }
             this.properties.put(name, value);
             return this;

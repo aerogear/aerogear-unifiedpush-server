@@ -17,10 +17,9 @@ upsServices.factory('metricsEndpoint', function ($resource, $q, apiPrefix) {
       var deferred = $q.defer();
       this.application({id: applicationId, page: pageNo - 1, per_page: perPage, sort:'desc', search: searchString}, function (data, responseHeaders) {
         angular.forEach(data, function (metric) {
-          metric.$deliveryStatus = (metric.servedVariants === metric.totalVariants);
-          metric.$deliveryFailed = metric.variantInformations.some(function( variantMetric ) {
-            return variantMetric.reason;
-          });
+          metric.totalVariants = 0;
+          metric.servedVariants = 0;
+          metric.totalReceivers = 0;
         });
         deferred.resolve({
           totalItems: parseInt(responseHeaders('total'), 10),

@@ -1,9 +1,10 @@
 angular.module('upsConsole')
-  .controller('ActivityController', function ( $log, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
+  .controller('ActivityController', function ( $log, $timeout, $interval, $modal, variantModal, $scope, metricsEndpoint ) {
 
     var self = this;
 
-    this.TOOLTIP_PENDING = "Payload is being submitted";
+    this.TOOLTIP_TARGETS = "Targeted devices or topics for Android/Firebase";
+    this.TOOLTIP_OPENED = "Number of users that launched the mobile app by using the push notification";
     this.TOOLTIP_SUCCESS = "Payload submitted to 3rd party push network for further processing";
     this.TOOLTIP_FAIL = "Could not submit payload to 3rd party";
 
@@ -45,9 +46,6 @@ angular.module('upsConsole')
               console.log('failed to parse metric');
               metric.$message = {};
             }
-            metric.variantInformations.forEach(function( variantInformation ) {
-              variantInformation.$variant = getVariantByID( variantInformation.variantID );
-            });
           });
         });
     }

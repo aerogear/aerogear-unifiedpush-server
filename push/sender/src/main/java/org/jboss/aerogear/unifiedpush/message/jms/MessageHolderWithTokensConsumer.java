@@ -46,6 +46,7 @@ public class MessageHolderWithTokensConsumer extends AbstractJMSMessageListener<
     @Override
     public void onMessage(MessageHolderWithTokens message) {
         try {
+            logger.trace("receiving tokens from queue, triggering Notification Dispatcher to pick the right sender");
             dequeueEvent.fire(message);
         } catch (DispatchInitiationException e) {
             throw e;

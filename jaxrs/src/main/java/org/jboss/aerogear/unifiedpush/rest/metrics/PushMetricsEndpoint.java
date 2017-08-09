@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -49,7 +49,7 @@ public class PushMetricsEndpoint {
      * @param pageSize  number of items per page
      * @param sorting   sorting order: {@code asc} (default) or {@code desc}
      * @param search    search query
-     * @return          list of {@link PushMessageInformation}s
+     * @return          list of {@link FlatPushMessageInformation}s
      *
      * @responseheader total            Total count of items
      * @responseheader receivers        Receivers
@@ -68,27 +68,27 @@ public class PushMetricsEndpoint {
             @QueryParam("sort") String sorting,
             @QueryParam("search") String search) {
 
-        if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
-        }
-        
         pageSize = parsePageSize(pageSize);
 
         if (page == null) {
             page = 0;
         }
 
-        PageResult<PushMessageInformation, MessageMetrics> pageResult =
-                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+        if (id == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
+        }
+
+        PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =
+                metricsService.findAllFlatsForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getAggregate().getCount())
-                .header("receivers", pageResult.getAggregate().getReceivers())
+                .header("receivers", "0")
                 .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
                 .build();
     }
 
-    private static Integer parsePageSize(Integer pageSize) {
+    private Integer parsePageSize(Integer pageSize) {
         if (pageSize != null) {
             pageSize = Math.min(MAX_PAGE_SIZE, pageSize);
         } else {

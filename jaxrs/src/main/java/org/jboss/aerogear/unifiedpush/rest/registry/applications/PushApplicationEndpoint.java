@@ -16,15 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
@@ -43,8 +36,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import java.util.Map;
-import java.util.UUID;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
@@ -180,10 +182,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
 
     private void putActivityIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
         response.header("activity_app_" + app.getPushApplicationID(), metricsService.countMessagesForPushApplication(app.getPushApplicationID()));
-
-        app.getVariants().forEach(variant -> {
-            response.header("activity_variant_" + variant.getVariantID(), metricsService.countMessagesForVariant(variant.getVariantID()));
-        });
     }
 
     private void putDeviceCountIntoResponseHeaders(PushApplication app, ResponseBuilder response) {

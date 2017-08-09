@@ -25,6 +25,7 @@ import java.util.Set;
 /**
  * Metadata object that contains various informations around a submitted push message request
  */
+@Deprecated
 public class PushMessageInformation extends BaseModel {
 
     private static final long serialVersionUID = -3855047068913784279L;
