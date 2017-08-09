@@ -72,8 +72,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class)
             .addClasses(AbstractJMSTest.class, JmsClient.class)
-            .addClasses(DispatchToQueue.class, Dequeue.class)
-            .addAsWebInfResource(new File(WEB_RESOURCE_PATH + "hornetq-jms.xml"));
+            .addClasses(DispatchToQueue.class, Dequeue.class);
     }
 
     @Override
