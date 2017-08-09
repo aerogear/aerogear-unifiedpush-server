@@ -5,11 +5,6 @@ batch
 #/subsystem=logging/console-handler=AEROGEAR:remove()
 
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMPushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMTokenBatchQueue:remove()
-
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.MetricsQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.BatchLoadedQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.AllBatchesLoadedQueue:remove()
 
 run-batch
