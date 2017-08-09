@@ -203,6 +203,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 			// add the client identifier
 			message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
 
+			logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
 			notificationRouter.submit(pushApplication, message);
 		}
 	}
