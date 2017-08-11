@@ -21,7 +21,7 @@
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
         <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-        <version>0.2.20.2</version>
+        <version>0.9.0</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -99,7 +99,7 @@
             <!-- AeroGear Dependencies BOM Imports -->
             <dependency>
                 <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-bom</artifactId>
+                <artifactId>aerogear-unifiedpush-bom</artifactId>
                 <version>${aerogear.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -111,15 +111,6 @@
                 <artifactId>openejb-core-hibernate</artifactId>
                 <version>4.7.0</version>
                 <type>pom</type>
-            </dependency>
-
-            <!-- AeroGear Android Dependencies BOM Imports -->
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-android-bom</artifactId>
-                <version>${aerogear.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -196,7 +187,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <wildfly-maven-plugin.version>1.1.0.Alpha7</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.2.20.2</aerogear.bom.version>
+        <aerogear.bom.version>0.9.0</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
