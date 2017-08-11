@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * A type-safe identifier for the allowed variant types.
