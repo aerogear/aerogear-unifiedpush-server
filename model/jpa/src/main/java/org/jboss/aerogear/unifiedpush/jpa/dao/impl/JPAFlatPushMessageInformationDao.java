@@ -128,7 +128,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        logger.info("Deleting ['" + affectedRows + "'] outdated PushMessageInformation objects");
+        logger.info("Deleting ['" + affectedRows + "'] outdated FlatPushMessageInformation objects");
     }
 
     //Admin queries

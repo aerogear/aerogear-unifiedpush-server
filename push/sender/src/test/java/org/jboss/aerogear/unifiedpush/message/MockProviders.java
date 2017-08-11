@@ -22,8 +22,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
@@ -31,15 +29,8 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 public class MockProviders {
 
     private FlatPushMessageInformationDao flatPushMessageInformationDao = mock(FlatPushMessageInformationDao.class);
-    private PushMessageInformationDao pushMessageInformationDao = mock(PushMessageInformationDao.class);
     private GenericVariantService genericVariantService = mock(GenericVariantService.class);
-    private VariantMetricInformationDao variantMetricInformationDao = mock(VariantMetricInformationDao.class);
     private ClientInstallationService clientInstallationService = mock(ClientInstallationService.class);
-
-    @Produces
-    public PushMessageInformationDao getPushMessageInformationDao() {
-        return pushMessageInformationDao;
-    }
 
     @Produces
     public FlatPushMessageInformationDao getFlatPushMessageInformationDao() {
@@ -49,11 +40,6 @@ public class MockProviders {
     @Produces
     public GenericVariantService getGenericVariantService() {
         return genericVariantService;
-    }
-
-    @Produces
-    public VariantMetricInformationDao getVariantMetricInformationDao() {
-        return variantMetricInformationDao;
     }
 
     @Produces
