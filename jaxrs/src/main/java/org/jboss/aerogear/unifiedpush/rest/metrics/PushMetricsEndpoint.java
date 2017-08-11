@@ -60,7 +60,7 @@ public class PushMetricsEndpoint {
     @GET
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushMessageInformation>")
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation>")
     public Response pushMessageInformationPerApplication(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,

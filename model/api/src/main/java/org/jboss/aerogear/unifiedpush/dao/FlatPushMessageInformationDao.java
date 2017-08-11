@@ -101,7 +101,7 @@ public interface FlatPushMessageInformationDao extends GenericBaseDao<FlatPushMe
     List<String> findVariantIDsWithWarnings(String loginName);
 
     /**
-     * Filters the three most recent PushMessageInformation objects
+     * Filters the three most recent FlatPushMessageInformation objects
      *
      * @param loginName the username
      * @param maxResults number of max items in the returned list

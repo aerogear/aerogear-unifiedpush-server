@@ -22,13 +22,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
@@ -44,40 +41,7 @@ public class PushMessageMetricsService {
     public static final String AEROGEAR_METRICS_STORAGE_MAX_DAYS = "aerogear.metrics.storage.days";
 
     @Inject
-    private PushMessageInformationDao pushMessageInformationDao;
-
-    @Inject
-    private VariantMetricInformationDao variantMetricInformationDao;
-
-    @Inject
     private FlatPushMessageInformationDao flatPushMessageInformationDao;
-
-    /**
-     * Starts the capturing of metadata around a push message request.
-     *
-     * @param pushAppId the ip of the push application which is owing the push message job
-     * @param json the raw JSON data
-     * @param ipAddress remote address of the job submitter
-     * @param clientIdentifier the String representating who triggered the push message
-     *
-     * @return the metadata object for the started push message request job
-     */
-    @Deprecated
-    public PushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier, int totalVariantCount) {
-        final PushMessageInformation information = new PushMessageInformation();
-
-        information.setRawJsonMessage(json);
-        information.setIpAddress(ipAddress);
-        information.setPushApplicationId(pushAppId);
-        information.setClientIdentifier(clientIdentifier);
-        information.setServedVariants(0);
-        information.setTotalVariants(totalVariantCount);
-
-        pushMessageInformationDao.create(information);
-        pushMessageInformationDao.flushAndClear();
-
-        return information;
-    }
 
     public FlatPushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
         final FlatPushMessageInformation information = new FlatPushMessageInformation();
@@ -93,11 +57,6 @@ public class PushMessageMetricsService {
         return information;
     }
 
-    @Deprecated
-    public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
-        pushMessageInformationDao.update(pushMessageInformation);
-    }
-
     public void updatePushMessageInformation(FlatPushMessageInformation pushMessageInformation) {
         flatPushMessageInformationDao.update(pushMessageInformation);
     }
@@ -106,20 +65,6 @@ public class PushMessageMetricsService {
         final VariantErrorStatus ves = new VariantErrorStatus(pushMessageInformation, variant, errorMessage);
         pushMessageInformation.getErrors().add(ves);
         flatPushMessageInformationDao.update(pushMessageInformation);
-    }
-
-    /**
-     * Returns a list of metadata objects for the given Push Application
-     *
-     * @param pushApplicationID the push app ID
-     * @param sorting do we want sorting?
-     * @param page number of the actual page in the pagination
-     * @param pageSize number of items
-     *
-     * @return list of push message info objects
-     */
-    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
-        return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
     }
 
     public PageResult<FlatPushMessageInformation, MessageMetrics> findAllFlatsForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
@@ -138,16 +83,7 @@ public class PushMessageMetricsService {
     }
 
     /**
-     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
-     *  <i>older</i> than 30 days!
-     */
-    public void deleteOutdatedPushInformationData() {
-        final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
-        pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
-    }
-
-    /**
-     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} objects that are
+     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation} objects that are
      *  <i>older</i> than 30 days!
      */
     public void deleteOutdatedFlatPushInformationData() {
@@ -159,7 +95,7 @@ public class PushMessageMetricsService {
         return flatPushMessageInformationDao.find(id);
     }
 
-    public void updateAnalytics(String aerogearPushId, String variantID) {
+    public void updateAnalytics(String aerogearPushId) {
         FlatPushMessageInformation pushMessageInformation = this.getPushMessageInformation(aerogearPushId);
 
         if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message
@@ -173,13 +109,6 @@ public class PushMessageMetricsService {
             }
             //update the general counter
             pushMessageInformation.incrementAppOpenCounter();
-
-//            //update the variant counter
-//            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
-//            variantMetricInformation.incrementVariantOpenCounter();
-//            variantMetricInformationDao.update(variantMetricInformation);
-
-//            pushMessageInformationDao.update(pushMessageInformation);
         }
 
     }

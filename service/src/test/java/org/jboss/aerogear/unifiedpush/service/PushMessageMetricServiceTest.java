@@ -62,11 +62,11 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     @Test
     public void updateAnalyticsTest() {
-        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId());
         FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation.getAppOpenCounter()).isEqualTo(1);
 
-        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId(),"321");
+        pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId());
         FlatPushMessageInformation updatedPushInformation1 = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
     }
@@ -81,7 +81,6 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
         assertThat(updatedPushInformation.getErrors())
                 .extracting("pushMessageVariantId", "variantID", "errorReason")
                 .contains(
-//                        tuple(updatedPushInformation.getId() + ":321", "321", "Big failure" ),
                         tuple(updatedPushInformation.getId() + ":321", "321", "Really big failure" )
                 );
     }

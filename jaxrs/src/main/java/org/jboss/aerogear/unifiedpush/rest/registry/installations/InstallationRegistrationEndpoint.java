@@ -227,7 +227,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //let's do update the analytics
         if (pushMessageId != null) {
-            metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+            metricsService.updateAnalytics(pushMessageId);
         }
 
         return Response.ok(EmptyJSON.STRING).build();

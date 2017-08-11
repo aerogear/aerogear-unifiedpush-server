@@ -22,12 +22,10 @@ import org.apache.openejb.mockito.MockitoInjector;
 import org.apache.openejb.testing.MockInjector;
 import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAFlatPushMessageInformationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
@@ -115,13 +113,11 @@ public abstract class AbstractBaseServiceTest {
     public Beans getBeans() {
         final Beans beans = new Beans();
         beans.addManagedClass(ClientInstallationServiceImpl.class);
-        beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(JPAFlatPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(JPACategoryDao.class);
-        beans.addManagedClass(JPAVariantMetricInformationDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);

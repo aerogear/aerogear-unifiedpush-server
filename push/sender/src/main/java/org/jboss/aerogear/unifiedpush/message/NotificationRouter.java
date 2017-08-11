@@ -106,16 +106,7 @@ public class NotificationRouter {
         if (jsonMessageContent != null && jsonMessageContent.length() >= 4500) {
             jsonMessageContent = message.toMinimizedJsonString();
         }
-/*
-        final PushMessageInformation pushMessageInformation =
-                metricsService.storeNewRequestFrom(
-                        pushApplication.getPushApplicationID(),
-                        jsonMessageContent,
-                        message.getIpAddress(),
-                        message.getClientIdentifier(),
-                        variants.getVariantCount()
-                );
-*/
+
         final FlatPushMessageInformation pushMessageInformation =
                 metricsService.storeNewRequestFrom(
                         pushApplication.getPushApplicationID(),
