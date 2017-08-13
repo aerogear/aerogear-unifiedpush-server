@@ -25,7 +25,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
@@ -40,7 +39,6 @@ import com.datastax.driver.core.utils.UUIDs;
 @Stateless
 public class AliasServiceImpl implements AliasService {
 	private final Logger logger = LoggerFactory.getLogger(AliasServiceImpl.class);
-	private final static EmailValidator EMAIL_VALIDATOR = new EmailValidator();
 
 	@Inject
 	private AliasCrudService aliasCrudService;
@@ -62,21 +60,6 @@ public class AliasServiceImpl implements AliasService {
 			create(alias);
 			aliasList.add(alias);
 		});
-
-		return aliasList;
-	}
-
-	@Override
-	@Deprecated
-	public List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases, boolean oauth2) {
-		logger.debug("OAuth2 flag is: " + oauth2);
-
-		// Create keycloak client if missing.
-		if (oauth2)
-			keycloakService.createClientIfAbsent(pushApplication);
-
-		// Recreate all aliases to Alias Table
-		List<Alias> aliasList = createAliases(pushApplication, aliases, oauth2);
 
 		return aliasList;
 	}
@@ -164,40 +147,6 @@ public class AliasServiceImpl implements AliasService {
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
 		return aliasObj != null;
-	}
-
-	@Override
-	public Alias create(String pushApplicationId, String alias) {
-		return createAlias(UUID.fromString(pushApplicationId), alias, false);
-	}
-
-	/*
-	 * Deprecated - Use Alias object from model-api Used only from Deprecated
-	 * syncAliases
-	 */
-	@Deprecated
-	private List<Alias> createAliases(PushApplication pushApp, List<String> aliases, boolean oauth2) {
-		List<Alias> aliasList = new ArrayList<>();
-
-		for (String name : aliases) {
-			aliasList.add(createAlias(UUID.fromString(pushApp.getPushApplicationID()), name, oauth2));
-		}
-
-		return aliasList;
-	}
-
-	@Deprecated
-	private Alias createAlias(UUID pushApp, String alias, boolean oauth2) {
-		Alias user = new Alias(pushApp, null);
-		if (EMAIL_VALIDATOR.isValid(alias, null)) {
-			user.setEmail(alias);
-		} else {
-			user.setOther(alias);
-		}
-
-		create(user);
-
-		return user;
 	}
 
 	private Alias exists(UUID pushApplicationUUID, Alias aliasToFind) {

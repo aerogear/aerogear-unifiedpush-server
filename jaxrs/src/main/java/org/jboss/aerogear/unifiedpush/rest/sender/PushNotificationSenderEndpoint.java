@@ -137,6 +137,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payload")
+	@Deprecated
 	public Response sendLargePayload(DocumentDeployMessage payloadRequest, @Context HttpServletRequest request) {
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushApplicationService);
@@ -160,6 +161,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payload")
+	@Deprecated
 	public Response updateLargePayload(DocumentDeployMessage payloadRequest, @Context HttpServletRequest request) {
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushApplicationService);

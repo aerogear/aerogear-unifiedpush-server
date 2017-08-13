@@ -28,9 +28,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -42,6 +44,8 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
+
+import com.datastax.driver.core.utils.UUIDs;
 
 public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
@@ -579,7 +583,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		applicationService.addVariant(application, variant);
 
 		String installationAlias = "alias2";
-		List<String> aliases = Arrays.asList("a", "b", "alias2");
+		List<Alias> aliases = new ArrayList<>();
+		UUID pushAppId = UUID.fromString(application.getPushApplicationID());
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), "a"));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), "b"));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), installationAlias));
 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
@@ -587,7 +595,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		device.setAlias(installationAlias);
 
 		clientInstallationService.addInstallationSynchronously(androidVariant, device);
-		aliasService.syncAliases(application, aliases, false);
+		aliasService.addAll(application, aliases, false);
 
 		Variant var = clientInstallationService.associateInstallation(device, variant);
 		assertTrue("Unable to assosiate variant!", var != null);
@@ -609,7 +617,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		applicationService.addVariant(application, variant);
 
 		String installationAlias = "alias1";
-		List<String> aliases = Arrays.asList("a", "b", installationAlias);
+		List<Alias> aliases = new ArrayList<>();
+		UUID pushAppId = UUID.fromString(application.getPushApplicationID());
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), "a"));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), "b"));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), installationAlias));
 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
@@ -617,21 +629,21 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 		device.setAlias(installationAlias);
 
 		clientInstallationService.addInstallationSynchronously(variant, device);
-		aliasService.syncAliases(application, aliases, false);
+		aliasService.addAll(application, aliases, false);
 
 		Installation installation = clientInstallationService
 				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
 		assertNotNull(installation);
 
 		// Recreate without 'p1' alias from aliases list.
-		aliasService.syncAliases(application, Arrays.asList("a", "b"), false);
+		aliasService.addAll(application, aliases.subList(0, 1), false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 
 		assertTrue(installation.isEnabled() == true);
 
 		// Recreate with 'p1' alias from aliases list.
-		aliasService.syncAliases(application, aliases, false);
+		aliasService.addAll(application, aliases, false);
 		installation = clientInstallationService.findInstallationForVariantByDeviceToken(variant.getVariantID(),
 				deviceToken);
 

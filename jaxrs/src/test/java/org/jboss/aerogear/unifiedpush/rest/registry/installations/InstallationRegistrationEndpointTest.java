@@ -2,6 +2,8 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
@@ -9,6 +11,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -40,6 +43,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.datastax.driver.core.utils.UUIDs;
 
 @RunWith(Arquillian.class)
 public class InstallationRegistrationEndpointTest extends RestEndpointTest {
@@ -120,9 +125,10 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 
 			// Register alias
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
-			ArrayList<String> aliases = new ArrayList<String>();
-			aliases.add("Support@Test.com");
-			aliasService.syncAliases(app, aliases, false);
+
+			List<Alias> aliases = new ArrayList<>();
+			aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Support@Test.com"));
+			aliasService.addAll(app, aliases, false);
 
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);

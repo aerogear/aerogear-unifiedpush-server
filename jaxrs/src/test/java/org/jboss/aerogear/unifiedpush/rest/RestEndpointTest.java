@@ -59,14 +59,6 @@ public abstract class RestEndpointTest {
 		return iosInstallation;
 	}
 
-	/*
-	 * Return ResteasyWebTarget authenticated with DEFAULT_APP_ID/DEFAULT_APP_PASS
-	 */
-	@Deprecated
-	protected ResteasyWebTarget getAliasesTarget(URL deploymentUrl) {
-		return applicationClient.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/aliases");
-	}
-
 	protected ResteasyWebTarget getAllAliasesTarget(URL deploymentUrl) {
 		return applicationClient.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/all");
 	}

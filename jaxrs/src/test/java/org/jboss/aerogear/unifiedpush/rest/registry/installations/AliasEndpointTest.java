@@ -1,13 +1,14 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.registry.applications.AliasEndpoint;
@@ -83,36 +84,39 @@ public class AliasEndpointTest extends RestEndpointTest {
 	@Test
 	@RunAsClient
 	public void registerAliases(@ArquillianResource URL deploymentUrl) {
-		ResteasyWebTarget target = getAliasesTarget(deploymentUrl);
+		ResteasyWebTarget target = getAllAliasesTarget(deploymentUrl);
 
-		String[] legacyAliases = new String[] { "Supprot@AeroBase.org", "Test@AeroBase.org", "Help@AeroBase.org" };
+		List<Alias> aliases = new ArrayList<>();
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroBase.org"));
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Test@AeroBase.org"));
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Help@AeroBase.org"));
 
 		// Create 3 Aliases
-		Response response = target.request().post(Entity.entity(legacyAliases, MediaType.APPLICATION_JSON_TYPE));
+		Response response = target.request().post(Entity.entity(aliases, MediaType.APPLICATION_JSON_TYPE));
 
 		Assert.assertTrue(response.getStatus() == 200);
 		response.close();
 
 		// Re-Create 3 Aliases
 		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
-				.post(Entity.entity(legacyAliases, MediaType.APPLICATION_JSON_TYPE));
+				.post(Entity.entity(aliases, MediaType.APPLICATION_JSON_TYPE));
 		Assert.assertTrue(response.getStatus() == 200);
 		response.close();
 
 		// Re-Create 2 first Aliases
 		response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
-				.post(Entity.entity(ArrayUtils.subarray(legacyAliases, 0, 1), MediaType.APPLICATION_JSON_TYPE));
+				.post(Entity.entity(aliases.subList(0, 1), MediaType.APPLICATION_JSON_TYPE));
 		Assert.assertTrue(response.getStatus() == 200);
 		response.close();
 
 		// Query for previously created aliases
-		for (String alias : legacyAliases) {
-			target = getAliasByNameTarget(deploymentUrl, alias);
+		for (Alias alias : aliases) {
+			target = getAliasByNameTarget(deploymentUrl, alias.getEmail());
 
 			response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS).get();
 			Assert.assertTrue(response.getStatus() == 200);
 			Alias aliasObj = response.readEntity(Alias.class);
-			Assert.assertTrue(aliasObj != null & aliasObj.getEmail().equals(alias));
+			Assert.assertTrue(aliasObj != null & aliasObj.getEmail().equals(alias.getEmail()));
 			response.close();
 		}
 	}
