@@ -230,38 +230,26 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		return appendAllowOriginHeader(Response.ok(entity), request);
 	}
 
-	/**
-	 * RESTful API for updating device token. The Endpoint is protected using
-	 * <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
-	 *
-	 * <pre>
-	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "device-token: BASE64 encoded device-token"
-	 *   -X PUT
-	 *   -d 'BASE64 encoded new device-token'
-	 *   https://SERVER:PORT/context/rest/registry/device/
-	 * </pre>
-	 *
-	 * Details about JSON format can be found HERE!
-	 *
-	 * @param token
-	 *            The new registered deviceToken.
-	 * @param request
-	 *            The request object
-	 *
-	 * @requestheader device-token the old push service dependent token (ie
-	 *                InstanceID in FCM). If not present return 401 error code.
-	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
-	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
-	 *                 Server" (only for 401 response)
-	 *
-	 * @statuscode 204 Successful update of the device token
-	 * @statuscode 401 The request requires authentication.
-	 * @statuscode 500 Server error while replacing.
-	 */
+    /**
+     * RESTful API for Push Notification metrics registration.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X PUT
+     *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
+     * </pre>
+     *
+     * @param pushMessageId push message identifier
+     * @param request the request
+     * @return              empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 401 The request requires authentication
+     */
 	@PUT
 	@Path("/token/{token: .*}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -329,7 +317,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		// let's do update the analytics
 		if (pushMessageId != null) {
-			metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+            metricsService.updateAnalytics(pushMessageId);
 		}
 
 		return Response.ok(EmptyJSON.STRING).build();

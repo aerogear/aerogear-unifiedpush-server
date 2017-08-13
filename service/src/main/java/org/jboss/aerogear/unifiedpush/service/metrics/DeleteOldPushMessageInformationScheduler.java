@@ -33,7 +33,7 @@ public class DeleteOldPushMessageInformationScheduler {
      * in which the application is executing. These are the default values from the @Schedule annotation.
      */
     @Schedule
-    public void deleteOutdatedMetrics(){
-        service.deleteOutdatedPushInformationData();
+    public void deleteOutdatedFlatMetrics(){
+        service.deleteOutdatedFlatPushInformationData();
     }
 }

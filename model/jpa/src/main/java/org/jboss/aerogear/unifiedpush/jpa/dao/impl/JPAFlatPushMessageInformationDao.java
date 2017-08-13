@@ -16,43 +16,40 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.Date;
+import java.util.List;
 
-public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformation, String> implements PushMessageInformationDao {
+public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessageInformation, String> implements FlatPushMessageInformationDao{
 
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
 
-    private final Logger logger = LoggerFactory.getLogger(JPAPushMessageInformationDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JPAFlatPushMessageInformationDao.class);
 
 
     @Override
-    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
+    public List<FlatPushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
         return findAllForPushApplicationByParams(pushApplicationId, null, ascending, null, null);
     }
 
     @Override
-    public List<PushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
-        String baseQuery = "from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+    public List<FlatPushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+        String baseQuery = "from FlatPushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
         if (search != null) {
             baseQuery += " AND pmi.rawJsonMessage LIKE :search";
         }
         final String queryJPQL = "select pmi " + baseQuery + " ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
 
-        TypedQuery<PushMessageInformation> typedQuery = createQuery(queryJPQL)
+        TypedQuery<FlatPushMessageInformation> typedQuery = createQuery(queryJPQL)
                 .setParameter("pushApplicationId", pushApplicationId);
         if (search != null) {
             typedQuery.setParameter("search", "%" + search + "%");
@@ -66,18 +63,13 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForPushApplication(String pushApplicationId) {
-        return createQuery("select count(*) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
+        return createQuery("select count(*) from FlatPushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId", Long.class)
                 .setParameter("pushApplicationId", pushApplicationId).getSingleResult();
     }
 
     @Override
-    public long getNumberOfPushMessagesForVariant(String variantID) {
-        return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
-                .setParameter("variantID", variantID).getSingleResult();
-    }
-
     public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
-        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(totalReceivers), sum(appOpenCounter)) from PushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
+        String metricsJPQL = "select new org.jboss.aerogear.unifiedpush.dto.MessageMetrics(count(*), sum(appOpenCounter)) from FlatPushMessageInformation pmi where pmi.pushApplicationId = :pushApplicationId";
         if (search != null) {
             metricsJPQL += " AND pmi.rawJsonMessage LIKE :search";
         }
@@ -91,9 +83,9 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+    public PageResult<FlatPushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
 
-        final List<PushMessageInformation> pushMessageInformationList = findAllForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
+        final List<FlatPushMessageInformation> pushMessageInformationList = findAllForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
         final MessageMetrics messageMetrics = findMessageMetricsForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
 
         return new PageResult<>(pushMessageInformationList,  messageMetrics);
@@ -101,23 +93,23 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
-        return createQuery("select count(pmi) from PushMessageInformation pmi, PushApplication pa " +
+        return createQuery("select count(pmi) from FlatPushMessageInformation pmi, PushApplication pa " +
                 "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer)", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
     }
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi, Variant va " +
-                " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
-                " and vmi.deliveryStatus = false", String.class)
-                .setParameter("developer", loginName)
-                .getResultList();
+
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi " +
+            " WHERE vmi.variant.developer = :developer)", String.class)
+            .setParameter("developer", loginName)
+            .getResultList();
     }
 
     @Override
-    public List<PushMessageInformation> findLatestActivity(String loginName, int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi, PushApplication pa" +
+    public List<FlatPushMessageInformation> findLatestActivity(String loginName, int maxResults) {
+        return createQuery("select pmi from FlatPushMessageInformation pmi, PushApplication pa" +
                 " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer)" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
@@ -128,28 +120,27 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     @Override
     public void deletePushInformationOlderThan(Date oldest) {
         // TODO: use criteria API...
-        entityManager.createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
+        entityManager.createQuery("delete from VariantErrorStatus vmi where vmi.pushMessageInformation.id in (select pmi FROM FlatPushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        int affectedRows = entityManager.createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
+        int affectedRows = entityManager.createQuery("delete FROM FlatPushMessageInformation pmi WHERE pmi.submitDate < :oldest")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        logger.info("Deleting ['{}'] outdated PushMessageInformation objects", affectedRows);
+        logger.info("Deleting ['" + affectedRows + "'] outdated FlatPushMessageInformation objects");
     }
 
     //Admin queries
     @Override
     public List<String> findVariantIDsWithWarnings() {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
-                " where vmi.deliveryStatus = false", String.class)
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi", String.class)
                 .getResultList();
     }
 
     @Override
-    public List<PushMessageInformation> findLatestActivity(int maxResults) {
-        return createQuery("select pmi from PushMessageInformation pmi" +
+    public List<FlatPushMessageInformation> findLatestActivity(int maxResults) {
+        return createQuery("select pmi from FlatPushMessageInformation pmi" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setMaxResults(maxResults)
                 .getResultList();
@@ -157,7 +148,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
     @Override
     public long getNumberOfPushMessagesForApplications() {
-        return createQuery("select count(pmi) from PushMessageInformation pmi", Long.class).getSingleResult();
+        return createQuery("select count(pmi) from FlatPushMessageInformation pmi", Long.class).getSingleResult();
     }
 
     /**
@@ -172,7 +163,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    public Class<PushMessageInformation> getType() {
-        return PushMessageInformation.class;
+    public Class<FlatPushMessageInformation> getType() {
+        return FlatPushMessageInformation.class;
     }
 }

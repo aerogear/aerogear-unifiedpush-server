@@ -38,8 +38,8 @@ public class PersistenceJPAConfig {
 			"META-INF/orm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Category.hbm.xml",
-			"org/jboss/aerogear/unifiedpush/api/PushMessageInformation.hbm.xml",
-			"org/jboss/aerogear/unifiedpush/api/VariantMetricInformation.hbm.xml"
+			"org/jboss/aerogear/unifiedpush/api/FlatPushMessageInformation.hbm.xml",
+			"org/jboss/aerogear/unifiedpush/api/VariantErrorStatus.hbm.xml"
 	};
 
 	private static final String SYS_KEY_DB_NAME = "org.jboss.aerogear.unifiedpush.initdb.database";

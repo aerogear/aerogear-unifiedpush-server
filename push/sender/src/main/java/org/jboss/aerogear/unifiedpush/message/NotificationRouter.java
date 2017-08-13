@@ -28,8 +28,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -42,17 +42,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Takes a request for sending {@link UnifiedPushMessage} and submits it to
- * messaging subsystem for further processing.
+ * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
  *
- * Router splits messages to specific variant types (push network type) so that
- * they can be processed separately, giving attention to limitations and
- * requirements of specific push networks.
+ * Router splits messages to specific variant types (push network type) so that they can be processed separately,
+ * giving attention to limitations and requirements of specific push networks.
  *
- * {@link NotificationRouter} receives a request for sending a
- * {@link UnifiedPushMessage} and queues one message per variant type, both in
- * transaction. The transactional behavior makes sure the request for sending
- * notification is recorded and then asynchronously processed.
+ * {@link NotificationRouter} receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in transaction.
+ * The transactional behavior makes sure the request for sending notification is recorded and then asynchronously processed.
  *
  * The further processing of the push message happens in {@link TokenLoader}.
  */
@@ -117,9 +113,13 @@ public class NotificationRouter {
             jsonMessageContent = message.toMinimizedJsonString();
         }
 
-		final PushMessageInformation pushMessageInformation = metricsService.storeNewRequestFrom(
-				pushApplication.getPushApplicationID(), jsonMessageContent, message.getIpAddress(),
-				message.getClientIdentifier(), variants.getVariantCount());
+        final FlatPushMessageInformation pushMessageInformation =
+                metricsService.storeNewRequestFrom(
+                        pushApplication.getPushApplicationID(),
+                        jsonMessageContent,
+                        message.getIpAddress(),
+                        message.getClientIdentifier()
+                );
 
 		// we split the variants per type since each type may have its own
 		// configuration (e.g. batch size)
@@ -161,12 +161,5 @@ public class NotificationRouter {
 			variants.forEach(this::add);
 		}
 
-		int getVariantCount() {
-			int count = 0;
-			for (Collection<Variant> variants : values()) {
-				count += variants.size();
-			}
-			return count;
-		}
 	}
 }

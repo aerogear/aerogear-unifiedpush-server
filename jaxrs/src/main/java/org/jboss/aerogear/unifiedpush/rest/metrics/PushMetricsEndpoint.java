@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 
 import javax.inject.Inject;
@@ -28,7 +27,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -36,7 +35,7 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import com.qmino.miredot.annotations.ReturnType;
 
 @Path("/metrics/messages")
-public class PushMetricsEndpoint { 
+public class PushMetricsEndpoint {
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 25;
 
@@ -51,7 +50,7 @@ public class PushMetricsEndpoint {
      * @param pageSize  number of items per page
      * @param sorting   sorting order: {@code asc} (default) or {@code desc}
      * @param search    search query
-     * @return          list of {@link PushMessageInformation}s
+     * @return          list of {@link FlatPushMessageInformation}s
      *
      * @responseheader total            Total count of items
      * @responseheader receivers        Receivers
@@ -62,7 +61,7 @@ public class PushMetricsEndpoint {
     @GET
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushMessageInformation>")
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation>")
     public Response pushMessageInformationPerApplication(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,
@@ -70,22 +69,22 @@ public class PushMetricsEndpoint {
             @QueryParam("sort") String sorting,
             @QueryParam("search") String search) {
 
-        if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
-        }
-        
         pageSize = parsePageSize(pageSize);
 
         if (page == null) {
             page = 0;
         }
 
-        PageResult<PushMessageInformation, MessageMetrics> pageResult =
-                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+        if (id == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
+        }
+
+        PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =
+                metricsService.findAllFlatsForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getAggregate().getCount())
-                .header("receivers", pageResult.getAggregate().getReceivers())
+                .header("receivers", "0")
                 .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
                 .build();
     }

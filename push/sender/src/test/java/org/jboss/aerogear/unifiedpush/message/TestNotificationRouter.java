@@ -33,12 +33,12 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
@@ -113,9 +113,9 @@ public class TestNotificationRouter {
 
 	@Test
 	@Transactional(TransactionMode.ROLLBACK)
-	public void testInvokesMetricsService(PushMessageInformationDao pushMessageInformationDao) {
+    public void testInvokesMetricsService(FlatPushMessageInformationDao pushMessageInformationDao) {
 		router.submit(app, message);
-		PushMessageInformation messageInformation = new PushMessageInformation();
+		FlatPushMessageInformation messageInformation = new FlatPushMessageInformation();
 		messageInformation.setPushApplicationId(app.getPushApplicationID());
 		pushMessageInformationDao.create(messageInformation);
 	}

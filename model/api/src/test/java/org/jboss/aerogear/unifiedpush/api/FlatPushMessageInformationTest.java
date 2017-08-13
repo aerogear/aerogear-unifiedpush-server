@@ -19,15 +19,14 @@ package org.jboss.aerogear.unifiedpush.api;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-public class PushMessageInformationTest {
+public class FlatPushMessageInformationTest {
 
-    private PushMessageInformation pushMessageInformation;
+    private FlatPushMessageInformation pushMessageInformation;
     private Date openAppDate = new Date();
     private Date lastOpenDate = new Date();
 
@@ -36,7 +35,8 @@ public class PushMessageInformationTest {
 
 
         // general job data
-        pushMessageInformation = new PushMessageInformation();
+        pushMessageInformation = new FlatPushMessageInformation();
+        pushMessageInformation.setId("123");
         pushMessageInformation.setPushApplicationId("123");
         pushMessageInformation.setRawJsonMessage("{\"data\" : \"something\"}");
         pushMessageInformation.setIpAddress("127.0.0.1");
@@ -46,32 +46,30 @@ public class PushMessageInformationTest {
         pushMessageInformation.setLastOpenDate(lastOpenDate);
 
 
-        // two involved variants:
-        VariantMetricInformation variantInfo1 = new VariantMetricInformation();
-        variantInfo1.setVariantID("345");
-        variantInfo1.setReceivers(Long.valueOf(500));
-        variantInfo1.setDeliveryStatus(Boolean.FALSE);
-        variantInfo1.setVariantOpenCounter(Long.valueOf(1));
+        Variant variant1 = new AndroidVariant();
+        variant1.setId("345");
+        variant1.setVariantID("345");
+        Variant variant2 = new AndroidVariant();
+        variant2.setId("678");
+        variant2.setVariantID("678");
 
-        VariantMetricInformation variantInfo2 = new VariantMetricInformation();
-        variantInfo2.setVariantID("678");
-        variantInfo2.setReceivers(Long.valueOf(100));
-        variantInfo2.setDeliveryStatus(Boolean.TRUE);
-        variantInfo1.setVariantOpenCounter(Long.valueOf(2));
+        // two involved variants:
+        VariantErrorStatus variantInfo1 = new VariantErrorStatus(pushMessageInformation, variant1, "Some error");
+        VariantErrorStatus variantInfo2 = new VariantErrorStatus(pushMessageInformation, variant2, "Some other failure");
 
         // add the variant metadata:
-        pushMessageInformation.getVariantInformations().add(variantInfo1);
-        pushMessageInformation.getVariantInformations().add(variantInfo2);
+        pushMessageInformation.getErrors().add(variantInfo1);
+        pushMessageInformation.getErrors().add(variantInfo2);
     }
 
     @Test
     public void checkPushMessageInformation() {
 
-        assertThat(pushMessageInformation.getVariantInformations()).hasSize(2);
-        assertThat(pushMessageInformation.getVariantInformations()).extracting("receivers", "deliveryStatus")
+        assertThat(pushMessageInformation.getErrors()).hasSize(2);
+        assertThat(pushMessageInformation.getErrors()).extracting("variantID", "errorReason")
                 .contains(
-                        tuple(500L, Boolean.FALSE),
-                        tuple(100L, Boolean.TRUE)
+                        tuple("345", "Some error"),
+                        tuple("678", "Some other failure")
                 );
 
         assertThat(pushMessageInformation.getRawJsonMessage()).isEqualTo("{\"data\" : \"something\"}");

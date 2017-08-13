@@ -76,8 +76,7 @@ public abstract class AbstractBaseServiceTest {
 	public void setUp() {
 		// Keycloak test environment
 		AccessToken token = new AccessToken();
-		// The current developer will always be the admin in this testing
-		// scenario
+        //The current developer will always be the admin in this testing scenario
 		token.setPreferredUsername("admin");
 		when(context.getToken()).thenReturn(token);
 		when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
@@ -91,8 +90,8 @@ public abstract class AbstractBaseServiceTest {
 	}
 
 	/**
-	 * Enforced to override to make sure test-case specific setup is done inside
-	 * here!
+     * Enforced to override to make sure test-case specific
+     * setup is done inside here!
 	 */
 	protected abstract void specificSetup();
 

@@ -170,6 +170,7 @@ public class VariantDaoTest {
     @Test
     public void deleteVariantIncludingInstallations() {
         AndroidVariant queriedVariant = (AndroidVariant) variantDao.findByVariantID("1");
+        assertThat(entityManager.find(Installation.class, "1")).isNotNull();
 
         variantDao.delete(queriedVariant);
         entityManager.flush();

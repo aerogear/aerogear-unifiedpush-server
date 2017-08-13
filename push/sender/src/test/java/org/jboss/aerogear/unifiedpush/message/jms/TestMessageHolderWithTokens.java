@@ -26,7 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
@@ -51,7 +51,7 @@ public class TestMessageHolderWithTokens {
 	}
 
     private UnifiedPushMessage message;
-    private PushMessageInformation information;
+    private FlatPushMessageInformation information;
     private Variant variant;
     private Collection<String> deviceTokens;
     private static CountDownLatch delivered;
@@ -61,7 +61,7 @@ public class TestMessageHolderWithTokens {
 
     @Before
     public void setUp() {
-        information = new PushMessageInformation();
+        information = new FlatPushMessageInformation();
         message = new UnifiedPushMessage();
         deviceTokens = new ArrayList<>();
         delivered = new CountDownLatch(5);

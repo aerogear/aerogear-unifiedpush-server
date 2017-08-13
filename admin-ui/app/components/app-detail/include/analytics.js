@@ -34,7 +34,7 @@ angular.module('upsConsole')
           ];
           angular.forEach(self.metrics, function (pushMessage) {
             pushMessage.message = JSON.parse(pushMessage.rawJsonMessage);
-            self.performance[0].push(pushMessage.totalReceivers);
+            self.performance[0].push(0);
             self.performance[1].push(pushMessage.appOpenCounter);
           });
 

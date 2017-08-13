@@ -17,12 +17,13 @@
 package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
+import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
@@ -41,19 +42,22 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+//import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
-public class PushMessageInformationDaoTest {
+public class FlatPushMessageInformationDaoTest {
 
     @Inject
     private EntityManager entityManager;
 
     @Inject
-    private PushMessageInformationDao pushMessageInformationDao;
+    private FlatPushMessageInformationDao pushMessageInformationDao;
 
     @Inject
-    private JPAVariantMetricInformationDao variantMetricInformationDao;
+    private VariantDao variantDao;
+
+//    @Inject
+//    private JPAVariantMetricInformationDao variantMetricInformationDao;
     private String pushMessageInformationID = "1";
 
     @Deployment
@@ -62,7 +66,7 @@ public class PushMessageInformationDaoTest {
     }
 
     @Rule
-    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("MessageInformation.xml");
+    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("FlatPushMessageInformation.xml");
 
 
     @Before
@@ -87,7 +91,7 @@ public class PushMessageInformationDaoTest {
     @Test
     public void createPushMessageInformation() {
 
-        PushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+        FlatPushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
 
         assertThat(pushMessageInformation).isNotNull();
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
@@ -95,7 +99,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void addJsonToPushMessageInformation() {
-        PushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+        FlatPushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
         pushMessageInformation.setRawJsonMessage("{\"alert\" : \"hello\"}");
         pushMessageInformationDao.update(pushMessageInformation);
 
@@ -109,7 +113,7 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void addClientIdentifierToPushMessageInformation() {
-        PushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
+        FlatPushMessageInformation pushMessageInformation = pushMessageInformationDao.find(pushMessageInformationID);
         pushMessageInformation.setClientIdentifier("Java Sender Client");
         pushMessageInformationDao.update(pushMessageInformation);
 
@@ -121,24 +125,12 @@ public class PushMessageInformationDaoTest {
         assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
     }
 
-    @Test
-    public void addVariantInfoToPushMessageInformation() {
-        PushMessageInformation pushMessageInformation = pushMessageInformationDao.find("2");
-
-        assertThat(pushMessageInformation.getVariantInformations()).extracting("receivers", "deliveryStatus")
-                .contains(
-                        tuple(1000L, Boolean.FALSE),
-                        tuple(200L, Boolean.FALSE)
-                );
-
-        assertThat(pushMessageInformation.getSubmitDate()).isNotNull();
-    }
 
     @Test
     public void findByPushApplicationID() {
         int page = 0;
         int pageSize = 20;
-        PageResult<PushMessageInformation, MessageMetrics> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, page, pageSize);
         assertThat(messageInformations.getResultList()).isNotEmpty();
         assertThat(messageInformations.getResultList()).hasSize(2);
     }
@@ -153,7 +145,7 @@ public class PushMessageInformationDaoTest {
 
         for (int i = 0; i < 1000; i++) {
 
-            PushMessageInformation pmi = new PushMessageInformation();
+            FlatPushMessageInformation pmi = new FlatPushMessageInformation();
             pmi.setPushApplicationId("231231231");
 
             pushMessageInformationDao.create(pmi);
@@ -165,7 +157,7 @@ public class PushMessageInformationDaoTest {
         // a few more for different PushApplication...
         for (int i = 0; i < 1000; i++) {
 
-            PushMessageInformation pmi = new PushMessageInformation();
+            FlatPushMessageInformation pmi = new FlatPushMessageInformation();
             pmi.setPushApplicationId("231231232");
 
             pushMessageInformationDao.create(pmi);
@@ -185,28 +177,22 @@ public class PushMessageInformationDaoTest {
     }
 
     @Test
-    public void countMessagesPerVariant() {
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432432")).isEqualTo(2);
-        assertThat(pushMessageInformationDao.getNumberOfPushMessagesForVariant("231543432434")).isEqualTo(1);
-    }
-
-    @Test
     public void findMostBusyVariants() {
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
+        List<FlatPushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(3);
     }
 
     @Test
     public void findAllBusyVariants() {
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 5);
+        List<FlatPushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 5);
         assertThat(lastActivity).hasSize(3); // we just have three... - but asked for five
     }
 
     @Test
     public void findMostBusyVariantsForOnlyTwo() {
-        final PushMessageInformation pushMessageInformation = pushMessageInformationDao.find("3");
+        final FlatPushMessageInformation pushMessageInformation = pushMessageInformationDao.find("3");
         entityManager.remove(pushMessageInformation);
-        List<PushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
+        List<FlatPushMessageInformation> lastActivity = pushMessageInformationDao.findLatestActivity("admin", 3);
         assertThat(lastActivity).hasSize(2);
 
         lastActivity = pushMessageInformationDao.findLatestActivity(3);
@@ -219,7 +205,7 @@ public class PushMessageInformationDaoTest {
         final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings();
 
         assertThat(variantIDsWithWarnings).hasSize(4);
-        assertThat(variantIDsWithWarnings).contains("213", "231543432432", "23154343243333", "231543432434");
+        assertThat(variantIDsWithWarnings).contains("1", "2", "3", "4");
     }
 
     @Test
@@ -228,15 +214,36 @@ public class PushMessageInformationDaoTest {
         final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings("dude");
 
         assertThat(variantIDsWithWarnings).hasSize(1);
-        assertThat(variantIDsWithWarnings).containsOnly("213");
+        assertThat(variantIDsWithWarnings).containsOnly("4");
+    }
+
+    @Test
+    public void findVariantIDsWithWarningsForKalle() {
+        // all warnings:
+        final List<String> variantIDsWithWarnings = pushMessageInformationDao.findVariantIDsWithWarnings("kalle");
+
+        assertThat(variantIDsWithWarnings).isNotNull();
+        assertThat(variantIDsWithWarnings).isEmpty();
+    }
+
+    @Test
+    public void addTwoErrors() {
+        FlatPushMessageInformation fmpi = pushMessageInformationDao.find("1");
+        Variant variant = variantDao.find("1");
+        VariantErrorStatus ves = new VariantErrorStatus(fmpi, variant, "error");
+
+        ves.setVariant(variant);
+        ves.setPushMessageInformation(fmpi);
+
+        fmpi.getErrors().add(ves);
     }
 
     @Test
     public void ascendingDateOrdering() {
 
-        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.TRUE, 0, 25);
-        final List<PushMessageInformation> list = messageInformations.getResultList();
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
 
         assertThat(list.get(0).getSubmitDate()).isBefore(list.get(1).getSubmitDate());
@@ -244,9 +251,9 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void descendingDateOrdering() {
-        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", null, Boolean.FALSE, 0, 25);
-        final List<PushMessageInformation> list = messageInformations.getResultList();
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(2);
 
         assertThat(list.get(0).getSubmitDate()).isAfter(list.get(1).getSubmitDate());
@@ -254,15 +261,15 @@ public class PushMessageInformationDaoTest {
 
     @Test
     public void testSearchString() {
-        PageResult<PushMessageInformation, MessageMetrics> messageInformations =
+        PageResult<FlatPushMessageInformation, MessageMetrics> messageInformations =
                 pushMessageInformationDao.findAllForPushApplication("231231231", "foo", Boolean.TRUE, 0, 25);
-        final List<PushMessageInformation> list = messageInformations.getResultList();
+        final List<FlatPushMessageInformation> list = messageInformations.getResultList();
         assertThat(list).hasSize(1);
     }
 
     @Test
     public void testLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
+        FlatPushMessageInformation largePushMessageInformation = new FlatPushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
         largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4500));
         pushMessageInformationDao.create(largePushMessageInformation);
@@ -270,7 +277,7 @@ public class PushMessageInformationDaoTest {
 
     @Test(expected = PersistenceException.class)
     public void testTooLongRawJsonPayload() {
-        PushMessageInformation largePushMessageInformation = new PushMessageInformation();
+        FlatPushMessageInformation largePushMessageInformation = new FlatPushMessageInformation();
         largePushMessageInformation.setPushApplicationId("231231231");
         largePushMessageInformation.setRawJsonMessage(TestUtils.longString(4501));
         pushMessageInformationDao.create(largePushMessageInformation);
@@ -280,7 +287,7 @@ public class PushMessageInformationDaoTest {
     @Test
     public void deleteOldPushMessageInformations() {
 
-        List<PushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
+        List<FlatPushMessageInformation> messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(2);
 
         pushMessageInformationDao.deletePushInformationOlderThan(DateUtils.calculatePastDate(0));
@@ -289,11 +296,5 @@ public class PushMessageInformationDaoTest {
 
         messageInformations = pushMessageInformationDao.findAllForPushApplication("231231231", Boolean.TRUE);
         assertThat(messageInformations).hasSize(0);
-    }
-
-    @Test
-    public void findVariantMetricByVariantId() {
-        VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213","1");
-        assertThat(variantMetricInformation).isNotNull();
     }
 }

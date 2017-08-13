@@ -21,10 +21,9 @@ import java.io.Serializable;
 /**
  * Event fired when all batches for given variant were loaded and queued.
  *
- * Note: this does not mean all batches are processed, see {@link VariantCompletedEvent}.
+ * Note: this does not mean all batches are processed.
  *
  * @see BatchLoadedEvent
- * @see VariantCompletedEvent
  */
 public class AllBatchesLoadedEvent implements Serializable {
 

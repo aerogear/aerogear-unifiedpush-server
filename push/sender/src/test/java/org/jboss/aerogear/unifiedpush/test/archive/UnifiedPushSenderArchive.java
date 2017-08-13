@@ -29,17 +29,14 @@ import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder;
-import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
-import org.jboss.aerogear.unifiedpush.message.jms.CdiJmsBridge;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProducer;
-import org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 import org.jboss.shrinkwrap.api.Archive;
@@ -74,9 +71,8 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
 				.addPackage(BatchLoadedEvent.class.getPackage()) //
 				.addPackage(AbstractMessageHolder.class.getPackage()) //
 				.addPackage(MessageDeliveryException.class.getPackage()) //
-				.addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class,
-						AbstractJMSMessageConsumer.class) //
-				.addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)//
+				.addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class) //
+				.addClasses(AbstractJMSTest.class, JmsClient.class)//
 				.addClasses(DispatchToQueue.class, Dequeue.class);
 	}
 
@@ -84,7 +80,7 @@ public class UnifiedPushSenderArchive extends UnifiedPushArchiveBase<UnifiedPush
 		return addClasses(AbstractJMSMessageListener.class)
 				.addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
 				.addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
-				.addClasses(TriggerMetricCollectionConsumer.class).addAsWebInfResource(
+				.addAsWebInfResource(
 						new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/jboss-ejb3.xml"), "jboss-ejb3.xml");
 	}
 

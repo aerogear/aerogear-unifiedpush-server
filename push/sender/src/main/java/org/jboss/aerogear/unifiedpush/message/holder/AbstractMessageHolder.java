@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.holder;
 
-import java.io.Serializable;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+
+import java.io.Serializable;
 
 /**
  * Abstract class that serves as a base for objects that holds push notification details and can be used as a payload in messaging subsystems.
@@ -28,15 +28,15 @@ public abstract class AbstractMessageHolder implements Serializable {
 
     private static final long serialVersionUID = 8204829162844896312L;
 
-    private PushMessageInformation pushMessageInformation;
+    private FlatPushMessageInformation pushMessageInformation;
     private UnifiedPushMessage unifiedPushMessage;
 
-    public AbstractMessageHolder(PushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage) {
+    public AbstractMessageHolder(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage) {
         this.pushMessageInformation = pushMessageInformation;
         this.unifiedPushMessage = unifiedPushMessage;
     }
 
-    public PushMessageInformation getPushMessageInformation() {
+    public FlatPushMessageInformation getPushMessageInformation() {
         return pushMessageInformation;
     }
 
