@@ -31,4 +31,9 @@ public class KafkaClusterConfig {
      */
     public static final String KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID = "agpush_installationMetricsGroup";
 
+    /**
+     * Notification router streams input topic.
+     */
+    public static final String NOTIFICATION_ROUTER_STREAMS_INPUT_TOPIC = "agpush_pushMessageProcessing";
+
 }
