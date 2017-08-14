@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenCheck;
 
 import java.util.HashSet;
