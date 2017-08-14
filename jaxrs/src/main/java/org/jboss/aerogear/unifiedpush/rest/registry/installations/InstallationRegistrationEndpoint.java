@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
 import net.wessendorf.kafka.cdi.annotation.Producer;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -57,7 +56,6 @@ import java.io.IOException;
 import java.util.List;
 
 @Path("/registry/device")
-@KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
