@@ -233,7 +233,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             // start the producer and push a message to installation metrics
             // topic
             installationMetricsProducer.send(KAFKA_INSTALLATION_TOPIC, pushMessageId);
-
+            
             return Response.ok(EmptyJSON.STRING).build();
 
         } else {
@@ -419,5 +419,9 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         // unauthorized...
         return null;
+    }
+    
+    public SimpleKafkaProducer<String, String> getInstallationMetricsProducer(){
+        return installationMetricsProducer;
     }
 }

@@ -28,6 +28,14 @@
     <name>UnifiedPush Kafka</name>
 
     <dependencies>
+    
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
         <dependency>
             <groupId>net.wessendorf.kafka</groupId>
             <artifactId>kafka-cdi-extension</artifactId>
@@ -50,6 +58,13 @@
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-service</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-jaxrs</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -94,6 +109,7 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+		
     </dependencies>
 
     <profiles>
@@ -115,6 +131,33 @@
                     <artifactId>assertj-core</artifactId>
                     <scope>test</scope>
                 </dependency>
+                
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+                    <version>1.0.0.Final</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld</groupId>
+                    <artifactId>weld-core</artifactId>
+                    <version>2.3.5.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                
             </dependencies>
         </profile>
     </profiles>
