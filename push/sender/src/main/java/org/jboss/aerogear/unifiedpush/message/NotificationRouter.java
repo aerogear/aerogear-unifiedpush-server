@@ -22,7 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.kafka.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;

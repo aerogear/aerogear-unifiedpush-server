@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.jms;
+package org.jboss.aerogear.unifiedpush.message.kafka;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,10 +24,10 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Denotes an event with message that will be dispatched to JMS queue
+ * Denotes an event with message that is pulled from JMS queue for further processing
  */
 @Qualifier
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DispatchToQueue {
+public @interface Dequeue {
 }
