@@ -28,7 +28,7 @@ import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INST
 import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID;
 
 /**
- * Kafka Consumer that reads from "installationMetrics" topic a pair (PushMessageID, VariantID) and updates analytics by
+ * Kafka Consumer that reads the VariantID from "agpush_installationMetrics" and updates analytics by
  * invocation of {@link PushMessageMetricsService#updateAnalytics(String)}.
  * 
  */
@@ -40,8 +40,7 @@ public class InstallationMetricsKafkaConsumer {
     private PushMessageMetricsService metricsService;
 
     /**
-     * A method invoked for each record that a consumer reads. It updates metrics analytics based on push message id and variant
-     * id.
+     * Update metrics analytics based on push message id from the consumed record.
      */
     @Consumer(topic = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
     public void receiver(final String pushMessageId) {
