@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('upsConsole')
-  .controller('AppController', function ( $rootScope, $scope, Auth, $http, $interval, $timeout, $log, appConfig, dashboardEndpoint ) {
+  .controller('AppController', function ( $rootScope, $scope, Auth, $http, $interval, $timeout, $log, appConfig, dashboardEndpoint, $$rootRouter ) {
 
     var self = this;
 
@@ -31,6 +31,7 @@ angular.module('upsConsole')
     this.username = getUsername();
     $scope.$watch(getUsername, function( newValue ) {
       self.username = newValue;
+      $$rootRouter.navigate('/');
     });
 
     this.logout = function() {

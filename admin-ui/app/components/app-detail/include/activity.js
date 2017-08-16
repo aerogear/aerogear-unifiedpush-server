@@ -97,9 +97,14 @@ angular.module('upsConsole')
       }
     });
 
-    $scope.$watch(function() { return self.searchString }, function( searchString ) {
-      self.currentPage = 1;
-      fetchMetrics( self.currentPage, self.searchString );
+    $scope.$watch(function() { 
+      return self.searchString 
+    }, function (newSearchString, oldSearchString) {
+      //ensure that the value has actually changed, to prevent fetchMetrics being called on initial load here
+      if (newSearchString !== oldSearchString) {
+        self.currentPage = 1;
+        fetchMetrics(self.currentPage, self.newSearchString);
+      }
     });
 
   });
